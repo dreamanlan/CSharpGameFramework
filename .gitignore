@@ -45,3 +45,4 @@ Unity3d/*.suo
 Unity3d/Library
 Unity3d/obj
 Unity3d/Temp
+Unity3d/Assets/Plugins/*

@@ -1,0 +1,12 @@
+story(main)
+{
+  onmessage("start")
+  {
+    highlightprompt(0,"Tip_0");
+    firemessage("ShowDlg",1);
+  };
+  onmessage("DlgFinish",1)
+  {
+    changescene(2);
+  };
+};

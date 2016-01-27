@@ -1,0 +1,1585 @@
+fileFormatVersion: 2
+guid: 62ff1223754dcdf46becd1d26b2d1c03
+timeCreated: 1452440340
+licenseType: Pro
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: ActorIcons_0
+    21300002: ActorIcons_1
+    21300004: ActorIcons_2
+    21300006: ActorIcons_3
+    21300008: ActorIcons_4
+    21300010: ActorIcons_5
+    21300012: ActorIcons_6
+    21300014: ActorIcons_7
+    21300016: ActorIcons_8
+    21300018: ActorIcons_9
+    21300020: ActorIcons_10
+    21300022: ActorIcons_11
+    21300024: ActorIcons_12
+    21300026: ActorIcons_13
+    21300028: ActorIcons_14
+    21300030: ActorIcons_15
+    21300032: ActorIcons_16
+    21300034: ActorIcons_17
+    21300036: ActorIcons_18
+    21300038: ActorIcons_19
+    21300040: ActorIcons_20
+    21300042: ActorIcons_21
+    21300044: ActorIcons_22
+    21300046: ActorIcons_23
+    21300048: ActorIcons_24
+    21300050: ActorIcons_25
+    21300052: ActorIcons_26
+    21300054: ActorIcons_27
+    21300056: ActorIcons_28
+    21300058: ActorIcons_29
+    21300060: ActorIcons_30
+    21300062: ActorIcons_31
+    21300064: ActorIcons_32
+    21300066: ActorIcons_33
+    21300068: ActorIcons_34
+    21300070: ActorIcons_35
+    21300072: ActorIcons_36
+    21300074: ActorIcons_37
+    21300076: ActorIcons_38
+    21300078: ActorIcons_39
+    21300080: ActorIcons_40
+    21300082: ActorIcons_41
+    21300084: ActorIcons_42
+    21300086: ActorIcons_43
+    21300088: ActorIcons_44
+    21300090: ActorIcons_45
+    21300092: ActorIcons_46
+    21300094: ActorIcons_47
+    21300096: ActorIcons_48
+    21300098: ActorIcons_49
+    21300100: ActorIcons_50
+    21300102: ActorIcons_51
+    21300104: ActorIcons_52
+    21300106: ActorIcons_53
+    21300108: ActorIcons_54
+    21300110: ActorIcons_55
+    21300112: ActorIcons_56
+    21300114: ActorIcons_57
+    21300116: ActorIcons_58
+    21300118: ActorIcons_59
+    21300120: ActorIcons_60
+    21300122: ActorIcons_61
+    21300124: ActorIcons_62
+    21300126: ActorIcons_63
+    21300128: ActorIcons_64
+    21300130: ActorIcons_65
+    21300132: ActorIcons_66
+    21300134: ActorIcons_67
+    21300136: ActorIcons_68
+    21300138: ActorIcons_69
+    21300140: ActorIcons_70
+    21300142: ActorIcons_71
+    21300144: ActorIcons_72
+    21300146: ActorIcons_73
+    21300148: ActorIcons_74
+    21300150: ActorIcons_75
+    21300152: ActorIcons_76
+    21300154: ActorIcons_77
+    21300156: ActorIcons_78
+    21300158: ActorIcons_79
+    21300160: ActorIcons_80
+    21300162: ActorIcons_81
+    21300164: ActorIcons_82
+    21300166: ActorIcons_83
+    21300168: ActorIcons_84
+    21300170: ActorIcons_85
+    21300172: ActorIcons_86
+    21300174: ActorIcons_87
+    21300176: ActorIcons_88
+    21300178: ActorIcons_89
+    21300180: ActorIcons_90
+    21300182: ActorIcons_91
+    21300184: ActorIcons_92
+    21300186: ActorIcons_93
+    21300188: ActorIcons_94
+    21300190: ActorIcons_95
+    21300192: ActorIcons_96
+    21300194: ActorIcons_97
+    21300196: ActorIcons_98
+    21300198: ActorIcons_99
+    21300200: ActorIcons_100
+    21300202: ActorIcons_101
+    21300204: ActorIcons_102
+    21300206: ActorIcons_103
+    21300208: ActorIcons_104
+    21300210: ActorIcons_105
+    21300212: ActorIcons_106
+    21300214: ActorIcons_107
+    21300216: ActorIcons_108
+    21300218: ActorIcons_109
+    21300220: ActorIcons_110
+    21300222: ActorIcons_111
+    21300224: ActorIcons_112
+    21300226: ActorIcons_113
+    21300228: ActorIcons_114
+    21300230: ActorIcons_115
+    21300232: ActorIcons_116
+    21300234: ActorIcons_117
+    21300236: ActorIcons_118
+    21300238: ActorIcons_119
+    21300240: ActorIcons_120
+    21300242: ActorIcons_121
+    21300244: ActorIcons_122
+    21300246: ActorIcons_123
+    21300248: ActorIcons_124
+    21300250: ActorIcons_125
+    21300252: ActorIcons_126
+    21300254: ActorIcons_127
+    21300256: ActorIcons_128
+    21300258: ActorIcons_129
+    21300260: ActorIcons_130
+    21300262: ActorIcons_131
+    21300264: ActorIcons_132
+    21300266: ActorIcons_133
+    21300268: ActorIcons_134
+    21300270: ActorIcons_135
+    21300272: ActorIcons_136
+    21300274: ActorIcons_137
+    21300276: ActorIcons_138
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: ActorIcons_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1139
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_1
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 1139
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_2
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 1139
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_3
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 1139
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_4
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 1139
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_5
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 1139
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_6
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 1139
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_7
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 1139
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_8
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 1139
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_9
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 1139
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1074
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_11
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 1074
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_12
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 1074
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_13
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 1074
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_14
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 1074
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_15
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 1074
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_16
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 1074
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_17
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 1074
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_18
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 1074
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_19
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 1074
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1009
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_21
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 1009
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_22
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 1009
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_23
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 1009
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_24
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 1009
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_25
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 1009
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_26
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 1009
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_27
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 1009
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_28
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 1009
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_29
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 1009
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 944
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_31
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 944
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_32
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 944
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_33
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 944
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_34
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 944
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_35
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 944
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_36
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 944
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_37
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 944
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_38
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 944
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_39
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 944
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 879
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_41
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 879
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_42
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 879
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_43
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 879
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_44
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 879
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_45
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 879
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_46
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 879
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_47
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 879
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_48
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 879
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_49
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 879
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_50
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 814
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_51
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 814
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_52
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 814
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_53
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 814
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_54
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 814
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_55
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 814
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_56
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 814
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_57
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 814
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_58
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 814
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_59
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 814
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_60
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 749
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_61
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 749
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_62
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 749
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_63
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 749
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_64
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 749
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_65
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 749
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_66
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 749
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_67
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 749
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_68
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 749
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_69
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 749
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_70
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 684
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_71
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 684
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_72
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 684
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_73
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 684
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_74
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 684
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_75
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 684
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_76
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 684
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_77
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 684
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_78
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 684
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_79
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 684
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_80
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 619
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_81
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 619
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_82
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 619
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_83
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 619
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_84
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 619
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_85
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 619
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_86
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 619
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_87
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 619
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_88
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 619
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_89
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 619
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_90
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 554
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_91
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 554
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_92
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 554
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_93
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 554
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_94
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 554
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_95
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 554
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_96
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 554
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_97
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 554
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_98
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 554
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_99
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 554
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_100
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 489
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_101
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 489
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_102
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 489
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_103
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 489
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_104
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 489
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_105
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 489
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_106
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 489
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_107
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 489
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_108
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 489
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_109
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 489
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_110
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 424
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_111
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 424
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_112
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 424
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_113
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 424
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_114
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 424
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_115
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 424
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_116
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 424
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_117
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 424
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_118
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 424
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_119
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 424
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_120
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 359
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_121
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 359
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_122
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 359
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_123
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 359
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_124
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 359
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_125
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 359
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_126
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 359
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_127
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 359
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_128
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 359
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_129
+      rect:
+        serializedVersion: 2
+        x: 594
+        y: 359
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_130
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 294
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_131
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 294
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_132
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 294
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_133
+      rect:
+        serializedVersion: 2
+        x: 198
+        y: 294
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_134
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 294
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_135
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 294
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_136
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 294
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_137
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 294
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: ActorIcons_138
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 294
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

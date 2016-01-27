@@ -1,0 +1,141 @@
+﻿Version 2.2.1
+- FIX: Any unfinished thread used for file loading will now be forcibly closed when the Build Report Window is closed by the user.
+- FIX: Improved code for making sure Build Report Tool assets will not be deleted. This detection is based on the folder names and file names, so don't rename the folders or files in the Build Report Tool.
+
+
+Version 2.2
+- NEW: Revamped size readings in the Overview section.
+- NEW: Added option to allow batch deleting of used assets.
+- NEW: Added option to choose not to show the Build Report window in batchmode builds.
+- FIX: Fixed compatiblity with Unity 4.3
+
+
+Version 2.1.4
+- FIX: Fixed null exception bug when trying to get Unity Editor log file when using Windows XP Professional x64 Edition.
+
+
+Version 2.1.3
+- FIX: Fixed bug where streaming assets were not accounted for in the "Used Assets" section. The default file filters generated also now has a "Streaming Assets" group.
+
+
+Version 2.1.2
+- FIX: Fixed bug where asset listing did not take entries of built-in assets properly. This also fixes the bug where some assets that are used are mistakenly identified as unused. The default file filter config XML file generated now also takes built-in asset entries into account. Note: Built-in assets as entries in the log file was introduced in Unity 4.2.x
+- FIX: Fixed bug where the file filters displayed would always show the one embedded in the opened XML file, even if Build Report Tool was configured to use an external file filter config XML file.
+
+
+Version 2.1.1
+- FIX: Prefixed all source code files with either "BRT_" or "DldUtil_" to ensure no conflicts with source code files of user.
+- EDT: Created new namespace DldUtil for the utility classes BigFileReader, and TraverseDirectory.
+- EDT: Removed minor warning messages from build unless BRT_SHOW_MINOR_WARNINGS is enabled.
+
+
+Version 2.1
+- EDT: Optimized prefab usage detection.
+
+
+Version 2.0
+- FIX: Unused assets are now processed per batch, to prevent out-of-memory issues on projects with large number of files. This also helps lessen time to generate a build report that has unused assets info. The number of files to process per batch can be changed in the Options.
+- EDT: Optimized editor log parsing and file traversing codes.
+- FIX: Fixed bug with displaying of escaped HTML characters in asset entry names.
+
+
+Version 1.11
+- FIX: Ensured compatibility with Unity 4.2
+
+
+Version 1.10
+
+- NEW: In the Used/Unused Assets List: Added a "Select All" which will select all asset entries in current filter.
+- FIX: Fixed bug with escaped HTML characters in asset entry names.
+- FIX: Fixed bug when reloading file filters and current filter displayed would erroneously always reset to first one.
+
+
+Version 1.9
+
+- Changed manner of how to select files for size summation: each entry in the asset list now has a checkbox before it.
+- NEW: Added batch delete feature: "Delete selected" and "Delete all" buttons for the Unused Assets list.
+- NEW: Added bug fix for locating editor log file properly in Windows XP.
+
+
+Version 1.8
+
+- NEW: Added "Calculation Levels" in the Options screen. This allows you to skip generating certain parts of the build report at varying levels, to speed up the build report generation process, at the expense of having lesser information. Depending on your situation, this may be the only option if you get out of memory errors when generating build reports.
+- NEW: Generating a build report (and opening a build report from file) is now done asynchronously (on a separate thread), minimizing the GUI's unresponsiveness on heavy computations.
+- NEW: Added pagination on the asset lists. This is used to minimize lag on the GUI when having hundreds to thousands of entries in asset lists. The number of entries per page can be set in the Options screen.
+- NEW: Which native plugins were included in the build is now properly recognized in the asset lists.
+- NEW: Added "Help & Info" screen showing the README and VERSION files.
+- NEW: Re-ordered layout of options in the Options screen.
+- NEW: Properly segregated managed DLLs into the "Script DLLs" category.
+- FIX: Added fix for dealing with invalid XML characters.
+- FIX: Minor bug fixes.
+
+
+Version 1.7.1
+
+- FIX: Fixed error about the missing FileFiltersUsed.xml when opening the Build Report window on a clean environment.
+
+
+Version 1.7
+
+- FIX: Moved as much code as possible into its own namespace "BuildReportTool" to minimize naming conflicts with users' codes.
+- NEW: File filters are now serialized in an XML file to allow user-configuration. A FileFiltersUsed.xml with default values will be generated in ~/UnityBuildReports/ if it does not exist yet. That file can be used as a starting point for custom file filters. If there is a FileFiltersUsed.xml in the Assets/BuildReport/ folder in your project, it will use that instead to allow per-project file filters.
+- FIX: Made a much more reliable way of getting build info automatically after a build. The Build Report Window showing blank information should not happen any more.
+- NEW: Added buttons to open folder of path settings in options screen (a la "Reveal in Finder" or "Show in Explorer").
+- NEW: Added version of Unity used to build project in build info.
+- FIX: Minor bug fixes.
+
+
+Version 1.6
+
+- NEW: Added option to manually override what Editor.log to look at.
+- NEW: Added option to select files in an asset list. All selected files have their total file size and percentage displayed.
+
+
+Version 1.5
+
+- NEW: Added options screen
+  - Can now specify if Build Report Tool will collect information automatically or not.
+  - Can now specify whether svn/git metadata get included in unused assets scan.
+  - File filters can now be either a drop down box or the previous buttons.
+- NEW: Build info can now be serialized (saved) into XML files for later viewing. Top row of buttons now have "Open" and "Save" for accessing and saving XML files, respectively.
+  - Automatically gathered build info are also automatically saved, either in the user's personal folder (My Documents/Home) or beside the project folder. This can be changed in the options screen.
+
+
+Version 1.4
+
+- NEW: The Build Report Window will now show automatically after building your project.
+- NEW: The Build Report Window is now a dockable window. Layout is changed, segregated in three major parts: Overview, Used Assets, and Unused Assets. The Asset Breakdown list is now in Used Assets.
+- NEW: The Used Assets List (formerly Asset Breakdown List), can now be filtered. There are two types of filters: 1) by file type, and 2) by folder name.
+  - By file type: the usual textures, models, scripts, sounds category. This is determined by the file type extension name of the file.
+  - By folder name: you can filter assets based on what folder they reside in. For example, there's a filter to get all assets inside any folder named "Standard Assets". This will filter for any parent folder of the file.
+  - Filters can be customized by editing FiltersUsed.cs (found in the BuildReport/Scripts/Editor/UserConfigurable folder) and adding/editing the entries. It's pretty much self-explanatory, and the entries there serve as samples on how to use it. Prepend your entries with a dot to indicate that it's a file type filter, or put a slash "/" before and after to indicate that it's a folder type filter.
+  - NOTE: Take note that upgrading to newer versions in the future may overwrite your FiltersUsed.cs. Backup first before updating the Build Report Tool to a new version.
+- NEW: The Build Report Window can now show UNUSED assets in your project. This is for determining files that you no longer use. Same with the Used Assets List, this list can be filtered by file type or folder. The filters used in the Used Assets List is the same one used for this Unused Assets List.
+- NOTE: Avatar Mask files (.mask files, used only in Unity 4) are not shown in the Unused Assets List. Right now, there is no reliable way of determining if an Avatar Mask file is used in the build or not.
+- NEW: The Build Report Tool can now show prefabs that are not referenced as variables or residing in a Resources folder but nevertheless used in a build. See notes below on "Prefab Instances in Scenes" for details.
+- FIX: Fixed a bug when unable to get DLL file size when using Unity 4.
+
+
+Version 1.3
+
+- NEW: The DLL list now shows the file size for each DLL, and is sorted by size, large to small. In particular, if you enable size stripping for mscorlib.dll, you'll see the file size of that DLL reflected properly.
+- NEW: The DLL list is now separated into two lists: DLLs made from your scripts, and DLLs of standard Mono libraries that your project uses.
+- NEW: The total compressed build size now shows for Android builds (this is simply the file size of the resulting .apk file).
+
+
+Version 1.2
+
+- NEW: Added support for Pro dark skin.
+
+
+Version 1.1
+
+- FIX: Fixed bug when certain asset filenames are not recognized.
+
+
+Version 1.0
+
+- Initial release.
+
+
+

@@ -1,0 +1,14 @@
+story(ez_r_arrow)
+{
+  onmessage(start)
+  {
+    wait(10000);
+    destroynpcwithobjid(@objid);
+  };
+  onmessage(ez_r_arrow_kill)
+  {
+    if(@objid==$0.ActorId){
+      destroynpcwithobjid(@objid);
+    };
+  };
+};

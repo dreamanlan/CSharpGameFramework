@@ -1,0 +1,15 @@
+skill(106)
+{
+  section(30000)
+  {
+    adjustsectionduration("impact",100);
+  };
+  section(100)
+  {
+    sendstorymessage(0,"KillSummonNpc");
+  };
+  onstop
+  {
+    sendstorymessage(0,"KillSummonNpc");
+  };
+};
