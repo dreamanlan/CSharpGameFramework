@@ -1,0 +1,32 @@
+int32	string	
+id	dslFile	
+//技能dsl ID	技能所在的dsl文件	逻辑解释或说明
+1	Skill/born.dsl	默认出生技能
+2	Skill/dead.dsl	死亡技能（死亡动画等在这里）
+3	Skill/attack.dsl	普攻
+4	Skill/aoeattack.dsl	普通范围攻击
+5	Skill/magicattack.dsl	魔法攻击（带轨迹部分的技能）
+6	Skill/addbuff.dsl	普通技能加buff
+7	Skill/buff.dsl	普通buff
+100	Skill/gailun_e.dsl	盖伦审判
+101		
+102	Skill/shitouren_r.dsl	石头人势不可挡
+103	Skill/anni_r.dsl	安妮提伯斯之怒
+104		
+105	Skill/manwang_r.dsl	蛮王旋风斩
+106	Skill/killbuff.dsl	定时kill召唤出的npc
+107	Skill/sleepbuff.dsl	眩晕buff
+108	Skill/shitouren_fukongbuff.dsl	石头人R浮空buff
+109	Skill/shangjin_r.dsl	赏金猎人大招
+110		
+111		
+112	Skill/ez_r.dsl	EZ大招
+113	Skill/jiansheng_q.dsl	剑圣Q技能
+114	Skill/jiqiren_q.dsl	机器人Q技能
+115	Skill/shieldbuff.dsl	盾buff
+116	Skill/jiqiren_feizhuabuff.dsl	机器人飞爪buff
+117	Skill/ez_nr.dsl	EZ大招新方式
+118	Skill/ez_nr_arrow.dsl	EZ大招箭
+119	Skill/aoeborn.dsl	出身AOE技能
+120	Skill/aoeaddblood.dsl	全体加血
+121	Skill/aoeaddbuff.dsl	全体加buff

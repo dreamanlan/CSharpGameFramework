@@ -1,0 +1,1720 @@
+一、我们的剧情系统脚本与技能系统使用同一语法的DSL语言（解析器源码在https://github.com/dreamanlan/DSL）。
+
+二、DSL语法元素（本部分可跳过不看）
+  
+  DSL语言的语句都以;结束，这可能是最有可能写错的地方，在实际使用时一定要注意，任何语句结束一定要写上;号。
+  
+  DSL语言在语法层面都是由语句构成，语句由函数级联而成，最后加一个分号表示语句结束：
+  
+  语句 ::= ｛ 函数 ｝;
+  函数 ::= 函数调用 \{ 语句列表 \}
+  
+  函数调用 ::= 函数名 ( 函数参数表 )
+  函数调用 ::= 函数调用 ( 函数参数表 )
+  
+  对语句，函数表为可选，亦即单独一个分号也构成一个语句。
+  对函数，函数调用、语句部分以及函数调用的函数名部分都是可选的。如下形式都是合法的函数语法：
+  
+  (a,b,c,d)
+  
+  或
+  
+  (a,b,c,d)
+  {
+    cmd1();
+    cmd2();
+  }
+  
+  或
+  
+  {
+    cmd1();
+    cmd2();
+  }
+  
+  函数调用可以级联，即一个函数调用返回一个函数，然后再调用：
+  
+  getSomething()(a,b,c,d);
+  
+  包含语句的函数不能直接用于构成函数调用，如下语法是合法的语法，但不是函数调用，而是语句：
+  
+  func(a,b)
+  {
+    cmd1();
+    cmd2();
+  }(e,f,g);
+  
+  这样的语法实际上被解析成语句的第一个函数与第二个函数，第二个函数是一个仅由函数参数表构成的函数。
+  
+  另外一种函数调用的变体是表达式语法：
+  
+  a + b 等价于 +(a,b)
+  
+  DSL语言支持三种形式的注释：
+  
+  /**/
+  //
+  #
+  
+  后两种是单行注释，第一种是与c语言相同的块注释。
+  
+  DSL语言里的字符串可以用单引号与双引号括起来。不带空格的字符串也可省略引号。目前true/false也被解释为字符串。可以认为DSL语言只有字符串与浮点数2种类型。
+  函数名也是字符串，所以也可以是用引号括起来的。
+  
+三、用于技能的DSL
+  
+  这里简单说一下用于技能的DSL，技能DSL与后面的剧情DSL不太一样，技能DSL是纯粹描述性的，不会包含复杂逻辑。这样设计的原因一是技能在概念上已经有很好的抽象，另外一个原因是
+  技能本身包含可见表现与不可见逻辑两个部分，必然是客户端与服务器/逻辑层都需要实现的，如果技能DSL也包含复杂逻辑，会导致客户端与逻辑层的实现非常难以同步，同时工作量也会
+  剧增。
+  
+  技能DSL由技能section构成，每个section则由触发器构成：
+  
+  skill(1)
+  {
+    section(100)
+    {
+      trigger1();
+      trigger2();
+    };
+    onmessage("msg",1)
+    {
+    };
+    oninterrupt
+    {
+    };
+    onstop
+    {
+    };
+  };
+  
+  技能DSL不支持自定义变量，也不支持自己编写逻辑语句，只能由触发器构成，触发器组合成了技能，同时也是实现上的基本单位，客户端与服务器的同步也由触发器的实现负责（并非所有触发器都需要同步
+  ，多数表现相关的触发器在服务器端是不需要的，在服务器解释技能DSL时会被忽略）。
+  
+  技能DSL支持几种特殊的段用于技能流程的一些特殊处理，如oninterrupt、onstop，这类段都是在特定情形下一次性处理，此时整个段里的所有触发器都执行一次，然后不再
+  持续运行，另外还有一类，onmessage，用于处理自定义的消息。
+  技能同时只会有一个普通section在运行状态，onmessage则可以有多个同时在运行状态（但同一个onmessage段不会产生多个实例）。section与onmessage里的触发器都会随时间持续运行，直
+  到触发器运行结束，或者段结束。  
+  
+四、用于剧情的DSL
+
+  剧情脚本语法如下：
+  
+  story(main)
+  {
+    local
+    {
+      @var1(0);
+      @var2(1);
+    };
+    onmessage("start")
+    {
+      
+    };
+    onmessage("allnpckilled")
+    {
+    
+    };
+  };
+  
+  目前的实现，一个场景的story总是从main开始执行。story的名称在场景内唯一即可。一个story由局部变量定义与多个消息处理构成，即上面的onmessage语句。onmessage语句是由onmessage函数+分号构成。
+  onmessage函数的参数表共同构成消息处理的消息id，多个参数会用:连接成一个字符串构成消息id，比如：
+  
+  onmessage("npckilled",12)
+  {
+  };
+  
+  这个消息处理的实际消息id是“npckilled:12”，在我们的游戏系统里触发消息时实际发送的消息ID就是这个。上面的写法与下面写法是完全等价的：
+  
+  onmessage("npckilled:12")
+  {
+  };
+  
+  消息id都是在story解析时就能确定的常量值（所以这部分不能出现任何变量）。
+  
+  story支持局部变量与全局变量，有一些全局变量将来会由游戏系统定义。局部变量命名必须是@局部变量名，全局变量命名必须是@@全局变量名。除@@变名的全局变量处，story还提供一种动
+  态key/value方式的类全局变量，通过propget/propset来读写（它们也能用于全局变量与局部变量读写）。
+  
+  局部变量可以在story的local部分定义并指定一个初始值（这里指定的值必须是常量）。全局变量与局部变量都可以在消息处理里直接通过赋值产生新的变量，没有赋值的变量直接读取将得到未知值，所以一定要
+  保证变量地读取前有赋值，对局部变量，最好是在local里定义。
+  
+  消息在触发时可以带有多个参数，在消息处理里，这些参数可以通过 $+索引 来访问，$0代表第一个参数，$1代表第二个参数，以此类推。
+  
+  消息处理由具体的处理语句构成。语句部分有三大类元素，一类是通用的类似传统程序语言里的语句，一类是特定的用于实现story逻辑的命令，还有一类是用于变量运算的函数。
+  
+  剧情命令与函数利用dotnet反射机制调用dotnet对象成员，此时可以采用与c#相似的写法：
+  
+  obj.property = val;
+  val = obj.property;
+  obj.method(arg1,arg2,...);
+  val = obj.method(arg1,arg2,...);
+  
+  剧情脚本支持json的literal写法：
+  
+  [1,3,4,5];
+  {'a' => 1, 'b' => 2, 'c' => 3};
+  
+  注：在dsl用于UI脚本时，每一个UI对应一个脚本，为了方便配置，不在dsl里出现UI的名字，消息处理采用下述写法：
+  onnamespacedmessage(msgId)
+  {
+  };
+  对于名为ns的UI，上述处理等价于（也就是说这是一种带隐藏名字空间的机制）：
+  onmessage(ns,msgId)
+  {
+  };
+  
+  
+五、剧情语句API
+
+  1、赋值语句 assign 或 =
+  
+  用法：
+  assign(@var,值);
+  @var=值;
+  
+  其中值可以是常量或者是一个表达式，如果是表达是最好括起来。在后续API，所有值也是这样。
+  
+  2、自增/自减 inc 与 dec
+  用法：
+  inc(@var);
+  inc(@var,值）;
+  dec(@var);
+  dec(@var,值）;
+  
+  3、动态变量赋值 propset
+  用法：
+  progset（值,值）;
+  
+  第一个值必须是一个字符串值，表示变量名(对于局部变量与全局变量，名字必须包括特殊的@与@@前缀)。
+  
+  4、遍历语句 foreach
+  用法：
+  foreach(值1,值2,值3,...)
+  {
+    cmd1($$);
+    cmd2($$);
+  };
+  
+  作用：
+  对foreach部分指出的值，依次执行命令列表部分，在命令中通过$$来获取当前遍历执行的值。
+  
+  5、指定次数循环 loop
+  用法：
+  loop(值)
+  {
+    cmd1($$);
+    cmd2($$);
+  };
+  
+  作用：
+  执行命令列表由值指定的次数，在命令中通过$$来获取当前第几次执行，从0开始。
+  
+  6、条件循环 while
+  用法：
+  while(值)
+  {
+    cmd1();
+    cmd2();    
+  };
+  
+  作用：
+  如果值不为0就循环执行命令列表。
+  
+  7、条件执行 if/else
+  用法：  
+  if(值)
+  {
+    cmd1();
+    cmd2();
+  };
+  
+  或者
+  
+  if(值)
+  {
+    cmd1();
+    cmd2();
+  }
+  else
+  {
+    cmd3();
+    cmd4();
+  };
+  
+  或者
+  
+  if(值1)
+  {
+    cmd1();
+    cmd2();
+  }
+  elseif(值2)
+  {
+    cmd3();
+    cmd4();
+  }
+  .
+  .
+  .
+  elseif(值n)
+  {
+    cmd5();
+    cmd6();
+  }
+  else
+  {
+    cmd7();
+    cmd8();
+  }
+  
+  作用：
+  如果值不为0则执行cmd1与cmd2命令列表，否则如果有else则执行cmd3与cmd4命令列表。
+  
+  8、等待一段时间 wait 或 sleep
+  用法：
+  wait(毫秒数)[if(条件表达式)];
+  或
+  sleep(毫秒数)[if(条件表达式)];
+  
+  作用：
+  暂停当前的消息处理指定时间。注意，一个消息处理如果没有wait或sleep调用，会一直执行直到结束。因此如果有大的循环处理，里面应该调用sleep(0);来
+  释放控制权以允许其它逻辑正常执行。if部分为可选，用于在条件不满足时提前结束等待。
+  
+  9、日志 log
+  用法：
+  log(format，参数表);
+  
+  作用：
+  按format指定的格式格式化参数表各个值，然后输出拼接好的字符串到调试日志。
+  
+  10、本地消息触发 localmessage
+  用法：
+  localmessage(消息ID，参数表);
+  
+  作用：
+  触发一个本story内的消息。注意消息ID是一个字符串，对应onmessage的参数部分所描述的消息ID，onmessage有多个参数则用:把各参数拼接成消息ID。这里
+  的参数表的各个值在onmessage处理里可以通过$0,$1,...来访问。
+  
+  11、结束当前story的执行 terminate
+  用法：
+  terminate();
+  
+  作用：
+  结束当前story的执行。
+  
+  12、对list循环 looplist
+  用法：
+  looplist(值)
+  {
+  	cmd1();
+  	cmd2();
+  };
+  
+  作用：
+  对值指定的list的各个值遍历循环执行命令列表，在命令中通过$$来获得当前遍历到的list元素。
+  
+  13、改变list某个元素的值listset
+  用法：
+  listset(list,index,value);
+  
+  作用：
+  修改指定list的index元素值为value。
+  
+  14、清空指定的消息队列
+  用法：
+  clearmessage(msgid1,msgid2,...);
+  
+  作用：
+  清空指定的消息队列，如果不指定参数刚清空所有消息队列。
+  
+  15、执行dotnet方法
+  用法：
+  dotnetexec(obj/type,method,arg1,arg2,...);
+  
+  作用：
+  调用指定类/对象的方法。
+  
+  16、设置dotnet特性/字段
+  用法：
+  dotnetset(obj/type,property,arg1,arg2,...);
+  
+  作用：
+  设置指定类/对象的特性/字段。
+    
+  17、jsonadd
+  用法：
+  jsonadd(jsonobj,value);
+  
+  作用：
+  往json数组里添加元素。
+  
+  18、jsonset
+  用法：
+  jsonset(jsonobj,key/index,value);
+  
+  作用：
+  往json对象或数组里添加或修改元素。
+  
+  19、jsonremove
+  用法：
+  jsonremove(jsonobj,key);//用于json对象
+  jsonremove(jsonobj,index);//用于json数组
+  
+  作用：
+  移除json对象或json数组里的元素。
+  
+  20、waitlocalmessage/waitlocalmessagehandler
+  用法：
+  waitlocalmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+  waitlocalmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+  
+  作用：
+  waitlocalmessage等待当前story的指定消息之一触发。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)
+  waitlocalmessagehandler等待当前story的指定消息处理全部执行完毕。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)
+  
+六、运算
+
+  1、数字加     +
+  2、数字减     -
+  3、数字乘     *
+  4、数字比较   >=
+  5、数字比较   >
+  6、数字比较   ==
+  7、数字比较   <=
+  8、数字比较   <
+  9、逻辑与     &&
+  10、逻辑或    ||
+  11、逻辑非    !
+  12、数学除    /
+  13、数学取模  %
+  14、abs(x);
+  15、floor(x);
+  16、ceiling(x);
+  17、round(x);
+  18、pow(x,y); 或 pow(x);
+  19、log(x,y); 或 log(x);
+  20、sqrt(x);
+  21、sin(x);
+  22、cos(x);
+  23、sinh(x);
+  24、cosh(x);
+  25、min(x,y,z,...);
+  26、max(x,y,z,...);
+  
+七、内部函数
+  
+  1、vector2
+  用法：
+  vector2(x,y);
+  
+  作用：
+  构造一个vector2对象。
+    
+  2、vector3
+  用法：
+  vector3(x,y,z);
+  
+  作用：
+  构造一个vector3对象。
+    
+  3、vector4
+  用法：
+  vector4(x,y,z,w);
+  
+  作用：
+  构造一个vector4对象。
+    
+  4、quaternion
+  用法：
+  quaternion(x,y,z,w);
+  
+  作用：
+  构造一个quaternion对象。
+    
+  5、eular
+  用法：
+  eular(x,y,z);
+  
+  作用：
+  基于欧拉角构造一个quaternion对象。
+  
+  6、time
+  用法：
+  time();
+  
+  作用：
+  获取当前时间（单位：毫秒）
+  
+  7、format
+  用法：
+  format(format_string，参数列表);
+  
+  作用：
+  按格式化串格式化指定的参数列表，构成一个字符串。
+  
+  8、propget
+  用法：
+  propget(值[,defaultvalue]);
+  
+  作用：
+  值必须是个字符串值，表示要读取值的变量名。此函数用于动态获取变量值。
+  
+  9、intlist
+  用法：
+  intlist("1 2 3 4 5");
+    
+  作用：
+  从字符串里读取数字列表，分隔符可以是' '、','、'|'之一。返回值用于looplist语句遍历。
+  
+  10、stringlist
+  用法：
+  stringlist("a b c d e");
+  
+  作用：
+  从字符串里读取字符串列表，分隔符可以是' '、','、'|'之一。返回值用于looplist语句遍历。
+  
+  11、vector2list
+  用法：
+  vector2list("v1x v1y v2x v2y");
+  
+  作用：
+  从字符串里读取vector2列表，分隔符可以是' '、','、'|'之一。返回值用于looplist语句遍历。
+  
+  12、vector3list
+  用法：
+  vector3list("v1x v1y v1z v2x v2y v2z");
+  
+  作用：
+  从字符串里读取vector3列表，分隔符可以是' '、','、'|'之一。返回值用于looplist语句遍历。
+  
+  13、list
+  用法：
+  list(1,2,3,4,5);
+  
+  作用：
+  由参数表构成一个列表。返回值用于looplist语句遍历。
+  
+  14、substring
+  用法：
+  substring(字符串,start[,length]);
+  
+  作用：
+  获取字符串子串。
+  
+  15、rndint
+  用法：
+  rndint(min,max);
+  
+  作用：
+  获得一个介于[min,max)间的随机整数。
+  
+  16、rndfloat
+  用法：
+  rndfloat();
+  
+  作用：
+  获得一个0~1之前的随机浮点数。
+  
+  17、floatlist
+  用法：
+  floatlist("1.0 2.0 3.0 4.0 5.0");
+    
+  作用：
+  从字符串里读取数字列表，分隔符可以是' '、','、'|'之一。返回值用于looplist语句遍历。
+  
+  18、rndfromlist
+  用法:
+  rndfromlist(intlist("1 2 3 4 5 6 7 8")[,defaultvalue]);
+  
+  作用：
+  从指定的list里随机取一个值。
+  
+  19、listget
+  用法：
+  listget(list,index[,defaultvalue]);
+  
+  作用：
+  从指定的list取第index个元素。
+  
+  20、listsize
+  用法：
+  listsize(list);
+  
+  作用：
+  取指定list的元素个数。
+  
+  21、vector2dist
+  用法：
+  vector2dist(vector2(1,2),vector2(3,4));
+  
+  作用：
+  计算2点距离。
+  
+  22、vector3dist
+  用法：
+  vector3dist(vector3(1,2,3),vector3(4,5,6));
+  
+  作用：
+  计算2点距离（2D距离）。
+  
+  23、vector2to3
+  用法：
+  vector2to3(vector2(1,2));
+  
+  作用：
+  将vector2转换成vector3，y值部分置0。
+  
+  24、vector3to2
+  用法：
+  vector3to2(vector3(1,2,3));
+  
+  作用：
+  将vector3转换成vector2，丢掉y值部分。
+  
+  25、isnull
+  用法：
+  isnull(x);
+  
+  作用：
+  判断指定值是否为空。
+  
+  26、str2int
+  用法：
+  str2int(str);
+  
+  作用：
+  将字符串转成整数。
+  
+  27、str2float
+  用法：
+  str2float(str);
+  
+  作用：
+  将字符串转成浮点数。
+  
+  28、调用dotnet方法
+  用法：
+  dotnetcall(obj/type,method,arg1,arg2,...);
+  
+  作用：
+  调用指定类/对象的方法，并取得返回值。
+  
+  29、获取dotnet特性/字段
+  用法：
+  dotnetget(obj/type,property,arg1,arg2,...);
+  
+  作用：
+  获取指定类/对象的特性/字段的值。
+  
+  30、改变值类型
+  用法：
+  changetype(值,"type");
+  
+  作用：
+  改变值的类型，返回新类型的值。(type可以是sbyte、byte、short、ushort、int、uint、long、ulong、float、double、string、bool等)
+  
+  31、json2str
+  用法：
+  json2str(json);
+  
+  作用：
+  将json对象转为json字符串。
+  
+  32、str2json
+  用法：
+  str2json(str);
+  
+  作用：
+  解析指定json字符串，返回json对象。
+  
+  33、jsonarray
+  用法：
+  jsonarray(1,3,4,5);
+  或
+  [1,3,4,5];
+  
+  作用：
+  构造一个json数组对象。
+  
+  34、jsonobject
+  用法：
+  jsonobject('a' => 1, 'b' => 2, 'c' => 3);
+  或
+  {'a' => 1, 'b' => 2, 'c' => 3};
+  
+  作用：
+  构造一个json对象。
+  
+  35、jsonget
+  用法：
+  jsonget(jsonobj,key/index[,defval]);
+  
+  作用：
+  获取json对象指定名称或索引的值。（可选指定缺省值）
+  
+  36、jsoncount
+  用法：
+  jsoncount(jsonobj);
+  
+  作用：
+  获取指定json对象或数组的元素个数。
+  
+  37、jsonkeys
+  用法：
+  jsonkeys(jsonobj);
+  
+  作用：
+  获取指定json对象的key列表，结果可用于looplist语句。
+  
+  38、jsonvalues
+  用法：
+  jsonvalues(jsonobj);
+  
+  作用：
+  获取指定json对象或数组的值列表，结果可用于looplist语句。
+  
+  39、isjsonarray
+  用法：
+  isjsonarray(jsonobj);
+  
+  作用：
+  判断jsonobj是否json数组。
+  
+  40、isjsonobject
+  用法：
+  isjsonobject(jsonobj);
+  
+  作用：
+  判断jsonobj是否json对象。
+  
+  41、dictformat
+  用法：
+  dictformat(dictId,arg1,arg2,...);
+  
+  作用：
+  按字典号指定的格式化串格式化字符串。
+  
+  42、dictget
+  用法：
+  dictget(dictId);
+  
+  作用：
+  读取字典号对应的字符串。
+  
+  43、dictparse
+  用法：
+  dictparse(str_from_server);
+  
+  作用：
+  对服务器传回使用了字典的字符串进行字典替换。
+  
+  44、gettype
+  用法：
+  gettype("System.Console");
+  
+  作用：
+  获取指定名称的Class的Type。
+  静态类名写法：TopNamespace.SubNameSpace.ContainingClass+NestedClass, MyAssembly, Version=1.3.0.0, Culture=neutral, PublicKeyToken=b17a5c561934e089
+  
+  45、rndvector3
+  用法：
+  rndvector3(center,radius);
+  
+  作用：
+  取指定点周围的随机点。
+  
+  46、rndvector2
+  用法：
+  rndvector2(center,radius);
+  
+  作用：
+  取指定点周围的随机点。
+  
+八、剧情函数
+
+  1、npcidlist
+  用法：
+  npcidlist();
+  
+  作用：
+  获取NPC id列表，结果用于looplist语句遍历。
+  
+  2、objid2unitid
+  用法：
+  objid2unitid(objid);
+  
+  作用：
+  取得指定objid对象的unitid。
+  
+  3、unitid2objid
+  用法：
+  unitid2objid(unitid);
+  
+  作用：
+  取得指定unitid对象的objid，仅对npc有效。
+  
+  4、getposition
+  用法：
+  getposition(objid);
+  
+  作用：
+  取得指定objid对象的位置，可用于需要位置的函数与命令。
+  
+  5、getcamp
+  用法：
+  getcamp(objid);
+  
+  作用：
+  取得指定objid对象的阵营，用于判断敌我关系。
+  
+  6、isenemy
+  用法：
+  isenemy(camp1,camp2);
+  
+  作用：
+  判断2个阵营是否敌对。
+  
+  7、isfriend
+  用法：
+  isfriend(camp1,camp2);
+  
+  作用：
+  判断2个阵营是否友好。
+  
+  8、getpositionx/getpostiony/getpositionz
+  用法：
+  getpositionx(objid);
+  getpositiony(objid);
+  getpositionz(objid);
+  
+  作用：
+  取得指定objid对象的位置，可用于需要位置的函数与命令。
+  
+  9、gethp/getenergy
+  用法：
+  gethp(objid);
+  getenergy(objid);
+  
+  作用：
+  获取指定对象的hp/mp
+  
+  10、getmaxhp/getmaxenergy
+  用法：
+  getmaxhp(objid);
+  getmaxenergy(objid);
+  
+  作用：
+  获取指定对象的maxhp/maxmp属性值。
+  
+  11、calcdir
+  用法：
+  calcdir(objid,targetid);
+  
+  作用：
+  计算从指定对象面向目标对象的方向值。（弧度）
+  
+  12、combatnpccount
+  用法：
+  combatnpccount([camp_id]);
+  
+  作用：
+  获取战斗npc数量。
+  
+  13、objget
+  用法：
+  objget(uniqueid,localname[,defaultvalue]);
+  
+  作用：
+  获取指定npc身上的局部变量值。(uniqueid通过unitid2uniqueid/objid2uniqueid获取或由消息参数获取)
+  
+  14、iscombatnpc
+  用法：
+  iscombatnpc(objid);
+  
+  作用：
+  获取指定npc是否战斗npc。
+  
+  15、getlinkid
+  用法：
+  getlinkid(objid);
+  
+  作用：
+  获取指定对象的linkid。
+  
+  16、getlevel
+  用法：
+  getlevel(objid);
+  
+  作用：
+  获取指定对象的等级。
+  
+  17、getattr
+  用法：
+  getattr(objid,attrname,value[,defaultvalue]);
+  
+  作用：
+  获取指定对象的指定属性值。
+  支持的属性名如下：（大小写必须一致)
+      MoveSpeed/WalkSpeed/RunSpeed/HpMax/RageMax/EnergyMax/HpRecover/EnergyRecover
+      AttackBase/ADefenceBase/MDefenceBase
+      Critical/CriticalPow/CriticalBackHitPow/CriticalCrackPow
+      FireDamage/FireERD/IceDamage/IceERD/PoisonDamage/PoisonERD/Weight/Rps/AttackRange
+    
+  18、unit2uniqueid
+  用法：
+  unit2uniqueid(unitid);
+  
+  作用：
+  取指定unitid NPC的uniqueid，如果还没有生成，则先生成再返回。（目前为obj生成uniqueid只能通过unit2uniqueid/objid2uniqueid实现）
+  
+  19、obj2uniqueid
+  用法：
+  obj2uniqueid(objid);
+  
+  作用：
+  取指定objid 对象的uniqueid，如果还没有生成，则先生成再返回。（目前为obj生成uniqueid只能通过unit2uniqueid/objid2uniqueid实现）
+  
+  20、iscontrolbystory
+  用法：
+  iscontrolbystory(objid);
+  
+  作用：
+  判断指定对象当前是否标记了由story脚本控制。
+  
+  21、objcancastskill
+  用法：
+  objcancastskill(objid[,skillid]);
+  
+  作用：
+  判断指定对象当前是否能释放指定技能。
+  
+  22、objisundercontrol
+  用法：
+  objisundercontrol(objid);
+  
+  作用：
+  判断指定对象是否处理硬直、浮空等由受击引起的受控状态。
+  
+  23、getunitytype
+  用法：
+  getunitytype(typename);
+  
+  作用：
+  获取指定类型的unity3d类型Type实例。
+  
+  24、getunityuitype
+  用法：
+  getunityuitype(typename);
+  
+  作用：
+  获取指定类型的unity3d UI类型Type实例。
+  
+  25、getdialogitem
+  用法：
+  getdialogitem(dlgId,index);
+  
+  作用：
+  获取指定剧情对话配表数据行（TableConfig.StoryDlg），对指定dlgId，对应的对话数据从0开始，下一条加1，直到读取返回null为止。
+    
+  26、npcfindimpactseqbyid
+  用法：
+  npcfindimpactseqbyid(unitId,impactId);
+  
+  作用：
+  查找指定NPC上指定impactId的第一个impact的seq。
+  
+  27、objfindimpactseqbyid
+  用法：
+  objfindimpactseqbyid(objId,impactId);
+  
+  作用：
+  查找指定NPC上指定impactId的第一个impact的seq。
+  
+  28、getleaderlinkid
+  用法：
+  getleaderlinkid();
+  
+  作用：
+  获取当前队长的linkid，actor.txt表里的id。
+  
+  29、getleaderid
+  用法：
+  getleaderid();
+  
+  作用：
+  获取当前队长npc的objid。
+  
+  30、getnpctype
+  用法：
+  getnpctype(unitid);
+  
+  作用：
+  获取指定npc的类型。
+   
+  31、getsummonerid
+  用法：
+  getsummonerid(unitid);
+  
+  作用：
+  获取指定npc的召唤者id。
+  
+  32、objgetnpctype
+  用法：
+  objgetnpctype(objid);
+  
+  作用：
+  获取指定obj的类型。
+   
+  33、objgetsummonerid
+  用法：
+  objgetsummonerid(objid);
+  
+  作用：
+  获取指定obj的召唤者id。
+  
+  34、calcoffset
+  用法：
+  calcoffset(objid,targetobjid,vector3(x,y,z));
+  
+  作用：
+  计算沿objid->targetobjid方向，相对objid偏移(x,y,z)的位置。
+    
+九、剧情命令
+
+  1、startstory
+  用法：
+  startstory("clientlogic");
+  
+  作用：
+  启动指定的story。
+  
+  2、stopstory
+  用法：
+  stopstory("clientlogic");
+  
+  作用：
+  停止指定的story。
+  
+  3、firemessage
+  用法：
+  firemessage(消息id,参数表);
+  
+  作用：
+  触发指定消息，与localmessage的不同是这个命令触发的消息将广播到当前所有在执行的story。
+  
+  4、changescene
+  用法：
+  changescene(scene_id);
+  
+  作用：
+  切换到目标场景。
+  
+  5、createnpc
+  用法：
+  createnpc(npc_unit_id,vector3(x,y,z),dir,camp,linkId[,ai,stringlist("param1 param2 param3 ...")])[objid("@objid")];
+  
+  作用：
+  创建npc，可指定位置与朝向。带objid语法的样式用于获取objid到指定变量名（字符串名，可以是运算结果构成的变量名）
+  
+  6、destroynpc
+  用法：
+  destroynpc(npc_unit_id);
+  
+  作用：
+  删除指定unit_id的npc，如果有多个，则都会删除。
+  
+  7、npcmove
+  用法：
+  npcmove(unit_id,vector3(x,y,z));
+  
+  作用：
+  移动指定npc到目标点。
+  
+  8、enableai
+  用法：
+  enableai(unit_id,true_or_false);
+  
+  作用：
+  允许或禁止npc AI，第二个参数必须是"true"或"false"。
+  以一定速度移向目标点。
+  
+  9、camerafollow
+  用法：
+  camerafollow(unit_id1,unit_id2,...);
+  
+  作用：
+  摄像机跟随指定npc，按参数顺序处理，直到找到第一个可跟随目标为止。
+  
+  10、npcface
+  用法：
+  npcface(unit_id,dir);
+  
+  作用：
+  控制npc朝向（如果有ai控制，这一命令不一定有效果）。
+  
+  11、npcmovewithwaypoints
+  用法：
+  npcmovewithwaypoints(unit_id,vector3list("v1x v1y v2x v2y"));
+  
+  作用：
+  控制npc沿指定路线移动。
+  
+  12、npcpatrol
+  用法：
+  npcpatrol(unit_id,vector3list("v1x v1y v2x v2y")[,isloop]);
+  
+  作用：
+  控制npc沿指定路线巡逻（如果指明isloop，路线应该形成一个环）。
+  
+  13、npcstop
+  用法：
+  npcstop(unit_id);
+  
+  作用：
+  停止正在执行的移动或巡逻命令，进入休闲ai状态。
+  
+  14、npcattack
+  用法：
+  npcattack(unit_id,target_unit_id);
+  或
+  npcattack(unit_id);
+  
+  作用：
+  控制npc攻击另一npc或游戏对象，二者必须为敌对关系。
+  
+  15、setcamp
+  用法：
+  setcamp(unit_id,camp_id);
+  
+  作用：
+  设置npc阵营id。
+  
+  16、objface
+  用法：
+  objface(objid,dir);
+  
+  作用：
+  控制游戏对象朝向。
+  
+  17、objmove
+  用法：
+  objmove(objid,vector3(x,y,z));
+  
+  作用：
+  移动游戏对象到目标点。
+  
+  18、objmovewithwaypoints
+  用法：
+  objmovewithwaypoints(objid,vector3list("v1x v1y v2x v2y"));
+  
+  作用：
+  控制游戏对象沿指定路线移动。
+  
+  19、objpatrol
+  用法：
+  objpatrol(objid,vector3list("v1x v1y v2x v2y")[,isloop]);
+  
+  作用：
+  控制游戏对象沿指定路线移动（如果指明isloop，路线应该形成一个环）。
+  
+  20、lockframe
+  用法：
+  lockframe(0.1);
+  
+  作用：
+  改变当前渲染层时间快慢。通常在一定时间后恢复。
+  
+  21、publishgfxevent
+  用法：
+  publishgfxevent(ev_name,group,arg1,arg2,...)[touser(userid)];
+  
+  作用：
+  在剧情脚本里直接发布逻辑层或渲染层事件，从而触发订阅对应事件的处理。（注意：参数只支持整数、浮点数与字符串三种类型，所以并不是所有事件都能由此命令触发）（用在服务器上时可以用touser发给单个玩家，否则是广播）
+  
+  22、objanimation
+  用法：
+  objanimation(objid,anim);
+  
+  作用：
+  让指定对象播放指定动作anim。
+  
+  23、sendgfxmessage
+  24、sendgfxmessagewithtag
+  用法：
+  sendgfxmessage(name,msg,arg1,arg2,...);
+  sendgfxmessagewithtag(tag,msg,arg1,arg2,...);
+  
+  作用：
+  在剧情脚本里直接给渲染层指定gameobject发消息。（注意：参数只支持整数、浮点数与字符串三种类型）（用在服务器上时可以用touser发给单个玩家，否则是广播）
+  
+  25、restarttimeout
+  用法：
+  restarttimeout(scene_logic_config_id[,timeout]);
+  
+  作用：
+  重置超时场景逻辑，可选参数用于改变超时值。
+  
+  26、npcpursuit
+  用法：
+  npcpursuit(unit_id,targetid);
+  
+  作用：
+  让指定npc接近指定目标，目标进入npc攻击范围时命令停止（注意不会发动攻击，只触发剧情消息）。
+  
+  27、setai  
+  用法：
+  setai(unit_id,ai_logic_id,stringlist("aiparam0 aiparam1 aiparam2"));
+  
+  作用：
+  改变指定npc的ai逻辑并指定对应ai逻辑的ai参数。
+  
+  28、npcaddimpact
+  用法：
+  npcaddimpact(unit_id,impact_id,arg1,arg2,arg3,...)[seq("@seq")];
+  
+  作用：
+  给npc加buff。
+  
+  29、npcremoveimpact
+  用法：
+  npcremoveimpact(unit_id,seq);
+  
+  作用：
+  去掉npc身上的指定buff。
+  
+  30、npccastskill
+  用法：
+  npccastskill(unit_id,skill_id,arg1,arg2,arg3,...);
+  
+  作用：
+  让npc释放指定技能。
+  
+  31、npcstopskill
+  用法：
+  npcstopskill(unit_id);
+  
+  作用：
+  让npc停止正在释放的技能。
+  
+  32、npcaddskill
+  用法：
+  npcaddskill(unit_id,skill_id);
+  
+  作用：
+  给npc添加技能，从而可以释放此技能。
+  
+  33、npcremoveskill
+  用法：
+  npcremoveskill(unit_id,skill_id);
+  
+  作用：
+  删除npc的指定技能，之后不能再释放此技能。（注意，不要删除npc表里配好的技能，否则可能导致ai混乱）
+    
+  34、objstop
+  35、objpursuit
+  36、objenableai
+  37、objsetai
+  38、objaddimpact
+  39、objremoveimpact
+  40、objcastskill
+  41、objstopskill
+  42、objaddskill
+  43、objremoveskill
+  用法：
+  objstop(objid);
+  objpursuit(objid,targetid);
+  objenableai(objid,true_or_false);
+  objsetai(objid,ailogicid,stringlist("p1 p2 p3 p4"));
+  objaddimpact(objid,impactid,arg1,arg2,arg3,...)[seq("@seq")];
+  objremoveimpact(objid,seq);
+  objcastskill(objid,skillid,arg1,arg2,arg3,...);
+  objstopskill(objid);
+  objaddskill(objid,skillid);
+  objremoveskill(objid,skillid);
+  
+  作用：与对应版本的npcXXX相同，只是第一个参数改成objid，并可用于玩家。
+  
+  44、pausescenelogic
+  用法：
+  pausescenelogic(logic_config_id,"true");
+  pausescenelogic(logic_config_id,"false");
+  
+  作用：
+  暂停/继续指定的场景逻辑。
+  
+  45、objlisten/npclisten
+  用法：
+  objlisten(objid,"damage","true");
+  npclisten(npc_unit_id,"damage","true");
+  
+  作用：
+  让指定对象开始监听伤害事件（仅用于全开可能导致性能问题的事件，目前只有伤害事件一种需要明确开启【其它事件均默认开启】，后续可能会添加其它的）。
+  
+  46、highlightprompt
+  用法：
+  highlightprompt(objid,dictid,arg1,arg2,...);
+  
+  作用：
+  在屏幕中上方显示醒目提示信息（信息来自字典）。
+  
+  47、objset
+  用法：
+  objset(uniqueid,localname,value);
+  
+  作用：
+  设置指定npc身上局部变量的值。(uniqueid通过unitid2uniqueid/objid2uniqueid获取或由消息参数获取)
+  
+  48、destroynpcwithobjid
+  用法：
+  destroynpcwithobjid(objid);
+  
+  作用：
+  销毁指定objid的npc。
+  
+  49、sethp/setenergy
+  用法：
+  sethp(objid,hp);
+  setenergy(objid,energy);
+  
+  作用：
+  设置指定obj的战斗属性值。
+  
+  50、setlevel
+  用法：
+  setlevel(objid,lvl);
+  
+  作用：
+  设置指定对象的等级。
+  
+  51、setattr
+  用法：
+  setattr(objid,attrname,value);
+  
+  作用：
+  设置指定对象的指定属性值。
+  支持的属性名如下：（大小写必须一致)
+      MoveSpeed/WalkSpeed/RunSpeed/HpMax/RageMax/EnergyMax/HpRecover/EnergyRecover/
+      AttackBase/DefenceBase/
+      Critical/CriticalPow/
+      Rps/AttackRange
+      
+  52、markcontrolbystory
+  用法：
+  markcontrolbystory(objid,true/false);
+  
+  作用：
+  标记指定对象是否由story脚本控制。（主要用在战神赛的机器人放技能时）
+    
+  53、waitstory
+  用法：
+  waitstory(storyid1,storyid2,...)[set(var,val)timeoutset(timeout,var,val)];
+  
+  作用：
+  等待运行的各story执行完毕。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)
+  
+  54、waitallmessage/waitallmessagehandler
+  用法：
+  waitallmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+  waitallmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+  
+  作用：
+  waitallmessage等待指定的消息之一触发。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)
+  waitallmessagehandler等待运行的各story的指定消息都执行完毕。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)
+  
+  55、createscenelogic
+  用法：
+  createscenelogic(config_id,logic_id,stringlist("param1 param2 param3 ..."));
+  
+  作用：
+  创建指定logic_id的场景逻辑。
+  
+  56、destroyscenelogic
+  用法：
+  destroyscenelogic(config_id);
+  
+  作用：
+  销毁指定的场景逻辑。
+  
+  57、camerafollowrange
+  用法：
+  camerafollowrange(begin_unit_id,end_unit_id);
+  
+  作用：
+  让像机跟随指定范围的npc，按顺序处理，找到第一个可跟随目标为止。
+  
+  58、camerafollowpath
+  用法：
+  camerafollowpath();
+  
+  作用：
+  恢复像机到默认状态。
+  
+  59、cameralook
+  用法：
+  cameralook(unit_id);
+  cameralook(vector3(x,y,z));
+  
+  作用：
+  让像机看着指定目标。  
+  
+  60、sendskillmessage
+  用法：
+  sendskillmessage(actorid,skillid,seq,msg,arg1,arg2,arg3,...);
+  
+  作用：
+  发送技能消息。
+  
+  61、setunitid
+  用法：
+  setunitid(objid,unitid);
+  
+  作用：
+  修改某个obj的unitid。
+  
+  62、setleaderid
+  用法：
+  setleaderid(objid);
+  
+  作用：
+  标记队长objid。 
+  
+  63、setsummonerid
+  用法：
+  setsummonerid(unitid,objid);
+  
+  作用：
+  指定召唤者id。  
+  
+  64、objsetsummonerid
+  用法：
+  objsetsummonerid(objid,objid);
+  
+  作用：
+  指定召唤者id。  
+  
+  65、setaitarget
+  用法：
+  setaitarget(unit_id,target);
+  
+  作用：
+  设置指定npc的AI目标。
+  
+  66、objsetaitarget
+  用法：
+  objsetaitarget(objid,target);
+  
+  作用：
+  设置指定npc的AI目标。
+  
+    
+十、游戏系统内实现的消息触发(非场景逻辑配置的消息触发)
+  
+  1、allkilled
+  消息ID：
+  allkilled
+  参数：
+  无
+  
+  触发时机：
+  当前场景所有敌对npc死亡时触发。
+  
+  2、npckilled
+  消息ID：
+  npckilled:npc_unit_id
+  参数：
+  npc的对象id，剩余npc数目, uniqueId, killerId
+  
+  触发时机：
+  某个战斗npc死亡时触发。
+  
+  3、npcarrived
+  消息ID：
+  npcarrived:npc_unit_id
+  参数：
+  npc的对象id
+  
+  触发时机：
+  npcmove命令控制的npc到达目标点时触发。
+  
+  4、npcpatrolexit/objpatrolexit
+  消息ID：
+  npcpatrolexit:npc_unit_id
+  objpatrolexit
+  参数：
+  npc的对象id
+  
+  触发时机：
+  npcpatrol命令控制的npc退出巡逻时触发，通常是发现敌人了。
+  
+  5、npcpatrolrestart/objpatrolrestart
+  消息ID：
+  npcpatrolrestart:npc_unit_id
+  objpatrolrestart
+  参数：
+  npc的对象id
+  
+  触发时机：
+  npcpatrol命令控制的npc重新开始巡逻时触发（用于循环巡逻情形，完成了一遍巡逻）。
+  
+  6、npcpatrolfinish/objpatrolfinish
+  消息ID：
+  npcpatrolfinish:npc_unit_id
+  objpatrolfinish
+  参数：
+  npc的对象id
+  
+  触发时机：
+ 	npcpatrol命令控制的npc完成巡逻时触发（用于非循环巡逻情形，完成了巡逻）。
+ 	
+  7、objarrived
+  消息ID：
+  objarrived
+  参数：
+  对象id
+  
+  触发时机：
+  objmove命令控制的对象到达目标点时触发。 
+  
+  8、objpursuitexit
+  消息ID：
+  objpursuitexit
+  参数：
+  对象id
+  
+  触发时机：
+  由npcpursuit/objpursuit/playerselfpursuit发起的接近命令，目标消失时触发。
+  
+  9、npcpursuitexit
+  消息ID：
+  npcpursuitexit:npc_unit_id
+  参数：
+  对象id
+  
+  触发时机：
+  由npcpursuit/objpursuit发起的接近命令，目标消失时触发。
+   
+  10、objpursuitfinish
+  消息ID：
+  objpursuitfinish
+  参数：
+  对象id
+  
+  触发时机：
+  由npcpursuit/objpursuit/playerselfpursuit发起的接近命令，目标在攻击范围时触发。
+  
+  11、npcpursuitfinish
+  消息ID：
+  npcpursuitfinish:npc_unit_id
+  参数：
+  对象id
+  
+  触发时机：
+  由npcpursuit/objpursuit发起的接近命令，目标在攻击范围时触发。
+  
+  12、objdamage
+  消息ID：
+  objdamage
+  参数：
+  objid,casterid,hpdamage,npdamage,iscritical(1==yes, 0==no)
+  
+  触发时机：
+  开启了伤害监听的obj在受到伤害时触发。
+  
+  13、npcdamage
+  消息ID：
+  npcdamage:unit_id
+  参数：
+  npcobjid,casterid,hpdamage,npdamage,iscritical(1==yes, 0==no)
+  
+  触发时机：
+  开启了伤害监听的npc在受到伤害时触发。
+  
+  14、objkilled
+  消息ID：
+  objkilled
+  参数：
+  objid, leftcombatnpccount, uniqueId, killerId
+  
+  触发时机：
+  npc死亡时触发（不包括玩家）。
+  
+  15、objmeetenemy
+  消息ID：
+  objmeetenemy
+  参数：
+  objid
+  
+  触发时机：
+  npc遇敌时触发。
+  
+  16、npcmeetenemy
+  消息ID：
+  npcmeetenemy:unitid
+  参数：
+  objid
+  
+  触发时机：
+  npc遇敌时触发。
+  
+  17、alldied
+  消息ID：
+  alldied
+  参数：
+  无
+  
+  触发时机：
+  所有我方npc死亡时触发。 
+    
+  18、objcreated
+  消息ID：
+  objcreated
+  参数：
+  objid
+  
+  触发时机：
+  npc创建时触发。
+  
+  19、npccreated
+  消息ID：
+  npccreated:npc_unit_id
+  参数：
+  objid
+  
+  触发时机：
+  npc创建时触发。
+     	
+十一、场景逻辑触发的消息
+
+  1、timeout
+  消息ID：
+  timeout:场景逻辑配置id
+  参数：
+  超时时间
+  
+  触发时机：
+  场景运行时间超过指定超时时间触发。
+  
+  2、sandclock
+  消息ID：
+  sandclock:场景逻辑配置id
+  参数：
+  dayOfMonth,dayOfWeek,hour,minute
+  
+  触发时机：
+  每分钟触发一次，用于定点触发逻辑。
+  
+//-------------------------------------------------------------------------------------------------
+十二、渲染层函数  
+  1、gfxget
+  用法：
+  gfxget(name);
+  
+  作用：
+  获取渲染层指定名字的缓存数据。
+  
+  2、gfxtime
+  用法：
+  gfxtime();
+  
+  作用：
+  获取渲染层时间。
+  
+  3、gfxtimescale
+  用法：
+  gfxtimescale();
+  
+  作用：
+  获取渲染层时间倍率。
+  
+  4、isactive/isreallyactive
+  用法：
+  isactive(game_object_path);
+  isreallyactive(game_object_path);
+  
+  作用：
+  判断指定GameObject是否active，isactive判断对象自身，isreallyactive检查对象所在层次路径是否都active。（主要用于判断窗口是否可见）
+  
+  5、getcomponent
+  用法：
+  getcomponent(game_object_path，component_type_name/type);
+  
+  作用：
+  获取指定gameobject上的指定component实例。
+  
+  6、getgameobject
+  用法：
+  getgameobject(game_object_path);
+  
+  作用：
+  获取gameobject对象实例。 
+  
+  7、namespace
+  用法：
+  namespace();
+  
+  作用：
+  获取当前脚本的namespace（用于UI脚本，一般UI脚本的namespace为UI名，由加载UI时传入）。
+
+十三、渲染染层命令
+  1、gfxclear
+  2、gfxset
+  用法：
+  gfxclear();
+  gfxset(name,value);
+  
+  作用：
+  清空渲染层数据缓存。
+  添加/修改渲染层数据缓存。
+  
+  3、addcomponent
+  用法：
+  addcomponent(objpath, component_name/component_type)[obj("@varname")];
+  
+  作用：
+  添加component到obj.可选部分指定一个对象名来存储component对象实例。
+  
+  4、openurl
+  用法：
+  openurl(url);
+  
+  作用：
+  用浏览器打开指定url。
+  
+  5、quit
+  用法：
+  quit();
+  
+  作用：
+  退出游戏。
+  
+  6、localnamespacedmessage
+  用法：
+  localnamespacedmessage(msgId,arg1,arg2,...);
+  
+  作用：
+  发送本名字空间内的消息，对应的消息处理由下述语法提供
+    onnamespacedmessage(msgId)
+    {
+      //消息处理
+    };
+  因为名字空间无法由dsl本身指定，所以单独提供了一套消息/处理机制，这套机制其实是对原来的消息机制的msgId添加了一个namespace前缀，如果知道dsl对应的名字空间，假设为ns，则下述语法与上面的处理等价
+    onmessage(ns,msgId)
+    {
+      //消息处理
+    };
+  类似的，localmessage(ns+":"+msgId,arg1,arg2,...);与发送消息的语法等价，后面类似的基于namespace的方法是这样与对应的普通方法等价，不再一一缀述。
+    
+  7、clearnamespacedmessage
+  用法：  
+    clearnamespacedmessage(msgid1,msgid2,...);
+    
+  作用：
+  清空指定的本地名字空间内的消息。
+  
+  8、waitlocalnamespacedmessage/waitlocalnamespacedmessagehandler
+  用法：
+    waitlocalnamespacedmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    waitlocalnamespacedmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    
+  作用：
+    waitlocalnamespacedmessage等待指定的本地名字空间内的消息之一触发。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)
+    waitlocalnamespacedmessagehandler等待指定的本地名字空间内的消息处理全部执行完毕。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)

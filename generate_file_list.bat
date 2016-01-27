@@ -1,0 +1,1 @@
+call Tools\GenerateFileList\bin\Debug\GenerateFileList.exe

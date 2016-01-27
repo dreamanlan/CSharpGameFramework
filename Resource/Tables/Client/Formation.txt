@@ -1,0 +1,3 @@
+int32	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float	float[]	float
+teamid	pos0	dir0	pos1	dir1	pos2	dir2	pos3	dir3	pos4	dir4	pos5	dir5	pos6	dir6	pos7	dir7	pos8	dir8	pos9	dir9	pos10	dir10	pos11	dir11	pos12	dir12	pos13	dir13	pos14	dir14	pos15	dir15
+1	0|0|0	0	-2|0|1	0	-1|0|2	0	1|0|2	0	2|0|1	0	0|0|2	0	-10|0|-10	0	-5|0|-10	0	0|0|-10	0	5|0|-10	0	10|0|-10	0	-10|0|-15	0	-5|0|-15	0	0|0|-15	0	5|0|-15	0	10|0|-15	0

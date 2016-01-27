@@ -1,0 +1,16 @@
+skill(103)
+{
+  section(1000)
+  {
+    animation("attack");
+    adjustsectionduration("anim",100);
+    selfeffect(selfEffect,1000,"eyes",0)
+    {
+      transform(vector3(0,1,0));
+    };
+  };
+  section(100)
+  {
+    sendstorymessage(0,"SummonBear","32","4");
+  };
+};

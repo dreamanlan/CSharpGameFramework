@@ -1,0 +1,3 @@
+int32	string	string	string	bool
+id	name	path	dsl	visible
+100	StoryDlg	UI/StoryDlg	Client/UI/StoryDlg.dsl	1

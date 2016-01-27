@@ -1,0 +1,6 @@
+story(main)
+{
+  onmessage("start")
+  {
+  };
+};

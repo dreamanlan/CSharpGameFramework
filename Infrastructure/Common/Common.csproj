@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1C8280CD-EB93-4849-940E-A99EDDF811D6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>GameFramework</RootNamespace>
+    <AssemblyName>Common</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ScriptFrameworkLibrary">
+      <HintPath>..\..\ExternalLibrary\ScriptFrameworkLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ClientConcurrent\ClientConcurrentActionProcessor.cs" />
+    <Compile Include="ClientConcurrent\ClientConcurrentDictionary.cs" />
+    <Compile Include="ClientConcurrent\ClientConcurrentObjectPool.cs" />
+    <Compile Include="ClientConcurrent\ClientConcurrentOrderedList.cs" />
+    <Compile Include="ClientConcurrent\ClientConcurrentPoolAllocatedAction.cs" />
+    <Compile Include="ClientConcurrent\ClientConcurrentQueue.cs" />
+    <Compile Include="ClientConcurrent\ClientConcurrentStack.cs" />
+    <Compile Include="ClientConcurrent\ClientConcurrentTypedDataCollection.cs" />
+    <Compile Include="ClientConcurrent\ClientInterlocked.cs" />
+    <Compile Include="ClientConcurrent\ClientSpinLock.cs" />
+    <Compile Include="ClientConcurrent\ClientSpinWait.cs" />
+    <Compile Include="ClientConcurrent\ClientWatch.cs" />
+    <Compile Include="ClientConcurrent\MyTaskDispatcher.cs" />
+    <Compile Include="ClientConcurrent\MyThread.cs" />
+    <Compile Include="DataReader\BinaryTable.cs" />
+    <Compile Include="DataReader\DataDictionaryMgr.cs" />
+    <Compile Include="DataReader\DataListMgr.cs" />
+    <Compile Include="DataReader\DataRecordUtility.cs" />
+    <Compile Include="DataReader\ResourceReadProxy.cs" />
+    <Compile Include="DataReader\IData.cs" />
+    <Compile Include="Geometry\Geometry.cs" />
+    <Compile Include="Geometry\Geometry3D.cs" />
+    <Compile Include="GlobalVariables.cs" />
+    <Compile Include="Log\LogSystem.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PublishSubscribe\PublishSubscribeSystem.cs" />
+    <Compile Include="Story\StoryDefine.cs" />
+    <Compile Include="StrDictionary.cs" />
+    <Compile Include="Util\Converter.cs" />
+    <Compile Include="Util\Heap.cs" />
+    <Compile Include="Util\Helper.cs" />
+    <Compile Include="Util\HomePath.cs" />
+    <Compile Include="Util\IActionQueue.cs" />
+    <Compile Include="Util\LinkedListDictionary.cs" />
+    <Compile Include="Util\MyActionAndFunc.cs" />
+    <Compile Include="Util\MyDictionary.cs" />
+    <Compile Include="Util\ObjectPool.cs" />
+    <Compile Include="Util\PoolAllocatedAction.cs" />
+    <Compile Include="Util\TimeUtility.cs" />
+    <Compile Include="Util\TypedDataCollection.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
