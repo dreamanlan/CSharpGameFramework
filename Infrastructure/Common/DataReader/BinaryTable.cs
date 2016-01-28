@@ -492,36 +492,48 @@ namespace GameFramework
                                     int index = table.AddString(val);
                                     WriteIndex(record, colIndex, index);
                                 } else if (0 == type.CompareTo("int[]") || 0 == type.CompareTo("int32[]") || 0 == type.CompareTo("long[]") || 0 == type.CompareTo("int64[]")) {
-                                    string[] v = val.Split(',', ';', '|', ' ');
-                                    int[] vals = new int[v.Length];
-                                    for (int i = 0; i < v.Length; ++i) {
-                                        vals[i] = int.Parse(v[i]);
+                                    int index = -1;
+                                    if (!string.IsNullOrEmpty(val)) {
+                                        string[] v = val.Split(',', ';', '|', ' ');
+                                        int[] vals = new int[v.Length];
+                                        for (int i = 0; i < v.Length; ++i) {
+                                            vals[i] = int.Parse(v[i]);
+                                        }
+                                        index = table.AddIntList(vals);
                                     }
-                                    int index = table.AddIntList(vals);
                                     WriteIndex(record, colIndex, index);
                                 } else if (0 == type.CompareTo("float[]")) {
-                                    string[] v = val.Split(',', ';', '|', ' ');
-                                    float[] vals = new float[v.Length];
-                                    for (int i = 0; i < v.Length; ++i) {
-                                        vals[i] = float.Parse(v[i]);
+                                    int index = -1;
+                                    if (!string.IsNullOrEmpty(val)) {
+                                        string[] v = val.Split(',', ';', '|', ' ');
+                                        float[] vals = new float[v.Length];
+                                        for (int i = 0; i < v.Length; ++i) {
+                                            vals[i] = float.Parse(v[i]);
+                                        }
+                                        index = table.AddFloatList(vals);
                                     }
-                                    int index = table.AddFloatList(vals);
                                     WriteIndex(record, colIndex, index);
                                 } else if (0 == type.CompareTo("bool[]")) {
-                                    string[] v = val.Split(',', ';', '|', ' ');
-                                    int[] vals = new int[v.Length];
-                                    for (int i = 0; i < v.Length; ++i) {
-                                        vals[i] = (v[i] == "true" || v[i] == "1") ? 1 : 0;
+                                    int index = -1;
+                                    if (!string.IsNullOrEmpty(val)) {
+                                        string[] v = val.Split(',', ';', '|', ' ');
+                                        int[] vals = new int[v.Length];
+                                        for (int i = 0; i < v.Length; ++i) {
+                                            vals[i] = (v[i] == "true" || v[i] == "1") ? 1 : 0;
+                                        }
+                                        index = table.AddIntList(vals);
                                     }
-                                    int index = table.AddIntList(vals);
                                     WriteIndex(record, colIndex, index);
                                 } else if (0 == type.CompareTo("string[]")) {
-                                    string[] vals = val.Split(',', ';', '|', ' ');
-                                    int index = table.AddStrList(vals);
+                                    int index = -1;
+                                    if (!string.IsNullOrEmpty(val)) {
+                                        string[] vals = val.Split(',', ';', '|', ' ');
+                                        index = table.AddStrList(vals);
+                                    }
                                     WriteIndex(record, colIndex, index);
                                 }
                             } catch (Exception ex) {
-                                LogSystem.Error("[line:{0} col:{1}] “{2}”, exception:{3}", rowIndex + 1, colIndex + 1, lines[rowIndex], ex.Message);
+                                LogSystem.Error("[line:{0} col:{1}] “{2}”, exception:{3}\n{4}", rowIndex + 1, colIndex + 1, lines[rowIndex], ex.Message, ex.StackTrace);
                             }
                             ++colIndex;
                         }
