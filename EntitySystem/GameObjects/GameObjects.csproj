@@ -49,10 +49,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="protobuf-net">
-      <HintPath>..\ExternLibrary\protobuf-net.dll</HintPath>
+      <HintPath>..\..\ExternalLibrary\protobuf-net.dll</HintPath>
     </Reference>
     <Reference Include="ScriptFrameworkLibrary">
-      <HintPath>..\ExternLibrary\ScriptFrameworkLibrary.dll</HintPath>
+      <HintPath>..\..\ExternalLibrary\ScriptFrameworkLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>

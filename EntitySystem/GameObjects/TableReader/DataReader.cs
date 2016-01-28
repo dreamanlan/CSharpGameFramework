@@ -558,7 +558,7 @@ namespace TableConfig
 {
 	public sealed partial class Skill : IDataRecord<int>
 	{
-		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 124)]
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 120)]
 		private struct SkillRecord
 		{
 			internal int id;
@@ -591,7 +591,6 @@ namespace TableConfig
 			internal float aoeAngleOrLength;
 			internal int maxAoeTargetCount;
 			internal int dslSkillId;
-			internal int dslFile;
 		}
 
 		public int id;
@@ -624,7 +623,6 @@ namespace TableConfig
 		public float aoeAngleOrLength;
 		public int maxAoeTargetCount;
 		public int dslSkillId;
-		public string dslFile;
 
 		public bool ReadFromBinary(BinaryTable table, int index)
 		{
@@ -659,7 +657,6 @@ namespace TableConfig
 			aoeAngleOrLength = DataRecordUtility.ExtractFloat(table, record.aoeAngleOrLength, 0);
 			maxAoeTargetCount = DataRecordUtility.ExtractInt(table, record.maxAoeTargetCount, 0);
 			dslSkillId = DataRecordUtility.ExtractInt(table, record.dslSkillId, 0);
-			dslFile = DataRecordUtility.ExtractString(table, record.dslFile, "");
 			return true;
 		}
 
@@ -696,7 +693,6 @@ namespace TableConfig
 			record.aoeAngleOrLength = DataRecordUtility.SetValue(table, aoeAngleOrLength, 0);
 			record.maxAoeTargetCount = DataRecordUtility.SetValue(table, maxAoeTargetCount, 0);
 			record.dslSkillId = DataRecordUtility.SetValue(table, dslSkillId, 0);
-			record.dslFile = DataRecordUtility.SetValue(table, dslFile, "");
 			byte[] bytes = GetRecordBytes(record);
 			table.Records.Add(bytes);
 		}

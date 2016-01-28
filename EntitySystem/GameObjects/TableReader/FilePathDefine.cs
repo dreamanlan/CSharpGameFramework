@@ -10,6 +10,7 @@ namespace TableConfig
 {
 	internal class FilePathDefine_Client : FilePathDefine
 	{
+		public const string C_Actor = "Client/Actor.dat";
 		public const string C_Formation = "Client/Formation.dat";
 		public const string C_Level = "Client/Level.dat";
 		public const string C_Skill = "Client/Skill.dat";
@@ -18,7 +19,6 @@ namespace TableConfig
 		public const string C_StoryDlg = "Client/StoryDlg.dat";
 		public const string C_StrDictionary = "Client/StrDictionary.dat";
 		public const string C_UI = "Client/UI.dat";
-		public const string C_Actor = "Client/Actor.dat";
 	}
 	internal class FilePathDefine_Server : FilePathDefine
 	{

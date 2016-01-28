@@ -50,9 +50,8 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ScriptFrameworkLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\ExternLibrary\ScriptFrameworkLibrary.dll</HintPath>
+    <Reference Include="ScriptFrameworkLibrary">
+      <HintPath>..\..\ExternalLibrary\ScriptFrameworkLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
   </ItemGroup>
