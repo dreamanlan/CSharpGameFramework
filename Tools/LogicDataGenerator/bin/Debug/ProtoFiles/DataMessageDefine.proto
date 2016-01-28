@@ -1,0 +1,97 @@
+//----------------------------------------------------------------------------
+//！！！不要手动修改此文件，此文件由LogicDataGenerator按ProtoFiles/DataMessageDefine.dsl生成！！！
+//----------------------------------------------------------------------------
+package GameFrameworkMessage;
+
+message Msg_DL_Connect
+{
+	required bool Result = 1;
+	optional string Error = 2;
+}
+
+message Msg_DL_LoadResult
+{
+
+	enum ErrorNoEnum
+	{
+		Exception = -1;
+		Success = 0;
+		NotFound = 1;
+		PrepError = 2;
+		PostError = 3;
+		TimeoutError = 4;
+		Undone = 5;
+	}
+	required int32 MsgId = 1;
+	repeated string PrimaryKeys = 2;
+	required int64 SerialNo = 3;
+	required ErrorNoEnum ErrorNo = 4;
+	optional string ErrorInfo = 5;
+	repeated Msg_DL_SingleRowResult Results = 6;
+}
+
+message Msg_DL_SaveResult
+{
+
+	enum ErrorNoEnum
+	{
+		Exception = -1;
+		Success = 0;
+		NotFound = 1;
+		PrepError = 2;
+		PostError = 3;
+		TimeoutError = 4;
+	}
+	required int32 MsgId = 1;
+	repeated string PrimaryKeys = 2;
+	required int64 SerialNo = 3;
+	required ErrorNoEnum ErrorNo = 4;
+	optional string ErrorInfo = 5;
+}
+
+message Msg_DL_SingleRowResult
+{
+	required int32 MsgId = 1;
+	repeated string PrimaryKeys = 2;
+	repeated string ForeignKeys = 3;
+	required int32 DataVersion = 4;
+	optional bytes Data = 5;
+}
+
+message Msg_LD_Connect
+{
+	required string ClientName = 1;
+}
+
+message Msg_LD_Load
+{
+	required int32 MsgId = 1;
+	repeated string PrimaryKeys = 2;
+	required int64 SerialNo = 3;
+	repeated Msg_LD_SingleLoadRequest LoadRequests = 4;
+}
+
+message Msg_LD_Save
+{
+	required int32 MsgId = 1;
+	repeated string PrimaryKeys = 2;
+	repeated string ForeignKeys = 3;
+	required int64 SerialNo = 4;
+	optional bytes Data = 5;
+}
+
+message Msg_LD_SingleLoadRequest
+{
+
+	enum LoadTypeEnum
+	{
+		LoadAll = 0;
+		LoadSingle = 1;
+		LoadMulti = 2;
+	}
+	required int32 MsgId = 1;
+	required LoadTypeEnum LoadType = 2;
+	repeated string Keys = 3;
+	optional int32 Start = 4;
+	optional int32 Count = 5[default = -1];
+}

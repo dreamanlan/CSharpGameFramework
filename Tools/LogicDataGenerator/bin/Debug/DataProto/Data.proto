@@ -1,0 +1,605 @@
+//----------------------------------------------------------------------------
+//！！！不要手动修改此文件，此文件由LogicDataGenerator按DataProto/Data.dsl生成！！！
+//----------------------------------------------------------------------------
+package GameFrameworkData;
+
+message GeneralRecordData
+{
+	repeated string PrimaryKeys = 1;
+	repeated string ForeignKeys = 2;
+	required int32 DataVersion = 3;
+	optional bytes Data = 4;
+}
+
+message TableAccount
+{
+	required int32 LogicServerId = 1;
+	required string AccountId = 2;
+	required bool IsBanned = 3;
+	required uint64 UserGuid1 = 4;
+	required uint64 UserGuid2 = 5;
+	required uint64 UserGuid3 = 6;
+}
+
+message TableActivationCode
+{
+	required string ActivationCode = 1;
+	required bool IsActivated = 2;
+	required int32 LogicServerId = 3;
+	required string AccountId = 4;
+}
+
+message TableArenaInfo
+{
+	required int64 UserGuid = 1;
+	required int32 LogicServerId = 2;
+	required int32 Rank = 3;
+	required bool IsRobot = 4;
+	required bytes ArenaBytes = 5;
+	required string LastBattleTime = 6;
+	required int32 LeftFightCount = 7;
+	required int32 BuyFightCount = 8;
+	required string LastResetFightCountTime = 9;
+	required string ArenaHistroyTimeList = 10;
+	required string ArenaHistroyRankList = 11;
+}
+
+message TableArenaRecord
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 Rank = 3;
+	required bool IsChallengerSuccess = 4;
+	required string BeginTime = 5;
+	required string EndTime = 6;
+	required int64 CGuid = 7;
+	required int32 CHeroId = 8;
+	required int32 CLevel = 9;
+	required int32 CFightScore = 10;
+	required string CNickname = 11;
+	required int32 CRank = 12;
+	required int32 CUserDamage = 13;
+	required int32 CPartnerId1 = 14;
+	required int32 CPartnerDamage1 = 15;
+	required int32 CPartnerId2 = 16;
+	required int32 CPartnerDamage2 = 17;
+	required int32 CPartnerId3 = 18;
+	required int32 CPartnerDamage3 = 19;
+	required int64 TGuid = 20;
+	required int32 THeroId = 21;
+	required int32 TLevel = 22;
+	required int32 TFightScore = 23;
+	required string TNickname = 24;
+	required int32 TRank = 25;
+	required int32 TUserDamage = 26;
+	required int32 TPartnerId1 = 27;
+	required int32 TPartnerDamage1 = 28;
+	required int32 TPartnerId2 = 29;
+	required int32 TPartnerDamage2 = 30;
+	required int32 TPartnerId3 = 31;
+	required int32 TPartnerDamage3 = 32;
+}
+
+message TableCorpsInfo
+{
+	required int64 CorpsGuid = 1;
+	required int32 LogicServerId = 2;
+	required string CorpsName = 3;
+	required int32 Level = 4;
+	required int32 Score = 5;
+	required int32 Rank = 6;
+	required int32 Activeness = 7;
+	required string Notice = 8;
+	required string LastResetActivenessTime = 9;
+	required string CreateTime = 10;
+	required bytes TollgateBytes = 11;
+}
+
+message TableCorpsMember
+{
+	required int64 UserGuid = 1;
+	required int64 CorpsGuid = 2;
+	required int32 Title = 3;
+	required string Nickname = 4;
+	required int32 HeroId = 5;
+	required int32 Level = 6;
+	required int32 FightScore = 7;
+	required int32 DayActiveness = 8;
+	required int32 WeekActiveness = 9;
+	required string ActivenessHistoryDate = 10;
+	required string ActivenessHistoryValue = 11;
+	required int64 LastLoginTime = 12;
+}
+
+message TableEquipInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int64 ItemGuid = 3;
+	required int32 Position = 4;
+	required int32 ItemId = 5;
+	required int32 Level = 6;
+	required int32 AppendProperty = 7;
+	required int32 EnhanceStarLevel = 8;
+	required int32 StrengthLevel = 9;
+	required int32 FailCount = 10;
+}
+
+message TableExpeditionInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 FightingScore = 3;
+	required int32 HP = 4;
+	required int32 MP = 5;
+	required int32 Rage = 6;
+	required int32 Schedule = 7;
+	required int32 MonsterCount = 8;
+	required int32 BossCount = 9;
+	required int32 OnePlayerCount = 10;
+	required string Unrewarded = 11;
+	required int32 TollgateType = 12;
+	required string EnemyList = 13;
+	required string EnemyAttrList = 14;
+	required bytes ImageA = 15;
+	required bytes ImageB = 16;
+	required int32 ResetCount = 17;
+	required string PartnerIdList = 18;
+	required string PartnerHpList = 19;
+	required int32 LastAchievedSchedule = 20;
+}
+
+message TableFashionInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int64 ItemGuid = 3;
+	required int32 Position = 4;
+	required int32 ItemId = 5;
+	required bool IsForever = 6;
+	required string ExpirationTime = 7;
+	required string LastNoticeTime = 8;
+}
+
+message TableFightInfo
+{
+	required string Guid = 1;
+	required int32 LogicServerId = 2;
+	required int32 Rank = 3;
+	required int64 UserGuid = 4;
+	required int32 HeroId = 5;
+	required string Nickname = 6;
+	required int32 Level = 7;
+	required int32 FightingScore = 8;
+}
+
+message TableFriendInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int64 FriendGuid = 3;
+	required string FriendNickname = 4;
+	required int32 HeroId = 5;
+	required int32 Level = 6;
+	required int32 FightingScore = 7;
+	required bool IsBlack = 8;
+}
+
+message TableGlobalParam
+{
+	required string ParamType = 1;
+	required string ParamValue = 2;
+}
+
+message TableGowInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 GowElo = 3;
+	required int32 GowMatches = 4;
+	required int32 GowWinMatches = 5;
+	required string GowHistroyTimeList = 6;
+	required string GowHistroyEloList = 7;
+	required int32 RankId = 8;
+	required int32 Point = 9;
+	required int32 CriticalMatchCount = 10;
+	required int32 CriticalWinMatchCount = 11;
+	required bool IsAcquirePrize = 12;
+	required string LastTourneyDate = 13;
+	required string LastResetGowPrizeTime = 14;
+}
+
+message TableGowStar
+{
+	required string Guid = 1;
+	required int32 LogicServerId = 2;
+	required int32 Rank = 3;
+	required int64 UserGuid = 4;
+	required string Nickname = 5;
+	required int32 HeroId = 6;
+	required int32 Level = 7;
+	required int32 FightingScore = 8;
+	required int32 GowElo = 9;
+	required int32 RankId = 10;
+	required int32 Point = 11;
+}
+
+message TableGuid
+{
+	required string GuidType = 1;
+	required uint64 GuidValue = 2;
+}
+
+message TableHomeNotice
+{
+	required int32 LogicServerId = 1;
+	required string Content = 2;
+	required string CreateTime = 3;
+}
+
+message TableInviterInfo
+{
+	required int64 UserGuid = 1;
+	required string InviteCode = 2;
+	required int64 InviterGuid = 3;
+	required int32 InviterLevel = 4;
+	required string RewardedList = 5;
+	required string InviteeGuidList = 6;
+	required string InviteeLevelList = 7;
+}
+
+message TableItemInfo
+{
+	required uint64 ItemGuid = 1;
+	required uint64 UserGuid = 2;
+	required int32 ItemId = 3;
+	required int32 ItemNum = 4;
+	required int32 Level = 5;
+	required int32 Experience = 6;
+	required int32 AppendProperty = 7;
+	required int32 EnhanceStarLevel = 8;
+}
+
+message TableLegacyInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 Position = 3;
+	required int32 LegacyId = 4;
+	required int32 LegacyLevel = 5;
+	required int32 AppendProperty = 6;
+	required bool IsUnlock = 7;
+}
+
+message TableLevelInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 LevelId = 3;
+	required int32 LevelRecord = 4;
+	required int32 ResetEliteCount = 5;
+	required bytes SceneDataBytes = 6;
+}
+
+message TableLoginLotteryRecord
+{
+	required int64 RecordId = 1;
+	required string AccountId = 2;
+	required int64 UserGuid = 3;
+	required string Nickname = 4;
+	required int32 RewardId = 5;
+	required string CreateTime = 6;
+}
+
+message TableLootInfo
+{
+	required int64 UserGuid = 1;
+	required bool IsPool = 2;
+	required bool IsVisible = 3;
+	required int64 LootKey = 4;
+	required string Nickname = 5;
+	required int32 HeroId = 6;
+	required int32 Level = 7;
+	required int32 FightScore = 8;
+	required string LastBattleTime = 9;
+	required int32 DomainType = 10;
+	required string BeginTime = 11;
+	required bool IsOpen = 12;
+	required bool IsGetAward = 13;
+	required float LootAward = 14;
+	required int64 TargetLootKey = 15;
+	required string FightOrderList = 16;
+	required string LootOrderList = 17;
+	required int32 LootIncome = 18;
+	required int32 LootLoss = 19;
+	required int32 LootType = 20;
+	required bytes LootBytes = 21;
+}
+
+message TableLootRecord
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required bool IsPool = 3;
+	required bool IsLootSuccess = 4;
+	required string LootBeginTime = 5;
+	required string LootEndTime = 6;
+	required int32 DomainType = 7;
+	required int32 Booty = 8;
+	required int64 LGuid = 9;
+	required int32 LHeroId = 10;
+	required int32 LLevel = 11;
+	required int32 LFightScore = 12;
+	required string LNickname = 13;
+	required int32 LUserDamage = 14;
+	required string LDefenseOrderList = 15;
+	required string LLootOrderList = 16;
+	required int64 DGuid = 17;
+	required int32 DHeroId = 18;
+	required int32 DLevel = 19;
+	required int32 DFightScore = 20;
+	required string DNickname = 21;
+	required int32 DUserDamage = 22;
+	required string DDefenseOrderList = 23;
+	required string DLootOrderList = 24;
+}
+
+message TableLotteryInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 LotteryId = 3;
+	required bool IsFirstDraw = 4;
+	required int32 FreeCount = 5;
+	required string LastDrawTime = 6;
+	required string LastResetCountTime = 7;
+}
+
+message TableMailInfo
+{
+	required int64 Guid = 1;
+	required int32 LogicServerId = 2;
+	required int32 ModuleTypeId = 3;
+	required string Sender = 4;
+	required int64 Receiver = 5;
+	required string SendDate = 6;
+	required string ExpiryDate = 7;
+	required string Title = 8;
+	required string Text = 9;
+	required int32 Money = 10;
+	required int32 Gold = 11;
+	required int32 Stamina = 12;
+	required string ItemIds = 13;
+	required string ItemNumbers = 14;
+	required int32 LevelDemand = 15;
+	required bool IsRead = 16;
+}
+
+message TableMailStateInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int64 MailGuid = 3;
+	required bool IsRead = 4;
+	required bool IsReceived = 5;
+	required string ExpiryDate = 6;
+}
+
+message TableMissionInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 MissionId = 3;
+	required int32 MissionValue = 4;
+	required int32 MissionState = 5;
+}
+
+message TableMpveAwardInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 MpveSceneId = 3;
+	required int32 DareCount = 4;
+	required int32 AwardCount = 5;
+	required string IsAwardedList = 6;
+	required string AwardIdList = 7;
+	required string DifficultyList = 8;
+}
+
+message TableNickname
+{
+	required string Nickname = 1;
+	required uint64 UserGuid = 2;
+}
+
+message TablePartnerInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 PartnerId = 3;
+	required int32 AdditionLevel = 4;
+	required int32 SkillLevel = 5;
+	required string EquipList = 6;
+	required int32 ActiveOrder = 7;
+}
+
+message TablePaymentInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required string OrderId = 3;
+	required string GoodsRegisterId = 4;
+	required int32 Diamond = 5;
+	required string PaymentTime = 6;
+}
+
+message TableSkillInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 SkillId = 3;
+	required int32 Level = 4;
+	required int32 Preset = 5;
+}
+
+message TableTalentInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int64 ItemGuid = 3;
+	required int32 Position = 4;
+	required int32 ItemId = 5;
+	required int32 Level = 6;
+	required int32 Experience = 7;
+}
+
+message TableUndonePayment
+{
+	required string OrderId = 1;
+	required string GoodsRegisterId = 2;
+	required int32 GoodsNum = 3;
+	required float GoodsPrice = 4;
+	required int64 UserGuid = 5;
+	required string ChannelId = 6;
+}
+
+message TableUserBattleInfo
+{
+	required int64 Guid = 1;
+	required int32 SceneId = 2;
+	required int64 StartTime = 3;
+	required int32 SumGold = 4;
+	required int32 Exp = 5;
+	required int32 RewardItemId = 6;
+	required int32 RewardItemCount = 7;
+	required int32 DeadCount = 8;
+	required int32 ReliveCount = 9;
+	required bool IsClearing = 10;
+	required int32 MatchKey = 11;
+	required int32 PartnerFinishedCount = 12;
+	required int32 PartnerRemainCount = 13;
+	required int32 PartnerBuyCount = 14;
+	required string PartnerList = 15;
+	required int32 PartnerSelectIndex = 16;
+	required string PartnerLastResetTime = 17;
+	required int32 DungeonQueryCount = 18;
+	required int32 DungeonLeftFightCount = 19;
+	required int32 DungeonBuyFightCount = 20;
+	required string DungeonMatchTargetList = 21;
+	required string DungeonMatchDropList = 22;
+	required string DungeonLastResetTime = 23;
+	required int32 SecretCurrentFight = 24;
+	required string SecretHpRateList = 25;
+	required string SecretMpRateList = 26;
+	required string SecretSegmentList = 27;
+	required string SecretFightCountList = 28;
+}
+
+message TableUserGeneralInfo
+{
+	required int64 Guid = 1;
+	required int64 GuideFlag = 2;
+	required string NewbieFlag = 3;
+	required string NewbieActionFlag = 4;
+	required int32 BuyMoneyCount = 5;
+	required double LastBuyMoneyTimestamp = 6;
+	required string LastResetMidasTouchTime = 7;
+	required int32 SellIncome = 8;
+	required double LastSellTimestamp = 9;
+	required string LastResetSellTime = 10;
+	required string ExchangeGoodList = 11;
+	required string ExchangeGoodNumber = 12;
+	required string ExchangeGoodRefreshCount = 13;
+	required string LastResetExchangeGoodTime = 14;
+	required string LastResetDaySignCountTime = 15;
+	required int32 MonthSignCount = 16;
+	required string LastResetMonthSignCountTime = 17;
+	required string MonthCardExpireTime = 18;
+	required bool IsWeeklyLoginRewarded = 19;
+	required string WeeklyLoginRewardList = 20;
+	required string LastResetWeeklyLoginRewardTime = 21;
+	required int32 DailyOnlineDuration = 22;
+	required string DailyOnlineRewardList = 23;
+	required string LastResetDailyOnlineTime = 24;
+	required bool IsFirstPaymentRewarded = 25;
+	required string VipRewaredList = 26;
+	required int32 MorrowRewardId = 27;
+	required string MorrowActiveTime = 28;
+	required bool IsMorrowActive = 29;
+	required double LevelupCostTime = 30;
+	required bool IsChatForbidden = 31;
+	required int32 GrowthFund = 32;
+	required string ChapterIdList = 33;
+	required string ChapterAwardList = 34;
+	required string LastResetConsumeCountTime = 35;
+	required int32 DayRestSignCount = 36;
+}
+
+message TableUserInfo
+{
+	required uint64 Guid = 1;
+	required int32 LogicServerId = 2;
+	required string AccountId = 3;
+	required string Nickname = 4;
+	required int32 HeroId = 5;
+	required string CreateTime = 6;
+	required int32 Level = 7;
+	required int32 Money = 8;
+	required int32 Gold = 9;
+	required int32 ExpPoints = 10;
+	required int32 CitySceneId = 11;
+	required int32 Vip = 12;
+	required string LastLogoutTime = 13;
+	required int32 AchievedScore = 14;
+}
+
+message TableUserSpecialInfo
+{
+	required int64 Guid = 1;
+	required int32 Vigor = 2;
+	required double LastAddVigorTimestamp = 3;
+	required int32 Stamina = 4;
+	required int32 BuyStaminaCount = 5;
+	required double LastAddStaminaTimestamp = 6;
+	required int32 UsedStamina = 7;
+	required string LastResetStaminaTime = 8;
+	required string CompleteSceneList = 9;
+	required string CompleteSceneNumber = 10;
+	required string LastResetSceneCountTime = 11;
+	required string LastResetDailyMissionTime = 12;
+	required int32 ActiveFashionId = 13;
+	required bool IsFashionShow = 14;
+	required int32 ActiveWingId = 15;
+	required bool IsWingShow = 16;
+	required int32 ActiveWeaponId = 17;
+	required bool IsWeaponShow = 18;
+	required int32 Vitality = 19;
+	required double LastAddVitalityTimestamp = 20;
+	required string LastResetExpeditionTime = 21;
+	required int64 CorpsGuid = 22;
+	required string LastQuitCorpsTime = 23;
+	required bool IsAcquireCorpsSignInPrize = 24;
+	required string LastResetCorpsSignInPrizeTime = 25;
+	required string CorpsChapterIdList = 26;
+	required string CorpsChapterDareList = 27;
+	required string LastResetSecretAreaTime = 28;
+	required int64 RecentLoginState = 29;
+	required int32 SumLoginDayCount = 30;
+	required int32 UsedLoginLotteryDrawCount = 31;
+	required string LastSaveRecentLoginTime = 32;
+	required string DiamondBoxList = 33;
+	required string LastResetMpveAwardTime = 34;
+	required string FinishedActivityList = 35;
+}
+
+message TableXSoulInfo
+{
+	required string Guid = 1;
+	required int64 UserGuid = 2;
+	required int32 Position = 3;
+	required int32 XSoulType = 4;
+	required int32 XSoulId = 5;
+	required int32 XSoulLevel = 6;
+	required int32 XSoulExp = 7;
+	required int32 XSoulModelLevel = 8;
+}

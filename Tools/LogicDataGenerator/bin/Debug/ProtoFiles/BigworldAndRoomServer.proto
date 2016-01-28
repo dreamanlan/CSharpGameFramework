@@ -1,0 +1,343 @@
+//----------------------------------------------------------------------------
+//！！！不要手动修改此文件，此文件由LogicDataGenerator按ProtoFiles/BigworldAndRoomServer.dsl生成！！！
+//----------------------------------------------------------------------------
+package GameFrameworkMessage;
+
+message Msg_BL_BroadcastText
+{
+	required int32 LogicServerId = 1;
+	required int32 BroadcastType = 2;
+	required string Content = 3;
+	required int32 RollCount = 4;
+}
+
+message Msg_BL_GowBattleEnd
+{
+	required Msg_RL_UserBattleInfo BattleInfo = 1;
+	required bytes GowBattleResult = 2;
+	required Msg_LBL_GowInfo GowInfo = 3;
+}
+
+message Msg_BL_QueryUserStateResult
+{
+	required uint64 Guid = 1;
+	required int32 State = 2;
+}
+
+message Msg_BL_UserOffline
+{
+	required uint64 Guid = 1;
+}
+
+message Msg_LB_BigworldUserBaseInfo
+{
+	required string NodeName = 1;
+	required int32 WorldId = 2;
+	required int32 LogicServerId = 3;
+	required string AccountId = 4;
+	required int32 FightingScore = 5;
+	required string ClientGameVersion = 6;
+	required string StartServerTime = 7;
+}
+
+message Msg_LB_CancelMatch
+{
+	required uint64 Guid = 1;
+	required int32 Type = 2;
+}
+
+message Msg_LB_QueryUserState
+{
+	required uint64 Guid = 1;
+}
+
+message Msg_LB_RequestEnterField
+{
+	required Msg_LB_BigworldUserBaseInfo BaseInfo = 1;
+	required Msg_LR_RoomUserInfo User = 2;
+	required int32 SceneId = 3;
+	required int32 WantRoomId = 4;
+	required int32 FromSceneId = 5;
+}
+
+message Msg_LB_RequestGowMatch
+{
+	required Msg_LB_BigworldUserBaseInfo BaseInfo = 1;
+	required Msg_LR_RoomUserInfo User = 2;
+	required Msg_LBL_GowInfo GowInfo = 3;
+	required int32 Type = 4;
+	required int32 SceneDifficulty = 5;
+}
+
+message Msg_LB_UpdateLobbyInfo
+{
+	required int32 WorldId = 1;
+	required int32 UserCount = 2;
+	required int32 RoomCount = 3;
+	required int32 RoomUserCount = 4;
+}
+
+message Msg_LB_UserOffline
+{
+	required uint64 Guid = 1;
+}
+
+message Msg_LB_UserRelogin
+{
+	required uint64 Guid = 1;
+}
+
+message Msg_LBL_GowInfo
+{
+	required int32 GowElo = 1;
+	required int32 GowMatchElo = 2;
+	required int32 GowMatches = 3;
+	required int32 GowWinMatches = 4;
+	required int32 LeftMatchCount = 5;
+	required int32 RankId = 6;
+	required int32 Point = 7;
+	required int32 CriticalTotalMatches = 8;
+	required int32 CriticalAmassWinMatches = 9;
+	required int32 CriticalAmassLossMatches = 10;
+	required int32 ContinueLossMatches = 11;
+	required int32 ContinueWinMatches = 12;
+	required bool IsAcquirePrize = 13;
+	optional string LastTourneyDate = 14;
+}
+
+message Msg_LBL_Message
+{
+
+	enum MsgTypeEnum
+	{
+		Node = 0;
+		Room = 1;
+	}
+	required MsgTypeEnum MsgType = 1;
+	required string TargetName = 2;
+	required bytes Data = 3;
+}
+
+message Msg_LR_ChangeField
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+	required int32 TargetRoomID = 3;
+}
+
+message Msg_LR_CreateBattleRoom
+{
+	required int32 RoomId = 1;
+	required int32 SceneType = 2;
+	required int32 SceneDifficulty = 3;
+	repeated Msg_LR_RoomUserInfo Users = 4;
+	repeated int32 Monsters = 5;
+	repeated int32 Hps = 6;
+}
+
+message Msg_LR_EnterField
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+	required Msg_LR_RoomUserInfo UserInfo = 3;
+	optional int32 HP = 4;
+	optional int32 MP = 5;
+}
+
+message Msg_LR_ReclaimItem
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+	required int32 ItemId = 3;
+	required string Model = 4;
+	required string Particle = 5;
+	required int32 TipDict = 6;
+}
+
+message Msg_LR_ReconnectUser
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+}
+
+message Msg_LR_ReplyRegisterRoomServer
+{
+	required bool IsOk = 1;
+}
+
+message Msg_LR_RoomUserInfo
+{
+
+	message EquipInfo
+	{
+		required int32 equip_id = 1;
+		required int32 equip_level = 2;
+		required int32 equip_random_property = 3;
+		required int32 equip_upgrade_star = 4;
+		required int32 equip_strength_level = 5;
+	}
+
+	message SkillInfo
+	{
+		required int32 skill_id = 1;
+		required int32 skill_level = 2;
+	}
+	required uint64 Guid = 1;
+	required string Nick = 2;
+	required uint32 Key = 3;
+	required int32 Hero = 4;
+	required int32 ArgScore = 5;
+	required int32 Camp = 6;
+	required bool IsMachine = 7;
+	repeated int32 ShopEquipmentsId = 8;
+	repeated SkillInfo Skills = 9;
+	optional int32 PresetIndex = 10;
+	repeated EquipInfo Equips = 11;
+	required int32 Level = 12;
+	optional float EnterX = 13;
+	optional float EnterY = 14;
+}
+
+message Msg_LR_UserQuit
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+}
+
+message Msg_LR_UserReLive
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+}
+
+message Msg_RL_BattleEnd
+{
+
+	enum WinnerCampEnum
+	{
+		None = 0;
+		Red = 1;
+		Blue = 2;
+	}
+	required int32 RoomID = 1;
+	required WinnerCampEnum WinnerCamp = 2;
+	repeated Msg_RL_UserBattleInfo UserBattleInfos = 3;
+	repeated int32 Monsters = 4;
+	repeated int32 Hps = 5;
+}
+
+message Msg_RL_ChangeField
+{
+	required uint64 UserGuid = 1;
+	required int32 SceneID = 2;
+}
+
+message Msg_RL_ChangeFieldResult
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+	required int32 TargetRoomID = 3;
+	required int32 Result = 4;
+	optional int32 HP = 5;
+	optional int32 MP = 6;
+}
+
+message Msg_RL_EnterFieldResult
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+	required int32 Result = 3;
+}
+
+message Msg_RL_PickItem
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+	required int32 ItemId = 3;
+	required string Model = 4;
+	required string Particle = 5;
+	optional string RoomSvrName = 6;
+}
+
+message Msg_RL_PickMoney
+{
+	required uint64 UserGuid = 1;
+	required int32 Num = 2;
+}
+
+message Msg_RL_RegisterRoomServer
+{
+	required string ServerName = 1;
+	required int32 MaxRoomNum = 2;
+	required string ServerIp = 3;
+	required uint32 ServerPort = 4;
+}
+
+message Msg_RL_ReplyCreateBattleRoom
+{
+	required int32 RoomId = 1;
+	required bool IsSuccess = 2;
+}
+
+message Msg_RL_ReplyReconnectUser
+{
+
+	enum ReconnectResultEnum
+	{
+		Drop = 0;
+		NotExist = 1;
+		Online = 2;
+	}
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+	required int32 Result = 3;
+}
+
+message Msg_RL_RoomServerUpdateInfo
+{
+	required string ServerName = 1;
+	required int32 IdleRoomNum = 2;
+	required int32 UserNum = 3;
+}
+
+message Msg_RL_UserBattleInfo
+{
+
+	enum BattleResultEnum
+	{
+		Win = 0;
+		Lost = 1;
+		Unfinish = 2;
+	}
+	required uint64 UserGuid = 1;
+	required BattleResultEnum BattleResult = 2;
+	optional int32 Money = 3;
+	optional int32 HitCount = 4;
+	optional int32 KillNpcCount = 5;
+	optional int32 MaxMultiHitCount = 6;
+	optional int32 TotalDamageToMyself = 7;
+	optional int32 TotalDamageFromMyself = 8;
+	optional int32 AwardId = 9;
+	optional string NickName = 10;
+	optional int32 HeroId = 11;
+	optional int32 ReliveTime = 12;
+}
+
+message Msg_RL_UserDrop
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+	required bool IsBattleEnd = 3;
+}
+
+message Msg_RL_UserLobbyItemInfo
+{
+	required int32 ItemId = 1;
+	required int32 ItemNum = 2;
+}
+
+message Msg_RL_UserQuit
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+}
