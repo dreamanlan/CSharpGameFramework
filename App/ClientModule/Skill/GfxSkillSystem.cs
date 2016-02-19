@@ -469,7 +469,7 @@ namespace GameFramework.Skill
         }
         private SkillInstanceInfo NewSkillInstanceImpl(int skillId, TableConfig.Skill skillData)
         {
-            string filePath = GameFramework.HomePath.GetAbsolutePath(FilePathDefine.C_DslPath + skillData.dslFile);
+            string filePath = GameFramework.HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + skillData.dslFile);
             SkillConfigManager.Instance.LoadSkillIfNotExist(skillData.dslSkillId, filePath);
             SkillInstance inst = SkillConfigManager.Instance.NewSkillInstance(skillData.dslSkillId);
 

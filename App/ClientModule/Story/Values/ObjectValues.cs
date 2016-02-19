@@ -1247,7 +1247,7 @@ namespace GameFramework.Story.Values
                     Vector2 srcPos = obj.GetMovementStateInfo().GetPosition2D();
                     float y = obj.GetMovementStateInfo().PositionY;
                     Vector2 targetPos = target.GetMovementStateInfo().GetPosition2D();
-                    float radian = Geometry.GetYAngle(srcPos, targetPos);
+                    float radian = Geometry.GetYRadian(srcPos, targetPos);
                     Vector2 newPos = srcPos + Geometry.GetRotate(new Vector2(offset.X, offset.Z), radian);
                     m_Value = new Vector3(newPos.X, y + offset.Y, newPos.Y);
                 } else if (null != obj) {
@@ -1342,7 +1342,7 @@ namespace GameFramework.Story.Values
                 if (null != obj && null != target) {
                     Vector2 srcPos = obj.GetMovementStateInfo().GetPosition2D();
                     Vector2 targetPos = target.GetMovementStateInfo().GetPosition2D();
-                    m_Value = Geometry.GetYAngle(srcPos, targetPos);
+                    m_Value = Geometry.GetYRadian(srcPos, targetPos);
                 } else if (null != obj) {
                     m_Value = obj.GetMovementStateInfo().GetFaceDir();
                 } else {

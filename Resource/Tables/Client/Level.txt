@@ -1,6 +1,0 @@
-int32	string	int32	string[]	int32[]
-id	prefab	type	GfxDslFile	SceneUi
-//id	地图prefab名称	类型（0--未分类场景 1--主UI场景 2--战斗场景 3--剧情场景）	场景逻辑脚本文件	要加载的UI
-//说明				
-1	Main	1	Client/Story/Scene1/story.dsl;Client/Story/Common/skillstory.dsl	100
-2	Level1	2	Client/Story/Scene2/story.dsl;Client/Story/Common/skillstory.dsl	100

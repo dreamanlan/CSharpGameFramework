@@ -5,14 +5,13 @@ using GameFramework.Story;
 
 public class OnClickDispatcher : MonoBehaviour
 {
-    public readonly string MessageId = "OnClick";
+    public readonly string MessageId = "on_click";
     public string WindowName = "";
-    public string EventTag = "";
     public InputField[] InputLabels = null;
     public Toggle[] InputToggles = null;
     public Slider[] InputSliders = null;
 
-    public void OnClickHandler()
+    public void OnClickHandler(string tag)
     {
         int strCt = 0;
         int boolCt = 0;
@@ -40,17 +39,6 @@ public class OnClickDispatcher : MonoBehaviour
             for (int i = 0; i < floatCt; ++i) {
                 floatVals[i] = InputSliders[i].value;
             }
-        }
-        string tag;
-        if (string.IsNullOrEmpty(EventTag)) {
-            Text label = gameObject.GetComponent<Text>();
-            if (null != label) {
-                tag = label.text;
-            } else {
-                tag = "";
-            }
-        } else {
-            tag = EventTag;
         }
         GfxStorySystem.Instance.SendMessage(string.Format("{0}:{1}", WindowName, MessageId), tag, strCt, strVals, boolCt, boolVals, floatCt, floatVals);
     }

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <StartAction>Program</StartAction>
+    <StartProgram>d:\works\Dev\Public\Messenger\Bin\dcore.exe</StartProgram>
+    <StartArguments>TestMessenger1.xml</StartArguments>
+    <StartWorkingDirectory>d:\works\Dev\Public\Messenger\Bin\</StartWorkingDirectory>
+  </PropertyGroup>
+</Project>

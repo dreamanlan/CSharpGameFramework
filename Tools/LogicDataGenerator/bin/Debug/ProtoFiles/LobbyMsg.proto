@@ -1,0 +1,277 @@
+//----------------------------------------------------------------------------
+//！！！不要手动修改此文件，此文件由LogicDataGenerator按ProtoFiles/LobbyMsg.dsl生成！！！
+//----------------------------------------------------------------------------
+package GameFrameworkMessage;
+
+enum LobbyArgType
+{
+	NULL = 0;
+	INT = 1;
+	FLOAT = 2;
+	STRING = 3;
+}
+
+message AccountLogin
+{
+	required string m_AccountId = 1;
+	required string m_Password = 2;
+	required string m_ClientInfo = 3;
+}
+
+message AccountLoginResult
+{
+
+	enum AccountLoginResultEnum
+	{
+		Success = 0;
+		FirstLogin = 1;
+		Error = 2;
+		Wait = 3;
+		Banned = 4;
+		AlreadyOnline = 5;
+		Queueing = 6;
+		QueueFull = 7;
+		Failed = 8;
+		Nonactivated = 9;
+	}
+	required string m_AccountId = 1;
+	required AccountLoginResultEnum m_Result = 2;
+	required uint64 m_UserGuid = 3;
+}
+
+message AccountLogout
+{
+}
+
+message ActivateAccount
+{
+	required string m_ActivationCode = 1;
+}
+
+message ActivateAccountResult
+{
+
+	enum ActivateAccountResultEnum
+	{
+		Success = 0;
+		InvalidCode = 1;
+		MistakenCode = 2;
+		Error = 3;
+	}
+	required ActivateAccountResultEnum m_Result = 1;
+}
+
+message ChangeName
+{
+	required string m_Nickname = 1;
+}
+
+message ChangeNameResult
+{
+
+	enum ChangeNameResultEnum
+	{
+		Success = 0;
+		NicknameError = 1;
+		UnknownError = 2;
+	}
+	required ChangeNameResultEnum m_Result = 1;
+	required string m_Nickname = 2;
+}
+
+message ChangeSceneRoom
+{
+	optional int32 m_SceneId = 1;
+	optional int32 m_RoomId = 2;
+}
+
+message DirectLogin
+{
+}
+
+message EnterScene
+{
+	required int32 m_SceneId = 1;
+	optional int32 m_RoomId = 2;
+}
+
+message EnterSceneResult
+{
+	optional string server_ip = 1;
+	optional uint32 server_port = 2;
+	optional uint32 key = 3;
+	optional int32 camp_id = 4;
+	optional int32 scene_type = 5;
+	required int32 result = 6;
+	required int32 prime = 7;
+}
+
+message GetQueueingCount
+{
+}
+
+message GmCode
+{
+	required string m_Content = 1;
+}
+
+message KickUser
+{
+}
+
+message Logout
+{
+}
+
+message Msg_CLC_StoryMessage
+{
+
+	message MessageArg
+	{
+		required LobbyArgType val_type = 1;
+		required string str_val = 2;
+	}
+	required string m_MsgId = 1;
+	repeated MessageArg m_Args = 2;
+}
+
+message Msg_LC_HighlightPrompt
+{
+	required string dict_id = 1;
+	repeated string argument = 2;
+}
+
+message Msg_LC_PublishEvent
+{
+
+	message EventArg
+	{
+		required LobbyArgType val_type = 1;
+		required string str_val = 2;
+	}
+	required bool is_logic_event = 1;
+	required string ev_name = 2;
+	required string group = 3;
+	repeated EventArg args = 4;
+}
+
+message Msg_LC_SendGfxMessage
+{
+
+	message EventArg
+	{
+		required LobbyArgType val_type = 1;
+		required string str_val = 2;
+	}
+	required bool is_with_tag = 1;
+	required string name = 2;
+	required string msg = 3;
+	repeated EventArg args = 4;
+}
+
+message NodeMessageWithAccount
+{
+	required string m_Account = 1;
+}
+
+message NodeMessageWithAccountAndGuid
+{
+	required string m_Account = 1;
+	required uint64 m_Guid = 2;
+}
+
+message NodeMessageWithGuid
+{
+	required uint64 m_Guid = 1;
+}
+
+message NodeRegister
+{
+	required string m_Name = 1;
+}
+
+message NodeRegisterResult
+{
+	required bool m_IsOk = 1;
+}
+
+message QueueingCountResult
+{
+	required int32 m_QueueingCount = 1;
+}
+
+message QuitRoom
+{
+	required bool m_IsQuitRoom = 1;
+}
+
+message RequestNickname
+{
+}
+
+message RequestNicknameResult
+{
+	repeated string m_Nicknames = 1;
+}
+
+message RequestSceneRoomInfo
+{
+}
+
+message RequestSceneRoomList
+{
+}
+
+message RoleEnter
+{
+	optional string m_Nickname = 1;
+}
+
+message RoleEnterResult
+{
+
+	enum RoleEnterResultEnum
+	{
+		Success = 0;
+		Wait = 1;
+		UnknownError = 2;
+	}
+
+	message MemberInfo
+	{
+		required int32 Hero = 1;
+		required int32 Level = 2;
+	}
+	required RoleEnterResultEnum m_Result = 1;
+	required string m_Nickname = 2;
+	required int32 m_HeroId = 3;
+	optional int32 m_Money = 4;
+	optional int32 m_Gold = 5;
+	optional int32 m_Level = 6;
+	optional int32 m_SceneId = 7;
+	optional int32 m_WorldId = 8;
+	repeated MemberInfo Members = 9;
+}
+
+message ServerShutdown
+{
+}
+
+message TooManyOperations
+{
+}
+
+message UserHeartbeat
+{
+}
+
+message VersionVerify
+{
+}
+
+message VersionVerifyResult
+{
+	required int32 m_Result = 1;
+	required int32 m_EnableLog = 2;
+	required uint32 m_ShopMask = 3;
+}

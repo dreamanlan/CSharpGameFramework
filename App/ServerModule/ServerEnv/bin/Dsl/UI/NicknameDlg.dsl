@@ -1,0 +1,31 @@
+story(main)
+{
+  local
+  {
+    @nicknameList(0);
+    @rndname(0);
+  };
+  onmessage("start")
+  {
+  	log("NicknameDlg start");
+    @window.active=changetype(0,"bool");
+  };
+  onmessage("show_nickname")
+  {
+    @window.active=changetype(1,"bool");
+    @nicknameList=$0;
+    @rndname=rndfromlist(@nicknameList);
+    @nickname_Input.text=@rndname;
+  };  
+  onnamespacedmessage("on_click")
+  {
+  	log("NicknameDlg on click {0} {1} {2}",$0,$1,$2);
+  	if($0=="roll"){
+	    @rndname=rndfromlist(@nicknameList);
+	    @nickname_Input.text=@rndname;
+  	}else{
+	  	firemessage("do_nickname",listget($2,0,"unknown"));
+	    @window.active=changetype(0,"bool");
+	  };
+  };
+};

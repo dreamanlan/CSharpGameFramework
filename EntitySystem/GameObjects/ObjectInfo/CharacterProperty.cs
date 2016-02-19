@@ -26,35 +26,12 @@ namespace GameFramework
       get { return m_MoveSpeed / s_Key; }
     }
     /**
-     * @brief 行走速度
-     */
-    public float WalkSpeed
-    {
-      get { return m_WalkSpeed / s_Key; }
-    }
-    /**
-     * @brief 跑路速度
-     */
-    public float RunSpeed
-    {
-      get { return m_RunSpeed / s_Key; }
-    }
-    /**
      * @brief 最大血量
      */
     public int HpMax
     {
       get { return m_HpMax / s_Key; }
     }
-
-    /**
-     * @brief 最大血量
-     */
-    public int RageMax
-    {
-      get { return m_RageMax / s_Key; }
-    }
-
     /**
      * @brief 最大能量
      */
@@ -64,37 +41,19 @@ namespace GameFramework
     }
 
     /**
-     * @brief 生命值回复速度
-     */
-    public float HpRecover
-    {
-      get { return m_HpRecover / s_Key; }
-    }
-
-    /**
-     * @brief 能量值回复速度
-     */
-    public float EnergyRecover
-    {
-      get { return m_EnergyRecover / s_Key; }
-    }
-
-    /**
      * @brief 物理攻击力
      */
     public int AttackBase
     {
         get { return m_AttackBase / s_Key; }
     }
-
     /**
      * @brief 物理防御力
      */
     public int DefenceBase
     {
       get { return m_DefenceBase / s_Key; }
-    }
-    
+    }    
     /**
      * @brief 暴击率
      */
@@ -102,7 +61,6 @@ namespace GameFramework
     {
       get { return m_Critical / s_Key; }
     }
-
     /**
      * @brief 暴击额外伤害比率
      */
@@ -110,7 +68,6 @@ namespace GameFramework
     {
       get { return m_CriticalPow / s_Key; }
     }
-
     /**
      * @brief 攻击速度
      */
@@ -118,7 +75,6 @@ namespace GameFramework
     {
       get { return m_Rps / s_Key; }
     }
-
     /**
      * @brief 攻击距离
      */
@@ -137,30 +93,7 @@ namespace GameFramework
     public void SetMoveSpeed(Operate_Type opType, float tVal)
     {
       m_MoveSpeed = UpdateAttr(m_MoveSpeed, m_MoveSpeed, opType, tVal);
-    }
-    /**
-     * @brief 角色属性修改
-     *
-     * @param optype 操作类型
-     * @param val 值
-     *
-     */
-    public void SetWalkSpeed(Operate_Type opType, float tVal)
-    {
-      m_WalkSpeed = UpdateAttr(m_WalkSpeed, m_WalkSpeed, opType, tVal);
-    }
-    /**
-     * @brief 角色属性修改
-     *
-     * @param optype 操作类型
-     * @param val 值
-     *
-     */
-    public void SetRunSpeed(Operate_Type opType, float tVal)
-    {
-      m_RunSpeed = UpdateAttr(m_RunSpeed, m_RunSpeed, opType, tVal);
-    }
-    
+    }    
     /**
      * @brief 角色属性修改
      *
@@ -172,19 +105,6 @@ namespace GameFramework
     {
       m_HpMax = (int)UpdateAttr(m_HpMax, m_HpMax, opType, tVal);
     }
-
-    /**
-     * @brief 角色属性修改
-     *
-     * @param optype 操作类型
-     * @param val 值
-     *
-     */
-    public void SetRageMax(Operate_Type opType, int tVal)
-    {
-      m_RageMax = (int)UpdateAttr(m_RageMax, m_RageMax, opType, tVal);
-    }
-
     /**
      * @brief 角色属性修改
      *
@@ -204,35 +124,10 @@ namespace GameFramework
      * @param val 值
      *
      */
-    public void SetHpRecover(Operate_Type opType, float tVal)
-    {
-      m_HpRecover = UpdateAttr(m_HpRecover, opType, tVal);
-    }
-    
-    /**
-     * @brief 角色属性修改
-     *
-     * @param optype 操作类型
-     * @param val 值
-     *
-     */
-    public void SetEnergyRecover(Operate_Type opType, float tVal)
-    {
-      m_EnergyRecover = UpdateAttr(m_EnergyRecover, opType, tVal);
-    }
-
-    /**
-     * @brief 角色属性修改
-     *
-     * @param optype 操作类型
-     * @param val 值
-     *
-     */
     public void SetAttackBase(Operate_Type opType, int tVal)
     {
       m_AttackBase = (int)UpdateAttr(m_AttackBase, opType, tVal);
     }
-
     /**
      * @brief 角色属性修改
      *
@@ -243,8 +138,7 @@ namespace GameFramework
     public void SetDefenceBase(Operate_Type opType, int tVal)
     {
       m_DefenceBase = (int)UpdateAttr(m_DefenceBase, opType, tVal);
-    }
-        
+    }        
     /**
      * @brief 角色属性修改
      *
@@ -256,7 +150,6 @@ namespace GameFramework
     {
       m_Critical = UpdateAttr(m_Critical, opType, tVal);
     }
-
     /**
      * @brief 角色属性修改
      *
@@ -268,7 +161,6 @@ namespace GameFramework
     {
       m_CriticalPow = UpdateAttr(m_CriticalPow, opType, tVal);
     }
-
     /**
      * @brief 角色属性修改
      *
@@ -280,7 +172,6 @@ namespace GameFramework
     {
       m_Rps = UpdateAttr(m_Rps, opType, tVal);
     }
-
     /**
      * @brief 角色属性修改
      *
@@ -328,33 +219,13 @@ namespace GameFramework
      */
     private float m_MoveSpeed;
     /**
-     * @brief 走路速度
-     */
-    private float m_WalkSpeed;
-    /**
-     * @brief 跑路速度
-     */
-    private float m_RunSpeed;
-    /**
      * @brief 最大生命值
      */
     private int m_HpMax;
     /**
-     * @brief 最大怒气值
-     */
-    private int m_RageMax;
-    /**
      * @brief 最大能量值
      */
     private int m_EnergyMax;
-    /**
-     * @brief 生命值回复速度
-     */
-    private float m_HpRecover;
-    /**
-     * @brief 能量值回复速度
-     */
-    private float m_EnergyRecover;
     /**
      * @brief 物理攻击力
      */

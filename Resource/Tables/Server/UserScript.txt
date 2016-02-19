@@ -1,0 +1,3 @@
+string	string	string	string
+id	StoryId	Namespace	DslFile
+user_main	user_main		UserServer/main.dsl

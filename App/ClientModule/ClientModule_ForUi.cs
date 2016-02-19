@@ -18,6 +18,14 @@ namespace GameFramework
         {
             return EntityController.Instance.GetCampId(actorId);
         }
+        public void MoveTo(float x, float y, float z)
+        {
+            if (IsRoomScene) {
+                Network.NetworkSystem.Instance.SyncPlayerMoveToPos(new ScriptRuntime.Vector3(x, y, z));
+            } else {
+                GfxStorySystem.Instance.SendMessage("move_to", x, y, z);
+            }
+        }
         public bool SkillCanFindTarget(int objId, int skillId)
         {
             bool ret = false;
@@ -48,14 +56,27 @@ namespace GameFramework
                 if (null != skillInfo) {
                     if (obj.Energy >= obj.GetActualProperty().EnergyMax) {
                         if (!skillInfo.IsInCd(TimeUtility.GetLocalMilliseconds())) {
-                            AiStateInfo aiInfo = obj.GetAiStateInfo();
-                            AiData_General data = aiInfo.AiDatas.GetData<AiData_General>();
-                            if (null == data) {
-                                data = new AiData_General();
-                                aiInfo.AiDatas.AddData(data);
+                            if (IsRoomScene) {
+                                Network.NetworkSystem.Instance.SyncPlayerSkill(obj, skillId);
+                            } else {
+                                AiStateInfo aiInfo = obj.GetAiStateInfo();
+                                if (aiInfo.AiLogic == (int)AiStateLogicId.Entity_Leader) {
+                                    AiData_Leader data = aiInfo.AiDatas.GetData<AiData_Leader>();
+                                    if (null == data) {
+                                        data = new AiData_Leader();
+                                        aiInfo.AiDatas.AddData(data);
+                                    }
+                                    data.ManualSkillId = skillId;
+                                } else {
+                                    AiData_General data = aiInfo.AiDatas.GetData<AiData_General>();
+                                    if (null == data) {
+                                        data = new AiData_General();
+                                        aiInfo.AiDatas.AddData(data);
+                                    }
+                                    data.ManualSkillId = skillId;
+                                }
+                                aiInfo.ChangeToState((int)AiStateId.SkillCommand);
                             }
-                            data.ManualSkillId = skillId;
-                            aiInfo.ChangeToState((int)AiStateId.SkillCommand);
                             ret = true;
                         }
                     }
@@ -68,7 +89,17 @@ namespace GameFramework
             int leaderID = ClientModule.Instance.LeaderID;
             EntityInfo obj = GetEntityById(leaderID);
             if (null != obj) {
-                obj.SceneContext.BlackBoard.IsAutoOperate = bAuto;
+                if (IsRoomScene) {
+                    Network.NetworkSystem.Instance.SyncOperateMode(bAuto);
+                } else {
+                    AiStateInfo aiInfo = obj.GetAiStateInfo();
+                    AiData_Leader data = aiInfo.AiDatas.GetData<AiData_Leader>();
+                    if (null == data) {
+                        data = new AiData_Leader();
+                        aiInfo.AiDatas.AddData(data);
+                    }
+                    data.IsAutoOperate = bAuto;
+                }
             }
         }
         public bool GetAIEnable(int objID)

@@ -29,6 +29,19 @@ namespace GameFramework
             NotifyAiInitDslLogic(entity);
         }
 
+        protected override bool OnStateLogicCheck(EntityInfo entity, long deltaTime)
+        {
+            if (entity.IsDead()) {
+                if (entity.GetAiStateInfo().CurState != (int)AiStateId.Idle) {
+                    entity.GetMovementStateInfo().IsMoving = false;
+                    NotifyAiMove(entity);
+                    ChangeToState(entity, (int)AiStateId.Idle);
+                }
+                return false;
+            }
+            return true;
+        }
+
         private void IdleHandler(EntityInfo entity, long deltaTime)
         {
             AiStateInfo info = entity.GetAiStateInfo();
@@ -59,12 +72,6 @@ namespace GameFramework
         }
         private void SkillCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiData_General data = GetAiData(entity);
             if (null != data) {
                 AiLogicUtility.DoSkillCommandState(entity, deltaTime, this, data.ManualSkillId);

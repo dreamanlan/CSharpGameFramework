@@ -1,0 +1,144 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.0</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0664BB03-3179-4E26-BB87-D65529A3DFEB}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>GameFramework</RootNamespace>
+    <AssemblyName>Lobby</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Execute" command="..\DcoreEnv\bin\dcore.exe config/dcore_lobby.xml" workingdir="..\DcoreEnv\bin" externalConsole="True" />
+      </CustomCommands>
+    </CustomCommands>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>False</ConsolePause>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CSharpCenterClient">
+      <HintPath>..\..\..\ExternalLibrary\CSharpCenterClient.dll</HintPath>
+    </Reference>
+    <Reference Include="DataProtobufSerializer">
+      <HintPath>..\DataProtoBuf\bin\DataProtobufSerializer.dll</HintPath>
+    </Reference>
+    <Reference Include="LitJson">
+      <HintPath>..\..\..\ExternalLibrary\LitJson.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\..\ExternalLibrary\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtobufSerializer">
+      <HintPath>..\..\ClientProtoBuf\bin\ProtobufSerializer.dll</HintPath>
+    </Reference>
+    <Reference Include="ScriptFrameworkLibrary">
+      <HintPath>..\..\..\ExternalLibrary\ScriptFrameworkLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\GeneratedCode\DataAccess\Data.cs">
+      <Link>Common\Data.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MessageCommon\DbDataSerializer.cs">
+      <Link>Common\DbDataSerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MessageCommon\ProtoNetEncoding.cs">
+      <Link>Common\ProtoNetEncoding.cs</Link>
+    </Compile>
+    <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="NodeMessageManager\NodeMessageManager.cs" />
+    <Compile Include="NodeMessageManager\NodeMessageInfo.cs" />
+    <Compile Include="NodeMessageManager\NodeMessageThread.cs" />
+    <Compile Include="LobbyServer_UserHandler.cs" />
+    <Compile Include="Util\Md5.cs" />
+    <Compile Include="Util\PretendRandom.cs" />
+    <Compile Include="Lobby.cs" />
+    <Compile Include="LobbyConfig.cs" />
+    <Compile Include="Process\GlobalProcessThread.cs" />
+    <Compile Include="Process\UserProcessScheduler.cs" />
+    <Compile Include="Common\NodeMessageDefine.cs" />
+    <Compile Include="Common\NodeMessageDispatcher.cs" />
+    <Compile Include="Process\RoomProcessThread.cs" />
+    <Compile Include="LobbyServer_NodeHandler.cs" />
+    <Compile Include="LobbyServer_ServerHandler.cs" />
+    <Compile Include="Info\LobbyInfo.cs" />
+    <Compile Include="Info\RoomInfo.cs" />
+    <Compile Include="Info\UserInfo.cs" />
+    <Compile Include="Info\RoomServerInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\EntitySystem\GameObjects\GameObjects.csproj">
+      <Project>{e280220b-7eda-4274-b3d5-4e922d98caad}</Project>
+      <Name>GameObjects</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj">
+      <Project>{1c8280cd-eb93-4849-940e-a99eddf811d6}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ClientProtoBuf\ClientProtoBuf.csproj">
+      <Project>{C402FC70-3A7A-4CE2-956F-6AA1DFD5882E}</Project>
+      <Name>ClientProtoBuf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Infrastructure\Common\ServerCommon.csproj">
+      <Project>{8EAD2077-DE3A-435C-B770-09EFFE4153C1}</Project>
+      <Name>ServerCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataProtoBuf\DataProtoBuf.csproj">
+      <Project>{f261f4c6-33db-44ee-87fe-aec3d6fe395e}</Project>
+      <Name>DataProtoBuf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogSys\LogSys\LogSys.csproj">
+      <Project>{7935F58E-9F5D-48F7-B915-C6A0F455165F}</Project>
+      <Name>LogSys</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Messenger\Messenger\Messenger.csproj">
+      <Project>{98BA0167-2BEB-4845-9926-50CB465C4FA6}</Project>
+      <Name>Messenger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServerProtoBuf\ServerProtoBuf.csproj">
+      <Project>{3A1DEA99-D58B-4CE0-BB57-8C09E97AF5E4}</Project>
+      <Name>ServerProtoBuf</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

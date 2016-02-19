@@ -854,10 +854,9 @@
   作用：
   获取指定对象的指定属性值。
   支持的属性名如下：（大小写必须一致)
-      MoveSpeed/WalkSpeed/RunSpeed/HpMax/RageMax/EnergyMax/HpRecover/EnergyRecover
-      AttackBase/ADefenceBase/MDefenceBase
-      Critical/CriticalPow/CriticalBackHitPow/CriticalCrackPow
-      FireDamage/FireERD/IceDamage/IceERD/PoisonDamage/PoisonERD/Weight/Rps/AttackRange
+      MoveSpeed/HpMax/EnergyMax/HpRecover/EnergyRecover
+      AttackBase/DefenceBase
+      Critical/CriticalPow/Rps/AttackRange
     
   18、unit2uniqueid
   用法：
@@ -977,6 +976,34 @@
   
   作用：
   计算沿objid->targetobjid方向，相对objid偏移(x,y,z)的位置。
+  
+  35、getaidata
+  用法：
+  getaidata(objid,aidatatype);
+  
+  作用：
+  取指定对象的aidata，aidatatype可以是AiData_General等。
+  
+  36、getentityinfo
+  用法：
+  getentityinfo(objid);
+  
+  作用：
+  获取指定objid的EntityInfo实例。
+  
+  37、getentityview
+  用法：
+  getentityview(objid);
+  
+  作用：
+  取指定对象的EntityViewModel实例。
+  
+  38、getuserinfo
+  用法：
+  getuserinfo(guid);
+  
+  作用：
+  仅用在userserver上，用于获取UserInfo对象。
     
 九、剧情命令
 
@@ -1292,7 +1319,7 @@
   作用：
   设置指定对象的指定属性值。
   支持的属性名如下：（大小写必须一致)
-      MoveSpeed/WalkSpeed/RunSpeed/HpMax/RageMax/EnergyMax/HpRecover/EnergyRecover/
+      MoveSpeed/WalkSpeed/RunSpeed/HpMax/EnergyMax/HpRecover/EnergyRecover/
       AttackBase/DefenceBase/
       Critical/CriticalPow/
       Rps/AttackRange
@@ -1405,177 +1432,186 @@
   作用：
   设置指定npc的AI目标。
   
+  67、sendroomstorymessage/sendserverstorymessage/sendclientstorymessage
+  用法：
+  sendserverstorymessage(msg,arg1,arg2,...)[touser(objid_on_room_guid_on_userserver)];
+  sendclientstorymessage(msg,arg1,arg2,...)[touser(objid_on_room_guid_on_userserver)];
+  
+  作用：
+  roomserver或userserver给服务器或客户端发送storymessage，在room上指定user使用objid，在userserver指定user用guid，在client不能指定user。
+  服务器间发送消息时，实际收到消息时会在开头插入一个参数表示玩家id（在roomserver上是objid，在userserver上是guid）
+  
     
 十、游戏系统内实现的消息触发(非场景逻辑配置的消息触发)
   
-  1、allkilled
+  1、all_killed
   消息ID：
-  allkilled
+  all_killed
   参数：
   无
   
   触发时机：
   当前场景所有敌对npc死亡时触发。
   
-  2、npckilled
+  2、npc_killed
   消息ID：
-  npckilled:npc_unit_id
+  npc_killed:npc_unit_id
   参数：
   npc的对象id，剩余npc数目, uniqueId, killerId
   
   触发时机：
   某个战斗npc死亡时触发。
   
-  3、npcarrived
+  3、npc_arrived
   消息ID：
-  npcarrived:npc_unit_id
+  npc_arrived:npc_unit_id
   参数：
   npc的对象id
   
   触发时机：
   npcmove命令控制的npc到达目标点时触发。
   
-  4、npcpatrolexit/objpatrolexit
+  4、npc_patrol_exit/obj_patrol_exit
   消息ID：
-  npcpatrolexit:npc_unit_id
-  objpatrolexit
+  npc_patrol_exit:npc_unit_id
+  obj_patrol_exit
   参数：
   npc的对象id
   
   触发时机：
   npcpatrol命令控制的npc退出巡逻时触发，通常是发现敌人了。
   
-  5、npcpatrolrestart/objpatrolrestart
+  5、npc_patrol_restart/obj_patrol_restart
   消息ID：
-  npcpatrolrestart:npc_unit_id
-  objpatrolrestart
+  npc_patrol_restart:npc_unit_id
+  obj_patrol_restart
   参数：
   npc的对象id
   
   触发时机：
   npcpatrol命令控制的npc重新开始巡逻时触发（用于循环巡逻情形，完成了一遍巡逻）。
   
-  6、npcpatrolfinish/objpatrolfinish
+  6、npc_patrol_finish/obj_patrol_finish
   消息ID：
-  npcpatrolfinish:npc_unit_id
-  objpatrolfinish
+  npc_patrol_finish:npc_unit_id
+  obj_patrol_finish
   参数：
   npc的对象id
   
   触发时机：
  	npcpatrol命令控制的npc完成巡逻时触发（用于非循环巡逻情形，完成了巡逻）。
  	
-  7、objarrived
+  7、obj_arrived
   消息ID：
-  objarrived
+  obj_arrived
   参数：
   对象id
   
   触发时机：
   objmove命令控制的对象到达目标点时触发。 
   
-  8、objpursuitexit
+  8、obj_pursuit_exit
   消息ID：
-  objpursuitexit
+  obj_pursuit_exit
   参数：
   对象id
   
   触发时机：
   由npcpursuit/objpursuit/playerselfpursuit发起的接近命令，目标消失时触发。
   
-  9、npcpursuitexit
+  9、npc_pursuit_exit
   消息ID：
-  npcpursuitexit:npc_unit_id
+  npc_pursuit_exit:npc_unit_id
   参数：
   对象id
   
   触发时机：
   由npcpursuit/objpursuit发起的接近命令，目标消失时触发。
    
-  10、objpursuitfinish
+  10、obj_pursuit_finish
   消息ID：
-  objpursuitfinish
+  obj_pursuit_finish
   参数：
   对象id
   
   触发时机：
   由npcpursuit/objpursuit/playerselfpursuit发起的接近命令，目标在攻击范围时触发。
   
-  11、npcpursuitfinish
+  11、npc_pursuit_finish
   消息ID：
-  npcpursuitfinish:npc_unit_id
+  npc_pursuit_finish:npc_unit_id
   参数：
   对象id
   
   触发时机：
   由npcpursuit/objpursuit发起的接近命令，目标在攻击范围时触发。
   
-  12、objdamage
+  12、obj_damage
   消息ID：
-  objdamage
+  obj_damage
   参数：
   objid,casterid,hpdamage,npdamage,iscritical(1==yes, 0==no)
   
   触发时机：
   开启了伤害监听的obj在受到伤害时触发。
   
-  13、npcdamage
+  13、npc_damage
   消息ID：
-  npcdamage:unit_id
+  npc_damage:unit_id
   参数：
   npcobjid,casterid,hpdamage,npdamage,iscritical(1==yes, 0==no)
   
   触发时机：
   开启了伤害监听的npc在受到伤害时触发。
   
-  14、objkilled
+  14、obj_killed
   消息ID：
-  objkilled
+  obj_killed
   参数：
   objid, leftcombatnpccount, uniqueId, killerId
   
   触发时机：
   npc死亡时触发（不包括玩家）。
   
-  15、objmeetenemy
+  15、obj_meet_enemy
   消息ID：
-  objmeetenemy
+  obj_meet_enemy
   参数：
   objid
   
   触发时机：
   npc遇敌时触发。
   
-  16、npcmeetenemy
+  16、npc_meet_enemy
   消息ID：
-  npcmeetenemy:unitid
+  npc_meet_enemy:unitid
   参数：
   objid
   
   触发时机：
   npc遇敌时触发。
   
-  17、alldied
+  17、all_died
   消息ID：
-  alldied
+  all_died
   参数：
   无
   
   触发时机：
   所有我方npc死亡时触发。 
     
-  18、objcreated
+  18、obj_created
   消息ID：
-  objcreated
+  obj_created
   参数：
   objid
   
   触发时机：
   npc创建时触发。
   
-  19、npccreated
+  19、npc_created
   消息ID：
-  npccreated:npc_unit_id
+  npc_created:npc_unit_id
   参数：
   objid
   

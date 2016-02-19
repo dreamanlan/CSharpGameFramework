@@ -79,7 +79,7 @@ namespace GameFramework
                 return mgr;
             }
         }
-        public EntityManager NpcManager
+        public EntityManager EntityManager
         {
             get
             {

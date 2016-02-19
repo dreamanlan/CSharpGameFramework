@@ -66,7 +66,7 @@ namespace GameFramework
             UpdateSpatial();
             UpdateEdgeColor();
         }
-        internal void SyncFaceDir()
+        internal void SyncSpatial()
         {
             if (null != m_Entity && null != Actor) {
                 MovementStateInfo msi = m_Entity.GetMovementStateInfo();
@@ -76,13 +76,14 @@ namespace GameFramework
                 msi.SetFaceDir(dir);
                 msi.SetMoveDir(dir);
 
-                if (msi.IsMoving && msi.IsManualMoving) {
+                if (msi.IsMoving) {
                     Vector3 tpos = new Vector3(msi.TargetPosition.X, msi.TargetPosition.Y, msi.TargetPosition.Z);
                     if ((tpos - v3).sqrMagnitude < c_StopDistSqr) {
                         msi.IsMoving = false;
                         if (null != Animator) {
                             //Animator.CrossFade(c_StandAnim, c_CrossFadeTime);
                             Animator.Play(c_StandAnim);
+                            msi.IsMoving = false;
                         }
                     }
                 }
@@ -97,7 +98,7 @@ namespace GameFramework
 
         private void UpdateSpatial()
         {
-            SyncFaceDir();
+            SyncSpatial();
         }
 
         /// <summary>
@@ -146,6 +147,18 @@ namespace GameFramework
                     Animator.Play(c_StandAnim);
                 } else {
                     Animator.Play(c_StandAnim);
+                }
+            }
+        }
+
+        public void PlayAnimation(string anim)
+        {
+            if (null != Animator) {
+                if (ObjId == ClientModule.Instance.LeaderID) {
+                    //Animator.CrossFade(anim, c_CrossFadeTime);
+                    Animator.Play(anim);
+                } else {
+                    Animator.Play(anim);
                 }
             }
         }

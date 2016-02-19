@@ -22,6 +22,9 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "firemessage", new StoryCommandFactoryHelper<Story.Commands.FireMessageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitallmessage", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageHandlerCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendroomstorymessage", new StoryCommandFactoryHelper<Story.Commands.SendRoomStoryMessageCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendserverstorymessage", new StoryCommandFactoryHelper<Story.Commands.SendServerStoryMessageCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendclientstorymessage", new StoryCommandFactoryHelper<StorySystem.CommonCommands.DummyCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "publishgfxevent", new StoryCommandFactoryHelper<Story.Commands.PublishGfxEventCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendgfxmessage", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendgfxmessagewithtag", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageWithTagCommand>());
@@ -46,6 +49,7 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerafollowpath", new StoryCommandFactoryHelper<Story.Commands.CameraFollowPathCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralook", new StoryCommandFactoryHelper<Story.Commands.CameraLookCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "lockframe", new StoryCommandFactoryHelper<Story.Commands.LockFrameCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "showdlg", new StoryCommandFactoryHelper<Story.Commands.ShowDlgCommand>());
             
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "createnpc", new StoryCommandFactoryHelper<Story.Commands.CreateNpcCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "destroynpc", new StoryCommandFactoryHelper<Story.Commands.DestroyNpcCommand>());
@@ -92,7 +96,6 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetsummonerid", new StoryCommandFactoryHelper<Story.Commands.ObjSetSummonerIdCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sethp", new StoryCommandFactoryHelper<Story.Commands.SetHpCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setenergy", new StoryCommandFactoryHelper<Story.Commands.SetEnergyCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setrage", new StoryCommandFactoryHelper<Story.Commands.SetRageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objset", new StoryCommandFactoryHelper<Story.Commands.ObjSetCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setlevel", new StoryCommandFactoryHelper<Story.Commands.SetLevelCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setattr", new StoryCommandFactoryHelper<Story.Commands.SetAttrCommand>());
@@ -111,10 +114,14 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getgameobject", new StoryValueFactoryHelper<Story.Values.GetGameObjectValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getunitytype", new StoryValueFactoryHelper<Story.Values.GetUnityTypeValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getunityuitype", new StoryValueFactoryHelper<Story.Values.GetUnityUiTypeValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getentityinfo", new StoryValueFactoryHelper<Story.Values.GetEntityInfoValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getentityview", new StoryValueFactoryHelper<Story.Values.GetEntityViewValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getuserinfo", new StoryValueFactoryHelper<StorySystem.CommonValues.DummyValue>());
 
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "blackboardget", new StoryValueFactoryHelper<Story.Values.BlackboardGetValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getdialogitem", new StoryValueFactoryHelper<Story.Values.GetDialogItemValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getactoricon", new StoryValueFactoryHelper<Story.Values.GetActorIconValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getaidata", new StoryValueFactoryHelper<Story.Values.GetAiDataValue>());
 
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "npcidlist", new StoryValueFactoryHelper<Story.Values.NpcIdListValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "combatnpccount", new StoryValueFactoryHelper<Story.Values.CombatNpcCountValue>());
@@ -150,11 +157,12 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "iscontrolbystory", new StoryValueFactoryHelper<Story.Values.IsControlByStoryValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objcancastskill", new StoryValueFactoryHelper<Story.Values.ObjCanCastSkillValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objisundercontrol", new StoryValueFactoryHelper<Story.Values.ObjIsUnderControlValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleaderlinkid", new StoryValueFactoryHelper<Story.Values.GetLeaderLinkIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleaderid", new StoryValueFactoryHelper<Story.Values.GetLeaderIdValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsummonerskillid", new StoryValueFactoryHelper<Story.Values.GetSummonerSkillIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getnpctype", new StoryValueFactoryHelper<Story.Values.GetNpcTypeValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsummonerid", new StoryValueFactoryHelper<Story.Values.GetSummonerIdValue>());
+
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleaderlinkid", new StoryValueFactoryHelper<Story.Values.GetLeaderLinkIdValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsummonerskillid", new StoryValueFactoryHelper<Story.Values.GetSummonerSkillIdValue>());
         }
         public void Reset()
         {
@@ -173,12 +181,15 @@ namespace GameFramework.Story
         {
             TableConfig.Level cfg = TableConfig.LevelProvider.Instance.GetLevel(m_SceneId);
             if (null != cfg) {
-                int ct;
                 string[] filePath;
-                ct = cfg.GfxDslFile.Count;
-                filePath = new string[ct];
-                for (int i = 0; i < ct; i++) {
-                    filePath[i] = HomePath.GetAbsolutePath(FilePathDefine.C_DslPath + cfg.GfxDslFile[i]);
+                int ct1 = cfg.SceneDslFile.Count;
+                int ct2 = cfg.ClientDslFile.Count;
+                filePath = new string[ct1 + ct2];
+                for (int i = 0; i < ct1; i++) {
+                    filePath[i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + cfg.SceneDslFile[i]);
+                }
+                for (int i = 0; i < ct2; i++) {
+                    filePath[ct1 + i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + cfg.ClientDslFile[i]);
                 }
                 StoryConfigManager.Instance.LoadStories(0, string.Empty, filePath);
                 Dictionary<string, StoryInstance> stories = StoryConfigManager.Instance.GetStories(0);
@@ -191,7 +202,7 @@ namespace GameFramework.Story
         }
         public void PreloadNamespacedStory(string _namespace, string file)
         {
-            string filePath = HomePath.GetAbsolutePath(FilePathDefine.C_DslPath + file);
+            string filePath = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + file);
             StoryConfigManager.Instance.LoadStories(0, _namespace, filePath);
             Dictionary<string, StoryInstance> stories = StoryConfigManager.Instance.GetStories(filePath);
             if (null != stories) {
@@ -202,7 +213,7 @@ namespace GameFramework.Story
         }
         public void PreloadAiStory(string _namespace, string file)
         {
-            string filePath = HomePath.GetAbsolutePath(FilePathDefine.C_DslPath + file);
+            string filePath = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + file);
             StoryConfigManager.Instance.LoadStories(0, _namespace, filePath);
             Dictionary<string, StoryInstance> stories = StoryConfigManager.Instance.GetStories(filePath);
             if (null != stories) {
@@ -226,7 +237,7 @@ namespace GameFramework.Story
         }
         public AiStoryInstanceInfo NewAiStoryInstance(string storyId, string _namespace, params string[] overloadFiles)
         {
-            return NewAiStoryInstance(m_SceneId, storyId, _namespace, true, overloadFiles);
+            return NewAiStoryInstance(storyId, _namespace, true, overloadFiles);
         }
         public void RecycleAiStoryInstance(AiStoryInstanceInfo info)
         {
@@ -266,7 +277,7 @@ namespace GameFramework.Story
         }
         public void StartStory(string storyId, string _namespace, params string[] overloadFiles)
         {
-            StoryInstance inst = NewStoryInstance(m_SceneId, storyId, _namespace, true, overloadFiles);
+            StoryInstance inst = NewStoryInstance(storyId, _namespace, true, overloadFiles);
             if (null != inst) {
                 m_StoryLogicInfos.Add(inst);
                 inst.Context = null;
@@ -378,7 +389,7 @@ namespace GameFramework.Story
             return sum;
         }
 
-        private StoryInstance NewStoryInstance(int sceneId, string storyId, string _namespace, bool logIfNotFound, params string[] overloadFiles)
+        private StoryInstance NewStoryInstance(string storyId, string _namespace, bool logIfNotFound, params string[] overloadFiles)
         {
             if (!string.IsNullOrEmpty(_namespace)) {
                 storyId = string.Format("{0}:{1}", _namespace, storyId);
@@ -387,26 +398,29 @@ namespace GameFramework.Story
             if (null == instance) {
                 TableConfig.Level cfg = TableConfig.LevelProvider.Instance.GetLevel(m_SceneId);
                 if (null != cfg) {
-                    int ct;
                     string[] filePath;
                     if (overloadFiles.Length <= 0) {
-                        ct = cfg.GfxDslFile.Count;
-                        filePath = new string[ct];
-                        for (int i = 0; i < ct; i++) {
-                            filePath[i] = HomePath.GetAbsolutePath(FilePathDefine.C_DslPath + cfg.GfxDslFile[i]);
+                        int ct1 = cfg.SceneDslFile.Count;
+                        int ct2 = cfg.ClientDslFile.Count;
+                        filePath = new string[ct1 + ct2];
+                        for (int i = 0; i < ct1; i++) {
+                            filePath[i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + cfg.SceneDslFile[i]);
+                        }
+                        for (int i = 0; i < ct2; i++) {
+                            filePath[ct1 + i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + cfg.ClientDslFile[i]);
                         }
                     } else {
-                        ct = overloadFiles.Length;
+                        int ct = overloadFiles.Length;
                         filePath = new string[ct];
                         for (int i = 0; i < ct; i++) {
-                            filePath[i] = HomePath.GetAbsolutePath(FilePathDefine.C_DslPath + overloadFiles[i]);
+                            filePath[i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + overloadFiles[i]);
                         }
                     }
                     StoryConfigManager.Instance.LoadStories(0, _namespace, filePath);
                     instance = StoryConfigManager.Instance.NewStoryInstance(storyId, 0);
                     if (instance == null) {
                         if (logIfNotFound)
-                            LogSystem.Error("Can't load story config, story:{0} scene:{1} !", storyId, sceneId);
+                            LogSystem.Error("Can't load story config, story:{0} scene:{1} !", storyId, m_SceneId);
                         return null;
                     }
                     for (int ix = 0; ix < filePath.Length; ++ix) {
@@ -422,7 +436,7 @@ namespace GameFramework.Story
                     return instance;
                 } else {
                     if (logIfNotFound)
-                        LogSystem.Error("Can't find story config, story:{0} scene:{1} !", storyId, sceneId);
+                        LogSystem.Error("Can't find story config, story:{0} scene:{1} !", storyId, m_SceneId);
                     return null;
                 }
             } else {
@@ -444,7 +458,7 @@ namespace GameFramework.Story
             return info;
         }
 
-        private AiStoryInstanceInfo NewAiStoryInstance(int sceneId, string storyId, string _namespace, bool logIfNotFound, params string[] overloadFiles)
+        private AiStoryInstanceInfo NewAiStoryInstance(string storyId, string _namespace, bool logIfNotFound, params string[] overloadFiles)
         {
             if (!string.IsNullOrEmpty(_namespace)) {
                 storyId = string.Format("{0}:{1}", _namespace, storyId);
@@ -456,13 +470,13 @@ namespace GameFramework.Story
                 ct = overloadFiles.Length;
                 filePath = new string[ct];
                 for (int i = 0; i < ct; i++) {
-                    filePath[i] = HomePath.GetAbsolutePath(FilePathDefine.C_DslPath + overloadFiles[i]);
+                    filePath[i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + overloadFiles[i]);
                 }
                 StoryConfigManager.Instance.LoadStories(0, _namespace, filePath);
                 StoryInstance instance = StoryConfigManager.Instance.NewStoryInstance(storyId, 0);
                 if (instance == null) {
                     if (logIfNotFound)
-                        LogSystem.Error("Can't load story config, story:{0} scene:{1} !", storyId, sceneId);
+                        LogSystem.Error("Can't load story config, story:{0} scene:{1} !", storyId, m_SceneId);
                     return null;
                 }
                 for (int ix = 0; ix < filePath.Length; ++ix) {

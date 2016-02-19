@@ -72,9 +72,13 @@ namespace GameFramework
       return GetLocalMilliseconds() - s_LastResponseTime;
     }
 
+    public static long GetLocalMicroseconds()
+    {
+      return (GetElapsedTimeUs() - s_Instance.m_StartTimeUs);
+    }
     public static long GetLocalMilliseconds()
     {
-      return (GetElapsedTimeUs() - s_Instance.m_StartTimeUs) / 1000;
+        return (GetElapsedTimeUs() - s_Instance.m_StartTimeUs) / 1000;
     }
     public static DateTime GetServerDateTime()
     {
@@ -82,8 +86,8 @@ namespace GameFramework
     }
     public static long GetElapsedTimeUs()
     {
-      return DateTime.Now.Ticks / 10;
-      //return (long)(Stopwatch.GetTimestamp() / s_TickPerUs);
+      //return DateTime.Now.Ticks / 10;
+      return (long)(Stopwatch.GetTimestamp() / s_TickPerUs);
     }
     public static void SampleClientTick()
     {

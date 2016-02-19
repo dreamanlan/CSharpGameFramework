@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class FilePathDefine
+internal class FilePathDefine
 {
-    public const string C_RootPath = "";
-    public const string C_DslPath = "Dsl/";
+    internal const string C_ClientRootPath = "Tables/";
+    internal const string C_ServerRootPath = "Tables/";
+    internal const string C_ClientDslPath = "Dsl/";
+    internal const string C_ServerDslPath = "Dsl/";
 }

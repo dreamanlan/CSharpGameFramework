@@ -13,6 +13,7 @@ public sealed class OverHeadBarManager
         subscribes.Add(Utility.EventSystem.Subscribe<int, float, int>("ui_actor_mp", "ui", ChangeMp));
         subscribes.Add(Utility.EventSystem.Subscribe<int, int>("ui_show_hp_num", "ui", ShowHpNum));
         subscribes.Add(Utility.EventSystem.Subscribe<int>("ui_remove_actor", "ui", RemoveActor));
+        subscribes.Add(Utility.EventSystem.Subscribe<int, bool>("ui_actor_color", "ui", ChangeColor));
         subscribes.Add(Utility.EventSystem.Subscribe<int>("ui_drop", "ui", Drop));
     }
     public void Release()
@@ -34,7 +35,7 @@ public sealed class OverHeadBarManager
             view.gameObject.SetActive(bVisibleForHp);
         }
     }
-    private void AddActor(int actorID, bool isHero, TableConfig.Actor cfg)
+    private void AddActor(int actorID, bool isGreen, TableConfig.Actor cfg)
     {
         GameObject obj = ClientModule.Instance.GetGameObject(actorID);
         GameObject headObj = Utility.FindChildObject(obj, "bloodbar");
@@ -55,7 +56,7 @@ public sealed class OverHeadBarManager
             Color green = new Color(35f / 255f, 192f / 255f, 25f / 255f);
             Color red = new Color(172f / 255f, 45f / 255f, 26f / 255f);
 
-            view.SetHealthColor(isHero);
+            view.SetHealthColor(isGreen);
             views[actorID] = view;
             view.SetHealth(1);
             float mp = ClientModule.Instance.GetNpcMp(actorID);
@@ -79,6 +80,13 @@ public sealed class OverHeadBarManager
             view.SetMp(mp);
         }
     }
+    private void ChangeColor(int actorID, bool isGreen)
+    {
+        OverHeadBar view;
+        if (views.TryGetValue(actorID, out view)) {
+            view.SetHealthColor(isGreen);
+        }
+    }
     private void ShowHpNum(int actorID, int num)
     {
         OverHeadBar view;
@@ -86,7 +94,7 @@ public sealed class OverHeadBarManager
             if (num > 0) {
                 view.ShowFloatNum(num, Color.green, 1.0f);
             } else {
-                if (ClientModule.Instance.GetCampId(actorID) == (int)CampIdEnum.Blue) {
+                if (ClientModule.Instance.GetCampId(actorID) == ClientModule.Instance.CampId) {
                     view.ShowFloatNum(num, Color.red, 1.0f);
                 } else {
                     view.ShowFloatNum(num, Color.white, 1.0f);

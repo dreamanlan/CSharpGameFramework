@@ -269,7 +269,7 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
 35. aoeimpact(start_time, center_x, center_y, center_z, relativeToTarget);
     功能：按指定偏移位置与配表的范围对指定目标产生aoe impact
     
-36. aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact[,start_time]);
+36. aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time]);
     功能：按指定偏移位置与配表的范围对指定目标发送轨迹impact
     
 37. stopsectionif(type[,start_time]);

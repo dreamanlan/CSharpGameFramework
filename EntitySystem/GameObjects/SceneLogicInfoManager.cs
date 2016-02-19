@@ -41,6 +41,30 @@ namespace GameFramework
             return ret;
         }
 
+        public SceneLogicInfo AddSceneLogicInfo(int logicId)
+        {
+            SceneLogicInfo info = NewSceneLogicInfo();
+            info.SceneContext = m_SceneContext;
+            info.SceneLogicConfig = new SceneLogicConfig();
+            info.SceneLogicConfig.m_LogicId = logicId;
+            m_SceneLogicInfos.AddLast(info.GetId(), info);
+            return info;
+        }
+
+        public SceneLogicInfo AddSceneLogicInfo(int id, int logicId)
+        {
+            SceneLogicInfo info = NewSceneLogicInfo(id);
+            info.SceneContext = m_SceneContext;
+            info.SceneLogicConfig = new SceneLogicConfig();
+            info.SceneLogicConfig.m_LogicId = logicId;
+            SceneLogicInfo oldInfo;
+            if (m_SceneLogicInfos.TryGetValue(id, out oldInfo)) {
+                LogSystem.Error("AddSceneLogicInfo error, Id={0} was exist, LogicId={1}, NewLogicId={2}", id, oldInfo.LogicId, logicId);
+            }
+            m_SceneLogicInfos.AddLast(info.GetId(), info);
+            return info;
+        }
+
         public SceneLogicInfo AddSceneLogicInfo(SceneLogicConfig cfg)
         {
             SceneLogicInfo info = NewSceneLogicInfo();
@@ -162,6 +186,9 @@ namespace GameFramework
         private int GenNextId()
         {
             int startId = c_StartId;
+            if (GlobalVariables.Instance.IsClient) {
+                startId = c_StartId_Client;
+            }
             int id = 0;
             for (int i = 0; i < c_MaxIdNum; ++i) {
                 id = (m_NextInfoId + i - startId) % c_MaxIdNum + startId;
@@ -180,6 +207,7 @@ namespace GameFramework
         private int m_SceneLogicInfoPoolSize = 128;
 
         private const int c_StartId = 1100;
+        private const int c_StartId_Client = 3000;
         private const int c_MaxIdNum = 100;
         private int m_NextInfoId = c_StartId;
 

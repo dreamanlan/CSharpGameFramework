@@ -1,4 +1,13 @@
-tabledef(Actor, dictionary, client)
+tabledef(UserScript, dictionary, server)
+{
+	recordmodifier(partial);
+	providermodifier(partial);
+	fielddef(id, id, string);
+	fielddef(StoryId, StoryId, string);
+	fielddef(Namespace, Namespace, string);
+	fielddef(DslFile, DslFile, string);
+};
+tabledef(Actor, dictionary, public)
 {
 	recordmodifier(partial);
 	providermodifier(partial);
@@ -28,7 +37,7 @@ tabledef(Actor, dictionary, client)
 	fielddef(deadskill, deadskill, int32);
 	fielddef(size, size, float);
 };
-tabledef(Formation, dictionary, client)
+tabledef(Formation, dictionary, public)
 {
 	recordmodifier(partial);
 	providermodifier(partial);
@@ -66,17 +75,27 @@ tabledef(Formation, dictionary, client)
 	fielddef(pos15, pos15, float_list);
 	fielddef(dir15, dir15, float);
 };
-tabledef(Level, dictionary, client)
+tabledef(Level, dictionary, public)
 {
 	recordmodifier(partial);
 	providermodifier(partial);
 	fielddef(id, id, int32);
 	fielddef(prefab, prefab, string);
 	fielddef(type, type, int32);
-	fielddef(GfxDslFile, GfxDslFile, string_list);
+	fielddef(SceneDslFile, SceneDslFile, string_list);
+	fielddef(ClientDslFile, ClientDslFile, string_list);
+	fielddef(RoomDslFile, RoomDslFile, string_list);
 	fielddef(SceneUi, SceneUi, int32_list);
+	fielddef(EnterX, EnterX, float);
+	fielddef(EnterY, EnterY, float);
+	fielddef(EnterRadius, EnterRadius, float);
+	fielddef(RoomServer, RoomServer, string_list);
+	fielddef(ThreadCountPerScene, ThreadCountPerScene, int32);
+	fielddef(RoomCountPerThread, RoomCountPerThread, int32);
+	fielddef(MaxUserCount, MaxUserCount, int32);
+	fielddef(CanPK, CanPK, bool);
 };
-tabledef(Skill, dictionary, client)
+tabledef(Skill, dictionary, public)
 {
 	recordmodifier(partial);
 	providermodifier(partial);
@@ -111,14 +130,14 @@ tabledef(Skill, dictionary, client)
 	fielddef(maxAoeTargetCount, maxAoeTargetCount, int32);
 	fielddef(dslSkillId, dslSkillId, int32);
 };
-tabledef(SkillDsl, dictionary, client)
+tabledef(SkillDsl, dictionary, public)
 {
 	recordmodifier(partial);
 	providermodifier(partial);
 	fielddef(id, id, int32);
 	fielddef(dslFile, dslFile, string);
 };
-tabledef(SkillResources, list, client)
+tabledef(SkillResources, list, public)
 {
 	recordmodifier(partial);
 	providermodifier(partial);

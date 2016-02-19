@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{893F4EAD-916E-435E-B093-9837DA7FDC7E}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DataCache</RootNamespace>
+    <AssemblyName>DataCache</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <PlatformTarget>x86</PlatformTarget>
+    <CustomCommands>
+      <CustomCommands>
+        <Command type="Execute" command="123" />
+      </CustomCommands>
+    </CustomCommands>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CSharpCenterClient">
+      <HintPath>..\..\..\ExternalLibrary\CSharpCenterClient.dll</HintPath>
+    </Reference>
+    <Reference Include="DataProtobufSerializer">
+      <HintPath>..\DataProtoBuf\bin\DataProtobufSerializer.dll</HintPath>
+    </Reference>
+    <Reference Include="MySql.Data">
+      <HintPath>..\..\..\ExternalLibrary\MySql.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\..\ExternalLibrary\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="ScriptFrameworkLibrary">
+      <HintPath>..\..\..\ExternalLibrary\ScriptFrameworkLibrary.dll</HintPath>
+    </Reference>
+    <Reference Include="ServerProtobufSerializer">
+      <HintPath>..\ServerProtoBuf\bin\ServerProtobufSerializer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\GeneratedCode\DataAccess\DataDML.cs">
+      <Link>MySql\DataDML.cs</Link>
+    </Compile>
+    <Compile Include="..\..\GeneratedCode\DataAccess\DataEnum.cs">
+      <Link>MySql\DataEnum.cs</Link>
+    </Compile>
+    <Compile Include="..\..\MessageCommon\DbDataSerializer.cs">
+      <Link>MySql\DbDataSerializer.cs</Link>
+    </Compile>
+    <Compile Include="DataCache.cs" />
+    <Compile Include="Cache\CacheItem.cs" />
+    <Compile Include="Cache\CacheSystem.cs" />
+    <Compile Include="Cache\CacheTable.cs" />
+    <Compile Include="MySql\DataLoadImplement.cs" />
+    <Compile Include="MySql\DataProcedureImplement.cs" />
+    <Compile Include="MySql\DataSaveImplement.cs" />
+    <Compile Include="MySql\DbThread.cs" />
+    <Compile Include="MySql\DbThreadManager.cs" />
+    <Compile Include="Systems\DataCacheSystem.cs" />
+    <Compile Include="Systems\PersistentSystem.cs" />
+    <Compile Include="MySql\DBConn.cs" />
+    <Compile Include="Utils\Crc32.cs" />
+    <Compile Include="Utils\DataCacheResultCode.cs" />
+    <Compile Include="Utils\Error.cs" />
+    <Compile Include="Utils\DataCacheConfig.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Systems\DataOpSystem.cs" />
+    <Compile Include="DataCacheVersion.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj">
+      <Project>{1c8280cd-eb93-4849-940e-a99eddf811d6}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Infrastructure\Common\ServerCommon.csproj">
+      <Project>{8EAD2077-DE3A-435C-B770-09EFFE4153C1}</Project>
+      <Name>ServerCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataProtoBuf\DataProtoBuf.csproj">
+      <Project>{f261f4c6-33db-44ee-87fe-aec3d6fe395e}</Project>
+      <Name>DataProtoBuf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LogSys\LogSys\LogSys.csproj">
+      <Project>{7935F58E-9F5D-48F7-B915-C6A0F455165F}</Project>
+      <Name>LogSys</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Messenger\Messenger\Messenger.csproj">
+      <Project>{98BA0167-2BEB-4845-9926-50CB465C4FA6}</Project>
+      <Name>Messenger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServerProtoBuf\ServerProtoBuf.csproj">
+      <Project>{3A1DEA99-D58B-4CE0-BB57-8C09E97AF5E4}</Project>
+      <Name>ServerProtoBuf</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

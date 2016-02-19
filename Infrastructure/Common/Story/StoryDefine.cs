@@ -5,7 +5,7 @@ namespace GameFramework
 {
   public enum StoryCommandGroupDefine
   {
-    BG = 0,
+    USER = 0,
     GM,
     GFX,
     UI,
@@ -13,7 +13,7 @@ namespace GameFramework
   }
   public enum StoryValueGroupDefine
   {
-    BG = 0,
+    USER = 0,
     GM,
     GFX,
     UI,

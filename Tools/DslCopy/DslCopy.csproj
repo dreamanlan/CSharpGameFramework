@@ -57,7 +57,7 @@
       <HintPath>..\..\Infrastructure\Common\bin\Debug\Common.dll</HintPath>
     </Reference>
     <Reference Include="Dsl">
-      <HintPath>..\..\ExternalLibrary\Dsl.dll</HintPath>
+      <HintPath>..\..\CsLibrary\ExternLibrary\Dsl.dll</HintPath>
     </Reference>
     <Reference Include="ScriptFrameworkLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

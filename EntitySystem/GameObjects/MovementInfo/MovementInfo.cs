@@ -18,10 +18,10 @@ namespace GameFramework
             }
         }
 
-        public bool IsManualMoving
+        public bool IsSkillMoving
         {
-            get { return m_IsManualMoving; }
-            set { m_IsManualMoving = value; }
+            get { return m_IsSkillMoving; }
+            set { m_IsSkillMoving = value; }
         }
         public int FormationIndex
         {
@@ -31,7 +31,11 @@ namespace GameFramework
         public ScriptRuntime.Vector3 TargetPosition
         {
             get { return m_TargetPosition; }
-            set { m_TargetPosition = value; }
+            set
+            {
+                m_TargetPosition = value;
+                m_IsMoveStatusChanged = true;
+            }
         }
         public float PositionX
         {
@@ -151,7 +155,7 @@ namespace GameFramework
             m_Position = new ScriptRuntime.Vector3();
             m_TargetPosition = new ScriptRuntime.Vector3();
             m_IsMoving = false;
-            m_IsManualMoving = false;
+            m_IsSkillMoving = false;
             m_FaceDir = 0;
             m_MoveDir = 0;
             m_IsFaceDirChanged = false;
@@ -174,7 +178,7 @@ namespace GameFramework
         }
 
         private bool m_IsMoving = false;
-        private bool m_IsManualMoving = false;
+        private bool m_IsSkillMoving = false;
         private int m_FormationIndex = 0;
         private ScriptRuntime.Vector3 m_Position;
         private ScriptRuntime.Vector3 m_TargetPosition;

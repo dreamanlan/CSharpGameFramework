@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using StorySystem;
 using GameFramework;
 using GameFramework.Skill;
+using GameFrameworkMessage;
 
 namespace GameFramework.Story.Commands
 {
@@ -340,6 +341,16 @@ namespace GameFramework.Story.Commands
             }
             object[] args = arglist.ToArray();
             GfxStorySystem.Instance.SendMessage(msgId, args);
+
+            const string c_DialogOverPrefix = "dialog_over:";
+            if (msgId.StartsWith(c_DialogOverPrefix)) {
+                TableConfig.Level level = ClientModule.Instance.SceneInfo;
+                if (null != level && level.type == (int)SceneTypeEnum.Room) {
+                    GameFrameworkMessage.Msg_CR_DlgClosed msg = new GameFrameworkMessage.Msg_CR_DlgClosed();
+                    msg.dialog_id = int.Parse(msgId.Substring(c_DialogOverPrefix.Length).Trim());
+                    Network.NetworkSystem.Instance.SendMessage(GameFrameworkMessage.RoomMessageDefine.Msg_CR_DlgClosed, msg);
+                }
+            }
             return false;
         }
 
@@ -632,6 +643,185 @@ namespace GameFramework.Story.Commands
         private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
+    }
+    /// <summary>
+    /// sendroomstorymessage(msg,arg1,arg2,...);
+    /// </summary>
+    internal class SendRoomStoryMessageCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SendRoomStoryMessageCommand cmd = new SendRoomStoryMessageCommand();
+            cmd.m_Msg = m_Msg.Clone();
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                cmd.m_Args.Add(val.Clone());
+            }
+            return cmd;
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_Msg.Substitute(iterator, args);
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                val.Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_Msg.Evaluate(instance);
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                val.Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            string _msg = m_Msg.Value;
+
+            Msg_CRC_StoryMessage protoData = new Msg_CRC_StoryMessage();
+            protoData.m_MsgId = _msg;
+
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                object v = val.Value;
+                if (null == v) {
+                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
+                    arg.val_type = ArgType.NULL;
+                    arg.str_val = "";
+                    protoData.m_Args.Add(arg);
+                } else if (v is int) {
+                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
+                    arg.val_type = ArgType.INT;
+                    arg.str_val = ((int)v).ToString();
+                    protoData.m_Args.Add(arg);
+                } else if (v is float) {
+                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
+                    arg.val_type = ArgType.FLOAT;
+                    arg.str_val = ((float)v).ToString();
+                    protoData.m_Args.Add(arg);
+                } else {
+                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
+                    arg.val_type = ArgType.STRING;
+                    arg.str_val = v.ToString();
+                    protoData.m_Args.Add(arg);
+                }
+            }
+
+            try {
+                Network.NodeMessage msg = new Network.NodeMessage(LobbyMessageDefine.Msg_CLC_StoryMessage, Network.UserNetworkSystem.Instance.Guid);
+                msg.m_ProtoData = protoData;
+                Network.NodeMessageDispatcher.SendMessage(msg);
+            } catch (Exception ex) {
+                LogSystem.Error("LobbyNetworkSystem.SendMessage throw Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_Msg.InitFromDsl(callData.GetParam(0));
+            }
+            for (int i = 1; i < callData.GetParamNum(); ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_Args.Add(val);
+            }
+        }
+
+        private IStoryValue<string> m_Msg = new StoryValue<string>();
+        private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
+    }
+    /// <summary>
+    /// sendserverstorymessage(msg,arg1,arg2,...);
+    /// </summary>
+    internal class SendServerStoryMessageCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SendServerStoryMessageCommand cmd = new SendServerStoryMessageCommand();
+            cmd.m_Msg = m_Msg.Clone();
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                cmd.m_Args.Add(val.Clone());
+            }
+            return cmd;
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_Msg.Substitute(iterator, args);
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                val.Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_Msg.Evaluate(instance);
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                val.Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            string _msg = m_Msg.Value;
+
+            Msg_CRC_StoryMessage msg = new Msg_CRC_StoryMessage();
+            msg.m_MsgId = _msg;
+
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                object v = val.Value;
+                if (null == v) {
+                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
+                    arg.val_type = ArgType.NULL;
+                    arg.str_val = "";
+                    msg.m_Args.Add(arg);
+                } else if (v is int) {
+                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
+                    arg.val_type = ArgType.INT;
+                    arg.str_val = ((int)v).ToString();
+                    msg.m_Args.Add(arg);
+                } else if (v is float) {
+                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
+                    arg.val_type = ArgType.FLOAT;
+                    arg.str_val = ((float)v).ToString();
+                    msg.m_Args.Add(arg);
+                } else {
+                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
+                    arg.val_type = ArgType.STRING;
+                    arg.str_val = v.ToString();
+                    msg.m_Args.Add(arg);
+                }
+            }
+            Network.NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CRC_StoryMessage, msg);
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_Msg.InitFromDsl(callData.GetParam(0));
+            }
+            for (int i = 1; i < callData.GetParamNum(); ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_Args.Add(val);
+            }
+        }
+
+        private IStoryValue<string> m_Msg = new StoryValue<string>();
+        private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
     }
     /// <summary>
     /// publishgfxevent(ev_name,group,arg1,arg2,...);

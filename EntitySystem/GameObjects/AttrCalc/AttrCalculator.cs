@@ -24,7 +24,7 @@ namespace GameFramework
             RefixAttrByImpact(entity);
 
             int hpMax = entity.GetActualProperty().HpMax;
-            entity.GetActualProperty().SetHpMax(Operate_Type.OT_Absolute, (int)(entity.HpMaxCoefficient * hpMax));
+            entity.GetActualProperty().SetHpMax(Operate_Type.OT_Absolute, hpMax);
         }
     }
 }

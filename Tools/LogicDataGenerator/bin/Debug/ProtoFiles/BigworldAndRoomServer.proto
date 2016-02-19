@@ -5,17 +5,9 @@ package GameFrameworkMessage;
 
 message Msg_BL_BroadcastText
 {
-	required int32 LogicServerId = 1;
-	required int32 BroadcastType = 2;
-	required string Content = 3;
-	required int32 RollCount = 4;
-}
-
-message Msg_BL_GowBattleEnd
-{
-	required Msg_RL_UserBattleInfo BattleInfo = 1;
-	required bytes GowBattleResult = 2;
-	required Msg_LBL_GowInfo GowInfo = 3;
+	required int32 BroadcastType = 1;
+	required string Content = 2;
+	required int32 RollCount = 3;
 }
 
 message Msg_BL_QueryUserStateResult
@@ -33,11 +25,10 @@ message Msg_LB_BigworldUserBaseInfo
 {
 	required string NodeName = 1;
 	required int32 WorldId = 2;
-	required int32 LogicServerId = 3;
-	required string AccountId = 4;
-	required int32 FightingScore = 5;
-	required string ClientGameVersion = 6;
-	required string StartServerTime = 7;
+	required string AccountId = 3;
+	required string ClientInfo = 4;
+	required string StartServerTime = 5;
+	required int32 FightingCapacity = 6;
 }
 
 message Msg_LB_CancelMatch
@@ -51,7 +42,7 @@ message Msg_LB_QueryUserState
 	required uint64 Guid = 1;
 }
 
-message Msg_LB_RequestEnterField
+message Msg_LB_RequestEnterScene
 {
 	required Msg_LB_BigworldUserBaseInfo BaseInfo = 1;
 	required Msg_LR_RoomUserInfo User = 2;
@@ -60,21 +51,10 @@ message Msg_LB_RequestEnterField
 	required int32 FromSceneId = 5;
 }
 
-message Msg_LB_RequestGowMatch
-{
-	required Msg_LB_BigworldUserBaseInfo BaseInfo = 1;
-	required Msg_LR_RoomUserInfo User = 2;
-	required Msg_LBL_GowInfo GowInfo = 3;
-	required int32 Type = 4;
-	required int32 SceneDifficulty = 5;
-}
-
-message Msg_LB_UpdateLobbyInfo
+message Msg_LB_UpdateUserServerInfo
 {
 	required int32 WorldId = 1;
 	required int32 UserCount = 2;
-	required int32 RoomCount = 3;
-	required int32 RoomUserCount = 4;
 }
 
 message Msg_LB_UserOffline
@@ -87,24 +67,6 @@ message Msg_LB_UserRelogin
 	required uint64 Guid = 1;
 }
 
-message Msg_LBL_GowInfo
-{
-	required int32 GowElo = 1;
-	required int32 GowMatchElo = 2;
-	required int32 GowMatches = 3;
-	required int32 GowWinMatches = 4;
-	required int32 LeftMatchCount = 5;
-	required int32 RankId = 6;
-	required int32 Point = 7;
-	required int32 CriticalTotalMatches = 8;
-	required int32 CriticalAmassWinMatches = 9;
-	required int32 CriticalAmassLossMatches = 10;
-	required int32 ContinueLossMatches = 11;
-	required int32 ContinueWinMatches = 12;
-	required bool IsAcquirePrize = 13;
-	optional string LastTourneyDate = 14;
-}
-
 message Msg_LBL_Message
 {
 
@@ -114,28 +76,18 @@ message Msg_LBL_Message
 		Room = 1;
 	}
 	required MsgTypeEnum MsgType = 1;
-	required string TargetName = 2;
+	optional string TargetName = 2;
 	required bytes Data = 3;
 }
 
-message Msg_LR_ChangeField
+message Msg_LR_ChangeScene
 {
 	required uint64 UserGuid = 1;
 	required int32 RoomID = 2;
 	required int32 TargetRoomID = 3;
 }
 
-message Msg_LR_CreateBattleRoom
-{
-	required int32 RoomId = 1;
-	required int32 SceneType = 2;
-	required int32 SceneDifficulty = 3;
-	repeated Msg_LR_RoomUserInfo Users = 4;
-	repeated int32 Monsters = 5;
-	repeated int32 Hps = 6;
-}
-
-message Msg_LR_EnterField
+message Msg_LR_EnterScene
 {
 	required uint64 UserGuid = 1;
 	required int32 RoomID = 2;
@@ -168,34 +120,21 @@ message Msg_LR_ReplyRegisterRoomServer
 message Msg_LR_RoomUserInfo
 {
 
-	message EquipInfo
+	message MemberInfo
 	{
-		required int32 equip_id = 1;
-		required int32 equip_level = 2;
-		required int32 equip_random_property = 3;
-		required int32 equip_upgrade_star = 4;
-		required int32 equip_strength_level = 5;
-	}
-
-	message SkillInfo
-	{
-		required int32 skill_id = 1;
-		required int32 skill_level = 2;
+		required int32 Hero = 1;
+		required int32 Level = 2;
 	}
 	required uint64 Guid = 1;
 	required string Nick = 2;
 	required uint32 Key = 3;
 	required int32 Hero = 4;
-	required int32 ArgScore = 5;
-	required int32 Camp = 6;
-	required bool IsMachine = 7;
-	repeated int32 ShopEquipmentsId = 8;
-	repeated SkillInfo Skills = 9;
-	optional int32 PresetIndex = 10;
-	repeated EquipInfo Equips = 11;
-	required int32 Level = 12;
-	optional float EnterX = 13;
-	optional float EnterY = 14;
+	required int32 Camp = 5;
+	required bool IsMachine = 6;
+	required int32 Level = 7;
+	optional float EnterX = 8;
+	optional float EnterY = 9;
+	repeated MemberInfo Members = 10;
 }
 
 message Msg_LR_UserQuit
@@ -210,29 +149,35 @@ message Msg_LR_UserReLive
 	required int32 RoomID = 2;
 }
 
-message Msg_RL_BattleEnd
+message Msg_LRL_StoryMessage
 {
 
-	enum WinnerCampEnum
+	enum ArgType
 	{
-		None = 0;
-		Red = 1;
-		Blue = 2;
+		NULL = 0;
+		INT = 1;
+		FLOAT = 2;
+		STRING = 3;
 	}
-	required int32 RoomID = 1;
-	required WinnerCampEnum WinnerCamp = 2;
-	repeated Msg_RL_UserBattleInfo UserBattleInfos = 3;
-	repeated int32 Monsters = 4;
-	repeated int32 Hps = 5;
+
+	message MessageArg
+	{
+		required ArgType val_type = 1;
+		required string str_val = 2;
+	}
+	optional int32 RoomId = 1;
+	required uint64 UserGuid = 2;
+	required string MsgId = 3;
+	repeated MessageArg Args = 4;
 }
 
-message Msg_RL_ChangeField
+message Msg_RL_ChangeScene
 {
 	required uint64 UserGuid = 1;
 	required int32 SceneID = 2;
 }
 
-message Msg_RL_ChangeFieldResult
+message Msg_RL_ChangeSceneResult
 {
 	required uint64 UserGuid = 1;
 	required int32 RoomID = 2;
@@ -242,7 +187,7 @@ message Msg_RL_ChangeFieldResult
 	optional int32 MP = 6;
 }
 
-message Msg_RL_EnterFieldResult
+message Msg_RL_EnterSceneResult
 {
 	required uint64 UserGuid = 1;
 	required int32 RoomID = 2;
@@ -273,12 +218,6 @@ message Msg_RL_RegisterRoomServer
 	required uint32 ServerPort = 4;
 }
 
-message Msg_RL_ReplyCreateBattleRoom
-{
-	required int32 RoomId = 1;
-	required bool IsSuccess = 2;
-}
-
 message Msg_RL_ReplyReconnectUser
 {
 
@@ -298,29 +237,6 @@ message Msg_RL_RoomServerUpdateInfo
 	required string ServerName = 1;
 	required int32 IdleRoomNum = 2;
 	required int32 UserNum = 3;
-}
-
-message Msg_RL_UserBattleInfo
-{
-
-	enum BattleResultEnum
-	{
-		Win = 0;
-		Lost = 1;
-		Unfinish = 2;
-	}
-	required uint64 UserGuid = 1;
-	required BattleResultEnum BattleResult = 2;
-	optional int32 Money = 3;
-	optional int32 HitCount = 4;
-	optional int32 KillNpcCount = 5;
-	optional int32 MaxMultiHitCount = 6;
-	optional int32 TotalDamageToMyself = 7;
-	optional int32 TotalDamageFromMyself = 8;
-	optional int32 AwardId = 9;
-	optional string NickName = 10;
-	optional int32 HeroId = 11;
-	optional int32 ReliveTime = 12;
 }
 
 message Msg_RL_UserDrop

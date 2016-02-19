@@ -98,11 +98,47 @@ namespace GameFramework
             }
             return campId;
         }
+        internal bool IsMovableEntity(int objId)
+        {
+            bool ret = true;
+            int type = GetEntityType(objId);
+            if (type == (int)EntityTypeEnum.Tower) {
+                ret = false;
+            }
+            return ret;
+        }
+        internal bool IsMovableEntity(UnityEngine.GameObject obj)
+        {
+            bool ret = true;
+            int type = GetEntityType(obj);
+            if (type == (int)EntityTypeEnum.Tower) {
+                ret = false;
+            }
+            return ret;
+        }
+        internal bool IsRotatableEntity(int objId)
+        {
+            bool ret = true;
+            int type = GetEntityType(objId);
+            if (type == (int)EntityTypeEnum.Tower) {
+                ret = false;
+            }
+            return ret;
+        }
+        internal bool IsRotatableEntity(UnityEngine.GameObject obj)
+        {
+            bool ret = true;
+            int type = GetEntityType(obj);
+            if (type == (int)EntityTypeEnum.Tower) {
+                ret = false;
+            }
+            return ret;
+        }
         internal void SyncFaceDir(UnityEngine.GameObject obj)
         {
             EntityViewModel viewModel = GetEntityView(obj);
             if (null != viewModel) {
-                viewModel.SyncFaceDir();
+                viewModel.SyncSpatial();
             }
         }
         internal bool CanCastSkill(int objId, TableConfig.Skill configData, int seq)
@@ -173,7 +209,7 @@ namespace GameFramework
                     entity.GetSkillStateInfo().SetCurSkillInfo(skillId);
                     skillInfo.IsSkillActivated = true;
                     skillInfo.CdEndTime = TimeUtility.GetLocalMilliseconds() + (long)(skillInfo.ConfigData.cooldown * 1000);
-                    if (skillInfo.ConfigData.mpRecover > 0) {
+                    if (skillInfo.ConfigData.mpRecover > 0 && !ClientModule.Instance.IsRoomScene) {
                         //回蓝
                         entity.SetEnergy(Operate_Type.OT_Relative, skillInfo.ConfigData.mpRecover);
                         entity.EntityManager.FireDamageEvent(actorId, 0, false, false, 0, -skillInfo.ConfigData.mpRecover);
@@ -576,6 +612,8 @@ namespace GameFramework
         }
         internal void ImpactDamage(int srcObjId, int targetId, int impactId, int seq)
         {
+            if (ClientModule.Instance.IsRoomScene)
+                return;
             EntityViewModel view = GetEntityViewById(targetId);
             EntityViewModel srcView = GetEntityViewById(srcObjId);
             if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDead()) {

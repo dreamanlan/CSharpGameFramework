@@ -163,6 +163,7 @@ namespace GameFramework
             m_UnusedEntities.Clear();
             m_NextInfoId = c_StartId;
             m_UnusedIds.Clear();
+            m_UnusedClientIds.Clear();
         }
 
         public void FireDamageEvent(int receiver, int sender, bool isNormalDamage, bool isCritical, int hpDamage, int npDamage)
@@ -206,6 +207,9 @@ namespace GameFramework
                 if (id >= c_StartId && id < c_StartId + c_MaxIdNum) {
                     m_UnusedIds.Push(id);
                 }
+                if (id >= c_StartId_Client && id < c_StartId_Client + c_MaxIdNum) {
+                    m_UnusedClientIds.Push(id);
+                }
                 if (m_UnusedEntities.Count < m_EntityPoolSize) {
                     npcInfo.Reset();
                     m_UnusedEntities.Enqueue(npcInfo);
@@ -217,12 +221,23 @@ namespace GameFramework
         {
             int id = 0;
             int startId = 0;
-            startId = c_StartId;
-            while (m_UnusedIds.Count > 100) {
-                int t = m_UnusedIds.Pop();
-                if (!m_Entities.Contains(t)) {
-                    id = t;
-                    break;
+            if (GlobalVariables.Instance.IsClient) {
+                startId = c_StartId_Client;
+                while (m_UnusedClientIds.Count > 100) {
+                    int t = m_UnusedClientIds.Pop();
+                    if (!m_Entities.Contains(t)) {
+                        id = t;
+                        break;
+                    }
+                }
+            } else {
+                startId = c_StartId;
+                while (m_UnusedIds.Count > 100) {
+                    int t = m_UnusedIds.Pop();
+                    if (!m_Entities.Contains(t)) {
+                        id = t;
+                        break;
+                    }
                 }
             }
             if (id <= 0) {
@@ -244,10 +259,12 @@ namespace GameFramework
         private LinkedListDictionary<int, EntityInfo> m_Entities = new LinkedListDictionary<int, EntityInfo>();
         private Queue<EntityInfo> m_UnusedEntities = new Queue<EntityInfo>();
         private Heap<int> m_UnusedIds = new Heap<int>(new DefaultReverseComparer<int>());
+        private Heap<int> m_UnusedClientIds = new Heap<int>(new DefaultReverseComparer<int>());
         private int m_EntityPoolSize = 128;
 
         private const int c_StartId = 100;
         private const int c_MaxIdNum = 1000;
+        private const int c_StartId_Client = 2000;
         private int m_NextInfoId = c_StartId;
 
         private SceneContextInfo m_SceneContext = null;

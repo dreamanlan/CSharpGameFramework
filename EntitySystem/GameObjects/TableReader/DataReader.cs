@@ -162,6 +162,10 @@ namespace TableConfig
 		{
 			Load(FilePathDefine_Client.C_Actor);
 		}
+		public void LoadForServer()
+		{
+			Load(FilePathDefine_Server.C_Actor);
+		}
 		public void Load(string file)
 		{
 			if (BinaryTable.IsValid(HomePath.GetAbsolutePath(file))) {
@@ -392,6 +396,10 @@ namespace TableConfig
 		{
 			Load(FilePathDefine_Client.C_Formation);
 		}
+		public void LoadForServer()
+		{
+			Load(FilePathDefine_Server.C_Formation);
+		}
 		public void Load(string file)
 		{
 			if (BinaryTable.IsValid(HomePath.GetAbsolutePath(file))) {
@@ -440,21 +448,41 @@ namespace TableConfig
 {
 	public sealed partial class Level : IDataRecord<int>
 	{
-		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 20)]
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 60)]
 		private struct LevelRecord
 		{
 			internal int id;
 			internal int prefab;
 			internal int type;
-			internal int GfxDslFile;
+			internal int SceneDslFile;
+			internal int ClientDslFile;
+			internal int RoomDslFile;
 			internal int SceneUi;
+			internal float EnterX;
+			internal float EnterY;
+			internal float EnterRadius;
+			internal int RoomServer;
+			internal int ThreadCountPerScene;
+			internal int RoomCountPerThread;
+			internal int MaxUserCount;
+			internal int CanPK;
 		}
 
 		public int id;
 		public string prefab;
 		public int type;
-		public List<string> GfxDslFile;
+		public List<string> SceneDslFile;
+		public List<string> ClientDslFile;
+		public List<string> RoomDslFile;
 		public List<int> SceneUi;
+		public float EnterX;
+		public float EnterY;
+		public float EnterRadius;
+		public List<string> RoomServer;
+		public int ThreadCountPerScene;
+		public int RoomCountPerThread;
+		public int MaxUserCount;
+		public bool CanPK;
 
 		public bool ReadFromBinary(BinaryTable table, int index)
 		{
@@ -462,8 +490,18 @@ namespace TableConfig
 			id = DataRecordUtility.ExtractInt(table, record.id, 0);
 			prefab = DataRecordUtility.ExtractString(table, record.prefab, "");
 			type = DataRecordUtility.ExtractInt(table, record.type, 0);
-			GfxDslFile = DataRecordUtility.ExtractStringList(table, record.GfxDslFile, null);
+			SceneDslFile = DataRecordUtility.ExtractStringList(table, record.SceneDslFile, null);
+			ClientDslFile = DataRecordUtility.ExtractStringList(table, record.ClientDslFile, null);
+			RoomDslFile = DataRecordUtility.ExtractStringList(table, record.RoomDslFile, null);
 			SceneUi = DataRecordUtility.ExtractIntList(table, record.SceneUi, null);
+			EnterX = DataRecordUtility.ExtractFloat(table, record.EnterX, 0);
+			EnterY = DataRecordUtility.ExtractFloat(table, record.EnterY, 0);
+			EnterRadius = DataRecordUtility.ExtractFloat(table, record.EnterRadius, 0);
+			RoomServer = DataRecordUtility.ExtractStringList(table, record.RoomServer, null);
+			ThreadCountPerScene = DataRecordUtility.ExtractInt(table, record.ThreadCountPerScene, 0);
+			RoomCountPerThread = DataRecordUtility.ExtractInt(table, record.RoomCountPerThread, 0);
+			MaxUserCount = DataRecordUtility.ExtractInt(table, record.MaxUserCount, 0);
+			CanPK = DataRecordUtility.ExtractBool(table, record.CanPK, false);
 			return true;
 		}
 
@@ -473,8 +511,18 @@ namespace TableConfig
 			record.id = DataRecordUtility.SetValue(table, id, 0);
 			record.prefab = DataRecordUtility.SetValue(table, prefab, "");
 			record.type = DataRecordUtility.SetValue(table, type, 0);
-			record.GfxDslFile = DataRecordUtility.SetValue(table, GfxDslFile, null);
+			record.SceneDslFile = DataRecordUtility.SetValue(table, SceneDslFile, null);
+			record.ClientDslFile = DataRecordUtility.SetValue(table, ClientDslFile, null);
+			record.RoomDslFile = DataRecordUtility.SetValue(table, RoomDslFile, null);
 			record.SceneUi = DataRecordUtility.SetValue(table, SceneUi, null);
+			record.EnterX = DataRecordUtility.SetValue(table, EnterX, 0);
+			record.EnterY = DataRecordUtility.SetValue(table, EnterY, 0);
+			record.EnterRadius = DataRecordUtility.SetValue(table, EnterRadius, 0);
+			record.RoomServer = DataRecordUtility.SetValue(table, RoomServer, null);
+			record.ThreadCountPerScene = DataRecordUtility.SetValue(table, ThreadCountPerScene, 0);
+			record.RoomCountPerThread = DataRecordUtility.SetValue(table, RoomCountPerThread, 0);
+			record.MaxUserCount = DataRecordUtility.SetValue(table, MaxUserCount, 0);
+			record.CanPK = DataRecordUtility.SetValue(table, CanPK, false);
 			byte[] bytes = GetRecordBytes(record);
 			table.Records.Add(bytes);
 		}
@@ -509,6 +557,10 @@ namespace TableConfig
 		public void LoadForClient()
 		{
 			Load(FilePathDefine_Client.C_Level);
+		}
+		public void LoadForServer()
+		{
+			Load(FilePathDefine_Server.C_Level);
 		}
 		public void Load(string file)
 		{
@@ -728,6 +780,10 @@ namespace TableConfig
 		{
 			Load(FilePathDefine_Client.C_Skill);
 		}
+		public void LoadForServer()
+		{
+			Load(FilePathDefine_Server.C_Skill);
+		}
 		public void Load(string file)
 		{
 			if (BinaryTable.IsValid(HomePath.GetAbsolutePath(file))) {
@@ -834,6 +890,10 @@ namespace TableConfig
 		{
 			Load(FilePathDefine_Client.C_SkillDsl);
 		}
+		public void LoadForServer()
+		{
+			Load(FilePathDefine_Server.C_SkillDsl);
+		}
 		public void Load(string file)
 		{
 			if (BinaryTable.IsValid(HomePath.GetAbsolutePath(file))) {
@@ -938,6 +998,10 @@ namespace TableConfig
 		public void LoadForClient()
 		{
 			Load(FilePathDefine_Client.C_SkillResources);
+		}
+		public void LoadForServer()
+		{
+			Load(FilePathDefine_Server.C_SkillResources);
 		}
 		public void Load(string file)
 		{
@@ -1321,5 +1385,119 @@ namespace TableConfig
 			get { return s_Instance; }
 		}
 		private static UIProvider s_Instance = new UIProvider();
+	}
+}
+
+namespace TableConfig
+{
+	public sealed partial class UserScript : IDataRecord<string>
+	{
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 16)]
+		private struct UserScriptRecord
+		{
+			internal int id;
+			internal int StoryId;
+			internal int Namespace;
+			internal int DslFile;
+		}
+
+		public string id;
+		public string StoryId;
+		public string Namespace;
+		public string DslFile;
+
+		public bool ReadFromBinary(BinaryTable table, int index)
+		{
+			UserScriptRecord record = GetRecord(table,index);
+			id = DataRecordUtility.ExtractString(table, record.id, "");
+			StoryId = DataRecordUtility.ExtractString(table, record.StoryId, "");
+			Namespace = DataRecordUtility.ExtractString(table, record.Namespace, "");
+			DslFile = DataRecordUtility.ExtractString(table, record.DslFile, "");
+			return true;
+		}
+
+		public void WriteToBinary(BinaryTable table)
+		{
+			UserScriptRecord record = new UserScriptRecord();
+			record.id = DataRecordUtility.SetValue(table, id, "");
+			record.StoryId = DataRecordUtility.SetValue(table, StoryId, "");
+			record.Namespace = DataRecordUtility.SetValue(table, Namespace, "");
+			record.DslFile = DataRecordUtility.SetValue(table, DslFile, "");
+			byte[] bytes = GetRecordBytes(record);
+			table.Records.Add(bytes);
+		}
+
+		public string GetId()
+		{
+			return id;
+		}
+
+		private unsafe UserScriptRecord GetRecord(BinaryTable table, int index)
+		{
+			UserScriptRecord record;
+			byte[] bytes = table.Records[index];
+			fixed (byte* p = bytes) {
+				record = *(UserScriptRecord*)p;
+			}
+			return record;
+		}
+		private static unsafe byte[] GetRecordBytes(UserScriptRecord record)
+		{
+			byte[] bytes = new byte[sizeof(UserScriptRecord)];
+			fixed (byte* p = bytes) {
+				UserScriptRecord* temp = (UserScriptRecord*)p;
+				*temp = record;
+			}
+			return bytes;
+		}
+	}
+
+	public sealed partial class UserScriptProvider
+	{
+		public void LoadForServer()
+		{
+			Load(FilePathDefine_Server.C_UserScript);
+		}
+		public void Load(string file)
+		{
+			if (BinaryTable.IsValid(HomePath.GetAbsolutePath(file))) {
+				m_UserScriptMgr.LoadFromBinary(file);
+			} else {
+				LogSystem.Error("UserScript is not a table !");
+			}
+		}
+		public void Save(string file)
+		{
+		#if DEBUG
+			m_UserScriptMgr.SaveToBinary(file);
+		#endif
+		}
+		public void Clear()
+		{
+			m_UserScriptMgr.Clear();
+		}
+
+		public DataDictionaryMgr<UserScript,string> UserScriptMgr
+		{
+			get { return m_UserScriptMgr; }
+		}
+
+		public int GetUserScriptCount()
+		{
+			return m_UserScriptMgr.GetDataCount();
+		}
+
+		public UserScript GetUserScript(string id)
+		{
+			return m_UserScriptMgr.GetDataById(id);
+		}
+
+		private DataDictionaryMgr<UserScript,string> m_UserScriptMgr = new DataDictionaryMgr<UserScript,string>();
+
+		public static UserScriptProvider Instance
+		{
+			get { return s_Instance; }
+		}
+		private static UserScriptProvider s_Instance = new UserScriptProvider();
 	}
 }

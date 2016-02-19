@@ -339,28 +339,29 @@ namespace TableReaderGenerator
                 sw.WriteLine("using System.IO;");
                 sw.WriteLine("using System.Text;");
                 sw.WriteLine();
-                sw.WriteLine("namespace TableConfig");
+                sw.WriteLine("public class FilePathDefine_Client");
                 sw.WriteLine("{");
-                sw.WriteLine("\tinternal class FilePathDefine_Client : FilePathDefine");
-                sw.WriteLine("\t{");
+                sw.WriteLine("\tpublic const string C_RootPath = FilePathDefine.C_ClientRootPath;");
+                sw.WriteLine("\tpublic const string C_DslPath = FilePathDefine.C_ClientDslPath;");
                 foreach (var pair in tableFiles) {
                     string filename = pair.Key;
                     string filepath = pair.Value;
                     if (filepath.Contains("Public") || filepath.Contains("Client")) {
-                        sw.WriteLine("\t\tpublic const string C_{0} = \"{1}\";", filename, Path.ChangeExtension(filepath,"dat"));
+                        sw.WriteLine("\tpublic const string C_{0} = C_RootPath + \"{1}\";", filename, Path.ChangeExtension(filepath, "dat"));
                     }
                 }
-                sw.WriteLine("\t}");
-                sw.WriteLine("\tinternal class FilePathDefine_Server : FilePathDefine");
-                sw.WriteLine("\t{");
+                sw.WriteLine("}");
+                sw.WriteLine("public class FilePathDefine_Server");
+                sw.WriteLine("{");
+                sw.WriteLine("\tpublic const string C_RootPath = FilePathDefine.C_ServerRootPath;");
+                sw.WriteLine("\tpublic const string C_DslPath = FilePathDefine.C_ServerDslPath;");
                 foreach (var pair in tableFiles) {
                     string filename = pair.Key;
                     string filepath = pair.Value;
                     if (filepath.Contains("Public") || filepath.Contains("Server")) {
-                        sw.WriteLine("\t\tpublic const string C_{0} = \"{1}\";", filename, Path.ChangeExtension(filepath,"dat"));
+                        sw.WriteLine("\tpublic const string C_{0} = C_RootPath + \"{1}\";", filename, Path.ChangeExtension(filepath, "dat"));
                     }
                 }
-                sw.WriteLine("\t}");
                 sw.WriteLine("}");
                 sw.Close();
             }

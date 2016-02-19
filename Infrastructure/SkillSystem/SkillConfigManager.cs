@@ -32,7 +32,7 @@ namespace SkillSystem
                 }
 #else
         try {
-          dataFile.LoadObfuscatedFile(file, GlobalVariables.Instance.DecodeTable);
+          dataFile.LoadBinaryFile(file, GlobalVariables.Instance.DecodeTable);
           Load(dataFile);
         } catch {
         }
@@ -54,7 +54,7 @@ namespace SkillSystem
             }
 #else
       try {
-        dataFile.LoadObfuscatedCode(text, GlobalVariables.Instance.DecodeTable);
+        dataFile.LoadBinaryCode(text, GlobalVariables.Instance.DecodeTable);
         Load(dataFile);
       } catch {
       }

@@ -329,17 +329,17 @@ namespace StorySystem.CommonCommands
             if (ct <= 0) {
                 string varName = m_SetVar.Value;
                 object varVal = m_SetVal.Value;
-                instance.SetVariable(varName,varVal);
+                instance.SetVariable(varName, varVal);
             } else {
-              int curTime = m_CurTime;
-              m_CurTime += (int)delta;
-              if (curTime <= m_TimeoutVal.Value) {
-                  ret = true;
-              } else {
-                string varName = m_TimeoutSetVar.Value;
-                object varVal = m_TimeoutSetVal.Value;
-                instance.SetVariable(varName,varVal);
-              }
+                int curTime = m_CurTime;
+                m_CurTime += (int)delta;
+                if (curTime <= m_TimeoutVal.Value) {
+                    ret = true;
+                } else {
+                    string varName = m_TimeoutSetVar.Value;
+                    object varVal = m_TimeoutSetVal.Value;
+                    instance.SetVariable(varName, varVal);
+                }
             }
             return ret;
         }

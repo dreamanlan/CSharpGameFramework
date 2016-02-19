@@ -15,31 +15,21 @@ message(Msg_LR_ReplyRegisterRoomServer)
 
 message(Msg_LR_RoomUserInfo)
 {
+  message(MemberInfo)
+  {
+    member(Hero, int32, required);
+    member(Level, int32, required);
+  };
 	member(Guid, uint64, required);
 	member(Nick, string, required);
 	member(Key, uint32, required);
 	member(Hero, int32, required);
-	member(ArgScore, int32, required);
 	member(Camp, int32, required);
 	member(IsMachine, bool, required);
-	member(ShopEquipmentsId, int32, repeated);
-	message(SkillInfo) {
-    member(skill_id, int32, required);
-    member(skill_level, int32, required);
-  };
-  member(Skills, SkillInfo, repeated);
-	member(PresetIndex, int32, optional);
-	message(EquipInfo) {
-    member(equip_id, int32, required);
-    member(equip_level, int32, required);
-    member(equip_random_property, int32, required);
-	  member(equip_upgrade_star, int32, required);
-	  member(equip_strength_level, int32, required);
-  };
-  member(Equips, EquipInfo, repeated);
   member(Level, int32, required);
   member(EnterX, float, optional);
   member(EnterY, float, optional);
+  member(Members, MemberInfo, repeated);
 };
 
 message(Msg_LR_ReconnectUser)
@@ -60,22 +50,6 @@ message(Msg_RL_ReplyReconnectUser)
 	member(Result, int32, required);
 };
 
-message(Msg_LR_CreateBattleRoom)
-{
-	member(RoomId, int32, required);
-	member(SceneType, int32, required);
-	member(SceneDifficulty, int32, required);
-	member(Users, Msg_LR_RoomUserInfo, repeated);
-	member(Monsters, int32, repeated);
-	member(Hps, int32, repeated);
-};
-
-message(Msg_RL_ReplyCreateBattleRoom)
-{
-	member(RoomId, int32, required);
-	member(IsSuccess, bool, required);
-};
-
 message(Msg_RL_RoomServerUpdateInfo)
 {
 	member(ServerName, string, required);
@@ -87,41 +61,6 @@ message(Msg_RL_UserLobbyItemInfo)
 {
 	member(ItemId, int32, required);
 	member(ItemNum, int32, required);
-};
-
-message(Msg_RL_UserBattleInfo)
-{
-	member(UserGuid, uint64, required);
-	enum(BattleResultEnum) {
-    Win;
-    Lost;
-    Unfinish;
-  };
-	member(BattleResult, BattleResultEnum, required);
-	member(Money, int32, optional);
-	member(HitCount, int32, optional);
-	member(KillNpcCount, int32, optional);
-	member(MaxMultiHitCount, int32, optional);
-	member(TotalDamageToMyself, int32, optional);
-	member(TotalDamageFromMyself, int32, optional);
-	member(AwardId, int32, optional);
-	member(NickName, string, optional);
-	member(HeroId, int32, optional);
-  member(ReliveTime, int32, optional);
-};
-
-message(Msg_RL_BattleEnd)
-{
-	member(RoomID, int32, required);
-	enum(WinnerCampEnum) {
-    None;
-    Red;
-    Blue;
-  };
-  member(WinnerCamp, WinnerCampEnum, required);
-	member(UserBattleInfos, Msg_RL_UserBattleInfo, repeated);
-	member(Monsters, int32, repeated);
-	member(Hps, int32, repeated);
 };
 
 message(Msg_RL_PickMoney)
@@ -175,7 +114,7 @@ message(Msg_LR_UserReLive)
   member(RoomID, int32, required);
 };
 
-message(Msg_LR_EnterField)
+message(Msg_LR_EnterScene)
 {
 	member(UserGuid, uint64, required);
 	member(RoomID, int32, required);
@@ -184,21 +123,21 @@ message(Msg_LR_EnterField)
 	member(MP, int32, optional);	
 };
 
-message(Msg_RL_EnterFieldResult)
+message(Msg_RL_EnterSceneResult)
 {
 	member(UserGuid, uint64, required);
 	member(RoomID, int32, required);
 	member(Result, int32, required);
 };
 
-message(Msg_LR_ChangeField)
+message(Msg_LR_ChangeScene)
 {
 	member(UserGuid, uint64, required);
 	member(RoomID, int32, required);
 	member(TargetRoomID, int32, required);
 };
 
-message(Msg_RL_ChangeFieldResult)
+message(Msg_RL_ChangeSceneResult)
 {
 	member(UserGuid, uint64, required);
 	member(RoomID, int32, required);
@@ -208,8 +147,26 @@ message(Msg_RL_ChangeFieldResult)
 	member(MP, int32, optional);
 };
 
-message(Msg_RL_ChangeField)
+message(Msg_RL_ChangeScene)
 {
 	member(UserGuid, uint64, required);
 	member(SceneID, int32, required);
+};
+
+message(Msg_LRL_StoryMessage)
+{
+  enum(ArgType) {
+    NULL;
+    INT;
+    FLOAT;
+    STRING;
+  };
+  message(MessageArg) {
+    member(val_type, ArgType, required);
+    member(str_val, string, required);
+  };
+  member(RoomId, int, optional);
+	member(UserGuid, uint64, required);
+  member(MsgId, string, required);
+  member(Args, MessageArg, repeated);
 };

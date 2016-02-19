@@ -3,7 +3,7 @@ del /f/q DataProto\*.cs DataProto\*.proto DataProto\*.sql
 
 LogicDataGenerator.exe
 
-..\ProtoGen\protogen.exe -i:DataProto\Data.proto -o:DataProto\DataMessage.cs
+..\ProtoGen\protogen.exe -i:DataProto\Data.proto -o:DataProto\DataStruct.cs
 
-rem xcopy DataProto\*.cs ..\..\..\..\App\GeneratedCode\DataMessage\ /y/d 
+xcopy DataProto\*.cs ..\..\..\..\App\GeneratedCode\DataAccess\ /y/d 
 @pause

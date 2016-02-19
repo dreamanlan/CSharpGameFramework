@@ -118,12 +118,7 @@ namespace GameFramework.Skill.Trigers
 
         private float m_Speed = 1.0f;
         private bool m_IsEffectSkillTime = false;
-        private float m_Weight = 1.0f;
-        private int m_Layer = 0;
-        private int m_WrapMode = (int)WrapMode.ClampForever;
         private int m_PlayMode = 0;
-        private int m_BlendMode = 0;
-        private string m_MixingNode = "";
         private long m_CrossFadeTime = 300;
 
         private long m_RealStartTime = 0;

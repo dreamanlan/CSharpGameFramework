@@ -1,0 +1,11 @@
+story(local_main)
+{
+  onmessage("start")
+  {
+  	startstory("skill_main");
+  };
+  onmessage("quit")
+  {
+    changescene(1);
+  };
+};

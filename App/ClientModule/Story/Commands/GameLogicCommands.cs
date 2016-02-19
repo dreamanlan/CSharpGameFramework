@@ -328,13 +328,15 @@ namespace GameFramework.Story.Commands
         private IStoryValue<float> m_Scale = new StoryValue<float>();
     }
     /// <summary>
-    /// setleaderid(objid);
+    /// setleaderid([objid,]leaderid);
     /// </summary>
     internal class SetLeaderIdCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
             SetLeaderIdCommand cmd = new SetLeaderIdCommand();
+            cmd.m_ParamNum = m_ParamNum;
+            cmd.m_ObjId = m_ObjId.Clone();
             cmd.m_LeaderId = m_LeaderId.Clone();
             return cmd;
         }
@@ -345,22 +347,84 @@ namespace GameFramework.Story.Commands
 
         protected override void Substitute(object iterator, object[] args)
         {
+            if (m_ParamNum > 1) {
+                m_ObjId.Substitute(iterator, args);
+            }
             m_LeaderId.Substitute(iterator, args);
         }
 
         protected override void Evaluate(StoryInstance instance)
         {
+            if (m_ParamNum > 1) {
+                m_ObjId.Evaluate(instance);
+            }
             m_LeaderId.Evaluate(instance);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             int leaderId = m_LeaderId.Value;
-            ClientModule.Instance.LeaderID = leaderId;
-            EntityInfo leader = ClientModule.Instance.GetEntityById(ClientModule.Instance.LeaderID);
-            if (leader != null) {
-                ClientModule.Instance.LeaderLinkID = leader.GetLinkId();
+            if (m_ParamNum > 1) {
+                int objId = m_ObjId.Value;
+                EntityInfo npc = ClientModule.Instance.GetEntityById(objId);
+                if (null != npc) {
+                    npc.GetAiStateInfo().LeaderID = leaderId;
+                }
+            } else {
+                ClientModule.Instance.LeaderID = leaderId;
+                EntityInfo leader = ClientModule.Instance.GetEntityById(ClientModule.Instance.LeaderID);
+                if (leader != null) {
+                    ClientModule.Instance.LeaderLinkID = leader.GetLinkId();
+                }
             }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            m_ParamNum = callData.GetParamNum();
+            if (m_ParamNum > 1) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+                m_LeaderId.InitFromDsl(callData.GetParam(1));
+            } else if (m_ParamNum > 0) {
+                m_LeaderId.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private int m_ParamNum = 0;
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryValue<int> m_LeaderId = new StoryValue<int>();
+    }
+    /// <summary>
+    /// showdlg(storyDlgId);
+    /// </summary>
+    internal class ShowDlgCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ShowDlgCommand cmd = new ShowDlgCommand();
+            cmd.m_StoryDlgId = m_StoryDlgId.Clone();
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_StoryDlgId.Substitute(iterator, args);
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_StoryDlgId.Evaluate(instance);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            GfxStorySystem.Instance.SendMessage("show_dlg", m_StoryDlgId.Value);
+            LogSystem.Info("showdlg {0}", m_StoryDlgId.Value);
             return false;
         }
 
@@ -368,10 +432,10 @@ namespace GameFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_LeaderId.InitFromDsl(callData.GetParam(0));
+                m_StoryDlgId.InitFromDsl(callData.GetParam(0));
             }
         }
 
-        private IStoryValue<int> m_LeaderId = new StoryValue<int>();
+        private IStoryValue<int> m_StoryDlgId = new StoryValue<int>();
     }
 }

@@ -28,10 +28,25 @@ namespace GameFramework
             info.Target = 0;
         }
 
+        protected override bool OnStateLogicCheck(EntityInfo entity, long deltaTime)
+        {
+            if (entity.IsDead()) {
+                if (entity.GetAiStateInfo().CurState != (int)AiStateId.Idle) {
+                    entity.GetMovementStateInfo().IsMoving = false;
+                    NotifyAiMove(entity);
+                    ChangeToState(entity, (int)AiStateId.Idle);
+                }
+                return false;
+            }
+            if (IsLeaderDead(entity)) {
+                entity.SetHp(Operate_Type.OT_Absolute, 0);
+                return false;
+            }
+            return true;
+        }
+
         private void IdleHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead())
-                return;
             AiStateInfo info = entity.GetAiStateInfo();
             info.Time += deltaTime;
             if (info.Time > 100) {
@@ -78,12 +93,6 @@ namespace GameFramework
         }
         private void PursuitHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiStateInfo info = entity.GetAiStateInfo();
             info.Time += deltaTime;
             if (info.Time > 200) {
@@ -94,7 +103,7 @@ namespace GameFramework
                     float dist = (float)entity.GetActualProperty().AttackRange + minDist;
                     Vector3 targetPos = target.GetMovementStateInfo().GetPosition3D();
                     ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
-                    float dir = Geometry.GetYAngle(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
+                    float dir = Geometry.GetYRadian(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
                     targetPos.X += (float)(minDist * Math.Sin(dir));
                     targetPos.Z += (float)(minDist * Math.Cos(dir));
                     float powDist = Geometry.DistanceSquare(srcPos, targetPos);
@@ -131,12 +140,6 @@ namespace GameFramework
         }
         private void CombatHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiStateInfo info = entity.GetAiStateInfo();
             info.Time += deltaTime;
             if (info.Time > c_IntervalTime) {
@@ -144,13 +147,14 @@ namespace GameFramework
                 if (null != data) {
                     info.Time = 0;
                     EntityInfo leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderID);
+                    AiData_Leader leaderData = GetLeaderAiData(leader);
                     EntityInfo target = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.Target);
                     if (null != target) {
                         float minDist = entity.GetRadius() + target.GetRadius();
                         float dist = (float)entity.GetActualProperty().AttackRange + minDist;
                         ScriptRuntime.Vector3 targetPos = target.GetMovementStateInfo().GetPosition3D();
                         ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
-                        float dir = Geometry.GetYAngle(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
+                        float dir = Geometry.GetYRadian(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
                         targetPos.X += (float)(minDist * Math.Sin(dir));
                         targetPos.Z += (float)(minDist * Math.Cos(dir));
                         float powDist = Geometry.DistanceSquare(srcPos, targetPos);
@@ -178,7 +182,7 @@ namespace GameFramework
                                 if (data.ManualSkillId > 0) {
                                     skillId = data.ManualSkillId;
                                 } else {
-                                    if (entity.SceneContext.BlackBoard.IsAutoOperate && entity.ManualSkillId > 0 && Helper.Random.Next() <= 20) {
+                                    if (leaderData.IsAutoOperate && entity.ManualSkillId > 0 && Helper.Random.Next() <= 20) {
                                         skillId = entity.ManualSkillId;
                                     } else if (entity.AutoSkillIds.Count > 0) {
                                         int index = Helper.Random.Next(entity.AutoSkillIds.Count);
@@ -208,12 +212,6 @@ namespace GameFramework
         }
         private void GoHomeHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiStateInfo info = entity.GetAiStateInfo();
             info.Time += deltaTime;
             if (info.Time > c_IntervalTime) {
@@ -245,12 +243,6 @@ namespace GameFramework
         }
         private void SkillCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiData_General data = GetAiData(entity);
             if (null != data) {
                 AiLogicUtility.DoSkillCommandState(entity, deltaTime, this, data.ManualSkillId);
@@ -262,42 +254,18 @@ namespace GameFramework
         }
         private void MoveCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiLogicUtility.DoMoveCommandState(entity, deltaTime, this);
         }
         private void PursuitCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiLogicUtility.DoPursuitCommandState(entity, deltaTime, this);
         }
         private void PatrolCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiLogicUtility.DoPatrolCommandState(entity, deltaTime, this);
         }
         private void WaitCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
         }
         private AiData_General GetAiData(EntityInfo entity)
         {
@@ -308,19 +276,40 @@ namespace GameFramework
             }
             return data;
         }
+        private AiData_Leader GetLeaderAiData(EntityInfo entity)
+        {
+            AiData_Leader data = entity.GetAiStateInfo().AiDatas.GetData<AiData_Leader>();
+            if (null == data) {
+                data = new AiData_Leader();
+                entity.GetAiStateInfo().AiDatas.AddData(data);
+            }
+            return data;
+        }
         private Vector3 GetHomePos(int formationIndex, EntityInfo leader)
         {
-            Vector3 pos;
-            int id = leader.SceneContext.BlackBoard.FormationId;
+            Vector3 pos; 
+            AiData_Leader leaderData = GetLeaderAiData(leader);
+            int id = leaderData.FormationId;
             TableConfig.Formation formation = TableConfig.FormationProvider.Instance.GetFormation(id);
             if (null != formation) {
                 TableConfig.Formation.PosDir posDir = formation.GetPosDir(formationIndex);
                 float dir;
-                pos = posDir.CalcPosDir(leader.GetMovementStateInfo().GetPosition3D(), leader.GetMovementStateInfo().GetFaceDir(), out dir);
+                pos = posDir.CalcPosDir(leader.GetMovementStateInfo().TargetPosition, leader.GetMovementStateInfo().GetFaceDir(), out dir);
             } else {
                 pos = Vector3.Zero;
             }
             return pos;
+        }
+        private bool IsLeaderDead(EntityInfo entity)
+        {
+            bool ret = true;
+            AiStateInfo info = entity.GetAiStateInfo();
+            AiData_General data = GetAiData(entity);
+            EntityInfo leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderID);
+            if (null != leader) {
+                ret = leader.IsDead();
+            }
+            return ret;
         }
 
         private const long c_IntervalTime = 200;

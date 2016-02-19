@@ -16,9 +16,11 @@ set lang=chs
 rem working directory
 set workdir=%~dp0
 
+set svrdsl=%workdir%\App\ServerModule\ServerEnv\bin\Dsl
 set clidsl=%workdir%\Unity3d\Assets\StreamingAssets\Dsl
 set dsldir=%workdir%\Resource\DslFile
-set clitable=%workdir%\Unity3d\Assets\StreamingAssets
+set svrtable=%workdir%\App\ServerModule\ServerEnv\bin\Tables
+set clitable=%workdir%\Unity3d\Assets\StreamingAssets\Tables
 set tabledir=%workdir%\Resource\Tables
 
 rem dsl copy and convert *.dsl from txt to binary (only release version)
@@ -38,6 +40,8 @@ if "%cfg%" EQU "Release" (
 echo update dsl and table files
 %dslcopy% %dsldir% %clidsl%
 %tablecopy% %tabledir% %clitable%
+%dslcopy% %dsldir% %svrdsl%
+%tablecopy% %tabledir% %svrtable% isserver
 
 goto good_end
 

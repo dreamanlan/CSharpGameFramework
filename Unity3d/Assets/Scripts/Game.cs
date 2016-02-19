@@ -27,15 +27,22 @@ public class Game : MonoBehaviour
     private GameObject mMainCamera = null;
     void Start()
     {
-        DontDestroyOnLoad(gameObject);
-        DontDestroyOnLoad(eventSystem.gameObject);
-        Input.multiTouchEnabled = true;
+        try {
+            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(eventSystem.gameObject);
+            Input.multiTouchEnabled = true;
+            Application.runInBackground = true;
 
-        string dataPath = Application.dataPath;
-        string persistentDataPath = Application.persistentDataPath + "/DataFile";
-        string streamingAssetsPath = Application.streamingAssetsPath;
-        string tempPath = Application.temporaryCachePath;
-        		
+            string dataPath = Application.dataPath;
+            string persistentDataPath = Application.persistentDataPath + "/DataFile";
+            string streamingAssetsPath = Application.streamingAssetsPath;
+            string tempPath = Application.temporaryCachePath;
+
+            Debug.Log("tempPath=" + tempPath);
+            Debug.Log("dataPath=" + dataPath);
+            Debug.Log("persistentDataPath=" + persistentDataPath);
+            Debug.Log("streamingAssetsPath=" + streamingAssetsPath);
+
 #if UNITY_ANDROID && !UNITY_EDITOR
 	    GameControler.Init(tempPath, persistentDataPath);
         GlobalVariables.Instance.IsDevice = true;
@@ -48,15 +55,16 @@ public class Game : MonoBehaviour
             GlobalVariables.Instance.IsIphone4S = false;
         }
 #else
-        GlobalVariables.Instance.IsDevice = false;
-        if (Application.isEditor && !GlobalVariables.Instance.IsPublish)
-            GameControler.Init(tempPath, streamingAssetsPath);
-        else
-            GameControler.Init(dataPath, streamingAssetsPath);
+            GlobalVariables.Instance.IsDevice = false;
+            if (Application.isEditor && !GlobalVariables.Instance.IsPublish)
+                GameControler.Init(tempPath, streamingAssetsPath);
+            else
+                GameControler.Init(dataPath, streamingAssetsPath);
 #endif
-        Debug.Log("tempPath=" + tempPath);
-        Debug.Log("persistentDataPath=" + persistentDataPath);
-        StartCoroutine(CheckAndUpdate());
+            StartCoroutine(CheckAndUpdate());
+        } catch (System.Exception ex) {
+            Debug.LogErrorFormat("exception:{0}\n{1}", ex.Message, ex.StackTrace);
+        }
     }
 
     IEnumerator CheckAndUpdate()
@@ -88,7 +96,7 @@ public class Game : MonoBehaviour
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, 100, 1 << LayerMask.NameToLayer("Terrain"))) {
                         Vector3 pos = hit.point;
-                        GfxStorySystem.Instance.SendMessage("MoveTo", pos.x, pos.y, pos.z);
+                        ClientModule.Instance.MoveTo(pos.x, pos.y, pos.z);
                     }
                 }
             }
@@ -101,10 +109,23 @@ public class Game : MonoBehaviour
             m_CameraController.Update();
         }
     }
+
+    void OnApplicationPause(bool pauseStatus)
+    {
+        GameControler.PauseGame(pauseStatus);
+        GameControler.PauseGameForeground(pauseStatus);
+    }
+
+    void OnApplicationQuit()
+    {
+        GameControler.Release();
+    }
         
     void OnLevelWasLoaded(int level)
     {
-        if (level > 2) {
+    		if (level == 2) {
+            HighlightPromptManager.Instance.Init();
+    		} else if (level > 2) {
             HighlightPromptManager.Instance.Init();
             BattleTopMenuManager.Instance.Init();
             SkillBarManager.Instance.Init();
@@ -170,7 +191,8 @@ public class Game : MonoBehaviour
             }
         }
     }
-     
+
+#if UNITY_ANDROID || UNITY_IPHONE     
     IEnumerator ExtractDataFile()
     {
         string srcPath = Application.streamingAssetsPath;
@@ -235,7 +257,7 @@ public class Game : MonoBehaviour
             Debug.Log("Can't load list.txt");
         }
     }
-
+#endif
     private void CameraLook(float[] poses)
     {
         if (null != poses && poses.Length >= 3) {

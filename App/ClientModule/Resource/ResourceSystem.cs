@@ -414,7 +414,7 @@ namespace GameFramework
         private Dictionary<int, Queue<UnityEngine.Object>> m_UnusedResources = new Dictionary<int, Queue<UnityEngine.Object>>();
 
         private Dictionary<UnityEngine.Object, int> m_LayerDict = new Dictionary<UnityEngine.Object, int>();
-        private float m_LastTickTime = 0;
+        //private float m_LastTickTime = 0;
         private int m_DeactiveLayer = LayerMask.NameToLayer("DeActive");
 
         public static ResourceSystem Instance

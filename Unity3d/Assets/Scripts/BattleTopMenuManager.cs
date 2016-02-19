@@ -15,10 +15,10 @@ public sealed class BattleTopMenuManager
             ClientModule.Instance.SetOperateType(bAuto);            
         };
         view.onClickQuit = () => {
-            GfxStorySystem.Instance.SendMessage("Quit");
+            GfxStorySystem.Instance.SendMessage("quit");
         };
         view.onTimeOver = () => {
-            GfxStorySystem.Instance.SendMessage("TimeOver");
+            GfxStorySystem.Instance.SendMessage("time_over");
         };
         subscribes.Add(Utility.EventSystem.Subscribe("ui_stop_watch", "ui", () => view.StopWatch()));
         subscribes.Add(Utility.EventSystem.Subscribe("ui_show", "ui", Show));

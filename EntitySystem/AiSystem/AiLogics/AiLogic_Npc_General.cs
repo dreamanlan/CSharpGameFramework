@@ -28,10 +28,21 @@ namespace GameFramework
             info.Target = 0;
         }
 
+        protected override bool OnStateLogicCheck(EntityInfo entity, long deltaTime)
+        {
+            if (entity.IsDead()) {
+                if (entity.GetAiStateInfo().CurState != (int)AiStateId.Idle) {
+                    entity.GetMovementStateInfo().IsMoving = false;
+                    NotifyAiMove(entity);
+                    ChangeToState(entity, (int)AiStateId.Idle);
+                }
+                return false;
+            }
+            return true;
+        }
+
         private void IdleHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead())
-                return;
             AiStateInfo info = entity.GetAiStateInfo();
             info.Time += deltaTime;
             if (info.Time > 100) {
@@ -59,12 +70,6 @@ namespace GameFramework
         }
         private void PursuitHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiStateInfo info = entity.GetAiStateInfo();
             info.Time += deltaTime;
             if (info.Time > 200) {
@@ -75,7 +80,7 @@ namespace GameFramework
                     float distGoHome = entity.GohomeRange;
                     Vector3 targetPos = target.GetMovementStateInfo().GetPosition3D();
                     ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
-                    float dir = Geometry.GetYAngle(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
+                    float dir = Geometry.GetYRadian(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
                     targetPos.X += (float)(minDist * Math.Sin(dir));
                     targetPos.Z += (float)(minDist * Math.Cos(dir));
                     float powDist = Geometry.DistanceSquare(srcPos, targetPos);
@@ -103,12 +108,6 @@ namespace GameFramework
         }
         private void CombatHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiStateInfo info = entity.GetAiStateInfo();
             info.Time += deltaTime;
             if (info.Time > c_IntervalTime) {
@@ -121,7 +120,7 @@ namespace GameFramework
                         float dist = (float)entity.GetActualProperty().AttackRange + minDist;
                         ScriptRuntime.Vector3 targetPos = target.GetMovementStateInfo().GetPosition3D();
                         ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
-                        float dir = Geometry.GetYAngle(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
+                        float dir = Geometry.GetYRadian(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
                         targetPos.X += (float)(minDist * Math.Sin(dir));
                         targetPos.Z += (float)(minDist * Math.Cos(dir));
                         float powDist = Geometry.DistanceSquare(srcPos, targetPos);
@@ -153,12 +152,6 @@ namespace GameFramework
         }
         private void GoHomeHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiStateInfo info = entity.GetAiStateInfo();
             info.Time += deltaTime;
             if (info.Time > c_IntervalTime) {
@@ -182,12 +175,6 @@ namespace GameFramework
         }
         private void SkillCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiData_General data = GetAiData(entity);
             if (null != data) {
                 AiLogicUtility.DoSkillCommandState(entity, deltaTime, this, data.ManualSkillId);
@@ -199,42 +186,18 @@ namespace GameFramework
         }
         private void MoveCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiLogicUtility.DoMoveCommandState(entity, deltaTime, this);
         }
         private void PursuitCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiLogicUtility.DoPursuitCommandState(entity, deltaTime, this);
         }
         private void PatrolCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiLogicUtility.DoPatrolCommandState(entity, deltaTime, this);
         }
         private void WaitCommandHandler(EntityInfo entity, long deltaTime)
         {
-            if (entity.IsDead()) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                NotifyAiMove(entity);
-                ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
         }
         private AiData_General GetAiData(EntityInfo entity)
         {

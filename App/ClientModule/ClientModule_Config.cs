@@ -9,7 +9,7 @@ namespace GameFramework
     {
         public static void LoadTableConfig()
         {
-            string root = HomePath.CurHomePath + "/Table/";
+            string root = HomePath.CurHomePath + "/Tables/";
             LogSystem.Debug("table config root = {0}", root);
 
             //字典表需要为字典功能提供查表机制

@@ -24,6 +24,11 @@ namespace GameFramework
 
     public partial class EntityInfo
     {
+        public object CustomData
+        {
+            get { return m_CustomData; }
+            set { m_CustomData = value; }
+        }
         public int EntityType
         {
             get { return m_EntityType; }
@@ -280,7 +285,8 @@ namespace GameFramework
         {
             get { return m_ConfigData; }
         }
-
+        
+        private object m_CustomData = null;
         private int m_EntityType = 0;
         private float m_Scale = 1.0f;
 
@@ -305,5 +311,7 @@ namespace GameFramework
         private AiStateInfo m_AiStateInfo = new AiStateInfo();
 
         private TableConfig.Actor m_ConfigData;
+
+        public const int c_StartUserUnitId = 100000000;
     }
 }

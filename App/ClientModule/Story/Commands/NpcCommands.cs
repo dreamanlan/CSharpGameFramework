@@ -9,7 +9,7 @@ using GameFramework.Skill;
 namespace GameFramework.Story.Commands
 {
     /// <summary>
-    /// createnpc(npc_unit_id,vector3(x,y,z),dir,camp,linkId[,ai,stringlist("param1 param2 param3 ...")])[objid("@objid")];
+    /// createnpc(npc_unit_id,vector3(x,y,z),dir,camp,linkId[,ai,stringlist("param1 param2 param3 ..."),leaderId])[objid("@objid")];
     /// </summary>
     internal class CreateNpcCommand : AbstractStoryCommand
     {
@@ -23,6 +23,7 @@ namespace GameFramework.Story.Commands
             cmd.m_LinkId = m_LinkId.Clone();
             cmd.m_AiLogic = m_AiLogic.Clone();
             cmd.m_AiParams = m_AiParams.Clone();
+            cmd.m_LeaderId = m_LeaderId.Clone();
             cmd.m_ParamNum = m_ParamNum;
             cmd.m_HaveObjId = m_HaveObjId;
             cmd.m_ObjIdVarName = m_ObjIdVarName.Clone();
@@ -45,6 +46,9 @@ namespace GameFramework.Story.Commands
                 if (m_ParamNum > 6) {
                     m_AiLogic.Substitute(iterator, args);
                     m_AiParams.Substitute(iterator, args);
+                    if (m_ParamNum > 7) {
+                        m_LeaderId.Substitute(iterator, args);
+                    }
                 }
             }
             if (m_HaveObjId) {
@@ -64,6 +68,9 @@ namespace GameFramework.Story.Commands
                 if (m_ParamNum > 6) {
                     m_AiLogic.Evaluate(instance);
                     m_AiParams.Evaluate(instance);
+                    if (m_ParamNum > 7) {
+                        m_LeaderId.Evaluate(instance);
+                    }
                 }
             }
             if (m_HaveObjId) {
@@ -87,7 +94,12 @@ namespace GameFramework.Story.Commands
                     if (null != charObj) {
                         charObj.GetAiStateInfo().Reset();
                         charObj.GetAiStateInfo().AiLogic = aiLogic;
-                        charObj.GetAiStateInfo().LeaderID = ClientModule.Instance.LeaderID;
+                        if (m_ParamNum > 7) {
+                            int leaderId = m_LeaderId.Value;
+                            charObj.GetAiStateInfo().LeaderID = leaderId;
+                        } else {
+                            charObj.GetAiStateInfo().LeaderID = 0;
+                        }
                         IEnumerable aiParams = m_AiParams.Value;
                         int ix = 0;
                         foreach (string aiParam in aiParams) {
@@ -121,6 +133,9 @@ namespace GameFramework.Story.Commands
                 if (m_ParamNum > 6) {
                     m_AiLogic.InitFromDsl(callData.GetParam(5));
                     m_AiParams.InitFromDsl(callData.GetParam(6));
+                    if (m_ParamNum > 7) {
+                        m_LeaderId.InitFromDsl(callData.GetParam(7));
+                    }
                 }
             }
         }
@@ -153,6 +168,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<int> m_LinkId = new StoryValue<int>();
         private IStoryValue<int> m_AiLogic = new StoryValue<int>();
         private IStoryValue<IEnumerable> m_AiParams = new StoryValue<IEnumerable>();
+        private IStoryValue<int> m_LeaderId = new StoryValue<int>();
         private bool m_HaveObjId = false;
         private IStoryValue<string> m_ObjIdVarName = new StoryValue<string>();
     }
@@ -1461,6 +1477,7 @@ namespace GameFramework.Story.Commands
             if (null != obj) {
                 int campId = m_CampId.Value;
                 obj.SetCampId(campId);
+                Utility.EventSystem.Publish("ui_actor_color", "ui", obj.GetId(), CharacterRelation.RELATION_FRIEND == EntityInfo.GetRelation(ClientModule.Instance.CampId, campId));
             }
             return false;
         }

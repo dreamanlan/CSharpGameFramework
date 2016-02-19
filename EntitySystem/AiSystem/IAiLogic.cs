@@ -51,7 +51,7 @@ namespace GameFramework
                 if (curState > (int)AiStateId.Invalid && curState < (int)AiStateId.MaxNum) {
                     AiStateHandler handler;
                     if (m_Handlers.TryGetValue(curState, out handler)) {
-                        if (null != handler) {
+                        if (OnStateLogicCheck(entity, deltaTime) && null != handler) {
                             handler(entity, deltaTime);
                         }
                     } else {
@@ -76,6 +76,11 @@ namespace GameFramework
         }
         public void NotifyAiMove(EntityInfo entity)
         {
+            Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
+            Vector3 targetPos = entity.GetMovementStateInfo().TargetPosition;
+            float dir = Geometry.GetYRadian(srcPos, targetPos);
+            entity.GetMovementStateInfo().SetMoveDir(dir);
+            entity.GetMovementStateInfo().SetFaceDir(dir);
             if (null != OnAiMove)
                 OnAiMove(entity);
         }
@@ -109,8 +114,8 @@ namespace GameFramework
             if (null != OnAiMeetEnemy) {
                 OnAiMeetEnemy(entity);
             }
-            AiSendStoryMessage(entity, "objmeetenemy", entity.GetId());
-            AiSendStoryMessage(entity, "npcmeetenemy:" + entity.GetUnitId(), entity.GetId());
+            AiSendStoryMessage(entity, "obj_meet_enemy", entity.GetId());
+            AiSendStoryMessage(entity, "npc_meet_enemy:" + entity.GetUnitId(), entity.GetId());
         }
 
         public void NotifyAiInitDslLogic(EntityInfo entity)
@@ -141,6 +146,10 @@ namespace GameFramework
         protected abstract void OnInitStateHandlers();
         protected virtual void OnStateLogicInit(EntityInfo entity, long deltaTime)
         { }
+        protected virtual bool OnStateLogicCheck(EntityInfo entity, long deltaTime)
+        {
+            return true;
+        }
 
         private Dictionary<int, AiStateHandler> m_Handlers = new Dictionary<int, AiStateHandler>();
     }

@@ -5,16 +5,11 @@ using System.IO;
 using GameFramework.GmCommands;
 using GameFramework.Story;
 using GameFramework.Skill;
+using GameFramework.Network;
+using GameFrameworkMessage;
 
 namespace GameFramework
 {
-    public enum SceneType
-    {
-        Unclassified = 0,
-        MainUi,
-        Battle,
-        Story,
-    }
     public partial class ClientModule
     {
         #region Singleton
@@ -100,20 +95,9 @@ namespace GameFramework
                 LogSystem.Error("ExecCommand exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-
-        private void OnTriggerArea(int id)
-        {
-            if (m_CurStageId != id) {
-                for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
-                    EntityInfo info = linkNode.Value;
-                    info.GetCombatStatisticInfo().ClearMultiKillCount();
-                }
-            }
-            m_CurStageId = id;
-        }
         #endregion
 
-        public void Init()
+        internal void Init()
         {
             LoadTableConfig();
 
@@ -139,6 +123,9 @@ namespace GameFramework
             m_AiSystem.SetEntityManager(m_EntityManager);
             m_SceneLogicSystem.SetSceneLogicInfoManager(m_SceneLogicInfoManager);
 
+            UserNetworkSystem.Instance.Init(m_AsyncActionProcessor);
+            NetworkSystem.Instance.Init();
+
             AiViewModelManager.Instance.Init();
             SceneLogicViewModelManager.Instance.Init();
             EntityViewModelManager.Instance.Init();
@@ -149,15 +136,16 @@ namespace GameFramework
             Utility.EventSystem.Subscribe("gm_resetdsl", "gm", ResetDsl);
             Utility.EventSystem.Subscribe<string>("gm_execscript", "gm", ExecScript);
             Utility.EventSystem.Subscribe<string>("gm_execcommand", "gm", ExecCommand);
-
-            Utility.EventSystem.Subscribe<int>("gm_trigger_area", "gm", OnTriggerArea);
         }
-        public void Release()
+        internal void Release()
         {
+            UserNetworkSystem.Instance.QuitClient();
+            NetworkSystem.Instance.QuitClient();
+            NetworkSystem.Instance.Release();
             EntityViewModelManager.Instance.Release();
             EntityController.Instance.Release();
         }
-        public void Reset()
+        internal void Reset()
         {
             GmCommands.ClientGmStorySystem.Instance.Reset();
             GfxStorySystem.Instance.Reset();
@@ -184,21 +172,20 @@ namespace GameFramework
 
             m_LeaderLinkID = 0;
             m_leaderID = 0;
-            m_IsFirstBlood = true;
-            m_CurStageId = 0;
         }
-        public void Preload()
+        internal void Preload()
         {
-            m_CurStageIndex = -1;
-
             GfxStorySystem.Instance.PreloadSceneStories();
-            GfxStorySystem.Instance.StartStory("main");
+            GfxStorySystem.Instance.StartStory("local_main");
+            if (!IsRoomScene) {
+                GfxStorySystem.Instance.StartStory("story_main");
+            }
 
             PreloadUiStories();
 
             PredefinedSkill.Instance.Preload();
         }
-        public void Tick()
+        internal void Tick()
         {
             if (!m_IsSceneLoaded) {
                 return;
@@ -212,7 +199,9 @@ namespace GameFramework
             m_KdTree.EndBuild();
 
             //处理延迟调用
-            m_DelayActionProcessor.HandleActions(100);
+            m_AsyncActionProcessor.HandleActions(100);
+            UserNetworkSystem.Instance.Tick();
+            NetworkSystem.Instance.Tick();
             
             GmCommands.ClientGmStorySystem.Instance.Tick();
             GfxStorySystem.Instance.Tick();
@@ -227,10 +216,27 @@ namespace GameFramework
             EntityController.Instance.Tick();
             ResourceSystem.Instance.Tick();
         }
-
-        public void DelayChangeScene(int levelId)
+        
+        internal void TryEnterScene(uint key, string ip, int port, int campId, int sceneId)
         {
-            QueueAction(ChangeScene, levelId);
+            if (!m_IsSceneLoaded) {
+                //等待当前场景成功进入后再切换场景
+                QueueAction(TryEnterScene, key, ip, port, campId, sceneId);
+                return;
+            }
+            campId = Helper.Random.Next() < 50 ? (int)CampIdEnum.Blue : (int)CampIdEnum.Red;
+            m_CampId = campId;
+            NetworkSystem.Instance.Start(key, ip, port, campId, sceneId);
+        }
+        
+        internal void DelayChangeScene(int levelId)
+        {
+            TableConfig.Level cfg = TableConfig.LevelProvider.Instance.GetLevel(levelId);
+            if (null != cfg && cfg.type == (int)SceneTypeEnum.Room) {
+                UserNetworkSystem.Instance.EnterScene(levelId, 0);
+            } else {
+                QueueAction(ChangeScene, levelId);
+            }
         }
 
         public void ChangeScene(int levelId)
@@ -249,23 +255,58 @@ namespace GameFramework
             GfxStorySystem.Instance.SceneId = m_SceneId;
             Preload();
 
-            if (lvl.type == (int)SceneType.MainUi) {
+            if (lvl.type == (int)SceneTypeEnum.MainUi) {
                 m_LastMainUiSceneId = m_SceneId;
                 Utility.SendMessage("GameRoot", "OnLoadMainUiComplete", lvl.id);
-            } else if (lvl.type == (int)SceneType.Battle) {
+            } else if (lvl.type == (int)SceneTypeEnum.Battle || lvl.type == (int)SceneTypeEnum.Story) {
                 Utility.SendMessage("GameRoot", "OnLoadBattleComplete", lvl.id);
+            } else if (lvl.type == (int)SceneTypeEnum.Room) {
+                Utility.SendMessage("GameRoot", "OnLoadBattleComplete", lvl.id);
+
+                GameFrameworkMessage.Msg_CR_Enter build = new GameFrameworkMessage.Msg_CR_Enter();
+                NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_Enter, build);
+                LogSystem.Warn("send Msg_CR_Enter to roomserver");
             }
             m_IsSceneLoaded = true;            
         }
-
-        public void PlayMusic(string eventName)
+                
+        internal void OnRoomServerDisconnected()
         {
-            Utility.SendMessage("GameRoot", "PlayMusic", eventName);
+            if (m_IsSceneLoaded) {
+                if (NetworkSystem.Instance.ReconnectCount <= 18) {
+                } else {
+                    //连接了3分钟以上还连不上，尝试结算
+                    NetworkSystem.Instance.QuitBattlePassive();
+                }
+            }
         }
-
-        public void PlayOneShot(string eventName)
+        internal void OnRoomServerConnected()
         {
-            Utility.SendMessage("GameRoot", "PlayOneShot", eventName);
+            if (m_IsSceneLoaded) {
+                if (SceneId == NetworkSystem.Instance.RoomSceneId) {
+                    RefreshRoomScene();
+                } else {
+                    //多人副本在网络连接与验证通过后再切场景，防止卡住。
+                    QueueAction(this.ChangeScene, NetworkSystem.Instance.RoomSceneId);
+                }
+            }
+        }
+        private void RefreshRoomScene()
+        {
+            LogSystem.Warn("ClientModule.RefreshRoomScene Destory Objects...");
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+                EntityInfo info = linkNode.Value;
+                if (null != info) {
+                    EntityViewModelManager.Instance.DestroyEntityView(info.GetId());
+                }
+            }
+            LogSystem.Warn("ClientModule.RefreshRoomScene Destory Objects Finish.");
+
+            m_EntityManager.Reset();
+
+            GameFrameworkMessage.Msg_CR_Enter build = new GameFrameworkMessage.Msg_CR_Enter();
+            NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_Enter, build);
+            LogSystem.Warn("RefreshRoomScene send Msg_CR_Enter to roomserver");
         }
 
         internal int GetBossCount()
@@ -412,6 +453,36 @@ namespace GameFramework
             }
             return objId;
         }
+        internal EntityInfo CreateEntity(int objId, int unitId, float x, float y, float z, float dir, int camp, int linkId)
+        {
+            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(linkId);
+            if (null != cfg) {
+                EntityInfo entity = m_EntityManager.AddEntity(objId, unitId, camp, cfg, 0);
+                if (null != entity) {
+                    entity.GetMovementStateInfo().SetPosition(x, y, z);
+                    entity.GetMovementStateInfo().SetFaceDir(dir);
+                    EntityViewModelManager.Instance.CreateEntityView(entity.GetId());
+                    OnCreateEntity(entity);
+                    return entity;
+                }
+            }
+            return null;
+        }
+        internal EntityInfo CreateEntity(int objId, int unitId, float x, float y, float z, float dir, int camp, int linkId, int ai, params string[] aiParams)
+        {
+            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(linkId);
+            if (null != cfg) {
+                EntityInfo entity = m_EntityManager.AddEntity(objId, unitId, camp, cfg, ai, aiParams);
+                if (null != entity) {
+                    entity.GetMovementStateInfo().SetPosition(x, y, z);
+                    entity.GetMovementStateInfo().SetFaceDir(dir);
+                    EntityViewModelManager.Instance.CreateEntityView(entity.GetId());
+                    OnCreateEntity(entity);
+                    return entity;
+                }
+            }
+            return null;
+        }
         internal int CreateSceneLogic(int configId, int logicId, params string[] args)
         {
             int id = 0;
@@ -424,6 +495,15 @@ namespace GameFramework
                 id = logicInfo.GetId();
             }
             return id;
+        }
+        internal SceneLogicInfo CreateSceneLogic(int infoId, int configId, int logicId, params string[] args)
+        {
+            SceneLogicConfig cfg = new SceneLogicConfig();
+            cfg.m_ConfigId = configId;
+            cfg.m_LogicId = logicId;
+            cfg.m_Params = args;
+            SceneLogicInfo logicInfo = m_SceneLogicInfoManager.AddSceneLogicInfo(infoId, cfg);
+            return logicInfo;
         }
         internal void DestroySceneLogic(int id)
         {
@@ -450,6 +530,10 @@ namespace GameFramework
         {
             string info = Dict.Format(id, args);
             Utility.EventSystem.Publish("ui_highlight_prompt","ui", info);
+        }
+        internal EntityInfo GetLeaderEntityInfo()
+        {
+            return m_EntityManager.GetEntityInfo(m_leaderID);
         }
 
         private void TickEntities()
@@ -510,9 +594,9 @@ namespace GameFramework
                 int friendCt = 0;
                 for (int i = 0; i < m_DeletedEntities.Count; ++i) {
                     EntityInfo ni = m_DeletedEntities[i];
-                    if (CharacterRelation.RELATION_ENEMY==EntityInfo.GetRelation((int)CampIdEnum.Blue, ni.GetCampId())) {
+                    if (CharacterRelation.RELATION_ENEMY==EntityInfo.GetRelation(CampId, ni.GetCampId())) {
                         ++enemyCt;
-                    } else if (CharacterRelation.RELATION_FRIEND == EntityInfo.GetRelation((int)CampIdEnum.Blue, ni.GetCampId())) {
+                    } else if (CharacterRelation.RELATION_FRIEND == EntityInfo.GetRelation(CampId, ni.GetCampId())) {
                         ++friendCt;
                     }
                     DestroyEntity(ni);
@@ -544,35 +628,35 @@ namespace GameFramework
         }
         private void OnEntityKilled(EntityInfo ni)
         {
-            int leftEnemyCt = GetBattleNpcCount((int)CampIdEnum.Blue, CharacterRelation.RELATION_ENEMY);
-            int leftFriendCt = GetBattleNpcCount((int)CampIdEnum.Blue);
+            int leftEnemyCt = GetBattleNpcCount(CampId, CharacterRelation.RELATION_ENEMY);
+            int leftFriendCt = GetBattleNpcCount(CampId);
 
-            GfxStorySystem.Instance.SendMessage("objkilled", ni.GetId(), leftEnemyCt, leftFriendCt);
-            GfxStorySystem.Instance.SendMessage("npckilled:" + ni.GetUnitId(), ni.GetId(), leftEnemyCt, leftFriendCt);
+            GfxStorySystem.Instance.SendMessage("obj_killed", ni.GetId(), leftEnemyCt, leftFriendCt);
+            GfxStorySystem.Instance.SendMessage("npc_killed:" + ni.GetUnitId(), ni.GetId(), leftEnemyCt, leftFriendCt);
         }
         private void TryAllKilledOrAllDied(bool tryAllKilled, bool tryAllDied)
         {
             if (tryAllKilled) {
-                int leftEnemyCt = GetBattleNpcCount((int)CampIdEnum.Blue, CharacterRelation.RELATION_ENEMY) + GetDyingBattleNpcCount((int)CampIdEnum.Blue, CharacterRelation.RELATION_ENEMY);
+                int leftEnemyCt = GetBattleNpcCount(CampId, CharacterRelation.RELATION_ENEMY) + GetDyingBattleNpcCount(CampId, CharacterRelation.RELATION_ENEMY);
                 if (leftEnemyCt <= 0) {
-                    GfxStorySystem.Instance.SendMessage("allkilled");
+                    GfxStorySystem.Instance.SendMessage("all_killed");
                 }
             }
             if (tryAllDied) {
-                int leftFriendCt = GetBattleNpcCount((int)CampIdEnum.Blue) + GetDyingBattleNpcCount((int)CampIdEnum.Blue);
+                int leftFriendCt = GetBattleNpcCount(CampId) + GetDyingBattleNpcCount(CampId);
                 if (leftFriendCt <= 0) {
-                    GfxStorySystem.Instance.SendMessage("alldied");
+                    GfxStorySystem.Instance.SendMessage("all_died");
                 }
             }
         }
         private void OnCreateEntity(EntityInfo entity)
         {
             if (null != entity) {
-                GfxStorySystem.Instance.SendMessage("objcreated", entity.GetId());
-                GfxStorySystem.Instance.SendMessage(string.Format("npccreated:{0}", entity.GetUnitId()), entity.GetId());
+                GfxStorySystem.Instance.SendMessage("obj_created", entity.GetId());
+                GfxStorySystem.Instance.SendMessage(string.Format("npc_created:{0}", entity.GetUnitId()), entity.GetId());
 
-                bool isHero = entity.GetCampId() == (int)CampIdEnum.Blue;
-                Utility.EventSystem.Publish("ui_add_actor", "ui", entity.GetId(), isHero, entity.ConfigData);
+                bool isGreen = CharacterRelation.RELATION_FRIEND == EntityInfo.GetRelation(entity.GetCampId(), CampId);
+                Utility.EventSystem.Publish("ui_add_actor", "ui", entity.GetId(), isGreen, entity.ConfigData);
             }
         }
         private void OnDestroyEntity(EntityInfo entity)
@@ -596,9 +680,9 @@ namespace GameFramework
                 if (hpDamage != 0) {
                     float hp = (float)entity.Hp / entity.GetActualProperty().HpMax;
                     Utility.EventSystem.Publish("ui_actor_hp", "ui", entity.GetId(), hp);
-                    if (receiver == LeaderID || caster == LeaderID) {
+                    //if (receiver == LeaderID || caster == LeaderID) {
                         Utility.EventSystem.Publish("ui_show_hp_num", "ui", entity.GetId(), -hpDamage);
-                    }
+                    //}
                     if (caster == LeaderID) {
                         EntityViewModel view = EntityController.Instance.GetEntityViewById(receiver);
                         if (view != null) {
@@ -642,31 +726,49 @@ namespace GameFramework
         {
             get { return m_SceneInfo; }
         }
-        public int CurStageIndex
+        public bool IsMainUiScene
         {
-            get { return m_CurStageIndex; }
-            set { m_CurStageIndex = value; }
+            get
+            {
+                bool ret = false;
+                if (null != m_SceneInfo) {
+                    ret = m_SceneInfo.type == (int)SceneTypeEnum.MainUi;
+                }
+                return ret;
+            }
         }
-
-        public EntityManager EntityManager
+        public bool IsBattleScene
         {
-            get { return m_EntityManager; }
+            get
+            {
+                bool ret = false;
+                if (null != m_SceneInfo) {
+                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Battle;
+                }
+                return ret;
+            }
         }
-        public SceneLogicInfoManager SceneLogicInfoManager
+        public bool IsStoryScene
         {
-            get { return m_SceneLogicInfoManager; }
+            get
+            {
+                bool ret = false;
+                if (null != m_SceneInfo) {
+                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Story;
+                }
+                return ret;
+            }
         }
-        public BlackBoard BlackBoard
+        public bool IsRoomScene
         {
-            get { return m_BlackBoard; }
-        }
-        public KdObjectTree KdTree
-        {
-            get { return m_KdTree; }
-        }
-        public SceneContextInfo SceneContext
-        {
-            get { return m_SceneContextInfo; }
+            get
+            {
+                bool ret = false;
+                if (null != m_SceneInfo) {
+                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Room;
+                }
+                return ret;
+            }
         }
         public int SummonerSkillId
         {
@@ -683,20 +785,37 @@ namespace GameFramework
             get { return m_leaderID; }
             set { m_leaderID = value; }
         }
-        public int CurStageId
+        public int CampId
         {
-            get { return m_CurStageId; }
+            get { return m_CampId; }
+            set { m_CampId = value; }
         }
-        public bool IsFirstBlood
+
+        internal EntityManager EntityManager
         {
-            get { return m_IsFirstBlood; }
-            set { m_IsFirstBlood = value; }
+            get { return m_EntityManager; }
+        }
+        internal SceneLogicInfoManager SceneLogicInfoManager
+        {
+            get { return m_SceneLogicInfoManager; }
+        }
+        internal BlackBoard BlackBoard
+        {
+            get { return m_BlackBoard; }
+        }
+        internal KdObjectTree KdTree
+        {
+            get { return m_KdTree; }
+        }
+        internal SceneContextInfo SceneContext
+        {
+            get { return m_SceneContextInfo; }
         }
 
         #region delay action process (为了不触发jit编译，这里重新包装一次)
         internal void QueueAction(MyAction action)
         {
-            m_DelayActionProcessor.QueueAction(action);
+            m_AsyncActionProcessor.QueueAction(action);
         }
         internal void QueueAction<T1>(MyAction<T1> action, T1 t1)
         {
@@ -832,8 +951,8 @@ namespace GameFramework
         }
         internal void QueueActionWithDelegation(Delegate action, params object[] args)
         {
-            if (null != m_DelayActionProcessor) {
-                m_DelayActionProcessor.QueueActionWithDelegation(action, args);
+            if (null != m_AsyncActionProcessor) {
+                m_AsyncActionProcessor.QueueActionWithDelegation(action, args);
             }
         }
         #endregion
@@ -841,7 +960,6 @@ namespace GameFramework
         private int m_LastMainUiSceneId;
         private int m_SceneId;
         private TableConfig.Level m_SceneInfo;
-        private int m_CurStageIndex;
 
         private KdObjectTree m_KdTree = new KdObjectTree();
         private BlackBoard m_BlackBoard = new BlackBoard();
@@ -853,13 +971,13 @@ namespace GameFramework
         private SceneLogicSystem m_SceneLogicSystem = new SceneLogicSystem();
 
         private List<EntityInfo> m_DeletedEntities = new List<EntityInfo>();
-        private ClientDelayActionProcessor m_DelayActionProcessor = new ClientDelayActionProcessor();
-        private bool m_IsSceneLoaded = true;
+        private ClientAsyncActionProcessor m_AsyncActionProcessor = new ClientAsyncActionProcessor();
+        private bool m_IsSceneLoaded = false;
 
         private int m_leaderID;
         private int m_LeaderLinkID;
         private int m_SummonerSkillId = 22;
-        private bool m_IsFirstBlood = true;
-        private int m_CurStageId = 0;
+
+        private int m_CampId = (int)CampIdEnum.Blue;
     }
 }

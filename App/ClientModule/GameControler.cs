@@ -180,6 +180,10 @@ namespace GameFramework
                 return s_IsPausedForeground;
             }
         }
+        internal static Logger FileLogger
+        {
+            get { return s_Logger; }
+        }
 
         private static Logger s_Logger = new Logger();
         private static bool s_IsInited = false;

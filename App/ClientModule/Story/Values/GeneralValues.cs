@@ -243,8 +243,8 @@ namespace GameFramework.Story.Values
                 int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 int num = callData.GetParamNum();
                 if (num > 0) {
-                    m_Index.InitFromDsl(callData.GetParam(0));
-                    flag |= m_Index.Flag;
+                    m_ObjPath.InitFromDsl(callData.GetParam(0));
+                    flag |= m_ObjPath.Flag;
                 }
                 m_Flag = flag;
             }
@@ -252,7 +252,7 @@ namespace GameFramework.Story.Values
         public IStoryValue<object> Clone()
         {
             IsActiveValue val = new IsActiveValue();
-            val.m_Index = m_Index.Clone();
+            val.m_ObjPath = m_ObjPath.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             val.m_Flag = m_Flag;
@@ -262,12 +262,12 @@ namespace GameFramework.Story.Values
         {
             m_HaveValue = false;
             if (StoryValueHelper.HaveArg(Flag)) {
-                m_Index.Substitute(iterator, args);
+                m_ObjPath.Substitute(iterator, args);
             }
         }
         public void Evaluate(StoryInstance instance)
         {
-            m_Index.Evaluate(instance);
+            m_ObjPath.Evaluate(instance);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -294,19 +294,34 @@ namespace GameFramework.Story.Values
 
         private void TryUpdateValue(StoryInstance instance)
         {
-            if (m_Index.HaveValue) {
+            if (m_ObjPath.HaveValue) {
                 m_HaveValue = true;
-                string objPath = m_Index.Value;
-                UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
-                if (null != obj) {
-                    m_Value = obj.activeSelf ? 1 : 0;
+                object o = m_ObjPath.Value;
+                string objPath = o as string;
+                if (null != objPath) {
+                    UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
+                    if (null != obj) {
+                        m_Value = obj.activeSelf ? 1 : 0;
+                    } else {
+                        m_Value = 0;
+                    }
                 } else {
-                    m_Value = 0;
+                    try {
+                        int objId = (int)o;
+                        UnityEngine.GameObject obj = EntityController.Instance.GetGameObject(objId);
+                        if (null != obj) {
+                            m_Value = obj.activeSelf ? 1 : 0;
+                        } else {
+                            m_Value = 0;
+                        }
+                    } catch {
+                        m_Value = null;
+                    }
                 }
             }
         }
 
-        private IStoryValue<string> m_Index = new StoryValue<string>();
+        private IStoryValue<object> m_ObjPath = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
@@ -373,17 +388,32 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue) {
                 m_HaveValue = true;
-                string objPath = m_ObjPath.Value;
-                UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
-                if (null != obj) {
-                    m_Value = obj.activeInHierarchy ? 1 : 0;
+                object o = m_ObjPath.Value;
+                string objPath = o as string;
+                if (null != objPath) {
+                    UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
+                    if (null != obj) {
+                        m_Value = obj.activeInHierarchy ? 1 : 0;
+                    } else {
+                        m_Value = 0;
+                    }
                 } else {
-                    m_Value = 0;
+                    try {
+                        int objId = (int)o;
+                        UnityEngine.GameObject obj = EntityController.Instance.GetGameObject(objId);
+                        if (null != obj) {
+                            m_Value = obj.activeInHierarchy ? 1 : 0;
+                        } else {
+                            m_Value = 0;
+                        }
+                    } catch {
+                        m_Value = null;
+                    }
                 }
             }
         }
 
-        private IStoryValue<string> m_ObjPath = new StoryValue<string>();
+        private IStoryValue<object> m_ObjPath = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
@@ -550,17 +580,27 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue) {
                 m_HaveValue = true;
-                string objPath = m_ObjPath.Value;
-                UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
-                if (null != obj) {
-                    m_Value = obj;
+                object o = m_ObjPath.Value;
+                string objPath = o as string;
+                if (null != objPath) {
+                    UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
+                    if (null != obj) {
+                        m_Value = obj;
+                    } else {
+                        m_Value = null;
+                    }
                 } else {
-                    m_Value = null;
+                    try {
+                        int objId = (int)o;
+                        m_Value = EntityController.Instance.GetGameObject(objId);
+                    } catch {
+                        m_Value = null;
+                    }
                 }
             }
         }
 
-        private IStoryValue<string> m_ObjPath = new StoryValue<string>();
+        private IStoryValue<object> m_ObjPath = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
@@ -729,6 +769,150 @@ namespace GameFramework.Story.Values
         }
 
         private IStoryValue<string> m_TypeName = new StoryValue<string>();
+        private bool m_HaveValue;
+        private object m_Value;
+        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+    }
+    internal sealed class GetEntityInfoValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getentityinfo" && callData.GetParamNum() == 1) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+                m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_ObjId.Flag;
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetEntityInfoValue val = new GetEntityInfoValue();
+            val.m_ObjId = m_ObjId.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            val.m_Flag = m_Flag;
+            return val;
+        }
+        public void Substitute(object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_Iterator = iterator;
+            m_Args = args;
+            if (StoryValueHelper.HaveArg(Flag)) {
+                m_ObjId.Substitute(iterator, args);
+            }
+        }
+        public void Evaluate(StoryInstance instance)
+        {
+            m_ObjId.Evaluate(instance);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        public int Flag
+        {
+            get
+            {
+                return m_Flag;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjId.HaveValue) {
+                int objId = m_ObjId.Value;
+                m_HaveValue = true;
+                m_Value = ClientModule.Instance.GetEntityById(objId);
+            }
+        }
+
+        private object m_Iterator = null;
+        private object[] m_Args = null;
+
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+    }
+    internal sealed class GetEntityViewValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getentityview" && callData.GetParamNum() == 1) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+                m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_ObjId.Flag;
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetEntityViewValue val = new GetEntityViewValue();
+            val.m_ObjId = m_ObjId.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            val.m_Flag = m_Flag;
+            return val;
+        }
+        public void Substitute(object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_Iterator = iterator;
+            m_Args = args;
+            if (StoryValueHelper.HaveArg(Flag)) {
+                m_ObjId.Substitute(iterator, args);
+            }
+        }
+        public void Evaluate(StoryInstance instance)
+        {
+            m_ObjId.Evaluate(instance);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        public int Flag
+        {
+            get
+            {
+                return m_Flag;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjId.HaveValue) {
+                int objId = m_ObjId.Value;
+                m_HaveValue = true;
+                m_Value = EntityController.Instance.GetEntityViewById(objId);
+            }
+        }
+
+        private object m_Iterator = null;
+        private object[] m_Args = null;
+
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private bool m_HaveValue;
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;

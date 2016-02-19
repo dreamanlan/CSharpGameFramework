@@ -13,7 +13,7 @@ namespace GameFramework.Skill.Trigers
 
         public static void Lookat(GameObject obj, Vector3 target, float rotateDegree)
         {
-            if (EntityController.Instance.GetEntityType(obj) == (int)EntityTypeEnum.Tower)
+            if (!EntityController.Instance.IsRotatableEntity(obj))
                 return;
             Vector3 dir = target - obj.transform.position;
             if (dir.sqrMagnitude > Geometry.c_FloatPrecision) {
@@ -23,7 +23,7 @@ namespace GameFramework.Skill.Trigers
         }
         public static void Lookat(GameObject obj, Vector3 target)
         {
-            if (EntityController.Instance.GetEntityType(obj) == (int)EntityTypeEnum.Tower)
+            if (!EntityController.Instance.IsRotatableEntity(obj))
                 return;
             Vector3 dir = target - obj.transform.position;
             if (dir.sqrMagnitude > Geometry.c_FloatPrecision) {
@@ -255,6 +255,8 @@ namespace GameFramework.Skill.Trigers
             if (cfg.resources.TryGetValue(key, out ret)) {
                 return ret;
             }
+            if (key.IndexOf("/") < 0)
+                return string.Empty;
             return key;
         }
 
@@ -342,7 +344,7 @@ namespace GameFramework.Skill.Trigers
             if (null != targetObj && relativeToTarget) {
                 Vector3 srcPos = srcObj.transform.position;
                 Vector3 targetPos = targetObj.transform.position;
-                radian = Geometry.GetYAngle(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
+                radian = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
                 ScriptRuntime.Vector2 newOffset = Geometry.GetRotate(new ScriptRuntime.Vector2(relativeCenter.x, relativeCenter.z), radian);
                 center = targetPos + new Vector3(newOffset.X, relativeCenter.y, newOffset.Y);
             } else {

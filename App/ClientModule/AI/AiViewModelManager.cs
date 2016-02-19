@@ -18,7 +18,6 @@ namespace GameFramework
             AbstractAiStateLogic.OnAiStopSkill += this.OnAiStopSkill;
             AbstractAiStateLogic.OnAiAddImpact += this.OnAiAddImpact;
             AbstractAiStateLogic.OnAiRemoveImpact += this.OnAiRemoveImpact;
-            AbstractAiStateLogic.OnAiMeetEnemy += this.OnAiMeetEnemy;
             AbstractAiStateLogic.OnAiSendStoryMessage += this.OnAiSendStoryMessage;
         }
 
@@ -73,12 +72,23 @@ namespace GameFramework
         }
         private void OnAiAddImpact(EntityInfo entity, int impactId)
         {
+            ImpactInfo impactInfo = new ImpactInfo(impactId);
+            impactInfo.StartTime = TimeUtility.GetLocalMilliseconds();
+            impactInfo.ImpactSenderId = entity.GetId();
+            impactInfo.SkillId = 0;
+            if (null != impactInfo.ConfigData) {
+                entity.GetSkillStateInfo().AddImpact(impactInfo);
+                int seq = impactInfo.Seq;
+                if (GfxSkillSystem.Instance.StartSkill(entity.GetId(), impactInfo.ConfigData, seq)) {
+                }
+            }                
         }
         private void OnAiRemoveImpact(EntityInfo entity, int impactId)
         {
-        }
-        private void OnAiMeetEnemy(EntityInfo entity)
-        {
+            ImpactInfo impactInfo = entity.GetSkillStateInfo().FindImpactInfoById(impactId);
+            if (null != impactInfo) {
+                GfxSkillSystem.Instance.StopSkill(entity.GetId(), impactId, impactInfo.Seq, false);
+            }
         }
         private void OnAiSendStoryMessage(EntityInfo entity, string msgId, object[] args)
         {

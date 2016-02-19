@@ -6,10 +6,10 @@ skill(106)
   };
   section(100)
   {
-    sendstorymessage(0,"KillSummonNpc");
+    sendstorymessage(0,"kill_summon_npc");
   };
   onstop
   {
-    sendstorymessage(0,"KillSummonNpc");
+    sendstorymessage(0,"kill_summon_npc");
   };
 };

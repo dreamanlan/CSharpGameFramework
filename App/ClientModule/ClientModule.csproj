@@ -18,7 +18,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;UNITY_5;UNITY_EDITOR</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;UNITY_5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -52,22 +52,40 @@
     <Reference Include="Dsl">
       <HintPath>..\..\ExternalLibrary\Dsl.dll</HintPath>
     </Reference>
+    <Reference Include="Lidgren.Network">
+      <HintPath>..\..\ExternalLibrary\Lidgren.Network.dll</HintPath>
+    </Reference>
     <Reference Include="LitJson">
       <HintPath>..\..\ExternalLibrary\LitJson.dll</HintPath>
+    </Reference>
+    <Reference Include="MyWebSocket">
+      <HintPath>..\..\ExternalLibrary\MyWebSocket.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\ExternalLibrary\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtobufSerializer">
+      <HintPath>..\ClientProtoBuf\bin\ProtobufSerializer.dll</HintPath>
     </Reference>
     <Reference Include="ScriptFrameworkLibrary">
       <HintPath>..\..\ExternalLibrary\ScriptFrameworkLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="UnityEditor">
-      <HintPath>..\..\ExternalLibrary\UnityEditor.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\..\ExternalLibrary\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\MessageCommon\ProtoHelper.cs">
+      <Link>RoomNetWork\ProtoHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\MessageCommon\ProtoNetEncoding.cs">
+      <Link>UserNetwork\ProtoNetEncoding.cs</Link>
+    </Compile>
+    <Compile Include="..\MessageCommon\ProtoNetSerialize.cs">
+      <Link>RoomNetWork\ProtoNetSerialize.cs</Link>
+    </Compile>
     <Compile Include="AI\AiViewModelManager.cs" />
     <Compile Include="ClientModule.cs" />
     <Compile Include="ClientModule_Config.cs" />
@@ -83,6 +101,9 @@
     <Compile Include="GameObjects\EntityViewModel_Npc.cs" />
     <Compile Include="GmCommands\ClientGmStorySystem.cs" />
     <Compile Include="GmCommands\GmCommands.cs" />
+    <Compile Include="RoomNetWork\MessageDispatch.cs" />
+    <Compile Include="RoomNetWork\MsgHandler.cs" />
+    <Compile Include="RoomNetWork\NetWorkSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resource\AbstractScriptBehavior.cs" />
     <Compile Include="Resource\AssetBundleManager.cs" />
@@ -118,8 +139,14 @@
     <Compile Include="Story\Values\GameLogicValues.cs" />
     <Compile Include="Story\Values\GeneralValues.cs" />
     <Compile Include="Story\Values\NpcValues.cs" />
-    <Compile Include="Utility\Utility.cs" />
-    <Compile Include="Utility\PointController.cs" />
+    <Compile Include="UserData\ClientInfo.cs" />
+    <Compile Include="UserData\RoleInfo.cs" />
+    <Compile Include="UserNetwork\UserMessageHandler.cs" />
+    <Compile Include="UserNetwork\UserNetworkSystem.cs" />
+    <Compile Include="UserNetwork\NodeMessageDefine.cs" />
+    <Compile Include="UserNetwork\NodeMessageDispatcher.cs" />
+    <Compile Include="UtilityForClient\UtilityForClient.cs" />
+    <Compile Include="UtilityForClient\PointController.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\EntitySystem\AiSystem\AiSystem.csproj">
@@ -145,6 +172,10 @@
     <ProjectReference Include="..\..\Infrastructure\StorySystem\StorySystem.csproj">
       <Project>{f1d962e1-3b17-4597-b542-bcb657e75829}</Project>
       <Name>StorySystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClientProtoBuf\ClientProtoBuf.csproj">
+      <Project>{c402fc70-3a7a-4ce2-956f-6aa1dfd5882e}</Project>
+      <Name>ClientProtoBuf</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

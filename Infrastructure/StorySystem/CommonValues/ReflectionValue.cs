@@ -453,7 +453,7 @@ namespace StorySystem.CommonValues
                             GameFramework.LogSystem.Warn("null == Type.GetType({0})", type);
                         }
                     }
-                } catch(Exception ex) {
+                } catch (Exception ex) {
                     GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     m_Value = null;
                 }

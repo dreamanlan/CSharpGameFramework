@@ -12,6 +12,11 @@ namespace GameFramework
     public const int c_TotalPreservedRoomCount = 64;
     public const int c_PreservedRoomCountPerThread = 4;
 
+    public bool IsClient
+    {
+        get { return m_IsClient; }
+        set { m_IsClient = value; }
+    }
     public bool IsDebug
     {
       get { return m_IsDebug; }
@@ -96,6 +101,7 @@ namespace GameFramework
       AddCrypto("time", "_45_", m_EncodeTable, m_DecodeTable);
     }
 
+    private bool m_IsClient = true;
     private bool m_IsDebug = false;
     private bool m_IsDevice = false;
     private bool m_IsPublish = false;

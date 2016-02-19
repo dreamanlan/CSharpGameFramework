@@ -57,7 +57,7 @@ namespace StorySystem.CommonCommands
                     } catch (Exception ex) {
                         GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     }
-                } else {                    
+                } else {
                     t = obj.GetType();
                     if (null != t) {
                         try {

@@ -1,0 +1,22 @@
+//emit_skill
+skill(90000)
+{
+  section(10000)
+  {
+  	track(0,0);
+  };
+};
+//hit_skill
+skill(90001)
+{
+  section(300)
+  {
+    animation(hitAnim);
+    //adjustsectionduration("anim",100);
+    selfeffect(hitEffect,-1,hitEffectBone,-1)
+    {
+      transform(vector3(0,1,0));
+    };
+    damage(0);
+  };
+};

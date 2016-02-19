@@ -31,25 +31,13 @@ namespace GameFramework
     {
       m_BlackBoardDatas.Clear();
     }
-    public bool IsAutoOperate
-    {
-        get { return m_IsAutoOperate; }
-        set { m_IsAutoOperate = value; }
-    }
     public bool IsGameOver
     {
         get { return m_IsGameOver; }
         set { m_IsGameOver = value; }
     }
-    public int FormationId
-    {
-        get { return m_FormationId; }
-        set { m_FormationId = value; }
-    }
 
-    private bool m_IsAutoOperate = false;
     private bool m_IsGameOver = false;
-    private int m_FormationId = 1;
     private TypedDataCollection m_BlackBoardDatas = new TypedDataCollection();
     private Dictionary<string, object> m_BlackBoardVariables = new Dictionary<string, object>();
   }

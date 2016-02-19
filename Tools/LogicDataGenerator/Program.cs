@@ -36,6 +36,7 @@ namespace LogicDataGenerator
   internal class MessageDef
   {
     internal string m_TypeName;
+    internal string m_WrapName;
     internal List<MemberDef> m_Members = new List<MemberDef>();
     internal List<string> m_PrimaryKeys = new List<string>();
     internal List<string> m_ForeignKeys = new List<string>();
@@ -44,6 +45,16 @@ namespace LogicDataGenerator
     internal string m_EnumValue = string.Empty;
     internal bool m_DontGenEnum = false;
     internal bool m_DontGenDB = false;
+    internal MemberDef GetMemberDef(string memberName)
+    {
+      MemberDef ret = null;
+      foreach (var memberDef in m_Members) {
+        if (memberDef.m_MemberName.Equals(memberName)) {
+          ret = memberDef;
+        }
+      }
+      return ret;
+    }
 
     internal SortedDictionary<string, EnumTypeDef> m_EnumTypes = new SortedDictionary<string, EnumTypeDef>();
     internal SortedDictionary<string, MessageDef> m_Messages = new SortedDictionary<string, MessageDef>();
@@ -395,7 +406,7 @@ namespace LogicDataGenerator
         sw.WriteLine();
         sw.WriteLine("namespace GameFramework");
         sw.WriteLine("{");
-        sw.WriteLine("\tpublic sealed class {0}Wrap", messageDef.m_TypeName);
+        sw.WriteLine("\tpublic sealed partial class {0}", messageDef.m_WrapName);
         sw.WriteLine("\t{");
         sw.WriteLine();
         sw.WriteLine("\t\tpublic bool Modified");
@@ -426,32 +437,35 @@ namespace LogicDataGenerator
             isSpecial = converter.m_IsSpecial;
             if (isSpecial) {
               sw.WriteLine(IndentCode("\t\t", converter.m_CrudCode), memberDef.m_MemberName, callOnUpdated);
-            }
-          } else {
-            if (memberDef.m_IsPrimaryKey) {
-              callOnUpdated = "OnPrimaryKeyUpdated()";
-            } else if (memberDef.m_IsForeignKey) {
-              callOnUpdated = "OnForeignKeyUpdated()";
-            }
-          }
-          if (!isSpecial) {
-            sw.WriteLine("\t\tpublic {0} {1}", memberDef.m_TypeName, memberDef.m_MemberName);
-            sw.WriteLine("\t\t{");
-            if (null != converter) {
+            } else {
+              sw.WriteLine("\t\tpublic {0} {1}", memberDef.m_TypeName, memberDef.m_MemberName);
+              sw.WriteLine("\t\t{");
               sw.WriteLine("\t\t\tget{{return m_{0};}}", memberDef.m_MemberName);
               sw.WriteLine("\t\t\tset");
               sw.WriteLine("\t\t\t{");
               sw.WriteLine("\t\t\t\tm_{0} = value;", memberDef.m_MemberName);
               sw.WriteLine("\t\t\t\t{0};", callOnUpdated);
               sw.WriteLine("\t\t\t}");
-            } else {
-              sw.WriteLine("\t\t\tget{{return m_{0}.{1};}}", messageDef.m_TypeName, memberDef.m_MemberName);
-              sw.WriteLine("\t\t\tset");
-              sw.WriteLine("\t\t\t{");
-              sw.WriteLine("\t\t\t\tm_{0}.{1} = value;", messageDef.m_TypeName, memberDef.m_MemberName);
-              sw.WriteLine("\t\t\t\t{0};", callOnUpdated);
-              sw.WriteLine("\t\t\t}");
+              sw.WriteLine("\t\t}");
             }
+          } else {                   
+            sw.WriteLine("\t\tpublic {0} {1}", memberDef.m_TypeName, memberDef.m_MemberName);
+            sw.WriteLine("\t\t{");
+            sw.WriteLine("\t\t\tget{{return m_{0}.{1};}}", messageDef.m_TypeName, memberDef.m_MemberName);
+            sw.WriteLine("\t\t\tset");
+            sw.WriteLine("\t\t\t{");
+            sw.WriteLine("\t\t\t\tm_{0}.{1} = value;", messageDef.m_TypeName, memberDef.m_MemberName);
+            if (!(memberDef.m_IsPrimaryKey || memberDef.m_IsForeignKey)) {
+              sw.WriteLine("\t\t\t\t{0};", callOnUpdated);
+            } else {
+              if (memberDef.m_IsPrimaryKey) {
+                sw.WriteLine("\t\t\t\t{0};", "OnPrimaryKeyUpdated()");
+              }
+              if (memberDef.m_IsForeignKey) {
+                sw.WriteLine("\t\t\t\t{0};", "OnForeignKeyUpdated()");
+              }
+            }           
+            sw.WriteLine("\t\t\t}");
             sw.WriteLine("\t\t}");
           }
         }
@@ -529,7 +543,14 @@ namespace LogicDataGenerator
         if (messageDef.m_PrimaryKeys.Count > 0) {
           sw.WriteLine("\t\t\tm_PrimaryKeys.Clear();");
           foreach (string key in messageDef.m_PrimaryKeys) {
-            sw.WriteLine("\t\t\tm_PrimaryKeys.Add(m_{0}.{1}.ToString());", messageDef.m_TypeName, key);
+            MemberDef memberDef = messageDef.GetMemberDef(key);
+            if (memberDef.m_TypeName.Equals("string")) {
+              sw.WriteLine("\t\t\tif (m_{0}.{1} != null) {2}", messageDef.m_TypeName, key, '{');
+              sw.WriteLine("\t\t\t\tm_PrimaryKeys.Add(m_{0}.{1}.ToString());", messageDef.m_TypeName, key);
+              sw.WriteLine("\t\t\t}");
+            } else {
+              sw.WriteLine("\t\t\tm_PrimaryKeys.Add(m_{0}.{1}.ToString());", messageDef.m_TypeName, key);
+            }
           }
         }
         sw.WriteLine("\t\t}");
@@ -539,7 +560,14 @@ namespace LogicDataGenerator
         if (messageDef.m_ForeignKeys.Count > 0) {
           sw.WriteLine("\t\t\tm_ForeignKeys.Clear();");
           foreach (string key in messageDef.m_ForeignKeys) {
-            sw.WriteLine("\t\t\tm_ForeignKeys.Add(m_{0}.{1}.ToString());", messageDef.m_TypeName, key);
+            MemberDef memberDef = messageDef.GetMemberDef(key);
+            if (memberDef.m_TypeName.Equals("string")) {
+              sw.WriteLine("\t\t\tif (m_{0}.{1} != null) {2}", messageDef.m_TypeName, key, '{');
+              sw.WriteLine("\t\t\t\tm_ForeignKeys.Add(m_{0}.{1}.ToString());", messageDef.m_TypeName, key);
+              sw.WriteLine("\t\t\t}");
+            } else {
+              sw.WriteLine("\t\t\tm_ForeignKeys.Add(m_{0}.{1}.ToString());", messageDef.m_TypeName, key);
+            }
           }
         }
         sw.WriteLine("\t\t}");
@@ -606,6 +634,7 @@ namespace LogicDataGenerator
               }
             }
           }
+          sw.WriteLine("\t\tMaxNum");
           sw.WriteLine("\t}");
           sw.WriteLine("");
           sw.WriteLine("\tpublic static class {0}2Type", enumName);
@@ -645,6 +674,58 @@ namespace LogicDataGenerator
         }
       } catch (Exception ex) {
         Console.WriteLine(ex);
+      }
+    }
+    internal void GenAllJsMessagesEnum(string jsFile, string enumName, params string[] groups)
+    {
+      HashSet<string> expectGroups = new HashSet<string>(groups);
+      if (expectGroups.Count <= 0) {
+        expectGroups.Add(string.Empty);
+      }
+      using (StreamWriter sw = new StreamWriter(jsFile, true)) {
+        sw.WriteLine("//----------------------------------------------------------------------------");
+        sw.WriteLine("//！！！不要手动修改此文件，此文件由LogicDataGenerator按{0}生成！！！", m_DslFile);
+        sw.WriteLine("//----------------------------------------------------------------------------");
+        
+        sw.WriteLine("var {0} = {{", enumName);
+        bool first = true;
+        string specValue = string.Empty;
+        int index = 1;
+        foreach (string message in m_SortedMessageEnums) {
+          MessageDef messageDef;
+          if (m_Messages.TryGetValue(message, out messageDef)) {
+            if (!messageDef.m_DontGenEnum) {
+              if (!string.IsNullOrEmpty(messageDef.m_EnumValue)) {
+                sw.WriteLine("\t{0} : {1},", message, messageDef.m_EnumValue);
+                specValue = messageDef.m_EnumValue;
+                index = 1;
+              } else {
+                if (first || string.IsNullOrEmpty(specValue)) {
+                  sw.WriteLine("\t{0} : {1},", message, index);
+                  ++index;
+                } else {
+                  sw.WriteLine("\t{0} : {1} + {2},", message, specValue, index);
+                  ++index;
+                }
+              }
+              first = false;
+            }
+          }
+        }
+        sw.WriteLine("};");
+        sw.WriteLine();
+
+        if (!string.IsNullOrEmpty(m_Package)) {
+          sw.WriteLine("exports.{0} = {{", m_Package);
+        } else {
+          sw.WriteLine("exports = {{", m_Package);
+        }
+        sw.WriteLine();
+        sw.WriteLine("\t{0} : {0},", enumName);
+        sw.WriteLine();
+        
+        sw.WriteLine("};");
+        sw.Close();
       }
     }
     internal void GenAllMessageProtos(string file, params string[] groups)
@@ -969,6 +1050,23 @@ namespace LogicDataGenerator
         sw.WriteLine("\t\t\t}");
         sw.WriteLine("\t\t}");
 
+        sw.WriteLine("\t\tinternal static int BatchSave(int msgId, List<bool> validList, List<byte[]> dataList, int dataVersion)");
+        sw.WriteLine("\t\t{");
+        sw.WriteLine("\t\t\tint count = 0;");
+        sw.WriteLine("\t\t\tswitch(msgId){");
+        foreach (var messagePair in m_Messages) {
+          string message = messagePair.Key;
+          MessageDef messageDef = messagePair.Value;
+          if (!messageDef.m_DontGenEnum && !messageDef.m_DontGenDB && expectGroups.Contains(messageDef.m_GroupName)) {
+            sw.WriteLine("\t\t\t\tcase (int){0}.{1}:", enumName, messageDef.m_TypeName);
+            sw.WriteLine("\t\t\t\t\tcount = BatchSave{0}(validList, dataList, dataVersion);", messageDef.m_TypeName);
+            sw.WriteLine("\t\t\t\t\tbreak;");
+          }
+        }
+        sw.WriteLine("\t\t\t}");
+        sw.WriteLine("\t\t\treturn count;");
+        sw.WriteLine("\t\t}");
+
         sw.WriteLine("\t\tinternal static List<GeneralRecordData> LoadAll(int msgId, int start, int count)");
         sw.WriteLine("\t\t{");
         sw.WriteLine("\t\t\tif(start<0)");
@@ -1026,6 +1124,7 @@ namespace LogicDataGenerator
             GenMessageLoadSingle(messageDef, sw);
             GenMessageLoadMulti(messageDef, sw);
             GenMessageSave(messageDef, sw);
+            GenMessageBatchSave(messageDef, sw);
           }
         }
 
@@ -1289,561 +1388,75 @@ namespace LogicDataGenerator
         Console.WriteLine(ex);
       }
     }
-    internal void GenAllCsJsonMessagesEnum(string csFile, string enumName, params string[] groups)
+    private void GenMessageBatchSave(MessageDef messageDef, TextWriter sw)
     {
-      HashSet<string> expectGroups = new HashSet<string>(groups);
-      if (expectGroups.Count <= 0) {
-        expectGroups.Add(string.Empty);
-      }
-      try {
-        string package;
-        if (!string.IsNullOrEmpty(m_Package)) {
-          package = m_Package;
-        } else {
-          package = "GameFrameworkMessage";
-        }
-        using (StreamWriter sw = new StreamWriter(csFile, true)) {
-          sw.WriteLine("//----------------------------------------------------------------------------");
-          sw.WriteLine("//！！！不要手动修改此文件，此文件由LogicDataGenerator按{0}生成！！！", m_DslFile);
-          sw.WriteLine("//----------------------------------------------------------------------------");
-          sw.WriteLine("using System;");
-          sw.WriteLine("using System.Collections.Generic;");
-          sw.WriteLine("using GameFramework;");
-          sw.WriteLine("");
-          sw.WriteLine("namespace {0}", package);
-          sw.WriteLine("{");
-          sw.WriteLine("\tpublic enum {0}", enumName);
-          sw.WriteLine("\t{");
-          sw.WriteLine("\t\tZero,");
-          bool first = true;
-          foreach (string message in m_SortedMessageEnums) {
-            MessageDef messageDef;
-            if (m_Messages.TryGetValue(message, out messageDef)) {
-              if (!messageDef.m_DontGenEnum) {
-                if (!string.IsNullOrEmpty(messageDef.m_EnumValue)) {
-                  sw.WriteLine("\t\t{0} = {1},", message, messageDef.m_EnumValue);
-                } else {
-                  if (first) {
-                    sw.WriteLine("\t\t{0} = 1,", message);
-                  } else {
-                    sw.WriteLine("\t\t{0},", message);
-                  }
-                }
-                first = false;
-              }
-            }
-          }
-          sw.WriteLine("\t\tMaxNum");
-          sw.WriteLine("\t}");
-          sw.WriteLine("\tpublic static class {0}2Object", enumName);
-          sw.WriteLine("\t{");
-          sw.WriteLine("\t\tpublic static object New(int id)");
-          sw.WriteLine("\t\t{");
-          sw.WriteLine("\t\t\tobject r = null;");
-          sw.WriteLine("\t\t\tMyFunc<object> t;");
-          sw.WriteLine("\t\t\tif(s_{0}2Object.TryGetValue(id, out t)){{", enumName);
-          sw.WriteLine("\t\t\t\tr = t();");
-          sw.WriteLine("\t\t\t}");
-          sw.WriteLine("\t\t\treturn r;");
-          sw.WriteLine("\t\t}");
-          sw.WriteLine("");
-          sw.WriteLine("\t\tstatic {0}2Object()", enumName);
-          sw.WriteLine("\t\t{");
-          foreach (var messagePair in m_Messages) {
-            string message = messagePair.Key;
-            MessageDef messageDef = messagePair.Value;
-            if (!messageDef.m_DontGenEnum && expectGroups.Contains(messageDef.m_GroupName)) {
-              sw.WriteLine("\t\t\ts_{0}2Object.Add((int){1}.{2}, () => new {3}());", enumName, enumName, message, message);
-            }
-          }
-          sw.WriteLine("\t\t}");
-          sw.WriteLine("");
-          sw.WriteLine("\t\tprivate static Dictionary<int, MyFunc<object>> s_{0}2Object = new Dictionary<int, MyFunc<object>>();", enumName);
-          sw.WriteLine("\t}");
-          sw.WriteLine("}");
-          sw.Close();
-        }
-      } catch (Exception ex) {
-        Console.WriteLine(ex);
-      }
-    }
-    internal void GenAllJsonMessagesAndJsJsonMessagesEnum(string jsFile, string csFile, string enumName, params string[] groups)
-    {
-      HashSet<string> expectGroups = new HashSet<string>(groups);
-      if (expectGroups.Count <= 0) {
-        expectGroups.Add(string.Empty);
-      }
-      try {
-        GenAllJsJsonMessagesAndMessagesEnum(jsFile, enumName, expectGroups);       
-      } catch (Exception ex) {
-        Console.WriteLine(ex);
-      }
-      try {
-        GenAllCsJsonMessages(csFile, expectGroups);
-      } catch (Exception ex) {
-        Console.WriteLine(ex);
-      }
-    }
-    private void GenAllJsJsonMessagesAndMessagesEnum(string jsFile, string enumName, HashSet<string> expectGroups)
-    {
-      using (StreamWriter sw = new StreamWriter(jsFile, true)) {
-        sw.WriteLine("//----------------------------------------------------------------------------");
-        sw.WriteLine("//！！！不要手动修改此文件，此文件由LogicDataGenerator按{0}生成！！！", m_DslFile);
-        sw.WriteLine("//----------------------------------------------------------------------------");
-
-        sw.WriteLine(@"
-var c_Null = null;
-var s_GetSubData = function(data, index, obj){
-	if(data instanceof Array && data.length>index && null!=data[index] && data[index] instanceof Array){
-		obj.fromJson(data[index]);
-	}
-};
-var s_GetSubDataArray = function(data, index, obj, factory) {
-	if(data instanceof Array && data.length>index && null!=data[index] && data[index] instanceof Array){
-		var ct = data[index].length;
-		for(var i=0;i<ct;++i){
-			var val = factory();
-			val.fromJson(data[index]);
-			obj.push(val);
-		}
-	}
-};
-var s_AddSubData = function(data, obj) {
-	if(null!=obj){
-	  data.push(obj.toJson());
-	} else {
-	  data.push(obj);
-	}
-};
-var s_AddSubDataArray = function(data, obj) {
-	if(null!=obj){
-		var subData = new Array();
-		for(var i in obj){
-			if(null!=obj[i]){
-				subData.push(obj[i].toJson());
-			} else {
-				subData.push(obj[i]);
-			}
-		}
-		data.push(subData);
-	} else {
-		data.push(obj);
-	}
-};");
-
-        int indent = 0;
-        
-        foreach (var enumTypePair in m_EnumTypes) {
-          string enumType = enumTypePair.Key;
-          EnumTypeDef enumTypeDef = enumTypePair.Value;
-          if (expectGroups.Contains(enumTypeDef.m_GroupName)) {
-            GenJsJsonEnumType(enumTypeDef, indent, sw);
-          }
-        }
-
-        foreach (var messagePair in m_Messages) {
-          string message = messagePair.Key;
-          MessageDef messageDef = messagePair.Value;
-          if (expectGroups.Contains(messageDef.m_GroupName)) {
-            GenJsJsonMessage(messageDef, indent, sw);
-          }
-        }
-
-        sw.WriteLine();
-
-        sw.WriteLine("var {0} = {{", enumName);
-        bool first = true;
-        string specValue = string.Empty;
-        int index = 1;
-        foreach (string message in m_SortedMessageEnums) {
-          MessageDef messageDef;
-          if (m_Messages.TryGetValue(message, out messageDef)) {
-            if (!messageDef.m_DontGenEnum) {
-              if (!string.IsNullOrEmpty(messageDef.m_EnumValue)) {
-                sw.WriteLine("\t{0} : {1},", message, messageDef.m_EnumValue);
-                specValue = messageDef.m_EnumValue;
-                index = 1;
-              } else {
-                if (first || string.IsNullOrEmpty(specValue)) {
-                  sw.WriteLine("\t{0} : {1},", message, index);
-                  ++index;
-                } else {
-                  sw.WriteLine("\t{0} : {1} + {2},", message, specValue, index);
-                  ++index;
-                }
-              }
-              first = false;
-            }
-          }
-        }
-        sw.WriteLine("};");
-
-        sw.WriteLine();
-        sw.WriteLine("function {0}2Object(){{", enumName);
-        sw.WriteLine("\tvar dict = new Object();");
-        foreach (var messagePair in m_Messages) {
-          string message = messagePair.Key;
-          MessageDef messageDef = messagePair.Value;
-          if (!messageDef.m_DontGenEnum && expectGroups.Contains(messageDef.m_GroupName)) {
-            sw.WriteLine("\tdict[{0}.{1}] = function(){{return new {1}();}};", enumName, messageDef.m_TypeName);
-          }
-        }
-        sw.WriteLine(@"
-	function newObject(id){
-	  var factory = dict[id];
-	  if(factory){
-	    return factory();
-	  }
-	  return null;
-	}
-	  
-	return {
-	  newObject : newObject
-	};");
-        sw.WriteLine("}");
-        
-        sw.WriteLine();
-
-        indent = 1;
-        if (!string.IsNullOrEmpty(m_Package)) {
-          sw.WriteLine("exports.{0} = {{", m_Package);
-        } else {
-          sw.WriteLine("exports = {{", m_Package);
-        }
-        sw.WriteLine();
-        sw.WriteLine("\t{0} : {0},", enumName);
-        sw.WriteLine("\t{0}2Object : new {0}2Object(),", enumName);
-        sw.WriteLine();
-
-        foreach (var enumTypePair in m_EnumTypes) {
-          string enumType = enumTypePair.Key;
-          EnumTypeDef enumTypeDef = enumTypePair.Value;
-          if (expectGroups.Contains(enumTypeDef.m_GroupName)) {
-            sw.WriteLine("\t{0} : {0},", enumTypeDef.m_EnumName);
-          }
-        }
-
-        foreach (var messagePair in m_Messages) {
-          string message = messagePair.Key;
-          MessageDef messageDef = messagePair.Value;
-          if (expectGroups.Contains(messageDef.m_GroupName)) {
-            sw.WriteLine("\t{0} : {0},", messageDef.m_TypeName);
-          }
-        }
-
-        sw.WriteLine("};");
-        sw.Close();
-      }
-    }
-    private void GenJsJsonEnumType(EnumTypeDef enumTypeDef, int indent, TextWriter sw)
-    {
-      const string c_Indents = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
-      string indentStr = c_Indents.Substring(0, indent);
       try {
         sw.WriteLine();
-        sw.WriteLine("{0}var {1} = {{", indentStr, enumTypeDef.m_EnumName);
-        foreach (var pair in enumTypeDef.m_EnumMembers) {
-          sw.WriteLine("{0}\t{1} : {2},", indentStr, pair.Key, pair.Value);
-        }
-        sw.WriteLine("{0}}};", indentStr);
-      } catch (Exception ex) {
-        Console.WriteLine(ex);
-      }
-    }
-    private void GenJsJsonMessage(MessageDef messageDef, int indent, TextWriter sw)
-    {
-      const string c_Indents = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
-      string indentStr = c_Indents.Substring(0, indent);
-      try {
-        sw.WriteLine();
-        sw.WriteLine("{0}function {1}(){{", indentStr, messageDef.m_TypeName);
-        foreach (var enumDefPair in messageDef.m_EnumTypes) {
-          GenJsJsonEnumType(enumDefPair.Value, indent + 1, sw);
-        }
-        foreach (var messageDefPair in messageDef.m_Messages) {
-          GenJsJsonMessage(messageDefPair.Value, indent + 1, sw);
-        }
-        GenJsJsonNestedMessageExport(messageDef, indent + 1, sw);
-        sw.WriteLine();
-        sw.WriteLine("{0}\treturn {{", indentStr);
+        sw.WriteLine("\t\tprivate static int BatchSave{0}(List<bool> validList, List<byte[]> dataList, int dataVersion)", messageDef.m_TypeName);
+        sw.WriteLine("\t\t{");
+        sw.WriteLine("\t\t\tif (dataList.Count <= 0) {");
+        sw.WriteLine("\t\t\t  return 0;");
+        sw.WriteLine("\t\t\t}");
+        sw.WriteLine("\t\t\tStringBuilder sbSql = new StringBuilder(\"insert into {0} \", 4096); ", messageDef.m_TypeName);
+        StringBuilder sbMember = new StringBuilder();
         foreach (MemberDef memberDef in messageDef.m_Members) {
-          string type = GetProtoType(memberDef.m_TypeName);
-          if (null != memberDef.m_Default) {
-            sw.WriteLine("{0}\t\t{1} : {2},", indentStr, memberDef.m_MemberName, memberDef.m_Default);
-          } else {
-            if (0 == memberDef.m_Modifier.CompareTo("repeated")) {
-              sw.WriteLine("{0}\t\t{1} : new Array(),", indentStr, memberDef.m_MemberName);
-            } else if(0 == type.CompareTo("string")) {
-              sw.WriteLine("{0}\t\t{1} : \"\",", indentStr, memberDef.m_MemberName);
-            } else if (0 == type.CompareTo("bool")) {
-              sw.WriteLine("{0}\t\t{1} : false,", indentStr, memberDef.m_MemberName);
-            } else if(0 == type.CompareTo("int32") ||
-              0 == type.CompareTo("uint32") ||
-              0 == type.CompareTo("int64") ||
-              0 == type.CompareTo("uint64") ||
-              0 == type.CompareTo("float") ||
-              0 == type.CompareTo("double")) {
-                sw.WriteLine("{0}\t\t{1} : 0,", indentStr, memberDef.m_MemberName);
-            } else if (null != FindEnumTypeDef(memberDef.m_TypeName)) {
-              sw.WriteLine("{0}\t\t{1} : 0,", indentStr, memberDef.m_MemberName);
-            } else {
-              sw.WriteLine("{0}\t\t{1} : c_Null/*{2}*/,", indentStr, memberDef.m_MemberName, memberDef.m_TypeName);
-            }
-          }
+          sbMember.Append(memberDef.m_MemberName);
+          sbMember.Append(',');
         }
+        sbMember.Remove(sbMember.Length - 1, 1);
+        sw.WriteLine("\t\t\tsbSql.Append(\"(IsValid,DataVersion,{0})\");", sbMember.ToString());
+        sw.WriteLine("\t\t\tsbSql.Append(\" values \");", sbMember.ToString());
+        sw.WriteLine("\t\t\tfor (int i = 0; i < validList.Count; ++i) {");       
+        sw.WriteLine("\t\t\t  Byte valid = 1;");
+        sw.WriteLine("\t\t\t  if (validList[i] == false) {");
+        sw.WriteLine("\t\t\t    valid = 0;");
+        sw.WriteLine("\t\t\t  }");
+        sw.WriteLine("\t\t\t  StringBuilder sbValue = new StringBuilder();");
+        sw.WriteLine("\t\t\t  sbValue.AppendFormat(\"({0},{1}\", valid, dataVersion);");
+        sw.WriteLine("\t\t\t  object _msg;");
+        sw.WriteLine("\t\t\t  if (DbDataSerializer.Decode(dataList[i], typeof({0}), out _msg)) {{", messageDef.m_TypeName);
+        sw.WriteLine("\t\t\t    {0} msg = _msg as {0};", messageDef.m_TypeName);
+        foreach (MemberDef memberDef in messageDef.m_Members) {
+          sw.WriteLine("\t\t\t    sbValue.Append(',');");          
+          if (memberDef.m_TypeName.Equals("bool")) {
+             sw.WriteLine("\t\t\t    sbValue.Append(msg.{0});", memberDef.m_MemberName);
+          } else {
+             sw.WriteLine("\t\t\t    sbValue.AppendFormat(\"\'{{0}}\'\", msg.{0});", memberDef.m_MemberName);          
+          }          
+        }
+        sw.WriteLine("\t\t\t    sbValue.Append(')');");
+        sw.WriteLine("\t\t\t    sbSql.Append(sbValue.ToString());");
+        sw.WriteLine("\t\t\t    sbSql.Append(',');");
+        sw.WriteLine("\t\t\t  }");
+        sw.WriteLine("\t\t\t}");
+        sw.WriteLine("\t\t\tsbSql.Remove(sbSql.Length - 1, 1);");
+        sw.WriteLine("\t\t\tsbSql.Append(\" on duplicate key update \");");
+        sw.WriteLine("\t\t\tsbSql.AppendFormat(\" IsValid = if(DataVersion < {0}, values(IsValid), IsValid),\", dataVersion);");
+        foreach (MemberDef memberDef in messageDef.m_Members) {
+          sw.WriteLine("\t\t\tsbSql.AppendFormat(\" {0} = if(DataVersion < {{0}}, values({0}), {0}),\", dataVersion);", memberDef.m_MemberName);
+        }
+        sw.WriteLine("\t\t\tsbSql.AppendFormat(\" DataVersion = if(DataVersion < {0}, {0}, DataVersion),\", dataVersion);");
+        sw.WriteLine("\t\t\tsbSql.Remove(sbSql.Length - 1, 1);");
+      
+        sw.WriteLine("\t\t\tstring statement = sbSql.ToString();");
+        sw.WriteLine("\t\t\tint count = 0;");
+        sw.WriteLine("\t\t\ttry {");
+        sw.WriteLine("\t\t\t  using (MySqlCommand cmd = new MySqlCommand()) {");
+        sw.WriteLine("\t\t\t    cmd.Connection = DBConn.MySqlConn;");
+        sw.WriteLine("\t\t\t    cmd.CommandType = CommandType.Text;");
+        sw.WriteLine("\t\t\t    cmd.CommandText = statement;");       
+        sw.WriteLine("\t\t\t    count = cmd.ExecuteNonQuery();");
+        sw.WriteLine("\t\t\t  }");
+        sw.WriteLine("\t\t\t} catch (Exception ex) {");
+        sw.WriteLine("\t\t\t  if (dataList.Count < 200) {");
+        sw.WriteLine("\t\t\t    LogSys.Log(LOG_TYPE.ERROR, \"Error Sql statement:{0}\", statement);");
+        sw.WriteLine("\t\t\t  }");
+        sw.WriteLine("\t\t\t  DBConn.Close();");
+        sw.WriteLine("\t\t\t  throw ex;");
+        sw.WriteLine("\t\t\t}");
+        sw.WriteLine("\t\t\treturn count;");
+        sw.WriteLine("\t\t}");
         sw.WriteLine();
-        sw.WriteLine("{0}\t\tfromJson : function(data){{", indentStr);
-        foreach (MemberDef memberDef in messageDef.m_Members) {
-          string type = GetProtoType(memberDef.m_TypeName);
-          if (0 == memberDef.m_Modifier.CompareTo("repeated")) {
-            if (0 == type.CompareTo("int32") ||
-              0 == type.CompareTo("uint32") ||
-              0 == type.CompareTo("int64") ||
-              0 == type.CompareTo("uint64") ||
-              0 == type.CompareTo("bool") ||
-              0 == type.CompareTo("string") ||
-              0 == type.CompareTo("float") ||
-              0 == type.CompareTo("double")) {
-                sw.WriteLine("{0}\t\t\tthis.{1} = data[{2}];", indentStr, memberDef.m_MemberName, memberDef.m_Order - 1);
-            } else if (null != FindEnumTypeDef(memberDef.m_TypeName)) {
-              sw.WriteLine("{0}\t\t\tthis.{1} = data[{2}];", indentStr, memberDef.m_MemberName, memberDef.m_Order - 1);
-            } else {
-              sw.WriteLine("{0}\t\t\ts_GetSubDataArray(data, {1}, this.{2}, function(){{return new {3}();}});", indentStr, memberDef.m_Order - 1, memberDef.m_MemberName, memberDef.m_TypeName);
-            }
-          } else if (0 == type.CompareTo("int32") ||
-            0 == type.CompareTo("uint32") ||
-            0 == type.CompareTo("int64") ||
-            0 == type.CompareTo("uint64") ||
-            0 == type.CompareTo("bool") ||
-            0 == type.CompareTo("string") ||
-            0 == type.CompareTo("float") ||
-            0 == type.CompareTo("double")) {
-              sw.WriteLine("{0}\t\t\tthis.{1} = data[{2}];", indentStr, memberDef.m_MemberName, memberDef.m_Order - 1);
-          } else if (null != FindEnumTypeDef(memberDef.m_TypeName)) {
-            sw.WriteLine("{0}\t\t\tthis.{1} = data[{2}];", indentStr, memberDef.m_MemberName, memberDef.m_Order - 1);
-          } else {
-            sw.WriteLine("{0}\t\t\tthis.{1} = new {2}();", indentStr, memberDef.m_MemberName, memberDef.m_TypeName);
-            sw.WriteLine("{0}\t\t\ts_GetSubData(data, {1}, this.{2});", indentStr, memberDef.m_Order - 1, memberDef.m_MemberName);
-          }
-        }
-        sw.WriteLine("{0}\t\t}},", indentStr);
-        sw.WriteLine("{0}\t\ttoJson : function(){{", indentStr);
-        sw.WriteLine("{0}\t\t\tvar data = new Array();", indentStr);
-        foreach (MemberDef memberDef in messageDef.m_Members) {
-          string type = GetProtoType(memberDef.m_TypeName);
-          if (0 == memberDef.m_Modifier.CompareTo("repeated")) {
-            if (0 == type.CompareTo("int32") ||
-              0 == type.CompareTo("uint32") ||
-              0 == type.CompareTo("int64") ||
-              0 == type.CompareTo("uint64") ||
-              0 == type.CompareTo("bool") ||
-              0 == type.CompareTo("string") ||
-              0 == type.CompareTo("float") ||
-              0 == type.CompareTo("double")) {
-                sw.WriteLine("{0}\t\t\tdata.push(this.{1});", indentStr, memberDef.m_MemberName);
-            } else if (null != FindEnumTypeDef(memberDef.m_TypeName)) {
-              sw.WriteLine("{0}\t\t\tdata.push(this.{1});", indentStr, memberDef.m_MemberName);
-            } else {
-              sw.WriteLine("{0}\t\t\ts_AddSubDataArray(data, this.{1});", indentStr, memberDef.m_MemberName);
-            }
-          } else if (0 == type.CompareTo("int32") ||
-            0 == type.CompareTo("uint32") ||
-            0 == type.CompareTo("int64") ||
-            0 == type.CompareTo("uint64") ||
-            0 == type.CompareTo("bool") ||
-            0 == type.CompareTo("string") ||
-            0 == type.CompareTo("float") ||
-            0 == type.CompareTo("double")) {
-              sw.WriteLine("{0}\t\t\tdata.push(this.{1});", indentStr, memberDef.m_MemberName);
-          } else if (null != FindEnumTypeDef(memberDef.m_TypeName)) {
-            sw.WriteLine("{0}\t\t\tdata.push(this.{1});", indentStr, memberDef.m_MemberName);
-          } else {
-            sw.WriteLine("{0}\t\t\ts_AddSubData(data, this.{1});", indentStr, memberDef.m_MemberName);
-          }
-        }
-        sw.WriteLine("{0}\t\t\treturn data;", indentStr);
-        sw.WriteLine("{0}\t\t}},", indentStr);
-        sw.WriteLine("{0}\t}};", indentStr);
-        sw.WriteLine("{0}}}", indentStr);
-      } catch (Exception ex) {
-        Console.WriteLine(ex);
-      }
-    }
-    private void GenJsJsonNestedMessageExport(MessageDef messageDef, int indent, TextWriter sw)
-    {
-      const string c_Indents = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
-      string indentStr = c_Indents.Substring(0, indent);
-      try {
-        if (messageDef.m_EnumTypes.Count > 0 || messageDef.m_Messages.Count > 0) {
-          sw.WriteLine();
-        }
-        foreach (var enumDefPair in messageDef.m_EnumTypes) {
-          sw.WriteLine("{0}{1}.{2} = {2};", indentStr, messageDef.m_TypeName, enumDefPair.Key);
-        }
-        foreach (var messageDefPair in messageDef.m_Messages) {
-          sw.WriteLine("{0}{1}.{2} = {2};", indentStr, messageDef.m_TypeName, messageDefPair.Key);
-        }
-      } catch (Exception ex) {
-        Console.WriteLine(ex);
-      }
-    }
-    private void GenAllCsJsonMessages(string csFile, HashSet<string> expectGroups)
-    {
-      using (StreamWriter sw = new StreamWriter(csFile, true)) {
-        sw.WriteLine("//----------------------------------------------------------------------------");
-        sw.WriteLine("//！！！不要手动修改此文件，此文件由LogicDataGenerator按{0}生成！！！", m_DslFile);
-        sw.WriteLine("//----------------------------------------------------------------------------");
-        sw.WriteLine("using System;");
-        sw.WriteLine("using System.Collections.Generic;");
-        sw.WriteLine("using LitJson;");
-        sw.WriteLine("using GameFramework;");
-        sw.WriteLine("");
-        int indent = 0;
-        if (!string.IsNullOrEmpty(m_Package)) {
-          sw.WriteLine("namespace {0}", m_Package);
-          sw.WriteLine("{");
-          indent = 1;
-        }
-
-        foreach (var enumTypePair in m_EnumTypes) {
-          string enumType = enumTypePair.Key;
-          EnumTypeDef enumTypeDef = enumTypePair.Value;
-          if (expectGroups.Contains(enumTypeDef.m_GroupName)) {
-            GenCsJsonEnumType(enumTypeDef, indent, sw);
-          }
-        }
-
-        foreach (var messagePair in m_Messages) {
-          string message = messagePair.Key;
-          MessageDef messageDef = messagePair.Value;
-          if (expectGroups.Contains(messageDef.m_GroupName)) {
-            GenCsJsonMessage(messageDef, indent, sw);
-          }
-        }
-
-        if (!string.IsNullOrEmpty(m_Package)) {
-          sw.WriteLine("}");
-        }
-        sw.Close();
-      }
-    }
-    private void GenCsJsonEnumType(EnumTypeDef enumTypeDef, int indent, TextWriter sw)
-    {
-      const string c_Indents = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
-      string indentStr = c_Indents.Substring(0, indent);
-      try {
-        sw.WriteLine();
-        sw.WriteLine("{0}public enum {1}", indentStr, enumTypeDef.m_EnumName);
-        sw.WriteLine("{0}{{", indentStr);
-        foreach (var pair in enumTypeDef.m_EnumMembers) {
-          sw.WriteLine("{0}\t{1} = {2},", indentStr, pair.Key, pair.Value);
-        }
-        sw.WriteLine("{0}}}", indentStr);
-      } catch (Exception ex) {
-        Console.WriteLine(ex);
-      }
-    }
-    private void GenCsJsonMessage(MessageDef messageDef, int indent, TextWriter sw)
-    {
-      const string c_Indents = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
-      string indentStr = c_Indents.Substring(0, indent);
-      try {
-        sw.WriteLine();
-        sw.WriteLine("{0}public class {1} : IJsonMessage", indentStr, messageDef.m_TypeName);
-        sw.WriteLine("{0}{{", indentStr);
-        foreach (var enumDefPair in messageDef.m_EnumTypes) {
-          GenCsJsonEnumType(enumDefPair.Value, indent + 1, sw);
-        }
-        foreach (var messageDefPair in messageDef.m_Messages) {
-          GenCsJsonMessage(messageDefPair.Value, indent + 1, sw);
-        }
-        foreach (MemberDef memberDef in messageDef.m_Members) {
-          string type = GetProtoType(memberDef.m_TypeName);
-          if (null != memberDef.m_Default) {
-            sw.WriteLine("{0}\tpublic {1} {2} = {3};", indentStr, memberDef.m_TypeName, memberDef.m_MemberName, memberDef.m_Default);
-          } else {
-            if (0 == memberDef.m_Modifier.CompareTo("repeated")) {
-              sw.WriteLine("{0}\tpublic List<{1}> {2} = new List<{1}>();", indentStr, memberDef.m_TypeName, memberDef.m_MemberName);
-            } else {
-              sw.WriteLine("{0}\tpublic {1} {2};", indentStr, memberDef.m_TypeName, memberDef.m_MemberName);
-            }
-          }
-        }
-        sw.WriteLine();
-        sw.WriteLine("{0}\tpublic void FromJson(JsonData data)", indentStr);
-        sw.WriteLine("{0}\t{{", indentStr);
-        foreach (MemberDef memberDef in messageDef.m_Members) {
-          string type = GetProtoType(memberDef.m_TypeName);
-          if (0 == memberDef.m_Modifier.CompareTo("repeated")) {
-            if (0 == type.CompareTo("int32") ||
-              0 == type.CompareTo("uint32") ||
-              0 == type.CompareTo("int64") ||
-              0 == type.CompareTo("uint64") ||
-              0 == type.CompareTo("bool") ||
-              0 == type.CompareTo("string") ||
-              0 == type.CompareTo("float") ||
-              0 == type.CompareTo("double")) {
-              sw.WriteLine("{0}\t\tJsonMessageUtility.GetSimpleArray(data, {1}, ref {2});", indentStr, memberDef.m_Order - 1, memberDef.m_MemberName);
-            } else if (null != FindEnumTypeDef(memberDef.m_TypeName)) {
-              sw.WriteLine("{0}\t\tJsonMessageUtility.GetEnumArray(data, {1}, ref {2});", indentStr, memberDef.m_Order - 1, memberDef.m_MemberName);
-            } else {
-              sw.WriteLine("{0}\t\tJsonMessageUtility.GetSubDataArray(data, {1}, ref {2});", indentStr, memberDef.m_Order - 1, memberDef.m_MemberName);
-            }
-          } else if (0 == type.CompareTo("int32") ||
-            0 == type.CompareTo("uint32") ||
-            0 == type.CompareTo("int64") ||
-            0 == type.CompareTo("uint64") ||
-            0 == type.CompareTo("bool") ||
-            0 == type.CompareTo("string") ||
-            0 == type.CompareTo("float") ||
-            0 == type.CompareTo("double")) {
-            sw.WriteLine("{0}\t\tdata.Get({1}, ref {2});", indentStr, memberDef.m_Order - 1, memberDef.m_MemberName);
-          } else if (null != FindEnumTypeDef(memberDef.m_TypeName)) {
-            sw.WriteLine("{0}\t\tJsonMessageUtility.GetEnum(data, {1}, out {2});", indentStr, memberDef.m_Order - 1, memberDef.m_MemberName);
-          } else {
-            sw.WriteLine("{0}\t\tJsonMessageUtility.GetSubData(data, {1}, out {2});", indentStr, memberDef.m_Order - 1, memberDef.m_MemberName);
-          }
-        }
-        sw.WriteLine("{0}\t}}", indentStr);
-        sw.WriteLine("{0}\tpublic JsonData ToJson()", indentStr);
-        sw.WriteLine("{0}\t{{", indentStr);
-        sw.WriteLine("{0}\t\tJsonData data = new JsonData();", indentStr);
-        sw.WriteLine("{0}\t\tdata.SetJsonType(JsonType.Array);", indentStr);
-        foreach (MemberDef memberDef in messageDef.m_Members) {
-          string type = GetProtoType(memberDef.m_TypeName);
-          if (0 == memberDef.m_Modifier.CompareTo("repeated")) {
-            if (0 == type.CompareTo("int32") ||
-              0 == type.CompareTo("uint32") ||
-              0 == type.CompareTo("int64") ||
-              0 == type.CompareTo("uint64") ||
-              0 == type.CompareTo("bool") ||
-              0 == type.CompareTo("string") ||
-              0 == type.CompareTo("float") ||
-              0 == type.CompareTo("double")) {
-              sw.WriteLine("{0}\t\tJsonMessageUtility.AddSimpleArray(data, {1});", indentStr, memberDef.m_MemberName);
-            } else if (null != FindEnumTypeDef(memberDef.m_TypeName)) {
-              sw.WriteLine("{0}\t\tJsonMessageUtility.AddEnumArray(data, {1});", indentStr, memberDef.m_MemberName);
-            } else {
-              sw.WriteLine("{0}\t\tJsonMessageUtility.AddSubDataArray(data, {1});", indentStr, memberDef.m_MemberName);
-            }
-          } else if(0 == type.CompareTo("int32") || 
-            0 == type.CompareTo("uint32") || 
-            0 == type.CompareTo("int64") || 
-            0 == type.CompareTo("uint64") || 
-            0 == type.CompareTo("bool") ||  
-            0 == type.CompareTo("string") || 
-            0 == type.CompareTo("float") ||
-            0 == type.CompareTo("double")) {
-            sw.WriteLine("{0}\t\tdata.ArrayAdd({1});", indentStr, memberDef.m_MemberName);
-          } else if (null != FindEnumTypeDef(memberDef.m_TypeName)) {
-            sw.WriteLine("{0}\t\tJsonMessageUtility.AddEnum(data, {1});", indentStr, memberDef.m_MemberName);
-          } else {
-            sw.WriteLine("{0}\t\tJsonMessageUtility.AddSubData(data, {1});", indentStr, memberDef.m_MemberName);
-          }
-        }
-        sw.WriteLine("{0}\t\treturn data;", indentStr);
-        sw.WriteLine("{0}\t}}", indentStr);
-        sw.WriteLine("{0}}}", indentStr);
       } catch (Exception ex) {
         Console.WriteLine(ex);
       }
@@ -2018,6 +1631,7 @@ var s_AddSubDataArray = function(data, obj) {
 
           MessageDef messageDef = new MessageDef();
           messageDef.m_TypeName = typeName;
+          messageDef.m_WrapName = typeName + "Wrap";
           messageDef.m_GroupName = groupName;
           messageDef.m_DontGenEnum = isInnerMessage;
           messageDef.m_DontGenDB = isInnerMessage;
@@ -2038,6 +1652,8 @@ var s_AddSubDataArray = function(data, obj) {
                   messageDef.m_DontGenDB = true;
               } else if (field.GetId() == "enumvalue") {
                 messageDef.m_EnumValue = field.GetParamId(0);
+              } else if (field.GetId() == "wrapname") {
+                messageDef.m_WrapName = field.GetParamId(0);
               } else if (field.GetId() == "member") {
                 if (field.GetParamNum() >= 3) {
                   MemberDef memberDef = new MemberDef();
@@ -2174,10 +1790,10 @@ var s_AddSubDataArray = function(data, obj) {
     {
       GenDataMessage();
       GenBigwordMessage();
-      GenBillingMessage();
+      //GenBillingMessage();
       GenClientLobbyMessage();
+      GenClientLobbyGmMessage();
       GenClientRoomMessage();
-      GenClientGmMessage();
     }
     private static void GenDataAndProto()
     {
@@ -2219,23 +1835,25 @@ var s_AddSubDataArray = function(data, obj) {
     private static void GenClientLobbyMessage()
     {
       MessageDslParser parser = new MessageDslParser();
-      parser.Init("ProtoFiles/GameFrameworkLobbyMsg.dsl");
-      parser.GenAllCsJsonMessagesEnum("ProtoFiles/GameFrameworkLobbyMsgEnum.cs", "JsonMessageDefine", string.Empty);
-      parser.GenAllJsonMessagesAndJsJsonMessagesEnum("ProtoFiles/GameFrameworkLobbyMsg.js", "ProtoFiles/GameFrameworkLobbyMsg.cs", "JsonMessageDefine", string.Empty);
+      parser.Init("ProtoFiles/LobbyMsg.dsl");
+      parser.GenAllMessagesEnum("ProtoFiles/LobbyMsgEnum.cs", "LobbyMessageDefine", string.Empty);
+      parser.GenAllJsMessagesEnum("ProtoFiles/LobbyMsgEnum.js", "LobbyMessageDefine", string.Empty);
+      parser.GenAllMessageProtos("ProtoFiles/LobbyMsg.proto", string.Empty);
+    }
+    private static void GenClientLobbyGmMessage()
+    {
+        MessageDslParser parser = new MessageDslParser();
+        parser.Init("ProtoFiles/LobbyGmMsg.dsl");
+        parser.GenAllMessagesEnum("ProtoFiles/LobbyGmMsgEnum.cs", "LobbyGmMessageDefine", string.Empty);
+        parser.GenAllJsMessagesEnum("ProtoFiles/LobbyGmMsgEnum.js", "LobbyGmMessageDefine", string.Empty);
+        parser.GenAllMessageProtos("ProtoFiles/LobbyGmMsg.proto", string.Empty);
     }
     private static void GenClientRoomMessage()
     {
       MessageDslParser parser = new MessageDslParser();
-      parser.Init("ProtoFiles/GameFrameworkMsg.dsl");
-      parser.GenAllCsJsonMessagesEnum("ProtoFiles/GameFrameworkMsgEnum.cs", "MessageDefine", string.Empty);
-      parser.GenAllJsonMessagesAndJsJsonMessagesEnum("ProtoFiles/GameFrameworkMsg.js", "ProtoFiles/GameFrameworkMsg.cs", "MessageDefine", string.Empty);
-    }
-    private static void GenClientGmMessage()
-    {
-      MessageDslParser parser = new MessageDslParser();
-      parser.Init("ProtoFiles/GameFrameworkGmMsg.dsl");
-      parser.GenAllMessagesEnum("ProtoFiles/GameFrameworkGmMsgEnum.cs", "GmMessageDefine", string.Empty);
-      parser.GenAllMessageProtos("ProtoFiles/GameFrameworkGmMsg.proto", string.Empty);
+      parser.Init("ProtoFiles/RoomMsg.dsl");
+      parser.GenAllMessagesEnum("ProtoFiles/RoomMsgEnum.cs", "RoomMessageDefine", string.Empty);
+      parser.GenAllMessageProtos("ProtoFiles/RoomMsg.proto", string.Empty);
     }
     
     private static void ConvertToUtf8(string file, string destfile)

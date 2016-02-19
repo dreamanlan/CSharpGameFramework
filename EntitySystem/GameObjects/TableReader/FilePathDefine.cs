@@ -6,21 +6,29 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace TableConfig
+public class FilePathDefine_Client
 {
-	internal class FilePathDefine_Client : FilePathDefine
-	{
-		public const string C_Actor = "Client/Actor.dat";
-		public const string C_Formation = "Client/Formation.dat";
-		public const string C_Level = "Client/Level.dat";
-		public const string C_Skill = "Client/Skill.dat";
-		public const string C_SkillDsl = "Client/SkillDsl.dat";
-		public const string C_SkillResources = "Client/SkillResources.dat";
-		public const string C_StoryDlg = "Client/StoryDlg.dat";
-		public const string C_StrDictionary = "Client/StrDictionary.dat";
-		public const string C_UI = "Client/UI.dat";
-	}
-	internal class FilePathDefine_Server : FilePathDefine
-	{
-	}
+	public const string C_RootPath = FilePathDefine.C_ClientRootPath;
+	public const string C_DslPath = FilePathDefine.C_ClientDslPath;
+	public const string C_Actor = C_RootPath + "Public/Actor.dat";
+	public const string C_Formation = C_RootPath + "Public/Formation.dat";
+	public const string C_Level = C_RootPath + "Public/Level.dat";
+	public const string C_Skill = C_RootPath + "Public/Skill.dat";
+	public const string C_SkillDsl = C_RootPath + "Public/SkillDsl.dat";
+	public const string C_SkillResources = C_RootPath + "Public/SkillResources.dat";
+	public const string C_StoryDlg = C_RootPath + "Client/StoryDlg.dat";
+	public const string C_StrDictionary = C_RootPath + "Client/StrDictionary.dat";
+	public const string C_UI = C_RootPath + "Client/UI.dat";
+}
+public class FilePathDefine_Server
+{
+	public const string C_RootPath = FilePathDefine.C_ServerRootPath;
+	public const string C_DslPath = FilePathDefine.C_ServerDslPath;
+	public const string C_UserScript = C_RootPath + "Server/UserScript.dat";
+	public const string C_Actor = C_RootPath + "Public/Actor.dat";
+	public const string C_Formation = C_RootPath + "Public/Formation.dat";
+	public const string C_Level = C_RootPath + "Public/Level.dat";
+	public const string C_Skill = C_RootPath + "Public/Skill.dat";
+	public const string C_SkillDsl = C_RootPath + "Public/SkillDsl.dat";
+	public const string C_SkillResources = C_RootPath + "Public/SkillResources.dat";
 }

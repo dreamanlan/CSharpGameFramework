@@ -141,8 +141,8 @@ namespace GameFramework
                     }
                 }
             } else if(!entity.GetSkillStateInfo().IsSkillActivated()) {
-                logic.AiSendStoryMessage(entity, "npcskillfinish:" + entity.GetUnitId(), entity.GetId());
-                logic.AiSendStoryMessage(entity, "objskillfinish", entity.GetId());
+                logic.AiSendStoryMessage(entity, "npc_skill_finish:" + entity.GetUnitId(), entity.GetId());
+                logic.AiSendStoryMessage(entity, "obj_skill_finish", entity.GetId());
                 logic.ChangeToState(entity, (int)AiStateId.Idle);
             }
         }
@@ -175,8 +175,8 @@ namespace GameFramework
 
             //判断是否状态结束并执行相应处理
             if (data.IsFinish) {
-                logic.AiSendStoryMessage(entity, "npcarrived:" + entity.GetUnitId(), entity.GetId());
-                logic.AiSendStoryMessage(entity, "objarrived", entity.GetId());
+                logic.AiSendStoryMessage(entity, "npc_arrived:" + entity.GetUnitId(), entity.GetId());
+                logic.AiSendStoryMessage(entity, "obj_arrived", entity.GetId());
                 entity.GetMovementStateInfo().IsMoving = false;
                 logic.NotifyAiMove(entity);
                 logic.ChangeToState(entity, (int)AiStateId.Idle);
@@ -220,13 +220,13 @@ namespace GameFramework
                     float distGoHome = entity.GohomeRange;
                     Vector3 targetPos = target.GetMovementStateInfo().GetPosition3D();
                     ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
-                    float dir = Geometry.GetYAngle(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
+                    float dir = Geometry.GetYRadian(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
                     targetPos.X += (float)(minDist * Math.Sin(dir));
                     targetPos.Z += (float)(minDist * Math.Cos(dir));
                     float powDist = Geometry.DistanceSquare(srcPos, targetPos);
                     if (powDist < dist * dist) {
-                        logic.AiSendStoryMessage(entity, "npcpursuitfinish:" + entity.GetUnitId(), entity.GetId());
-                        logic.AiSendStoryMessage(entity, "objpursuitfinish", entity.GetId());
+                        logic.AiSendStoryMessage(entity, "npc_pursuit_finish:" + entity.GetUnitId(), entity.GetId());
+                        logic.AiSendStoryMessage(entity, "obj_pursuit_finish", entity.GetId());
                         entity.GetMovementStateInfo().IsMoving = false;
                         logic.NotifyAiMove(entity);
                         logic.ChangeToState(entity, (int)AiStateId.Idle);
@@ -236,8 +236,8 @@ namespace GameFramework
                         logic.NotifyAiMove(entity);
                     }
                 } else {
-                    logic.AiSendStoryMessage(entity, "npcpursuitexit:" + entity.GetUnitId(), entity.GetId());
-                    logic.AiSendStoryMessage(entity, "objpursuitexit", entity.GetId());
+                    logic.AiSendStoryMessage(entity, "npc_pursuit_exit:" + entity.GetUnitId(), entity.GetId());
+                    logic.AiSendStoryMessage(entity, "obj_pursuit_exit", entity.GetId());
                     entity.GetMovementStateInfo().IsMoving = false;
                     logic.NotifyAiMove(entity);
                     logic.ChangeToState(entity, (int)AiStateId.Idle);
@@ -246,12 +246,6 @@ namespace GameFramework
         }
         internal static void DoPatrolCommandState(EntityInfo entity, long deltaTime, AbstractAiStateLogic logic)
         {
-            if (entity.IsDead()) {
-                logic.AiSendStoryMessage(entity, "objpatrolexit", entity.GetId());
-                logic.AiSendStoryMessage(entity, string.Format("npcpatrolexit:{0}", entity.GetUnitId()), entity.GetId());
-                logic.ChangeToState(entity, (int)AiStateId.Idle);
-                return;
-            }
             AiStateInfo info = entity.GetAiStateInfo();
             info.Time += deltaTime;
             if (info.Time > 100) {
@@ -270,8 +264,8 @@ namespace GameFramework
                         info.Target = target.GetId();
                 }
                 if (null != target) {
-                    logic.AiSendStoryMessage(entity, "objpatrolexit", entity.GetId());
-                    logic.AiSendStoryMessage(entity, string.Format("npcpatrolexit:{0}", entity.GetUnitId()), entity.GetId());
+                    logic.AiSendStoryMessage(entity, "obj_patrol_exit", entity.GetId());
+                    logic.AiSendStoryMessage(entity, string.Format("npc_patrol_exit:{0}", entity.GetUnitId()), entity.GetId());
                     logic.ChangeToState(entity, (int)AiStateId.Pursuit);
                 } else {
                     AiData_ForPatrolCommand data = GetAiDataForPatrolCommand(entity);
@@ -289,12 +283,12 @@ namespace GameFramework
                                 logic.NotifyAiMove(entity);
                             } else {
                                 if (data.IsLoopPatrol) {
-                                    logic.AiSendStoryMessage(entity, "objpatrolrestart", entity.GetId());
-                                    logic.AiSendStoryMessage(entity, string.Format("npcpatrolrestart:{0}", entity.GetUnitId()), entity.GetId());
+                                    logic.AiSendStoryMessage(entity, "obj_patrol_restart", entity.GetId());
+                                    logic.AiSendStoryMessage(entity, string.Format("npc_patrol_restart:{0}", entity.GetUnitId()), entity.GetId());
                                     data.PatrolPath.Restart();
                                 } else {
-                                    logic.AiSendStoryMessage(entity, "objpatrolfinish", entity.GetId());
-                                    logic.AiSendStoryMessage(entity, string.Format("npcpatrolfinish:{0}", entity.GetUnitId()), entity.GetId());
+                                    logic.AiSendStoryMessage(entity, "obj_patrol_finish", entity.GetId());
+                                    logic.AiSendStoryMessage(entity, string.Format("npc_patrol_finish:{0}", entity.GetUnitId()), entity.GetId());
                                     entity.GetMovementStateInfo().IsMoving = false;
                                     logic.NotifyAiMove(entity);
                                     logic.ChangeToState(entity, (int)AiStateId.Idle);

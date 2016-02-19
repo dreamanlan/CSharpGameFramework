@@ -152,10 +152,6 @@ namespace GameFramework
         {
             get { return m_Hp / CharacterProperty.Key; }
         }
-        public int Rage
-        {
-            get { return m_Rage / CharacterProperty.Key; }
-        }
         public int Energy
         {
             get { return m_Energy / CharacterProperty.Key; }
@@ -164,36 +160,6 @@ namespace GameFramework
         {
             get { return m_Shield / CharacterProperty.Key; }
         }
-
-        public float HpMaxCoefficient
-        {
-            get { return m_HpMaxCoefficient; }
-            set { m_HpMaxCoefficient = value; }
-        }
-        public float EnergyMaxCoefficient
-        {
-            get { return m_EnergyMaxCoefficient; }
-            set { m_EnergyMaxCoefficient = value; }
-        }
-        /**
-         * 攻击范围系数（在0~1之间） 
-         */
-        public float AttackRangeCoefficient
-        {
-            get { return m_AttackRangeCoefficient; }
-            set { m_AttackRangeCoefficient = value; }
-        }
-        /**
-         * 对象的速度系数（在0~1之间）
-         */
-        public float VelocityCoefficient
-        {
-            get { return m_VelocityCoefficient; }
-            set { m_VelocityCoefficient = value; }
-        }
-        /**
-         * @brief 视野范围
-         */
         public float ViewRange
         {
             get { return m_ViewRange; }
@@ -266,11 +232,16 @@ namespace GameFramework
             } else if (opType == Operate_Type.OT_RemoveBit) {
                 m_StateFlag &= ~((int)mask);
             }
+            m_PropertyChanged = true;
         }
         public int StateFlag
         {
             get { return m_StateFlag; }
-            set { m_StateFlag = value; }
+            set 
+            { 
+                m_StateFlag = value;
+                m_PropertyChanged = true;
+            }
         }
         public bool IsHaveStoryFlag(StoryListenFlagEnum flag)
         {
@@ -313,17 +284,7 @@ namespace GameFramework
         {
             int key = CharacterProperty.Key;
             m_Hp = (int)CharacterProperty.UpdateAttr(m_Hp, m_ActualProperty.HpMax * key, opType, tVal);
-        }
-        public void SetRage(Operate_Type opType, int tVal)
-        {
-            int key = CharacterProperty.Key;
-            int result = (int)CharacterProperty.UpdateAttr(m_Rage, m_ActualProperty.RageMax * key, opType, tVal);
-            if (result > m_ActualProperty.RageMax * key) {
-                result = m_ActualProperty.RageMax * key;
-            } else if (result < 0) {
-                result = 0;
-            }
-            m_Rage = result;
+            m_PropertyChanged = true;
         }
         public void SetEnergy(Operate_Type opType, int tVal)
         {
@@ -335,6 +296,7 @@ namespace GameFramework
                 result = 0;
             }
             m_Energy = result;
+            m_PropertyChanged = true;
         }
         public void SetShield(Operate_Type opType, int tVal)
         {
@@ -347,6 +309,7 @@ namespace GameFramework
                 result = 0;
             }
             m_Shield = result;
+            m_PropertyChanged = true;
         }
 
         public void ResetAttackerInfo()
@@ -380,12 +343,8 @@ namespace GameFramework
         public void CalcBaseAttr()
         {
             float aMoveSpeed = GetBaseProperty().MoveSpeed;
-            float aWalkSpeed = GetBaseProperty().WalkSpeed;
-            float aRunSpeed = GetBaseProperty().RunSpeed;
             int aHpMax = GetBaseProperty().HpMax;
             int aEnergyMax = GetBaseProperty().EnergyMax;
-            float aHpRecover = GetBaseProperty().HpRecover;
-            float aEnergyRecover = GetBaseProperty().EnergyRecover;
             int aAttackBase = GetBaseProperty().AttackBase;
             int aDefenceBase = GetBaseProperty().DefenceBase;
             float aCritical = GetBaseProperty().Critical;
@@ -394,13 +353,8 @@ namespace GameFramework
             float aAttackRange = GetBaseProperty().AttackRange;
 
             GetActualProperty().SetMoveSpeed(Operate_Type.OT_Absolute, aMoveSpeed);
-            GetActualProperty().SetWalkSpeed(Operate_Type.OT_Absolute, aWalkSpeed);
-            GetActualProperty().SetRunSpeed(Operate_Type.OT_Absolute, aRunSpeed);
             GetActualProperty().SetHpMax(Operate_Type.OT_Absolute, aHpMax);
-            GetActualProperty().SetRageMax(Operate_Type.OT_Absolute, GetBaseProperty().RageMax);
             GetActualProperty().SetEnergyMax(Operate_Type.OT_Absolute, aEnergyMax);
-            GetActualProperty().SetHpRecover(Operate_Type.OT_Absolute, aHpRecover);
-            GetActualProperty().SetEnergyRecover(Operate_Type.OT_Absolute, aEnergyRecover);
             GetActualProperty().SetAttackBase(Operate_Type.OT_Absolute, aAttackBase);
             GetActualProperty().SetDefenceBase(Operate_Type.OT_Absolute, aDefenceBase);
             GetActualProperty().SetCritical(Operate_Type.OT_Absolute, aCritical);
@@ -413,6 +367,11 @@ namespace GameFramework
         {
             get { return m_LevelChanged; }
             set { m_LevelChanged = value; }
+        }
+        public bool PropertyChanged
+        {
+            get { return m_PropertyChanged; }
+            set { m_PropertyChanged = value; }
         }
 
         public MovementStateInfo GetMovementStateInfo()
@@ -520,6 +479,7 @@ namespace GameFramework
         }
         private void ResetBaseInfo()
         {
+            m_CampId = 0;
             m_UniqueId = 0;
             m_OwnerId = -1;
             m_SummonerId = -1;
@@ -528,23 +488,18 @@ namespace GameFramework
 
             m_IsControlByStory = false;
             m_IsControlByManual = false;
-            m_CampId = 0;
+            m_LevelChanged = false;
+            m_PropertyChanged = false;
 
             m_Level = 0;
             m_Hp = 0;
             m_Energy = 0;
-
-            m_HpMaxCoefficient = 1;
-            m_EnergyMaxCoefficient = 1;
-            m_AttackRangeCoefficient = 1;
-            m_VelocityCoefficient = 1;
             m_StateFlag = 0;
 
             m_CanUseSkill = true;
             m_KillerId = 0;
 
             SetHp(Operate_Type.OT_Absolute, GetActualProperty().HpMax);
-            SetRage(Operate_Type.OT_Absolute, 0);
             SetEnergy(Operate_Type.OT_Absolute, GetActualProperty().EnergyMax);
 
             ResetAttackerInfo();
@@ -567,14 +522,10 @@ namespace GameFramework
         private bool m_IsControlByStory = false;
         private bool m_IsControlByManual = false;
         private bool m_LevelChanged = false;
+        private bool m_PropertyChanged = false;
         private int m_Hp = 0;
-        private int m_Rage = 0;
         private int m_Energy = 0;
         private int m_Shield = 0;
-        private float m_HpMaxCoefficient = 1;
-        private float m_EnergyMaxCoefficient = 1;
-        private float m_AttackRangeCoefficient = 1;
-        private float m_VelocityCoefficient = 1;
         private float m_ViewRange = 0;
         private float m_GohomeRange = 5.0f;
         private int m_CampId = 0;
@@ -600,12 +551,11 @@ namespace GameFramework
         private CombatStatisticInfo m_CombatStatisticInfo = new CombatStatisticInfo();
         private SceneContextInfo m_SceneContext = null;
 
-        //阵营可为Friendly、Hostile、Blue、Red、FieldScene
+        //阵营可为Friendly、Hostile、Blue、Red
         //Friendly 全部友好
         //Hostile 全部敌对(同阵营友好)
         //Blue 与Hostile与Red敌对
         //Red 与Hostile与Blue敌对
-        //FieldScene 与除自己外的其它人或怪都敌对（同阵营也敌对）
         public static CharacterRelation GetRelation(EntityInfo pObj_A, EntityInfo pObj_B)
         {
             if (pObj_A == null || pObj_B == null) {

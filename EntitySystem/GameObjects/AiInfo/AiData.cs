@@ -22,6 +22,22 @@ namespace GameFramework
         private int m_ManualSkillId = 0;
         private long m_LastUseSkillTime = 0;
     }
+    public class AiData_Leader : AiData_General
+    {
+        public bool IsAutoOperate
+        {
+            get { return m_IsAutoOperate; }
+            set { m_IsAutoOperate = value; }
+        }
+        public int FormationId
+        {
+            get { return m_FormationId; }
+            set { m_FormationId = value; }
+        }
+
+        private bool m_IsAutoOperate = false;
+        private int m_FormationId = 1;
+    }
     public class AiData_ForMoveCommand
     {
         public List<Vector3> WayPoints { get; set; }

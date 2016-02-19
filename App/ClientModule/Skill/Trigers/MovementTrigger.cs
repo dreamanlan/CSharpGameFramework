@@ -85,9 +85,13 @@ namespace GameFramework.Skill.Trigers
 
         private void EnableMoveAgent(GameObject obj, bool isEnable)
         {
-            EntityViewModel npcView = (EntityViewModel)EntityController.Instance.GetEntityView(obj);
-            if (npcView != null)
-                npcView.SetMoveAgentEnable(isEnable);
+            try {
+                EntityViewModel npcView = (EntityViewModel)EntityController.Instance.GetEntityView(obj);
+                if (npcView != null)
+                    npcView.SetMoveAgentEnable(isEnable);
+            } catch (Exception ex) {
+                LogSystem.Warn("SetMoveAgentEnable exception:{0}", ex.Message);
+            }
         }
 
         private bool m_IsEnable = true;
@@ -150,7 +154,7 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            bool isTower = EntityController.Instance.GetEntityType(senderObj.GfxObj) == (int)EntityTypeEnum.Tower;
+            bool isTower = !EntityController.Instance.IsMovableEntity(senderObj.GfxObj);
             if (isTower)
                 return false;
             if (m_RealStartTime < 0) {
@@ -300,7 +304,7 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            bool isTower = EntityController.Instance.GetEntityType(senderObj.GfxObj) == (int)EntityTypeEnum.Tower;
+            bool isTower = !EntityController.Instance.IsMovableEntity(senderObj.GfxObj);
             if (isTower) return false;
             if (m_RealStartTime < 0) {
                 m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
@@ -314,7 +318,7 @@ namespace GameFramework.Skill.Trigers
                 if (null != targetObj) {
                     Vector3 srcPos = obj.transform.position;
                     Vector3 targetPos = targetObj.transform.position;
-                    float degree = Geometry.GetYAngle(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
+                    float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
                     ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(targetPos.x, targetPos.z) + Geometry.GetRotate(new ScriptRuntime.Vector2(m_Offset.x, m_Offset.z), degree);
                     targetPos = new Vector3(newPos.X, targetPos.y + m_Offset.y, newPos.Y);
                     if (m_StopAtTarget == (int)StopAtTargetType.AdjustVelocity) {
@@ -409,7 +413,7 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            bool isTower = EntityController.Instance.GetEntityType(senderObj.GfxObj) == (int)EntityTypeEnum.Tower;
+            bool isTower = !EntityController.Instance.IsMovableEntity(senderObj.GfxObj);
             if (isTower)
                 return false;
             if (m_RealStartTime < 0) {
@@ -424,7 +428,7 @@ namespace GameFramework.Skill.Trigers
                 if (null != targetObj) {
                     Vector3 srcPos = obj.transform.position;
                     Vector3 targetPos = targetObj.transform.position;
-                    float degree = Geometry.GetYAngle(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
+                    float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
                     ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(targetPos.x, targetPos.z) + Geometry.GetRotate(new ScriptRuntime.Vector2(m_Offset.x, m_Offset.z), degree);
                     targetPos = new Vector3(newPos.X, targetPos.y + m_Offset.y, newPos.Y);
                     if (m_StopAtTarget == (int)StopAtTargetType.AdjustVelocity) {

@@ -44,10 +44,10 @@ public class OverHeadBar : MonoBehaviour
 		slowTime = 0f;
         canvas = this.GetComponentInChildren<Canvas>();
 	}	
-    public void SetHealthColor(bool isEnemy) 
+    public void SetHealthColor(bool isGreen) 
     {
-    	health.gameObject.SetActive(isEnemy);
-    	health2.gameObject.SetActive(!isEnemy);        
+    	health.gameObject.SetActive(isGreen);
+    	health2.gameObject.SetActive(!isGreen);        
     }
     public void ShowFloatNum(int num,Color color,float duration)
     {

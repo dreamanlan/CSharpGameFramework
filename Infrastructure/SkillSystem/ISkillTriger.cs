@@ -57,4 +57,12 @@ namespace SkillSystem
 
         protected long m_StartTime = 0;
     }
+    public class DummyTriger : AbstractSkillTriger
+    {
+        public override ISkillTriger Clone()
+        {
+            DummyTriger cmd = new DummyTriger();
+            return cmd;
+        }
+    }
 }

@@ -1,0 +1,27 @@
+skill(102)
+{
+  section(10)
+  {
+    hiteffect(hitEffect, "eyes", 0, 1000, "stand", 100);
+    facetotarget(0,10,0,"maxdist");
+  };
+  section(1000)
+  {
+    enablemoveagent(false);
+    animation("move");
+    selfeffect(selfEffect,1000,"eyes",0)
+    {
+      transform(vector3(0,1,0));
+    };
+    targeteffect(hitEffect,1000,"eyes",0)
+    {
+      transform(vector3(0,1,0));
+    };
+    charge(200,10,1,vector3(0,0,-0.5),0);
+    aoeimpact(-3,0,0,-1,true);
+  };
+  onstop
+  {
+    enablemoveagent(true);
+  };
+};

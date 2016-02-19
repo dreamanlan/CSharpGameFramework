@@ -1,0 +1,312 @@
+//----------------------------------------------------------------------------
+//！！！不要手动修改此文件，此文件由LogicDataGenerator按ProtoFiles/RoomMsg.dsl生成！！！
+//----------------------------------------------------------------------------
+package GameFrameworkMessage;
+
+enum ArgType
+{
+	NULL = 0;
+	INT = 1;
+	FLOAT = 2;
+	STRING = 3;
+}
+
+message EncodePosition
+{
+	required int32 x = 1;
+	required int32 z = 2;
+}
+
+message EncodePosition3D
+{
+	required int32 x = 1;
+	required int32 y = 2;
+	required int32 z = 3;
+}
+
+message Msg_CR_DlgClosed
+{
+	required int32 dialog_id = 1;
+}
+
+message Msg_CR_Enter
+{
+}
+
+message Msg_CR_GiveUpBattle
+{
+}
+
+message Msg_CR_GmCommand
+{
+	required int32 type = 1;
+	optional string content = 2;
+}
+
+message Msg_CR_Observer
+{
+}
+
+message Msg_CR_OperateMode
+{
+	required bool isauto = 1;
+}
+
+message Msg_CR_Quit
+{
+	required bool is_force = 1;
+}
+
+message Msg_CR_ShakeHands
+{
+	required uint32 auth_key = 1;
+}
+
+message Msg_CR_Skill
+{
+	required int32 role_id = 1;
+	required int32 skill_id = 2;
+}
+
+message Msg_CR_SwitchDebug
+{
+	required bool is_debug = 1;
+}
+
+message Msg_CR_UserMoveToPos
+{
+	required uint64 target_pos = 1;
+}
+
+message Msg_CRC_StoryMessage
+{
+
+	message MessageArg
+	{
+		required ArgType val_type = 1;
+		required string str_val = 2;
+	}
+	required string m_MsgId = 1;
+	repeated MessageArg m_Args = 2;
+}
+
+message Msg_Ping
+{
+	required int64 send_ping_time = 1;
+}
+
+message Msg_Pong
+{
+	required int64 send_ping_time = 1;
+	required int64 send_pong_time = 2;
+}
+
+message Msg_RC_AddImpact
+{
+	required int32 sender_id = 1;
+	required int32 target_id = 2;
+	required int32 impact_id = 3;
+	required int32 skill_id = 4;
+	required int32 duration = 5;
+}
+
+message Msg_RC_AddSkill
+{
+	required int32 obj_id = 1;
+	required int32 skill_id = 2;
+}
+
+message Msg_RC_AdjustPosition
+{
+	required int32 role_id = 1;
+	required int32 x = 2;
+	required int32 z = 3;
+	required int32 face_dir = 4;
+}
+
+message Msg_RC_CampChanged
+{
+	required int32 obj_id = 1;
+	required int32 camp_id = 2;
+}
+
+message Msg_RC_ChangeScene
+{
+	required int32 target_scene_id = 1;
+}
+
+message Msg_RC_CreateNpc
+{
+	required int32 npc_id = 1;
+	required int32 unit_id = 2;
+	required Position cur_pos = 3;
+	required float face_direction = 4;
+	required int32 link_id = 5;
+	optional int32 camp_id = 6;
+	optional int32 owner_id = 7;
+	optional int32 leader_id = 8;
+	optional uint32 key = 9;
+	optional int32 level = 10;
+}
+
+message Msg_RC_DebugSpaceInfo
+{
+
+	message DebugSpaceInfo
+	{
+		required int32 obj_id = 1;
+		required bool is_player = 2;
+		required float pos_x = 3;
+		required float pos_z = 4;
+		required float face_dir = 5;
+	}
+	repeated DebugSpaceInfo space_infos = 1;
+}
+
+message Msg_RC_DestroyNpc
+{
+	required int32 npc_id = 1;
+}
+
+message Msg_RC_HighlightPrompt
+{
+	required string dict_id = 1;
+	repeated string argument = 2;
+}
+
+message Msg_RC_ImpactDamage
+{
+
+	enum Flag
+	{
+		IS_KILLER = 1;
+		IS_CRITICAL = 2;
+		IS_ORDINARY = 4;
+	}
+	required int32 role_id = 1;
+	required int32 attacker_id = 2;
+	required int32 damage_status = 3;
+	required int32 hp = 4;
+	optional int32 energy = 5;
+}
+
+message Msg_RC_LockFrame
+{
+	required float scale = 1;
+}
+
+message Msg_RC_NpcDead
+{
+	required int32 npc_id = 1;
+}
+
+message Msg_RC_NpcFace
+{
+	optional int32 npc_id = 1;
+	required int32 face_direction = 2;
+}
+
+message Msg_RC_NpcMove
+{
+	required int32 npc_id = 1;
+	optional int32 move_direction = 2;
+	optional int32 velocity = 3;
+	optional uint64 cur_pos = 4;
+	optional uint64 target_pos = 5;
+}
+
+message Msg_RC_NpcSkill
+{
+	required int32 npc_id = 1;
+	required int32 skill_id = 2;
+	required uint64 stand_pos = 3;
+	required int32 face_direction = 4;
+}
+
+message Msg_RC_NpcStopSkill
+{
+	required int32 npc_id = 1;
+}
+
+message Msg_RC_PlayAnimation
+{
+	required int32 obj_id = 1;
+	required string anim_name = 2;
+}
+
+message Msg_RC_PublishEvent
+{
+
+	message EventArg
+	{
+		required ArgType val_type = 1;
+		required string str_val = 2;
+	}
+	required bool is_logic_event = 1;
+	required string ev_name = 2;
+	required string group = 3;
+	repeated EventArg args = 4;
+}
+
+message Msg_RC_RemoveImpact
+{
+	required int32 obj_id = 1;
+	required int32 impact_id = 2;
+}
+
+message Msg_RC_RemoveSkill
+{
+	required int32 obj_id = 1;
+	required int32 skill_id = 2;
+}
+
+message Msg_RC_SendGfxMessage
+{
+
+	message EventArg
+	{
+		required ArgType val_type = 1;
+		required string str_val = 2;
+	}
+	required bool is_with_tag = 1;
+	required string name = 2;
+	required string msg = 3;
+	repeated EventArg args = 4;
+}
+
+message Msg_RC_ShakeHands_Ret
+{
+
+	enum RetType
+	{
+		SUCCESS = 0;
+		ERROR = 1;
+	}
+	required RetType auth_result = 1;
+}
+
+message Msg_RC_ShowDlg
+{
+	required int32 dialog_id = 1;
+}
+
+message Msg_RC_SyncNpcOwnerId
+{
+	required int32 npc_id = 1;
+	required int32 owner_id = 2;
+}
+
+message Msg_RC_SyncProperty
+{
+	required int32 role_id = 1;
+	required int32 hp = 2;
+	required int32 np = 3;
+	required int32 shield = 4;
+	required int32 state = 5;
+}
+
+message Position
+{
+	required float x = 1;
+	required float z = 2;
+}

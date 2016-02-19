@@ -11,6 +11,6 @@ skill(103)
   };
   section(100)
   {
-    sendstorymessage(0,"SummonBear","32","4");
+    sendstorymessage(0,"summon_bear","32","4");
   };
 };

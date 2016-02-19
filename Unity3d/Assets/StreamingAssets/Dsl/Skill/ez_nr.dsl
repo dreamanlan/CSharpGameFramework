@@ -8,6 +8,6 @@ skill(117)
     {
       transform(vector3(0,1,0));
     };
-    sendstorymessage(50,"EzSkillR");
+    sendstorymessage(50,"ez_skill_r");
   };
 };
