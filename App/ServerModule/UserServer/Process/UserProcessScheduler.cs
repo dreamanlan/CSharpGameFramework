@@ -414,7 +414,7 @@ namespace GameFramework
                         //用户处在下线过程中，需要等待lobby离线流程完成
                         NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, accountId, user.Guid);
                         GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();
-                        protoData.m_Result = RoleEnterResult.RoleEnterResultEnum.Wait;
+                        protoData.Result = RoleEnterResult.RoleEnterResultEnum.Wait;
                         roleEnterResultMsg.m_ProtoData = protoData;
                         NodeMessageDispatcher.SendNodeMessage(user.NodeName, roleEnterResultMsg);
                         LogSys.Log(LOG_TYPE.WARN, "RoleEnter AccountId:{0} Guid:{1} Wait Offline", accountId, userGuid);
@@ -428,14 +428,14 @@ namespace GameFramework
                             //回复客户端
                             NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, user.AccountId, user.Guid);
                             GameFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(user);
-                            protoData.m_Result = RoleEnterResult.RoleEnterResultEnum.Success;
+                            protoData.Result = RoleEnterResult.RoleEnterResultEnum.Success;
                             roleEnterResultMsg.m_ProtoData = protoData;
                             NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, roleEnterResultMsg);
                         } else {
                             //角色AccountId与账号AccountId不匹配,进入游戏失败
                             NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, accountId, user.Guid);
                             GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();
-                            protoData.m_Result = RoleEnterResult.RoleEnterResultEnum.UnknownError;
+                            protoData.Result = RoleEnterResult.RoleEnterResultEnum.UnknownError;
                             roleEnterResultMsg.m_ProtoData = protoData;
                             LogSys.Log(LOG_TYPE.ERROR, "LoginStep_8a: Role Reenter FAILED. AccountId:{0}, UserGuid:{1}, Nickname:{2}",
                                 accountId, userGuid, user.Nickname);
@@ -487,13 +487,13 @@ namespace GameFramework
                 this.DoUserLogin(ui);
                 NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, ui.AccountId, ui.Guid);
                 GameFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(ui);
-                protoData.m_Result = RoleEnterResult.RoleEnterResultEnum.Success;
+                protoData.Result = RoleEnterResult.RoleEnterResultEnum.Success;
                 replyMsg.m_ProtoData = protoData;
                 NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, replyMsg);
             } else {
                 NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, accountInfo.AccountId, userGuid);
                 GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();
-                protoData.m_Result = RoleEnterResult.RoleEnterResultEnum.UnknownError;
+                protoData.Result = RoleEnterResult.RoleEnterResultEnum.UnknownError;
                 replyMsg.m_ProtoData = protoData;
                 NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, replyMsg);
             }
@@ -700,6 +700,7 @@ namespace GameFramework
             ui.Level = 1;
             ui.CreateTime = DateTime.Now;
             ui.FightingCapacity = 200;
+            ui.SummonerSkillId = 22;
             //加4个队员
             for (int id = 2; id <= 5; ++id) {
                 MemberInfo member = new MemberInfo();
@@ -714,14 +715,21 @@ namespace GameFramework
         {
             GameFrameworkMessage.RoleEnterResult replyMsg = new GameFrameworkMessage.RoleEnterResult();
             //
-            replyMsg.m_Nickname = ui.Nickname;
-            replyMsg.m_HeroId = ui.HeroId;
-            replyMsg.m_Level = ui.Level;
-            replyMsg.m_Money = ui.Money;
-            replyMsg.m_Gold = ui.Gold;
-            replyMsg.m_Level = ui.Level;
-            replyMsg.m_SceneId = ui.SceneId;
-            replyMsg.m_WorldId = UserServerConfig.WorldId;
+            replyMsg.Nickname = ui.Nickname;
+            replyMsg.HeroId = ui.HeroId;
+            replyMsg.Level = ui.Level;
+            replyMsg.Money = ui.Money;
+            replyMsg.Gold = ui.Gold;
+            replyMsg.Level = ui.Level;
+            replyMsg.SceneId = ui.SceneId;
+            replyMsg.SummonerSkillId = ui.SummonerSkillId;
+            replyMsg.WorldId = UserServerConfig.WorldId;
+
+            for (int i = 0; i < ui.MemberInfos.Count; ++i) {
+                MemberInfoForMessage mi = new MemberInfoForMessage();
+                mi.Hero = ui.MemberInfos[i].HeroId;
+                mi.Level = ui.MemberInfos[i].Level;
+            }
             return replyMsg;
         }
         private void CreateRole(string accountId, string nickname, int heroId)
@@ -752,7 +760,7 @@ namespace GameFramework
                       accountId, ui.Guid, ui.Nickname);
                     NodeMessage enterMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, ui.AccountId, ui.Guid);
                     GameFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(ui);
-                    protoData.m_Result = RoleEnterResult.RoleEnterResultEnum.Success;
+                    protoData.Result = RoleEnterResult.RoleEnterResultEnum.Success;
                     enterMsg.m_ProtoData = protoData;
                     NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, enterMsg);
                 } else {

@@ -207,28 +207,34 @@ namespace GameFramework
             this.m_CurrentUserSaveCount = 0;
 
             m_MemberInfos.Clear();
-            m_ItemInfos.Clear();
-            m_MailStateInfos.Clear();
+            m_FriendInfos.Clear();
+            m_ItemBag.Reset();
+            m_MailStateInfo.Reset();
         }
 
         internal List<MemberInfo> MemberInfos
         {
             get { return m_MemberInfos; }
         }
-        public List<ItemInfo> ItemInfos
+        public List<FriendInfo> FriendInfos
         {
-            get { return m_ItemInfos; }
+            get { return m_FriendInfos; }
         }
-        public List<MailStateInfo> MailStateInfos
+        public ItemBag ItemBag
         {
-            get { return m_MailStateInfos; }
+            get { return m_ItemBag; }
+        }
+        public MailStateInfo MailStateInfo
+        {
+            get { return m_MailStateInfo; }
         }
 
         //==================================================================================
 
         private List<MemberInfo> m_MemberInfos = new List<MemberInfo>();
-        private List<ItemInfo> m_ItemInfos = new List<ItemInfo>();
-        private List<MailStateInfo> m_MailStateInfos = new List<MailStateInfo>();
+        private List<FriendInfo> m_FriendInfos = new List<FriendInfo>();
+        private ItemBag m_ItemBag = new ItemBag();
+        private MailStateInfo m_MailStateInfo = new MailStateInfo();
         
         private int m_Money = 0;
         private int m_Gold = 0;

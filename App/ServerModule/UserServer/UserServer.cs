@@ -419,6 +419,8 @@ namespace GameFramework
         private const long c_WarningTickTime = 1000;
         private const long c_WaitQuitTimeInterval = 600000;      //重置等待退出状态的时间间隔,5mins
         private const long c_FightingScoreStatisticInterval = 60000;
+
+        private int m_MaxGlobalActionNum = 500000;
         //
         private bool m_WaitQuit = false;
         private bool m_QuitFinish = false;

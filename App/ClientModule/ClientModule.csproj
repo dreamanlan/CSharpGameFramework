@@ -140,7 +140,6 @@
     <Compile Include="Story\Values\GeneralValues.cs" />
     <Compile Include="Story\Values\NpcValues.cs" />
     <Compile Include="UserData\ClientInfo.cs" />
-    <Compile Include="UserData\RoleInfo.cs" />
     <Compile Include="UserNetwork\UserMessageHandler.cs" />
     <Compile Include="UserNetwork\UserNetworkSystem.cs" />
     <Compile Include="UserNetwork\NodeMessageDefine.cs" />

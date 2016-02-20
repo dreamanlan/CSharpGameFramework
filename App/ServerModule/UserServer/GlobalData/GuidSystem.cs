@@ -93,11 +93,9 @@ namespace GameFramework
     internal ulong GenerateItemGuid()
     {      
       ulong serial = (ulong)Interlocked.Increment(ref m_NextItemGuid) - 1;
-      /* ItemGuid不在即时存储到dsnode
       if (UserServer.Instance.DataCacheThread.DataStoreAvailable) {
         UserServer.Instance.DataCacheThread.DSSaveGuid(GuidSystem.s_ItemGuidType, serial);
       }
-      */ 
       return serial * 10000 + s_WorldId;
     }
     internal ulong GenerateMemberGuid()
@@ -107,6 +105,14 @@ namespace GameFramework
         UserServer.Instance.DataCacheThread.DSSaveGuid(GuidSystem.s_MemberGuidType, serial);
       }
       return serial * 10000 + s_WorldId;
+    }
+    internal ulong GenerateFriendGuid()
+    {
+        ulong serial = (ulong)Interlocked.Increment(ref m_NextFriendGuid) - 1;
+        if (UserServer.Instance.DataCacheThread.DataStoreAvailable) {
+            UserServer.Instance.DataCacheThread.DSSaveGuid(GuidSystem.s_FriendGuidType, serial);
+        }
+        return serial * 10000 + s_WorldId;
     }
     internal ulong GenerateAuctionGuid()
     {
@@ -118,14 +124,16 @@ namespace GameFramework
     }
     internal static string s_UserGuidType = "UserGuid";    
     internal static string s_MailGuidType = "MailGuid";    
-    internal static string s_ItemGuidType = "ItemGuid";    
+    internal static string s_ItemGuidType = "ItemGuid";
     internal static string s_MemberGuidType = "MemberGuid";
+    internal static string s_FriendGuidType = "FriendGuid";
     internal static string s_AuctionGuidType = "AuctionGuid";
 
     private long m_NextUserGuid = 1;
     private long m_NextMailGuid = 1;
     private long m_NextItemGuid = 1;
     private long m_NextMemberGuid = 1;
+    private long m_NextFriendGuid = 1;
     private long m_NextAuctionGuid = 1;
    
     private static ulong s_WorldId = 0;

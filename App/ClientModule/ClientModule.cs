@@ -95,6 +95,15 @@ namespace GameFramework
                 LogSystem.Error("ExecCommand exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
+        internal void ExecCode(string code)
+        {
+            try {
+                GmCommands.ClientGmStorySystem.Instance.Reset();
+                GmCommands.ClientGmStorySystem.Instance.LoadStoryCode(code);
+                GmCommands.ClientGmStorySystem.Instance.StartStory("main");
+            } catch {
+            }
+        }
         #endregion
 
         internal void Init()
@@ -170,8 +179,8 @@ namespace GameFramework
             m_SceneLogicSystem.Reset();
             m_SceneInfo = null;
 
-            m_LeaderLinkID = 0;
             m_leaderID = 0;
+            m_CampId = (int)CampIdEnum.Blue;
         }
         internal void Preload()
         {
@@ -224,8 +233,6 @@ namespace GameFramework
                 QueueAction(TryEnterScene, key, ip, port, campId, sceneId);
                 return;
             }
-            campId = Helper.Random.Next() < 50 ? (int)CampIdEnum.Blue : (int)CampIdEnum.Red;
-            m_CampId = campId;
             NetworkSystem.Instance.Start(key, ip, port, campId, sceneId);
         }
         
@@ -772,13 +779,10 @@ namespace GameFramework
         }
         public int SummonerSkillId
         {
-            get { return m_SummonerSkillId; }
-            set { m_SummonerSkillId = value; }
-        }
-        public int LeaderLinkID
-        {
-            get { return m_LeaderLinkID; }
-            set { m_LeaderLinkID = value; }
+            get
+            {
+                return ClientInfo.Instance.RoleData.SummonerSkillId;
+            }
         }
         public int LeaderID
         {
@@ -975,9 +979,6 @@ namespace GameFramework
         private bool m_IsSceneLoaded = false;
 
         private int m_leaderID;
-        private int m_LeaderLinkID;
-        private int m_SummonerSkillId = 22;
-
         private int m_CampId = (int)CampIdEnum.Blue;
     }
 }

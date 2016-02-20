@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using GameFrameworkMessage;
 
 namespace GameFramework
 {
@@ -10,26 +11,31 @@ namespace GameFramework
             get { return s_Instance; }
         }
         private static ClientInfo s_Instance = new ClientInfo();
-
-        public RoleInfo CurrentRole
+        
+        public ulong Guid
         {
-            get { return m_CurrentRole; }
-            set { m_CurrentRole = value; }
+            get { return m_Guid; }
+            set { m_Guid = value; }
         }
-        public int WorldId
+        public RoleEnterResult RoleData
         {
-            get { return m_WorldId; }
-            set { m_WorldId = value; }
+            get { return m_RoleData; }
+            set { m_RoleData = value; }
         }
-
+        public List<MailInfoForMessage> Mails
+        {
+            get { return m_Mails; }
+            set { m_Mails = value; }
+        }
         public int PropertyKey
         {
             get { return m_PropertyKey; }
             set { m_PropertyKey = value; }
         }
 
-        private int m_WorldId = 0;
+        private ulong m_Guid = 0;
+        private RoleEnterResult m_RoleData = new RoleEnterResult();
+        private List<MailInfoForMessage> m_Mails = new List<MailInfoForMessage>();
         private int m_PropertyKey = 1;
-        private RoleInfo m_CurrentRole = null;              //当前游戏的玩家角色
     }
 }

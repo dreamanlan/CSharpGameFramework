@@ -23,6 +23,8 @@ namespace GameFrameworkMessage
 		RequestSceneRoomInfo,
 		RequestSceneRoomList,
 		ServerShutdown,
+		Msg_CL_GetMailList,
+		Msg_LC_NotifyNewMail,
 		GmCode,
 		AccountLogin,
 		AccountLoginResult,
@@ -33,11 +35,33 @@ namespace GameFrameworkMessage
 		ChangeName,
 		ChangeNameResult,
 		RoleEnter,
+		FriendInfoForMessage,
+		MemberInfoForMessage,
+		ItemInfoForMessage,
 		RoleEnterResult,
 		EnterScene,
 		ChangeSceneRoom,
 		EnterSceneResult,
 		QuitRoom,
+		MailItemForMessage,
+		MailInfoForMessage,
+		Msg_LC_SyncMailList,
+		Msg_CL_ReadMail,
+		Msg_CL_ReceiveMail,
+		Msg_CL_DeleteMail,
+		Msg_LC_LackOfSpace,
+		Msg_LC_SyncFriendList,
+		Msg_CL_AddFriend,
+		Msg_LC_AddFriend,
+		Msg_CL_RemoveFriend,
+		Msg_LC_RemoveFriend,
+		Msg_CL_MarkBlack,
+		Msg_LC_MarkBlack,
+		Msg_LC_SyncRoleInfo,
+		Msg_LC_SyncMemberList,
+		Msg_LC_SyncItemList,
+		Msg_CL_UseItem,
+		Msg_CL_DiscardItem,
 		Msg_CLC_StoryMessage,
 		Msg_LC_PublishEvent,
 		Msg_LC_SendGfxMessage,
@@ -85,22 +109,70 @@ namespace GameFrameworkMessage
 			s_Type2LobbyMessageDefine.Add(typeof(EnterScene), (int)LobbyMessageDefine.EnterScene);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.EnterSceneResult, typeof(EnterSceneResult));
 			s_Type2LobbyMessageDefine.Add(typeof(EnterSceneResult), (int)LobbyMessageDefine.EnterSceneResult);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.FriendInfoForMessage, typeof(FriendInfoForMessage));
+			s_Type2LobbyMessageDefine.Add(typeof(FriendInfoForMessage), (int)LobbyMessageDefine.FriendInfoForMessage);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.GetQueueingCount, typeof(GetQueueingCount));
 			s_Type2LobbyMessageDefine.Add(typeof(GetQueueingCount), (int)LobbyMessageDefine.GetQueueingCount);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.GmCode, typeof(GmCode));
 			s_Type2LobbyMessageDefine.Add(typeof(GmCode), (int)LobbyMessageDefine.GmCode);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.ItemInfoForMessage, typeof(ItemInfoForMessage));
+			s_Type2LobbyMessageDefine.Add(typeof(ItemInfoForMessage), (int)LobbyMessageDefine.ItemInfoForMessage);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.KickUser, typeof(KickUser));
 			s_Type2LobbyMessageDefine.Add(typeof(KickUser), (int)LobbyMessageDefine.KickUser);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Logout, typeof(Logout));
 			s_Type2LobbyMessageDefine.Add(typeof(Logout), (int)LobbyMessageDefine.Logout);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.MailInfoForMessage, typeof(MailInfoForMessage));
+			s_Type2LobbyMessageDefine.Add(typeof(MailInfoForMessage), (int)LobbyMessageDefine.MailInfoForMessage);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.MailItemForMessage, typeof(MailItemForMessage));
+			s_Type2LobbyMessageDefine.Add(typeof(MailItemForMessage), (int)LobbyMessageDefine.MailItemForMessage);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.MemberInfoForMessage, typeof(MemberInfoForMessage));
+			s_Type2LobbyMessageDefine.Add(typeof(MemberInfoForMessage), (int)LobbyMessageDefine.MemberInfoForMessage);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_CL_AddFriend, typeof(Msg_CL_AddFriend));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_CL_AddFriend), (int)LobbyMessageDefine.Msg_CL_AddFriend);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_CL_DeleteMail, typeof(Msg_CL_DeleteMail));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_CL_DeleteMail), (int)LobbyMessageDefine.Msg_CL_DeleteMail);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_CL_DiscardItem, typeof(Msg_CL_DiscardItem));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_CL_DiscardItem), (int)LobbyMessageDefine.Msg_CL_DiscardItem);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_CL_GetMailList, typeof(Msg_CL_GetMailList));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_CL_GetMailList), (int)LobbyMessageDefine.Msg_CL_GetMailList);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_CL_MarkBlack, typeof(Msg_CL_MarkBlack));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_CL_MarkBlack), (int)LobbyMessageDefine.Msg_CL_MarkBlack);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_CL_ReadMail, typeof(Msg_CL_ReadMail));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_CL_ReadMail), (int)LobbyMessageDefine.Msg_CL_ReadMail);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_CL_ReceiveMail, typeof(Msg_CL_ReceiveMail));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_CL_ReceiveMail), (int)LobbyMessageDefine.Msg_CL_ReceiveMail);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_CL_RemoveFriend, typeof(Msg_CL_RemoveFriend));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_CL_RemoveFriend), (int)LobbyMessageDefine.Msg_CL_RemoveFriend);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_CL_UseItem, typeof(Msg_CL_UseItem));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_CL_UseItem), (int)LobbyMessageDefine.Msg_CL_UseItem);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_CLC_StoryMessage, typeof(Msg_CLC_StoryMessage));
 			s_Type2LobbyMessageDefine.Add(typeof(Msg_CLC_StoryMessage), (int)LobbyMessageDefine.Msg_CLC_StoryMessage);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_AddFriend, typeof(Msg_LC_AddFriend));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_AddFriend), (int)LobbyMessageDefine.Msg_LC_AddFriend);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_HighlightPrompt, typeof(Msg_LC_HighlightPrompt));
 			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_HighlightPrompt), (int)LobbyMessageDefine.Msg_LC_HighlightPrompt);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_LackOfSpace, typeof(Msg_LC_LackOfSpace));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_LackOfSpace), (int)LobbyMessageDefine.Msg_LC_LackOfSpace);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_MarkBlack, typeof(Msg_LC_MarkBlack));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_MarkBlack), (int)LobbyMessageDefine.Msg_LC_MarkBlack);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_NotifyNewMail, typeof(Msg_LC_NotifyNewMail));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_NotifyNewMail), (int)LobbyMessageDefine.Msg_LC_NotifyNewMail);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_PublishEvent, typeof(Msg_LC_PublishEvent));
 			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_PublishEvent), (int)LobbyMessageDefine.Msg_LC_PublishEvent);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_RemoveFriend, typeof(Msg_LC_RemoveFriend));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_RemoveFriend), (int)LobbyMessageDefine.Msg_LC_RemoveFriend);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_SendGfxMessage, typeof(Msg_LC_SendGfxMessage));
 			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_SendGfxMessage), (int)LobbyMessageDefine.Msg_LC_SendGfxMessage);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_SyncFriendList, typeof(Msg_LC_SyncFriendList));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_SyncFriendList), (int)LobbyMessageDefine.Msg_LC_SyncFriendList);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_SyncItemList, typeof(Msg_LC_SyncItemList));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_SyncItemList), (int)LobbyMessageDefine.Msg_LC_SyncItemList);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_SyncMailList, typeof(Msg_LC_SyncMailList));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_SyncMailList), (int)LobbyMessageDefine.Msg_LC_SyncMailList);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_SyncMemberList, typeof(Msg_LC_SyncMemberList));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_SyncMemberList), (int)LobbyMessageDefine.Msg_LC_SyncMemberList);
+			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.Msg_LC_SyncRoleInfo, typeof(Msg_LC_SyncRoleInfo));
+			s_Type2LobbyMessageDefine.Add(typeof(Msg_LC_SyncRoleInfo), (int)LobbyMessageDefine.Msg_LC_SyncRoleInfo);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.NodeRegister, typeof(NodeRegister));
 			s_Type2LobbyMessageDefine.Add(typeof(NodeRegister), (int)LobbyMessageDefine.NodeRegister);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.NodeRegisterResult, typeof(NodeRegisterResult));

@@ -84,12 +84,17 @@
       <Link>Common\ProtoNetEncoding.cs</Link>
     </Compile>
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="GlobalData\GlobalData.cs" />
     <Compile Include="GlobalData\GlobalSaveCounter.cs" />
     <Compile Include="GlobalData\GuidSystem.cs" />
     <Compile Include="GlobalData\NicknameSystem.cs" />
     <Compile Include="GmCommands\GmStorySystem.cs" />
     <Compile Include="GmCommands\RoleCommands.cs" />
     <Compile Include="Info\AccountInfo.cs" />
+    <Compile Include="Info\ItemBag.cs" />
+    <Compile Include="Mail\MailInfo.cs" />
+    <Compile Include="Info\MailStateInfo.cs" />
+    <Compile Include="Mail\MailSystem.cs" />
     <Compile Include="NodeMessageManager\NodeMessageManager.cs" />
     <Compile Include="NodeMessageManager\NodeMessageInfo.cs" />
     <Compile Include="NodeMessageManager\NodeMessageThread.cs" />

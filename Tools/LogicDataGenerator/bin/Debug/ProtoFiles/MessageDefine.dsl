@@ -30,6 +30,7 @@ message(Msg_LR_RoomUserInfo)
   member(EnterX, float, optional);
   member(EnterY, float, optional);
   member(Members, MemberInfo, repeated);
+  member(SummonerSkillId, int32, required);
 };
 
 message(Msg_LR_ReconnectUser)

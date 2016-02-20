@@ -498,7 +498,7 @@ namespace GameFramework.Story.Values
         private void TryUpdateValue(StoryInstance instance)
         {
             m_HaveValue = true;
-            m_Value = ClientModule.Instance.LeaderLinkID;
+            m_Value = ClientInfo.Instance.RoleData.HeroId;
         }
 
         private object m_Iterator = null;
@@ -568,6 +568,216 @@ namespace GameFramework.Story.Values
         private object m_Iterator = null;
         private object[] m_Args = null;
 
+        private bool m_HaveValue;
+        private object m_Value;
+        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+    }
+    internal sealed class GetMemberCountValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getmembercount") {
+                int flag = (int)StoryValueFlagMask.HAVE_VAR;
+                m_Flag = flag;
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetMemberCountValue val = new GetMemberCountValue();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            val.m_Flag = m_Flag;
+            return val;
+        }
+        public void Substitute(object iterator, object[] args)
+        {
+            m_HaveValue = false;
+        }
+        public void Evaluate(StoryInstance instance)
+        {
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        public int Flag
+        {
+            get
+            {
+                return m_Flag;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            m_HaveValue = true;
+            m_Value = ClientInfo.Instance.RoleData.Members.Count;
+        }
+
+        private bool m_HaveValue;
+        private object m_Value;
+        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+    }
+    internal sealed class GetMemberLinkIdValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getmemberlinkid") {
+                int flag = (int)StoryValueFlagMask.HAVE_VAR;
+                int num = callData.GetParamNum();
+                if (num > 0) {
+                    m_Index.InitFromDsl(callData.GetParam(0));
+                    flag |= m_Index.Flag;
+                }
+                m_Flag = flag;
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetMemberLinkIdValue val = new GetMemberLinkIdValue();
+            val.m_Index = m_Index.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            val.m_Flag = m_Flag;
+            return val;
+        }
+        public void Substitute(object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            if (StoryValueHelper.HaveArg(Flag)) {
+                m_Index.Substitute(iterator, args);
+            }
+        }
+        public void Evaluate(StoryInstance instance)
+        {
+            m_Index.Evaluate(instance);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        public int Flag
+        {
+            get
+            {
+                return m_Flag;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_Index.HaveValue) {
+                m_HaveValue = true;
+                int index = m_Index.Value;
+                if (index >= 0 && index < ClientInfo.Instance.RoleData.Members.Count) {
+                    m_Value = ClientInfo.Instance.RoleData.Members[index].Hero;
+                } else {
+                    m_Value = 0;
+                }
+            }
+        }
+
+        private IStoryValue<int> m_Index = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+    }
+    internal sealed class GetMemberLevelValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getmemberlevel") {
+                int flag = (int)StoryValueFlagMask.HAVE_VAR;
+                int num = callData.GetParamNum();
+                if (num > 0) {
+                    m_Index.InitFromDsl(callData.GetParam(0));
+                    flag |= m_Index.Flag;
+                }
+                m_Flag = flag;
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetMemberLevelValue val = new GetMemberLevelValue();
+            val.m_Index = m_Index.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            val.m_Flag = m_Flag;
+            return val;
+        }
+        public void Substitute(object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            if (StoryValueHelper.HaveArg(Flag)) {
+                m_Index.Substitute(iterator, args);
+            }
+        }
+        public void Evaluate(StoryInstance instance)
+        {
+            m_Index.Evaluate(instance);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        public int Flag
+        {
+            get
+            {
+                return m_Flag;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_Index.HaveValue) {
+                m_HaveValue = true;
+                int index = m_Index.Value;
+                if (index >= 0 && index < ClientInfo.Instance.RoleData.Members.Count) {
+                    m_Value = ClientInfo.Instance.RoleData.Members[index].Level;
+                } else {
+                    m_Value = 0;
+                }
+            }
+        }
+
+        private IStoryValue<int> m_Index = new StoryValue<int>();
         private bool m_HaveValue;
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;

@@ -19,6 +19,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -52,6 +58,15 @@ namespace GameFramework
 			set
 			{
 				m_TableAccount.UserGuid = value;
+				OnFieldUpdated();
+			}
+		}
+		public bool IsValid
+		{
+			get{return m_TableAccount.IsValid;}
+			set
+			{
+				m_TableAccount.IsValid = value;
 				OnFieldUpdated();
 			}
 		}
@@ -97,6 +112,7 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableAccount m_TableAccount = new TableAccount();
@@ -114,6 +130,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -192,6 +214,7 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableActivationCode m_TableActivationCode = new TableActivationCode();
@@ -209,6 +232,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -218,7 +247,7 @@ namespace GameFramework
 			get{ return m_ForeignKeys;}
 		}
 
-		public string Guid
+		public ulong Guid
 		{
 			get{return m_TableFriendInfo.Guid;}
 			set
@@ -227,7 +256,7 @@ namespace GameFramework
 				OnPrimaryKeyUpdated();
 			}
 		}
-		public long UserGuid
+		public ulong UserGuid
 		{
 			get{return m_TableFriendInfo.UserGuid;}
 			set
@@ -236,7 +265,7 @@ namespace GameFramework
 				OnForeignKeyUpdated();
 			}
 		}
-		public long FriendGuid
+		public ulong FriendGuid
 		{
 			get{return m_TableFriendInfo.FriendGuid;}
 			set
@@ -313,9 +342,7 @@ namespace GameFramework
 		private void UpdatePrimaryKeys()
 		{
 			m_PrimaryKeys.Clear();
-			if (m_TableFriendInfo.Guid != null) {
-				m_PrimaryKeys.Add(m_TableFriendInfo.Guid.ToString());
-			}
+			m_PrimaryKeys.Add(m_TableFriendInfo.Guid.ToString());
 		}
 
 		private void UpdateForeignKeys()
@@ -325,9 +352,121 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableFriendInfo m_TableFriendInfo = new TableFriendInfo();
+
+	}
+}
+
+namespace GameFramework
+{
+	public sealed partial class TableGlobalDataWrap
+	{
+
+		public bool Modified
+		{
+			get{ return m_Modified;}
+			set{ m_Modified = value;}
+		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
+		public List<string> PrimaryKeys
+		{
+			get{ return m_PrimaryKeys;}
+		}
+		public List<string> ForeignKeys
+		{
+			get{ return m_ForeignKeys;}
+		}
+
+		public string Key
+		{
+			get{return m_TableGlobalData.Key;}
+			set
+			{
+				m_TableGlobalData.Key = value;
+				OnPrimaryKeyUpdated();
+			}
+		}
+		public int IntValue
+		{
+			get{return m_TableGlobalData.IntValue;}
+			set
+			{
+				m_TableGlobalData.IntValue = value;
+				OnFieldUpdated();
+			}
+		}
+		public float FloatValue
+		{
+			get{return m_TableGlobalData.FloatValue;}
+			set
+			{
+				m_TableGlobalData.FloatValue = value;
+				OnFieldUpdated();
+			}
+		}
+		public string StrValue
+		{
+			get{return m_TableGlobalData.StrValue;}
+			set
+			{
+				m_TableGlobalData.StrValue = value;
+				OnFieldUpdated();
+			}
+		}
+
+		public TableGlobalData ToProto()
+		{
+			return m_TableGlobalData;
+		}
+		public void FromProto(TableGlobalData proto)
+		{
+			m_TableGlobalData = proto;
+			UpdatePrimaryKeys();
+			UpdateForeignKeys();
+		}
+
+		private void OnFieldUpdated()
+		{
+			m_Modified = true;
+		}
+
+		private void OnPrimaryKeyUpdated()
+		{
+			m_Modified = true;
+			UpdatePrimaryKeys();
+		}
+
+		private void OnForeignKeyUpdated()
+		{
+			m_Modified = true;
+			UpdateForeignKeys();
+		}
+
+		private void UpdatePrimaryKeys()
+		{
+			m_PrimaryKeys.Clear();
+			if (m_TableGlobalData.Key != null) {
+				m_PrimaryKeys.Add(m_TableGlobalData.Key.ToString());
+			}
+		}
+
+		private void UpdateForeignKeys()
+		{
+		}
+
+		private bool m_Modified = false;
+		private bool m_Deleted = false;
+		private List<string> m_PrimaryKeys = new List<string>();
+		private List<string> m_ForeignKeys = new List<string>();
+		private TableGlobalData m_TableGlobalData = new TableGlobalData();
 
 	}
 }
@@ -342,6 +481,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -411,6 +556,7 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableGlobalParam m_TableGlobalParam = new TableGlobalParam();
@@ -428,6 +574,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -497,6 +649,7 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableGuid m_TableGuid = new TableGuid();
@@ -514,6 +667,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -601,6 +760,7 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableItemInfo m_TableItemInfo = new TableItemInfo();
@@ -618,6 +778,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -627,22 +793,13 @@ namespace GameFramework
 			get{ return m_ForeignKeys;}
 		}
 
-		public long Guid
+		public ulong Guid
 		{
 			get{return m_TableMailInfo.Guid;}
 			set
 			{
 				m_TableMailInfo.Guid = value;
 				OnPrimaryKeyUpdated();
-			}
-		}
-		public int ModuleTypeId
-		{
-			get{return m_TableMailInfo.ModuleTypeId;}
-			set
-			{
-				m_TableMailInfo.ModuleTypeId = value;
-				OnFieldUpdated();
 			}
 		}
 		public string Sender
@@ -797,6 +954,7 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableMailInfo m_TableMailInfo = new TableMailInfo();
@@ -808,7 +966,7 @@ namespace GameFramework
 
 namespace GameFramework
 {
-	public sealed partial class MailStateInfo
+	public sealed partial class MailState
 	{
 
 		public bool Modified
@@ -816,6 +974,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -825,31 +989,22 @@ namespace GameFramework
 			get{ return m_ForeignKeys;}
 		}
 
-		public string Guid
+		public ulong MailGuid
 		{
-			get{return m_TableMailStateInfo.Guid;}
+			get{return m_TableMailStateInfo.MailGuid;}
 			set
 			{
-				m_TableMailStateInfo.Guid = value;
+				m_TableMailStateInfo.MailGuid = value;
 				OnPrimaryKeyUpdated();
 			}
 		}
-		public long UserGuid
+		public ulong UserGuid
 		{
 			get{return m_TableMailStateInfo.UserGuid;}
 			set
 			{
 				m_TableMailStateInfo.UserGuid = value;
 				OnForeignKeyUpdated();
-			}
-		}
-		public long MailGuid
-		{
-			get{return m_TableMailStateInfo.MailGuid;}
-			set
-			{
-				m_TableMailStateInfo.MailGuid = value;
-				OnFieldUpdated();
 			}
 		}
 		public bool IsRead
@@ -867,6 +1022,15 @@ namespace GameFramework
 			set
 			{
 				m_TableMailStateInfo.IsReceived = value;
+				OnFieldUpdated();
+			}
+		}
+		public bool IsDeleted
+		{
+			get{return m_TableMailStateInfo.IsDeleted;}
+			set
+			{
+				m_TableMailStateInfo.IsDeleted = value;
 				OnFieldUpdated();
 			}
 		}
@@ -913,9 +1077,7 @@ namespace GameFramework
 		private void UpdatePrimaryKeys()
 		{
 			m_PrimaryKeys.Clear();
-			if (m_TableMailStateInfo.Guid != null) {
-				m_PrimaryKeys.Add(m_TableMailStateInfo.Guid.ToString());
-			}
+			m_PrimaryKeys.Add(m_TableMailStateInfo.MailGuid.ToString());
 		}
 
 		private void UpdateForeignKeys()
@@ -925,6 +1087,7 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableMailStateInfo m_TableMailStateInfo = new TableMailStateInfo();
@@ -943,6 +1106,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -1030,6 +1199,7 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableMemberInfo m_TableMemberInfo = new TableMemberInfo();
@@ -1047,6 +1217,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -1116,6 +1292,7 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableNicknameInfo m_TableNicknameInfo = new TableNicknameInfo();
@@ -1133,6 +1310,12 @@ namespace GameFramework
 			get{ return m_Modified;}
 			set{ m_Modified = value;}
 		}
+		public bool Deleted
+		{
+			get{ return m_Deleted;}
+			set{ m_Deleted = value;}
+		}
+
 		public List<string> PrimaryKeys
 		{
 			get{ return m_PrimaryKeys;}
@@ -1268,11 +1451,50 @@ namespace GameFramework
 				OnFieldUpdated();
 			}
 		}
+		public int SummonerSkillId
+		{
+			get{return m_TableUserInfo.SummonerSkillId;}
+			set
+			{
+				m_TableUserInfo.SummonerSkillId = value;
+				OnFieldUpdated();
+			}
+		}
+		public Dictionary<string,int> IntDatas
+		{
+			get{return m_IntDatas;}
+			set
+			{
+				m_IntDatas = value;
+				OnFieldUpdated();
+			}
+		}
+		public Dictionary<string,float> FloatDatas
+		{
+			get{return m_FloatDatas;}
+			set
+			{
+				m_FloatDatas = value;
+				OnFieldUpdated();
+			}
+		}
+		public Dictionary<string,string> StringDatas
+		{
+			get{return m_StringDatas;}
+			set
+			{
+				m_StringDatas = value;
+				OnFieldUpdated();
+			}
+		}
 
 		public TableUserInfo ToProto()
 		{
 			m_TableUserInfo.CreateTime = m_CreateTime.ToString("yyyyMMddHHmmss");
 			m_TableUserInfo.LastLogoutTime = m_LastLogoutTime.ToString("yyyyMMddHHmmss");
+			m_TableUserInfo.IntDatas = DataProtoUtility.JoinGeneralDictionary(";",",",m_IntDatas);
+			m_TableUserInfo.FloatDatas = DataProtoUtility.JoinGeneralDictionary(";",",",m_FloatDatas);
+			m_TableUserInfo.StringDatas = DataProtoUtility.JoinGeneralDictionary(";",",",m_StringDatas);
 			return m_TableUserInfo;
 		}
 		public void FromProto(TableUserInfo proto)
@@ -1282,6 +1504,9 @@ namespace GameFramework
 			UpdateForeignKeys();
 			m_CreateTime = DateTime.ParseExact(m_TableUserInfo.CreateTime,"yyyyMMddHHmmss",null);
 			m_LastLogoutTime = DateTime.ParseExact(m_TableUserInfo.LastLogoutTime,"yyyyMMddHHmmss",null);
+			m_IntDatas = DataProtoUtility.SplitGeneralDictionary<string,int>(new char[]{';'},new char[]{','}, m_TableUserInfo.IntDatas);
+			m_FloatDatas = DataProtoUtility.SplitGeneralDictionary<string,float>(new char[]{';'},new char[]{','}, m_TableUserInfo.FloatDatas);
+			m_StringDatas = DataProtoUtility.SplitGeneralDictionary<string,string>(new char[]{';'},new char[]{','}, m_TableUserInfo.StringDatas);
 		}
 
 		private void OnFieldUpdated()
@@ -1316,11 +1541,15 @@ namespace GameFramework
 		}
 
 		private bool m_Modified = false;
+		private bool m_Deleted = false;
 		private List<string> m_PrimaryKeys = new List<string>();
 		private List<string> m_ForeignKeys = new List<string>();
 		private TableUserInfo m_TableUserInfo = new TableUserInfo();
 		private DateTime m_CreateTime = new DateTime();
 		private DateTime m_LastLogoutTime = new DateTime();
+		private Dictionary<string,int> m_IntDatas = new Dictionary<string,int>();
+		private Dictionary<string,float> m_FloatDatas = new Dictionary<string,float>();
+		private Dictionary<string,string> m_StringDatas = new Dictionary<string,string>();
 
 	}
 }

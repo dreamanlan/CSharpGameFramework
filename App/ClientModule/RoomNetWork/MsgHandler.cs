@@ -68,7 +68,6 @@ internal class Msg_RC_CreateNpc_Handler
             }
             if (targetmsg.key > 0 && targetmsg.key == NetworkSystem.Instance.Key) {
                 ClientModule.Instance.LeaderID = targetmsg.npc_id;
-                ClientModule.Instance.LeaderLinkID = targetmsg.link_id;
             }
         }
     }

@@ -16,6 +16,7 @@ message TableAccount
 	required string AccountId = 1;
 	required bool IsBanned = 2;
 	required uint64 UserGuid = 3;
+	required bool IsValid = 4;
 }
 
 message TableActivationCode
@@ -27,13 +28,21 @@ message TableActivationCode
 
 message TableFriendInfo
 {
-	required string Guid = 1;
-	required int64 UserGuid = 2;
-	required int64 FriendGuid = 3;
+	required uint64 Guid = 1;
+	required uint64 UserGuid = 2;
+	required uint64 FriendGuid = 3;
 	required string FriendNickname = 4;
 	required int64 QQ = 5;
 	required int64 weixin = 6;
 	required bool IsBlack = 7;
+}
+
+message TableGlobalData
+{
+	required string Key = 1;
+	required int32 IntValue = 2;
+	required float FloatValue = 3;
+	required string StrValue = 4;
 }
 
 message TableGlobalParam
@@ -58,29 +67,28 @@ message TableItemInfo
 
 message TableMailInfo
 {
-	required int64 Guid = 1;
-	required int32 ModuleTypeId = 2;
-	required string Sender = 3;
-	required int64 Receiver = 4;
-	required string SendDate = 5;
-	required string ExpiryDate = 6;
-	required string Title = 7;
-	required string Text = 8;
-	required int32 Money = 9;
-	required int32 Gold = 10;
-	required string ItemIds = 11;
-	required string ItemNumbers = 12;
-	required int32 LevelDemand = 13;
-	required bool IsRead = 14;
+	required uint64 Guid = 1;
+	required string Sender = 2;
+	required int64 Receiver = 3;
+	required string SendDate = 4;
+	required string ExpiryDate = 5;
+	required string Title = 6;
+	required string Text = 7;
+	required int32 Money = 8;
+	required int32 Gold = 9;
+	required string ItemIds = 10;
+	required string ItemNumbers = 11;
+	required int32 LevelDemand = 12;
+	required bool IsRead = 13;
 }
 
 message TableMailStateInfo
 {
-	required string Guid = 1;
-	required int64 UserGuid = 2;
-	required int64 MailGuid = 3;
-	required bool IsRead = 4;
-	required bool IsReceived = 5;
+	required uint64 MailGuid = 1;
+	required uint64 UserGuid = 2;
+	required bool IsRead = 3;
+	required bool IsReceived = 4;
+	required bool IsDeleted = 5;
 	required string ExpiryDate = 6;
 }
 
@@ -114,4 +122,8 @@ message TableUserInfo
 	required float FaceDir = 12;
 	required int32 Money = 13;
 	required int32 Gold = 14;
+	required int32 SummonerSkillId = 15;
+	required string IntDatas = 16;
+	required string FloatDatas = 17;
+	required string StringDatas = 18;
 }

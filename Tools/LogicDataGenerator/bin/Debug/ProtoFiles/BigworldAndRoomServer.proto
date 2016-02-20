@@ -135,6 +135,7 @@ message Msg_LR_RoomUserInfo
 	optional float EnterX = 8;
 	optional float EnterY = 9;
 	repeated MemberInfo Members = 10;
+	required int32 SummonerSkillId = 11;
 }
 
 message Msg_LR_UserQuit

@@ -569,6 +569,13 @@ namespace GameFrameworkMessage
       get { return _Members; }
     }
   
+    private int _SummonerSkillId;
+    [global::ProtoBuf.ProtoMember(11, IsRequired = true, Name=@"SummonerSkillId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int SummonerSkillId
+    {
+      get { return _SummonerSkillId; }
+      set { _SummonerSkillId = value; }
+    }
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"MemberInfo")]
   public partial class MemberInfo : global::ProtoBuf.IExtensible
   {

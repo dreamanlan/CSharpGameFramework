@@ -32,9 +32,151 @@ namespace GameFramework
         {
             UserServer.Instance.TransmitToBigworld(msg);
         }
+        internal void AddFriend(ulong guid, Msg_CL_AddFriend msg)
+        {
+            UserInfo userInfo = GetUserInfo(guid);
+            if (null != userInfo) {
+                ulong friendGuid = UserServer.Instance.UserProcessScheduler.FindUserGuidByNickname(msg.m_FriendNickname);
+                UserInfo friendUserInfo = GetUserInfo(friendGuid);
+                if (null != friendUserInfo) {
+                    FriendInfo friendInfo = userInfo.FriendInfos.Find(fi => fi.FriendNickname == msg.m_FriendNickname);
+                    if (null == friendInfo) {
+                        friendInfo = new FriendInfo();
+                        friendInfo.Guid = UserServer.Instance.GlobalProcessThread.GenerateFriendGuid();
+                        userInfo.FriendInfos.Add(friendInfo);
+                    }
+                    friendInfo.FriendNickname = msg.m_FriendNickname;
+                    friendInfo.FriendGuid = friendGuid;
+                    friendInfo.UserGuid = guid;
+
+                    FriendInfoForMessage msgInfo = new FriendInfoForMessage();
+                    msgInfo.FriendGuid = friendInfo.FriendGuid;
+                    msgInfo.FriendNickname = friendInfo.FriendNickname;
+                    msgInfo.IsBlack = friendInfo.IsBlack;
+
+                    Msg_LC_AddFriend retMsg = new Msg_LC_AddFriend();
+                    retMsg.m_FriendInfo = msgInfo;
+                    NotifyUser(guid, LobbyMessageDefine.Msg_LC_AddFriend, retMsg);
+                }
+            }
+        }
+        internal void RemoveFriend(ulong guid, Msg_CL_RemoveFriend msg)
+        {
+            UserInfo userInfo = GetUserInfo(guid);
+            if (null != userInfo) {
+                FriendInfo friendInfo = userInfo.FriendInfos.Find(fi => fi.FriendGuid == msg.m_FriendGuid);
+                if (null != friendInfo) {
+                    friendInfo.Deleted = true;
+
+                    Msg_LC_RemoveFriend retMsg = new Msg_LC_RemoveFriend();
+                    retMsg.m_FriendGuid = msg.m_FriendGuid;
+                    NotifyUser(guid, LobbyMessageDefine.Msg_LC_RemoveFriend, retMsg);
+                }
+            }
+        }
+        internal void MarkBlack(ulong guid, Msg_CL_MarkBlack msg)
+        {
+            UserInfo userInfo = GetUserInfo(guid);
+            if (null != userInfo) {
+                FriendInfo friendInfo = userInfo.FriendInfos.Find(fi => fi.FriendGuid == msg.m_FriendGuid);
+                if (null != friendInfo) {
+                    friendInfo.IsBlack = true;
+
+                    Msg_LC_MarkBlack retMsg = new Msg_LC_MarkBlack();
+                    retMsg.m_FriendGuid = msg.m_FriendGuid;
+                    NotifyUser(guid, LobbyMessageDefine.Msg_LC_MarkBlack, retMsg);
+                }
+            }
+        }
+        internal void UseItem(ulong guid, Msg_CL_UseItem msg)
+        {
+            UserInfo userInfo = GetUserInfo(guid);
+            if (null != userInfo) {
+
+                SyncItems(guid);
+            }
+        }
+        internal void DiscardItem(ulong guid, Msg_CL_DiscardItem msg)
+        {
+            UserInfo userInfo = GetUserInfo(guid);
+            if (null != userInfo) {
+
+                SyncItems(guid);
+            }
+        }
+        internal void AddAssets(ulong guid, int money, int gold)
+        {
+            UserInfo userInfo = GetUserInfo(guid);
+            if (null != userInfo) {
+                userInfo.IncreaseMoney(money);
+                userInfo.IncreaseGold(gold);
+
+                SyncRoleInfo(guid);
+            }
+        }
+        internal void AddItem(ulong guid, int itemId, int itemNum)
+        {
+            UserInfo userInfo = GetUserInfo(guid);
+            if (null != userInfo) {
+                userInfo.ItemBag.AddItemData(itemId, itemNum);
+
+                SyncItems(guid);
+            }
+        }
+        internal UserInfo GetUserInfo(ulong guid)
+        {
+            return UserServer.Instance.UserProcessScheduler.GetUserInfo(guid);
+        }
+        internal void SyncRoleInfo(ulong guid)
+        {
+            UserInfo user = GetUserInfo(guid);
+            if (null != user) {
+                Msg_LC_SyncRoleInfo protoData = new Msg_LC_SyncRoleInfo();
+                protoData.HeroId = user.HeroId;
+                protoData.Level = user.Level;
+                protoData.Money = user.Money;
+                protoData.Gold = user.Gold;
+                protoData.SummonerSkillId = user.SummonerSkillId;
+
+                NotifyUser(guid, LobbyMessageDefine.Msg_LC_SyncRoleInfo, protoData);
+            }
+        }
+        internal void SyncMembers(ulong guid)
+        {
+            UserInfo user = GetUserInfo(guid);
+            if (null != user) {
+                Msg_LC_SyncMemberList protoData = new Msg_LC_SyncMemberList();
+                for (int i = 0; i < user.MemberInfos.Count; ++i) {
+                    MemberInfoForMessage mi = new MemberInfoForMessage();
+                    mi.Hero = user.MemberInfos[i].HeroId;
+                    mi.Level = user.MemberInfos[i].Level;
+
+                    protoData.m_Members.Add(mi);
+                }
+                NotifyUser(guid, LobbyMessageDefine.Msg_LC_SyncMemberList, protoData);
+            }
+        }
+        internal void SyncItems(ulong guid)
+        {
+            UserInfo user = GetUserInfo(guid);
+            if (null != user) {
+                Msg_LC_SyncItemList protoData = new Msg_LC_SyncItemList();
+                for (int i = 0; i < user.ItemBag.ItemCount; ++i) {
+                    ItemInfo item = user.ItemBag.ItemInfos[i];
+
+                    ItemInfoForMessage itemInfo = new ItemInfoForMessage();
+                    itemInfo.ItemGuid = item.ItemGuid;
+                    itemInfo.ItemId = item.ItemId;
+                    itemInfo.ItemNum = item.ItemNum;
+
+                    protoData.m_Items.Add(itemInfo);
+                }
+                NotifyUser(guid, LobbyMessageDefine.Msg_LC_SyncItemList, protoData);
+            }
+        }
         internal void NotifyUser(ulong guid, LobbyMessageDefine id, object msg)
         {
-            UserInfo user = UserServer.Instance.UserProcessScheduler.GetUserInfo(guid);
+            UserInfo user = GetUserInfo(guid);
             if (null != user) {
                 NodeMessage retMsg = new NodeMessage(id, guid);
                 retMsg.m_ProtoData = msg;
@@ -112,6 +254,7 @@ namespace GameFramework
             ruiBuilder.Camp = info.CampId;
             ruiBuilder.IsMachine = false;
             ruiBuilder.Level = info.Level;
+            ruiBuilder.SummonerSkillId = info.SummonerSkillId;
             ///
             int memberCount = info.MemberInfos.Count;
             if (memberCount > 0) {

@@ -58,6 +58,8 @@ message(RequestNickname){};
 message(RequestSceneRoomInfo){};
 message(RequestSceneRoomList){};
 message(ServerShutdown){};
+message(Msg_CL_GetMailList){};
+message(Msg_LC_NotifyNewMail){};
 
 //=================================================
 message(GmCode) {
@@ -140,6 +142,25 @@ message(RoleEnter) {
   member(m_Nickname, string, optional);
 };
 
+message(FriendInfoForMessage)
+{
+	member(FriendGuid, ulong, required);
+	member(FriendNickname, string, required);
+	member(QQ, long, required);
+	member(weixin, long, required);
+	member(IsBlack, bool, required);
+};
+message(MemberInfoForMessage)
+{
+  member(Hero, int32, required);
+  member(Level, int32, required);
+};
+message(ItemInfoForMessage)
+{
+	member(ItemGuid, ulong, required);
+	member(ItemId, int, required);
+	member(ItemNum, int, required);
+};
 message(RoleEnterResult)
 {	
 	enum(RoleEnterResultEnum)
@@ -148,20 +169,18 @@ message(RoleEnterResult)
 	  Wait;
 	  UnknownError;
 	};
-  message(MemberInfo)
-  {
-    member(Hero, int32, required);
-    member(Level, int32, required);
-  };
-  member(m_Result, RoleEnterResultEnum, required);
-  member(m_Nickname, string, required);
-  member(m_HeroId, int, required);
-	member(m_Money, int, optional);
-  member(m_Gold, int, optional);
-	member(m_Level, int, optional);
-	member(m_SceneId, int, optional);
-  member(m_WorldId, int, optional);
-  member(Members, MemberInfo, repeated);
+  member(Result, RoleEnterResultEnum, required);
+  member(Nickname, string, required);
+  member(HeroId, int, required);
+	member(Money, int, required);
+  member(Gold, int, required);
+	member(Level, int, required);
+	member(SceneId, int, required);
+  member(WorldId, int, required);
+  member(Members, MemberInfoForMessage, repeated);
+  member(Items, ItemInfoForMessage, repeated);
+  member(Friends, FriendInfoForMessage, repeated);
+  member(SummonerSkillId, int32, required);
 };
 
 message(EnterScene)
@@ -177,18 +196,106 @@ message(ChangeSceneRoom)
 };
 
 message(EnterSceneResult) {
-  member(server_ip, string, optional);
-  member(server_port, uint, optional);
-  member(key, uint, optional);
-  member(camp_id, int, optional);
-  member(scene_type, int, optional);
+  member(server_ip, string, required);
+  member(server_port, uint, required);
+  member(key, uint, required);
+  member(camp_id, int, required);
+  member(scene_type, int, required);
   member(result, int, required);
   member(prime, int, required);
 };
 
 message(QuitRoom) {
 	member(m_IsQuitRoom, bool, required);
-};  
+};
+
+message(MailItemForMessage)
+{
+  member(m_ItemId, int32, required);
+  member(m_ItemNum, int32, required);
+};
+message(MailInfoForMessage)
+{
+  member(m_AlreadyRead, bool, required);
+  member(m_MailGuid, uint64, required);
+  member(m_Module, int32, required);
+  member(m_Title, string, required);
+  member(m_Sender, string, required);
+  member(m_SendTime, string, required);
+  member(m_Text, string, required);
+  member(m_Items, MailItemForMessage, repeated);
+  member(m_Money, int32, required);
+  member(m_Gold, int32, required);
+};
+message(Msg_LC_SyncMailList)
+{
+  member(m_Mails, MailInfoForMessage, repeated);
+};
+message(Msg_CL_ReadMail) {
+  member(m_MailGuid, uint64, required);
+};
+message(Msg_CL_ReceiveMail) {
+	member(m_MailGuid, uint64, required);
+};
+message(Msg_CL_DeleteMail) {
+  member(m_MailGuid, uint64, required);
+};
+message(Msg_LC_LackOfSpace)
+{
+	member(m_Succeed, bool, required);
+	member(m_ReceiveNum, int32, required);
+	member(m_FreeNum, int32, required);
+	member(m_MailGuid, uint64, required);
+};
+
+message(Msg_LC_SyncFriendList)
+{
+  member(m_Friends, FriendInfoForMessage, repeated);
+};
+message(Msg_CL_AddFriend) {
+  member(m_FriendNickname, string, required);
+};
+message(Msg_LC_AddFriend) {
+  member(m_FriendInfo, FriendInfoForMessage, required);
+};
+message(Msg_CL_RemoveFriend) {
+	member(m_FriendGuid, uint64, required);
+};
+message(Msg_LC_RemoveFriend) {
+	member(m_FriendGuid, uint64, required);
+};
+message(Msg_CL_MarkBlack) {
+	member(m_FriendGuid, uint64, required);
+};
+message(Msg_LC_MarkBlack) {
+	member(m_FriendGuid, uint64, required);
+};
+
+message(Msg_LC_SyncRoleInfo)
+{
+  member(HeroId, int, required);
+	member(Money, int, required);
+  member(Gold, int, required);
+	member(Level, int, required);
+  member(SummonerSkillId, int32, required);
+};
+
+message(Msg_LC_SyncMemberList)
+{
+	member(m_Members, MemberInfoForMessage, repeated);
+};
+
+message(Msg_LC_SyncItemList)
+{
+	member(m_Items, ItemInfoForMessage, repeated);
+};
+message(Msg_CL_UseItem) {
+	member(ItemId, int, required);
+	member(ItemNum, int, required);
+};
+message(Msg_CL_DiscardItem) {
+	member(ItemGuid, ulong, required);
+};
 
 message(Msg_CLC_StoryMessage)
 {

@@ -29,6 +29,9 @@ namespace GameFramework
 				case (int)DataEnum.TableFriendInfo:
 					SaveTableFriendInfo(isValid, dataVersion, data);
 					break;
+				case (int)DataEnum.TableGlobalData:
+					SaveTableGlobalData(isValid, dataVersion, data);
+					break;
 				case (int)DataEnum.TableGlobalParam:
 					SaveTableGlobalParam(isValid, dataVersion, data);
 					break;
@@ -67,6 +70,9 @@ namespace GameFramework
 					break;
 				case (int)DataEnum.TableFriendInfo:
 					count = BatchSaveTableFriendInfo(validList, dataList, dataVersion);
+					break;
+				case (int)DataEnum.TableGlobalData:
+					count = BatchSaveTableGlobalData(validList, dataList, dataVersion);
 					break;
 				case (int)DataEnum.TableGlobalParam:
 					count = BatchSaveTableGlobalParam(validList, dataList, dataVersion);
@@ -108,6 +114,8 @@ namespace GameFramework
 					return LoadAllTableActivationCode(start, count);
 				case (int)DataEnum.TableFriendInfo:
 					return LoadAllTableFriendInfo(start, count);
+				case (int)DataEnum.TableGlobalData:
+					return LoadAllTableGlobalData(start, count);
 				case (int)DataEnum.TableGlobalParam:
 					return LoadAllTableGlobalParam(start, count);
 				case (int)DataEnum.TableGuid:
@@ -136,6 +144,8 @@ namespace GameFramework
 					return LoadSingleTableActivationCode(primaryKeys);
 				case (int)DataEnum.TableFriendInfo:
 					return LoadSingleTableFriendInfo(primaryKeys);
+				case (int)DataEnum.TableGlobalData:
+					return LoadSingleTableGlobalData(primaryKeys);
 				case (int)DataEnum.TableGlobalParam:
 					return LoadSingleTableGlobalParam(primaryKeys);
 				case (int)DataEnum.TableGuid:
@@ -164,6 +174,8 @@ namespace GameFramework
 					return LoadMultiTableActivationCode(foreignKeys);
 				case (int)DataEnum.TableFriendInfo:
 					return LoadMultiTableFriendInfo(foreignKeys);
+				case (int)DataEnum.TableGlobalData:
+					return LoadMultiTableGlobalData(foreignKeys);
 				case (int)DataEnum.TableGlobalParam:
 					return LoadMultiTableGlobalParam(foreignKeys);
 				case (int)DataEnum.TableGuid:
@@ -213,6 +225,8 @@ namespace GameFramework
 			        msg.IsBanned = (bool)val;
 			        val = reader["UserGuid"];
 			        msg.UserGuid = (ulong)val;
+			        val = reader["IsValid"];
+			        msg.IsValid = (bool)val;
 			        record.DataVersion = (int)reader["DataVersion"];
 			        record.Data = DbDataSerializer.Encode(msg);
 			        ret.Add(record);
@@ -255,6 +269,8 @@ namespace GameFramework
 			        msg.IsBanned = (bool)val;
 			        val = reader["UserGuid"];
 			        msg.UserGuid = (ulong)val;
+			        val = reader["IsValid"];
+			        msg.IsValid = (bool)val;
 			        ret.DataVersion = (int)reader["DataVersion"];
 			        ret.Data = DbDataSerializer.Encode(msg);
 			      }
@@ -307,6 +323,10 @@ namespace GameFramework
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.UserGuid;
 				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_IsValid", MySqlDbType.Bit);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.IsValid;
+				    cmd.Parameters.Add(inputParam);
 				    cmd.ExecuteNonQuery();
 				  }
 				} catch (Exception ex) {
@@ -323,7 +343,7 @@ namespace GameFramework
 			  return 0;
 			}
 			StringBuilder sbSql = new StringBuilder("insert into TableAccount ", 4096); 
-			sbSql.Append("(IsValid,DataVersion,AccountId,IsBanned,UserGuid)");
+			sbSql.Append("(IsValid,DataVersion,AccountId,IsBanned,UserGuid,IsValid)");
 			sbSql.Append(" values ");
 			for (int i = 0; i < validList.Count; ++i) {
 			  Byte valid = 1;
@@ -341,6 +361,8 @@ namespace GameFramework
 			    sbValue.Append(msg.IsBanned);
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.UserGuid);
+			    sbValue.Append(',');
+			    sbValue.Append(msg.IsValid);
 			    sbValue.Append(')');
 			    sbSql.Append(sbValue.ToString());
 			    sbSql.Append(',');
@@ -352,6 +374,7 @@ namespace GameFramework
 			sbSql.AppendFormat(" AccountId = if(DataVersion < {0}, values(AccountId), AccountId),", dataVersion);
 			sbSql.AppendFormat(" IsBanned = if(DataVersion < {0}, values(IsBanned), IsBanned),", dataVersion);
 			sbSql.AppendFormat(" UserGuid = if(DataVersion < {0}, values(UserGuid), UserGuid),", dataVersion);
+			sbSql.AppendFormat(" IsValid = if(DataVersion < {0}, values(IsValid), IsValid),", dataVersion);
 			sbSql.AppendFormat(" DataVersion = if(DataVersion < {0}, {0}, DataVersion),", dataVersion);
 			sbSql.Remove(sbSql.Length - 1, 1);
 			string statement = sbSql.ToString();
@@ -588,13 +611,13 @@ namespace GameFramework
 			        object val;
 			        TableFriendInfo msg = new TableFriendInfo();
 			        val = reader["Guid"];
-			        msg.Guid = (string)val;
+			        msg.Guid = (ulong)val;
 			        record.PrimaryKeys.Add(val.ToString());
 			        val = reader["UserGuid"];
-			        msg.UserGuid = (long)val;
+			        msg.UserGuid = (ulong)val;
 			        record.ForeignKeys.Add(val.ToString());
 			        val = reader["FriendGuid"];
-			        msg.FriendGuid = (long)val;
+			        msg.FriendGuid = (ulong)val;
 			        val = reader["FriendNickname"];
 			        msg.FriendNickname = (string)val;
 			        val = reader["QQ"];
@@ -628,10 +651,9 @@ namespace GameFramework
 			    if(primaryKeys.Count != 1)
 				    throw new Exception("primary key number don't match !!!");
 			    MySqlParameter inputParam;
-			    inputParam = new MySqlParameter("@_Guid", MySqlDbType.VarChar);
+			    inputParam = new MySqlParameter("@_Guid", MySqlDbType.UInt64);
 			    inputParam.Direction = ParameterDirection.Input;
-			    inputParam.Value = primaryKeys[0];
-			    inputParam.Size = 24;
+			    inputParam.Value = (ulong)Convert.ChangeType(primaryKeys[0],typeof(ulong));
 			    cmd.Parameters.Add(inputParam);
 			    using (DbDataReader reader = cmd.ExecuteReader()) {
 			      if (reader.Read()) {
@@ -639,13 +661,13 @@ namespace GameFramework
 			        object val;
 			        TableFriendInfo msg = new TableFriendInfo();
 			        val = reader["Guid"];
-			        msg.Guid = (string)val;
+			        msg.Guid = (ulong)val;
 			        ret.PrimaryKeys.Add(val.ToString());
 			        val = reader["UserGuid"];
-			        msg.UserGuid = (long)val;
+			        msg.UserGuid = (ulong)val;
 			        ret.ForeignKeys.Add(val.ToString());
 			        val = reader["FriendGuid"];
-			        msg.FriendGuid = (long)val;
+			        msg.FriendGuid = (ulong)val;
 			        val = reader["FriendNickname"];
 			        msg.FriendNickname = (string)val;
 			        val = reader["QQ"];
@@ -678,9 +700,9 @@ namespace GameFramework
 			    if(foreignKeys.Count != 1)
 				    throw new Exception("foreign key number don't match !!!");
 			    MySqlParameter inputParam;
-			    inputParam = new MySqlParameter("@_UserGuid", MySqlDbType.Int64);
+			    inputParam = new MySqlParameter("@_UserGuid", MySqlDbType.UInt64);
 			    inputParam.Direction = ParameterDirection.Input;
-			    inputParam.Value = (long)Convert.ChangeType(foreignKeys[0],typeof(long));
+			    inputParam.Value = (ulong)Convert.ChangeType(foreignKeys[0],typeof(ulong));
 			    cmd.Parameters.Add(inputParam);
 			    using (DbDataReader reader = cmd.ExecuteReader()) {
 			      while (reader.Read()) {
@@ -688,13 +710,13 @@ namespace GameFramework
 			        object val;
 			        TableFriendInfo msg = new TableFriendInfo();
 			        val = reader["Guid"];
-			        msg.Guid = (string)val;
+			        msg.Guid = (ulong)val;
 			        record.PrimaryKeys.Add(val.ToString());
 			        val = reader["UserGuid"];
-			        msg.UserGuid = (long)val;
+			        msg.UserGuid = (ulong)val;
 			        record.ForeignKeys.Add(val.ToString());
 			        val = reader["FriendGuid"];
-			        msg.FriendGuid = (long)val;
+			        msg.FriendGuid = (ulong)val;
 			        val = reader["FriendNickname"];
 			        msg.FriendNickname = (string)val;
 			        val = reader["QQ"];
@@ -736,16 +758,15 @@ namespace GameFramework
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = dataVersion;
 				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_Guid", MySqlDbType.VarChar);
+				    inputParam = new MySqlParameter("@_Guid", MySqlDbType.UInt64);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.Guid;
-				    inputParam.Size = 24;
 				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_UserGuid", MySqlDbType.Int64);
+				    inputParam = new MySqlParameter("@_UserGuid", MySqlDbType.UInt64);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.UserGuid;
 				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_FriendGuid", MySqlDbType.Int64);
+				    inputParam = new MySqlParameter("@_FriendGuid", MySqlDbType.UInt64);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.FriendGuid;
 				    cmd.Parameters.Add(inputParam);
@@ -823,6 +844,208 @@ namespace GameFramework
 			sbSql.AppendFormat(" QQ = if(DataVersion < {0}, values(QQ), QQ),", dataVersion);
 			sbSql.AppendFormat(" weixin = if(DataVersion < {0}, values(weixin), weixin),", dataVersion);
 			sbSql.AppendFormat(" IsBlack = if(DataVersion < {0}, values(IsBlack), IsBlack),", dataVersion);
+			sbSql.AppendFormat(" DataVersion = if(DataVersion < {0}, {0}, DataVersion),", dataVersion);
+			sbSql.Remove(sbSql.Length - 1, 1);
+			string statement = sbSql.ToString();
+			int count = 0;
+			try {
+			  using (MySqlCommand cmd = new MySqlCommand()) {
+			    cmd.Connection = DBConn.MySqlConn;
+			    cmd.CommandType = CommandType.Text;
+			    cmd.CommandText = statement;
+			    count = cmd.ExecuteNonQuery();
+			  }
+			} catch (Exception ex) {
+			  if (dataList.Count < 200) {
+			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			  }
+			  DBConn.Close();
+			  throw ex;
+			}
+			return count;
+		}
+
+
+		private static List<GeneralRecordData> LoadAllTableGlobalData(int start, int count)
+		{
+			List<GeneralRecordData> ret = new List<GeneralRecordData>();
+			try {
+			  using (MySqlCommand cmd = new MySqlCommand()) {
+			    cmd.Connection = DBConn.MySqlConn;
+			    cmd.CommandType = CommandType.StoredProcedure;
+			    cmd.CommandText = "LoadAllTableGlobalData";
+			    MySqlParameter inputParam;
+			    inputParam = new MySqlParameter("@_Start", MySqlDbType.Int32);
+			    inputParam.Direction = ParameterDirection.Input;
+			    inputParam.Value = start;
+			    cmd.Parameters.Add(inputParam);
+			    inputParam = new MySqlParameter("@_Count", MySqlDbType.Int32);
+			    inputParam.Direction = ParameterDirection.Input;
+			    inputParam.Value = count;
+			    cmd.Parameters.Add(inputParam);
+			    using (DbDataReader reader = cmd.ExecuteReader()) {
+			      while (reader.Read()) {
+			        GeneralRecordData record = new GeneralRecordData();
+			        object val;
+			        TableGlobalData msg = new TableGlobalData();
+			        val = reader["Key"];
+			        msg.Key = (string)val;
+			        record.PrimaryKeys.Add(val.ToString());
+			        val = reader["IntValue"];
+			        msg.IntValue = (int)val;
+			        val = reader["FloatValue"];
+			        msg.FloatValue = (float)val;
+			        val = reader["StrValue"];
+			        msg.StrValue = (string)val;
+			        record.DataVersion = (int)reader["DataVersion"];
+			        record.Data = DbDataSerializer.Encode(msg);
+			        ret.Add(record);
+			      }
+			    }
+			  }
+			} catch (Exception ex) {
+			  DBConn.Close();
+			  throw ex;
+			}
+			return ret;
+		}
+
+
+		private static GeneralRecordData LoadSingleTableGlobalData(List<string> primaryKeys)
+		{
+			GeneralRecordData ret = null;
+			try {
+			  using (MySqlCommand cmd = new MySqlCommand()) {
+			    cmd.Connection = DBConn.MySqlConn;
+			    cmd.CommandType = CommandType.StoredProcedure;
+			    cmd.CommandText = "LoadSingleTableGlobalData";
+			    if(primaryKeys.Count != 1)
+				    throw new Exception("primary key number don't match !!!");
+			    MySqlParameter inputParam;
+			    inputParam = new MySqlParameter("@_Key", MySqlDbType.VarChar);
+			    inputParam.Direction = ParameterDirection.Input;
+			    inputParam.Value = primaryKeys[0];
+			    inputParam.Size = 32;
+			    cmd.Parameters.Add(inputParam);
+			    using (DbDataReader reader = cmd.ExecuteReader()) {
+			      if (reader.Read()) {
+			        ret = new GeneralRecordData();
+			        object val;
+			        TableGlobalData msg = new TableGlobalData();
+			        val = reader["Key"];
+			        msg.Key = (string)val;
+			        ret.PrimaryKeys.Add(val.ToString());
+			        val = reader["IntValue"];
+			        msg.IntValue = (int)val;
+			        val = reader["FloatValue"];
+			        msg.FloatValue = (float)val;
+			        val = reader["StrValue"];
+			        msg.StrValue = (string)val;
+			        ret.DataVersion = (int)reader["DataVersion"];
+			        ret.Data = DbDataSerializer.Encode(msg);
+			      }
+			    }
+			  }
+			} catch (Exception ex) {
+			  DBConn.Close();
+			  throw ex;
+			}
+			return ret;
+		}
+
+
+		private static List<GeneralRecordData> LoadMultiTableGlobalData(List<string> foreignKeys)
+		{
+			List<GeneralRecordData> ret = new List<GeneralRecordData>();
+			return ret;
+		}
+
+
+		private static void SaveTableGlobalData(bool isValid, int dataVersion, byte[] data)
+		{
+			object _msg;
+			if(DbDataSerializer.Decode(data, typeof(TableGlobalData), out _msg)){
+				TableGlobalData msg = _msg as TableGlobalData;
+				try {
+				  using (MySqlCommand cmd = new MySqlCommand()) {
+				    cmd.Connection = DBConn.MySqlConn;
+				    cmd.CommandType = CommandType.StoredProcedure;
+				    cmd.CommandText = "SaveTableGlobalData";
+				    MySqlParameter inputParam;
+				    inputParam = new MySqlParameter("@_IsValid", MySqlDbType.Bit);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = isValid;
+				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_DataVersion", MySqlDbType.Int32);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = dataVersion;
+				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_Key", MySqlDbType.VarChar);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.Key;
+				    inputParam.Size = 32;
+				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_IntValue", MySqlDbType.Int32);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.IntValue;
+				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_FloatValue", MySqlDbType.Float);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.FloatValue;
+				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_StrValue", MySqlDbType.VarChar);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.StrValue;
+				    inputParam.Size = 1024;
+				    cmd.Parameters.Add(inputParam);
+				    cmd.ExecuteNonQuery();
+				  }
+				} catch (Exception ex) {
+				  DBConn.Close();
+				  throw ex;
+				}
+			}
+		}
+
+
+		private static int BatchSaveTableGlobalData(List<bool> validList, List<byte[]> dataList, int dataVersion)
+		{
+			if (dataList.Count <= 0) {
+			  return 0;
+			}
+			StringBuilder sbSql = new StringBuilder("insert into TableGlobalData ", 4096); 
+			sbSql.Append("(IsValid,DataVersion,Key,IntValue,FloatValue,StrValue)");
+			sbSql.Append(" values ");
+			for (int i = 0; i < validList.Count; ++i) {
+			  Byte valid = 1;
+			  if (validList[i] == false) {
+			    valid = 0;
+			  }
+			  StringBuilder sbValue = new StringBuilder();
+			  sbValue.AppendFormat("({0},{1}", valid, dataVersion);
+			  object _msg;
+			  if (DbDataSerializer.Decode(dataList[i], typeof(TableGlobalData), out _msg)) {
+			    TableGlobalData msg = _msg as TableGlobalData;
+			    sbValue.Append(',');
+			    sbValue.AppendFormat("'{0}'", msg.Key);
+			    sbValue.Append(',');
+			    sbValue.AppendFormat("'{0}'", msg.IntValue);
+			    sbValue.Append(',');
+			    sbValue.AppendFormat("'{0}'", msg.FloatValue);
+			    sbValue.Append(',');
+			    sbValue.AppendFormat("'{0}'", msg.StrValue);
+			    sbValue.Append(')');
+			    sbSql.Append(sbValue.ToString());
+			    sbSql.Append(',');
+			  }
+			}
+			sbSql.Remove(sbSql.Length - 1, 1);
+			sbSql.Append(" on duplicate key update ");
+			sbSql.AppendFormat(" IsValid = if(DataVersion < {0}, values(IsValid), IsValid),", dataVersion);
+			sbSql.AppendFormat(" Key = if(DataVersion < {0}, values(Key), Key),", dataVersion);
+			sbSql.AppendFormat(" IntValue = if(DataVersion < {0}, values(IntValue), IntValue),", dataVersion);
+			sbSql.AppendFormat(" FloatValue = if(DataVersion < {0}, values(FloatValue), FloatValue),", dataVersion);
+			sbSql.AppendFormat(" StrValue = if(DataVersion < {0}, values(StrValue), StrValue),", dataVersion);
 			sbSql.AppendFormat(" DataVersion = if(DataVersion < {0}, {0}, DataVersion),", dataVersion);
 			sbSql.Remove(sbSql.Length - 1, 1);
 			string statement = sbSql.ToString();
@@ -1465,10 +1688,8 @@ namespace GameFramework
 			        object val;
 			        TableMailInfo msg = new TableMailInfo();
 			        val = reader["Guid"];
-			        msg.Guid = (long)val;
+			        msg.Guid = (ulong)val;
 			        record.PrimaryKeys.Add(val.ToString());
-			        val = reader["ModuleTypeId"];
-			        msg.ModuleTypeId = (int)val;
 			        val = reader["Sender"];
 			        msg.Sender = (string)val;
 			        val = reader["Receiver"];
@@ -1518,9 +1739,9 @@ namespace GameFramework
 			    if(primaryKeys.Count != 1)
 				    throw new Exception("primary key number don't match !!!");
 			    MySqlParameter inputParam;
-			    inputParam = new MySqlParameter("@_Guid", MySqlDbType.Int64);
+			    inputParam = new MySqlParameter("@_Guid", MySqlDbType.UInt64);
 			    inputParam.Direction = ParameterDirection.Input;
-			    inputParam.Value = (long)Convert.ChangeType(primaryKeys[0],typeof(long));
+			    inputParam.Value = (ulong)Convert.ChangeType(primaryKeys[0],typeof(ulong));
 			    cmd.Parameters.Add(inputParam);
 			    using (DbDataReader reader = cmd.ExecuteReader()) {
 			      if (reader.Read()) {
@@ -1528,10 +1749,8 @@ namespace GameFramework
 			        object val;
 			        TableMailInfo msg = new TableMailInfo();
 			        val = reader["Guid"];
-			        msg.Guid = (long)val;
+			        msg.Guid = (ulong)val;
 			        ret.PrimaryKeys.Add(val.ToString());
-			        val = reader["ModuleTypeId"];
-			        msg.ModuleTypeId = (int)val;
 			        val = reader["Sender"];
 			        msg.Sender = (string)val;
 			        val = reader["Receiver"];
@@ -1595,13 +1814,9 @@ namespace GameFramework
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = dataVersion;
 				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_Guid", MySqlDbType.Int64);
+				    inputParam = new MySqlParameter("@_Guid", MySqlDbType.UInt64);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.Guid;
-				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_ModuleTypeId", MySqlDbType.Int32);
-				    inputParam.Direction = ParameterDirection.Input;
-				    inputParam.Value = msg.ModuleTypeId;
 				    cmd.Parameters.Add(inputParam);
 				    inputParam = new MySqlParameter("@_Sender", MySqlDbType.VarChar);
 				    inputParam.Direction = ParameterDirection.Input;
@@ -1674,7 +1889,7 @@ namespace GameFramework
 			  return 0;
 			}
 			StringBuilder sbSql = new StringBuilder("insert into TableMailInfo ", 4096); 
-			sbSql.Append("(IsValid,DataVersion,Guid,ModuleTypeId,Sender,Receiver,SendDate,ExpiryDate,Title,Text,Money,Gold,ItemIds,ItemNumbers,LevelDemand,IsRead)");
+			sbSql.Append("(IsValid,DataVersion,Guid,Sender,Receiver,SendDate,ExpiryDate,Title,Text,Money,Gold,ItemIds,ItemNumbers,LevelDemand,IsRead)");
 			sbSql.Append(" values ");
 			for (int i = 0; i < validList.Count; ++i) {
 			  Byte valid = 1;
@@ -1688,8 +1903,6 @@ namespace GameFramework
 			    TableMailInfo msg = _msg as TableMailInfo;
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.Guid);
-			    sbValue.Append(',');
-			    sbValue.AppendFormat("'{0}'", msg.ModuleTypeId);
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.Sender);
 			    sbValue.Append(',');
@@ -1723,7 +1936,6 @@ namespace GameFramework
 			sbSql.Append(" on duplicate key update ");
 			sbSql.AppendFormat(" IsValid = if(DataVersion < {0}, values(IsValid), IsValid),", dataVersion);
 			sbSql.AppendFormat(" Guid = if(DataVersion < {0}, values(Guid), Guid),", dataVersion);
-			sbSql.AppendFormat(" ModuleTypeId = if(DataVersion < {0}, values(ModuleTypeId), ModuleTypeId),", dataVersion);
 			sbSql.AppendFormat(" Sender = if(DataVersion < {0}, values(Sender), Sender),", dataVersion);
 			sbSql.AppendFormat(" Receiver = if(DataVersion < {0}, values(Receiver), Receiver),", dataVersion);
 			sbSql.AppendFormat(" SendDate = if(DataVersion < {0}, values(SendDate), SendDate),", dataVersion);
@@ -1780,18 +1992,18 @@ namespace GameFramework
 			        GeneralRecordData record = new GeneralRecordData();
 			        object val;
 			        TableMailStateInfo msg = new TableMailStateInfo();
-			        val = reader["Guid"];
-			        msg.Guid = (string)val;
+			        val = reader["MailGuid"];
+			        msg.MailGuid = (ulong)val;
 			        record.PrimaryKeys.Add(val.ToString());
 			        val = reader["UserGuid"];
-			        msg.UserGuid = (long)val;
+			        msg.UserGuid = (ulong)val;
 			        record.ForeignKeys.Add(val.ToString());
-			        val = reader["MailGuid"];
-			        msg.MailGuid = (long)val;
 			        val = reader["IsRead"];
 			        msg.IsRead = (bool)val;
 			        val = reader["IsReceived"];
 			        msg.IsReceived = (bool)val;
+			        val = reader["IsDeleted"];
+			        msg.IsDeleted = (bool)val;
 			        val = reader["ExpiryDate"];
 			        msg.ExpiryDate = (string)val;
 			        record.DataVersion = (int)reader["DataVersion"];
@@ -1819,28 +2031,27 @@ namespace GameFramework
 			    if(primaryKeys.Count != 1)
 				    throw new Exception("primary key number don't match !!!");
 			    MySqlParameter inputParam;
-			    inputParam = new MySqlParameter("@_Guid", MySqlDbType.VarChar);
+			    inputParam = new MySqlParameter("@_MailGuid", MySqlDbType.UInt64);
 			    inputParam.Direction = ParameterDirection.Input;
-			    inputParam.Value = primaryKeys[0];
-			    inputParam.Size = 24;
+			    inputParam.Value = (ulong)Convert.ChangeType(primaryKeys[0],typeof(ulong));
 			    cmd.Parameters.Add(inputParam);
 			    using (DbDataReader reader = cmd.ExecuteReader()) {
 			      if (reader.Read()) {
 			        ret = new GeneralRecordData();
 			        object val;
 			        TableMailStateInfo msg = new TableMailStateInfo();
-			        val = reader["Guid"];
-			        msg.Guid = (string)val;
+			        val = reader["MailGuid"];
+			        msg.MailGuid = (ulong)val;
 			        ret.PrimaryKeys.Add(val.ToString());
 			        val = reader["UserGuid"];
-			        msg.UserGuid = (long)val;
+			        msg.UserGuid = (ulong)val;
 			        ret.ForeignKeys.Add(val.ToString());
-			        val = reader["MailGuid"];
-			        msg.MailGuid = (long)val;
 			        val = reader["IsRead"];
 			        msg.IsRead = (bool)val;
 			        val = reader["IsReceived"];
 			        msg.IsReceived = (bool)val;
+			        val = reader["IsDeleted"];
+			        msg.IsDeleted = (bool)val;
 			        val = reader["ExpiryDate"];
 			        msg.ExpiryDate = (string)val;
 			        ret.DataVersion = (int)reader["DataVersion"];
@@ -1867,27 +2078,27 @@ namespace GameFramework
 			    if(foreignKeys.Count != 1)
 				    throw new Exception("foreign key number don't match !!!");
 			    MySqlParameter inputParam;
-			    inputParam = new MySqlParameter("@_UserGuid", MySqlDbType.Int64);
+			    inputParam = new MySqlParameter("@_UserGuid", MySqlDbType.UInt64);
 			    inputParam.Direction = ParameterDirection.Input;
-			    inputParam.Value = (long)Convert.ChangeType(foreignKeys[0],typeof(long));
+			    inputParam.Value = (ulong)Convert.ChangeType(foreignKeys[0],typeof(ulong));
 			    cmd.Parameters.Add(inputParam);
 			    using (DbDataReader reader = cmd.ExecuteReader()) {
 			      while (reader.Read()) {
 			        GeneralRecordData record = new GeneralRecordData();
 			        object val;
 			        TableMailStateInfo msg = new TableMailStateInfo();
-			        val = reader["Guid"];
-			        msg.Guid = (string)val;
+			        val = reader["MailGuid"];
+			        msg.MailGuid = (ulong)val;
 			        record.PrimaryKeys.Add(val.ToString());
 			        val = reader["UserGuid"];
-			        msg.UserGuid = (long)val;
+			        msg.UserGuid = (ulong)val;
 			        record.ForeignKeys.Add(val.ToString());
-			        val = reader["MailGuid"];
-			        msg.MailGuid = (long)val;
 			        val = reader["IsRead"];
 			        msg.IsRead = (bool)val;
 			        val = reader["IsReceived"];
 			        msg.IsReceived = (bool)val;
+			        val = reader["IsDeleted"];
+			        msg.IsDeleted = (bool)val;
 			        val = reader["ExpiryDate"];
 			        msg.ExpiryDate = (string)val;
 			        record.DataVersion = (int)reader["DataVersion"];
@@ -1923,18 +2134,13 @@ namespace GameFramework
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = dataVersion;
 				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_Guid", MySqlDbType.VarChar);
-				    inputParam.Direction = ParameterDirection.Input;
-				    inputParam.Value = msg.Guid;
-				    inputParam.Size = 24;
-				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_UserGuid", MySqlDbType.Int64);
-				    inputParam.Direction = ParameterDirection.Input;
-				    inputParam.Value = msg.UserGuid;
-				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_MailGuid", MySqlDbType.Int64);
+				    inputParam = new MySqlParameter("@_MailGuid", MySqlDbType.UInt64);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.MailGuid;
+				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_UserGuid", MySqlDbType.UInt64);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.UserGuid;
 				    cmd.Parameters.Add(inputParam);
 				    inputParam = new MySqlParameter("@_IsRead", MySqlDbType.Bit);
 				    inputParam.Direction = ParameterDirection.Input;
@@ -1943,6 +2149,10 @@ namespace GameFramework
 				    inputParam = new MySqlParameter("@_IsReceived", MySqlDbType.Bit);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.IsReceived;
+				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_IsDeleted", MySqlDbType.Bit);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.IsDeleted;
 				    cmd.Parameters.Add(inputParam);
 				    inputParam = new MySqlParameter("@_ExpiryDate", MySqlDbType.VarChar);
 				    inputParam.Direction = ParameterDirection.Input;
@@ -1965,7 +2175,7 @@ namespace GameFramework
 			  return 0;
 			}
 			StringBuilder sbSql = new StringBuilder("insert into TableMailStateInfo ", 4096); 
-			sbSql.Append("(IsValid,DataVersion,Guid,UserGuid,MailGuid,IsRead,IsReceived,ExpiryDate)");
+			sbSql.Append("(IsValid,DataVersion,MailGuid,UserGuid,IsRead,IsReceived,IsDeleted,ExpiryDate)");
 			sbSql.Append(" values ");
 			for (int i = 0; i < validList.Count; ++i) {
 			  Byte valid = 1;
@@ -1978,15 +2188,15 @@ namespace GameFramework
 			  if (DbDataSerializer.Decode(dataList[i], typeof(TableMailStateInfo), out _msg)) {
 			    TableMailStateInfo msg = _msg as TableMailStateInfo;
 			    sbValue.Append(',');
-			    sbValue.AppendFormat("'{0}'", msg.Guid);
+			    sbValue.AppendFormat("'{0}'", msg.MailGuid);
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.UserGuid);
-			    sbValue.Append(',');
-			    sbValue.AppendFormat("'{0}'", msg.MailGuid);
 			    sbValue.Append(',');
 			    sbValue.Append(msg.IsRead);
 			    sbValue.Append(',');
 			    sbValue.Append(msg.IsReceived);
+			    sbValue.Append(',');
+			    sbValue.Append(msg.IsDeleted);
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.ExpiryDate);
 			    sbValue.Append(')');
@@ -1997,11 +2207,11 @@ namespace GameFramework
 			sbSql.Remove(sbSql.Length - 1, 1);
 			sbSql.Append(" on duplicate key update ");
 			sbSql.AppendFormat(" IsValid = if(DataVersion < {0}, values(IsValid), IsValid),", dataVersion);
-			sbSql.AppendFormat(" Guid = if(DataVersion < {0}, values(Guid), Guid),", dataVersion);
-			sbSql.AppendFormat(" UserGuid = if(DataVersion < {0}, values(UserGuid), UserGuid),", dataVersion);
 			sbSql.AppendFormat(" MailGuid = if(DataVersion < {0}, values(MailGuid), MailGuid),", dataVersion);
+			sbSql.AppendFormat(" UserGuid = if(DataVersion < {0}, values(UserGuid), UserGuid),", dataVersion);
 			sbSql.AppendFormat(" IsRead = if(DataVersion < {0}, values(IsRead), IsRead),", dataVersion);
 			sbSql.AppendFormat(" IsReceived = if(DataVersion < {0}, values(IsReceived), IsReceived),", dataVersion);
+			sbSql.AppendFormat(" IsDeleted = if(DataVersion < {0}, values(IsDeleted), IsDeleted),", dataVersion);
 			sbSql.AppendFormat(" ExpiryDate = if(DataVersion < {0}, values(ExpiryDate), ExpiryDate),", dataVersion);
 			sbSql.AppendFormat(" DataVersion = if(DataVersion < {0}, {0}, DataVersion),", dataVersion);
 			sbSql.Remove(sbSql.Length - 1, 1);
@@ -2494,6 +2704,14 @@ namespace GameFramework
 			        msg.Money = (int)val;
 			        val = reader["Gold"];
 			        msg.Gold = (int)val;
+			        val = reader["SummonerSkillId"];
+			        msg.SummonerSkillId = (int)val;
+			        val = reader["IntDatas"];
+			        msg.IntDatas = (string)val;
+			        val = reader["FloatDatas"];
+			        msg.FloatDatas = (string)val;
+			        val = reader["StringDatas"];
+			        msg.StringDatas = (string)val;
 			        record.DataVersion = (int)reader["DataVersion"];
 			        record.Data = DbDataSerializer.Encode(msg);
 			        ret.Add(record);
@@ -2558,6 +2776,14 @@ namespace GameFramework
 			        msg.Money = (int)val;
 			        val = reader["Gold"];
 			        msg.Gold = (int)val;
+			        val = reader["SummonerSkillId"];
+			        msg.SummonerSkillId = (int)val;
+			        val = reader["IntDatas"];
+			        msg.IntDatas = (string)val;
+			        val = reader["FloatDatas"];
+			        msg.FloatDatas = (string)val;
+			        val = reader["StringDatas"];
+			        msg.StringDatas = (string)val;
 			        ret.DataVersion = (int)reader["DataVersion"];
 			        ret.Data = DbDataSerializer.Encode(msg);
 			      }
@@ -2622,6 +2848,14 @@ namespace GameFramework
 			        msg.Money = (int)val;
 			        val = reader["Gold"];
 			        msg.Gold = (int)val;
+			        val = reader["SummonerSkillId"];
+			        msg.SummonerSkillId = (int)val;
+			        val = reader["IntDatas"];
+			        msg.IntDatas = (string)val;
+			        val = reader["FloatDatas"];
+			        msg.FloatDatas = (string)val;
+			        val = reader["StringDatas"];
+			        msg.StringDatas = (string)val;
 			        record.DataVersion = (int)reader["DataVersion"];
 			        record.Data = DbDataSerializer.Encode(msg);
 			        ret.Add(record);
@@ -2715,6 +2949,25 @@ namespace GameFramework
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.Gold;
 				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_SummonerSkillId", MySqlDbType.Int32);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.SummonerSkillId;
+				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_IntDatas", MySqlDbType.VarChar);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.IntDatas;
+				    inputParam.Size = 32;
+				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_FloatDatas", MySqlDbType.VarChar);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.FloatDatas;
+				    inputParam.Size = 32;
+				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_StringDatas", MySqlDbType.VarChar);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.StringDatas;
+				    inputParam.Size = 32;
+				    cmd.Parameters.Add(inputParam);
 				    cmd.ExecuteNonQuery();
 				  }
 				} catch (Exception ex) {
@@ -2731,7 +2984,7 @@ namespace GameFramework
 			  return 0;
 			}
 			StringBuilder sbSql = new StringBuilder("insert into TableUserInfo ", 4096); 
-			sbSql.Append("(IsValid,DataVersion,Guid,AccountId,Nickname,HeroId,CreateTime,LastLogoutTime,Level,ExpPoints,SceneId,PositionX,PositionZ,FaceDir,Money,Gold)");
+			sbSql.Append("(IsValid,DataVersion,Guid,AccountId,Nickname,HeroId,CreateTime,LastLogoutTime,Level,ExpPoints,SceneId,PositionX,PositionZ,FaceDir,Money,Gold,SummonerSkillId,IntDatas,FloatDatas,StringDatas)");
 			sbSql.Append(" values ");
 			for (int i = 0; i < validList.Count; ++i) {
 			  Byte valid = 1;
@@ -2771,6 +3024,14 @@ namespace GameFramework
 			    sbValue.AppendFormat("'{0}'", msg.Money);
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.Gold);
+			    sbValue.Append(',');
+			    sbValue.AppendFormat("'{0}'", msg.SummonerSkillId);
+			    sbValue.Append(',');
+			    sbValue.AppendFormat("'{0}'", msg.IntDatas);
+			    sbValue.Append(',');
+			    sbValue.AppendFormat("'{0}'", msg.FloatDatas);
+			    sbValue.Append(',');
+			    sbValue.AppendFormat("'{0}'", msg.StringDatas);
 			    sbValue.Append(')');
 			    sbSql.Append(sbValue.ToString());
 			    sbSql.Append(',');
@@ -2793,6 +3054,10 @@ namespace GameFramework
 			sbSql.AppendFormat(" FaceDir = if(DataVersion < {0}, values(FaceDir), FaceDir),", dataVersion);
 			sbSql.AppendFormat(" Money = if(DataVersion < {0}, values(Money), Money),", dataVersion);
 			sbSql.AppendFormat(" Gold = if(DataVersion < {0}, values(Gold), Gold),", dataVersion);
+			sbSql.AppendFormat(" SummonerSkillId = if(DataVersion < {0}, values(SummonerSkillId), SummonerSkillId),", dataVersion);
+			sbSql.AppendFormat(" IntDatas = if(DataVersion < {0}, values(IntDatas), IntDatas),", dataVersion);
+			sbSql.AppendFormat(" FloatDatas = if(DataVersion < {0}, values(FloatDatas), FloatDatas),", dataVersion);
+			sbSql.AppendFormat(" StringDatas = if(DataVersion < {0}, values(StringDatas), StringDatas),", dataVersion);
 			sbSql.AppendFormat(" DataVersion = if(DataVersion < {0}, {0}, DataVersion),", dataVersion);
 			sbSql.Remove(sbSql.Length - 1, 1);
 			string statement = sbSql.ToString();

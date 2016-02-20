@@ -13,6 +13,7 @@ namespace GameFrameworkData
 		TableNicknameInfo,
 		TableMailInfo,
 		TableActivationCode,
+		TableGlobalData,
 		TableAccount,
 		TableUserInfo,
 		TableMemberInfo,
@@ -46,6 +47,8 @@ namespace GameFrameworkData
 			s_Type2DataEnum.Add(typeof(TableActivationCode), (int)DataEnum.TableActivationCode);
 			s_DataEnum2Type.Add((int)DataEnum.TableFriendInfo, typeof(TableFriendInfo));
 			s_Type2DataEnum.Add(typeof(TableFriendInfo), (int)DataEnum.TableFriendInfo);
+			s_DataEnum2Type.Add((int)DataEnum.TableGlobalData, typeof(TableGlobalData));
+			s_Type2DataEnum.Add(typeof(TableGlobalData), (int)DataEnum.TableGlobalData);
 			s_DataEnum2Type.Add((int)DataEnum.TableGlobalParam, typeof(TableGlobalParam));
 			s_Type2DataEnum.Add(typeof(TableGlobalParam), (int)DataEnum.TableGlobalParam);
 			s_DataEnum2Type.Add((int)DataEnum.TableGuid, typeof(TableGuid));

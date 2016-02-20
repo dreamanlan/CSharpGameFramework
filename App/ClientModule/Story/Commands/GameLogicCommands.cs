@@ -372,10 +372,6 @@ namespace GameFramework.Story.Commands
                 }
             } else {
                 ClientModule.Instance.LeaderID = leaderId;
-                EntityInfo leader = ClientModule.Instance.GetEntityById(ClientModule.Instance.LeaderID);
-                if (leader != null) {
-                    ClientModule.Instance.LeaderLinkID = leader.GetLinkId();
-                }
             }
             return false;
         }

@@ -18,9 +18,9 @@ typeconverter("List<int>")
 {
 	messagetype(string);
 	message2logic
-	{:m_{1} = DataProtoUtility.SplitNumericList<int>(new char[]{{','}}, m_{0}.{1});:};
+	{:m_{1} = DataProtoUtility.SplitGeneralList<int>(new char[]{{','}}, m_{0}.{1});:};
 	logic2message
-	{:m_{0}.{1} = DataProtoUtility.JoinNumericList(",",m_{1});:};
+	{:m_{0}.{1} = DataProtoUtility.JoinGeneralList(",",m_{1});:};
 	crudcode
 	{:
 public int Get{0}Count()
@@ -133,18 +133,36 @@ typeconverter("Dictionary<int,string>")
 {
 	messagetype(string);
 	message2logic
-	{:m_{1} = DataProtoUtility.SplitNumericDictionary<int,string>(new char[]{{';'}},new char[]{{','}}, m_{0}.{1});:};
+	{:m_{1} = DataProtoUtility.SplitGeneralDictionary<int,string>(new char[]{{';'}},new char[]{{','}}, m_{0}.{1});:};
 	logic2message
-	{:m_{0}.{1} = DataProtoUtility.JoinNumericDictionary(";",",",m_{1});:};
+	{:m_{0}.{1} = DataProtoUtility.JoinGeneralDictionary(";",",",m_{1});:};
+};
+
+typeconverter("Dictionary<string,int>")
+{
+	messagetype(string);
+	message2logic
+	{:m_{1} = DataProtoUtility.SplitGeneralDictionary<string,int>(new char[]{{';'}},new char[]{{','}}, m_{0}.{1});:};
+	logic2message
+	{:m_{0}.{1} = DataProtoUtility.JoinGeneralDictionary(";",",",m_{1});:};
+};
+
+typeconverter("Dictionary<string,float>")
+{
+	messagetype(string);
+	message2logic
+	{:m_{1} = DataProtoUtility.SplitGeneralDictionary<string,float>(new char[]{{';'}},new char[]{{','}}, m_{0}.{1});:};
+	logic2message
+	{:m_{0}.{1} = DataProtoUtility.JoinGeneralDictionary(";",",",m_{1});:};
 };
 
 typeconverter("Dictionary<string,string>")
 {
 	messagetype(string);
 	message2logic
-	{:m_{1} = DataProtoUtility.SplitNumericDictionary<string,string>(new char[]{{';'}},new char[]{{','}}, m_{0}.{1});:};
+	{:m_{1} = DataProtoUtility.SplitGeneralDictionary<string,string>(new char[]{{';'}},new char[]{{','}}, m_{0}.{1});:};
 	logic2message
-	{:m_{0}.{1} = DataProtoUtility.JoinNumericDictionary(";",",",m_{1});:};
+	{:m_{0}.{1} = DataProtoUtility.JoinGeneralDictionary(";",",",m_{1});:};
 };
 
 message(GeneralRecordData)
@@ -189,10 +207,9 @@ message(TableNicknameInfo)
 
 message(TableMailInfo)
 {
-	member(Guid, long, required){
+	member(Guid, ulong, required){
 		primarykey;
-	}; 
-	member(ModuleTypeId, int, required);
+	};
 	member(Sender, string, required){
 		maxsize(32);
 	};
@@ -233,6 +250,19 @@ message(TableActivationCode)
 	};
 };
 
+message(TableGlobalData)
+{
+	member(Key, string, required){
+		maxsize(32);
+		primarykey;
+	};
+	member(IntValue, int, required);
+	member(FloatValue, float, required);
+	member(StrValue, string, required){
+		maxsize(1024);
+	};
+};
+
 //////////////////////////////////////////////////////////////////////
 message(TableAccount) 
 {
@@ -242,6 +272,7 @@ message(TableAccount)
 	};	
 	member(IsBanned, bool, required); 
 	member(UserGuid, ulong, required);
+	member(IsValid, bool, required);
 };
 
 message(TableUserInfo) 
@@ -272,13 +303,16 @@ message(TableUserInfo)
 	member(FaceDir, float, required);
 	member(Money, int, required);
 	member(Gold, int, required);
+	member(SummonerSkillId, int, required);
+	member(IntDatas, "Dictionary<string,int>", required);
+	member(FloatDatas, "Dictionary<string,float>", required);
+	member(StringDatas, "Dictionary<string,string>", required);
 };
 
 message(TableMemberInfo)
 {
   wrapname(MemberInfo);
 	member(MemberGuid, ulong, required){
-		maxsize(24);
 		primarykey;
 	};
 	member(UserGuid, ulong, required){
@@ -292,7 +326,6 @@ message(TableItemInfo)
 {
   wrapname(ItemInfo);
 	member(ItemGuid, ulong, required){
-		maxsize(24);
 		primarykey;
 	};	
 	member(UserGuid, ulong, required){
@@ -304,17 +337,16 @@ message(TableItemInfo)
 
 message(TableMailStateInfo)
 {
-  wrapname(MailStateInfo);
-	member(Guid, string, required){
-		maxsize(24);
+  wrapname(MailState);
+	member(MailGuid, ulong, required){
 		primarykey;
 	};
-	member(UserGuid, long, required){
+	member(UserGuid, ulong, required){
 	  foreignkey;
 	};
-	member(MailGuid, long, required);
 	member(IsRead, bool, required);
 	member(IsReceived, bool, required);
+	member(IsDeleted, bool, required);
 	member(ExpiryDate, DateTime, required){
 		maxsize(24);
 	};
@@ -323,14 +355,13 @@ message(TableMailStateInfo)
 message(TableFriendInfo)
 {
   wrapname(FriendInfo);
-	member(Guid, string, required){
-		maxsize(24);
+	member(Guid, ulong, required){
 		primarykey;
 	};
-	member(UserGuid, long, required){
+	member(UserGuid, ulong, required){
 	  foreignkey;
 	};
-	member(FriendGuid, long, required);
+	member(FriendGuid, ulong, required);
 	member(FriendNickname, string, required){
 		maxsize(32);
 	};

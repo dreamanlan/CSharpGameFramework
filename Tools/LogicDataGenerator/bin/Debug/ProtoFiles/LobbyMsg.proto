@@ -97,13 +97,22 @@ message EnterScene
 
 message EnterSceneResult
 {
-	optional string server_ip = 1;
-	optional uint32 server_port = 2;
-	optional uint32 key = 3;
-	optional int32 camp_id = 4;
-	optional int32 scene_type = 5;
+	required string server_ip = 1;
+	required uint32 server_port = 2;
+	required uint32 key = 3;
+	required int32 camp_id = 4;
+	required int32 scene_type = 5;
 	required int32 result = 6;
 	required int32 prime = 7;
+}
+
+message FriendInfoForMessage
+{
+	required uint64 FriendGuid = 1;
+	required string FriendNickname = 2;
+	required int64 QQ = 3;
+	required int64 weixin = 4;
+	required bool IsBlack = 5;
 }
 
 message GetQueueingCount
@@ -115,12 +124,90 @@ message GmCode
 	required string m_Content = 1;
 }
 
+message ItemInfoForMessage
+{
+	required uint64 ItemGuid = 1;
+	required int32 ItemId = 2;
+	required int32 ItemNum = 3;
+}
+
 message KickUser
 {
 }
 
 message Logout
 {
+}
+
+message MailInfoForMessage
+{
+	required bool m_AlreadyRead = 1;
+	required uint64 m_MailGuid = 2;
+	required int32 m_Module = 3;
+	required string m_Title = 4;
+	required string m_Sender = 5;
+	required string m_SendTime = 6;
+	required string m_Text = 7;
+	repeated MailItemForMessage m_Items = 8;
+	required int32 m_Money = 9;
+	required int32 m_Gold = 10;
+}
+
+message MailItemForMessage
+{
+	required int32 m_ItemId = 1;
+	required int32 m_ItemNum = 2;
+}
+
+message MemberInfoForMessage
+{
+	required int32 Hero = 1;
+	required int32 Level = 2;
+}
+
+message Msg_CL_AddFriend
+{
+	required string m_FriendNickname = 1;
+}
+
+message Msg_CL_DeleteMail
+{
+	required uint64 m_MailGuid = 1;
+}
+
+message Msg_CL_DiscardItem
+{
+	required uint64 ItemGuid = 1;
+}
+
+message Msg_CL_GetMailList
+{
+}
+
+message Msg_CL_MarkBlack
+{
+	required uint64 m_FriendGuid = 1;
+}
+
+message Msg_CL_ReadMail
+{
+	required uint64 m_MailGuid = 1;
+}
+
+message Msg_CL_ReceiveMail
+{
+	required uint64 m_MailGuid = 1;
+}
+
+message Msg_CL_RemoveFriend
+{
+	required uint64 m_FriendGuid = 1;
+}
+
+message Msg_CL_UseItem
+{
+	required int32 ItemId = 1;
+	required int32 ItemNum = 2;
 }
 
 message Msg_CLC_StoryMessage
@@ -135,10 +222,32 @@ message Msg_CLC_StoryMessage
 	repeated MessageArg m_Args = 2;
 }
 
+message Msg_LC_AddFriend
+{
+	required FriendInfoForMessage m_FriendInfo = 1;
+}
+
 message Msg_LC_HighlightPrompt
 {
 	required string dict_id = 1;
 	repeated string argument = 2;
+}
+
+message Msg_LC_LackOfSpace
+{
+	required bool m_Succeed = 1;
+	required int32 m_ReceiveNum = 2;
+	required int32 m_FreeNum = 3;
+	required uint64 m_MailGuid = 4;
+}
+
+message Msg_LC_MarkBlack
+{
+	required uint64 m_FriendGuid = 1;
+}
+
+message Msg_LC_NotifyNewMail
+{
 }
 
 message Msg_LC_PublishEvent
@@ -155,6 +264,11 @@ message Msg_LC_PublishEvent
 	repeated EventArg args = 4;
 }
 
+message Msg_LC_RemoveFriend
+{
+	required uint64 m_FriendGuid = 1;
+}
+
 message Msg_LC_SendGfxMessage
 {
 
@@ -167,6 +281,35 @@ message Msg_LC_SendGfxMessage
 	required string name = 2;
 	required string msg = 3;
 	repeated EventArg args = 4;
+}
+
+message Msg_LC_SyncFriendList
+{
+	repeated FriendInfoForMessage m_Friends = 1;
+}
+
+message Msg_LC_SyncItemList
+{
+	repeated ItemInfoForMessage m_Items = 1;
+}
+
+message Msg_LC_SyncMailList
+{
+	repeated MailInfoForMessage m_Mails = 1;
+}
+
+message Msg_LC_SyncMemberList
+{
+	repeated MemberInfoForMessage m_Members = 1;
+}
+
+message Msg_LC_SyncRoleInfo
+{
+	required int32 HeroId = 1;
+	required int32 Money = 2;
+	required int32 Gold = 3;
+	required int32 Level = 4;
+	required int32 SummonerSkillId = 5;
 }
 
 message NodeMessageWithAccount
@@ -236,21 +379,18 @@ message RoleEnterResult
 		Wait = 1;
 		UnknownError = 2;
 	}
-
-	message MemberInfo
-	{
-		required int32 Hero = 1;
-		required int32 Level = 2;
-	}
-	required RoleEnterResultEnum m_Result = 1;
-	required string m_Nickname = 2;
-	required int32 m_HeroId = 3;
-	optional int32 m_Money = 4;
-	optional int32 m_Gold = 5;
-	optional int32 m_Level = 6;
-	optional int32 m_SceneId = 7;
-	optional int32 m_WorldId = 8;
-	repeated MemberInfo Members = 9;
+	required RoleEnterResultEnum Result = 1;
+	required string Nickname = 2;
+	required int32 HeroId = 3;
+	required int32 Money = 4;
+	required int32 Gold = 5;
+	required int32 Level = 6;
+	required int32 SceneId = 7;
+	required int32 WorldId = 8;
+	repeated MemberInfoForMessage Members = 9;
+	repeated ItemInfoForMessage Items = 10;
+	repeated FriendInfoForMessage Friends = 11;
+	required int32 SummonerSkillId = 12;
 }
 
 message ServerShutdown

@@ -543,9 +543,11 @@ namespace GameFramework
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleaderid", new StoryValueFactoryHelper<Story.Values.GetLeaderIdValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getnpctype", new StoryValueFactoryHelper<Story.Values.GetNpcTypeValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsummonerid", new StoryValueFactoryHelper<Story.Values.GetSummonerIdValue>());
-
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleaderlinkid", new StoryValueFactoryHelper<Story.Values.GetLeaderLinkIdValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsummonerskillid", new StoryValueFactoryHelper<Story.Values.GetSummonerSkillIdValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmembercount", new StoryValueFactoryHelper<Story.Values.GetMemberCountValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlinkid", new StoryValueFactoryHelper<Story.Values.GetMemberLinkIdValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlevel", new StoryValueFactoryHelper<Story.Values.GetMemberLevelValue>());
             }
         }
 

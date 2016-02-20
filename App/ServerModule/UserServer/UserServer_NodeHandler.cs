@@ -29,6 +29,15 @@ namespace GameFramework
             NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestSceneRoomInfo, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.RequestSceneRoomInfo), HandleRequestSceneRoomInfo);
             NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.RequestSceneRoomList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.RequestSceneRoomList), HandleRequestSceneRoomList);
             NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.QuitRoom, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.QuitRoom), HandleQuitRoom);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_GetMailList, typeof(GameFrameworkMessage.NodeMessageWithGuid), null, HandleGetMailList);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_ReceiveMail, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_ReceiveMail), HandleReceiveMail);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_ReadMail, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_ReadMail), HandleReadMail);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_DeleteMail, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_DeleteMail), HandleDeleteMail);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_AddFriend, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_AddFriend), HandleAddFriend);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_RemoveFriend, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_RemoveFriend), HandleRemoveFriend);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_MarkBlack, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_MarkBlack), HandleMarkBlack);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_UseItem, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_UseItem), HandleUseItem);
+            NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_DiscardItem, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_DiscardItem), HandleDiscardItem);
             NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CLC_StoryMessage, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CLC_StoryMessage), HandleStoryMessage);
             //---------------------------------------------------------------------------------------------------------------
             //大世界发给客户端的消息的观察者处理，此类消息的handle被置为0，如果非0不应该处理（消息为客户端伪造）。
@@ -249,6 +258,114 @@ namespace GameFramework
                             user.CurrentState = UserState.Online;
                         }
                         LogSys.Log(LOG_TYPE.INFO, "QuitRoom Guid {0} state {1}", guid, user.CurrentState);
+                    }
+                }
+            }
+        }
+        private void HandleGetMailList(NodeMessage msg, int handle, uint seq)
+        {
+            GameFrameworkMessage.NodeMessageWithGuid getMailListMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            if (null != getMailListMsg) {
+                if (m_GlobalProcessThread.CurActionNum > m_MaxGlobalActionNum) {
+                    NodeMessage retMsg = new NodeMessage(LobbyMessageDefine.TooManyOperations, getMailListMsg.m_Guid);
+
+                    NodeMessageDispatcher.SendNodeMessage(handle, retMsg);
+                    return;
+                }
+                m_GlobalProcessThread.QueueAction(m_GlobalProcessThread.GetMailList, getMailListMsg.m_Guid);
+            }
+        }
+        private void HandleReadMail(NodeMessage msg, int handle, uint seq)
+        {
+            GameFrameworkMessage.NodeMessageWithGuid readMailMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            if (null != readMailMsg) {
+                GameFrameworkMessage.Msg_CL_ReadMail protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_ReadMail;
+                if (null != protoData) {
+                    m_GlobalProcessThread.QueueAction(m_GlobalProcessThread.ReadMail, readMailMsg.m_Guid, protoData.m_MailGuid);
+                }
+            }
+        }
+        private void HandleReceiveMail(NodeMessage msg, int handle, uint seq)
+        {
+            GameFrameworkMessage.NodeMessageWithGuid receiveMailMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            if (null != receiveMailMsg) {
+                GameFrameworkMessage.Msg_CL_ReceiveMail protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_ReceiveMail;
+                if (null != protoData) {
+                    m_GlobalProcessThread.QueueAction(m_GlobalProcessThread.ReceiveMail, receiveMailMsg.m_Guid, protoData.m_MailGuid);
+                }
+            }
+        }
+        private void HandleDeleteMail(NodeMessage msg, int handle, uint seq)
+        {
+            GameFrameworkMessage.NodeMessageWithGuid deleteMailMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            if (null != deleteMailMsg) {
+                GameFrameworkMessage.Msg_CL_DeleteMail protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_DeleteMail;
+                if (null != protoData) {
+                    m_GlobalProcessThread.QueueAction(m_GlobalProcessThread.DeleteMail, deleteMailMsg.m_Guid, protoData.m_MailGuid);
+                }
+            }
+        }
+        private void HandleAddFriend(NodeMessage msg, int handle, uint seq)
+        {
+            GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            if (null != nodeMsg) {
+                GameFrameworkMessage.Msg_CL_AddFriend protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_AddFriend;
+                if (null != protoData) {
+                    UserThread userThread = m_UserProcessScheduler.GetUserThread(nodeMsg.m_Guid);
+                    if (null != userThread) {
+                        userThread.QueueAction(userThread.AddFriend, nodeMsg.m_Guid, protoData);
+                    }
+                }
+            }
+        }
+        private void HandleRemoveFriend(NodeMessage msg, int handle, uint seq)
+        {
+            GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            if (null != nodeMsg) {
+                GameFrameworkMessage.Msg_CL_RemoveFriend protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_RemoveFriend;
+                if (null != protoData) {
+                    UserThread userThread = m_UserProcessScheduler.GetUserThread(nodeMsg.m_Guid);
+                    if (null != userThread) {
+                        userThread.QueueAction(userThread.RemoveFriend, nodeMsg.m_Guid, protoData);
+                    }
+                }
+            }
+        }
+        private void HandleMarkBlack(NodeMessage msg, int handle, uint seq)
+        {
+            GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            if (null != nodeMsg) {
+                GameFrameworkMessage.Msg_CL_MarkBlack protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_MarkBlack;
+                if (null != protoData) {
+                    UserThread userThread = m_UserProcessScheduler.GetUserThread(nodeMsg.m_Guid);
+                    if (null != userThread) {
+                        userThread.QueueAction(userThread.MarkBlack, nodeMsg.m_Guid, protoData);
+                    }
+                }
+            }
+        }
+        private void HandleUseItem(NodeMessage msg, int handle, uint seq)
+        {
+            GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            if (null != nodeMsg) {
+                GameFrameworkMessage.Msg_CL_UseItem protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_UseItem;
+                if (null != protoData) {
+                    UserThread userThread = m_UserProcessScheduler.GetUserThread(nodeMsg.m_Guid);
+                    if (null != userThread) {
+                        userThread.QueueAction(userThread.UseItem, nodeMsg.m_Guid, protoData);
+                    }
+                }
+            }
+        }
+        private void HandleDiscardItem(NodeMessage msg, int handle, uint seq)
+        {
+            GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
+            if (null != nodeMsg) {
+                GameFrameworkMessage.Msg_CL_DiscardItem protoData = msg.m_ProtoData as GameFrameworkMessage.Msg_CL_DiscardItem;
+                if (null != protoData) {
+                    UserThread userThread = m_UserProcessScheduler.GetUserThread(nodeMsg.m_Guid);
+                    if (null != userThread) {
+                        userThread.QueueAction(userThread.DiscardItem, nodeMsg.m_Guid, protoData);
                     }
                 }
             }

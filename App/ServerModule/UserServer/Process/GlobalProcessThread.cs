@@ -44,9 +44,17 @@ namespace GameFramework
         {
             return m_GuidSystem.GenerateMemberGuid();
         }
+        internal ulong GenerateFriendGuid()
+        {
+            return m_GuidSystem.GenerateFriendGuid();
+        }
         internal void InitGuidData(List<GuidInfo> guidList)
         {
             m_GuidSystem.InitGuidData(guidList);
+        }
+        internal void InitMailData(List<MailInfo> mailList)
+        {
+            m_MailSystem.InitMailData(mailList);
         }
         //=========================================================================================
         //同步调用方法部分，其它线程可直接调用(需要考虑多线程安全)。
@@ -55,6 +63,30 @@ namespace GameFramework
         //=========================================================================================
         //异步调用方法部分，其它线程通过QueueAction调用。
         //=========================================================================================
+        internal void GetMailList(ulong user)
+        {
+            m_MailSystem.GetMailList(user);
+        }
+        internal void SendUserMail(MailInfo userMail, int validityPeriod)
+        {
+            m_MailSystem.SendUserMail(userMail, validityPeriod);
+        }
+        internal void SendWholeMail(MailInfo wholeMail, int validityPeriod)
+        {
+            m_MailSystem.SendWholeMail(wholeMail, validityPeriod);
+        }
+        internal void ReadMail(ulong userGuid, ulong mailGuid)
+        {
+            m_MailSystem.ReadMail(userGuid, mailGuid);
+        }
+        internal void ReceiveMail(ulong userGuid, ulong mailGuid)
+        {
+            m_MailSystem.ReceiveMail(userGuid, mailGuid);
+        }
+        internal void DeleteMail(ulong userGuid, ulong mailGuid)
+        {
+            m_MailSystem.DeleteMail(userGuid, mailGuid);
+        }
 
         protected override void OnStart()
         {
@@ -83,6 +115,7 @@ namespace GameFramework
             }
             //逻辑Tick
             UserServer.Instance.UserProcessScheduler.NicknameSystem.Tick();
+            m_MailSystem.Tick();
             //全局数据存储
             long saveStartTime = 0;
             var dsThread = UserServer.Instance.DataCacheThread;
@@ -133,8 +166,9 @@ namespace GameFramework
             m_GuidCounter.CurrentSaveCount = DataCacheThread.UltimateSaveCount;
             m_IsLastSave = true;
         }
-        
+
         private GuidSystem m_GuidSystem = new GuidSystem();
+        private MailSystem m_MailSystem = new MailSystem();
         GlobalSaveCounter m_GuidCounter = new GlobalSaveCounter();            //Guid数据存储参数
 
         private const long c_WarningTickTime = 1000;

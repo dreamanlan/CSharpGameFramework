@@ -41,6 +41,15 @@ namespace GameFramework.Network
             Utility.EventSystem.Subscribe<int, int>("ge_change_room", "lobby", ChangeRoom);
             Utility.EventSystem.Subscribe("ge_request_roominfo", "lobby", RequestRoomInfo);
             Utility.EventSystem.Subscribe("ge_request_roomlist", "lobby", RequestRoomList);
+            Utility.EventSystem.Subscribe("ge_get_maillist", "lobby", RequestMailList);
+            Utility.EventSystem.Subscribe<ulong>("ge_read_mail", "lobby", ReadMail);
+            Utility.EventSystem.Subscribe<ulong>("ge_receive_mail", "lobby", ReceiveMail);
+            Utility.EventSystem.Subscribe<ulong>("ge_delete_mail", "lobby", DeleteMail);
+            Utility.EventSystem.Subscribe<string>("ge_add_friend", "lobby", AddFriend);
+            Utility.EventSystem.Subscribe<ulong>("ge_remove_friend", "lobby", RemoveFriend);
+            Utility.EventSystem.Subscribe<ulong>("ge_mark_black", "lobby", MarkBlack);
+            Utility.EventSystem.Subscribe<int, int>("ge_use_item", "lobby", UseItem);
+            Utility.EventSystem.Subscribe<ulong>("ge_discard_item", "lobby", DiscardItem);
             LobbyMessageHandler();
         }
         private void LobbyMessageHandler()
@@ -57,6 +66,16 @@ namespace GameFramework.Network
             RegisterMsgHandler(LobbyMessageDefine.EnterSceneResult, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.EnterSceneResult), HandleEnterSceneResult);
             RegisterMsgHandler(LobbyMessageDefine.ServerShutdown, typeof(GameFrameworkMessage.NodeMessageWithGuid), HandleServerShutdown);
             RegisterMsgHandler(LobbyMessageDefine.GmCode, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.GmCode), HandleGmCode);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_NotifyNewMail, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_NotifyNewMail), HandleNewMail);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncMailList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_SyncMailList), HandleMailList);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_LackOfSpace, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_LackOfSpace), HandleLackOfSpace);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncFriendList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_SyncFriendList), HandleSyncFriendList);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_AddFriend, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_AddFriend), HandleAddFriend);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_RemoveFriend, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_RemoveFriend), HandleRemoveFriend);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_MarkBlack, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_MarkBlack), HandleMarkBlack);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncRoleInfo, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_SyncRoleInfo), HandleSyncRoleInfo);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncMemberList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_SyncMemberList), HandleSyncMemberList);
+            RegisterMsgHandler(LobbyMessageDefine.Msg_LC_SyncItemList, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_LC_SyncItemList), HandleSyncItemList);
             RegisterMsgHandler(LobbyMessageDefine.Msg_CLC_StoryMessage, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CLC_StoryMessage), HandleStoryMessage);
         }
 
@@ -278,10 +297,7 @@ namespace GameFramework.Network
                 return;
             ChangeNameResult.ChangeNameResultEnum ret = protoMsg.m_Result;
             if (ret == ChangeNameResult.ChangeNameResultEnum.Success) {
-                RoleInfo player = new RoleInfo();
-                player.Guid = m_Guid;
-                player.Nickname = protoMsg.m_Nickname;
-                ClientInfo.Instance.CurrentRole = player;
+                ClientInfo.Instance.RoleData.Nickname = protoMsg.m_Nickname;
             }
         }
         private void HandleRoleEnterResult(NodeMessage lobbyMsg)
@@ -289,10 +305,10 @@ namespace GameFramework.Network
             GameFrameworkMessage.NodeMessageWithAccountAndGuid headerData = lobbyMsg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithAccountAndGuid;
             GameFrameworkMessage.RoleEnterResult protoData = lobbyMsg.m_ProtoData as GameFrameworkMessage.RoleEnterResult;
             if (null != protoData) {
-                RoleEnterResult.RoleEnterResultEnum ret = protoData.m_Result;
+                RoleEnterResult.RoleEnterResultEnum ret = protoData.Result;
                 m_Guid = headerData.m_Guid;
-                RoleInfo role = new RoleInfo();
-                role.Guid = m_Guid;
+                ClientInfo.Instance.Guid = m_Guid;
+                ClientInfo.Instance.RoleData = protoData;
 
                 if (ret == RoleEnterResult.RoleEnterResultEnum.Wait) {
                     Thread.Sleep(2000);
@@ -303,18 +319,11 @@ namespace GameFramework.Network
                     LogSystem.Info("Retry RoleEnter {0} {1}", m_AccountId, m_Guid);
                     return;
                 } else if (ret == RoleEnterResult.RoleEnterResultEnum.Success) {
-                    if (role != null) {
-                        //客户端接收服务器传来的数据，创建玩家对象
-                        m_WorldId = protoData.m_WorldId;
-                        role.Nickname = protoData.m_Nickname;
-                        role.HeroId = protoData.m_HeroId;
-                        role.Level = protoData.m_Level;
-                        ClientInfo.Instance.CurrentRole = role;
-                        ClientInfo.Instance.WorldId = protoData.m_WorldId;
-                        ///
-                        m_IsLogining = false;
-                        m_HasLoggedOn = true;
-                    }
+                    //客户端接收服务器传来的数据，创建玩家对象
+                    m_WorldId = protoData.WorldId;
+                    ///
+                    m_IsLogining = false;
+                    m_HasLoggedOn = true;
                     GfxStorySystem.Instance.SendMessage("start_game");
                 } else {
                     //进入游戏失败
@@ -347,7 +356,85 @@ namespace GameFramework.Network
         {
             GameFrameworkMessage.GmCode protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.GmCode;
             if (null != protoMsg) {
-                //ClientModule.Instance.ExecCode(protoMsg.m_Content);
+                ClientModule.Instance.ExecCode(protoMsg.m_Content);
+            }
+        }
+        private void HandleNewMail(NodeMessage lobbyMsg)
+        {
+        }
+        private void HandleMailList(NodeMessage lobbyMsg)
+        {
+            GameFrameworkMessage.Msg_LC_SyncMailList protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_SyncMailList;
+            if (null != protoMsg) {
+                ClientInfo.Instance.Mails = protoMsg.m_Mails;
+            }
+        }
+        private void HandleLackOfSpace(NodeMessage lobbyMsg)
+        {
+            GameFrameworkMessage.Msg_LC_LackOfSpace protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_LackOfSpace;
+            if (null != protoMsg) {
+            }
+        }
+        private void HandleSyncFriendList(NodeMessage lobbyMsg)
+        {
+            GameFrameworkMessage.Msg_LC_SyncFriendList protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_SyncFriendList;
+            if (null != protoMsg) {
+                ClientInfo.Instance.RoleData.Friends.Clear();
+                ClientInfo.Instance.RoleData.Friends.AddRange(protoMsg.m_Friends);
+            }
+        }
+        private void HandleAddFriend(NodeMessage lobbyMsg)
+        {
+            GameFrameworkMessage.Msg_LC_AddFriend protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_AddFriend;
+            if (null != protoMsg) {
+                FriendInfoForMessage friendInfo = ClientInfo.Instance.RoleData.Friends.Find(fi => fi.FriendGuid == protoMsg.m_FriendInfo.FriendGuid);
+                ClientInfo.Instance.RoleData.Friends.Remove(friendInfo);
+                ClientInfo.Instance.RoleData.Friends.Add(protoMsg.m_FriendInfo);
+            }
+        }
+        private void HandleRemoveFriend(NodeMessage lobbyMsg)
+        {
+            GameFrameworkMessage.Msg_LC_RemoveFriend protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_RemoveFriend;
+            if (null != protoMsg) {
+                FriendInfoForMessage friendInfo = ClientInfo.Instance.RoleData.Friends.Find(fi => fi.FriendGuid == protoMsg.m_FriendGuid);
+                ClientInfo.Instance.RoleData.Friends.Remove(friendInfo);
+            }
+        }
+        private void HandleMarkBlack(NodeMessage lobbyMsg)
+        {
+            GameFrameworkMessage.Msg_LC_MarkBlack protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_MarkBlack;
+            if (null != protoMsg) {
+                FriendInfoForMessage friendInfo = ClientInfo.Instance.RoleData.Friends.Find(fi => fi.FriendGuid == protoMsg.m_FriendGuid);
+                if (null != friendInfo) {
+                    friendInfo.IsBlack = true;
+                }
+            }
+        }
+        private void HandleSyncRoleInfo(NodeMessage lobbyMsg)
+        {
+            GameFrameworkMessage.Msg_LC_SyncRoleInfo protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_SyncRoleInfo;
+            if (null != protoMsg) {
+                ClientInfo.Instance.RoleData.HeroId = protoMsg.HeroId;
+                ClientInfo.Instance.RoleData.Level = protoMsg.Level;
+                ClientInfo.Instance.RoleData.Money = protoMsg.Money;
+                ClientInfo.Instance.RoleData.Gold = protoMsg.Gold;
+                ClientInfo.Instance.RoleData.SummonerSkillId = protoMsg.SummonerSkillId;
+            }
+        }
+        private void HandleSyncMemberList(NodeMessage lobbyMsg)
+        {
+            GameFrameworkMessage.Msg_LC_SyncMemberList protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_SyncMemberList;
+            if (null != protoMsg) {
+                ClientInfo.Instance.RoleData.Members.Clear();
+                ClientInfo.Instance.RoleData.Members.AddRange(protoMsg.m_Members);
+            }
+        }
+        private void HandleSyncItemList(NodeMessage lobbyMsg)
+        {
+            GameFrameworkMessage.Msg_LC_SyncItemList protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.Msg_LC_SyncItemList;
+            if (null != protoMsg) {
+                ClientInfo.Instance.RoleData.Items.Clear();
+                ClientInfo.Instance.RoleData.Items.AddRange(protoMsg.m_Items);
             }
         }
         private void HandleStoryMessage(NodeMessage lobbyMsg)
@@ -438,6 +525,121 @@ namespace GameFramework.Network
                     msg.SetHeaderWithGuid(m_Guid);
                     SendMessage(msg);
                 }
+            } catch (Exception ex) {
+                LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+        internal void RequestMailList()
+        {
+            try {
+                NodeMessage msg = new NodeMessage(LobbyMessageDefine.Msg_CL_GetMailList);
+                msg.SetHeaderWithGuid(m_Guid);
+                SendMessage(msg);
+            } catch (Exception ex) {
+                LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+        internal void ReadMail(ulong mailGuid)
+        {
+            try {
+                NodeMessage msg = new NodeMessage(LobbyMessageDefine.Msg_CL_ReadMail);
+                msg.SetHeaderWithGuid(m_Guid);
+                Msg_CL_ReadMail protoData = new Msg_CL_ReadMail();
+                protoData.m_MailGuid = mailGuid;
+                msg.m_ProtoData = protoData;
+                SendMessage(msg);
+            } catch (Exception ex) {
+                LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+        internal void ReceiveMail(ulong mailGuid)
+        {
+            try {
+                NodeMessage msg = new NodeMessage(LobbyMessageDefine.Msg_CL_ReceiveMail);
+                msg.SetHeaderWithGuid(m_Guid);
+                Msg_CL_ReceiveMail protoData = new Msg_CL_ReceiveMail();
+                protoData.m_MailGuid = mailGuid;
+                msg.m_ProtoData = protoData;
+                SendMessage(msg);
+            } catch (Exception ex) {
+                LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+        internal void DeleteMail(ulong mailGuid)
+        {
+            try {
+                NodeMessage msg = new NodeMessage(LobbyMessageDefine.Msg_CL_DeleteMail);
+                msg.SetHeaderWithGuid(m_Guid);
+                Msg_CL_DeleteMail protoData = new Msg_CL_DeleteMail();
+                protoData.m_MailGuid = mailGuid;
+                msg.m_ProtoData = protoData;
+                SendMessage(msg);
+            } catch (Exception ex) {
+                LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+        internal void AddFriend(string nickname)
+        {
+            try {
+                NodeMessage msg = new NodeMessage(LobbyMessageDefine.Msg_CL_AddFriend);
+                msg.SetHeaderWithGuid(m_Guid);
+                Msg_CL_AddFriend protoData = new Msg_CL_AddFriend();
+                protoData.m_FriendNickname = nickname;
+                msg.m_ProtoData = protoData;
+                SendMessage(msg);
+            } catch (Exception ex) {
+                LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+        internal void RemoveFriend(ulong friendGuid)
+        {
+            try {
+                NodeMessage msg = new NodeMessage(LobbyMessageDefine.Msg_CL_RemoveFriend);
+                msg.SetHeaderWithGuid(m_Guid);
+                Msg_CL_RemoveFriend protoData = new Msg_CL_RemoveFriend();
+                protoData.m_FriendGuid = friendGuid;
+                msg.m_ProtoData = protoData;
+                SendMessage(msg);
+            } catch (Exception ex) {
+                LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+        internal void MarkBlack(ulong friendGuid)
+        {
+            try {
+                NodeMessage msg = new NodeMessage(LobbyMessageDefine.Msg_CL_MarkBlack);
+                msg.SetHeaderWithGuid(m_Guid);
+                Msg_CL_MarkBlack protoData = new Msg_CL_MarkBlack();
+                protoData.m_FriendGuid = friendGuid;
+                msg.m_ProtoData = protoData;
+                SendMessage(msg);
+            } catch (Exception ex) {
+                LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+        internal void UseItem(int itemId, int itemNum)
+        {
+            try {
+                NodeMessage msg = new NodeMessage(LobbyMessageDefine.Msg_CL_UseItem);
+                msg.SetHeaderWithGuid(m_Guid);
+                Msg_CL_UseItem protoData = new Msg_CL_UseItem();
+                protoData.ItemId = itemId;
+                protoData.ItemNum = itemNum;
+                msg.m_ProtoData = protoData;
+                SendMessage(msg);
+            } catch (Exception ex) {
+                LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+        }
+        internal void DiscardItem(ulong itemGuid)
+        {
+            try {
+                NodeMessage msg = new NodeMessage(LobbyMessageDefine.Msg_CL_DiscardItem);
+                msg.SetHeaderWithGuid(m_Guid);
+                Msg_CL_DiscardItem protoData = new Msg_CL_DiscardItem();
+                protoData.ItemGuid = itemGuid;
+                msg.m_ProtoData = protoData;
+                SendMessage(msg);
             } catch (Exception ex) {
                 LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }

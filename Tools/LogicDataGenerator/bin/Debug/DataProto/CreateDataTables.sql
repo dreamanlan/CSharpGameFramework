@@ -12,6 +12,7 @@ create table TableAccount
 	AccountId varchar(64) binary not null,
 	IsBanned boolean not null,
 	UserGuid bigint unsigned not null,
+	IsValid boolean not null,
 	primary key (AutoKey)
 ) ENGINE=InnoDB;
 create unique index TableAccountPrimaryIndex on TableAccount (AccountId);
@@ -33,9 +34,9 @@ create table TableFriendInfo
 	AutoKey int not null auto_increment,
 	IsValid boolean not null,
 	DataVersion int not null,
-	Guid varchar(24) binary not null,
-	UserGuid bigint not null,
-	FriendGuid bigint not null,
+	Guid bigint unsigned not null,
+	UserGuid bigint unsigned not null,
+	FriendGuid bigint unsigned not null,
 	FriendNickname varchar(32) not null,
 	QQ bigint not null,
 	weixin bigint not null,
@@ -44,6 +45,19 @@ create table TableFriendInfo
 ) ENGINE=InnoDB;
 create unique index TableFriendInfoPrimaryIndex on TableFriendInfo (Guid);
 create index TableFriendInfoIndex on  TableFriendInfo (UserGuid);
+
+create table TableGlobalData
+(
+	AutoKey int not null auto_increment,
+	IsValid boolean not null,
+	DataVersion int not null,
+	Key varchar(32) binary not null,
+	IntValue int not null,
+	FloatValue float not null,
+	StrValue varchar(1024) not null,
+	primary key (AutoKey)
+) ENGINE=InnoDB;
+create unique index TableGlobalDataPrimaryIndex on TableGlobalData (Key);
 
 create table TableGlobalParam
 (
@@ -86,8 +100,7 @@ create table TableMailInfo
 	AutoKey int not null auto_increment,
 	IsValid boolean not null,
 	DataVersion int not null,
-	Guid bigint not null,
-	ModuleTypeId int not null,
+	Guid bigint unsigned not null,
 	Sender varchar(32) not null,
 	Receiver bigint not null,
 	SendDate varchar(24) not null,
@@ -109,15 +122,15 @@ create table TableMailStateInfo
 	AutoKey int not null auto_increment,
 	IsValid boolean not null,
 	DataVersion int not null,
-	Guid varchar(24) binary not null,
-	UserGuid bigint not null,
-	MailGuid bigint not null,
+	MailGuid bigint unsigned not null,
+	UserGuid bigint unsigned not null,
 	IsRead boolean not null,
 	IsReceived boolean not null,
+	IsDeleted boolean not null,
 	ExpiryDate varchar(24) not null,
 	primary key (AutoKey)
 ) ENGINE=InnoDB;
-create unique index TableMailStateInfoPrimaryIndex on TableMailStateInfo (Guid);
+create unique index TableMailStateInfoPrimaryIndex on TableMailStateInfo (MailGuid);
 create index TableMailStateInfoIndex on  TableMailStateInfo (UserGuid);
 
 create table TableMemberInfo
@@ -164,6 +177,10 @@ create table TableUserInfo
 	FaceDir float not null,
 	Money int not null,
 	Gold int not null,
+	SummonerSkillId int not null,
+	IntDatas varchar(32) not null,
+	FloatDatas varchar(32) not null,
+	StringDatas varchar(32) not null,
 	primary key (AutoKey)
 ) ENGINE=InnoDB;
 create unique index TableUserInfoPrimaryIndex on TableUserInfo (Guid);
@@ -180,20 +197,23 @@ create procedure SaveTableAccount(
 	,in _AccountId varchar(64)
 	,in _IsBanned boolean
 	,in _UserGuid bigint unsigned
+	,in _IsValid boolean
 )
 begin
-	insert into TableAccount (AutoKey,IsValid,DataVersion,AccountId,IsBanned,UserGuid)
+	insert into TableAccount (AutoKey,IsValid,DataVersion,AccountId,IsBanned,UserGuid,IsValid)
 		values 
 			(null,_IsValid,_DataVersion
 			,_AccountId
 			,_IsBanned
 			,_UserGuid
+			,_IsValid
 			)
 		on duplicate key update 
 			IsValid =  if(DataVersion < _DataVersion, _IsValid, IsValid),
 			AccountId =  if(DataVersion < _DataVersion, _AccountId, AccountId),
 			IsBanned =  if(DataVersion < _DataVersion, _IsBanned, IsBanned),
 			UserGuid =  if(DataVersion < _DataVersion, _UserGuid, UserGuid),
+			IsValid =  if(DataVersion < _DataVersion, _IsValid, IsValid),
 			DataVersion =  if(DataVersion < _DataVersion, _DataVersion, DataVersion);
 end $$
 delimiter ;
@@ -229,9 +249,9 @@ delimiter $$
 create procedure SaveTableFriendInfo(
 	in _IsValid boolean
 	,in _DataVersion int
-	,in _Guid varchar(24)
-	,in _UserGuid bigint
-	,in _FriendGuid bigint
+	,in _Guid bigint unsigned
+	,in _UserGuid bigint unsigned
+	,in _FriendGuid bigint unsigned
 	,in _FriendNickname varchar(32)
 	,in _QQ bigint
 	,in _weixin bigint
@@ -258,6 +278,35 @@ begin
 			QQ =  if(DataVersion < _DataVersion, _QQ, QQ),
 			weixin =  if(DataVersion < _DataVersion, _weixin, weixin),
 			IsBlack =  if(DataVersion < _DataVersion, _IsBlack, IsBlack),
+			DataVersion =  if(DataVersion < _DataVersion, _DataVersion, DataVersion);
+end $$
+delimiter ;
+
+drop procedure if exists SaveTableGlobalData;
+delimiter $$
+create procedure SaveTableGlobalData(
+	in _IsValid boolean
+	,in _DataVersion int
+	,in _Key varchar(32)
+	,in _IntValue int
+	,in _FloatValue float
+	,in _StrValue varchar(1024)
+)
+begin
+	insert into TableGlobalData (AutoKey,IsValid,DataVersion,Key,IntValue,FloatValue,StrValue)
+		values 
+			(null,_IsValid,_DataVersion
+			,_Key
+			,_IntValue
+			,_FloatValue
+			,_StrValue
+			)
+		on duplicate key update 
+			IsValid =  if(DataVersion < _DataVersion, _IsValid, IsValid),
+			Key =  if(DataVersion < _DataVersion, _Key, Key),
+			IntValue =  if(DataVersion < _DataVersion, _IntValue, IntValue),
+			FloatValue =  if(DataVersion < _DataVersion, _FloatValue, FloatValue),
+			StrValue =  if(DataVersion < _DataVersion, _StrValue, StrValue),
 			DataVersion =  if(DataVersion < _DataVersion, _DataVersion, DataVersion);
 end $$
 delimiter ;
@@ -342,8 +391,7 @@ delimiter $$
 create procedure SaveTableMailInfo(
 	in _IsValid boolean
 	,in _DataVersion int
-	,in _Guid bigint
-	,in _ModuleTypeId int
+	,in _Guid bigint unsigned
 	,in _Sender varchar(32)
 	,in _Receiver bigint
 	,in _SendDate varchar(24)
@@ -358,11 +406,10 @@ create procedure SaveTableMailInfo(
 	,in _IsRead boolean
 )
 begin
-	insert into TableMailInfo (AutoKey,IsValid,DataVersion,Guid,ModuleTypeId,Sender,Receiver,SendDate,ExpiryDate,Title,Text,Money,Gold,ItemIds,ItemNumbers,LevelDemand,IsRead)
+	insert into TableMailInfo (AutoKey,IsValid,DataVersion,Guid,Sender,Receiver,SendDate,ExpiryDate,Title,Text,Money,Gold,ItemIds,ItemNumbers,LevelDemand,IsRead)
 		values 
 			(null,_IsValid,_DataVersion
 			,_Guid
-			,_ModuleTypeId
 			,_Sender
 			,_Receiver
 			,_SendDate
@@ -379,7 +426,6 @@ begin
 		on duplicate key update 
 			IsValid =  if(DataVersion < _DataVersion, _IsValid, IsValid),
 			Guid =  if(DataVersion < _DataVersion, _Guid, Guid),
-			ModuleTypeId =  if(DataVersion < _DataVersion, _ModuleTypeId, ModuleTypeId),
 			Sender =  if(DataVersion < _DataVersion, _Sender, Sender),
 			Receiver =  if(DataVersion < _DataVersion, _Receiver, Receiver),
 			SendDate =  if(DataVersion < _DataVersion, _SendDate, SendDate),
@@ -401,31 +447,31 @@ delimiter $$
 create procedure SaveTableMailStateInfo(
 	in _IsValid boolean
 	,in _DataVersion int
-	,in _Guid varchar(24)
-	,in _UserGuid bigint
-	,in _MailGuid bigint
+	,in _MailGuid bigint unsigned
+	,in _UserGuid bigint unsigned
 	,in _IsRead boolean
 	,in _IsReceived boolean
+	,in _IsDeleted boolean
 	,in _ExpiryDate varchar(24)
 )
 begin
-	insert into TableMailStateInfo (AutoKey,IsValid,DataVersion,Guid,UserGuid,MailGuid,IsRead,IsReceived,ExpiryDate)
+	insert into TableMailStateInfo (AutoKey,IsValid,DataVersion,MailGuid,UserGuid,IsRead,IsReceived,IsDeleted,ExpiryDate)
 		values 
 			(null,_IsValid,_DataVersion
-			,_Guid
-			,_UserGuid
 			,_MailGuid
+			,_UserGuid
 			,_IsRead
 			,_IsReceived
+			,_IsDeleted
 			,_ExpiryDate
 			)
 		on duplicate key update 
 			IsValid =  if(DataVersion < _DataVersion, _IsValid, IsValid),
-			Guid =  if(DataVersion < _DataVersion, _Guid, Guid),
-			UserGuid =  if(DataVersion < _DataVersion, _UserGuid, UserGuid),
 			MailGuid =  if(DataVersion < _DataVersion, _MailGuid, MailGuid),
+			UserGuid =  if(DataVersion < _DataVersion, _UserGuid, UserGuid),
 			IsRead =  if(DataVersion < _DataVersion, _IsRead, IsRead),
 			IsReceived =  if(DataVersion < _DataVersion, _IsReceived, IsReceived),
+			IsDeleted =  if(DataVersion < _DataVersion, _IsDeleted, IsDeleted),
 			ExpiryDate =  if(DataVersion < _DataVersion, _ExpiryDate, ExpiryDate),
 			DataVersion =  if(DataVersion < _DataVersion, _DataVersion, DataVersion);
 end $$
@@ -502,9 +548,13 @@ create procedure SaveTableUserInfo(
 	,in _FaceDir float
 	,in _Money int
 	,in _Gold int
+	,in _SummonerSkillId int
+	,in _IntDatas varchar(32)
+	,in _FloatDatas varchar(32)
+	,in _StringDatas varchar(32)
 )
 begin
-	insert into TableUserInfo (AutoKey,IsValid,DataVersion,Guid,AccountId,Nickname,HeroId,CreateTime,LastLogoutTime,Level,ExpPoints,SceneId,PositionX,PositionZ,FaceDir,Money,Gold)
+	insert into TableUserInfo (AutoKey,IsValid,DataVersion,Guid,AccountId,Nickname,HeroId,CreateTime,LastLogoutTime,Level,ExpPoints,SceneId,PositionX,PositionZ,FaceDir,Money,Gold,SummonerSkillId,IntDatas,FloatDatas,StringDatas)
 		values 
 			(null,_IsValid,_DataVersion
 			,_Guid
@@ -521,6 +571,10 @@ begin
 			,_FaceDir
 			,_Money
 			,_Gold
+			,_SummonerSkillId
+			,_IntDatas
+			,_FloatDatas
+			,_StringDatas
 			)
 		on duplicate key update 
 			IsValid =  if(DataVersion < _DataVersion, _IsValid, IsValid),
@@ -538,6 +592,10 @@ begin
 			FaceDir =  if(DataVersion < _DataVersion, _FaceDir, FaceDir),
 			Money =  if(DataVersion < _DataVersion, _Money, Money),
 			Gold =  if(DataVersion < _DataVersion, _Gold, Gold),
+			SummonerSkillId =  if(DataVersion < _DataVersion, _SummonerSkillId, SummonerSkillId),
+			IntDatas =  if(DataVersion < _DataVersion, _IntDatas, IntDatas),
+			FloatDatas =  if(DataVersion < _DataVersion, _FloatDatas, FloatDatas),
+			StringDatas =  if(DataVersion < _DataVersion, _StringDatas, StringDatas),
 			DataVersion =  if(DataVersion < _DataVersion, _DataVersion, DataVersion);
 end $$
 delimiter ;
@@ -596,7 +654,7 @@ delimiter ;
 drop procedure if exists LoadSingleTableFriendInfo;
 delimiter $$
 create procedure LoadSingleTableFriendInfo(
-	in _Guid varchar(24)
+	in _Guid bigint unsigned
 )
 begin
 	select * from TableFriendInfo where IsValid = 1 
@@ -608,11 +666,31 @@ delimiter ;
 drop procedure if exists LoadMultiTableFriendInfo;
 delimiter $$
 create procedure LoadMultiTableFriendInfo(
-	in _UserGuid bigint
+	in _UserGuid bigint unsigned
 )
 begin
 	select * from TableFriendInfo where IsValid = 1 
 		and UserGuid = _UserGuid 
+		;
+end $$
+delimiter ;
+
+drop procedure if exists LoadAllTableGlobalData;
+delimiter $$
+create procedure LoadAllTableGlobalData(in _Start int, in _Count int)
+begin
+	select * from TableGlobalData where IsValid = 1 limit _Start, _Count;
+end $$
+delimiter ;
+
+drop procedure if exists LoadSingleTableGlobalData;
+delimiter $$
+create procedure LoadSingleTableGlobalData(
+	in _Key varchar(32)
+)
+begin
+	select * from TableGlobalData where IsValid = 1 
+		and Key = _Key 
 		;
 end $$
 delimiter ;
@@ -700,7 +778,7 @@ delimiter ;
 drop procedure if exists LoadSingleTableMailInfo;
 delimiter $$
 create procedure LoadSingleTableMailInfo(
-	in _Guid bigint
+	in _Guid bigint unsigned
 )
 begin
 	select * from TableMailInfo where IsValid = 1 
@@ -720,11 +798,11 @@ delimiter ;
 drop procedure if exists LoadSingleTableMailStateInfo;
 delimiter $$
 create procedure LoadSingleTableMailStateInfo(
-	in _Guid varchar(24)
+	in _MailGuid bigint unsigned
 )
 begin
 	select * from TableMailStateInfo where IsValid = 1 
-		and Guid = _Guid 
+		and MailGuid = _MailGuid 
 		;
 end $$
 delimiter ;
@@ -732,7 +810,7 @@ delimiter ;
 drop procedure if exists LoadMultiTableMailStateInfo;
 delimiter $$
 create procedure LoadMultiTableMailStateInfo(
-	in _UserGuid bigint
+	in _UserGuid bigint unsigned
 )
 begin
 	select * from TableMailStateInfo where IsValid = 1 

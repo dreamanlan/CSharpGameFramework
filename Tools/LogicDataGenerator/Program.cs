@@ -414,6 +414,12 @@ namespace LogicDataGenerator
         sw.WriteLine("\t\t\tget{ return m_Modified;}");
         sw.WriteLine("\t\t\tset{ m_Modified = value;}");
         sw.WriteLine("\t\t}");
+        sw.WriteLine("\t\tpublic bool Deleted");
+        sw.WriteLine("\t\t{");
+        sw.WriteLine("\t\t\tget{ return m_Deleted;}");
+        sw.WriteLine("\t\t\tset{ m_Deleted = value;}");
+        sw.WriteLine("\t\t}");
+        sw.WriteLine();
         sw.WriteLine("\t\tpublic List<string> PrimaryKeys");
         sw.WriteLine("\t\t{");
         sw.WriteLine("\t\t\tget{ return m_PrimaryKeys;}");
@@ -574,6 +580,7 @@ namespace LogicDataGenerator
 
         sw.WriteLine();
         sw.WriteLine("\t\tprivate bool m_Modified = false;");
+        sw.WriteLine("\t\tprivate bool m_Deleted = false;");
         sw.WriteLine("\t\tprivate List<string> m_PrimaryKeys = new List<string>();");
         sw.WriteLine("\t\tprivate List<string> m_ForeignKeys = new List<string>();");
         sw.WriteLine("\t\tprivate {0} m_{1} = new {2}();", messageDef.m_TypeName, messageDef.m_TypeName, messageDef.m_TypeName);

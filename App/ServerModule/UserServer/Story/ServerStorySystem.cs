@@ -265,9 +265,37 @@ namespace GameFramework
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "publishgfxevent", new StoryCommandFactoryHelper<Story.Commands.PublishGfxEventCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendgfxmessage", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendgfxmessagewithtag", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageWithTagCommand>());
+                
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendmail", new StoryCommandFactoryHelper<Story.Commands.SendMailCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearmembers", new StoryCommandFactoryHelper<Story.Commands.ClearMembersCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "addmember", new StoryCommandFactoryHelper<Story.Commands.AddMemberCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removemember", new StoryCommandFactoryHelper<Story.Commands.RemoveMemberCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "syncmembers", new StoryCommandFactoryHelper<Story.Commands.SyncMembersCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearitems", new StoryCommandFactoryHelper<Story.Commands.ClearItemsCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "additem", new StoryCommandFactoryHelper<Story.Commands.AddItemCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "reduceitem", new StoryCommandFactoryHelper<Story.Commands.ReduceItemCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removeitem", new StoryCommandFactoryHelper<Story.Commands.RemoveItemCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "syncitems", new StoryCommandFactoryHelper<Story.Commands.SyncItemsCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearuserdatas", new StoryCommandFactoryHelper<Story.Commands.ClearUserDatasCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "adduserdata", new StoryCommandFactoryHelper<Story.Commands.AddUserDataCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removeuserdata", new StoryCommandFactoryHelper<Story.Commands.RemoveUserDataCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearglobaldatas", new StoryCommandFactoryHelper<Story.Commands.ClearGlobalDatasCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "addglobaldata", new StoryCommandFactoryHelper<Story.Commands.AddGlobalDataCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removeglobaldata", new StoryCommandFactoryHelper<Story.Commands.RemoveGlobalDataCommand>());
 
                 //注册值与函数处理
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getuserinfo", new StoryValueFactoryHelper<Story.Values.GetUserInfoValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getmembercount", new StoryValueFactoryHelper<Story.Values.GetMemberCountValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getmemberinfo", new StoryValueFactoryHelper<Story.Values.GetMemberInfoValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getfriendcount", new StoryValueFactoryHelper<Story.Values.GetFriendCountValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getfriendinfo", new StoryValueFactoryHelper<Story.Values.GetFriendInfoValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getitemcount", new StoryValueFactoryHelper<Story.Values.GetItemCountValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getiteminfo", new StoryValueFactoryHelper<Story.Values.GetItemInfoValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "finditeminfo", new StoryValueFactoryHelper<Story.Values.FindItemInfoValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "calcitemnum", new StoryValueFactoryHelper<Story.Values.CalcItemNumValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getfreeitemcount", new StoryValueFactoryHelper<Story.Values.GetFreeItemCountValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getuserdata", new StoryValueFactoryHelper<Story.Values.GetUserDataValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getglobaldata", new StoryValueFactoryHelper<Story.Values.GetGlobalDataValue>());
             }
         }
 

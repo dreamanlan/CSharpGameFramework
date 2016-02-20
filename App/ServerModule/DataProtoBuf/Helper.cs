@@ -6,7 +6,7 @@ namespace GameFramework
 {
   public static class DataProtoUtility
   {
-    public static List<T> SplitNumericList<T>(char[] splits, string vec)
+    public static List<T> SplitGeneralList<T>(char[] splits, string vec)
     {
       List<T> list = new List<T>();
       try {
@@ -22,7 +22,7 @@ namespace GameFramework
       }
       return list;
     }
-    public static string JoinNumericList<T>(string separator, List<T> list)
+    public static string JoinGeneralList<T>(string separator, List<T> list)
     {
       List<string> slist = new List<string>();
       foreach (T v in list) {
@@ -30,7 +30,7 @@ namespace GameFramework
       };
       return string.Join(separator, slist.ToArray());
     }
-    public static Dictionary<KeyT, ValueT> SplitNumericDictionary<KeyT, ValueT>(char[] splits1, char[] splits2, string vec)
+    public static Dictionary<KeyT, ValueT> SplitGeneralDictionary<KeyT, ValueT>(char[] splits1, char[] splits2, string vec)
     {
       Dictionary<KeyT, ValueT> dict = new Dictionary<KeyT, ValueT>();
       try {
@@ -49,7 +49,7 @@ namespace GameFramework
       }
       return dict;
     }
-    public static string JoinNumericDictionary<KeyT, ValueT>(string separator1, string separator2, Dictionary<KeyT, ValueT> dict)
+    public static string JoinGeneralDictionary<KeyT, ValueT>(string separator1, string separator2, Dictionary<KeyT, ValueT> dict)
     {
       List<string> slist = new List<string>();
       foreach(var pair in dict){
