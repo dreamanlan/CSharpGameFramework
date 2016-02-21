@@ -938,7 +938,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<object> m_Value = new StoryValue();
     }
     /// <summary>
-    /// removeglobaldata(key, val);
+    /// removeglobaldata(key, type);
     /// </summary>
     internal class RemoveGlobalDataCommand : AbstractStoryCommand
     {

@@ -997,13 +997,6 @@
   
   作用：
   取指定对象的EntityViewModel实例。
-  
-  38、getuserinfo
-  用法：
-  getuserinfo(guid);
-  
-  作用：
-  仅用在userserver上，用于获取UserInfo对象。
     
 九、剧情命令
 
@@ -1439,7 +1432,7 @@
   
   作用：
   roomserver或userserver给服务器或客户端发送storymessage，在room上指定user使用objid，在userserver指定user用guid，在client不能指定user。
-  服务器间发送消息时，实际收到消息时会在开头插入一个参数表示玩家id（在roomserver上是objid，在userserver上是guid）
+  服务器间发送消息时，实际收到消息时的参数列表会在开头插入一个参数表示玩家id（在roomserver上是objid，在userserver上是guid），收到的消息ID会根据来自client或server分别加上前缀 client: 与 server: 。
   
     
 十、游戏系统内实现的消息触发(非场景逻辑配置的消息触发)
@@ -1754,3 +1747,60 @@
   作用：
     waitlocalnamespacedmessage等待指定的本地名字空间内的消息之一触发。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)
     waitlocalnamespacedmessagehandler等待指定的本地名字空间内的消息处理全部执行完毕。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)
+    
+十四、userserver上的函数  
+  1、getuserinfo
+  用法：
+  getuserinfo(guid);
+  
+  作用：
+  获取UserInfo对象。
+  
+  2、getmembercount(guid);
+	3、getmemberinfo(guid, index_or_guid);
+	4、getfriendcount(guid);
+	5、getfriendinfo(guid, index_or_guid);
+	6、getitemcount(guid);
+	7、getiteminfo(guid, index);
+	8、finditeminfo(guid, id_or_guid);
+	9、calcitemnum(id);
+	10、getfreeitemcount(guid);
+	11、getuserdata(guid, key, type);
+	12、getglobaldata(key, type);
+
+
+十五、userserver上的命令
+	1、startstory(storyId);
+	2、stopstory(storyId);
+	3、waitstory(storyid1,storyid2,...)[set(var,val)timeoutset(timeout,var,val)];
+	4、firemessage(消息id,参数表);
+  5、waitallmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+  6、waitallmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+	7、sendserverstorymessage(msg,arg1,arg2,...)[touser(guid)];
+	8、sendclientstorymessage(msg,arg1,arg2,...)[touser(guid)];
+  9、publishgfxevent(ev_name,group,arg1,arg2,...)[touser(userid)];
+  10、sendgfxmessage(name,msg,arg1,arg2,...);
+  11、sendgfxmessagewithtag(tag,msg,arg1,arg2,...);
+	12、sendmail(guid, title, content, sender, levelDemand, validPeriod, money, gold, item1, item1num, item2, item2num, ...);
+	13、clearmembers(guid);
+	14、addmember(guid, linkid, level);
+	15、removemember(guid, id_or_guid);
+	16、syncmembers(guid);
+	17、clearitems(guid);
+	18、additem(guid, itemid, num);
+	19、reduceitem(guid, itemid, num);
+	20、removeitem(guid, id_or_guid);
+	21、syncitems(guid);
+	22、clearuserdatas(guid);
+	23、adduserdata(guid, key, val);
+	24、removeuserdata(guid, key, type);
+	25、clearglobaldatas(guid);
+	26、addglobaldata(key, val);
+	27、removeglobaldata(key, type);
+	
+十六、userserver与roomserver对通用storymessage的处理
+	1、从客户端发来的storymessage，实际上在userserver的消息ID会变成 client:实际id ， 参数列表会在最前面插入一个玩家guid。
+	2、从Room发来的storymessage，实际上在userserver的消息ID会变成 server:实际id ， 参数列表会在最前面插入一个玩家guid。
+	3、从客户端发来的storymessage，实际上在roomserver的消息ID会变成 client:实际id ， 参数列表会在最前面插入一个玩家objid。
+	4、从Room发来的storymessage，实际上在roomserver的消息ID会变成 server:实际id ， 参数列表会在最前面插入一个玩家objid。
+	
