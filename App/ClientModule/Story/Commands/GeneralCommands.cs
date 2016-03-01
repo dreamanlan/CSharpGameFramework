@@ -682,8 +682,8 @@ namespace GameFramework.Story.Commands
         {
             string _msg = m_Msg.Value;
 
-            Msg_CRC_StoryMessage protoData = new Msg_CRC_StoryMessage();
-            protoData.m_MsgId = _msg;
+            Msg_CRC_StoryMessage msg = new Msg_CRC_StoryMessage();
+            msg.m_MsgId = _msg;
 
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> val = m_Args[i];
@@ -692,32 +692,25 @@ namespace GameFramework.Story.Commands
                     Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
                     arg.val_type = ArgType.NULL;
                     arg.str_val = "";
-                    protoData.m_Args.Add(arg);
+                    msg.m_Args.Add(arg);
                 } else if (v is int) {
                     Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
                     arg.val_type = ArgType.INT;
                     arg.str_val = ((int)v).ToString();
-                    protoData.m_Args.Add(arg);
+                    msg.m_Args.Add(arg);
                 } else if (v is float) {
                     Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
                     arg.val_type = ArgType.FLOAT;
                     arg.str_val = ((float)v).ToString();
-                    protoData.m_Args.Add(arg);
+                    msg.m_Args.Add(arg);
                 } else {
                     Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
                     arg.val_type = ArgType.STRING;
                     arg.str_val = v.ToString();
-                    protoData.m_Args.Add(arg);
+                    msg.m_Args.Add(arg);
                 }
             }
-
-            try {
-                Network.NodeMessage msg = new Network.NodeMessage(LobbyMessageDefine.Msg_CLC_StoryMessage, Network.UserNetworkSystem.Instance.Guid);
-                msg.m_ProtoData = protoData;
-                Network.NodeMessageDispatcher.SendMessage(msg);
-            } catch (Exception ex) {
-                LogSystem.Error("LobbyNetworkSystem.SendMessage throw Exception:{0}\n{1}", ex.Message, ex.StackTrace);
-            }
+            Network.NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CRC_StoryMessage, msg);
             return false;
         }
 
@@ -775,35 +768,42 @@ namespace GameFramework.Story.Commands
         {
             string _msg = m_Msg.Value;
 
-            Msg_CRC_StoryMessage msg = new Msg_CRC_StoryMessage();
-            msg.m_MsgId = _msg;
+            Msg_CLC_StoryMessage protoData = new Msg_CLC_StoryMessage();
+            protoData.m_MsgId = _msg;
 
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> val = m_Args[i];
                 object v = val.Value;
                 if (null == v) {
-                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
-                    arg.val_type = ArgType.NULL;
+                    Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
+                    arg.val_type = LobbyArgType.NULL;
                     arg.str_val = "";
-                    msg.m_Args.Add(arg);
+                    protoData.m_Args.Add(arg);
                 } else if (v is int) {
-                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
-                    arg.val_type = ArgType.INT;
+                    Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
+                    arg.val_type = LobbyArgType.INT;
                     arg.str_val = ((int)v).ToString();
-                    msg.m_Args.Add(arg);
+                    protoData.m_Args.Add(arg);
                 } else if (v is float) {
-                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
-                    arg.val_type = ArgType.FLOAT;
+                    Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
+                    arg.val_type = LobbyArgType.FLOAT;
                     arg.str_val = ((float)v).ToString();
-                    msg.m_Args.Add(arg);
+                    protoData.m_Args.Add(arg);
                 } else {
-                    Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
-                    arg.val_type = ArgType.STRING;
+                    Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
+                    arg.val_type = LobbyArgType.STRING;
                     arg.str_val = v.ToString();
-                    msg.m_Args.Add(arg);
+                    protoData.m_Args.Add(arg);
                 }
             }
-            Network.NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CRC_StoryMessage, msg);
+
+            try {
+                Network.NodeMessage msg = new Network.NodeMessage(LobbyMessageDefine.Msg_CLC_StoryMessage, Network.UserNetworkSystem.Instance.Guid);
+                msg.m_ProtoData = protoData;
+                Network.NodeMessageDispatcher.SendMessage(msg);
+            } catch (Exception ex) {
+                LogSystem.Error("LobbyNetworkSystem.SendMessage throw Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
             return false;
         }
 
