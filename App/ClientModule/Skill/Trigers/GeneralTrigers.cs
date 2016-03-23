@@ -45,7 +45,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (!m_IsSet) {
                 if (curSectionTime >= m_RealStartTime) {
@@ -146,7 +146,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime >= m_RealStartTime) {
                 EntityController.Instance.BornFinish(senderObj.ActorId);
@@ -194,7 +194,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime >= m_RealStartTime) {
                 EntityController.Instance.DeadFinish(senderObj.ActorId);
@@ -244,7 +244,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -304,7 +304,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -372,7 +372,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -440,7 +440,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;

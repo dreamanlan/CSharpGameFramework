@@ -35,7 +35,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -118,7 +118,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime >= m_RealStartTime) {
                 int targetType = scene.EntityController.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
@@ -210,7 +210,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -331,7 +331,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             long durationTime = m_DurationTime;
             long intervalTime = m_IntervalTime;
@@ -435,7 +435,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -536,7 +536,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
 
@@ -558,7 +558,7 @@ namespace GameFramework.Skill.Trigers
                             m_LifeTime = (long)(1000 * (dest - pos).Length() / m_RealSpeed);
                         }
                     } else if (curSectionTime > m_RealStartTime + m_LifeTime) {
-                        string trackBone = TriggerUtil.RefixBoneByConfig("hitEffectBone", instance.LocalVariables, senderObj.ConfigData);
+                        string trackBone = TriggerUtil.RefixStringVariable("hitEffectBone", instance.LocalVariables, senderObj.ConfigData);
                         m_HitEffectRotation = Quaternion.Identity;
 
                         string hitEffect;
@@ -639,7 +639,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;

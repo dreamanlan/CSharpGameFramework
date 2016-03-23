@@ -57,7 +57,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime >= m_RealStartTime) {
                 EnableMoveAgent(obj, m_IsEnable);
@@ -151,7 +151,7 @@ namespace GameFramework.Skill.Trigers
             if (isTower)
                 return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime){
                 return true;
@@ -301,7 +301,7 @@ namespace GameFramework.Skill.Trigers
             bool isTower = scene.EntityController.GetEntityType(senderObj.GfxObj) == (int)EntityTypeEnum.Tower;
             if (isTower) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (!m_TargetChecked) {
                 m_TargetChecked = true;
@@ -413,7 +413,7 @@ namespace GameFramework.Skill.Trigers
             if (isTower)
                 return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (!m_TargetChecked) {
                 m_TargetChecked = true;

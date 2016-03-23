@@ -96,15 +96,15 @@ namespace GameFramework.Skill.Trigers
 
         internal static void CalcHitConfig(Dictionary<string, object> variables, TableConfig.Skill cfg, out string hitEffect, out string hitEffectBone, out int hitEffectStartTime, out int hitEffectDeleteTime, out string hitAnim, out int hitAnimTime)
         {
-            hitEffect = RefixEffectByConfig("hitEffect", variables, cfg);
-            hitEffectBone = RefixBoneByConfig("hitEffectBone", variables, cfg);
-            hitEffectStartTime = RefixEffectStartTimeByConfig("hitEffectStartTime", variables, cfg);
-            hitEffectDeleteTime = RefixEffectDeleteTimeByConfig("hitEffectDeleteTime", variables, cfg);
-            hitAnim = RefixAnimByConfig("hitAnim", variables, cfg);
-            hitAnimTime = RefixAnimTimeByConfig("hitAnimTime", variables, cfg);
+            hitEffect = RefixResourceByConfig("hitEffect", variables, cfg);
+            hitEffectBone = RefixStringVariable("hitEffectBone", variables, cfg);
+            hitEffectStartTime = RefixIntVariable("hitEffectStartTime", variables, cfg);
+            hitEffectDeleteTime = RefixIntVariable("hitEffectDeleteTime", variables, cfg);
+            hitAnim = RefixStringVariable("hitAnim", variables, cfg);
+            hitAnimTime = RefixIntVariable("hitAnimTime", variables, cfg);
         }
 
-        internal static string RefixEffectByConfig(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        internal static string RefixResourceByConfig(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
             object val;
             if (variables.TryGetValue(key, out val)) {
@@ -117,7 +117,7 @@ namespace GameFramework.Skill.Trigers
             return key;
         }
 
-        internal static string RefixBoneByConfig(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        internal static string RefixStringVariable(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
             object val;
             if (variables.TryGetValue(key, out val)) {
@@ -125,67 +125,43 @@ namespace GameFramework.Skill.Trigers
             }
             return key;
         }
-        internal static int RefixEffectStartTimeByConfig(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        internal static int RefixIntVariable(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        {
+            object val;
+            if (variables.TryGetValue(key, out val)) {
+                return (int)val;
+            }
+            return 0;
+        }
+        internal static int RefixEffectStartTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
             if (timeTag < 0)
-                return RefixEffectStartTimeByConfig("hitEffectStartTime", variables, cfg);
+                return RefixIntVariable("hitEffectStartTime", variables, cfg);
             else
                 return timeTag;
         }        
-        internal static int RefixEffectStartTimeByConfig(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            object val;
-            if (variables.TryGetValue(key, out val)) {
-                return (int)val;
-            }
-            return 0;
-        }
-        internal static int RefixEffectDeleteTimeByConfig(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        internal static int RefixEffectDeleteTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
             if (timeTag < 0)
-                return RefixEffectDeleteTimeByConfig("hitEffectDeleteTime", variables, cfg);
+                return RefixIntVariable("hitEffectDeleteTime", variables, cfg);
             else
                 return timeTag;
         }
-        internal static int RefixEffectDeleteTimeByConfig(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            object val;
-            if (variables.TryGetValue(key, out val)) {
-                return (int)val;
-            }
-            return 0;
-        }
-        internal static string RefixAnimByConfig(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            object val;
-            if (variables.TryGetValue(key, out val)) {
-                return val.ToString();
-            }
-            return key;
-        }
-        internal static int RefixAnimTimeByConfig(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        internal static int RefixAnimTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
             if (timeTag < 0)
-                return RefixEffectDeleteTimeByConfig("hitAnimTime", variables, cfg);
+                return RefixIntVariable("hitAnimTime", variables, cfg);
             else
                 return timeTag;
         }
-        internal static int RefixAnimTimeByConfig(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            object val;
-            if (variables.TryGetValue(key, out val)) {
-                return (int)val;
-            }
-            return 0;
-        }
-        internal static int RefixStartTimeByConfig(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        internal static int RefixStartTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
             int index = -timeTag - 1;
             switch (index) {
                 case 0:
-                    return RefixAnimTimeByConfig("hitAnimTime", variables, cfg);
+                    return RefixIntVariable("hitAnimTime", variables, cfg);
                 case 1:
-                    return RefixEffectStartTimeByConfig("hitEffectStartTime", variables, cfg);
+                    return RefixIntVariable("hitEffectStartTime", variables, cfg);
                 default:
                     return timeTag;
             }

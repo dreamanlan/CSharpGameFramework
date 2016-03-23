@@ -33,14 +33,14 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixEffectStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixEffectStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     int senderId;
                     int targetId;
                     scene.EntityController.CalcSenderAndTarget(senderObj, out senderId, out targetId);
-                    string effectPath = TriggerUtil.RefixEffectByConfig(m_EffectPath, instance.LocalVariables, senderObj.ConfigData);
-                    string emitBone = TriggerUtil.RefixBoneByConfig(m_EmitBone, instance.LocalVariables, senderObj.ConfigData);
+                    string effectPath = TriggerUtil.RefixResourceByConfig(m_EffectPath, instance.LocalVariables, senderObj.ConfigData);
+                    string emitBone = TriggerUtil.RefixStringVariable(m_EmitBone, instance.LocalVariables, senderObj.ConfigData);
                     if (!string.IsNullOrEmpty(effectPath)) {
                         EntityInfo target = scene.EntityController.GetGameObject(targetId);
                         if (null != target) {
@@ -123,7 +123,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixEffectStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixEffectStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     int targetType = scene.EntityController.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
@@ -133,8 +133,8 @@ namespace GameFramework.Skill.Trigers
                     } else {
                         senderId = senderObj.TargetActorId;
                     }
-                    string effectPath = TriggerUtil.RefixEffectByConfig(m_EffectPath, instance.LocalVariables, senderObj.ConfigData);
-                    string emitBone = TriggerUtil.RefixBoneByConfig(m_EmitBone, instance.LocalVariables, senderObj.ConfigData);
+                    string effectPath = TriggerUtil.RefixResourceByConfig(m_EffectPath, instance.LocalVariables, senderObj.ConfigData);
+                    string emitBone = TriggerUtil.RefixStringVariable(m_EmitBone, instance.LocalVariables, senderObj.ConfigData);
                     int ct = 0;
                     TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                         string hitEffect;
@@ -222,12 +222,12 @@ namespace GameFramework.Skill.Trigers
             if (null == obj) return false;
             if (curSectionTime < m_StartTime)
                 return true;
-            instance.SetLocalVariable("hitEffect", TriggerUtil.RefixEffectByConfig(m_HitEffect, instance.LocalVariables, senderObj.ConfigData));
-            instance.SetLocalVariable("hitEffectBone", TriggerUtil.RefixBoneByConfig(m_HitEffectBone, instance.LocalVariables, senderObj.ConfigData));
-            instance.SetLocalVariable("hitEffectStartTime", TriggerUtil.RefixEffectStartTimeByConfig(m_HitEffectStartTime, instance.LocalVariables, senderObj.ConfigData));
-            instance.SetLocalVariable("hitEffectDeleteTime", TriggerUtil.RefixEffectDeleteTimeByConfig(m_HitEffectDeleteTime, instance.LocalVariables, senderObj.ConfigData));
-            instance.SetLocalVariable("hitAnim", TriggerUtil.RefixAnimByConfig(m_HitAnim, instance.LocalVariables, senderObj.ConfigData));
-            instance.SetLocalVariable("hitAnimTime", TriggerUtil.RefixAnimTimeByConfig(m_HitAnimTime, instance.LocalVariables, senderObj.ConfigData));
+            instance.SetLocalVariable("hitEffect", TriggerUtil.RefixResourceByConfig(m_HitEffect, instance.LocalVariables, senderObj.ConfigData));
+            instance.SetLocalVariable("hitEffectBone", TriggerUtil.RefixStringVariable(m_HitEffectBone, instance.LocalVariables, senderObj.ConfigData));
+            instance.SetLocalVariable("hitEffectStartTime", TriggerUtil.RefixEffectStartTime(m_HitEffectStartTime, instance.LocalVariables, senderObj.ConfigData));
+            instance.SetLocalVariable("hitEffectDeleteTime", TriggerUtil.RefixEffectDeleteTime(m_HitEffectDeleteTime, instance.LocalVariables, senderObj.ConfigData));
+            instance.SetLocalVariable("hitAnim", TriggerUtil.RefixStringVariable(m_HitAnim, instance.LocalVariables, senderObj.ConfigData));
+            instance.SetLocalVariable("hitAnimTime", TriggerUtil.RefixAnimTime(m_HitAnimTime, instance.LocalVariables, senderObj.ConfigData));
             return false;
         }
 

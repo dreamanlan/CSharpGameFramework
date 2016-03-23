@@ -33,7 +33,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime >= m_RealStartTime) {
                 scene.EntityController.BornFinish(senderObj.ActorId);
@@ -82,7 +82,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime >= m_RealStartTime) {
                 scene.EntityController.DeadFinish(senderObj.ActorId);
@@ -133,7 +133,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;

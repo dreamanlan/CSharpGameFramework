@@ -32,7 +32,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -93,7 +93,7 @@ namespace GameFramework.Skill.Trigers
 
         private int TryGetTimeFromConfig(Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
-            return TriggerUtil.RefixAnimTimeByConfig(m_Type, variables, cfg);
+            return TriggerUtil.RefixIntVariable(m_Type, variables, cfg);
         }
 
         private string m_Type = "anim";//anim/impact
@@ -142,7 +142,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;

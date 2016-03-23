@@ -41,12 +41,12 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     Animator animator = obj.GetComponent<Animator>();
                     if (null != animator) {
-                        string anim = TriggerUtil.RefixAnimByConfig(m_AnimName, instance.LocalVariables, senderObj.ConfigData);
+                        string anim = TriggerUtil.RefixStringVariable(m_AnimName, instance.LocalVariables, senderObj.ConfigData);
                         if (!string.IsNullOrEmpty(anim)) {
                             try {
                                 if (m_PlayMode == 0) {
@@ -152,7 +152,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTimeByConfig((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
