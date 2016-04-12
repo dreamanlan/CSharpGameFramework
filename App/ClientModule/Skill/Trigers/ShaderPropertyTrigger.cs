@@ -68,7 +68,7 @@ namespace GameFramework.Skill.Trigers
                                 }
                                 m_Materials.Add(mat);
 
-                                if (mat.shader.name == "Tut/Shader/Toon/toon" || mat.shader.name == "Mobile/Diffuse" || mat.shader.name == "Unlit/Transparent" || mat.shader.name == "LOLL/Toon/toonwithStencil") {
+                                if (mat.shader.name == "Tut/Shader/Toon/toon" || mat.shader.name == "Standard" || mat.shader.name == "Mobile/Diffuse" || mat.shader.name == "Unlit/Transparent" || mat.shader.name == "LOLL/Toon/toonwithStencil") {
                                 } else {
                                     continue;
                                 }

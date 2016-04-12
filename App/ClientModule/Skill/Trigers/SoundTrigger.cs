@@ -45,6 +45,7 @@ namespace GameFramework.Skill.Trigers
             triger.m_BoneName = m_BoneName;
             triger.m_IsAttach = m_IsAttach;
             triger.m_volume = m_volume;
+            triger.m_RealStartTime = m_StartTime;
             return triger;
         }
 
@@ -53,6 +54,8 @@ namespace GameFramework.Skill.Trigers
             m_IsResourcePreloaded = false;
             m_AudioSource = null;
             m_volume = 1.0f;
+
+            m_RealStartTime = m_StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -61,10 +64,13 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
+            if (m_RealStartTime < 0) {
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+            }
             if (!m_IsResourcePreloaded) {
                 PreloadResource(obj, instance);
             }
-            if (curSectionTime < m_StartTime) {
+            if (curSectionTime < m_RealStartTime) {
                 return true;
             }
             if (m_IsNeedCollide) {
@@ -163,6 +169,7 @@ namespace GameFramework.Skill.Trigers
                 m_AudioGroup.Add(callData.GetParamId(4));
                 m_IsNeedCollide = bool.Parse(callData.GetParamId(5));
             }
+            m_RealStartTime = m_StartTime;
         }
 
         protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
@@ -234,6 +241,8 @@ namespace GameFramework.Skill.Trigers
 
         private AudioSource m_AudioSource = null;
         private bool m_IsResourcePreloaded = false;
+
+        private long m_RealStartTime = 0;
     }
 
     public class StopSoundTrigger : AbstractSkillTriger

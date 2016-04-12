@@ -16,8 +16,9 @@ namespace GameFramework.Skill.Trigers
             if (!EntityController.Instance.IsRotatableEntity(obj))
                 return;
             Vector3 dir = target - obj.transform.position;
+            dir.y = 0;
             if (dir.sqrMagnitude > Geometry.c_FloatPrecision) {
-                obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, Quaternion.LookRotation(target - obj.transform.position), rotateDegree);
+                obj.transform.rotation = Quaternion.RotateTowards(obj.transform.rotation, Quaternion.LookRotation(dir), rotateDegree);
                 EntityController.Instance.SyncFaceDir(obj);
             }
         }
@@ -25,6 +26,7 @@ namespace GameFramework.Skill.Trigers
         {
             if (!EntityController.Instance.IsRotatableEntity(obj))
                 return;
+            target.y = obj.transform.position.y;
             Vector3 dir = target - obj.transform.position;
             if (dir.sqrMagnitude > Geometry.c_FloatPrecision) {
                 obj.transform.LookAt(target, Vector3.up);
@@ -235,14 +237,15 @@ namespace GameFramework.Skill.Trigers
 
         //-----------------------------------------------------------------------------------------------------------
 
-        public static void CalcHitConfig(Dictionary<string, object> variables, TableConfig.Skill cfg, out string hitEffect, out string hitEffectBone, out int hitEffectStartTime, out int hitEffectDeleteTime, out string hitAnim, out int hitAnimTime)
+        public static void CalcHitConfig(Dictionary<string, object> variables, TableConfig.Skill cfg, out Dictionary<string, object> result)
         {
-            hitEffect = RefixResourceByConfig("hitEffect", variables, cfg);
-            hitEffectBone = RefixStringVariable("hitEffectBone", variables, cfg);
-            hitEffectStartTime = RefixIntVariable("hitEffectStartTime", variables, cfg);
-            hitEffectDeleteTime = RefixIntVariable("hitEffectDeleteTime", variables, cfg);
-            hitAnim = RefixStringVariable("hitAnim", variables, cfg);
-            hitAnimTime = RefixIntVariable("hitAnimTime", variables, cfg);
+            result = new Dictionary<string, object>(variables);
+            string hitEffect = RefixResourceByConfig("hitEffect", variables, cfg);
+            if (result.ContainsKey("hitEffect")) {
+                result["hitEffect"] = hitEffect;
+            } else {
+                result.Add("hitEffect", hitEffect);
+            }
         }
 
         public static string RefixResourceByConfig(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
@@ -276,20 +279,6 @@ namespace GameFramework.Skill.Trigers
             }
             return 0;
         }
-        public static int RefixEffectStartTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            if (timeTag < 0)
-                return RefixIntVariable("hitEffectStartTime", variables, cfg);
-            else
-                return timeTag;
-        }        
-        public static int RefixEffectDeleteTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            if (timeTag < 0)
-                return RefixIntVariable("hitEffectDeleteTime", variables, cfg);
-            else
-                return timeTag;
-        }
         public static int RefixAnimTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
             if (timeTag < 0)
@@ -302,14 +291,23 @@ namespace GameFramework.Skill.Trigers
             int index = -timeTag - 1;
             switch (index) {
                 case 0:
-                    return RefixIntVariable("hitAnimTime", variables, cfg);
-                case 1:
                     return RefixIntVariable("hitEffectStartTime", variables, cfg);
+                case 1:
+                    return RefixIntVariable("hitAnimTime", variables, cfg);
+                case 2:
+                    return RefixIntVariable("hitDelayTime", variables, cfg);
                 default:
                     return timeTag;
             }
         }
-
+        public static int RefixDeleteTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        {
+            if (timeTag < 0)
+                return RefixIntVariable("hitEffectDeleteTime", variables, cfg);
+            else
+                return timeTag;
+        }
+        
         public static void AoeQuery(GfxSkillSenderInfo senderObj, SkillInstance instance, int senderId, int targetType, Vector3 relativeCenter, bool relativeToTarget, MyFunc<float, int, bool> callback)
         {
             GameObject srcObj = senderObj.GfxObj;
@@ -369,7 +367,8 @@ namespace GameFramework.Skill.Trigers
                         if (aoeType == (int)SkillAoeType.Capsule) {
                             isMatch = Geometry.IsCapsuleDiskIntersect(new ScriptRuntime.Vector2(center.x, center.z), angleu, range, new ScriptRuntime.Vector2(kdTreeObj.Position.X, kdTreeObj.Position.Z), kdTreeObj.Radius);
                         } else {
-                            isMatch = Geometry.IsObbDiskIntersect(new ScriptRuntime.Vector2(center.x, center.z), new ScriptRuntime.Vector2(range / 2, angleOrLength / 2), radian, new ScriptRuntime.Vector2(kdTreeObj.Position.X, kdTreeObj.Position.Z), kdTreeObj.Radius);
+                            ScriptRuntime.Vector2 half = new ScriptRuntime.Vector2(range / 2, angleOrLength / 2);
+                            isMatch = Geometry.IsObbDiskIntersect(c, half, radian, new ScriptRuntime.Vector2(kdTreeObj.Position.X, kdTreeObj.Position.Z), kdTreeObj.Radius);
                         }
                         if (isMatch) {
                             if (!callback(distSqr, kdTreeObj.Object.GetId())) {

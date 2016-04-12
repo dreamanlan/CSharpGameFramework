@@ -104,6 +104,12 @@ namespace GameFramework
             Vector3 right = Quaternion.AngleAxis(-45, Vector3.up) * (-dir);
             Gizmos.DrawLine(end, end + right * length * 0.5f);
         }
+        public static Vector3 GetBezierPoint(Vector3 p0, Vector3 p1, Vector3 p2, float t)
+        {
+            t = Mathf.Clamp01(t);
+            float num = 1f - t;
+            return (Vector3)((((num * num) * p0) + (((2f * num) * t) * p1)) + ((t * t) * p2));
+        }
         public static PublishSubscribeSystem EventSystem
         {
             get

@@ -587,7 +587,7 @@ namespace SkillSystem
                 ChangeToSection(m_CurSection + 1);
             }
             if (IsMessageDone() && IsAllSectionDone()) {
-                OnSkillStop(sender, delta);
+                OnSkillStop(sender);
             }
         }        
         public void Analyze(object sender)
@@ -621,21 +621,21 @@ namespace SkillSystem
 
             m_AlreadyAnalyzed = true;
         }
-        public void OnInterrupt(object sender, long delta)
+        public void OnInterrupt(object sender)
         {
             if (m_InterruptSection != null) {
-                m_InterruptSection.Prepare();
-                m_InterruptSection.Tick(sender, this, delta);
+                m_InterruptSection.Prepare();                
+                m_InterruptSection.Tick(sender, this, m_CurTime);
             }
             ResetCurSection();
             StopMessageHandlers();
             m_IsFinished = true;
         }
-        public void OnSkillStop(object sender, long delta)
+        public void OnSkillStop(object sender)
         {
             if (m_StopSection != null) {
                 m_StopSection.Prepare();
-                m_StopSection.Tick(sender, this, delta);
+                m_StopSection.Tick(sender, this, m_CurTime);
             }
             ResetCurSection();
             StopMessageHandlers();

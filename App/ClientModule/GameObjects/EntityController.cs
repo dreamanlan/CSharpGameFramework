@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GameFramework.Skill;
+using SkillSystem;
 
 namespace GameFramework
 {
@@ -412,6 +413,17 @@ namespace GameFramework
             }
             return UnityEngine.Vector3.zero;
         }
+        internal int GetImpactSkillId(int actorId, int impactId, int seq)
+        {
+            EntityViewModel view = GetEntityViewById(actorId);
+            if (null != view && null != view.Entity) {
+                ImpactInfo impactInfo = view.Entity.GetSkillStateInfo().GetImpactInfoBySeq(seq);
+                if (null != impactInfo && impactId == impactInfo.ImpactId) {
+                    return impactInfo.SkillId;
+                }
+            }
+            return 0;
+        }
         internal void CalcSenderAndTarget(GfxSkillSenderInfo senderObj, out int senderId, out int targetId)
         {
             senderId = 0;
@@ -512,11 +524,26 @@ namespace GameFramework
                 }
             }
         }
-        internal void SendImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, int impactId, string hitEffect, string hitEffectBone, int hitEffectStartTime, int hitEffectDeleteTime, string hitAnim, int hitAnimTime)
+        internal ImpactInfo SendImpact(int srcObjId, int targetId, int impactId, int skillId)
+        {
+            EntityViewModel view = GetEntityViewById(srcObjId);
+            if(null!=view && null!=view.Entity){
+                SkillInfo skillInfo = view.Entity.GetSkillStateInfo().GetSkillInfoById(skillId);
+                GfxSkillSenderInfo senderInfo;
+                SkillInstance skillInst = GfxSkillSystem.Instance.GetSkillInstance(srcObjId,skillId,0,out senderInfo);
+                if(null!=skillInst){
+                    Dictionary<string, object> args;
+                    Skill.Trigers.TriggerUtil.CalcHitConfig(skillInst.LocalVariables, senderInfo.ConfigData, out args);
+                    return EntityController.Instance.SendImpact(senderInfo.ConfigData, senderInfo.Seq, senderInfo.ActorId, srcObjId, targetId, impactId, args);
+                }
+            }
+            return null;
+        }
+        internal ImpactInfo SendImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, int impactId, Dictionary<string, object> args)
         {
             EntityViewModel view = GetEntityViewById(targetId);
             if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDead()) {
-                EntityInfo entity = view.Entity;
+                EntityInfo npc = view.Entity;
                 if (null != cfg) {
                     UnityEngine.Quaternion hitEffectRotation = UnityEngine.Quaternion.identity;
                     UnityEngine.GameObject srcObj = GetGameObject(srcObjId);
@@ -533,22 +560,24 @@ namespace GameFramework
                         impactInfo = new ImpactInfo(impactId);
                     }
                     if (TryInitImpactInfo(impactInfo, cfg, seq, curObjId, srcObjId)) {
-                        entity.GetSkillStateInfo().AddImpact(impactInfo);
-                        SkillInfo skillInfo = entity.GetSkillStateInfo().GetCurSkillInfo();
+                        npc.GetSkillStateInfo().AddImpact(impactInfo);
+                        SkillInfo skillInfo = npc.GetSkillStateInfo().GetCurSkillInfo();
                         if (null != skillInfo && (cfg.isInterrupt || impactInfo.ConfigData.isInterrupt)) {
                             GfxSkillSystem.Instance.StopSkill(targetId, skillInfo.SkillId, 0, true);
                         }
-                        GfxSkillSystem.Instance.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, new Dictionary<string, object>() { { "hitEffect", hitEffect }, { "hitEffectBone", hitEffectBone }, { "hitEffectStartTime", hitEffectStartTime }, { "hitEffectDeleteTime", hitEffectDeleteTime }, { "hitAnim", hitAnim }, { "hitAnimTime", hitAnimTime }, { "hitEffectRotation", hitEffectRotation } });
+                        GfxSkillSystem.Instance.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args, new Dictionary<string, object> { { "hitEffectRotation", hitEffectRotation } });
+                        return impactInfo;
                     }
                 }
             }
+            return null;
         }
-        internal void TrackImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, string effectPath, string emitBone, int emitImpact, float emitSpeed, string hitEffect, string hitEffectBone, int hitEffectStartTime, int hitEffectDeleteTime, string hitAnim, int hitAnimTime)
+        internal ImpactInfo TrackImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, string emitBone, int emitImpact, UnityEngine.Vector3 offset, Dictionary<string, object> args)
         {
             EntityViewModel view = GetEntityViewById(targetId);
             EntityViewModel srcView = GetEntityViewById(srcObjId);
             if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDead()) {
-                EntityInfo entity = view.Entity;
+                EntityInfo npc = view.Entity;
                 if (null != cfg) {
                     ImpactInfo impactInfo = null;
                     if (emitImpact <= 0) {
@@ -561,26 +590,28 @@ namespace GameFramework
                         if (null != srcObj) {
                             UnityEngine.Transform t = Utility.FindChildRecursive(srcObj.transform, emitBone);
                             if (null != t) {
-                                UnityEngine.Vector3 pos = t.position;
+                                UnityEngine.Vector3 pos = t.TransformPoint(offset);
                                 impactInfo.SenderPosition = new ScriptRuntime.Vector3(pos.x, pos.y, pos.z);
                             } else {
-                                UnityEngine.Vector3 pos = srcObj.transform.position;
-                                pos.y += entity.GetRadius();
+                                UnityEngine.Vector3 pos = srcObj.transform.TransformPoint(offset);
+                                pos.y += npc.GetRadius();
                                 impactInfo.SenderPosition = new ScriptRuntime.Vector3(pos.x, pos.y, pos.z);
                             }
                         }
-                        entity.GetSkillStateInfo().AddImpact(impactInfo);
-                        GfxSkillSystem.Instance.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, new Dictionary<string, object>() { { "emitEffect", effectPath }, { "hitEffect", hitEffect }, { "hitEffectBone", hitEffectBone }, { "hitEffectStartTime", hitEffectStartTime }, { "hitEffectDeleteTime", hitEffectDeleteTime }, { "hitAnim", hitAnim }, { "hitAnimTime", hitAnimTime }, { "emitSpeed", emitSpeed } });
+                        npc.GetSkillStateInfo().AddImpact(impactInfo);
+                        GfxSkillSystem.Instance.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args);
+                        return impactInfo;
                     }
                 }
             }
+            return null;
         }
-        internal void TrackSendImpact(int targetId, int impactId, int seq, string hitEffect, string hitEffectBone, int hitEffectStartTime, int hitEffectDeleteTime, string hitAnim, int hitAnimTime, UnityEngine.Quaternion hitEffectRotation)
+        internal ImpactInfo TrackSendImpact(int targetId, int impactId, int seq, Dictionary<string, object> args)
         {
             EntityViewModel view = GetEntityViewById(targetId);
             if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDead()) {
-                EntityInfo entity = view.Entity;
-                ImpactInfo trackImpactInfo = entity.GetSkillStateInfo().GetImpactInfoBySeq(seq);
+                EntityInfo npc = view.Entity;
+                ImpactInfo trackImpactInfo = npc.GetSkillStateInfo().GetImpactInfoBySeq(seq);
                 if (null != trackImpactInfo && impactId == trackImpactInfo.ImpactId) {
                     ImpactInfo impactInfo = null;
                     int targetImpactId = trackImpactInfo.ImpactToTarget;
@@ -605,10 +636,12 @@ namespace GameFramework
                     impactInfo.AddShield = trackImpactInfo.AddShield;
                     impactInfo.AddSpeed = trackImpactInfo.AddSpeed;
                     impactInfo.HpRecover = trackImpactInfo.HpRecover;
-                    entity.GetSkillStateInfo().AddImpact(impactInfo);
-                    GfxSkillSystem.Instance.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, new Dictionary<string, object>() { { "hitEffect", hitEffect }, { "hitEffectBone", hitEffectBone }, { "hitEffectStartTime", hitEffectStartTime }, { "hitEffectDeleteTime", hitEffectDeleteTime }, { "hitAnim", hitAnim }, { "hitAnimTime", hitAnimTime }, { "hitEffectRotation", hitEffectRotation } });
+                    npc.GetSkillStateInfo().AddImpact(impactInfo);
+                    GfxSkillSystem.Instance.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args);
+                    return impactInfo;
                 }
             }
+            return null;
         }
         internal void ImpactDamage(int srcObjId, int targetId, int impactId, int seq)
         {

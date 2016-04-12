@@ -58,14 +58,9 @@ namespace GameFramework.Skill.Trigers
                     return true;
                 });
             }
-            string hitEffect;
-            string hitEffectBone;
-            int hitEffectStartTime;
-            int hitEffectDeleteTime;
-            string hitAnim;
-            int hitAnimTime;
-            TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-            EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+            Dictionary<string, object> args;
+            TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+            EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
             return false;
         }
 
@@ -133,14 +128,9 @@ namespace GameFramework.Skill.Trigers
                 }
                 int ct = 0;
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
-                    string hitEffect;
-                    string hitEffectBone;
-                    int hitEffectStartTime;
-                    int hitEffectDeleteTime;
-                    string hitAnim;
-                    int hitAnimTime;
-                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                    Dictionary<string, object> args;
+                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, args);
                     ++ct;
                     if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                         return true;
@@ -248,14 +238,9 @@ namespace GameFramework.Skill.Trigers
                     ct = m_Targets.Count;
                 }
                 if (ct > 0 && m_CurTargetIndex < ct) {
-                    string hitEffect;
-                    string hitEffectBone;
-                    int hitEffectStartTime;
-                    int hitEffectDeleteTime;
-                    string hitAnim;
-                    int hitAnimTime;
-                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, m_SenderId, m_Targets[m_CurTargetIndex], m_ImpactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                    Dictionary<string, object> args;
+                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, m_SenderId, m_Targets[m_CurTargetIndex], m_ImpactId, args);
                     ++m_CurTargetIndex;
                 } else {
                     return false;
@@ -365,14 +350,9 @@ namespace GameFramework.Skill.Trigers
                         return true;
                     });
                 }
-                string hitEffect;
-                string hitEffectBone;
-                int hitEffectStartTime;
-                int hitEffectDeleteTime;
-                string hitAnim;
-                int hitAnimTime;
-                TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                Dictionary<string, object> args;
+                TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
             }
             return true;
         }
@@ -455,14 +435,9 @@ namespace GameFramework.Skill.Trigers
                 }
                 int ct = 0;
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
-                    string hitEffect;
-                    string hitEffectBone;
-                    int hitEffectStartTime;
-                    int hitEffectDeleteTime;
-                    string hitAnim;
-                    int hitAnimTime;
-                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                    Dictionary<string, object> args;
+                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, args);
                     ++ct;
                     if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                         return true;
@@ -549,8 +524,8 @@ namespace GameFramework.Skill.Trigers
                             LogSystem.Warn("[skill:{0} dsl skill id:{1}] track bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, trackBone);
                         }
 
-                        Vector3 pos = EntityController.Instance.GetImpactSenderPosition(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
-                        dest = Utility.FrontOfTarget(pos, dest, 0.3f);
+                        m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                        dest = Utility.FrontOfTarget(m_StartPos, dest, 0.1f);
 
                         if (m_RealSpeed < Geometry.c_FloatPrecision) {
                             object speedObj;
@@ -558,18 +533,36 @@ namespace GameFramework.Skill.Trigers
                                 m_RealSpeed = (float)speedObj;
                             }
                         }
-                        float lifetime = 1.0f;
+                        m_Lifetime = 1.0f;
                         if (m_RealSpeed >= Geometry.c_FloatPrecision) {
-                            lifetime = (dest - pos).magnitude / m_RealSpeed;
+                            m_Lifetime = (dest - m_StartPos).magnitude / m_RealSpeed;
+                        }
+                        Quaternion dir;
+                        object dirObj;
+                        if (instance.LocalVariables.TryGetValue("emitDir", out dirObj)) {
+                            dir = (Quaternion)dirObj;
+                        } else {
+                            dir = Quaternion.identity;
+                        }
+                        Vector3 scale;
+                        object scaleObj;
+                        if (instance.LocalVariables.TryGetValue("emitScale", out scaleObj)) {
+                            scale = (Vector3)scaleObj;
+                        } else {
+                            scale = Vector3.one;
                         }
 
+                        Vector3 lookDir = dest - m_StartPos;
+                        Quaternion q = Quaternion.LookRotation(lookDir);
+                        m_ControlPos = m_StartPos + Vector3.Scale(q * dir * Vector3.forward, scale * lookDir.magnitude * 0.5f);
+
                         string effectPath = TriggerUtil.RefixResourceByConfig("emitEffect", instance.LocalVariables, senderObj.ConfigData);
-                        m_Effect = ResourceSystem.Instance.NewObject(effectPath, lifetime) as GameObject;
+                        m_Effect = ResourceSystem.Instance.NewObject(effectPath, m_Lifetime) as GameObject;
                         if (null != m_Effect) {
                             TriggerUtil.SetObjVisible(m_Effect, true);
                             m_Effect.SetActive(false);
-                            m_Effect.transform.position = pos;
-                            m_Effect.transform.localRotation = Quaternion.LookRotation(dest - pos);
+                            m_Effect.transform.position = m_StartPos;
+                            m_Effect.transform.localRotation = q;
                             m_Effect.SetActive(true);
                         } else {
                             if (string.IsNullOrEmpty(effectPath)) {
@@ -586,23 +579,21 @@ namespace GameFramework.Skill.Trigers
                             dest = obj.transform.position;
                             dest.y += 1.5f;
                         }
-                        Vector3 pos = EntityController.Instance.GetImpactSenderPosition(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
-                        dest = Utility.FrontOfTarget(pos, dest, 0.1f);
-                        m_Effect.transform.position = Vector3.MoveTowards(m_Effect.transform.position, dest, m_RealSpeed * Time.deltaTime);
+                        dest = Utility.FrontOfTarget(m_StartPos, dest, 0.1f);
+                        //m_Effect.transform.position = Vector3.MoveTowards(m_Effect.transform.position, dest, m_RealSpeed * Time.deltaTime);
+                        m_Effect.transform.position = Utility.GetBezierPoint(m_StartPos, m_ControlPos, dest, (curSectionTime - m_RealStartTime) / 1000.0f / m_Lifetime);
 
                         if ((dest - m_Effect.transform.position).sqrMagnitude <= 0.01f) {
-                            string trackBone = TriggerUtil.RefixStringVariable("hitEffectBone", instance.LocalVariables, senderObj.ConfigData);
-                            m_HitEffectRotation = Quaternion.LookRotation(pos - dest);
+                            m_HitEffectRotation = Quaternion.LookRotation(m_StartPos - dest);
+                            Dictionary<string, object> args;
+                            TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                            if (args.ContainsKey("hitEffectRotation"))
+                                args["hitEffectRotation"] = m_HitEffectRotation;
+                            else
+                                args.Add("hitEffectRotation", m_HitEffectRotation);
+                            EntityController.Instance.TrackSendImpact(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, args);
 
-                            string hitEffect;
-                            string hitEffectBone;
-                            int hitEffectStartTime;
-                            int hitEffectDeleteTime;
-                            string hitAnim;
-                            int hitAnimTime;
-                            TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                            EntityController.Instance.TrackSendImpact(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, hitEffect, trackBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime, m_HitEffectRotation);
-
+                            
                             m_Effect.SetActive(false);
                             ResourceSystem.Instance.RecycleObject(m_Effect);
                             m_Effect = null;
@@ -641,6 +632,10 @@ namespace GameFramework.Skill.Trigers
 
         private long m_RealStartTime = 0;
         private float m_RealSpeed = 10f;
+
+        private Vector3 m_StartPos = Vector3.zero;
+        private Vector3 m_ControlPos = Vector3.zero;
+        private float m_Lifetime = 1.0f;
 
         private bool m_IsStarted = false;
         private Quaternion m_HitEffectRotation;
@@ -727,15 +722,9 @@ namespace GameFramework.Skill.Trigers
                             isCollide = true;
                             if (!m_Targets.Contains(targetId)) {
                                 m_Targets.Add(targetId);
-
-                                string hitEffect;
-                                string hitEffectBone;
-                                int hitEffectStartTime;
-                                int hitEffectDeleteTime;
-                                string hitAnim;
-                                int hitAnimTime;
-                                TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                                Dictionary<string, object> args;
+                                TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
                                 if (m_SingleHit) {
                                     return false;
                                 }

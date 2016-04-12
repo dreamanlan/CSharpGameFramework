@@ -33,7 +33,7 @@ namespace StorySystem
                 }
 #else
         try {
-          dataFile.LoadObfuscatedFile(file, GlobalVariables.Instance.DecodeTable);
+          dataFile.LoadBinaryFile(file, GlobalVariables.Instance.DecodeTable);
           Load(dataFile, sceneId, _namespace, file);
         } catch {
         }

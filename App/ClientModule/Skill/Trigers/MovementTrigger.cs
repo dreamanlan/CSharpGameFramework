@@ -446,16 +446,17 @@ namespace GameFramework.Skill.Trigers
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
-            } else if (curSectionTime <= m_RealDuration) {
+            } else if (curSectionTime <= m_RealStartTime + m_RealDuration) {
                 float t = (float)(int)(curSectionTime - m_RealStartTime) / 1000.0f;
                 float disty = m_YVelocity * t - m_G * t * t / 2;
                 float dist = TriggerUtil.ConvertToSecond(delta) * m_RealVelocity;
                 Vector3 targetPos = obj.transform.position + m_Forward * dist;
                 targetPos.y = m_InitY + disty;
-
                 TriggerUtil.MoveObjTo(obj, targetPos);
                 return true;
             } else {
+                Vector3 srcPos = obj.transform.position;
+                obj.transform.position = new Vector3(srcPos.x, m_InitY, srcPos.z);
                 return false;
             }
         }
@@ -490,8 +491,9 @@ namespace GameFramework.Skill.Trigers
         private void CalcYVelocityAndG()
         {
             float time_div = (float)(int)m_Duration / 1000.0f;
+            time_div /= 2;
             m_YVelocity = m_Height * 2.0f / time_div;
-            m_G = m_Height * 4.0f / (time_div * time_div);
+            m_G = m_Height * 2.0f / (time_div * time_div);
         }
 
         private long m_Duration = 0;
