@@ -208,7 +208,7 @@ namespace GameFramework
             for (int index = count - 1; index >= 0; --index) {
                 SkillLogicInfo info = m_SkillLogicInfos[index];
                 if (null != info) {
-                    info.SkillInst.OnSkillStop(info.Sender, 0);
+                    info.SkillInst.OnSkillStop(info.Sender);
                     StopSkillInstance(info);
                     m_SkillLogicInfos.RemoveAt(index);
                 }
@@ -308,9 +308,9 @@ namespace GameFramework
                 SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq);
                 if (null != logicInfo) {
                     if (isinterrupt) {
-                        logicInfo.SkillInst.OnInterrupt(logicInfo.Sender, 0);
+                        logicInfo.SkillInst.OnInterrupt(logicInfo.Sender);
                     }
-                    logicInfo.SkillInst.OnSkillStop(logicInfo.Sender, 0);
+                    logicInfo.SkillInst.OnSkillStop(logicInfo.Sender);
                     StopSkillInstance(logicInfo, isinterrupt);
                     m_SkillLogicInfos.Remove(logicInfo);
                 }
@@ -336,9 +336,9 @@ namespace GameFramework
                         if (!includeBuff && info.Sender.ConfigData.type == (int)SkillOrImpactType.Buff)
                             continue;
                         if (isinterrupt) {
-                            info.SkillInst.OnInterrupt(info.Sender, 0);
+                            info.SkillInst.OnInterrupt(info.Sender);
                         }
-                        info.SkillInst.OnSkillStop(info.Sender, 0);
+                        info.SkillInst.OnSkillStop(info.Sender);
                         StopSkillInstance(info, isinterrupt);
                         m_SkillLogicInfos.RemoveAt(index);
                     }
@@ -379,7 +379,7 @@ namespace GameFramework
                     }
                     if (!exist || info.SkillInst.IsFinished) {
                         if (!exist) {
-                            info.SkillInst.OnSkillStop(info.Sender, 0);
+                            info.SkillInst.OnSkillStop(info.Sender);
                         }
                         StopSkillInstance(info);
                         m_SkillLogicInfos.RemoveAt(ix);
