@@ -5,6 +5,7 @@ using System.Text;
 using GameFramework.Skill;
 using GameFrameworkMessage;
 using ScriptRuntime;
+using SkillSystem;
 
 namespace GameFramework
 {
@@ -329,6 +330,17 @@ namespace GameFramework
             }
             return Vector3.Zero;
         }
+        internal int GetImpactSkillId(int actorId, int impactId, int seq)
+        {
+            EntityInfo entity = m_Scene.EntityManager.GetEntityInfo(actorId);
+            if (null != entity) {
+                ImpactInfo impactInfo = entity.GetSkillStateInfo().GetImpactInfoBySeq(seq);
+                if (null != impactInfo && impactId == impactInfo.ImpactId) {
+                    return impactInfo.SkillId;
+                }
+            }
+            return 0;
+        }
         internal void CalcSenderAndTarget(GfxSkillSenderInfo senderObj, out int senderId, out int targetId)
         {
             senderId = 0;
@@ -423,7 +435,22 @@ namespace GameFramework
                 }
             }
         }
-        internal void SendImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, int impactId, string hitEffect, string hitEffectBone, int hitEffectStartTime, int hitEffectDeleteTime, string hitAnim, int hitAnimTime)
+        internal ImpactInfo SendImpact(int srcObjId, int targetId, int impactId, int skillId)
+        {
+            EntityInfo entity = m_Scene.EntityManager.GetEntityInfo(srcObjId);
+            if(null!=entity){
+                SkillInfo skillInfo = entity.GetSkillStateInfo().GetSkillInfoById(skillId);
+                GfxSkillSenderInfo senderInfo;
+                SkillInstance skillInst = m_Scene.SkillSystem.GetSkillInstance(srcObjId,skillId,0,out senderInfo);
+                if(null!=skillInst){
+                    Dictionary<string, object> args;
+                    Skill.Trigers.TriggerUtil.CalcHitConfig(skillInst.LocalVariables, senderInfo.ConfigData, out args);
+                    return SendImpact(senderInfo.ConfigData, senderInfo.Seq, senderInfo.ActorId, srcObjId, targetId, impactId, args);
+                }
+            }
+            return null;
+        }
+        internal ImpactInfo SendImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, int impactId, Dictionary<string, object> args)
         {
             EntityInfo targetObj = m_Scene.EntityManager.GetEntityInfo(targetId);
             if (null != targetObj) {
@@ -443,12 +470,14 @@ namespace GameFramework
                         if (null != skillInfo && (cfg.isInterrupt || impactInfo.ConfigData.isInterrupt)) {
                             m_Scene.SkillSystem.StopSkill(targetId, skillInfo.SkillId, 0, true);
                         }
-                        m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, new Dictionary<string, object>() { { "hitEffect", hitEffect }, { "hitEffectBone", hitEffectBone }, { "hitEffectStartTime", hitEffectStartTime }, { "hitEffectDeleteTime", hitEffectDeleteTime }, { "hitAnim", hitAnim }, { "hitAnimTime", hitAnimTime }, { "hitEffectRotation", hitEffectRotation } });
+                        m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args, new Dictionary<string, object> { { "hitEffectRotation", hitEffectRotation } });
+                        return impactInfo;
                     }
                 }
             }
+            return null;
         }
-        internal void TrackImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, string effectPath, string emitBone, int emitImpact, float emitSpeed, string hitEffect, string hitEffectBone, int hitEffectStartTime, int hitEffectDeleteTime, string hitAnim, int hitAnimTime)
+        internal ImpactInfo TrackImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, string emitBone, int emitImpact, Vector3 offset, Dictionary<string, object> args)
         {
             EntityInfo targetObj = m_Scene.EntityManager.GetEntityInfo(targetId);
             EntityInfo srcObj = m_Scene.EntityManager.GetEntityInfo(srcObjId);
@@ -467,12 +496,14 @@ namespace GameFramework
                             impactInfo.SenderPosition = pos;
                         }
                         targetObj.GetSkillStateInfo().AddImpact(impactInfo);
-                        m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, new Dictionary<string, object>() { { "emitEffect", effectPath }, { "hitEffect", hitEffect }, { "hitEffectBone", hitEffectBone }, { "hitEffectStartTime", hitEffectStartTime }, { "hitEffectDeleteTime", hitEffectDeleteTime }, { "hitAnim", hitAnim }, { "hitAnimTime", hitAnimTime }, { "emitSpeed", emitSpeed } });
+                        m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args);
+                        return impactInfo;
                     }
                 }
             }
+            return null;
         }
-        internal void TrackSendImpact(int targetId, int impactId, int seq, string hitEffect, string hitEffectBone, int hitEffectStartTime, int hitEffectDeleteTime, string hitAnim, int hitAnimTime, Quaternion hitEffectRotation)
+        internal ImpactInfo TrackSendImpact(int targetId, int impactId, int seq, Dictionary<string, object> args)
         {
             EntityInfo targetObj = m_Scene.EntityManager.GetEntityInfo(targetId);
             if (null != targetObj && !targetObj.IsDead()) {
@@ -502,9 +533,11 @@ namespace GameFramework
                     impactInfo.AddSpeed = trackImpactInfo.AddSpeed;
                     impactInfo.HpRecover = trackImpactInfo.HpRecover;
                     targetObj.GetSkillStateInfo().AddImpact(impactInfo);
-                    m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, new Dictionary<string, object>() { { "hitEffect", hitEffect }, { "hitEffectBone", hitEffectBone }, { "hitEffectStartTime", hitEffectStartTime }, { "hitEffectDeleteTime", hitEffectDeleteTime }, { "hitAnim", hitAnim }, { "hitAnimTime", hitAnimTime }, { "hitEffectRotation", hitEffectRotation } });
+                    m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args);
+                    return impactInfo;
                 }
             }
+            return null;
         }
         internal void ImpactDamage(int srcObjId, int targetId, int impactId, int seq)
         {

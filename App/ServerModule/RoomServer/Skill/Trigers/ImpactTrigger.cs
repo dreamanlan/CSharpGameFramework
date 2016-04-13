@@ -59,14 +59,9 @@ namespace GameFramework.Skill.Trigers
                     return true;
                 });
             }
-            string hitEffect;
-            string hitEffectBone;
-            int hitEffectStartTime;
-            int hitEffectDeleteTime;
-            string hitAnim;
-            int hitAnimTime;
-            TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-            scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+            Dictionary<string, object> args;
+            TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+            scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
             return false;
         }
 
@@ -135,14 +130,9 @@ namespace GameFramework.Skill.Trigers
                 }
                 int ct = 0;
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
-                    string hitEffect;
-                    string hitEffectBone;
-                    int hitEffectStartTime;
-                    int hitEffectDeleteTime;
-                    string hitAnim;
-                    int hitAnimTime;
-                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                    scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                    Dictionary<string, object> args;
+                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                    scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, args);
                     ++ct;
                     if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                         return true;
@@ -251,14 +241,9 @@ namespace GameFramework.Skill.Trigers
                     ct = m_Targets.Count;
                 }
                 if (ct > 0 && m_CurTargetIndex < ct) {
-                    string hitEffect;
-                    string hitEffectBone;
-                    int hitEffectStartTime;
-                    int hitEffectDeleteTime;
-                    string hitAnim;
-                    int hitAnimTime;
-                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                    scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, m_SenderId, m_Targets[m_CurTargetIndex], m_ImpactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                    Dictionary<string, object> args;
+                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                    scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, m_SenderId, m_Targets[m_CurTargetIndex], m_ImpactId, args);
                     ++m_CurTargetIndex;
                 } else {
                     return false;
@@ -369,14 +354,9 @@ namespace GameFramework.Skill.Trigers
                         return true;
                     });
                 }
-                string hitEffect;
-                string hitEffectBone;
-                int hitEffectStartTime;
-                int hitEffectDeleteTime;
-                string hitAnim;
-                int hitAnimTime;
-                TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                Dictionary<string, object> args;
+                TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
             }
             return true;
         }
@@ -460,14 +440,9 @@ namespace GameFramework.Skill.Trigers
                 }
                 int ct = 0;
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
-                    string hitEffect;
-                    string hitEffectBone;
-                    int hitEffectStartTime;
-                    int hitEffectDeleteTime;
-                    string hitAnim;
-                    int hitAnimTime;
-                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                    scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                    Dictionary<string, object> args;
+                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                    scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, args);
                     ++ct;
                     if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                         return true;
@@ -558,17 +533,15 @@ namespace GameFramework.Skill.Trigers
                             m_LifeTime = (long)(1000 * (dest - pos).Length() / m_RealSpeed);
                         }
                     } else if (curSectionTime > m_RealStartTime + m_LifeTime) {
-                        string trackBone = TriggerUtil.RefixStringVariable("hitEffectBone", instance.LocalVariables, senderObj.ConfigData);
                         m_HitEffectRotation = Quaternion.Identity;
 
-                        string hitEffect;
-                        string hitEffectBone;
-                        int hitEffectStartTime;
-                        int hitEffectDeleteTime;
-                        string hitAnim;
-                        int hitAnimTime;
-                        TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                        scene.EntityController.TrackSendImpact(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, hitEffect, trackBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime, m_HitEffectRotation);
+                        Dictionary<string, object> args;
+                        TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                        if (args.ContainsKey("hitEffectRotation"))
+                            args["hitEffectRotation"] = m_HitEffectRotation;
+                        else
+                            args.Add("hitEffectRotation", m_HitEffectRotation);
+                        scene.EntityController.TrackSendImpact(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, args);
 
                         instance.StopCurSection();
                         return false;
@@ -675,6 +648,7 @@ namespace GameFramework.Skill.Trigers
                 Vector3 c = (m_LastPos + center) / 2;
                 Vector3 angleu = center - m_LastPos;
                 float queryRadius = range + angleu.Length() / 2;
+                m_LastPos = center;
 
                 int ct = 0;
                 bool isCollide = false;
@@ -685,20 +659,11 @@ namespace GameFramework.Skill.Trigers
                         bool isMatch = Geometry.IsCapsuleDiskIntersect(new ScriptRuntime.Vector2(center.X, center.Z), new ScriptRuntime.Vector2(angleu.X, angleu.Z), range, new ScriptRuntime.Vector2(kdTreeObj.Position.X, kdTreeObj.Position.Z), kdTreeObj.Radius);
                         if (isMatch) {
                             isCollide = true;
-                            if (!m_Targets.Contains(targetId)) {
+                            if (!m_SingleHit || !m_Targets.Contains(targetId)) {
                                 m_Targets.Add(targetId);
-
-                                string hitEffect;
-                                string hitEffectBone;
-                                int hitEffectStartTime;
-                                int hitEffectDeleteTime;
-                                string hitAnim;
-                                int hitAnimTime;
-                                TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                                scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
-                                if (m_SingleHit) {
-                                    return false;
-                                }
+                                Dictionary<string, object> args;
+                                TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                                scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
                                 ++ct;
                                 if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                                     return true;

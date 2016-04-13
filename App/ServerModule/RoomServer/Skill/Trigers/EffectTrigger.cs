@@ -7,6 +7,13 @@ namespace GameFramework.Skill.Trigers
 {
     /// <summary>
     /// emiteffect(effect_path,emit_bone,emit_impact,emit_speed[,start_time]);
+    /// 
+    /// or
+    /// 
+    /// emiteffect(effect_path,emit_bone,emit_impact,emit_speed[,start_time])
+    /// {
+    ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
+    /// };
     /// </summary>
     internal class EmitEffectTriger : AbstractSkillTriger
     {
@@ -17,6 +24,9 @@ namespace GameFramework.Skill.Trigers
             triger.m_EmitBone = m_EmitBone;
             triger.m_EmitImpact = m_EmitImpact;
             triger.m_EmitSpeed = m_EmitSpeed;
+            triger.m_Pos = m_Pos;
+            triger.m_Dir = m_Dir;
+            triger.m_Scale = m_Scale;
             triger.m_StartTime = m_StartTime;
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
@@ -33,7 +43,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixEffectStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     int senderId;
@@ -44,14 +54,17 @@ namespace GameFramework.Skill.Trigers
                     if (!string.IsNullOrEmpty(effectPath)) {
                         EntityInfo target = scene.EntityController.GetGameObject(targetId);
                         if (null != target) {
-                            string hitEffect;
-                            string hitEffectBone;
-                            int hitEffectStartTime;
-                            int hitEffectDeleteTime;
-                            string hitAnim;
-                            int hitAnimTime;
-                            TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                            scene.EntityController.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, effectPath, emitBone, m_EmitImpact, m_EmitSpeed, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                            Dictionary<string, object> args;
+                            TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                            Dictionary<string, object> addArgs = new Dictionary<string, object>() { { "emitEffect", effectPath }, { "emitSpeed", m_EmitSpeed }, { "emitDir", m_Dir }, { "emitScale", m_Scale } };
+                            foreach (var pair in addArgs) {
+                                if (args.ContainsKey(pair.Key)) {
+                                    args[pair.Key] = pair.Value;
+                                } else {
+                                    args.Add(pair.Key, pair.Value);
+                                }
+                            }
+                            scene.EntityController.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, emitBone, m_EmitImpact, m_Pos, args);
                         }
                     } else {
                         LogSystem.Warn("[skill:{0} dsl skill id:{1}] emit effect is empty.", senderObj.SkillId, instance.DslSkillId);
@@ -85,16 +98,57 @@ namespace GameFramework.Skill.Trigers
             }
             m_RealStartTime = m_StartTime;
         }
-        
+
+        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        {
+            Dsl.CallData callData = funcData.Call;
+            if (null != callData) {
+                Load(callData, dslSkillId);
+
+                Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
+                if (null != statement) {
+                    Dsl.CallData stCall = statement as Dsl.CallData;
+                    if (null != stCall) {
+                        if (stCall.GetParamNum() > 0) {
+                            Dsl.CallData param0 = stCall.GetParam(0) as Dsl.CallData;
+                            if (null != param0)
+                                m_Pos = DslUtility.CalcVector3(param0);
+                        }
+                        if (stCall.GetParamNum() > 1) {
+                            Dsl.CallData param1 = stCall.GetParam(1) as Dsl.CallData;
+                            if (null != param1)
+                                m_Dir = DslUtility.CalcEularRotation(param1);
+                        }
+                        if (stCall.GetParamNum() > 2) {
+                            Dsl.CallData param2 = stCall.GetParam(2) as Dsl.CallData;
+                            if (null != param2)
+                                m_Scale = DslUtility.CalcVector3(param2);
+                        }
+                    }
+                }
+            }
+        }
+
         private string m_EffectPath = "";
         private string m_EmitBone = "";
         private int m_EmitImpact = 0;
         private float m_EmitSpeed = 10.0f;
 
+        private Vector3 m_Pos = Vector3.Zero;
+        private Quaternion m_Dir = Quaternion.Identity;
+        private Vector3 m_Scale = Vector3.One;
+
         private long m_RealStartTime = 0;
     }
     /// <summary>
     /// aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time]);
+    /// 
+    /// or
+    /// 
+    /// aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time])
+    /// {
+    ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
+    /// };
     /// </summary>
     internal class AoeEmitEffectTriger : AbstractSkillTriger
     {
@@ -107,6 +161,9 @@ namespace GameFramework.Skill.Trigers
             triger.m_RelativeToTarget = m_RelativeToTarget;
             triger.m_EmitImpact = m_EmitImpact;
             triger.m_EmitSpeed = m_EmitSpeed;
+            triger.m_Pos = m_Pos;
+            triger.m_Dir = m_Dir;
+            triger.m_Scale = m_Scale;
             triger.m_StartTime = m_StartTime;
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
@@ -123,7 +180,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixEffectStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     int targetType = scene.EntityController.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
@@ -137,14 +194,17 @@ namespace GameFramework.Skill.Trigers
                     string emitBone = TriggerUtil.RefixStringVariable(m_EmitBone, instance.LocalVariables, senderObj.ConfigData);
                     int ct = 0;
                     TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
-                        string hitEffect;
-                        string hitEffectBone;
-                        int hitEffectStartTime;
-                        int hitEffectDeleteTime;
-                        string hitAnim;
-                        int hitAnimTime;
-                        TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out hitEffect, out hitEffectBone, out hitEffectStartTime, out hitEffectDeleteTime, out hitAnim, out hitAnimTime);
-                        scene.EntityController.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, effectPath, emitBone, m_EmitImpact, m_EmitSpeed, hitEffect, hitEffectBone, hitEffectStartTime, hitEffectDeleteTime, hitAnim, hitAnimTime);
+                        Dictionary<string, object> args;
+                        TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                        Dictionary<string, object> addArgs = new Dictionary<string, object>() { { "emitEffect", effectPath }, { "emitSpeed", m_EmitSpeed }, { "emitDir", m_Dir }, { "emitScale", m_Scale } };
+                        foreach (var pair in addArgs) {
+                            if (args.ContainsKey(pair.Key)) {
+                                args[pair.Key] = pair.Value;
+                            } else {
+                                args.Add(pair.Key, pair.Value);
+                            }
+                        }
+                        scene.EntityController.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, emitBone, m_EmitImpact, m_Pos, args);
                         ++ct;
                         if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                             return true;
@@ -188,13 +248,48 @@ namespace GameFramework.Skill.Trigers
             }
             m_RealStartTime = m_StartTime;
         }
-        
+
+        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        {
+            Dsl.CallData callData = funcData.Call;
+            if (null != callData) {
+                Load(callData, dslSkillId);
+
+                Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
+                if (null != statement) {
+                    Dsl.CallData stCall = statement as Dsl.CallData;
+                    if (null != stCall) {
+                        if (stCall.GetParamNum() > 0) {
+                            Dsl.CallData param0 = stCall.GetParam(0) as Dsl.CallData;
+                            if (null != param0)
+                                m_Pos = DslUtility.CalcVector3(param0);
+                        }
+                        if (stCall.GetParamNum() > 1) {
+                            Dsl.CallData param1 = stCall.GetParam(1) as Dsl.CallData;
+                            if (null != param1)
+                                m_Dir = DslUtility.CalcEularRotation(param1);
+                        }
+                        if (stCall.GetParamNum() > 2) {
+                            Dsl.CallData param2 = stCall.GetParam(2) as Dsl.CallData;
+                            if (null != param2)
+                                m_Scale = DslUtility.CalcVector3(param2);
+                        }
+                    }
+                }
+            }
+        }
+
         private string m_EffectPath = "";
         private string m_EmitBone = "";
         private Vector3 m_RelativeCenter = Vector3.Zero;
         private bool m_RelativeToTarget = false;
         private int m_EmitImpact = 0;
         private float m_EmitSpeed = 10.0f;
+
+        private Vector3 m_Pos = Vector3.Zero;
+        private Quaternion m_Dir = Quaternion.Identity;
+        private Vector3 m_Scale = Vector3.One;
+
 
         private long m_RealStartTime = 0;
     }
@@ -212,6 +307,7 @@ namespace GameFramework.Skill.Trigers
             triger.m_HitEffectDeleteTime = m_HitEffectDeleteTime;
             triger.m_HitAnim = m_HitAnim;
             triger.m_HitAnimTime = m_HitAnimTime;
+            triger.m_HitDelayTime = m_HitDelayTime;
             return triger;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -224,10 +320,11 @@ namespace GameFramework.Skill.Trigers
                 return true;
             instance.SetLocalVariable("hitEffect", TriggerUtil.RefixResourceByConfig(m_HitEffect, instance.LocalVariables, senderObj.ConfigData));
             instance.SetLocalVariable("hitEffectBone", TriggerUtil.RefixStringVariable(m_HitEffectBone, instance.LocalVariables, senderObj.ConfigData));
-            instance.SetLocalVariable("hitEffectStartTime", TriggerUtil.RefixEffectStartTime(m_HitEffectStartTime, instance.LocalVariables, senderObj.ConfigData));
-            instance.SetLocalVariable("hitEffectDeleteTime", TriggerUtil.RefixEffectDeleteTime(m_HitEffectDeleteTime, instance.LocalVariables, senderObj.ConfigData));
+            instance.SetLocalVariable("hitEffectStartTime", TriggerUtil.RefixStartTime(m_HitEffectStartTime, instance.LocalVariables, senderObj.ConfigData));
+            instance.SetLocalVariable("hitEffectDeleteTime", TriggerUtil.RefixDeleteTime(m_HitEffectDeleteTime, instance.LocalVariables, senderObj.ConfigData));
             instance.SetLocalVariable("hitAnim", TriggerUtil.RefixStringVariable(m_HitAnim, instance.LocalVariables, senderObj.ConfigData));
             instance.SetLocalVariable("hitAnimTime", TriggerUtil.RefixAnimTime(m_HitAnimTime, instance.LocalVariables, senderObj.ConfigData));
+            instance.SetLocalVariable("hitDelayTime", TriggerUtil.RefixStartTime(m_HitDelayTime, instance.LocalVariables, senderObj.ConfigData));
             return false;
         }
 
@@ -253,7 +350,12 @@ namespace GameFramework.Skill.Trigers
                 m_HitAnimTime = int.Parse(callData.GetParamId(5));
             }
             if (num > 6) {
-                m_StartTime = long.Parse(callData.GetParamId(6));
+                m_HitDelayTime = int.Parse(callData.GetParamId(6));
+            } else {
+                m_HitDelayTime = 0;
+            }
+            if (num > 7) {
+                m_StartTime = long.Parse(callData.GetParamId(7));
             } else {
                 m_StartTime = 0;
             }
@@ -265,5 +367,6 @@ namespace GameFramework.Skill.Trigers
         private int m_HitEffectDeleteTime = 1000;
         private string m_HitAnim = string.Empty;
         private int m_HitAnimTime = 1000;
+        private int m_HitDelayTime = 0;
     }
 }

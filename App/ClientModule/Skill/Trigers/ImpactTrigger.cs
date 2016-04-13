@@ -710,6 +710,7 @@ namespace GameFramework.Skill.Trigers
                 Vector3 c = (m_LastPos + center) / 2;
                 Vector3 angleu = center - m_LastPos;
                 float queryRadius = range + angleu.magnitude / 2;
+                m_LastPos = center;
 
                 int ct = 0;
                 bool isCollide = false;
@@ -720,14 +721,11 @@ namespace GameFramework.Skill.Trigers
                         bool isMatch = Geometry.IsCapsuleDiskIntersect(new ScriptRuntime.Vector2(center.x, center.z), new ScriptRuntime.Vector2(angleu.x, angleu.z), range, new ScriptRuntime.Vector2(kdTreeObj.Position.X, kdTreeObj.Position.Z), kdTreeObj.Radius);
                         if (isMatch) {
                             isCollide = true;
-                            if (!m_Targets.Contains(targetId)) {
+                            if (!m_SingleHit || !m_Targets.Contains(targetId)) {
                                 m_Targets.Add(targetId);
                                 Dictionary<string, object> args;
                                 TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
                                 EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
-                                if (m_SingleHit) {
-                                    return false;
-                                }
                                 ++ct;
                                 if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                                     return true;

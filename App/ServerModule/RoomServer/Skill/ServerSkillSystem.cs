@@ -238,12 +238,26 @@ namespace GameFramework
         {
             get { return m_GlobalVariables; }
         }
-        //用于上层逻辑检查通过后调用
+        public SkillInstance GetSkillInstance(int actorId, int skillId, int seq)
+        {
+            GfxSkillSenderInfo sender;
+            return GetSkillInstance(actorId, skillId, seq, out sender);
+        }
+        public SkillInstance GetSkillInstance(int actorId, int skillId, int seq, out GfxSkillSenderInfo sender)
+        {
+            SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.ActorId == actorId && info.SkillId == skillId && info.Seq == seq);
+            if (null != logicInfo) {
+                sender = logicInfo.Sender;
+                return logicInfo.SkillInst;
+            }
+            sender = null;
+            return null;
+        }
         internal bool StartSkill(int actorId, TableConfig.Skill configData, int seq)
         {
             return StartSkill(actorId, configData, seq, null);
         }
-        internal bool StartSkill(int actorId, TableConfig.Skill configData, int seq, Dictionary<string, object> locals)
+        public bool StartSkill(int actorId, TableConfig.Skill configData, int seq, params Dictionary<string, object>[] locals)
         {
             bool ret = false;
             if (!m_Scene.EntityController.CanCastSkill(actorId, configData, seq)) {
@@ -272,8 +286,11 @@ namespace GameFramework
                 if (null != logicInfo) {
                     logicInfo.SkillInst.GlobalVariables = m_GlobalVariables;
                     if (null != locals) {
-                        foreach (KeyValuePair<string, object> pair in locals) {
-                            logicInfo.SkillInst.SetLocalVariable(pair.Key, pair.Value);
+                        int localCount = locals.Length;
+                        for (int i = 0; i < localCount; ++i) {
+                            foreach (KeyValuePair<string, object> pair in locals[i]) {
+                                logicInfo.SkillInst.SetLocalVariable(pair.Key, pair.Value);
+                            }
                         }
                     }
                     EntityInfo target = senderInfo.TargetGfxObj;
