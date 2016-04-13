@@ -231,9 +231,10 @@ namespace GameFramework.Story.Commands
                     object varVal = m_SetVal.Value;
                     instance.SetVariable(varName, varVal);
                 } else {
+                int timeout = m_TimeoutVal.Value;
                     int curTime = m_CurTime;
                     m_CurTime += (int)delta;
-                    if (curTime <= m_TimeoutVal.Value) {
+                if (timeout <= 0 || curTime <= timeout) {
                         ret = true;
                     } else {
                         string varName = m_TimeoutSetVar.Value;
@@ -444,9 +445,10 @@ namespace GameFramework.Story.Commands
                     object varVal = m_SetVal.Value;
                     instance.SetVariable(varName, varVal);
                 } else {
+                int timeout = m_TimeoutVal.Value;
                     int curTime = m_CurTime;
                     m_CurTime += (int)delta;
-                    if (curTime <= m_TimeoutVal.Value) {
+                if (timeout <= 0 || curTime <= timeout) {
                         ret = true;
                     } else {
                         string varName = m_TimeoutSetVar.Value;
@@ -580,9 +582,10 @@ namespace GameFramework.Story.Commands
                     object varVal = m_SetVal.Value;
                     instance.SetVariable(varName, varVal);
                 } else {
+                int timeout = m_TimeoutVal.Value;
                     int curTime = m_CurTime;
                     m_CurTime += (int)delta;
-                    if (curTime <= m_TimeoutVal.Value) {
+                if (timeout <= 0 || curTime <= timeout) {
                         ret = true;
                     } else {
                         string varName = m_TimeoutSetVar.Value;

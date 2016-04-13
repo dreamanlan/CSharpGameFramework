@@ -434,4 +434,139 @@ namespace GameFramework.Story.Commands
 
         private IStoryValue<int> m_StoryDlgId = new StoryValue<int>();
     }
+    /// <summary>
+    /// areadetect(name,radius,type,callback)[set(var,val)];
+    /// </summary>
+    internal class AreaDetectCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            AreaDetectCommand cmd = new AreaDetectCommand();
+            cmd.m_Name = m_Name.Clone();
+            cmd.m_Radius = m_Radius.Clone();
+            cmd.m_Type = m_Type.Clone();
+            cmd.m_EventName = m_EventName.Clone();
+            cmd.m_SetVar = m_SetVar.Clone();
+            cmd.m_SetVal = m_SetVal.Clone();
+            cmd.m_ElseSetVal = m_ElseSetVal.Clone();
+            cmd.m_HaveSet = m_HaveSet;
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_Name.Substitute(iterator, args);
+            m_Radius.Substitute(iterator, args);
+            m_Type.Substitute(iterator, args);
+            m_EventName.Substitute(iterator, args);
+            if (m_HaveSet) {
+                m_SetVar.Substitute(iterator, args);
+                m_SetVal.Substitute(iterator, args);
+                m_ElseSetVal.Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_Name.Evaluate(instance);
+            m_Radius.Evaluate(instance);
+            m_Type.Evaluate(instance);
+            m_EventName.Evaluate(instance);
+            if (m_HaveSet) {
+                m_SetVar.Evaluate(instance);
+                m_SetVal.Evaluate(instance);
+                m_ElseSetVal.Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            bool triggered = false;
+            string name = m_Name.Value;
+            float radius = m_Radius.Value;
+            string type = m_Type.Value;
+            string eventName = m_EventName.Value;
+            UnityEngine.GameObject obj = UnityEngine.GameObject.Find(name);
+            if (null != obj) {
+                UnityEngine.Vector3 pos = obj.transform.position;
+                if (type == "myself") {
+                    EntityViewModel view = EntityController.Instance.GetEntityViewById(ClientModule.Instance.LeaderID);
+                    if (null != view && null!=view.Actor) {
+                        if ((view.Actor.transform.position - pos).sqrMagnitude < radius * radius) {
+                            GfxStorySystem.Instance.SendMessage(eventName, name, radius, type);
+                            triggered = true;
+                        }
+                    }
+                } else if (type == "anyenemy" || type == "anyfriend") {
+                    EntityInfo myself = ClientModule.Instance.GetEntityById(ClientModule.Instance.LeaderID);
+                    ClientModule.Instance.KdTree.Query(pos.x, pos.y, pos.z, radius, (float distSqr, KdTreeObject kdObj) => {
+                        if (type == "anyenemy" && EntityInfo.GetRelation(myself, kdObj.Object) == CharacterRelation.RELATION_ENEMY ||
+                            type == "anyfriend" && EntityInfo.GetRelation(myself, kdObj.Object) == CharacterRelation.RELATION_FRIEND) {
+                            GfxStorySystem.Instance.SendMessage(eventName, name, radius, type);
+                            triggered = true;
+                            return false;
+                        }
+                        return true;
+                    });
+                }
+            }
+            string varName = m_SetVar.Value;
+            object varVal = m_SetVal.Value;
+            object elseVal = m_ElseSetVal.Value;
+            if (triggered) {
+                instance.SetVariable(varName, varVal);
+            } else {
+                instance.SetVariable(varName, elseVal);
+            }
+            return false;         
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 3) {
+                m_Name.InitFromDsl(callData.GetParam(0));
+                m_Radius.InitFromDsl(callData.GetParam(1));
+                m_Type.InitFromDsl(callData.GetParam(2));
+                m_EventName.InitFromDsl(callData.GetParam(3));
+            }
+        }
+
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            if (statementData.Functions.Count >= 2) {
+                Dsl.CallData first = statementData.Functions[0].Call;
+                Dsl.CallData second = statementData.Functions[1].Call;
+                if (null != first && null != second) {
+                    m_HaveSet = true;
+
+                    Load(first);
+                    LoadSet(second);
+                }
+            }
+        }
+
+        private void LoadSet(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 3) {
+                m_SetVar.InitFromDsl(callData.GetParam(0));
+                m_SetVal.InitFromDsl(callData.GetParam(1));
+                m_ElseSetVal.InitFromDsl(callData.GetParam(2));
+            }
+        }
+
+        private IStoryValue<string> m_Name = new StoryValue<string>();
+        private IStoryValue<float> m_Radius = new StoryValue<float>();
+        private IStoryValue<string> m_Type = new StoryValue<string>();
+        private IStoryValue<string> m_EventName = new StoryValue<string>();
+        private IStoryValue<string> m_SetVar = new StoryValue<string>();
+        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue<object> m_ElseSetVal = new StoryValue();
+        private bool m_HaveSet = false;
+    }
 }

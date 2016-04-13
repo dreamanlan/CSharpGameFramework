@@ -1411,21 +1411,34 @@
   作用：
   指定召唤者id。  
   
-  65、setaitarget
+  65、areadetect
+  用法：
+  areadetect(gameobjectname,radius,type,callback)[set(var,val,elseval)];
+  
+  示例：
+  while(@triggered==0){
+    areadetect("StoryPoint",5,"myself","LetsGo")set("@triggered",1,0);    
+    wait(100);
+  };
+  
+  作用：
+  检测区域条件是否满足，满足后发送callback的message，message带一个参数：gameobjectname。可选的在检测条件满足时设置变量为一个值val，否则设置为另一个值elseval。
+  
+  66、setaitarget
   用法：
   setaitarget(unit_id,target);
   
   作用：
   设置指定npc的AI目标。
   
-  66、objsetaitarget
+  67、objsetaitarget
   用法：
   objsetaitarget(objid,target);
   
   作用：
   设置指定npc的AI目标。
   
-  67、sendroomstorymessage/sendserverstorymessage/sendclientstorymessage
+  68、sendroomstorymessage/sendserverstorymessage/sendclientstorymessage
   用法：
   sendserverstorymessage(msg,arg1,arg2,...)[touser(objid_on_room_guid_on_userserver)];
   sendclientstorymessage(msg,arg1,arg2,...)[touser(objid_on_room_guid_on_userserver)];
