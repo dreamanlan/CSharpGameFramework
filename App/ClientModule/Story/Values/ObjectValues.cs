@@ -2392,4 +2392,81 @@ namespace GameFramework.Story.Values
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
+    internal sealed class ObjGetSummonSkillIdValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "objgetsummonskillid" && callData.GetParamNum() == 1) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+                m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_ObjId.Flag;
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            ObjGetSummonSkillIdValue val = new ObjGetSummonSkillIdValue();
+            val.m_ObjId = m_ObjId.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            val.m_Flag = m_Flag;
+            return val;
+        }
+        public void Substitute(object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_Iterator = iterator;
+            m_Args = args;
+            if (StoryValueHelper.HaveArg(Flag)) {
+                m_ObjId.Substitute(iterator, args);
+            }
+        }
+        public void Evaluate(StoryInstance instance)
+        {
+            m_ObjId.Evaluate(instance);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        public int Flag
+        {
+            get
+            {
+                return m_Flag;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjId.HaveValue) {
+                int objId = m_ObjId.Value;
+                m_HaveValue = true;
+                EntityInfo obj = ClientModule.Instance.GetEntityById(objId);
+                if (null != obj) {
+                    m_Value = obj.SummonSkillId;
+                } else {
+                    m_Value = 0;
+                }
+            }
+        }
+
+        private object m_Iterator = null;
+        private object[] m_Args = null;
+
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+    }
 }

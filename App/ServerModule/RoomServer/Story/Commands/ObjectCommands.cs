@@ -1706,4 +1706,58 @@ namespace GameFramework.Story.Commands
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private IStoryValue<int> m_SummonerId = new StoryValue<int>();
     }
+    /// objsetsummonskillid(objid, objid);
+    /// </summary>
+    internal class ObjSetSummonSkillIdCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ObjSetSummonSkillIdCommand cmd = new ObjSetSummonSkillIdCommand();
+            cmd.m_ObjId = m_ObjId.Clone();
+            cmd.m_SummonSkillId = m_SummonSkillId.Clone();
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_ObjId.Substitute(iterator, args);
+            m_SummonSkillId.Substitute(iterator, args);
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_ObjId.Evaluate(instance);
+            m_SummonSkillId.Evaluate(instance);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                int objId = m_ObjId.Value;
+                int summonSkillId = m_SummonSkillId.Value;
+                EntityInfo npcInfo = scene.SceneContext.GetEntityById(objId);
+                if (null != npcInfo) {
+                    npcInfo.SummonSkillId = summonSkillId;
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+                m_SummonSkillId.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryValue<int> m_SummonSkillId = new StoryValue<int>();
+    }
 }

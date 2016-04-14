@@ -617,10 +617,6 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < m_RealStartTime) {
                 return true;
             }
-            if (m_RealStartTime + m_DurationTime < curSectionTime) {
-                instance.StopCurSection();
-                return false;
-            }
             int impactId = 0;
             int senderId = 0;
             int targetType = scene.EntityController.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
@@ -644,11 +640,10 @@ namespace GameFramework.Skill.Trigers
             if (!m_IsStarted) {
                 m_IsStarted = true;
                 m_LastPos = center;
-            } else if ((center - m_LastPos).LengthSquared() >= 0.25f) {
+            } else if ((center - m_LastPos).LengthSquared() >= 0.25f || m_RealStartTime + m_DurationTime < curSectionTime) {
                 Vector3 c = (m_LastPos + center) / 2;
                 Vector3 angleu = center - m_LastPos;
                 float queryRadius = range + angleu.Length() / 2;
-                m_LastPos = center;
 
                 int ct = 0;
                 bool isCollide = false;
@@ -675,9 +670,16 @@ namespace GameFramework.Skill.Trigers
                     }
                     return true;
                 });
+
+                m_LastPos = center;
+
                 if (isCollide && m_FinishOnCollide) {
                     return false;
                 }
+            }
+            if (m_RealStartTime + m_DurationTime < curSectionTime) {
+                instance.StopCurSection();
+                return false;
             }
             return true;
         }

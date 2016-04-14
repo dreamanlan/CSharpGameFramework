@@ -679,10 +679,6 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < m_RealStartTime) {
                 return true;
             }
-            if (m_RealStartTime + m_DurationTime < curSectionTime) {
-                instance.StopCurSection();
-                return false;
-            }
             int impactId = 0;
             int senderId = 0;
             int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
@@ -706,11 +702,10 @@ namespace GameFramework.Skill.Trigers
             if (!m_IsStarted) {
                 m_IsStarted = true;
                 m_LastPos = center;
-            } else if ((center - m_LastPos).sqrMagnitude >= 0.25f) {
+            } else if ((center - m_LastPos).sqrMagnitude >= 0.25f || m_RealStartTime + m_DurationTime < curSectionTime) {
                 Vector3 c = (m_LastPos + center) / 2;
                 Vector3 angleu = center - m_LastPos;
                 float queryRadius = range + angleu.magnitude / 2;
-                m_LastPos = center;
 
                 int ct = 0;
                 bool isCollide = false;
@@ -718,7 +713,7 @@ namespace GameFramework.Skill.Trigers
                     int targetId = kdTreeObj.Object.GetId();
                     if (targetType == (int)SkillTargetType.Enemy && CharacterRelation.RELATION_ENEMY == EntityController.Instance.GetRelation(senderId, targetId) ||
                         targetType == (int)SkillTargetType.Friend && CharacterRelation.RELATION_FRIEND == EntityController.Instance.GetRelation(senderId, targetId)) {
-                        bool isMatch = Geometry.IsCapsuleDiskIntersect(new ScriptRuntime.Vector2(center.x, center.z), new ScriptRuntime.Vector2(angleu.x, angleu.z), range, new ScriptRuntime.Vector2(kdTreeObj.Position.X, kdTreeObj.Position.Z), kdTreeObj.Radius);
+                            bool isMatch = Geometry.IsCapsuleDiskIntersect(new ScriptRuntime.Vector2(m_LastPos.x, m_LastPos.z), new ScriptRuntime.Vector2(angleu.x, angleu.z), range, new ScriptRuntime.Vector2(kdTreeObj.Position.X, kdTreeObj.Position.Z), kdTreeObj.Radius);
                         if (isMatch) {
                             isCollide = true;
                             if (!m_SingleHit || !m_Targets.Contains(targetId)) {
@@ -737,9 +732,16 @@ namespace GameFramework.Skill.Trigers
                     }
                     return true;
                 });
+
+                m_LastPos = center;
+
                 if (isCollide && m_FinishOnCollide) {
                     return false;
                 }
+            }
+            if (m_RealStartTime + m_DurationTime < curSectionTime) {
+                instance.StopCurSection();
+                return false;
             }
             return true;
         }

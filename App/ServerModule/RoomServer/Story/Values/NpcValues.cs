@@ -401,6 +401,86 @@ namespace GameFramework.Story.Values
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
+    internal sealed class GetSummonSkillIdValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getsummonskillid" && callData.GetParamNum() == 1) {
+                m_UnitId.InitFromDsl(callData.GetParam(0));
+                m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_UnitId.Flag;
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetSummonSkillIdValue val = new GetSummonSkillIdValue();
+            val.m_UnitId = m_UnitId.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            val.m_Flag = m_Flag;
+            return val;
+        }
+        public void Substitute(object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_Iterator = iterator;
+            m_Args = args;
+            if (StoryValueHelper.HaveArg(Flag)) {
+                m_UnitId.Substitute(iterator, args);
+            }
+        }
+        public void Evaluate(StoryInstance instance)
+        {
+            m_UnitId.Evaluate(instance);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        public int Flag
+        {
+            get
+            {
+                return m_Flag;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                if (m_UnitId.HaveValue) {
+                    int unitId = m_UnitId.Value;
+                    m_HaveValue = true;
+                    EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
+                    if (null != obj) {
+                        m_Value = obj.SummonSkillId;
+                    } else {
+                        m_Value = 0;
+                    }
+                }
+            }
+        }
+
+        private object m_Iterator = null;
+        private object[] m_Args = null;
+
+        private IStoryValue<int> m_UnitId = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+    }
     internal sealed class NpcFindImpactSeqByIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)

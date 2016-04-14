@@ -749,6 +749,31 @@ namespace GameFramework
                 }
             }
         }
+        internal EntityInfo GetRootSummoner(EntityInfo obj)
+        {
+            while (null != obj && obj.SummonerId > 0) {
+                obj = ClientModule.Instance.GetEntityById(obj.SummonerId);
+            }
+            return obj;
+        }
+        internal int GetRootSummonerId(EntityInfo obj)
+        {
+            int ret = 0;
+            obj = GetRootSummoner(obj);
+            if (null != obj) {
+                ret = obj.GetId();
+            }
+            return ret;
+        }
+        internal EntityInfo GetRootSummonerInfo(EntityInfo obj, int curSkillId, out int skillId)
+        {
+            skillId = curSkillId;
+            while (null != obj && obj.SummonerId > 0) {
+                skillId = obj.SummonSkillId;
+                obj = ClientModule.Instance.GetEntityById(obj.SummonerId);
+            }
+            return obj;
+        }
 
         private bool TryInitImpactInfo(ImpactInfo impactInfo, TableConfig.Skill cfg, int seq, int curObjId, int srcObjId)
         {

@@ -1545,5 +1545,56 @@ namespace GameFramework.Story.Commands
         private IStoryValue<int> m_UnitId = new StoryValue<int>();
         private IStoryValue<int> m_SummonerId = new StoryValue<int>();
     }
+    /// setsummonskillid(unit_id, objid);
+    /// </summary>
+    internal class SetSummonSkillIdCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SetSummonSkillIdCommand cmd = new SetSummonSkillIdCommand();
+            cmd.m_UnitId = m_UnitId.Clone();
+            cmd.m_SummonSkillId = m_SummonSkillId.Clone();
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_UnitId.Substitute(iterator, args);
+            m_SummonSkillId.Substitute(iterator, args);
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_UnitId.Evaluate(instance);
+            m_SummonSkillId.Evaluate(instance);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            int unitId = m_UnitId.Value;
+            int summonSkillId = m_SummonSkillId.Value;
+            EntityInfo npcInfo = ClientModule.Instance.GetEntityByUnitId(unitId);
+            if (null != npcInfo) {
+                npcInfo.SummonSkillId = summonSkillId;
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_UnitId.InitFromDsl(callData.GetParam(0));
+                m_SummonSkillId.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<int> m_UnitId = new StoryValue<int>();
+        private IStoryValue<int> m_SummonSkillId = new StoryValue<int>();
+    }
     /// <summary>
 }

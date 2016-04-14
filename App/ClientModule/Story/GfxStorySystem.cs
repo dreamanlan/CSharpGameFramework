@@ -94,6 +94,7 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objremoveskill", new StoryCommandFactoryHelper<Story.Commands.ObjRemoveSkillCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objlisten", new StoryCommandFactoryHelper<Story.Commands.ObjListenCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetsummonerid", new StoryCommandFactoryHelper<Story.Commands.ObjSetSummonerIdCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetsummonskillid", new StoryCommandFactoryHelper<Story.Commands.ObjSetSummonSkillIdCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sethp", new StoryCommandFactoryHelper<Story.Commands.SetHpCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setenergy", new StoryCommandFactoryHelper<Story.Commands.SetEnergyCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objset", new StoryCommandFactoryHelper<Story.Commands.ObjSetCommand>());
@@ -102,6 +103,7 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setunitid", new StoryCommandFactoryHelper<Story.Commands.SetUnitIdCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setleaderid", new StoryCommandFactoryHelper<Story.Commands.SetLeaderIdCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setsummonerid", new StoryCommandFactoryHelper<Story.Commands.SetSummonerIdCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setsummonskillid", new StoryCommandFactoryHelper<Story.Commands.SetSummonSkillIdCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "markcontrolbystory", new StoryCommandFactoryHelper<Story.Commands.MarkControlByStoryCommand>());
 
             //注册值与函数处理
@@ -141,6 +143,7 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objgetformation", new StoryValueFactoryHelper<Story.Values.ObjGetFormationValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objgetnpctype", new StoryValueFactoryHelper<Story.Values.ObjGetNpcTypeValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objgetsummonerid", new StoryValueFactoryHelper<Story.Values.ObjGetSummonerIdValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objgetsummonskillid", new StoryValueFactoryHelper<Story.Values.ObjGetSummonSkillIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objfindimpactseqbyid", new StoryValueFactoryHelper<Story.Values.ObjFindImpactSeqByIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isenemy", new StoryValueFactoryHelper<Story.Values.IsEnemyValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isfriend", new StoryValueFactoryHelper<Story.Values.IsFriendValue>());
@@ -161,7 +164,7 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getnpctype", new StoryValueFactoryHelper<Story.Values.GetNpcTypeValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsummonerid", new StoryValueFactoryHelper<Story.Values.GetSummonerIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleaderlinkid", new StoryValueFactoryHelper<Story.Values.GetLeaderLinkIdValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsummonerskillid", new StoryValueFactoryHelper<Story.Values.GetSummonerSkillIdValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsummonskillid", new StoryValueFactoryHelper<Story.Values.GetSummonSkillIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmembercount", new StoryValueFactoryHelper<Story.Values.GetMemberCountValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlinkid", new StoryValueFactoryHelper<Story.Values.GetMemberLinkIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlevel", new StoryValueFactoryHelper<Story.Values.GetMemberLevelValue>());

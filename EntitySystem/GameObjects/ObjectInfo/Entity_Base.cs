@@ -435,6 +435,11 @@ namespace GameFramework
             get { return m_SummonerId; }
             set { m_SummonerId = value; }
         }
+        public int SummonSkillId
+        {
+            get { return m_SummonSkillId; }
+            set { m_SummonSkillId = value; }
+        }
 
         public bool IsUnderControl()
         {
@@ -483,6 +488,7 @@ namespace GameFramework
             m_UniqueId = 0;
             m_OwnerId = -1;
             m_SummonerId = -1;
+            m_SummonSkillId = -1;
             SetAIEnable(true);
             DeadTime = 0;
 
@@ -514,6 +520,7 @@ namespace GameFramework
         private int m_LinkId = 0;
         private int m_OwnerId = -1;
         private int m_SummonerId = 0;
+        private int m_SummonSkillId = 0;
         private string m_Name = "";
         private int m_Level = 1;
         private string m_Model = "";
