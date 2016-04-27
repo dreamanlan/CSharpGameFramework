@@ -3,7 +3,7 @@ skill(116)
   section(2000)
   {
     enablemoveagent(false);
-    animation("stand");
+    animation("Stand");
     selfeffect(selfEffect,1000,"eyes",0)
     {
       transform(vector3(0,1,0));
@@ -16,13 +16,13 @@ skill(116)
   section(100)
   {
     removestate("sleep");
-    animation("stand");
+    animation("Stand");
     enablemoveagent(true);
   };
   onstop
   {
     removestate("sleep");
-    animation("stand");
+    animation("Stand");
     enablemoveagent(true);
   };
 };

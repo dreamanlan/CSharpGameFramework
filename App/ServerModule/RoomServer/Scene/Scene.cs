@@ -77,6 +77,7 @@ namespace GameFramework
             m_LastTickTimeForTickPerSecond = 0;
 
             m_SceneState = SceneState.Sleeping;
+            m_IsStoryState = false;
         }
 
         internal void SetRoom(Room room)
@@ -353,6 +354,11 @@ namespace GameFramework
         {
             get { return m_GmStorySystem; }
         }
+        internal bool IsStoryState
+        {
+            get { return m_IsStoryState; }
+            set { m_IsStoryState = value; }
+        }
         
         private const long c_PreloadingTickInterval = 1000;
         private long m_LastPreloadingTickTime = 0;
@@ -379,6 +385,7 @@ namespace GameFramework
         private ServerSkillSystem m_SkillSystem = new ServerSkillSystem();
 
         private GmCommands.GmStorySystem m_GmStorySystem = new GmCommands.GmStorySystem();
+        private bool m_IsStoryState = false;
 
         private Room m_Room = null;
         private GameTimeUtil m_GameTime = new GameTimeUtil();

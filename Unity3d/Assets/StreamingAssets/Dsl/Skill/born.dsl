@@ -2,7 +2,7 @@ skill(1)
 {
   section(100)
   {
-    animation("stand");
+    animation("Stand");
   };
   onstop
   {

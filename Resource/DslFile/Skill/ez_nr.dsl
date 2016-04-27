@@ -2,7 +2,7 @@ skill(117)
 {  
   section(1000)
   {
-    animation("attack");
+    animation("Attack");
     adjustsectionduration("anim",100);
     selfeffect(selfEffect,1000,"eyes",0)
     {

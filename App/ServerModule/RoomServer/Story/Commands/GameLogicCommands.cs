@@ -897,4 +897,50 @@ namespace GameFramework.Story.Commands
         private IStoryValue<object> m_ElseSetVal = new StoryValue();
         private bool m_HaveSet = false;
     }
+    /// <summary>
+    /// setstorystate(0_or_1);
+    /// </summary>
+    internal class SetStoryStateCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SetStoryStateCommand cmd = new SetStoryStateCommand();
+            cmd.m_StoryState = m_StoryState.Clone();
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_StoryState.Substitute(iterator, args);
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_StoryState.Evaluate(instance);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                int state = m_StoryState.Value;
+                scene.IsStoryState = state != 0;
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_StoryState.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private IStoryValue<int> m_StoryState = new StoryValue<int>();
+    }
 }

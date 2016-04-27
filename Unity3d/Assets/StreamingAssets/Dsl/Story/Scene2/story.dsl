@@ -8,13 +8,13 @@ story(story_main)
   {
     createnpc(1000,vector3(65,0,70),0,3,1,3,stringlist(""));
     setleaderid(unitid2objid(1000));
-    setformation(1000,0);
+    npcsetformation(1000,0);
     npcaddskill(1000,22);
     npcaddskill(1000,23);
     publishgfxevent("ui_add_actor_button", "ui", 1, unitid2objid(1000));
     loop(4){
       createnpc(1001+$$,vector3(55+rndint(0,10),0,65+rndint(0,10)),0,3,$$+2,4,stringlist(""),getleaderid());
-      setformation(1001+$$,$$+1);
+      npcsetformation(1001+$$,$$+1);
       publishgfxevent("ui_add_actor_button","ui",$$+2,unitid2objid(1001+$$));
     };
     camerafollow(1000);

@@ -21,7 +21,7 @@ story(story_main)
     loop(4){
       @unitId = @userId*100+$$;
       createnpc(@unitId,vector3(55+rndint(0,10),0,65+rndint(0,10)),0,@campId,$$+2,4,stringlist(""),@userId);
-      setformation(@unitId,$$+1);
+      npcsetformation(@unitId,$$+1);
     };
     wait(1000);
     objaddskill(@userId,22);

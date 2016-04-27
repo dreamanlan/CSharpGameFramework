@@ -240,7 +240,7 @@ namespace GameFramework
             if (null != obj) {
                 UnityEngine.Animator animator = obj.GetComponent<UnityEngine.Animator>();
                 if (null != animator) {
-                    animator.Play("stand");
+                    animator.Play("Stand");
                 }
             }
         }

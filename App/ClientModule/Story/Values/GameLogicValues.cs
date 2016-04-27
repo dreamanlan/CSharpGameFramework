@@ -444,6 +444,79 @@ namespace GameFramework.Story.Values
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
+    internal sealed class GetActorValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getactor") {
+                int flag = (int)StoryValueFlagMask.HAVE_VAR;
+                int num = callData.GetParamNum();
+                if (num > 0) {
+                    m_ObjId.InitFromDsl(callData.GetParam(0));
+                    flag |= m_ObjId.Flag;
+                }
+                m_Flag = flag;
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetActorValue val = new GetActorValue();
+            val.m_ObjId = m_ObjId.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            val.m_Flag = m_Flag;
+            return val;
+        }
+        public void Substitute(object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            if (StoryValueHelper.HaveArg(Flag)) {
+                m_ObjId.Substitute(iterator, args);
+            }
+        }
+        public void Evaluate(StoryInstance instance)
+        {
+            m_ObjId.Evaluate(instance);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        public int Flag
+        {
+            get
+            {
+                return m_Flag;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjId.HaveValue) {
+                m_HaveValue = true;
+                m_Value = null;
+                int objId = m_ObjId.Value;
+                m_Value = EntityController.Instance.GetGameObject(objId);
+            }
+        }
+
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+    }
     internal sealed class GetLeaderLinkIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
@@ -499,70 +572,6 @@ namespace GameFramework.Story.Values
         {
             m_HaveValue = true;
             m_Value = ClientInfo.Instance.RoleData.HeroId;
-        }
-
-        private object m_Iterator = null;
-        private object[] m_Args = null;
-
-        private bool m_HaveValue;
-        private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
-    }
-    internal sealed class GetSummonerSkillIdValue : IStoryValue<object>
-    {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
-        {
-            Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getsummonerskillid") {
-                m_Flag = (int)StoryValueFlagMask.HAVE_VAR;
-            }
-        }
-        public IStoryValue<object> Clone()
-        {
-            GetSummonerSkillIdValue val = new GetSummonerSkillIdValue();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
-            return val;
-        }
-        public void Substitute(object iterator, object[] args)
-        {
-            m_HaveValue = false;
-            m_Iterator = iterator;
-            m_Args = args;
-            if (StoryValueHelper.HaveArg(Flag)) {
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public object Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            m_HaveValue = true;
-            m_Value = ClientModule.Instance.SummonerSkillId;
         }
 
         private object m_Iterator = null;

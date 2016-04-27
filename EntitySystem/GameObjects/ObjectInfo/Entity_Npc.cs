@@ -50,6 +50,11 @@ namespace GameFramework
         {
             get { return m_CanRotate; }
         }
+        public bool IsServerEntity
+        {
+            get { return m_IsServerEntity; }
+            set { m_IsServerEntity = value; }
+        }
         public int CreatorId
         {
             get { return m_CreatorId; }
@@ -131,11 +136,20 @@ namespace GameFramework
             m_NeedDelete = false;
             m_BornTime = 0;
             m_DropMoney = 0;
+
+            m_CanMove = true;
+            m_CanRotate = true;
+            m_CanHitMove = true;
+
+            m_IsServerEntity = true;
             
             m_CreatorId = 0;
             m_BornSkillId = 0;
             m_DeadSkillId = 0;
             m_NormalSkillId = 0;
+            m_EntityType = 0;
+            m_Scale = 1.0f;
+            
             m_AutoSkillIds.Clear();
             m_PassiveSkillIds.Clear();
 
@@ -293,6 +307,8 @@ namespace GameFramework
         private bool m_CanMove = true;
         private bool m_CanRotate = true;
         private bool m_CanHitMove = true;
+
+        private bool m_IsServerEntity = true;
 
         private bool m_IsBorning = false;
         private long m_BornTime = 0;

@@ -2,11 +2,11 @@ skill(109)
 {
 	section(10)
 	{
-    hiteffect(hitEffect, "eyes", 0, 1000, "stand", 100);
+    hiteffect(hitEffect, "eyes", 0, 1000, "Stand", 100);
 	};
   section(3000)
   {
-    animation("attack");
+    animation("Attack");
     selfeffect(selfEffect,1000,"eyes",0)
     {
       transform(vector3(0,1,0));
@@ -23,6 +23,6 @@ skill(109)
   };
   section(100)
   {
-    animation("stand");
+    animation("Stand");
   };
 };

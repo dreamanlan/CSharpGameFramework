@@ -735,11 +735,11 @@ namespace GameFramework.Story.Commands
     /// <summary>
     /// setformation(npc_unit_id,index);
     /// </summary>
-    internal class SetFormationCommand : AbstractStoryCommand
+    internal class NpcSetFormationCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
-            SetFormationCommand cmd = new SetFormationCommand();
+            NpcSetFormationCommand cmd = new NpcSetFormationCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_FormationIndex = m_FormationIndex.Clone();
             return cmd;
@@ -788,11 +788,11 @@ namespace GameFramework.Story.Commands
     /// <summary>
     /// enableai(npc_unit_id,true_or_false);
     /// </summary>
-    internal class EnableAiCommand : AbstractStoryCommand
+    internal class NpcEnableAiCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
-            EnableAiCommand cmd = new EnableAiCommand();
+            NpcEnableAiCommand cmd = new NpcEnableAiCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_Enable = m_Enable.Clone();
             return cmd;
@@ -841,11 +841,11 @@ namespace GameFramework.Story.Commands
     /// <summary>
     /// setai(unitid,ai_logic_id,stringlist("param1 param2 param3 ..."));
     /// </summary>
-    internal class SetAiCommand : AbstractStoryCommand
+    internal class NpcSetAiCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
-            SetAiCommand cmd = new SetAiCommand();
+            NpcSetAiCommand cmd = new NpcSetAiCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_AiLogic = m_AiLogic.Clone();
             cmd.m_AiParams = m_AiParams.Clone();
@@ -908,11 +908,11 @@ namespace GameFramework.Story.Commands
     /// <summary>
     /// setaitarget(unitid,targetId);
     /// </summary>
-    internal class SetAiTargetCommand : AbstractStoryCommand
+    internal class NpcSetAiTargetCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
-            SetAiTargetCommand cmd = new SetAiTargetCommand();
+            NpcSetAiTargetCommand cmd = new NpcSetAiTargetCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_TargetId = m_TargetId.Clone();
             return cmd;
@@ -1554,11 +1554,11 @@ namespace GameFramework.Story.Commands
     /// <summary>
     /// setcamp(npc_unit_id,camp_id);
     /// </summary>
-    internal class SetCampCommand : AbstractStoryCommand
+    internal class NpcSetCampCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
-            SetCampCommand cmd = new SetCampCommand();
+            NpcSetCampCommand cmd = new NpcSetCampCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_CampId = m_CampId.Clone();
             return cmd;
@@ -1612,11 +1612,11 @@ namespace GameFramework.Story.Commands
     }
     /// setsummonerid(unit_id, objid);
     /// </summary>
-    internal class SetSummonerIdCommand : AbstractStoryCommand
+    internal class NpcSetSummonerIdCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
-            SetSummonerIdCommand cmd = new SetSummonerIdCommand();
+            NpcSetSummonerIdCommand cmd = new NpcSetSummonerIdCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_SummonerId = m_SummonerId.Clone();
             return cmd;
@@ -1666,11 +1666,11 @@ namespace GameFramework.Story.Commands
     }
     /// setsummonskillid(unit_id, objid);
     /// </summary>
-    internal class SetSummonSkillIdCommand : AbstractStoryCommand
+    internal class NpcSetSummonSkillIdCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
-            SetSummonSkillIdCommand cmd = new SetSummonSkillIdCommand();
+            NpcSetSummonSkillIdCommand cmd = new NpcSetSummonSkillIdCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_SummonSkillId = m_SummonSkillId.Clone();
             return cmd;

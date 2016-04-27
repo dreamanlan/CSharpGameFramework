@@ -2,13 +2,13 @@ skill(102)
 {
   section(10)
   {
-    hiteffect(hitEffect, "eyes", 0, 1000, "stand", 100);
+    hiteffect(hitEffect, "eyes", 0, 1000, "Stand", 100);
     facetotarget(0,10,0,"maxdist");
   };
   section(1000)
   {
     enablemoveagent(false);
-    animation("move");
+    animation("Walk");
     selfeffect(selfEffect,1000,"eyes",0)
     {
       transform(vector3(0,1,0));

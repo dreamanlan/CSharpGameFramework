@@ -2,7 +2,7 @@ skill(2)
 {
   section(1000)
   {
-    animation("death");
+    animation("Death");
     adjustsectionduration("anim",100);
   };
   section(1000)

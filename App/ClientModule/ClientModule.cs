@@ -720,6 +720,19 @@ namespace GameFramework
                 }
             }
         }
+        private void OnStoryStateChanged()
+        {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+                EntityInfo info = linkNode.Value;
+                if (null != info && info.IsServerEntity && info.GetId() != LeaderID) {
+                    EntityViewModel view = EntityController.Instance.GetEntityViewById(info.GetId());
+                    if (IsStoryState)
+                        view.Visible = false;
+                    else
+                        view.Visible = true;
+                }
+            };
+        }
 
         public int SceneId
         {
@@ -764,6 +777,15 @@ namespace GameFramework
                     ret = m_SceneInfo.type == (int)SceneTypeEnum.Story;
                 }
                 return ret;
+            }
+        }
+        public bool IsStoryState
+        {
+            get { return m_IsStoryState; }
+            set 
+            { 
+                m_IsStoryState = value;
+                OnStoryStateChanged();
             }
         }
         public bool IsRoomScene
@@ -978,6 +1000,7 @@ namespace GameFramework
         private ClientAsyncActionProcessor m_AsyncActionProcessor = new ClientAsyncActionProcessor();
         private bool m_IsSceneLoaded = false;
 
+        private bool m_IsStoryState = false;
         private int m_leaderID;
         private int m_CampId = (int)CampIdEnum.Blue;
     }

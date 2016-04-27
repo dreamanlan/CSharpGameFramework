@@ -94,7 +94,7 @@ namespace GameFramework.Story.Values
         {
             CombatNpcCountValue val = new CombatNpcCountValue();
             val.m_ParamNum = m_ParamNum;
-            val.m_CampId = m_CampId;
+            val.m_CampId = m_CampId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             val.m_Flag = m_Flag;
@@ -159,19 +159,19 @@ namespace GameFramework.Story.Values
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
-    internal sealed class GetFormationValue : IStoryValue<object>
+    internal sealed class NpcGetFormationValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getformation" && 1 == callData.GetParamNum()) {
+            if (null != callData && callData.GetId() == "npcgetformation" && 1 == callData.GetParamNum()) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
                 m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_UnitId.Flag;
             }
         }
         public IStoryValue<object> Clone()
         {
-            GetFormationValue val = new GetFormationValue();
+            NpcGetFormationValue val = new NpcGetFormationValue();
             val.m_UnitId = m_UnitId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -232,19 +232,19 @@ namespace GameFramework.Story.Values
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
-    internal sealed class GetNpcTypeValue : IStoryValue<object>
+    internal sealed class NpcGetNpcTypeValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getnpctype" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetId() == "npcgetnpctype" && callData.GetParamNum() == 1) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
                 m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_UnitId.Flag;
             }
         }
         public IStoryValue<object> Clone()
         {
-            GetNpcTypeValue val = new GetNpcTypeValue();
+            NpcGetNpcTypeValue val = new NpcGetNpcTypeValue();
             val.m_UnitId = m_UnitId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -309,19 +309,19 @@ namespace GameFramework.Story.Values
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
-    internal sealed class GetSummonerIdValue : IStoryValue<object>
+    internal sealed class NpcGetSummonerIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getsummonerid" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetId() == "npcgetsummonerid" && callData.GetParamNum() == 1) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
                 m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_UnitId.Flag;
             }
         }
         public IStoryValue<object> Clone()
         {
-            GetSummonerIdValue val = new GetSummonerIdValue();
+            NpcGetSummonerIdValue val = new NpcGetSummonerIdValue();
             val.m_UnitId = m_UnitId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -386,19 +386,19 @@ namespace GameFramework.Story.Values
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
-    internal sealed class GetSummonSkillIdValue : IStoryValue<object>
+    internal sealed class NpcGetSummonSkillIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getsummonskillid" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetId() == "npcgetsummonskillid" && callData.GetParamNum() == 1) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
                 m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_UnitId.Flag;
             }
         }
         public IStoryValue<object> Clone()
         {
-            GetSummonSkillIdValue val = new GetSummonSkillIdValue();
+            NpcGetSummonSkillIdValue val = new NpcGetSummonSkillIdValue();
             val.m_UnitId = m_UnitId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;

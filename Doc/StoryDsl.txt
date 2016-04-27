@@ -914,89 +914,124 @@
   作用：
   获取指定剧情对话配表数据行（TableConfig.StoryDlg），对指定dlgId，对应的对话数据从0开始，下一条加1，直到读取返回null为止。
     
-  26、npcfindimpactseqbyid
+  27、npcfindimpactseqbyid
   用法：
   npcfindimpactseqbyid(unitId,impactId);
   
   作用：
   查找指定NPC上指定impactId的第一个impact的seq。
   
-  27、objfindimpactseqbyid
+  28、objfindimpactseqbyid
   用法：
   objfindimpactseqbyid(objId,impactId);
   
   作用：
   查找指定NPC上指定impactId的第一个impact的seq。
   
-  28、getleaderlinkid
+  29、getleaderlinkid
   用法：
   getleaderlinkid();
   
   作用：
   获取当前队长的linkid，actor.txt表里的id。
   
-  29、getleaderid
+  30、getleaderid
   用法：
   getleaderid();
   
   作用：
   获取当前队长npc的objid。
   
-  30、getnpctype
+  31、npcgetnpctype
   用法：
-  getnpctype(unitid);
+  npcgetnpctype(unitid);
   
   作用：
   获取指定npc的类型。
    
-  31、getsummonerid
+  32、npcgetsummonerid
   用法：
-  getsummonerid(unitid);
+  npcgetsummonerid(unitid);
   
   作用：
   获取指定npc的召唤者id。
   
-  32、objgetnpctype
+  33、objgetnpctype
   用法：
   objgetnpctype(objid);
   
   作用：
   获取指定obj的类型。
    
-  33、objgetsummonerid
+  34、objgetsummonerid
   用法：
   objgetsummonerid(objid);
   
   作用：
   获取指定obj的召唤者id。
   
-  34、calcoffset
+  35、calcoffset
   用法：
   calcoffset(objid,targetobjid,vector3(x,y,z));
   
   作用：
   计算沿objid->targetobjid方向，相对objid偏移(x,y,z)的位置。
   
-  35、getaidata
+  36、npccount
+  用法：
+  npccount(startUnitId,endUnitId);
+  
+  作用：
+  统计在指定范围[startUnitId,endUnitId]内的活着的npc数目。
+  
+  37、getaidata
   用法：
   getaidata(objid,aidatatype);
   
   作用：
-  取指定对象的aidata，aidatatype可以是AiData_General等。
+  获取指定npc的AiData,aidatatype可以是AiData_General等。
   
-  36、getentityinfo
+  38、npcgetsummonskillid
   用法：
-  getentityinfo(objid);
+  npcgetsummonskillid(unitid);
   
   作用：
-  获取指定objid的EntityInfo实例。
+  获取召唤指定npc的技能ID。
   
-  37、getentityview
+  39、objgetsummonskillid
   用法：
-  getentityview(objid);
+  objgetsummonskillid(objid);
   
   作用：
-  取指定对象的EntityViewModel实例。
+  获取召唤指定npc的技能ID。
+  
+  40、getactor
+  用法：
+  getactor(objid);
+  
+  作用：
+  获取指定objid的unity3d GameObject。
+  
+  41、isvisible
+  用法：
+  isvisible(objid);
+  
+  作用：
+  获取指定objid的显示状态。
+  
+  42、npcgetformation
+  用法：
+  npcgetformation(unitid);
+  
+  作用：
+  获取npc队形数据。
+  
+  43、objgetformation
+  用法：
+  objgetformation(objid);
+  
+  作用：
+  获取npc除形数据。
     
 九、剧情命令
 
@@ -1143,7 +1178,14 @@
   作用：
   改变当前渲染层时间快慢。通常在一定时间后恢复。
   
-  21、publishgfxevent
+  22、setstorystate
+  用法：
+  setstorystate(0_or_1);
+  
+  作用：
+  设置是否剧情状态（剧情状态会隐藏服务器NPC，退出剧情后再显示）。
+  
+  23、publishgfxevent
   用法：
   publishgfxevent(ev_name,group,arg1,arg2,...)[touser(userid)];
   
@@ -1180,21 +1222,21 @@
   作用：
   让指定npc接近指定目标，目标进入npc攻击范围时命令停止（注意不会发动攻击，只触发剧情消息）。
   
-  27、setai  
+  29、npcsetai  
   用法：
-  setai(unit_id,ai_logic_id,stringlist("aiparam0 aiparam1 aiparam2"));
+  npcsetai(unit_id,ai_logic_id,stringlist("aiparam0 aiparam1 aiparam2"));
   
   作用：
   改变指定npc的ai逻辑并指定对应ai逻辑的ai参数。
   
-  28、npcaddimpact
+  30、npcaddimpact
   用法：
   npcaddimpact(unit_id,impact_id,arg1,arg2,arg3,...)[seq("@seq")];
   
   作用：
   给npc加buff。
   
-  29、npcremoveimpact
+  31、npcremoveimpact
   用法：
   npcremoveimpact(unit_id,seq);
   
@@ -1424,9 +1466,9 @@
   作用：
   检测区域条件是否满足，满足后发送callback的message，message带一个参数：gameobjectname。可选的在检测条件满足时设置变量为一个值val，否则设置为另一个值elseval。
   
-  66、setaitarget
+  68、npcsetaitarget
   用法：
-  setaitarget(unit_id,target);
+  npcsetaitarget(unit_id,target);
   
   作用：
   设置指定npc的AI目标。
@@ -1446,6 +1488,47 @@
   作用：
   roomserver或userserver给服务器或客户端发送storymessage，在room上指定user使用objid，在userserver指定user用guid，在client不能指定user。
   服务器间发送消息时，实际收到消息时的参数列表会在开头插入一个参数表示玩家id（在roomserver上是objid，在userserver上是guid），收到的消息ID会根据来自client或server分别加上前缀 client: 与 server: 。
+  70、npcsetsummonskillid
+  用法：
+  npcsetsummonskillid(unitid,skillid);
+  
+  作用：
+  指定召唤技能id。  
+  
+  71、objsetsummonskillid
+  用法：
+  objsetsummonskillid(objid,skillid);
+  
+  作用：
+  指定召唤技能id。  
+  
+  72、objsetcamp
+  用法：
+  objsetcamp(objid,camp_id);
+  
+  作用：
+  设置npc阵营id。
+  
+  73、setvisible
+  用法：
+  setvisible(objid,0_or_1);
+  
+  作用：
+  设置npc是否显示。
+  
+  74、npcsetformation
+  用法：
+  npcsetformation(npc_unit_id,index);
+  
+  作用：
+  设置npc队形数据。
+  
+  75、objsetformation
+  用法：
+  objsetformation(obj_id, index);
+  
+  作用：
+  设置npc队形数据。
   
     
 十、游戏系统内实现的消息触发(非场景逻辑配置的消息触发)

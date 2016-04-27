@@ -82,15 +82,15 @@ public class DebugConsole : MonoBehaviour
     Dictionary<string, DebugCommand> _cmdTable = new Dictionary<string, DebugCommand>();
     string _inputString = string.Empty;
     Rect _windowRect;
-#if MOBILE
-    Rect _fakeWindowRect;
-    Rect _fakeDragRect;
-    bool dragging = false;
     GUIStyle windowOnStyle;
     GUIStyle windowStyle;
     GUIStyle labelStyle;
     GUIStyle textareaStyle;
     GUIStyle textfieldStyle;
+#if MOBILE
+    Rect _fakeWindowRect;
+    Rect _fakeDragRect;
+    bool dragging = false;
 #if UNITY_EDITOR
   Vector2 prevMousePos;
 #endif
@@ -483,21 +483,12 @@ public class DebugConsole : MonoBehaviour
       dragging = false;
     }
 #endif
-        if (!_isOpen) {
-            return;
-        }
-
-        innerRect.width = messageLine.width;
-#if !MOBILE
-        _windowRect = GUI.Window(-1111, _windowRect, windowMethods[toolbarIndex], string.Format("fps:{0:00.0} avgfps:{1:00.0}", GameFramework.TimeUtility.GfxFps, GameFramework.TimeUtility.GfxAvgFps));
-        GUI.BringWindowToFront(-1111);
-#else
         if (windowStyle == null) {
             windowStyle = new GUIStyle(GUI.skin.window);
             windowOnStyle = new GUIStyle(GUI.skin.window);
             windowOnStyle.normal.background = GUI.skin.window.onNormal.background;
             windowStyle.fontSize = 14;
-            windowOnStyle.fontSize = 14;            
+            windowOnStyle.fontSize = 14;
         }
         if (labelStyle == null) {
             labelStyle = new GUIStyle(GUI.skin.label);
@@ -511,7 +502,15 @@ public class DebugConsole : MonoBehaviour
             textfieldStyle = new GUIStyle(GUI.skin.textField);
             textfieldStyle.fontSize = 14;
         }
+        if (!_isOpen) {
+            return;
+        }
 
+        innerRect.width = messageLine.width;
+#if !MOBILE
+        _windowRect = GUI.Window(-1111, _windowRect, windowMethods[toolbarIndex], string.Format("fps:{0:00.0} avgfps:{1:00.0}", GameFramework.TimeUtility.GfxFps, GameFramework.TimeUtility.GfxAvgFps));
+        GUI.BringWindowToFront(-1111);
+#else
     GUI.BeginGroup(_windowRect);
 #if UNITY_EDITOR
     if (GUI.RepeatButton(_fakeDragRect, string.Empty, GUIStyle.none)) {

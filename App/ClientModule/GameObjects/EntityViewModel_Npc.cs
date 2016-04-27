@@ -8,8 +8,8 @@ namespace GameFramework
 {
     internal partial class EntityViewModel
     {
-        public const string c_StandAnim = "stand";
-        public const string c_MoveAnim = "move";
+        public const string c_StandAnim = "Idle";
+        public const string c_MoveAnim = "Run";
         public const float c_CrossFadeTime = 0.1f;
         internal EntityInfo Entity
         {

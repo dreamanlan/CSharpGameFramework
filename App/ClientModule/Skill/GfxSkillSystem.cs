@@ -196,7 +196,6 @@ namespace GameFramework.Skill
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("camerafollow", new SkillTrigerFactoryHelper<Trigers.CameraFollowTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("cameralook", new SkillTrigerFactoryHelper<Trigers.CameraLookTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("camerafollowpath", new SkillTrigerFactoryHelper<Trigers.CameraFollowPathTriger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("animation", new SkillTrigerFactoryHelper<Trigers.AnimationTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("animationspeed", new SkillTrigerFactoryHelper<Trigers.AnimationSpeedTriger>());

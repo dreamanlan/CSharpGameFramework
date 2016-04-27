@@ -1652,6 +1652,60 @@ namespace GameFramework.Story.Commands
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private IStoryValue<int> m_UnitId = new StoryValue<int>();
     }
+    /// <summary>
+    /// objsetcamp(objid,camp_id);
+    /// </summary>
+    internal class ObjSetCampCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ObjSetCampCommand cmd = new ObjSetCampCommand();
+            cmd.m_ObjId = m_ObjId.Clone();
+            cmd.m_CampId = m_CampId.Clone();
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_ObjId.Substitute(iterator, args);
+            m_CampId.Substitute(iterator, args);
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_ObjId.Evaluate(instance);
+            m_CampId.Evaluate(instance);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                EntityInfo obj = scene.SceneContext.GetEntityById(m_ObjId.Value);
+                if (null != obj) {
+                    int campId = m_CampId.Value;
+                    obj.SetCampId(campId);
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+                m_CampId.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryValue<int> m_CampId = new StoryValue<int>();
+    }
     /// objsetsummonerid(objid, objid);
     /// </summary>
     internal class ObjSetSummonerIdCommand : AbstractStoryCommand

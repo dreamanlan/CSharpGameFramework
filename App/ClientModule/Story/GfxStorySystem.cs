@@ -61,10 +61,10 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcstop", new StoryCommandFactoryHelper<Story.Commands.NpcStopCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcpursuit", new StoryCommandFactoryHelper<Story.Commands.NpcPursuitCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcattack", new StoryCommandFactoryHelper<Story.Commands.NpcAttackCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setformation", new StoryCommandFactoryHelper<Story.Commands.SetFormationCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "enableai", new StoryCommandFactoryHelper<Story.Commands.EnableAiCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setai", new StoryCommandFactoryHelper<Story.Commands.SetAiCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setaitarget", new StoryCommandFactoryHelper<Story.Commands.SetAiTargetCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetformation", new StoryCommandFactoryHelper<Story.Commands.NpcSetFormationCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcenableai", new StoryCommandFactoryHelper<Story.Commands.NpcEnableAiCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetai", new StoryCommandFactoryHelper<Story.Commands.NpcSetAiCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetaitarget", new StoryCommandFactoryHelper<Story.Commands.NpcSetAiTargetCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcanimation", new StoryCommandFactoryHelper<Story.Commands.NpcAnimationCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcaddimpact", new StoryCommandFactoryHelper<Story.Commands.NpcAddImpactCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcremoveimpact", new StoryCommandFactoryHelper<Story.Commands.NpcRemoveImpactCommand>());
@@ -73,7 +73,9 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcaddskill", new StoryCommandFactoryHelper<Story.Commands.NpcAddSkillCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcremoveskill", new StoryCommandFactoryHelper<Story.Commands.NpcRemoveSkillCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npclisten", new StoryCommandFactoryHelper<Story.Commands.NpcListenCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setcamp", new StoryCommandFactoryHelper<Story.Commands.SetCampCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetcamp", new StoryCommandFactoryHelper<Story.Commands.NpcSetCampCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetsummonerid", new StoryCommandFactoryHelper<Story.Commands.NpcSetSummonerIdCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetsummonskillid", new StoryCommandFactoryHelper<Story.Commands.NpcSetSummonSkillIdCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objface", new StoryCommandFactoryHelper<Story.Commands.ObjFaceCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objmove", new StoryCommandFactoryHelper<Story.Commands.ObjMoveCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objmovewithwaypoints", new StoryCommandFactoryHelper<Story.Commands.ObjMoveWithWaypointsCommand>());
@@ -93,8 +95,11 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objaddskill", new StoryCommandFactoryHelper<Story.Commands.ObjAddSkillCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objremoveskill", new StoryCommandFactoryHelper<Story.Commands.ObjRemoveSkillCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objlisten", new StoryCommandFactoryHelper<Story.Commands.ObjListenCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetcamp", new StoryCommandFactoryHelper<Story.Commands.ObjSetCampCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetsummonerid", new StoryCommandFactoryHelper<Story.Commands.ObjSetSummonerIdCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetsummonskillid", new StoryCommandFactoryHelper<Story.Commands.ObjSetSummonSkillIdCommand>());
+
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setvisible", new StoryCommandFactoryHelper<Story.Commands.SetVisibleCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sethp", new StoryCommandFactoryHelper<Story.Commands.SetHpCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setenergy", new StoryCommandFactoryHelper<Story.Commands.SetEnergyCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objset", new StoryCommandFactoryHelper<Story.Commands.ObjSetCommand>());
@@ -102,9 +107,8 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setattr", new StoryCommandFactoryHelper<Story.Commands.SetAttrCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setunitid", new StoryCommandFactoryHelper<Story.Commands.SetUnitIdCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setleaderid", new StoryCommandFactoryHelper<Story.Commands.SetLeaderIdCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setsummonerid", new StoryCommandFactoryHelper<Story.Commands.SetSummonerIdCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setsummonskillid", new StoryCommandFactoryHelper<Story.Commands.SetSummonSkillIdCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "markcontrolbystory", new StoryCommandFactoryHelper<Story.Commands.MarkControlByStoryCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setstorystate", new StoryCommandFactoryHelper<Story.Commands.SetStoryStateCommand>());
 
             //注册值与函数处理
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "gfxget", new StoryValueFactoryHelper<Story.Values.GfxGetValue>());
@@ -116,6 +120,7 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getgameobject", new StoryValueFactoryHelper<Story.Values.GetGameObjectValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getunitytype", new StoryValueFactoryHelper<Story.Values.GetUnityTypeValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getunityuitype", new StoryValueFactoryHelper<Story.Values.GetUnityUiTypeValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getactor", new StoryValueFactoryHelper<Story.Values.GetActorValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getentityinfo", new StoryValueFactoryHelper<Story.Values.GetEntityInfoValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getentityview", new StoryValueFactoryHelper<Story.Values.GetEntityViewValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getuserinfo", new StoryValueFactoryHelper<StorySystem.CommonValues.DummyValue>());
@@ -124,22 +129,21 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getdialogitem", new StoryValueFactoryHelper<Story.Values.GetDialogItemValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getactoricon", new StoryValueFactoryHelper<Story.Values.GetActorIconValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getaidata", new StoryValueFactoryHelper<Story.Values.GetAiDataValue>());
-
+            
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "npcidlist", new StoryValueFactoryHelper<Story.Values.NpcIdListValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "combatnpccount", new StoryValueFactoryHelper<Story.Values.CombatNpcCountValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getformation", new StoryValueFactoryHelper<Story.Values.GetFormationValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "npcfindimpactseqbyid", new StoryValueFactoryHelper<Story.Values.NpcFindImpactSeqByIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "npccount", new StoryValueFactoryHelper<Story.Values.NpcCountValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "unitid2objid", new StoryValueFactoryHelper<Story.Values.UnitId2ObjIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objid2unitid", new StoryValueFactoryHelper<Story.Values.ObjId2UnitIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "unitid2uniqueid", new StoryValueFactoryHelper<Story.Values.UnitId2UniqueIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objid2uniqueid", new StoryValueFactoryHelper<Story.Values.ObjId2UniqueIdValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getposition", new StoryValueFactoryHelper<Story.Values.GetPositionValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getpositionx", new StoryValueFactoryHelper<Story.Values.GetPositionXValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getpositiony", new StoryValueFactoryHelper<Story.Values.GetPositionYValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getpositionz", new StoryValueFactoryHelper<Story.Values.GetPositionZValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getcamp", new StoryValueFactoryHelper<Story.Values.GetCampValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "iscombatnpc", new StoryValueFactoryHelper<Story.Values.IsCombatNpcValue>());
+            
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "npcgetformation", new StoryValueFactoryHelper<Story.Values.NpcGetFormationValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "npcgetnpctype", new StoryValueFactoryHelper<Story.Values.NpcGetNpcTypeValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "npcgetsummonerid", new StoryValueFactoryHelper<Story.Values.NpcGetSummonerIdValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "npcgetsummonskillid", new StoryValueFactoryHelper<Story.Values.NpcGetSummonSkillIdValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "npcfindimpactseqbyid", new StoryValueFactoryHelper<Story.Values.NpcFindImpactSeqByIdValue>());
+
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objgetformation", new StoryValueFactoryHelper<Story.Values.ObjGetFormationValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objgetnpctype", new StoryValueFactoryHelper<Story.Values.ObjGetNpcTypeValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objgetsummonerid", new StoryValueFactoryHelper<Story.Values.ObjGetSummonerIdValue>());
@@ -147,6 +151,14 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objfindimpactseqbyid", new StoryValueFactoryHelper<Story.Values.ObjFindImpactSeqByIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isenemy", new StoryValueFactoryHelper<Story.Values.IsEnemyValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isfriend", new StoryValueFactoryHelper<Story.Values.IsFriendValue>());
+
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getposition", new StoryValueFactoryHelper<Story.Values.GetPositionValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getpositionx", new StoryValueFactoryHelper<Story.Values.GetPositionXValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getpositiony", new StoryValueFactoryHelper<Story.Values.GetPositionYValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getpositionz", new StoryValueFactoryHelper<Story.Values.GetPositionZValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getcamp", new StoryValueFactoryHelper<Story.Values.GetCampValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "iscombatnpc", new StoryValueFactoryHelper<Story.Values.IsCombatNpcValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isvisible", new StoryValueFactoryHelper<Story.Values.IsVisibleValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "gethp", new StoryValueFactoryHelper<Story.Values.GetHpValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getenergy", new StoryValueFactoryHelper<Story.Values.GetEnergyValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmaxhp", new StoryValueFactoryHelper<Story.Values.GetMaxHpValue>());
@@ -158,13 +170,10 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getlevel", new StoryValueFactoryHelper<Story.Values.GetLevelValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getattr", new StoryValueFactoryHelper<Story.Values.GetAttrValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "iscontrolbystory", new StoryValueFactoryHelper<Story.Values.IsControlByStoryValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objcancastskill", new StoryValueFactoryHelper<Story.Values.ObjCanCastSkillValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objisundercontrol", new StoryValueFactoryHelper<Story.Values.ObjIsUnderControlValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "cancastskill", new StoryValueFactoryHelper<Story.Values.CanCastSkillValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isundercontrol", new StoryValueFactoryHelper<Story.Values.IsUnderControlValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleaderid", new StoryValueFactoryHelper<Story.Values.GetLeaderIdValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getnpctype", new StoryValueFactoryHelper<Story.Values.GetNpcTypeValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsummonerid", new StoryValueFactoryHelper<Story.Values.GetSummonerIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleaderlinkid", new StoryValueFactoryHelper<Story.Values.GetLeaderLinkIdValue>());
-            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsummonskillid", new StoryValueFactoryHelper<Story.Values.GetSummonSkillIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmembercount", new StoryValueFactoryHelper<Story.Values.GetMemberCountValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlinkid", new StoryValueFactoryHelper<Story.Values.GetMemberLinkIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlevel", new StoryValueFactoryHelper<Story.Values.GetMemberLevelValue>());
