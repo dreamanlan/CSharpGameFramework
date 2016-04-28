@@ -10,8 +10,13 @@ story(main)
   };
   onmessage("start")
   {
-  	log("StoryDlg start");
-    @window.active=changetype(0,"bool");
+    bindui(@window){
+      var("@left","Left");
+      var("@right","Right");
+      var("@text","Panel/Text");
+      onclick("click","Panel/Text");
+    };
+    @window.SetActive(changetype(0,"bool"));
   };
   onmessage("show_dlg")
   {
@@ -45,7 +50,7 @@ story(main)
     @dlgItem = getdialogitem(@dlgId,@index);
     if(isnull(@dlgItem)){
       if(@isFinish<=0){
-        @window.active=changetype(0,"bool");
+        @window.SetActive(changetype(0,"bool"));
         publishgfxevent("ui_show","ui");
         firemessage("dialog_over:"+@dlgId);
       };
@@ -53,16 +58,16 @@ story(main)
       @isFinish=1;
     }else{
       if(@dlgItem.leftOrRight>0){
-        //@left.active=changetype(0,"bool");
-        //@right.active=changetype(1,"bool");
+        @left.SetActive(changetype(0,"bool"));
+        @right.SetActive(changetype(1,"bool"));
         @right_Image.sprite=getactoricon(@dlgItem.speaker);
       }else{
-        //@left.active=changetype(1,"bool");
-        //@right.active=changetype(0,"bool");
+        @left.SetActive(changetype(1,"bool"));
+        @right.SetActive(changetype(0,"bool"));
         @left_Image.sprite=getactoricon(@dlgItem.speaker);
       };        
       @text_Text.text = @dlgItem.dialog;
-      @window.active=changetype(1,"bool");
+      @window.SetActive(changetype(1,"bool"));
     };
   };
 };

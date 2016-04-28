@@ -2,7 +2,7 @@ skill(7)
 {
   section(60000)
   {
-    animation("attack");
+    animation("Attack");
     selfeffect(selfEffect,1000,"eyes",0)
     {
       transform(vector3(0,1,0));

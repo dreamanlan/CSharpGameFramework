@@ -20,8 +20,8 @@ story(story_main)
     objsetformation(@userId,0);
     loop(4){
       @unitId = @userId*100+$$;
-      createnpc(@unitId,vector3(55+rndint(0,10),0,65+rndint(0,10)),0,@campId,$$+2,4,stringlist(""),@userId);
-      setformation(@unitId,$$+1);
+      createnpc(@unitId,vector3(25+rndint(0,10),0,25+rndint(0,10)),0,@campId,$$+2,4,stringlist(""),@userId);
+      npcsetformation(@unitId,$$+1);
     };
     wait(1000);
     objaddskill(@userId,22);
@@ -49,7 +49,7 @@ story(story_main)
     if(@monsterRefresh==0){
       @monsterRefresh=1;
       loop(26){
-      	@pt = vector3(100+rndint(0,10),0,100+rndint(0,10));//getcomponent("pt"+($$/7),"PositionMarker").Position;
+      	@pt = vector3(75+rndint(0,10),0,75+rndint(0,10));//getcomponent("pt"+($$/7),"PositionMarker").Position;
         createnpc(1006+$$,rndvector3(@pt,10),0,2,$$+6,2,stringlist(""));
       };
     };

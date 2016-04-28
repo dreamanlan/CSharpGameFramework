@@ -2,7 +2,7 @@ skill(108)
 {
   section(60000)
   {
-    animation("hit");
+    animation("Damage");
     selfeffect(selfEffect,1000,"eyes",0)
     {
       transform(vector3(0,1,0));
@@ -16,13 +16,13 @@ skill(108)
   section(100)
   {
     removestate("sleep");
-    animation("stand");
+    animation("Stand");
     enablemoveagent(true);
   };
   onstop
   {
     removestate("sleep");
-    animation("stand");
+    animation("Stand");
     enablemoveagent(true);
   };
 };

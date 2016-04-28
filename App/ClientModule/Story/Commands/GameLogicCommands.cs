@@ -612,4 +612,311 @@ namespace GameFramework.Story.Commands
 
         private IStoryValue<int> m_StoryState = new StoryValue<int>();
     }
+    /// <summary>
+    /// bindui(gameobject){
+    ///     var("@varname","Panel/Input");
+    ///     inputs("",...);
+    ///     toggles("",...);
+    ///     sliders("",...);
+    ///     dropdowns("",...);
+    ///     onclick("eventtag","Panel/Button");
+    /// };
+    /// </summary>
+    internal class BindUiCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            BindUiCommand cmd = new BindUiCommand();
+            cmd.m_Obj = m_Obj.Clone();
+            for (int i = 0; i < m_VarInfos.Count; ++i) {
+                cmd.m_VarInfos.Add(new VarInfo(m_VarInfos[i]));
+            }
+            for (int i = 0; i < m_ClickInfos.Count; ++i) {
+                cmd.m_ClickInfos.Add(new ClickInfo(m_ClickInfos[i]));
+            }
+            for (int i = 0; i < m_Inputs.Count; ++i) {
+                cmd.m_Inputs.Add(m_Inputs[i].Clone());
+            }
+            for (int i = 0; i < m_Toggles.Count; ++i) {
+                cmd.m_Toggles.Add(m_Toggles[i].Clone());
+            }
+            for (int i = 0; i < m_Sliders.Count; ++i) {
+                cmd.m_Sliders.Add(m_Sliders[i].Clone());
+            }
+            for (int i = 0; i < m_DropDowns.Count; ++i) {
+                cmd.m_DropDowns.Add(m_DropDowns[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_Obj.Substitute(iterator, args);
+            for (int i = 0; i < m_VarInfos.Count; ++i) {
+                m_VarInfos[i].m_VarName.Substitute(iterator, args);
+                m_VarInfos[i].m_ControlPath.Substitute(iterator, args);
+            }
+            for (int i = 0; i < m_ClickInfos.Count; ++i) {
+                m_ClickInfos[i].m_Tag.Substitute(iterator, args);
+                m_ClickInfos[i].m_ButtonPath.Substitute(iterator, args);
+            }
+            var list = m_Inputs;
+            for (int k = 0; k < list.Count; ++k) {
+                list[k].Substitute(iterator, args);
+            }
+            list = m_Toggles;
+            for (int k = 0; k < list.Count; ++k) {
+                list[k].Substitute(iterator, args);
+            }
+            list = m_Sliders;
+            for (int k = 0; k < list.Count; ++k) {
+                list[k].Substitute(iterator, args);
+            }
+            list = m_DropDowns;
+            for (int k = 0; k < list.Count; ++k) {
+                list[k].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_Obj.Evaluate(instance);
+            for (int i = 0; i < m_VarInfos.Count; ++i) {
+                m_VarInfos[i].m_VarName.Evaluate(instance);
+                m_VarInfos[i].m_ControlPath.Evaluate(instance);
+            }
+            for (int i = 0; i < m_ClickInfos.Count; ++i) {
+                m_ClickInfos[i].m_Tag.Evaluate(instance);
+                m_ClickInfos[i].m_ButtonPath.Evaluate(instance);
+            }
+            var list = m_Inputs;
+            for (int k = 0; k < list.Count; ++k) {
+                list[k].Evaluate(instance);
+            }
+            list = m_Toggles;
+            for (int k = 0; k < list.Count; ++k) {
+                list[k].Evaluate(instance);
+            }
+            list = m_Sliders;
+            for (int k = 0; k < list.Count; ++k) {
+                list[k].Evaluate(instance);
+            }
+            list = m_DropDowns;
+            for (int k = 0; k < list.Count; ++k) {
+                list[k].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            UnityEngine.GameObject obj = m_Obj.Value as UnityEngine.GameObject;
+            if (null != obj) {
+                UiStoryInitializer initer = obj.GetComponent<UiStoryInitializer>();
+                if (null != initer) {
+                    UiStoryClickHandler handler = obj.GetComponent<UiStoryClickHandler>();
+                    if (null == handler) {
+                        handler = obj.AddComponent<UiStoryClickHandler>();
+                    }
+                    if (null != handler) {
+                        int ct = m_VarInfos.Count;
+                        for (int ix = 0; ix < ct; ++ix) {
+                            string name = m_VarInfos[ix].m_VarName.Value;
+                            string path = m_VarInfos[ix].m_ControlPath.Value;
+                            UnityEngine.GameObject ctrl = Utility.FindChildObjectByPath(obj, path);
+                            AddVariable(instance, name, ctrl);
+                        }
+
+                        handler.WindowName = initer.WindowName;
+                        var list = m_Inputs;
+                        for (int k = 0; k < list.Count; ++k) {
+                            string path = list[k].Value;
+                            var comp = Utility.FindComponentInChildren<UnityEngine.UI.InputField>(obj, path);
+                            handler.InputLabels.Add(comp);
+                        }
+                        list = m_Toggles;
+                        for (int k = 0; k < list.Count; ++k) {
+                            string path = list[k].Value;
+                            var comp = Utility.FindComponentInChildren<UnityEngine.UI.Toggle>(obj, path);
+                            handler.InputToggles.Add(comp);
+                        }
+                        list = m_Sliders;
+                        for (int k = 0; k < list.Count; ++k) {
+                            string path = list[k].Value;
+                            var comp = Utility.FindComponentInChildren<UnityEngine.UI.Slider>(obj, path);
+                            handler.InputSliders.Add(comp);
+                        }
+                        list = m_DropDowns;
+                        for (int k = 0; k < list.Count; ++k) {
+                            string path = list[k].Value;
+                            var comp = Utility.FindComponentInChildren<UnityEngine.UI.Dropdown>(obj, path);
+                            handler.InputDropdowns.Add(comp);
+                        }
+
+                        ct = m_ClickInfos.Count;
+                        for (int ix = 0; ix < ct; ++ix) {
+                            string tag = m_ClickInfos[ix].m_Tag.Value;
+                            string path = m_ClickInfos[ix].m_ButtonPath.Value;
+                            UnityEngine.UI.Button button = Utility.FindComponentInChildren<UnityEngine.UI.Button>(obj, path);
+
+                            button.onClick.AddListener(() => { handler.OnClickHandler(tag); });
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_Obj.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        protected override void Load(Dsl.FunctionData funcData)
+        {
+            Load(funcData.Call);
+            for (int i = 0; i < funcData.Statements.Count; ++i) {
+                Dsl.CallData callData = funcData.Statements[i] as Dsl.CallData;
+                if (null != callData) {
+                    string id = callData.GetId();
+                    if (id == "var") {
+                        LoadVar(callData);
+                    } else if (id == "onclick") {
+                        LoadOnClick(callData);
+                    } else if (id == "inputs") {
+                        LoadPaths(m_Inputs, callData);
+                    } else if (id == "toggles") {
+                        LoadPaths(m_Toggles, callData);
+                    } else if (id == "sliders") {
+                        LoadPaths(m_Sliders, callData);
+                    } else if (id == "dropdowns") {
+                        LoadPaths(m_DropDowns, callData);
+                    }
+                }
+            }
+        }
+
+        private void LoadVar(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 2) {
+                VarInfo info = new VarInfo();
+                info.m_VarName.InitFromDsl(callData.GetParam(0));
+                info.m_ControlPath.InitFromDsl(callData.GetParam(1));
+                m_VarInfos.Add(info);
+            }
+        }
+
+        private void LoadOnClick(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 2) {
+                ClickInfo info = new ClickInfo();
+                info.m_Tag.InitFromDsl(callData.GetParam(0));
+                info.m_ButtonPath.InitFromDsl(callData.GetParam(1));
+                m_ClickInfos.Add(info);
+            }
+        }
+
+        private class VarInfo
+        {
+            internal IStoryValue<string> m_VarName = null;
+            internal IStoryValue<string> m_ControlPath = null;
+
+            internal VarInfo() 
+            {
+                m_VarName = new StoryValue<string>();
+                m_ControlPath = new StoryValue<string>();
+            }
+            internal VarInfo(VarInfo other)
+            {
+                m_VarName = other.m_VarName.Clone();
+                m_ControlPath = other.m_ControlPath.Clone();
+            }
+        }
+        private class ClickInfo
+        {
+            internal IStoryValue<string> m_Tag = null;
+            internal IStoryValue<string> m_ButtonPath = null;
+
+            internal ClickInfo()
+            {
+                m_Tag = new StoryValue<string>();
+                m_ButtonPath = new StoryValue<string>();
+            }
+            internal ClickInfo(ClickInfo other)
+            {
+                m_Tag = other.m_Tag.Clone();
+                m_ButtonPath = other.m_ButtonPath.Clone();
+            }
+        }
+
+        private IStoryValue<object> m_Obj = new StoryValue();
+        private List<VarInfo> m_VarInfos = new List<VarInfo>();
+        internal List<IStoryValue<string>> m_Inputs = new List<IStoryValue<string>>();
+        internal List<IStoryValue<string>> m_Toggles = new List<IStoryValue<string>>();
+        internal List<IStoryValue<string>> m_Sliders = new List<IStoryValue<string>>();
+        internal List<IStoryValue<string>> m_DropDowns = new List<IStoryValue<string>>();
+        private List<ClickInfo> m_ClickInfos = new List<ClickInfo>();
+        
+        private static void LoadPaths(List<IStoryValue<string>> List, Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> path = new StoryValue<string>();
+                path.InitFromDsl(callData.GetParam(i));
+                List.Add(path);
+            }
+        }
+        private static void AddVariable(StoryInstance instance, string name, UnityEngine.GameObject control)
+        {
+            instance.LocalVariables.Add(name, control);
+            UnityEngine.UI.Text text = control.GetComponent<UnityEngine.UI.Text>();
+            if (null != text) {
+                instance.LocalVariables.Add(string.Format("{0}_Text", name), text);
+            }
+            UnityEngine.UI.Image image = control.GetComponent<UnityEngine.UI.Image>();
+            if (null != image) {
+                instance.LocalVariables.Add(string.Format("{0}_Image", name), image);
+            }
+            UnityEngine.UI.RawImage rawImage = control.GetComponent<UnityEngine.UI.RawImage>();
+            if (null != rawImage) {
+                instance.LocalVariables.Add(string.Format("{0}_RawImage", name), rawImage);
+            }
+            UnityEngine.UI.Button button = control.GetComponent<UnityEngine.UI.Button>();
+            if (null != button) {
+                instance.LocalVariables.Add(string.Format("{0}_Button", name), button);
+            }
+            UnityEngine.UI.Dropdown dropdown = control.GetComponent<UnityEngine.UI.Dropdown>();
+            if (null != dropdown) {
+                instance.LocalVariables.Add(string.Format("{0}_Dropdown", name), dropdown);
+            }
+            UnityEngine.UI.InputField inputField = control.GetComponent<UnityEngine.UI.InputField>();
+            if (null != inputField) {
+                instance.LocalVariables.Add(string.Format("{0}_Input", name), inputField);
+            }
+            UnityEngine.UI.Slider slider = control.GetComponent<UnityEngine.UI.Slider>();
+            if (null != inputField) {
+                instance.LocalVariables.Add(string.Format("{0}_Slider", name), slider);
+            }
+            UnityEngine.UI.Toggle toggle = control.GetComponent<UnityEngine.UI.Toggle>();
+            if (null != toggle) {
+                instance.LocalVariables.Add(string.Format("{0}_Toggle", name), toggle);
+            }
+            UnityEngine.UI.ToggleGroup toggleGroup = control.GetComponent<UnityEngine.UI.ToggleGroup>();
+            if (null != toggleGroup) {
+                instance.LocalVariables.Add(string.Format("{0}_ToggleGroup", name), toggleGroup);
+            }
+            UnityEngine.UI.Scrollbar scrollbar = control.GetComponent<UnityEngine.UI.Scrollbar>();
+            if (null != scrollbar) {
+                instance.LocalVariables.Add(string.Format("{0}_Scrollbar", name), scrollbar);
+            }
+        }
+    }
 }

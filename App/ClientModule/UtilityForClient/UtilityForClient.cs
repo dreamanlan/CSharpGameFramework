@@ -45,6 +45,49 @@ namespace GameFramework
             }
             return null;
         }
+        public static T FindChildComponent<T>(GameObject root, string name)
+        {
+            return FindChildObject(root, name).GetComponent<T>();
+        }
+        public static GameObject FindChildObjectByPath(GameObject gameObject, string name)
+        {
+            if (name.IndexOf('/') == -1) {
+                Transform child = gameObject.transform.FindChild(name);
+                if (null == child) {
+                    return null;
+                }
+                return child.gameObject;
+            } else {
+                string[] path = name.Split('/');
+                Transform child = gameObject.transform;
+                for (int i = 0; i < path.Length; i++) {
+                    child = child.FindChild(path[i]);
+                    if (null == child) {
+                        return null;
+                    }
+                }
+                return child.gameObject;
+            }
+        }
+        public static T FindComponentInChildren<T>(GameObject _gameObject, string _name)
+        {
+            if (_name.IndexOf('/') == -1) {
+                Transform child = _gameObject.transform.FindChild(_name);
+                if (child == null)
+                    return default(T);
+                return child.GetComponent<T>();
+            } else {
+                string[] path = _name.Split('/');
+                Transform child = _gameObject.transform;
+                for (int i = 0; i < path.Length; i++) {
+                    child = child.FindChild(path[i]);
+                    if (child == null) {
+                        return default(T);
+                    }
+                }
+                return child.GetComponent<T>();
+            }
+        }
         public static Transform FindChildRecursive(Transform parent, string bonePath)
         {
             Transform t = parent.Find(bonePath);

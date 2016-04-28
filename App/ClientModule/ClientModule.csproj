@@ -75,6 +75,9 @@
     <Reference Include="UnityEngine">
       <HintPath>..\..\ExternalLibrary\UnityEngine.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>D:\work\newdemo\Client\CsLibrary\ExternLibrary\UnityEngine.UI.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\MessageCommon\ProtoHelper.cs">
@@ -135,6 +138,8 @@
     <Compile Include="Story\Commands\GeneralCommands.cs" />
     <Compile Include="Story\Commands\NpcCommands.cs" />
     <Compile Include="Story\GfxStorySystem.cs" />
+    <Compile Include="Story\UiStoryClickHandler.cs" />
+    <Compile Include="Story\UiStoryInitializer.cs" />
     <Compile Include="Story\Values\ObjectValues.cs" />
     <Compile Include="Story\Values\GameLogicValues.cs" />
     <Compile Include="Story\Values\GeneralValues.cs" />
