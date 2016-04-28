@@ -1,0 +1,6 @@
+D:\work\Client\CsLibrary\ClientProtoBuf\bin\Debug\ClientProtoBuf.dll
+D:\work\Client\CsLibrary\ClientProtoBuf\bin\Debug\ClientProtoBuf.pdb
+D:\work\Client\CsLibrary\ClientProtoBuf\bin\Debug\protobuf-net.dll
+D:\work\Client\CsLibrary\ClientProtoBuf\obj\Debug\ClientProtoBuf.csprojResolveAssemblyReference.cache
+D:\work\Client\CsLibrary\ClientProtoBuf\obj\Debug\ClientProtoBuf.dll
+D:\work\Client\CsLibrary\ClientProtoBuf\obj\Debug\ClientProtoBuf.pdb

@@ -123,9 +123,9 @@ public class Game : MonoBehaviour
         
     void OnLevelWasLoaded(int level)
     {
-    		if (level == 2) {
+        if (level == 2) {
             HighlightPromptManager.Instance.Init();
-    		} else if (level > 2) {
+        } else if (level > 2) {
             HighlightPromptManager.Instance.Init();
             BattleTopMenuManager.Instance.Init();
             SkillBarManager.Instance.Init();
@@ -185,6 +185,16 @@ public class Game : MonoBehaviour
                         GameObject uiObj = GameObject.Instantiate(asset);
                         if (null != uiObj) {
                             uiObj.name = ui.name;
+                            if (!string.IsNullOrEmpty(ui.dsl)) {
+                                GameFramework.Story.UiStoryInitializer initer = uiObj.GetComponent<GameFramework.Story.UiStoryInitializer>();
+                                if (null == initer) {
+                                    initer = uiObj.AddComponent<GameFramework.Story.UiStoryInitializer>();
+                                }
+                                if (null != initer) {
+                                    initer.WindowName = ui.name;
+                                    initer.Init();
+                                }
+                            }
                         }
                     }
                 }

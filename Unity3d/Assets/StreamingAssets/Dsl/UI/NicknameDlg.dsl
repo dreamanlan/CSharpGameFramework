@@ -7,25 +7,31 @@ story(main)
   };
   onmessage("start")
   {
+    bindui(@window){
+      var("@nickname","Panel/NicknameInput");
+      inputs("Panel/NicknameInput");
+      onclick("roll","Panel/Roll");
+      onclick("ok","Panel/Button");
+    };
   	log("NicknameDlg start");
-    @window.active=changetype(0,"bool");
+    @window.SetActive(changetype(0,"bool"));
   };
   onmessage("show_nickname")
   {
-    @window.active=changetype(1,"bool");
+    @window.SetActive(changetype(1,"bool"));
     @nicknameList=$0;
     @rndname=rndfromlist(@nicknameList);
     @nickname_Input.text=@rndname;
   };  
   onnamespacedmessage("on_click")
   {
-  	log("NicknameDlg on click {0} {1} {2}",$0,$1,$2);
+  	log("NicknameDlg on click {0} {1}",$0,$1);
   	if($0=="roll"){
 	    @rndname=rndfromlist(@nicknameList);
 	    @nickname_Input.text=@rndname;
   	}else{
-	  	firemessage("do_nickname",listget($2,0,"unknown"));
-	    @window.active=changetype(0,"bool");
+	  	firemessage("do_nickname",listget($1,0,"unknown"));
+    	@window.SetActive(changetype(0,"bool"));
 	  };
   };
 };

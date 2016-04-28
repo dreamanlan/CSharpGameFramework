@@ -1,0 +1,15 @@
+F:\OpenSource\CSharpGameFramework_local\Test\ClientConfig\bin\Release\TableConfig.dll
+F:\OpenSource\CSharpGameFramework_local\Test\ClientConfig\bin\Release\TableConfig.pdb
+F:\OpenSource\CSharpGameFramework_local\Test\ClientConfig\bin\Release\protobuf-net.dll
+F:\OpenSource\CSharpGameFramework_local\Test\ClientConfig\obj\Release\TableConfig.dll
+F:\OpenSource\CSharpGameFramework_local\Test\ClientConfig\obj\Release\TableConfig.pdb
+F:\OpenSource\CSharpGameFramework_local\Test\TableConfig\bin\Release\TableConfig.dll
+F:\OpenSource\CSharpGameFramework_local\Test\TableConfig\bin\Release\TableConfig.pdb
+F:\OpenSource\CSharpGameFramework_local\Test\TableConfig\bin\Release\protobuf-net.dll
+F:\OpenSource\CSharpGameFramework_local\Test\TableConfig\obj\Release\TableConfig.dll
+F:\OpenSource\CSharpGameFramework_local\Test\TableConfig\obj\Release\TableConfig.pdb
+E:\work\OpenSource\CSharpGameFramework_local\Test\TableConfig\bin\Release\TableConfig.dll
+E:\work\OpenSource\CSharpGameFramework_local\Test\TableConfig\bin\Release\TableConfig.pdb
+E:\work\OpenSource\CSharpGameFramework_local\Test\TableConfig\bin\Release\protobuf-net.dll
+E:\work\OpenSource\CSharpGameFramework_local\Test\TableConfig\obj\Release\TableConfig.dll
+E:\work\OpenSource\CSharpGameFramework_local\Test\TableConfig\obj\Release\TableConfig.pdb

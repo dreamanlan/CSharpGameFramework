@@ -1,0 +1,67 @@
+package TableConfig;
+
+message SkillList
+{
+	repeated Skill items = 1;
+}
+message Skill
+{
+	required int32 id = 1;
+	required string desc = 2;
+	required int32 type = 3;
+	required int32 icon = 4;
+	required float distance = 5;
+	required float cooldown = 6;
+	required float BaseCooldown = 7;
+	required float duration = 8;
+	required float interval = 9;
+	required int32 damage = 10;
+	required int32 mpRecover = 11;
+	required int32 hpRecover = 12;
+	required int32 addAttack = 13;
+	required int32 addShield = 14;
+	required float addSpeed = 15;
+	required int32 canmove = 16;
+	required string leadAnim = 17;
+	required int32 leadAnimTime = 18;
+	required string leadEffect = 19;
+	required string leadEffectBone = 20;
+	required int32 leadEffectStartTime = 21;
+	required int32 leadEffectDeleteTime = 22;
+	required string castAnim = 23;
+	required int32 castAnimTime = 24;
+	required string selfEffect = 25;
+	required string selfEffectBone = 26;
+	required int32 selfEffectStartTime = 27;
+	required int32 selfEffectDeleteTime = 28;
+	required string targetEffect = 29;
+	required string targetEffectBone = 30;
+	required int32 targetEffectStartTime = 31;
+	required int32 targetEffectDeleteTime = 32;
+	required string emitEffect = 33;
+	required string emitEffectBone = 34;
+	required int32 emitEffectStartTime = 35;
+	required int32 emitSpeed = 36;
+	required string hitAnim = 37;
+	required int32 hitAnimTime = 38;
+	required string hitEffect = 39;
+	required string hitEffectBone = 40;
+	required int32 hitEffectStartTime = 41;
+	required int32 hitEffectDeleteTime = 42;
+	required int32 impactToSelf = 43;
+	required int32 impactToTarget = 44;
+	required int32 interruptPriority = 45;
+	required bool isInterrupt = 46;
+	required int32 targetType = 47;
+	required int32 aoeType = 48;
+	required float aoeSize = 49;
+	required float aoeAngleOrLength = 50;
+	required int32 maxAoeTargetCount = 51;
+	required int32 dslSkillId = 52;
+	required string dslFile = 53;
+	required string sound = 54;
+	required int32 soundDelay = 55;
+	required float skilltimescale = 56;
+	required int32 skilltimescalestarttime = 57;
+	required int32 skilltimescaleendtime = 58;
+}
