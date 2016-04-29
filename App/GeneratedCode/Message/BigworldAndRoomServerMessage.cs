@@ -321,6 +321,60 @@ namespace GameFrameworkMessage
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_LR_ActiveScene")]
+  public partial class Msg_LR_ActiveScene : global::ProtoBuf.IExtensible
+  {
+    public Msg_LR_ActiveScene() {}
+    
+    private ulong _UserGuid;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"UserGuid", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public ulong UserGuid
+    {
+      get { return _UserGuid; }
+      set { _UserGuid = value; }
+    }
+    private int _RoomID;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomID
+    {
+      get { return _RoomID; }
+      set { _RoomID = value; }
+    }
+    private int _SceneId;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"SceneId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int SceneId
+    {
+      get { return _SceneId; }
+      set { _SceneId = value; }
+    }
+    private readonly global::System.Collections.Generic.List<GameFrameworkMessage.Msg_LR_RoomUserInfo> _UserInfos = new global::System.Collections.Generic.List<GameFrameworkMessage.Msg_LR_RoomUserInfo>();
+    [global::ProtoBuf.ProtoMember(4, Name=@"UserInfos", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public global::System.Collections.Generic.List<GameFrameworkMessage.Msg_LR_RoomUserInfo> UserInfos
+    {
+      get { return _UserInfos; }
+    }
+  
+    private int _HPs = default(int);
+    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"HPs", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int HPs
+    {
+      get { return _HPs; }
+      set { _HPs = value; }
+    }
+    private int _MPs = default(int);
+    [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"MPs", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int MPs
+    {
+      get { return _MPs; }
+      set { _MPs = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_LR_ChangeScene")]
   public partial class Msg_LR_ChangeScene : global::ProtoBuf.IExtensible
   {
@@ -728,6 +782,37 @@ namespace GameFrameworkMessage
       STRING = 3
     }
   
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_RL_ActiveSceneResult")]
+  public partial class Msg_RL_ActiveSceneResult : global::ProtoBuf.IExtensible
+  {
+    public Msg_RL_ActiveSceneResult() {}
+    
+    private readonly global::System.Collections.Generic.List<ulong> _UserGuids = new global::System.Collections.Generic.List<ulong>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"UserGuids", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public global::System.Collections.Generic.List<ulong> UserGuids
+    {
+      get { return _UserGuids; }
+    }
+  
+    private int _RoomID;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomID
+    {
+      get { return _RoomID; }
+      set { _RoomID = value; }
+    }
+    private int _Result;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"Result", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int Result
+    {
+      get { return _Result; }
+      set { _Result = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }

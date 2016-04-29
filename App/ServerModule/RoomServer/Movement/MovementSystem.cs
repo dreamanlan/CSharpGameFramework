@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using System.Collections.Generic;
+using GameFrameworkMessage;
 
 namespace GameFramework
 {
@@ -52,28 +53,36 @@ namespace GameFramework
       //npc执行移动时忽略阻挡与避让，这些行为由ai模块在规划其路径时执行。
       if (!obj.IsDead() && obj.CanMove && msi.IsMoving && !msi.IsSkillMoving) {
         ScriptRuntime.Vector3 pos = msi.GetPosition3D();
-        float cos_angle = (float)msi.MoveDirCosAngle;
-        float sin_angle = (float)msi.MoveDirSinAngle;
-        float speed = (float)obj.GetActualProperty().MoveSpeed;
-        float distance = (speed * (float)(int)deltaTime) / 1000.0f;
-        
+                float speed = (float)obj.GetActualProperty().MoveSpeed;
+                float distance = (speed * (float)(int)deltaTime) / 1000.0f;
+                ScriptRuntime.Vector3 dir = msi.TargetDir;
+                
         //LogSystem.Debug("MovementSystem npc:{0} speed:{1} deltaTime:{2} distance:{3}", obj.GetId(), speed, deltaTime, distance);
 
-        float x = 0, y = 0;
-        if (msi.CalcDistancSquareToTarget() < distance * distance) {
-          x = msi.TargetPosition.X;
-          y = msi.TargetPosition.Z;
-          ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(x, y);
-          msi.SetPosition2D(newPos);
-        } else {
-          float len = pos.Length();
-          y = pos.Z + distance * cos_angle;
-          x = pos.X + distance * sin_angle;
-          ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(x, y);
-          msi.SetPosition2D(newPos);
+                float x = 0, y = 0;
+                if (msi.CalcDistancSquareToTarget() < distance * distance) {
+                    x = msi.TargetPosition.X;
+                    y = msi.TargetPosition.Z;
+                    ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(x, y);
+                    msi.SetPosition2D(newPos);
+
+                    msi.IsMoving = false;
+                    User user = obj.CustomData as User;
+                    if (null != user) {
+                        Msg_RC_NpcMove npcMoveBuilder = DataSyncUtility.BuildNpcMoveMessage(obj);
+                        if (null != npcMoveBuilder) {
+                            Scene scene = user.OwnRoom.GetActiveScene();
+                            if (null != scene) {
+                                scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcMove, npcMoveBuilder);
+                            }
+                        }
+                    }
+                } else {
+                    ScriptRuntime.Vector3 tpos = pos + dir * distance;
+                    msi.SetPosition(tpos);
+                }
+            }
         }
-      }
-    }
 
     private long m_LastTickTime = 0;
     private EntityManager m_EntityMgr = null;

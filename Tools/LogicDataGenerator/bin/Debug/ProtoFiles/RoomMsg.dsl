@@ -62,12 +62,14 @@ message(Msg_CR_Quit) {
 
 message(Msg_CR_UserMoveToPos) {
   member(target_pos, uint64, required);
+  member(is_stop, bool, optional);
 };
 
 // Íæ¼Ò¼¼ÄÜ
 message(Msg_CR_Skill) {
   member(role_id, int, required);
   member(skill_id, int, required);
+  member(target_id, int, required);
 };
 
 message(Msg_CR_OperateMode) {
@@ -111,7 +113,6 @@ message(Msg_RC_DestroyNpc) {
 
 message(Msg_RC_NpcMove) {
   member(npc_id, int, required);
-  member(move_direction, int, optional);
   member(velocity, int, optional);
   member(cur_pos, uint64, optional);
   member(target_pos, uint64, optional);

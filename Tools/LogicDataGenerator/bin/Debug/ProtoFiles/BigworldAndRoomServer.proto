@@ -80,6 +80,16 @@ message Msg_LBL_Message
 	required bytes Data = 3;
 }
 
+message Msg_LR_ActiveScene
+{
+	required uint64 UserGuid = 1;
+	required int32 RoomID = 2;
+	required int32 SceneId = 3;
+	repeated Msg_LR_RoomUserInfo UserInfos = 4;
+	optional int32 HPs = 5;
+	optional int32 MPs = 6;
+}
+
 message Msg_LR_ChangeScene
 {
 	required uint64 UserGuid = 1;
@@ -170,6 +180,13 @@ message Msg_LRL_StoryMessage
 	required uint64 UserGuid = 2;
 	required string MsgId = 3;
 	repeated MessageArg Args = 4;
+}
+
+message Msg_RL_ActiveSceneResult
+{
+	repeated uint64 UserGuids = 1;
+	required int32 RoomID = 2;
+	required int32 Result = 3;
 }
 
 message Msg_RL_ChangeScene

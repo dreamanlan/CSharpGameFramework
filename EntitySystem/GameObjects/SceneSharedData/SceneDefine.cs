@@ -11,6 +11,7 @@ namespace GameFramework
         Cant_Find_Room,
         Cant_Find_User,
         User_Key_Exist,
+        Not_Field_Room,
     }
     public enum SceneTypeEnum
     {

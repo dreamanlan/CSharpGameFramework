@@ -22,6 +22,8 @@ namespace GameFrameworkMessage
 		Msg_LR_UserQuit,
 		Msg_RL_UserQuit,
 		Msg_LR_UserReLive,
+		Msg_LR_ActiveScene,
+		Msg_RL_ActiveSceneResult,
 		Msg_LR_EnterScene,
 		Msg_RL_EnterSceneResult,
 		Msg_LR_ChangeScene,
@@ -82,6 +84,8 @@ namespace GameFrameworkMessage
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LB_UserRelogin), (int)BigworldAndRoomServerMessageEnum.Msg_LB_UserRelogin);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_LBL_Message, typeof(Msg_LBL_Message));
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LBL_Message), (int)BigworldAndRoomServerMessageEnum.Msg_LBL_Message);
+			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_LR_ActiveScene, typeof(Msg_LR_ActiveScene));
+			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LR_ActiveScene), (int)BigworldAndRoomServerMessageEnum.Msg_LR_ActiveScene);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_LR_ChangeScene, typeof(Msg_LR_ChangeScene));
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LR_ChangeScene), (int)BigworldAndRoomServerMessageEnum.Msg_LR_ChangeScene);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_LR_EnterScene, typeof(Msg_LR_EnterScene));
@@ -100,6 +104,8 @@ namespace GameFrameworkMessage
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LR_UserReLive), (int)BigworldAndRoomServerMessageEnum.Msg_LR_UserReLive);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_LRL_StoryMessage, typeof(Msg_LRL_StoryMessage));
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LRL_StoryMessage), (int)BigworldAndRoomServerMessageEnum.Msg_LRL_StoryMessage);
+			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_RL_ActiveSceneResult, typeof(Msg_RL_ActiveSceneResult));
+			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_RL_ActiveSceneResult), (int)BigworldAndRoomServerMessageEnum.Msg_RL_ActiveSceneResult);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_RL_ChangeScene, typeof(Msg_RL_ChangeScene));
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_RL_ChangeScene), (int)BigworldAndRoomServerMessageEnum.Msg_RL_ChangeScene);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_RL_ChangeSceneResult, typeof(Msg_RL_ChangeSceneResult));

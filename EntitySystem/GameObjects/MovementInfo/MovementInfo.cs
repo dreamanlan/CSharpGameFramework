@@ -35,6 +35,8 @@ namespace GameFramework
             {
                 m_TargetPosition = value;
                 m_IsMoveStatusChanged = true;
+                m_TargetDir = m_TargetPosition - m_Position;
+                m_TargetDir.Normalize();
             }
         }
         public float PositionX
@@ -52,23 +54,11 @@ namespace GameFramework
             get { return m_Position.Z; }
             set { m_Position.Z = value; }
         }
+        public ScriptRuntime.Vector3 TargetDir
+        {
+            get { return m_TargetDir; }
+        }
 
-        public float MoveDirCosAngle
-        {
-            get { return m_MoveDirCosAngle; }
-        }
-        public float MoveDirSinAngle
-        {
-            get { return m_MoveDirSinAngle; }
-        }
-        public float FaceDirCosAngle
-        {
-            get { return m_FaceDirCosAngle; }
-        }
-        public float FaceDirSinAngle
-        {
-            get { return m_FaceDirSinAngle; }
-        }
         public float CalcDistancSquareToTarget()
         {
             return Geometry.DistanceSquare(m_Position, m_TargetPosition);
@@ -105,9 +95,8 @@ namespace GameFramework
         {
             if (Math.Abs(m_FaceDir - rot) > c_Precision) {
                 m_FaceDir = rot;
-                m_FaceDirCosAngle = (float)Math.Cos(rot);
-                m_FaceDirSinAngle = (float)Math.Sin(rot);
                 m_IsFaceDirChanged = true;
+                m_FaceDir3D = new ScriptRuntime.Vector3((float)Math.Sin(rot), 0, (float)Math.Cos(rot));
             }
         }
         public float GetFaceDir()
@@ -118,9 +107,8 @@ namespace GameFramework
         {
             if (Math.Abs(m_MoveDir - dir) > c_Precision) {
                 m_MoveDir = dir;
-                m_MoveDirCosAngle = (float)Math.Cos(dir);
-                m_MoveDirSinAngle = (float)Math.Sin(dir);
                 m_IsMoveStatusChanged = true;
+                m_MoveDir3D = new ScriptRuntime.Vector3((float)Math.Sin(dir), 0, (float)Math.Cos(dir));
             }
         }
 
@@ -128,36 +116,38 @@ namespace GameFramework
         {
             return m_MoveDir;
         }
+        public ScriptRuntime.Vector2 GetMoveDir2D()
+        {
+            return new ScriptRuntime.Vector2(m_MoveDir3D.X, m_MoveDir3D.Z);
+        }
         public ScriptRuntime.Vector3 GetMoveDir3D()
         {
-            float dir = GetMoveDir();
-            return new ScriptRuntime.Vector3((float)Math.Sin(dir), 0, (float)Math.Cos(dir));
+            return m_MoveDir3D;
+        }
+        public ScriptRuntime.Vector2 GetFaceDir2D()
+        {
+            return new ScriptRuntime.Vector2(m_FaceDir3D.X, m_FaceDir3D.Z);
         }
         public ScriptRuntime.Vector3 GetFaceDir3D()
         {
-            float dir = GetFaceDir();
-            return new ScriptRuntime.Vector3((float)Math.Sin(dir), 0, (float)Math.Cos(dir));
-        }
-        public void StartMove()
-        {
-            IsMoving = true;
-        }
-        public void StopMove()
-        {
-            IsMoving = false;
+            return m_FaceDir3D;
         }
         public MovementStateInfo()
         {
-            m_Position = new ScriptRuntime.Vector3();
+            m_Position = ScriptRuntime.Vector3.Zero;
         }
         public void Reset()
         {
-            m_Position = new ScriptRuntime.Vector3();
-            m_TargetPosition = new ScriptRuntime.Vector3();
+            m_Position = ScriptRuntime.Vector3.Zero;
+            m_TargetPosition = ScriptRuntime.Vector3.Zero;
+
             m_IsMoving = false;
             m_IsSkillMoving = false;
             m_FaceDir = 0;
             m_MoveDir = 0;
+            m_TargetDir = ScriptRuntime.Vector3.Zero;
+            m_FaceDir3D = ScriptRuntime.Vector3.Zero;
+            m_MoveDir3D = ScriptRuntime.Vector3.Zero;
             m_IsFaceDirChanged = false;
             m_IsMoveStatusChanged = false;
         }
@@ -180,14 +170,13 @@ namespace GameFramework
         private bool m_IsMoving = false;
         private bool m_IsSkillMoving = false;
         private int m_FormationIndex = 0;
-        private ScriptRuntime.Vector3 m_Position;
-        private ScriptRuntime.Vector3 m_TargetPosition;
+        private ScriptRuntime.Vector3 m_Position = ScriptRuntime.Vector3.Zero;
+        private ScriptRuntime.Vector3 m_TargetPosition = ScriptRuntime.Vector3.Zero;
+        private ScriptRuntime.Vector3 m_TargetDir = ScriptRuntime.Vector3.Zero;
         private float m_FaceDir = 0;
-        private float m_FaceDirCosAngle = 1;
-        private float m_FaceDirSinAngle = 0;
         private float m_MoveDir = 0;
-        private float m_MoveDirCosAngle = 1;
-        private float m_MoveDirSinAngle = 0;
+        private ScriptRuntime.Vector3 m_FaceDir3D = ScriptRuntime.Vector3.Zero;
+        private ScriptRuntime.Vector3 m_MoveDir3D = ScriptRuntime.Vector3.Zero;
         private bool m_IsFaceDirChanged = false;
         private bool m_IsMoveStatusChanged = false;
         private float c_Precision = 0.001f;

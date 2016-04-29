@@ -66,6 +66,7 @@ message Msg_CR_Skill
 {
 	required int32 role_id = 1;
 	required int32 skill_id = 2;
+	required int32 target_id = 3;
 }
 
 message Msg_CR_SwitchDebug
@@ -76,6 +77,7 @@ message Msg_CR_SwitchDebug
 message Msg_CR_UserMoveToPos
 {
 	required uint64 target_pos = 1;
+	optional bool is_stop = 2;
 }
 
 message Msg_CRC_StoryMessage
@@ -209,10 +211,9 @@ message Msg_RC_NpcFace
 message Msg_RC_NpcMove
 {
 	required int32 npc_id = 1;
-	optional int32 move_direction = 2;
-	optional int32 velocity = 3;
-	optional uint64 cur_pos = 4;
-	optional uint64 target_pos = 5;
+	optional int32 velocity = 2;
+	optional uint64 cur_pos = 3;
+	optional uint64 target_pos = 4;
 }
 
 message Msg_RC_NpcSkill

@@ -115,13 +115,30 @@ message(Msg_LR_UserReLive)
   member(RoomID, int32, required);
 };
 
+message(Msg_LR_ActiveScene)
+{
+	member(UserGuid, uint64, required);
+	member(RoomID, int32, required);
+	member(SceneId, int32, required);
+	member(UserInfos, Msg_LR_RoomUserInfo, repeated);
+	member(HPs, int32, optional);
+	member(MPs, int32, optional);
+};
+
+message(Msg_RL_ActiveSceneResult)
+{
+	member(UserGuids, uint64, repeated);
+	member(RoomID, int32, required);
+	member(Result, int32, required);
+};
+
 message(Msg_LR_EnterScene)
 {
 	member(UserGuid, uint64, required);
 	member(RoomID, int32, required);
 	member(UserInfo, Msg_LR_RoomUserInfo, required);
 	member(HP, int32, optional);
-	member(MP, int32, optional);	
+	member(MP, int32, optional);
 };
 
 message(Msg_RL_EnterSceneResult)

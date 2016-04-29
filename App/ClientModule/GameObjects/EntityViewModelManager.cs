@@ -103,12 +103,74 @@ namespace GameFramework
         {
             return m_EntityViews.ContainsKey(objId);
         }
+        
+        internal void MarkSpaceInfoViews()
+        {
+            foreach (KeyValuePair<int, SpaceInfoView> pair in m_SpaceInfoViews) {
+                SpaceInfoView view = pair.Value;
+                view.NeedDestroy = true;
+            }
+        }
+        internal void UpdateSpaceInfoView(int objId, bool isPlayer, float x, float y, float z, float dir)
+        {
+            SpaceInfoView view = GetSpaceInfoViewById(objId);
+            if (null == view) {
+                view = CreateSpaceInfoView(objId, isPlayer);
+            }
+            if (null != view) {
+                view.NeedDestroy = false;
+                view.Update(x, y, z, dir);
+            }
+        }
+        internal void DestroyUnusedSpaceInfoViews()
+        {
+            List<int> deletes = new List<int>();
+            foreach (KeyValuePair<int, SpaceInfoView> pair in m_SpaceInfoViews) {
+                SpaceInfoView view = pair.Value;
+                if (view.NeedDestroy)
+                    deletes.Add(view.ObjId);
+            }
+            foreach (int id in deletes) {
+                DestroySpaceInfoView(id);
+            }
+            deletes.Clear();
+        }
+
+        private SpaceInfoView CreateSpaceInfoView(int objId, bool isPlayer)
+        {
+            SpaceInfoView view = null;
+            if (!m_SpaceInfoViews.ContainsKey(objId)) {
+                view = new SpaceInfoView();
+                view.Create(objId, isPlayer);
+                m_SpaceInfoViews.Add(objId, view);
+            }
+            return view;
+        }
+        private void DestroySpaceInfoView(int objId)
+        {
+            SpaceInfoView view;
+            if (m_SpaceInfoViews.TryGetValue(objId, out view)) {
+                if (view != null) {
+                    view.Destroy();
+                }
+                m_SpaceInfoViews.Remove(objId);
+            }
+        }
+        private SpaceInfoView GetSpaceInfoViewById(int objId)
+        {
+            SpaceInfoView view = null;
+            m_SpaceInfoViews.TryGetValue(objId, out view);
+            return view;
+        }
+
         private EntityViewModelManager()
         {
         }
 
         private MyDictionary<int, EntityViewModel> m_EntityViews = new MyDictionary<int, EntityViewModel>();
         private MyDictionary<UnityEngine.GameObject, int> m_Object2Ids = new MyDictionary<UnityEngine.GameObject, int>();
+
+        private MyDictionary<int, SpaceInfoView> m_SpaceInfoViews = new MyDictionary<int, SpaceInfoView>();
 
         internal static EntityViewModelManager Instance
         {

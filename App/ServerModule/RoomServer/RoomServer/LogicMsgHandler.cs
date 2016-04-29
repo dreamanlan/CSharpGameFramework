@@ -77,21 +77,27 @@ namespace GameFramework
                 ScriptRuntime.Vector3 pos = new ScriptRuntime.Vector3(tx, 0, tz);
 
                 MovementStateInfo msi = charactor.GetMovementStateInfo();
-
-                AiStateInfo asi = charactor.GetAiStateInfo();
-                msi.TargetPosition = pos;
-                List<Vector3> waypoints = new List<Vector3>();
-                waypoints.Add(pos);
-                AiData_ForMoveCommand data = asi.AiDatas.GetData<AiData_ForMoveCommand>();
-                if (null == data) {
-                    data = new AiData_ForMoveCommand(waypoints);
-                    asi.AiDatas.AddData(data);
+                if (!move_msg.is_stop) {
+                    msi.IsMoving = true;
+                    msi.TargetPosition = pos;
+                    float dir = Geometry.GetYRadian(msi.GetPosition3D(), pos);
+                    msi.SetFaceDir(dir);
+                    msi.SetMoveDir(dir);
+                } else {
+                    msi.IsMoving = true;
+                    msi.TargetPosition = pos;
+                    float dir = Geometry.GetYRadian(msi.GetPosition3D(), pos);
+                    msi.SetFaceDir(dir);
+                    msi.SetMoveDir(dir);
                 }
-                data.WayPoints = waypoints;
-                data.Index = 0;
-                data.IsFinish = false;
-                asi.Time = 1000;//下一帧即触发移动
-                asi.ChangeToState((int)(AiStateId.MoveCommand));
+
+                Msg_RC_NpcMove npcMoveBuilder = DataSyncUtility.BuildNpcMoveMessage(charactor);
+                if (null != npcMoveBuilder) {
+                    Scene scene = user.OwnRoom.GetActiveScene();
+                    if (null != scene) {
+                        scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcMove, npcMoveBuilder);
+                    }
+                }
             }
         }
     }

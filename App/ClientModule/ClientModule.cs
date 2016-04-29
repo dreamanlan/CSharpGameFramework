@@ -998,7 +998,7 @@ namespace GameFramework
 
         private List<EntityInfo> m_DeletedEntities = new List<EntityInfo>();
         private ClientAsyncActionProcessor m_AsyncActionProcessor = new ClientAsyncActionProcessor();
-        private bool m_IsSceneLoaded = false;
+        private bool m_IsSceneLoaded = true;
 
         private bool m_IsStoryState = false;
         private int m_leaderID;

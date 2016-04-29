@@ -39,6 +39,11 @@ namespace GameFramework
             get { return m_Hps; }
         }
         //-------------------------------------------------------------------------------------
+        internal bool IsFieldRoom
+        {
+            get { return m_IsFieldRoom; }
+            set { m_IsFieldRoom = value; }
+        }
         internal RoomState CurrentState
         { get; set; }
         internal Room()
@@ -274,6 +279,15 @@ namespace GameFramework
                             observer.Tick();
                         }
                     }
+                    if (!IsFieldRoom) {
+                        int userCount = GetActiveRoomUserCount();
+                        if (userCount <= 0) {
+                            if (GetMinimizeElapsedDroppedTime() > c_finish_time_for_no_users_) {
+                                //若房间内玩家数目为0，结束战斗，关闭房间
+                                EndBattle((int)CampIdEnum.Unkown);
+                            }
+                        }
+                    }
                     //每个Tick结束，将空间属性同步给Peer，用于Peer转发消息
                     foreach (User user in room_users_) {
                         if (null != user && null != user.Info && null != user.Info.GetMovementStateInfo()) {
@@ -410,6 +424,31 @@ namespace GameFramework
             connector_.SendMsgToLobby(builder);
         }
 
+        internal void EndBattle(int winnerCampID)
+        {
+            if (IsFieldRoom) {
+                return;
+            }
+            if (this.CurrentState == RoomState.Finish || this.CurrentState == RoomState.Deactive) {
+                return;
+            }
+            foreach (User user in room_users_) {
+                if (user != null) {
+                    Msg_RL_UserDrop unqBuilder = new Msg_RL_UserDrop();
+                    unqBuilder.RoomID = cur_room_id_;
+                    unqBuilder.UserGuid = user.Guid;
+                    unqBuilder.IsBattleEnd = true;
+                    connector_.SendMsgToLobby(unqBuilder);
+                    user.LastNotifyUserDropTime = TimeUtility.GetLocalMilliseconds();
+                }
+            }
+            //向Lobby发送战斗结束消息
+
+            this.CurrentState = RoomState.Finish;
+            m_FinishTime = TimeUtility.GetLocalMilliseconds();
+            LogSys.Log(LOG_TYPE.DEBUG, "Room {0}({1}) EndBattle.", RoomID, LocalID);
+        }
+
         internal bool AddObserver(ulong guid, string name, uint key)
         {
             bool ret = false;
@@ -431,6 +470,19 @@ namespace GameFramework
             }
             observer.IsEntered = false;
             //observer.IsIdle = true;
+        }
+        internal void NoticeRoomClosing()
+        {
+            foreach (User user in room_users_) {
+                if (user != null && (int)UserControlState.UserDropped == user.UserControlState) {
+                    Msg_RL_UserDrop unqBuilder = new Msg_RL_UserDrop();
+                    unqBuilder.RoomID = cur_room_id_;
+                    unqBuilder.UserGuid = user.Guid;
+                    unqBuilder.IsBattleEnd = true;
+                    connector_.SendMsgToLobby(unqBuilder);
+                    user.LastNotifyUserDropTime = TimeUtility.GetLocalMilliseconds();
+                }
+            }
         }
 
         private void Deactive()
@@ -502,6 +554,7 @@ namespace GameFramework
         private const int c_max_observer_num_ = 5;
         private Observer[] room_observers_ = new Observer[c_max_observer_num_];
 
+        private bool m_IsFieldRoom = false;
         private Scene m_ActiveScene = null;
         private ScenePool m_ScenePool = null;
 

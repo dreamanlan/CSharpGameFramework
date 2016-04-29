@@ -207,6 +207,13 @@ namespace GameFrameworkMessage
       get { return _skill_id; }
       set { _skill_id = value; }
     }
+    private int _target_id;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"target_id", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int target_id
+    {
+      get { return _target_id; }
+      set { _target_id = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -240,6 +247,14 @@ namespace GameFrameworkMessage
     {
       get { return _target_pos; }
       set { _target_pos = value; }
+    }
+    private bool _is_stop = default(bool);
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"is_stop", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(default(bool))]
+    public bool is_stop
+    {
+      get { return _is_stop; }
+      set { _is_stop = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -802,16 +817,8 @@ namespace GameFrameworkMessage
       get { return _npc_id; }
       set { _npc_id = value; }
     }
-    private int _move_direction = default(int);
-    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"move_direction", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(int))]
-    public int move_direction
-    {
-      get { return _move_direction; }
-      set { _move_direction = value; }
-    }
     private int _velocity = default(int);
-    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"velocity", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"velocity", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     [global::System.ComponentModel.DefaultValue(default(int))]
     public int velocity
     {
@@ -819,7 +826,7 @@ namespace GameFrameworkMessage
       set { _velocity = value; }
     }
     private ulong _cur_pos = default(ulong);
-    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"cur_pos", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"cur_pos", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     [global::System.ComponentModel.DefaultValue(default(ulong))]
     public ulong cur_pos
     {
@@ -827,7 +834,7 @@ namespace GameFrameworkMessage
       set { _cur_pos = value; }
     }
     private ulong _target_pos = default(ulong);
-    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"target_pos", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"target_pos", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     [global::System.ComponentModel.DefaultValue(default(ulong))]
     public ulong target_pos
     {

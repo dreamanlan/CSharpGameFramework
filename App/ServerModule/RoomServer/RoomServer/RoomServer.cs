@@ -22,10 +22,6 @@ namespace RoomServer
     /// </remarks>
     internal sealed partial class RoomServer
     {
-        internal void AddPlayer(uint key, ulong guid, int campId)
-        {
-            room_mgr_.AddPlayer(key, guid, campId);
-        }
         internal void ChangeRoomScene(int roomid, int scenetype)
         {
             room_mgr_.ChangeRoomScene(roomid, scenetype);
@@ -96,8 +92,10 @@ namespace RoomServer
 
             LogSys.Log(LOG_TYPE.DEBUG, "room server init ip: {0}  port: {1}", server_ip_, server_port_);
 
-            uint tick_interval = 50;
-            room_mgr_ = new RoomManager(1024, tick_interval, lobby_connector_);
+            thread_count_ = 8;
+            per_thread_room_count_ = 32;
+            uint tick_interval = 33;
+            room_mgr_ = new RoomManager(1280, thread_count_, per_thread_room_count_, tick_interval, lobby_connector_);
             room_mgr_.Init(room_server_name_);
             IOManager.Instance.Init((int)server_port_);
             room_mgr_.StartRoomThread();
@@ -274,6 +272,8 @@ namespace RoomServer
         private RoomManager room_mgr_;
         private long last_tick_time_;
         private long last_send_roominfo_time_;// 上一次发送房间信息的时间
+        private uint thread_count_;
+        private uint per_thread_room_count_;
         private bool is_continue_register_;
         private string server_ip_;
         private uint server_port_;

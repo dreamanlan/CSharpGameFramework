@@ -449,6 +449,15 @@ internal class Msg_RC_DebugSpaceInfo_Handler
         Msg_RC_DebugSpaceInfo targetmsg = msg as Msg_RC_DebugSpaceInfo;
         if (null == targetmsg)
             return;
+
+        EntityViewModelManager.Instance.MarkSpaceInfoViews();
+        if (GlobalVariables.Instance.IsDebug) {
+            for (int i = 0; i < targetmsg.space_infos.Count; i++) {
+                Msg_RC_DebugSpaceInfo.DebugSpaceInfo info = targetmsg.space_infos[i];
+                EntityViewModelManager.Instance.UpdateSpaceInfoView(info.obj_id, info.is_player, info.pos_x, 0, info.pos_z, info.face_dir);
+            }
+        }
+        EntityViewModelManager.Instance.DestroyUnusedSpaceInfoViews();
     }
 }
 

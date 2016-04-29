@@ -33,22 +33,30 @@ namespace GameFramework
             room_pool_.Init(max_room_count_);
             user_pool_ = userpool;
             connector_ = conn;
+            preactive_room_count_ = 0;
             LogSys.Log(LOG_TYPE.DEBUG, "thread {0} init ok.", cur_thread_id_);
             return true;
         }
 
         internal int IdleRoomCount()
         {
-            return (int)(max_room_count_ - active_room_.Count);
+            return (int)(max_room_count_ - active_room_.Count - preactive_room_count_);
         }
 
-        internal void ActiveRoom(int roomid, int scenetype)
+        internal void PreActiveRoom()
+        {
+            Interlocked.Increment(ref preactive_room_count_);
+        }
+
+        internal void ActiveFieldRoom(int roomid, int scenetype)
         {
             LogSys.Log(LOG_TYPE.INFO, "[0] active field room {0} scene {1} thread {2}", roomid, scenetype, cur_thread_id_);
             Room rm = room_pool_.NewRoom();
             if (null == rm) {
-                LogSys.Log(LOG_TYPE.ERROR, "Failed active field room {0} in thread {1}",
-                    roomid, cur_thread_id_);
+                Interlocked.Decrement(ref preactive_room_count_);
+
+                LogSys.Log(LOG_TYPE.ERROR, "Failed active field room {0} in thread {1}, preactive room count {2}",
+                    roomid, cur_thread_id_, preactive_room_count_);
                 return;
             }
             LogSys.Log(LOG_TYPE.INFO, "[1] active field room {0} scene {1} thread {2}", roomid, scenetype, cur_thread_id_);
@@ -60,16 +68,78 @@ namespace GameFramework
             rm.MaxLevel = 999;
             rm.Monsters.Clear();
             rm.Hps.Clear();
+            rm.IsFieldRoom = true;
 
             LogSys.Log(LOG_TYPE.INFO, "[3] active field room {0} scene {1} thread {2}", roomid, scenetype, cur_thread_id_);
 
             //工作全部完成后再加到激活房间列表，开始tick
             active_room_.Add(rm);
+            Interlocked.Decrement(ref preactive_room_count_);
 
-            LogSys.Log(LOG_TYPE.DEBUG, "active field room {0} in thread {1}",
-                roomid, cur_thread_id_);
+            LogSys.Log(LOG_TYPE.DEBUG, "active field room {0} in thread {1}, preactive room count {2}",
+                roomid, cur_thread_id_, preactive_room_count_);
         }
 
+        internal void ActiveRoom(int roomid, int scenetype, User[] users, List<int> monsters, List<int> hps)
+        {
+            LogSys.Log(LOG_TYPE.INFO, "[0] active room {0} scene {1} thread {2} for {3} users", roomid, scenetype, cur_thread_id_, users.Length);
+            Room rm = room_pool_.NewRoom();
+            if (null == rm) {
+                //由于并发原因，有可能lobby或主线程会多发起一些房间激活，这种失败情形需要回收user。
+                //我们通过预留一定数量的房间来降低这种情形发生的概率。
+                foreach (User u in users) {
+                    LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [RoomThread.ActiveRoom]", u.LocalID, u.Guid, u.GetKey());
+                    user_pool_.FreeUser(u.LocalID);
+                }
+                Interlocked.Decrement(ref preactive_room_count_);
+
+                LogSys.Log(LOG_TYPE.ERROR, "Failed active room {0} in thread {1}, preactive room count {2}",
+                    roomid, cur_thread_id_, preactive_room_count_);
+                return;
+            }
+            LogSys.Log(LOG_TYPE.INFO, "[1] active room {0} scene {1} thread {2} for {3} users", roomid, scenetype, cur_thread_id_, users.Length);
+            rm.ScenePool = scene_pool_;
+            rm.Init(roomid, scenetype, user_pool_, connector_);
+            LogSys.Log(LOG_TYPE.INFO, "[2] active room {0} scene {1} thread {2} for {3} users", roomid, scenetype, cur_thread_id_, users.Length);
+            if (null != users) {
+                int maxScore = 0;
+                int maxLevel = 0;
+                foreach (User us in users) {
+                    LogSys.Log(LOG_TYPE.INFO, "[3] active room {0} scene {1} thread {2} for user {3}({4})", roomid, scenetype, cur_thread_id_, us.Guid, us.GetKey());
+                    rm.AddNewUser(us);
+                }
+                ///
+
+                rm.MaxScore = maxScore;
+                rm.MaxLevel = maxLevel;
+                rm.Monsters.Clear();
+                rm.Hps.Clear();
+                if (null != monsters && null != hps
+                  && monsters.Count == hps.Count) {
+                    rm.Monsters.AddRange(monsters);
+                    rm.Hps.AddRange(hps);
+                }
+            }
+            LogSys.Log(LOG_TYPE.INFO, "[4] active room {0} scene {1} thread {2} for {3} users", roomid, scenetype, cur_thread_id_, users.Length);
+            /*
+            //临时添加测试观察者
+            for (int obIx = 0; obIx < 5; ++obIx) {
+              uint key = 0xf0000000 + (uint)((roomid << 4) + obIx);
+              string observerName = "Observer_" + key;
+              if (rm.AddObserver(key, observerName, key)) {
+                LogSys.Log(LOG_TYPE.DEBUG, "Add room observer successed, guid:{0} name:{1} key:{2}", key, observerName, key);
+              } else {
+                LogSys.Log(LOG_TYPE.DEBUG, "Add room observer failed, guid:{0} name:{1} key:{2}", key, observerName, key);
+              }
+            }
+            */
+            //工作全部完成后再加到激活房间列表，开始tick
+            active_room_.Add(rm);
+            Interlocked.Decrement(ref preactive_room_count_);
+
+            LogSys.Log(LOG_TYPE.DEBUG, "active room {0} in thread {1}, preactive room count {2}",
+                roomid, cur_thread_id_, preactive_room_count_);
+        }
         internal void AddUser(ulong guid, int roomId, User user)
         {
             Room room = GetRoomByID(roomId);
@@ -367,6 +437,8 @@ namespace GameFramework
 
         private RoomManager room_mgr_;
         private Connector connector_;
+
+        private int preactive_room_count_ = 0;
 
         private const long c_WarningTickTime = 1000;
         private long m_LastTickTime = 0;

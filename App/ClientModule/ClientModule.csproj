@@ -102,6 +102,7 @@
     </Compile>
     <Compile Include="GameObjects\EntityDrawGizmos.cs" />
     <Compile Include="GameObjects\EntityViewModel_Npc.cs" />
+    <Compile Include="GameObjects\SpaceInfoView.cs" />
     <Compile Include="GmCommands\ClientGmStorySystem.cs" />
     <Compile Include="GmCommands\GmCommands.cs" />
     <Compile Include="RoomNetWork\MessageDispatch.cs" />
