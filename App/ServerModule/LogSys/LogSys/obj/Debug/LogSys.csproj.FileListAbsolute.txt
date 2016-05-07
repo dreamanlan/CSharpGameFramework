@@ -15,3 +15,8 @@ F:\OpenSource\CSharpGameFramework_local\App\ServerModule\ServerEnv\bin\LogSys.pd
 F:\OpenSource\CSharpGameFramework_local\App\ServerModule\LogSys\LogSys\obj\Debug\LogSys.dll
 F:\OpenSource\CSharpGameFramework_local\App\ServerModule\LogSys\LogSys\obj\Debug\LogSys.pdb
 F:\OpenSource\CSharpGameFramework_local\App\ServerModule\LogSys\LogSys\obj\Debug\LogSys.csprojResolveAssemblyReference.cache
+E:\work\OpenSource\CSharpGameFramework\App\ServerModule\ServerEnv\bin\LogSys.dll
+E:\work\OpenSource\CSharpGameFramework\App\ServerModule\ServerEnv\bin\LogSys.pdb
+E:\work\OpenSource\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\LogSys.csprojResolveAssemblyReference.cache
+E:\work\OpenSource\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\LogSys.dll
+E:\work\OpenSource\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\LogSys.pdb
