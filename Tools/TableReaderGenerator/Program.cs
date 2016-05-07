@@ -804,6 +804,6 @@ namespace TableReaderGenerator
         }
                 
         private const string c_filters = "*.dat";
-        private static readonly HashSet<string> s_ListTables = new HashSet<string> { "SkillResources.txt" };
+        private static readonly HashSet<string> s_ListTables = new HashSet<string> { "SkillResources.txt", "LevelMonster.txt" };
     }
 }

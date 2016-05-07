@@ -21,11 +21,9 @@ namespace GameFramework
         Invalid = 0,
         Idle,
         Combat,
-        Pursuit,
         Escape,
         GoHome,
         Patrol,
-        Guard,
         DslLogic,
         SkillCommand,
         MoveCommand,
@@ -91,6 +89,18 @@ namespace GameFramework
                 m_AiStoryInstanceInfo = null;
             }
             m_IsInited = false;
+
+            m_AiLogic = 0;
+            m_AiParam = new string[c_MaxAiParamNum];
+            m_AiStoryInstanceInfo = null;
+            m_Time = 0;
+            m_IsInited = false;
+            m_leaderID = 0;
+            m_HomePos = Vector3.Zero;
+            m_Target = 0;
+            m_HateTarget = 0;
+            m_IsExternalTarget = false;
+            m_LastChangeTargetTime = 0;
         }
         public int AiLogic
         {
@@ -167,7 +177,7 @@ namespace GameFramework
         private long m_Time = 0;
         private bool m_IsInited = false;
         private int m_leaderID = 0;
-        private ScriptRuntime.Vector3 m_HomePos = new ScriptRuntime.Vector3();
+        private ScriptRuntime.Vector3 m_HomePos = Vector3.Zero;
         private int m_Target = 0;
         private int m_HateTarget = 0;
         private bool m_IsExternalTarget = false;

@@ -77,19 +77,11 @@ namespace GameFramework
                 ScriptRuntime.Vector3 pos = new ScriptRuntime.Vector3(tx, 0, tz);
 
                 MovementStateInfo msi = charactor.GetMovementStateInfo();
-                if (!move_msg.is_stop) {
-                    msi.IsMoving = true;
-                    msi.TargetPosition = pos;
-                    float dir = Geometry.GetYRadian(msi.GetPosition3D(), pos);
-                    msi.SetFaceDir(dir);
-                    msi.SetMoveDir(dir);
-                } else {
-                    msi.IsMoving = true;
-                    msi.TargetPosition = pos;
-                    float dir = Geometry.GetYRadian(msi.GetPosition3D(), pos);
-                    msi.SetFaceDir(dir);
-                    msi.SetMoveDir(dir);
-                }
+                msi.IsMoving = true;
+                msi.TargetPosition = pos;
+                float dir = Geometry.GetYRadian(msi.GetPosition3D(), pos);
+                msi.SetFaceDir(dir);
+                msi.SetMoveDir(dir);
 
                 Msg_RC_NpcMove npcMoveBuilder = DataSyncUtility.BuildNpcMoveMessage(charactor);
                 if (null != npcMoveBuilder) {
@@ -119,6 +111,13 @@ namespace GameFramework
                 EntityInfo obj = scene.GetEntityById(use_skill.role_id);
                 if (null != obj) {
                     AiStateInfo aiInfo = obj.GetAiStateInfo();
+                    if (use_skill.target_id > 0) {
+                        aiInfo.Target = use_skill.target_id;
+                    } else if (use_skill.target_dir > 0) {
+                        float dir = ProtoHelper.DecodeFloat(use_skill.target_dir);
+                        obj.GetMovementStateInfo().SetFaceDir(dir);
+                        aiInfo.Target = 0;
+                    }
                     if (aiInfo.AiLogic == (int)AiStateLogicId.Entity_Leader) {
                         AiData_Leader data = aiInfo.AiDatas.GetData<AiData_Leader>();
                         if (null == data) {
@@ -136,6 +135,24 @@ namespace GameFramework
                     }
                     aiInfo.ChangeToState((int)AiStateId.SkillCommand);
                 }
+            }
+        }
+    }
+
+    internal class Msg_CR_StopSkillHandler
+    {
+        internal static void Execute(object msg, User user)
+        {
+            Msg_CR_StopSkill stopMsg = msg as Msg_CR_StopSkill;
+            if (null == stopMsg) return;
+            EntityInfo userInfo = user.Info;
+            if (null == userInfo) return;
+            Scene scene = user.OwnRoom.GetActiveScene();
+            if (null != scene) {
+                scene.SkillSystem.StopAllSkill(userInfo.GetId(), true);
+
+                Msg_RC_NpcStopSkill retMsg = DataSyncUtility.BuildNpcStopSkillMessage(userInfo);
+                scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcStopSkill, retMsg);
             }
         }
     }
@@ -221,7 +238,8 @@ namespace GameFramework
                         StorySystem.StoryConfigManager.Instance.Clear();
                         scene.StorySystem.ClearStoryInstancePool();
                         scene.StorySystem.PreloadSceneStories();
-                        scene.StorySystem.StartStory("main");
+                        scene.StorySystem.StartStory("local_main");
+                        scene.StorySystem.StartStory("story_main");
                         break;
                     case 1:
                         //script

@@ -86,6 +86,7 @@
     <Compile Include="TableReader\BaseFilePathDefine.cs" />
     <Compile Include="TableReader\DataReader.cs" />
     <Compile Include="TableReader\Extension\Formation.cs" />
+    <Compile Include="TableReader\Extension\LevelMonster.cs" />
     <Compile Include="TableReader\Extension\Skill.cs" />
     <Compile Include="TableReader\FilePathDefine.cs" />
     <Compile Include="TableReader\TableConfigUtility.cs" />

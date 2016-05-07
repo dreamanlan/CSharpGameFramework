@@ -119,6 +119,10 @@ namespace GameFramework
         }
         public void AddImpact(ImpactInfo info)
         {
+            if (null == info.ConfigData) {
+                LogSystem.Error("impact {0} config can't found !", info.ImpactId);
+                return;
+            }
             m_ImpactList.Add(info);
             info.Seq = m_NextImpactSeq++;
             if ((int)SkillOrImpactType.Buff == info.ConfigData.type) {

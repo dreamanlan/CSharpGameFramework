@@ -318,6 +318,27 @@ namespace GameFramework
             AttackerInfos.Clear();
             m_LastAttackedTime = 0;
             m_LastAttackTime = 0;
+            m_WaitDeleteAttackers.Clear();
+            m_LastRetireTime = 0;
+        }
+        public void RetireAttackerInfos(long lifetime)
+        {
+            long curTime = TimeUtility.GetLocalMilliseconds();
+            if (m_LastRetireTime + lifetime < curTime) {
+                m_LastRetireTime = curTime;
+
+                m_WaitDeleteAttackers.Clear();
+                foreach (var pair in AttackerInfos) {
+                    AttackerInfo info = pair.Value;
+                    if (info.m_AttackTime + lifetime < curTime || m_SceneContext.GetEntityById(pair.Key) == null) {
+                        m_WaitDeleteAttackers.Add(pair.Key);
+                    }
+                }
+                for (int i = 0; i < m_WaitDeleteAttackers.Count; ++i) {
+                    AttackerInfos.Remove(m_WaitDeleteAttackers[i]);
+                }
+                m_WaitDeleteAttackers.Clear();
+            }
         }
         public void SetAttackerInfo(int attackId, bool isKiller, bool isNormalAttack, bool isCritical, int hpDamage, int npDamage)
         {
@@ -351,6 +372,11 @@ namespace GameFramework
             float aCriticalPow = GetBaseProperty().CriticalPow;
             float aRps = GetBaseProperty().Rps;
             float aAttackRange = GetBaseProperty().AttackRange;
+
+            aHpMax += ConfigData.addhp * GetLevel();
+            aEnergyMax += ConfigData.addmp * GetLevel();
+            aAttackBase += ConfigData.addattack * GetLevel();
+            aDefenceBase += ConfigData.adddefence * GetLevel();
 
             GetActualProperty().SetMoveSpeed(Operate_Type.OT_Absolute, aMoveSpeed);
             GetActualProperty().SetHpMax(Operate_Type.OT_Absolute, aHpMax);
@@ -544,6 +570,8 @@ namespace GameFramework
         private MyDictionary<int, AttackerInfo> m_AttackerInfos = new MyDictionary<int, AttackerInfo>();
         private long m_LastAttackedTime = 0;
         private long m_LastAttackTime = 0;
+        private List<int> m_WaitDeleteAttackers = new List<int>();
+        private long m_LastRetireTime = 0;
 
         private int m_StateFlag = 0;
         private int m_StoryListenFlag = 0;

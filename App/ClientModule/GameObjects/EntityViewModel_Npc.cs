@@ -122,7 +122,10 @@ namespace GameFramework
 
         public void MoveTo(float x, float y, float z)
         {
-            if (null != Agent) {
+            MovementStateInfo msi = m_Entity.GetMovementStateInfo();
+            msi.IsMoving = true;
+            msi.TargetPosition = new ScriptRuntime.Vector3(x, y, z);
+            if (null != Agent && Agent.enabled) {
                 Agent.SetDestination(new Vector3(x, y, z));
                 Agent.Resume();
             }
@@ -138,7 +141,9 @@ namespace GameFramework
 
         public void StopMove()
         {
-            if (null != Agent) {
+            MovementStateInfo msi = m_Entity.GetMovementStateInfo();
+            msi.IsMoving = false;
+            if (null != Agent && Agent.enabled) {
                 Agent.Stop();
             }
             if (null != Animator) {

@@ -9,9 +9,12 @@ namespace GameFramework
     {
         void Execute(EntityInfo entity, long deltaTime);
     }
-    public delegate void AiMoveDelegation(EntityInfo entity);
+    public delegate void AiPursueDelegation(EntityInfo entity, ScriptRuntime.Vector3 target);
+    public delegate void AiStopPursueDelegation(EntityInfo entity);
+    public delegate void AiSelectSkill(EntityInfo entity, SkillInfo skill);
+    public delegate void AiDeadDelegation(EntityInfo entity);
+    public delegate void AiTargetDelegation(EntityInfo entity, EntityInfo target);
     public delegate void AiFaceDelegation(EntityInfo entity);
-    public delegate void AiTargetDelegation(EntityInfo entity);
     public delegate void AiSkillDelegation(EntityInfo entity, int skillId);
     public delegate void AiStopSkillDelegation(EntityInfo entity);
     public delegate void AiAddImpactDelegation(EntityInfo user, int impactId);
@@ -22,7 +25,11 @@ namespace GameFramework
     public delegate void AiStateHandler(EntityInfo entity, long deltaTime);
     public abstract class AbstractAiStateLogic : IAiStateLogic
     {
-        public static AiMoveDelegation OnAiMove;
+        public static AiPursueDelegation OnAiPursue;
+        public static AiStopPursueDelegation OnAiStopPursue;
+        public static AiSelectSkill OnAiSelectSkill;
+        public static AiDeadDelegation OnAiDead;
+        public static AiTargetDelegation OnAiTarget;
         public static AiFaceDelegation OnAiFace;
         public static AiSkillDelegation OnAiSkill;
         public static AiStopSkillDelegation OnAiStopSkill;
@@ -74,15 +81,30 @@ namespace GameFramework
         {
             entity.GetAiStateInfo().PopState();
         }
-        public void NotifyAiMove(EntityInfo entity)
+        public void NotifyAiPursue(EntityInfo entity, ScriptRuntime.Vector3 target)
         {
-            Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
-            Vector3 targetPos = entity.GetMovementStateInfo().TargetPosition;
-            float dir = Geometry.GetYRadian(srcPos, targetPos);
-            entity.GetMovementStateInfo().SetMoveDir(dir);
-            entity.GetMovementStateInfo().SetFaceDir(dir);
-            if (null != OnAiMove)
-                OnAiMove(entity);
+            if (null != OnAiPursue)
+                OnAiPursue(entity, target);
+        }
+        public void NotifyAiStopPursue(EntityInfo entity)
+        {
+            if (null != OnAiStopPursue)
+                OnAiStopPursue(entity);
+        }
+        public void NotifyAiSelectSkill(EntityInfo entity, SkillInfo skill)
+        {
+            if (null != OnAiSelectSkill)
+                OnAiSelectSkill(entity, skill);
+        }
+        public void NotifyAiDead(EntityInfo entity)
+        {
+            if (null != OnAiDead)
+                OnAiDead(entity);
+        }
+        public void NotifyAiTarget(EntityInfo entity, EntityInfo target)
+        {
+            if (null != OnAiTarget)
+                OnAiTarget(entity, target);
         }
         public void NotifyAiFace(EntityInfo entity)
         {

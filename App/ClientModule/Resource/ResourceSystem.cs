@@ -12,101 +12,9 @@ namespace GameFramework
     /// </summary>
     public class ResourceSystem
     {
-        public void SetActiveOptim(UnityEngine.GameObject obj, bool active)
-        {
-            if (active) {
-                if (!obj.activeSelf)
-                    obj.SetActive(active);                              
-
-                int layer;
-                if (m_LayerDict.TryGetValue(obj, out layer)) {
-                    SetLayer(obj, layer);
-                }
-
-                ParticleSystem ps = obj.GetComponent<ParticleSystem>();
-                if (null != ps && ps.playOnAwake) {
-                    ps.Play();
-                } else {
-                    ParticleSystem[] pss = obj.GetComponentsInChildren<ParticleSystem>();
-                    for (int i = 0; i < pss.Length; i++) {
-                        if (null != pss[i] && pss[i].playOnAwake) {
-                            pss[i].Play();
-                        }
-                    }
-                }
-                AudioSource audioSource = obj.GetComponent<AudioSource>();
-                if(null!=audioSource && audioSource.playOnAwake){
-                    audioSource.Play();
-                } else {
-                    AudioSource[] audioSources = obj.GetComponentsInChildren<AudioSource>();
-                    for (int i = 0; i < audioSources.Length; i++) {
-                        if (null != audioSources[i] && audioSources[i].playOnAwake) {
-                            audioSources[i].Play();
-                        }
-                    }
-                }
-                NavMeshAgent agent = obj.GetComponent<NavMeshAgent>();
-                if (null != agent) {
-                    agent.enabled = false;
-                }
-                AbstractScriptBehavior scriptBehavior = obj.GetComponent<AbstractScriptBehavior>();
-                if (null != scriptBehavior) {
-                    scriptBehavior.ResourceEnabled = true;
-                } else {
-                    AbstractScriptBehavior[] scriptBehaviors = obj.GetComponentsInChildren<AbstractScriptBehavior>();
-                    for (int i = 0; i < scriptBehaviors.Length; ++i) {
-                        if (null != scriptBehaviors[i]) {
-                            scriptBehaviors[i].ResourceEnabled = true;
-                        }
-                    }
-                }
-            } else {
-                m_LayerDict[obj] = obj.layer;
-                SetLayer(obj, m_DeactiveLayer);
-
-                ParticleSystem ps0 = obj.GetComponent<ParticleSystem>();
-                if (null != ps0 && ps0.playOnAwake) {
-                    ps0.Stop();
-                } else {
-                    ParticleSystem[] pss = obj.GetComponentsInChildren<ParticleSystem>();
-                    for (int i = 0; i < pss.Length; i++) {
-                        if (null != pss[i] && pss[i].playOnAwake) {
-                            pss[i].Clear();
-                            pss[i].Stop();
-                        }
-                    }
-                }
-                AudioSource audioSource = obj.GetComponent<AudioSource>();
-                if(null!=audioSource && audioSource.playOnAwake){
-                    audioSource.Stop();
-                } else {
-                    AudioSource[] audioSources = obj.GetComponentsInChildren<AudioSource>();
-                    for (int i = 0; i < audioSources.Length; i++) {
-                        if (null != audioSources[i] && audioSources[i].playOnAwake) {
-                            audioSources[i].Stop();
-                        }
-                    }
-                }
-                NavMeshAgent agent = obj.GetComponent<NavMeshAgent>();
-                if (null != agent) {
-                    agent.enabled = false;
-                }
-                AbstractScriptBehavior scriptBehavior = obj.GetComponent<AbstractScriptBehavior>();
-                if (null != scriptBehavior) {
-                    scriptBehavior.ResourceEnabled = false;
-                } else {
-                    AbstractScriptBehavior[] scriptBehaviors = obj.GetComponentsInChildren<AbstractScriptBehavior>();
-                    for (int i = 0; i < scriptBehaviors.Length; ++i) {
-                        if (null != scriptBehaviors[i]) {
-                            scriptBehaviors[i].ResourceEnabled = false;
-                        }
-                    }
-                }
-            }
-        }
         public void SetVisible(UnityEngine.GameObject obj, bool visible, CharacterController cc)
         {
-            SetActiveOptim(obj, visible);
+            obj.SetActive(visible);
         }
         public void PreloadObject(string res, int ct)
         {
@@ -271,7 +179,7 @@ namespace GameFramework
             }
             OjbectEx objEx = null;
             if (!m_LoadedPrefabs.TryGetValue(res, out objEx)) {
-                if (GlobalVariables.Instance.IsPublish && AssetBundleManager.Instance.Contains(res)) {
+                if (AssetBundleManager.Instance.Contains(res)) {
                     obj = AssetBundleManager.Instance.Load(res);
                 }
                 if (obj == null) {
@@ -342,7 +250,8 @@ namespace GameFramework
         {
             GameObject gameObj = obj as GameObject;
             if (null != gameObj) {
-                SetActiveOptim(gameObj, true);
+                OnActiveChanged(gameObj, true);
+                gameObj.SetActive(true);
             }
         }
         private void FinalizeObject(UnityEngine.Object obj)
@@ -350,9 +259,113 @@ namespace GameFramework
             GameObject gameObj = obj as GameObject;
             if (null != gameObj) {
                 if (null != gameObj.transform.parent)
-                    gameObj.transform.SetParent(null);
-                SetActiveOptim(gameObj, false);
+                    gameObj.transform.parent = null;
+                OnActiveChanged(gameObj, false);
+                gameObj.SetActive(false);
             }
+        }
+        private void OnActiveChanged(UnityEngine.GameObject obj, bool active)
+        {
+            if (active) {
+                /*
+                if (!obj.activeSelf)
+                    obj.SetActive(active);                
+                int layer;
+                if (m_LayerDict.TryGetValue(obj, out layer)) {
+                    SetLayer(obj, layer);
+                }
+                */
+                ParticleSystem[] pss0 = obj.GetComponents<ParticleSystem>();
+                for (int i = 0; i < pss0.Length; i++) {
+                    if (null != pss0[i] && pss0[i].playOnAwake) {
+                        //pss0[i].Clear(true);
+                        pss0[i].Play(true);
+                    }
+                }
+                ParticleSystem[] pss = obj.GetComponentsInChildren<ParticleSystem>(true);
+                for (int i = 0; i < pss.Length; i++) {
+                    if (null != pss[i] && pss[i].playOnAwake) {
+                        //pss[i].Clear(true);
+                        pss[i].Play(true);
+                    }
+                }
+                AudioSource audioSource = obj.GetComponent<AudioSource>();
+                if (null != audioSource && audioSource.playOnAwake) {
+                    audioSource.Play();
+                }
+                AudioSource[] audioSources = obj.GetComponentsInChildren<AudioSource>(true);
+                for (int i = 0; i < audioSources.Length; i++) {
+                    if (null != audioSources[i] && audioSources[i].playOnAwake) {
+                        audioSources[i].Play();
+                    }
+                }
+                NavMeshAgent agent = obj.GetComponent<NavMeshAgent>();
+                if (null != agent) {
+                    agent.enabled = false;
+                }
+                AbstractScriptBehavior scriptBehavior = obj.GetComponent<AbstractScriptBehavior>();
+                if (null != scriptBehavior) {
+                    scriptBehavior.ResourceEnabled = true;
+                } else {
+                    AbstractScriptBehavior[] scriptBehaviors = obj.GetComponentsInChildren<AbstractScriptBehavior>(true);
+                    for (int i = 0; i < scriptBehaviors.Length; ++i) {
+                        if (null != scriptBehaviors[i]) {
+                            scriptBehaviors[i].ResourceEnabled = true;
+                        }
+                    }
+                }
+            } else {
+                /*
+                if (obj.layer != m_DeactiveLayer)
+                    m_LayerDict[obj] = obj.layer;
+                SetLayer(obj, m_DeactiveLayer);
+                */
+                ParticleSystem[] pss0 = obj.GetComponents<ParticleSystem>();
+                for (int i = 0; i < pss0.Length; i++) {
+                    if (null != pss0[i] && pss0[i].playOnAwake) {
+                        pss0[i].Clear(true);
+                        pss0[i].Stop(true);
+                    }
+                }
+                ParticleSystem[] pss = obj.GetComponentsInChildren<ParticleSystem>(true);
+                for (int i = 0; i < pss.Length; i++) {
+                    if (null != pss[i] && pss[i].playOnAwake) {
+                        pss[i].Clear(true);
+                        pss[i].Stop(true);
+                    }
+                }
+                AudioSource audioSource = obj.GetComponent<AudioSource>();
+                if (null != audioSource && audioSource.playOnAwake) {
+                    audioSource.Stop();
+                }
+                AudioSource[] audioSources = obj.GetComponentsInChildren<AudioSource>(true);
+                for (int i = 0; i < audioSources.Length; i++) {
+                    if (null != audioSources[i] && audioSources[i].playOnAwake) {
+                        audioSources[i].Stop();
+                    }
+                }
+
+                NavMeshAgent agent = obj.GetComponent<NavMeshAgent>();
+                if (null != agent) {
+                    agent.enabled = false;
+                }
+                AbstractScriptBehavior scriptBehavior = obj.GetComponent<AbstractScriptBehavior>();
+                if (null != scriptBehavior) {
+                    scriptBehavior.ResourceEnabled = false;
+                } else {
+                    AbstractScriptBehavior[] scriptBehaviors = obj.GetComponentsInChildren<AbstractScriptBehavior>(true);
+                    for (int i = 0; i < scriptBehaviors.Length; ++i) {
+                        if (null != scriptBehaviors[i]) {
+                            scriptBehaviors[i].ResourceEnabled = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void FroceSetGameObjectLayer(GameObject obj, int layer)
+        {
+            SetLayer(obj, layer);
         }
         private static void SetLayer(GameObject obj, int layer)
         {

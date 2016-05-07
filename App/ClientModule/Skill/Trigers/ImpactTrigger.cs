@@ -317,10 +317,10 @@ namespace GameFramework.Skill.Trigers
             long durationTime = m_DurationTime;
             long intervalTime = m_IntervalTime;
             if (durationTime <= 0) {
-                durationTime = (long)(senderObj.ConfigData.duration * 1000.0f);
+                durationTime = (long)senderObj.ConfigData.duration;
             }
             if (intervalTime <= 0) {
-                intervalTime = (long)(senderObj.ConfigData.interval * 1000.0f);
+                intervalTime = (long)senderObj.ConfigData.interval;
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;

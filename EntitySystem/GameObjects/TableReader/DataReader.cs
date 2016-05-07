@@ -12,7 +12,7 @@ namespace TableConfig
 {
 	public sealed partial class Actor : IDataRecord<int>
 	{
-		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 100)]
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 116)]
 		private struct ActorRecord
 		{
 			internal int id;
@@ -20,11 +20,15 @@ namespace TableConfig
 			internal int icon;
 			internal int type;
 			internal int avatar;
-			internal float cooldown;
+			internal int cooldown;
 			internal int hp;
 			internal int mp;
-			internal int baseattack;
+			internal int attack;
 			internal int defence;
+			internal int addhp;
+			internal int addmp;
+			internal int addattack;
+			internal int adddefence;
 			internal float speed;
 			internal float viewrange;
 			internal float gohomerange;
@@ -47,11 +51,15 @@ namespace TableConfig
 		public int icon;
 		public int type;
 		public string avatar;
-		public float cooldown;
+		public int cooldown;
 		public int hp;
 		public int mp;
-		public int baseattack;
+		public int attack;
 		public int defence;
+		public int addhp;
+		public int addmp;
+		public int addattack;
+		public int adddefence;
 		public float speed;
 		public float viewrange;
 		public float gohomerange;
@@ -76,11 +84,15 @@ namespace TableConfig
 			icon = DataRecordUtility.ExtractInt(table, record.icon, 0);
 			type = DataRecordUtility.ExtractInt(table, record.type, 0);
 			avatar = DataRecordUtility.ExtractString(table, record.avatar, "");
-			cooldown = DataRecordUtility.ExtractFloat(table, record.cooldown, 0);
+			cooldown = DataRecordUtility.ExtractInt(table, record.cooldown, 0);
 			hp = DataRecordUtility.ExtractInt(table, record.hp, 0);
 			mp = DataRecordUtility.ExtractInt(table, record.mp, 0);
-			baseattack = DataRecordUtility.ExtractInt(table, record.baseattack, 0);
+			attack = DataRecordUtility.ExtractInt(table, record.attack, 0);
 			defence = DataRecordUtility.ExtractInt(table, record.defence, 0);
+			addhp = DataRecordUtility.ExtractInt(table, record.addhp, 0);
+			addmp = DataRecordUtility.ExtractInt(table, record.addmp, 0);
+			addattack = DataRecordUtility.ExtractInt(table, record.addattack, 0);
+			adddefence = DataRecordUtility.ExtractInt(table, record.adddefence, 0);
 			speed = DataRecordUtility.ExtractFloat(table, record.speed, 0);
 			viewrange = DataRecordUtility.ExtractFloat(table, record.viewrange, 0);
 			gohomerange = DataRecordUtility.ExtractFloat(table, record.gohomerange, 0);
@@ -110,8 +122,12 @@ namespace TableConfig
 			record.cooldown = DataRecordUtility.SetValue(table, cooldown, 0);
 			record.hp = DataRecordUtility.SetValue(table, hp, 0);
 			record.mp = DataRecordUtility.SetValue(table, mp, 0);
-			record.baseattack = DataRecordUtility.SetValue(table, baseattack, 0);
+			record.attack = DataRecordUtility.SetValue(table, attack, 0);
 			record.defence = DataRecordUtility.SetValue(table, defence, 0);
+			record.addhp = DataRecordUtility.SetValue(table, addhp, 0);
+			record.addmp = DataRecordUtility.SetValue(table, addmp, 0);
+			record.addattack = DataRecordUtility.SetValue(table, addattack, 0);
+			record.adddefence = DataRecordUtility.SetValue(table, adddefence, 0);
 			record.speed = DataRecordUtility.SetValue(table, speed, 0);
 			record.viewrange = DataRecordUtility.SetValue(table, viewrange, 0);
 			record.gohomerange = DataRecordUtility.SetValue(table, gohomerange, 0);
@@ -608,6 +624,134 @@ namespace TableConfig
 
 namespace TableConfig
 {
+	public sealed partial class LevelMonster : IDataRecord
+	{
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 36)]
+		private struct LevelMonsterRecord
+		{
+			internal int group;
+			internal int scene;
+			internal int camp;
+			internal int actorID;
+			internal float x;
+			internal float y;
+			internal float dir;
+			internal int level;
+			internal int passive;
+		}
+
+		public int group;
+		public int scene;
+		public int camp;
+		public int actorID;
+		public float x;
+		public float y;
+		public float dir;
+		public int level;
+		public bool passive;
+
+		public bool ReadFromBinary(BinaryTable table, int index)
+		{
+			LevelMonsterRecord record = GetRecord(table,index);
+			group = DataRecordUtility.ExtractInt(table, record.group, 0);
+			scene = DataRecordUtility.ExtractInt(table, record.scene, 0);
+			camp = DataRecordUtility.ExtractInt(table, record.camp, 0);
+			actorID = DataRecordUtility.ExtractInt(table, record.actorID, 0);
+			x = DataRecordUtility.ExtractFloat(table, record.x, 0);
+			y = DataRecordUtility.ExtractFloat(table, record.y, 0);
+			dir = DataRecordUtility.ExtractFloat(table, record.dir, 0);
+			level = DataRecordUtility.ExtractInt(table, record.level, 0);
+			passive = DataRecordUtility.ExtractBool(table, record.passive, false);
+			return true;
+		}
+
+		public void WriteToBinary(BinaryTable table)
+		{
+			LevelMonsterRecord record = new LevelMonsterRecord();
+			record.group = DataRecordUtility.SetValue(table, group, 0);
+			record.scene = DataRecordUtility.SetValue(table, scene, 0);
+			record.camp = DataRecordUtility.SetValue(table, camp, 0);
+			record.actorID = DataRecordUtility.SetValue(table, actorID, 0);
+			record.x = DataRecordUtility.SetValue(table, x, 0);
+			record.y = DataRecordUtility.SetValue(table, y, 0);
+			record.dir = DataRecordUtility.SetValue(table, dir, 0);
+			record.level = DataRecordUtility.SetValue(table, level, 0);
+			record.passive = DataRecordUtility.SetValue(table, passive, false);
+			byte[] bytes = GetRecordBytes(record);
+			table.Records.Add(bytes);
+		}
+
+		private unsafe LevelMonsterRecord GetRecord(BinaryTable table, int index)
+		{
+			LevelMonsterRecord record;
+			byte[] bytes = table.Records[index];
+			fixed (byte* p = bytes) {
+				record = *(LevelMonsterRecord*)p;
+			}
+			return record;
+		}
+		private static unsafe byte[] GetRecordBytes(LevelMonsterRecord record)
+		{
+			byte[] bytes = new byte[sizeof(LevelMonsterRecord)];
+			fixed (byte* p = bytes) {
+				LevelMonsterRecord* temp = (LevelMonsterRecord*)p;
+				*temp = record;
+			}
+			return bytes;
+		}
+	}
+
+	public sealed partial class LevelMonsterProvider
+	{
+		public void LoadForClient()
+		{
+			Load(FilePathDefine_Client.C_LevelMonster);
+		}
+		public void LoadForServer()
+		{
+			Load(FilePathDefine_Server.C_LevelMonster);
+		}
+		public void Load(string file)
+		{
+			if (BinaryTable.IsValid(HomePath.GetAbsolutePath(file))) {
+				m_LevelMonsterMgr.LoadFromBinary(file);
+			} else {
+				LogSystem.Error("LevelMonster is not a table !");
+			}
+		}
+		public void Save(string file)
+		{
+		#if DEBUG
+			m_LevelMonsterMgr.SaveToBinary(file);
+		#endif
+		}
+		public void Clear()
+		{
+			m_LevelMonsterMgr.Clear();
+		}
+
+		public DataListMgr<LevelMonster> LevelMonsterMgr
+		{
+			get { return m_LevelMonsterMgr; }
+		}
+
+		public int GetLevelMonsterCount()
+		{
+			return m_LevelMonsterMgr.GetDataCount();
+		}
+
+		private DataListMgr<LevelMonster> m_LevelMonsterMgr = new DataListMgr<LevelMonster>();
+
+		public static LevelMonsterProvider Instance
+		{
+			get { return s_Instance; }
+		}
+		private static LevelMonsterProvider s_Instance = new LevelMonsterProvider();
+	}
+}
+
+namespace TableConfig
+{
 	public sealed partial class Skill : IDataRecord<int>
 	{
 		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 120)]
@@ -618,19 +762,9 @@ namespace TableConfig
 			internal int type;
 			internal int icon;
 			internal float distance;
-			internal float cooldown;
-			internal float duration;
-			internal float interval;
-			internal int damage;
-			internal int mpRecover;
-			internal int hpRecover;
-			internal int addAttack;
-			internal int addDefence;
-			internal int addRps;
-			internal int addCritical;
-			internal int addCriticalPow;
-			internal float addSpeed;
-			internal int addShield;
+			internal int cooldown;
+			internal int duration;
+			internal int interval;
 			internal int canmove;
 			internal int impactToSelf;
 			internal int impactToTarget;
@@ -643,6 +777,16 @@ namespace TableConfig
 			internal float aoeAngleOrLength;
 			internal int maxAoeTargetCount;
 			internal int dslSkillId;
+			internal float damage;
+			internal int mpRecover;
+			internal int hpRecover;
+			internal int addAttack;
+			internal int addDefence;
+			internal int addRps;
+			internal int addCritical;
+			internal int addCriticalPow;
+			internal float addSpeed;
+			internal int addShield;
 		}
 
 		public int id;
@@ -650,19 +794,9 @@ namespace TableConfig
 		public int type;
 		public int icon;
 		public float distance;
-		public float cooldown;
-		public float duration;
-		public float interval;
-		public int damage;
-		public int mpRecover;
-		public int hpRecover;
-		public int addAttack;
-		public int addDefence;
-		public int addRps;
-		public int addCritical;
-		public int addCriticalPow;
-		public float addSpeed;
-		public int addShield;
+		public int cooldown;
+		public int duration;
+		public int interval;
 		public int canmove;
 		public int impactToSelf;
 		public int impactToTarget;
@@ -675,6 +809,16 @@ namespace TableConfig
 		public float aoeAngleOrLength;
 		public int maxAoeTargetCount;
 		public int dslSkillId;
+		public float damage;
+		public int mpRecover;
+		public int hpRecover;
+		public int addAttack;
+		public int addDefence;
+		public int addRps;
+		public int addCritical;
+		public int addCriticalPow;
+		public float addSpeed;
+		public int addShield;
 
 		public bool ReadFromBinary(BinaryTable table, int index)
 		{
@@ -684,19 +828,9 @@ namespace TableConfig
 			type = DataRecordUtility.ExtractInt(table, record.type, 0);
 			icon = DataRecordUtility.ExtractInt(table, record.icon, 0);
 			distance = DataRecordUtility.ExtractFloat(table, record.distance, 0);
-			cooldown = DataRecordUtility.ExtractFloat(table, record.cooldown, 0);
-			duration = DataRecordUtility.ExtractFloat(table, record.duration, 0);
-			interval = DataRecordUtility.ExtractFloat(table, record.interval, 0);
-			damage = DataRecordUtility.ExtractInt(table, record.damage, 0);
-			mpRecover = DataRecordUtility.ExtractInt(table, record.mpRecover, 0);
-			hpRecover = DataRecordUtility.ExtractInt(table, record.hpRecover, 0);
-			addAttack = DataRecordUtility.ExtractInt(table, record.addAttack, 0);
-			addDefence = DataRecordUtility.ExtractInt(table, record.addDefence, 0);
-			addRps = DataRecordUtility.ExtractInt(table, record.addRps, 0);
-			addCritical = DataRecordUtility.ExtractInt(table, record.addCritical, 0);
-			addCriticalPow = DataRecordUtility.ExtractInt(table, record.addCriticalPow, 0);
-			addSpeed = DataRecordUtility.ExtractFloat(table, record.addSpeed, 0);
-			addShield = DataRecordUtility.ExtractInt(table, record.addShield, 0);
+			cooldown = DataRecordUtility.ExtractInt(table, record.cooldown, 0);
+			duration = DataRecordUtility.ExtractInt(table, record.duration, 0);
+			interval = DataRecordUtility.ExtractInt(table, record.interval, 0);
 			canmove = DataRecordUtility.ExtractInt(table, record.canmove, 0);
 			impactToSelf = DataRecordUtility.ExtractInt(table, record.impactToSelf, 0);
 			impactToTarget = DataRecordUtility.ExtractInt(table, record.impactToTarget, 0);
@@ -709,6 +843,16 @@ namespace TableConfig
 			aoeAngleOrLength = DataRecordUtility.ExtractFloat(table, record.aoeAngleOrLength, 0);
 			maxAoeTargetCount = DataRecordUtility.ExtractInt(table, record.maxAoeTargetCount, 0);
 			dslSkillId = DataRecordUtility.ExtractInt(table, record.dslSkillId, 0);
+			damage = DataRecordUtility.ExtractFloat(table, record.damage, 0);
+			mpRecover = DataRecordUtility.ExtractInt(table, record.mpRecover, 0);
+			hpRecover = DataRecordUtility.ExtractInt(table, record.hpRecover, 0);
+			addAttack = DataRecordUtility.ExtractInt(table, record.addAttack, 0);
+			addDefence = DataRecordUtility.ExtractInt(table, record.addDefence, 0);
+			addRps = DataRecordUtility.ExtractInt(table, record.addRps, 0);
+			addCritical = DataRecordUtility.ExtractInt(table, record.addCritical, 0);
+			addCriticalPow = DataRecordUtility.ExtractInt(table, record.addCriticalPow, 0);
+			addSpeed = DataRecordUtility.ExtractFloat(table, record.addSpeed, 0);
+			addShield = DataRecordUtility.ExtractInt(table, record.addShield, 0);
 			return true;
 		}
 
@@ -723,16 +867,6 @@ namespace TableConfig
 			record.cooldown = DataRecordUtility.SetValue(table, cooldown, 0);
 			record.duration = DataRecordUtility.SetValue(table, duration, 0);
 			record.interval = DataRecordUtility.SetValue(table, interval, 0);
-			record.damage = DataRecordUtility.SetValue(table, damage, 0);
-			record.mpRecover = DataRecordUtility.SetValue(table, mpRecover, 0);
-			record.hpRecover = DataRecordUtility.SetValue(table, hpRecover, 0);
-			record.addAttack = DataRecordUtility.SetValue(table, addAttack, 0);
-			record.addDefence = DataRecordUtility.SetValue(table, addDefence, 0);
-			record.addRps = DataRecordUtility.SetValue(table, addRps, 0);
-			record.addCritical = DataRecordUtility.SetValue(table, addCritical, 0);
-			record.addCriticalPow = DataRecordUtility.SetValue(table, addCriticalPow, 0);
-			record.addSpeed = DataRecordUtility.SetValue(table, addSpeed, 0);
-			record.addShield = DataRecordUtility.SetValue(table, addShield, 0);
 			record.canmove = DataRecordUtility.SetValue(table, canmove, 0);
 			record.impactToSelf = DataRecordUtility.SetValue(table, impactToSelf, 0);
 			record.impactToTarget = DataRecordUtility.SetValue(table, impactToTarget, 0);
@@ -745,6 +879,16 @@ namespace TableConfig
 			record.aoeAngleOrLength = DataRecordUtility.SetValue(table, aoeAngleOrLength, 0);
 			record.maxAoeTargetCount = DataRecordUtility.SetValue(table, maxAoeTargetCount, 0);
 			record.dslSkillId = DataRecordUtility.SetValue(table, dslSkillId, 0);
+			record.damage = DataRecordUtility.SetValue(table, damage, 0);
+			record.mpRecover = DataRecordUtility.SetValue(table, mpRecover, 0);
+			record.hpRecover = DataRecordUtility.SetValue(table, hpRecover, 0);
+			record.addAttack = DataRecordUtility.SetValue(table, addAttack, 0);
+			record.addDefence = DataRecordUtility.SetValue(table, addDefence, 0);
+			record.addRps = DataRecordUtility.SetValue(table, addRps, 0);
+			record.addCritical = DataRecordUtility.SetValue(table, addCritical, 0);
+			record.addCriticalPow = DataRecordUtility.SetValue(table, addCriticalPow, 0);
+			record.addSpeed = DataRecordUtility.SetValue(table, addSpeed, 0);
+			record.addShield = DataRecordUtility.SetValue(table, addShield, 0);
 			byte[] bytes = GetRecordBytes(record);
 			table.Records.Add(bytes);
 		}

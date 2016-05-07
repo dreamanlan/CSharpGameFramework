@@ -14,9 +14,47 @@ namespace GameFramework
         {
             return EntityController.Instance.GetGameObject(actorId);
         }
+        public int GetGameObjectId(UnityEngine.GameObject obj)
+        {
+            return EntityController.Instance.GetGameObjectId(obj);
+        }
+        public int GetGameObjectType(int id)
+        {
+            int type = -1;
+            EntityInfo entity = GetEntityById(id);
+            if (null != entity) {
+                type = entity.EntityType;
+            }
+            return type;
+        }
         public int GetCampId(int actorId)
         {
             return EntityController.Instance.GetCampId(actorId);
+        }
+        public void ClickNpc(int targetId)
+        {
+            SetLockTarget(targetId);
+        }
+        public void SetLockTarget(int targetId)
+        {
+            int oldTargetId = 0;
+            if (null != m_SelectedTarget) {
+                oldTargetId = m_SelectedTarget.TargetId;
+            }
+            OnSelectedTargetChange(oldTargetId, targetId);
+            EntityInfo target = GetEntityById(targetId);
+            if (null != target) {
+                m_SelectedTarget = new LockTargetInfo { Target = target, TargetId = targetId };
+                EntityInfo leader = GetEntityById(LeaderID);
+                if (null != leader) {
+                    AiStateInfo aiInfo = leader.GetAiStateInfo();
+                    if (null != SelectedTarget) {
+                        aiInfo.Target = SelectedTarget.TargetId;
+                    }
+                }
+            } else {
+                m_SelectedTarget = null;
+            }
         }
         public void MoveTo(float x, float y, float z)
         {
@@ -34,7 +72,7 @@ namespace GameFramework
                 SkillInfo skillInfo = obj.GetSkillStateInfo().GetSkillInfoById(skillId);
                 if (null != skillInfo) {
                     bool find = false;
-                    KdTree.Query(obj, skillInfo.distance, (float distSqr, KdTreeObject _obj) => {
+                    KdTree.Query(obj, skillInfo.Distance, (float distSqr, KdTreeObject _obj) => {
                         EntityInfo target = _obj.Object;
                         if (CharacterRelation.RELATION_ENEMY == EntityInfo.GetRelation(obj, target) && !target.IsDead()) {
                             find = true;
@@ -56,10 +94,15 @@ namespace GameFramework
                 if (null != skillInfo) {
                     if (obj.Energy >= obj.GetActualProperty().EnergyMax) {
                         if (!skillInfo.IsInCd(TimeUtility.GetLocalMilliseconds())) {
+                            int targetId = 0;
+                            if (null != SelectedTarget) {
+                                targetId = SelectedTarget.TargetId;
+                            }
                             if (IsRoomScene) {
-                                Network.NetworkSystem.Instance.SyncPlayerSkill(obj, skillId);
+                                Network.NetworkSystem.Instance.SyncPlayerSkill(obj, skillId, targetId, obj.GetMovementStateInfo().GetFaceDir());
                             } else {
                                 AiStateInfo aiInfo = obj.GetAiStateInfo();
+                                aiInfo.Target = targetId;
                                 if (aiInfo.AiLogic == (int)AiStateLogicId.Entity_Leader) {
                                     AiData_Leader data = aiInfo.AiDatas.GetData<AiData_Leader>();
                                     if (null == data) {

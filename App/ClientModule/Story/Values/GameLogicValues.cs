@@ -190,6 +190,96 @@ namespace GameFramework.Story.Values
         private object m_Value;
         private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
+    internal sealed class GetMonsterInfoValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getmonsterinfo") {
+                int flag = (int)StoryValueFlagMask.HAVE_VAR;
+                int num = callData.GetParamNum();
+                if (num > 1) {
+                    m_CampId.InitFromDsl(callData.GetParam(0));
+                    m_Index.InitFromDsl(callData.GetParam(1));
+                    flag |= m_CampId.Flag;
+                    flag |= m_Index.Flag;
+                }
+                m_Flag = flag;
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetMonsterInfoValue val = new GetMonsterInfoValue();
+            val.m_CampId = m_CampId.Clone();
+            val.m_Index = m_Index.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            val.m_Flag = m_Flag;
+            return val;
+        }
+        public void Substitute(object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            if (StoryValueHelper.HaveArg(Flag)) {
+                m_CampId.Substitute(iterator, args);
+                m_Index.Substitute(iterator, args);
+            }
+        }
+        public void Evaluate(StoryInstance instance)
+        {
+            m_CampId.Evaluate(instance);
+            m_Index.Evaluate(instance);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        public int Flag
+        {
+            get
+            {
+                return m_Flag;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_CampId.HaveValue && m_Index.HaveValue) {
+                m_HaveValue = true;
+                int sceneId = ClientModule.Instance.SceneId;
+                int campId = m_CampId.Value;
+                int index = m_Index.Value;
+                int monstersId = TableConfigUtility.GenLevelMonstersId(sceneId, campId);
+                List<TableConfig.LevelMonster> monsterList;
+                if (TableConfig.LevelMonsterProvider.Instance.TryGetValue(monstersId, out monsterList)) {
+                    if (index >= 0 && index < monsterList.Count) {
+                        m_Value = monsterList[index];
+                    } else {
+                        m_Value = null;
+                    }
+                } else {
+                    m_Value = null;
+                }
+            }
+        }
+
+        private IStoryValue<int> m_CampId = new StoryValue<int>();
+        private IStoryValue<int> m_Index = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+    }
     internal sealed class GetAiDataValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
@@ -634,6 +724,70 @@ namespace GameFramework.Story.Values
             m_HaveValue = true;
             m_Value = ClientInfo.Instance.RoleData.Members.Count;
         }
+
+        private bool m_HaveValue;
+        private object m_Value;
+        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+    }
+    internal sealed class IsClientValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "isclient") {
+                m_Flag = (int)StoryValueFlagMask.HAVE_VAR;
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            IsClientValue val = new IsClientValue();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            val.m_Flag = m_Flag;
+            return val;
+        }
+        public void Substitute(object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_Iterator = iterator;
+            m_Args = args;
+            if (StoryValueHelper.HaveArg(Flag)) {
+            }
+        }
+        public void Evaluate(StoryInstance instance)
+        {
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        public int Flag
+        {
+            get
+            {
+                return m_Flag;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            m_HaveValue = true;
+            m_Value = 1;
+        }
+
+        private object m_Iterator = null;
+        private object[] m_Args = null;
 
         private bool m_HaveValue;
         private object m_Value;

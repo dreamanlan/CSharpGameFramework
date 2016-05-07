@@ -5,6 +5,49 @@ using GameFrameworkMessage;
 
 namespace GameFramework.GmCommands
 {
+    //---------------------------------------------------------------------------------------------------------------
+    internal class DoResetDslCommand : SimpleStoryCommandBase<DoResetDslCommand, StoryValueParam<string>>
+    {
+        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<string> _params, long delta)
+        {
+            string val = _params.Param1Value;
+            if (Network.NetworkSystem.Instance.CanSendMessage) {
+                Msg_CR_GmCommand cmdMsg = new Msg_CR_GmCommand();
+                cmdMsg.type = 0;
+                Network.NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_GmCommand, cmdMsg);
+            }
+            return false;
+        }
+    }
+    internal class DoScpCommand : SimpleStoryCommandBase<DoScpCommand, StoryValueParam<string>>
+    {
+        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<string> _params, long delta)
+        {
+            string val = _params.Param1Value;
+            if (Network.NetworkSystem.Instance.CanSendMessage) {
+                Msg_CR_GmCommand cmdMsg = new Msg_CR_GmCommand();
+                cmdMsg.type = 1;
+                cmdMsg.content = val;
+                Network.NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_GmCommand, cmdMsg);
+            }
+            return false;
+        }
+    }
+    internal class DoGmCommand : SimpleStoryCommandBase<DoGmCommand, StoryValueParam<string>>
+    {
+        protected override bool ExecCommand(StoryInstance instance, StoryValueParam<string> _params, long delta)
+        {
+            string val = _params.Param1Value;
+            //ChatMessageSender.SendGmCommand(val);
+            if (Network.NetworkSystem.Instance.CanSendMessage) {
+                Msg_CR_GmCommand cmdMsg = new Msg_CR_GmCommand();
+                cmdMsg.type = 2;
+                cmdMsg.content = val;
+                Network.NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_GmCommand, cmdMsg);
+            }
+            return false;
+        }
+    }
     internal class SetDebugCommand : SimpleStoryCommandBase<SetDebugCommand, StoryValueParam<int>>
     {
         protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)

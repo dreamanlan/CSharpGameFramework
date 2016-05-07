@@ -10,7 +10,6 @@ namespace GameFramework
         protected override void OnInitStateHandlers()
         {
             SetStateHandler((int)AiStateId.Idle, this.IdleHandler);
-            SetStateHandler((int)AiStateId.Pursuit, this.PursuitHandler);
             SetStateHandler((int)AiStateId.Combat, this.CombatHandler);
             SetStateHandler((int)AiStateId.GoHome, this.GoHomeHandler);
             SetStateHandler((int)AiStateId.SkillCommand, this.SkillCommandHandler);
@@ -28,128 +27,80 @@ namespace GameFramework
             info.Target = 0;
         }
 
-        protected override bool OnStateLogicCheck(EntityInfo entity, long deltaTime)
+        protected override bool OnStateLogicCheck(EntityInfo npc, long deltaTime)
         {
-            if (entity.IsDead()) {
-                if (entity.GetAiStateInfo().CurState != (int)AiStateId.Idle) {
-                    entity.GetMovementStateInfo().IsMoving = false;
-                    NotifyAiMove(entity);
-                    ChangeToState(entity, (int)AiStateId.Idle);
-                }
+            if (npc.IsDead()) {
+                NotifyAiDead(npc);
                 return false;
             }
             return true;
         }
 
-        private void IdleHandler(EntityInfo entity, long deltaTime)
+        private void IdleHandler(EntityInfo npc, long deltaTime)
         {
-            AiStateInfo info = entity.GetAiStateInfo();
-            info.Time += deltaTime;
-            if (info.Time > 100) {
-                info.Time = 0;
-                EntityInfo target = null;
-                if (info.IsExternalTarget) {
-                    target = AiLogicUtility.GetSeeingLivingCharacterInfoHelper(entity, info.Target);
-                    if (null == target) {
-                        target = AiLogicUtility.GetNearstTargetHelper(entity, CharacterRelation.RELATION_ENEMY);
-                        if (null != target)
-                            info.Target = target.GetId();
-                    }
-                } else {
-                    target = AiLogicUtility.GetNearstTargetHelper(entity, CharacterRelation.RELATION_ENEMY);
-                    if (null != target)
-                        info.Target = target.GetId();
-                }
-                if (null != target) {
-                    entity.GetMovementStateInfo().IsMoving = false;
-                    NotifyAiMove(entity);
-                    info.Time = 0;
-                    ChangeToState(entity, (int)AiStateId.Pursuit);
-                }
-            }
+            if (npc.GetMovementStateInfo().IsMoving)
+                NotifyAiStopPursue(npc);
+
+            ChangeToState(npc, (int)AiStateId.Combat);
         }
-        private void PursuitHandler(EntityInfo entity, long deltaTime)
+
+        private void CombatHandler(EntityInfo npc, long deltaTime)
         {
-            AiStateInfo info = entity.GetAiStateInfo();
-            info.Time += deltaTime;
-            if (info.Time > 200) {
-                EntityInfo target = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.Target);
-                if (null != target) {
-                    float minDist = entity.GetRadius() + target.GetRadius();
-                    float dist = (float)entity.GetActualProperty().AttackRange + minDist;
-                    float distGoHome = entity.GohomeRange;
-                    Vector3 targetPos = target.GetMovementStateInfo().GetPosition3D();
-                    ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
-                    float dir = Geometry.GetYRadian(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
-                    targetPos.X += (float)(minDist * Math.Sin(dir));
-                    targetPos.Z += (float)(minDist * Math.Cos(dir));
-                    float powDist = Geometry.DistanceSquare(srcPos, targetPos);
-                    float powDistToHome = Geometry.DistanceSquare(srcPos, info.HomePos);
-                    if (powDist < dist * dist) {
-                        entity.GetMovementStateInfo().IsMoving = false;
-                        NotifyAiMove(entity);
-                        ChangeToState(entity, (int)AiStateId.Combat);
-                    } else if (powDistToHome > distGoHome * distGoHome) {
-                        entity.GetMovementStateInfo().IsMoving = true;
-                        entity.GetMovementStateInfo().TargetPosition = info.HomePos;
-                        NotifyAiMove(entity);
-                        ChangeToState(entity, (int)AiStateId.GoHome);
-                    } else {
-                        entity.GetMovementStateInfo().IsMoving = true;
-                        entity.GetMovementStateInfo().TargetPosition = targetPos;
-                        NotifyAiMove(entity);
-                    }
-                } else {
-                    entity.GetMovementStateInfo().IsMoving = false;
-                    NotifyAiMove(entity);
-                    ChangeToState(entity, (int)AiStateId.Idle);
-                }
+            if (npc.GetSkillStateInfo().IsSkillActivated()) {
+                return;
             }
-        }
-        private void CombatHandler(EntityInfo entity, long deltaTime)
-        {
-            AiStateInfo info = entity.GetAiStateInfo();
-            info.Time += deltaTime;
-            if (info.Time > c_IntervalTime) {
-                AiData_General data = GetAiData(entity);
-                if (null != data) {
-                    info.Time = 0;
-                    EntityInfo target = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.Target);
-                    if (null != target) {
-                        float minDist = entity.GetRadius() + target.GetRadius();
-                        float dist = (float)entity.GetActualProperty().AttackRange + minDist;
-                        ScriptRuntime.Vector3 targetPos = target.GetMovementStateInfo().GetPosition3D();
-                        ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
-                        float dir = Geometry.GetYRadian(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
-                        targetPos.X += (float)(minDist * Math.Sin(dir));
-                        targetPos.Z += (float)(minDist * Math.Cos(dir));
-                        float powDist = Geometry.DistanceSquare(srcPos, targetPos);
-                        if (powDist < dist * dist) {
-                            if (!entity.GetSkillStateInfo().IsSkillActivated()) {
-                                float rps = entity.GetActualProperty().Rps;
-                                long curTime = TimeUtility.GetLocalMilliseconds();
-                                NotifyAiFace(entity);
-                                int index = Helper.Random.Next(entity.AutoSkillIds.Count);
-                                int skillId = entity.AutoSkillIds[index];
-                                SkillInfo skillInfo = entity.GetSkillStateInfo().GetSkillInfoById(skillId);
-                                if (null != skillInfo && !skillInfo.IsInCd(curTime)) {
-                                    data.LastUseSkillTime = curTime;
-                                    NotifyAiSkill(entity, entity.AutoSkillIds[index]);
-                                }
-                            }
-                        } else {
-                            NotifyAiStopSkill(entity);
-                            ChangeToState(entity, (int)AiStateId.Pursuit);
-                        }
-                    } else {
-                        NotifyAiStopSkill(entity);
-                        ChangeToState(entity, (int)AiStateId.Idle);
-                    }
-                } else {
-                    info.Time = 0;
-                }
+
+            AiStateInfo info = npc.GetAiStateInfo();
+            Vector3 targetPos = info.HomePos;
+            ScriptRuntime.Vector3 srcPos = npc.GetMovementStateInfo().GetPosition3D();
+            float distSqrToHome = Geometry.DistanceSquare(srcPos, info.HomePos);
+            if (distSqrToHome > npc.GohomeRange) {
+                NotifyAiStopPursue(npc);
+                ChangeToState(npc, (int)AiStateId.GoHome);
+                return;
             }
+
+            ///
+            EntityInfo attackTarget = null;
+            SkillStateInfo currSkInfo = npc.GetSkillStateInfo();
+            ///找到可以使用的技能
+            SkillInfo skInfo = AiLogicUtility.NpcFindCanUseSkill(npc, this.GetAiData(npc), true);
+            NotifyAiSelectSkill(npc, skInfo);
+            if (skInfo == null) {
+                //没有可以使用的技能就切换到Idle状态
+                ChangeToState(npc, (int)AiStateId.Idle);
+                return;
+            }
+
+            CharacterRelation relation =
+                    (skInfo.TargetType == SkillTargetType.Friend ||
+                    skInfo.TargetType == SkillTargetType.RandFriend) ?
+                    CharacterRelation.RELATION_FRIEND :
+                    CharacterRelation.RELATION_ENEMY;
+
+            attackTarget = AiLogicUtility.GetNearstTargetHelper(
+                npc, skInfo.Distance, relation);
+
+            if (attackTarget != null && null != skInfo) //攻击范围内找到可攻击目标
+            {
+                info.Target = attackTarget.GetId();
+                NotifyAiStopPursue(npc);
+                NotifyAiSkill(npc, skInfo.SkillId); //攻击目标
+                return;
+            }
+            attackTarget = AiLogicUtility.GetNearstTargetHelper(
+            npc, npc.ViewRange, relation);
+            if (attackTarget != null) //视野范围内找到可攻击目标
+            {
+                NotifyAiPursue(npc, attackTarget.GetMovementStateInfo().GetPosition3D()); // 追赶目标
+                return;
+            }
+
+            currSkInfo.SetCurSkillInfo(0);
+            NotifyAiStopPursue(npc);
+            ChangeToState(npc, (int)AiStateId.GoHome);
         }
+
         private void GoHomeHandler(EntityInfo entity, long deltaTime)
         {
             AiStateInfo info = entity.GetAiStateInfo();
@@ -162,13 +113,10 @@ namespace GameFramework
                     ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
                     float powDistToHome = Geometry.DistanceSquare(srcPos, info.HomePos);
                     if (powDistToHome <= 1) {
-                        entity.GetMovementStateInfo().IsMoving = false;
-                        NotifyAiMove(entity);
+                        NotifyAiStopPursue(entity);
                         ChangeToState(entity, (int)AiStateId.Idle);
                     } else {
-                        entity.GetMovementStateInfo().IsMoving = true;
-                        entity.GetMovementStateInfo().TargetPosition = targetPos;
-                        NotifyAiMove(entity);
+                        NotifyAiPursue(entity, targetPos);
                     }
                 }
             }

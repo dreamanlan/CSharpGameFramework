@@ -10,6 +10,11 @@ using GameFrameworkMessage;
 
 namespace GameFramework
 {
+    public class LockTargetInfo
+    {
+        public int TargetId;
+        public EntityInfo Target;
+    }
     public partial class ClientModule
     {
         #region Singleton
@@ -28,12 +33,19 @@ namespace GameFramework
         private void ResetDsl()
         {
             try {
+                GfxSkillSystem.Instance.Reset();
+                GfxSkillSystem.Instance.ClearSkillInstancePool();
+                SkillSystem.SkillConfigManager.Instance.Clear();
+
                 GfxStorySystem.Instance.Reset();
                 GfxStorySystem.Instance.ClearStoryInstancePool();
                 StorySystem.StoryConfigManager.Instance.Clear();
                 GfxStorySystem.Instance.SceneId = m_SceneId;
                 GfxStorySystem.Instance.PreloadSceneStories();
-                GfxStorySystem.Instance.StartStory("main");
+                GfxStorySystem.Instance.StartStory("local_main");
+            if (!IsRoomScene) {
+                GfxStorySystem.Instance.StartStory("story_main");
+            }
                 LogSystem.Warn("ResetDsl finish.");
             } catch (Exception ex) {
                 LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
@@ -85,8 +97,10 @@ namespace GameFramework
                         string msgId = cmd.Substring(0, stIndex);
                         string[] args = cmd.Substring(stIndex + 1).Split(new char[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
                         ClientGmStorySystem.Instance.SendMessage(msgId, args);
+                        GfxStorySystem.Instance.SendMessage(msgId, args);
                     } else {
                         ClientGmStorySystem.Instance.SendMessage(cmd);
+                        GfxStorySystem.Instance.SendMessage(cmd);
                     }
                 }
 
@@ -106,8 +120,9 @@ namespace GameFramework
         }
         #endregion
 
-        internal void Init()
+        internal void Init(bool useNetwork)
         {
+            m_UseNetwork = useNetwork;
             LoadTableConfig();
 
             m_SceneContextInfo.OnHighlightPrompt = (int userId, string dict, object[] args) => {
@@ -132,8 +147,10 @@ namespace GameFramework
             m_AiSystem.SetEntityManager(m_EntityManager);
             m_SceneLogicSystem.SetSceneLogicInfoManager(m_SceneLogicInfoManager);
 
-            UserNetworkSystem.Instance.Init(m_AsyncActionProcessor);
-            NetworkSystem.Instance.Init();
+            if (m_UseNetwork) {
+                UserNetworkSystem.Instance.Init(m_AsyncActionProcessor);
+                NetworkSystem.Instance.Init();
+            }
 
             AiViewModelManager.Instance.Init();
             SceneLogicViewModelManager.Instance.Init();
@@ -148,9 +165,11 @@ namespace GameFramework
         }
         internal void Release()
         {
-            UserNetworkSystem.Instance.QuitClient();
-            NetworkSystem.Instance.QuitClient();
-            NetworkSystem.Instance.Release();
+            if (m_UseNetwork) {
+                UserNetworkSystem.Instance.QuitClient();
+                NetworkSystem.Instance.QuitClient();
+                NetworkSystem.Instance.Release();
+            }
             EntityViewModelManager.Instance.Release();
             EntityController.Instance.Release();
         }
@@ -196,6 +215,10 @@ namespace GameFramework
         }
         internal void Tick()
         {
+            if (m_UseNetwork) {
+                UserNetworkSystem.Instance.Tick();
+                NetworkSystem.Instance.Tick();
+            }
             if (!m_IsSceneLoaded) {
                 return;
             }
@@ -209,9 +232,7 @@ namespace GameFramework
 
             //处理延迟调用
             m_AsyncActionProcessor.HandleActions(100);
-            UserNetworkSystem.Instance.Tick();
-            NetworkSystem.Instance.Tick();
-            
+
             GmCommands.ClientGmStorySystem.Instance.Tick();
             GfxStorySystem.Instance.Tick();
             GfxSkillSystem.Instance.Tick();
@@ -548,6 +569,7 @@ namespace GameFramework
             m_DeletedEntities.Clear();
             for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
+                info.RetireAttackerInfos(10000);
                 if (info.LevelChanged || info.GetSkillStateInfo().BuffChanged) {
                     AttrCalculator.Calc(info);
                     info.LevelChanged = false;
@@ -635,6 +657,9 @@ namespace GameFramework
         }
         private void OnEntityKilled(EntityInfo ni)
         {
+            if (ni.GetMovementStateInfo().IsMoving) {
+                ni.GetMovementStateInfo().IsMoving = false;
+            }
             int leftEnemyCt = GetBattleNpcCount(CampId, CharacterRelation.RELATION_ENEMY);
             int leftFriendCt = GetBattleNpcCount(CampId);
 
@@ -669,12 +694,27 @@ namespace GameFramework
         private void OnDestroyEntity(EntityInfo entity)
         {
             if (null != entity) {
+                if (null != m_SelectedTarget && entity == m_SelectedTarget.Target) {
+                    SetLockTarget(0);
+                }
                 Utility.EventSystem.Publish("ui_remove_actor", "ui", entity.GetId());
             }
         }
 
         private void OnDamage(int receiver, int caster, bool isNormalDamage, bool isCritical, int hpDamage, int npDamage)
         {
+            if (receiver == LeaderID && caster > 0) {
+                bool newSelect = true;
+                if (null != SelectedTarget) {
+                    EntityInfo curTarget = GetEntityById(ClientModule.Instance.SelectedTarget.TargetId);
+                    if (curTarget == SelectedTarget.Target) {
+                        newSelect = false;
+                    }
+                }
+                if (newSelect) {
+                    SetLockTarget(caster);
+                }
+            }
             EntityInfo entity = GetEntityById(receiver);
             EntityInfo casterNpc = GetEntityById(caster);
             while (null != casterNpc && casterNpc.SummonerId > 0) {
@@ -733,6 +773,30 @@ namespace GameFramework
                 }
             };
         }
+        private void OnSelectedTargetChange(int oldSelect, int newSelect)
+        {
+            if (null == m_SelectedEffect) {
+                m_SelectedEffect = ResourceSystem.Instance.NewObject("Effects/Select") as UnityEngine.GameObject;
+            }
+            if (null == m_SelectedEffect) {
+                return;
+            }
+            m_SelectedEffect.transform.parent = null;
+            if (newSelect > 0) {
+                EntityViewModel viewModel = EntityController.Instance.GetEntityViewById(newSelect);
+                if (null != viewModel && null != viewModel.Actor) {
+                    m_SelectedEffect.transform.parent = viewModel.Actor.transform;
+                    m_SelectedEffect.transform.localPosition = UnityEngine.Vector3.zero;
+                    m_SelectedEffect.transform.localRotation = UnityEngine.Quaternion.identity;
+                    m_SelectedEffect.SetActive(true);
+                } else {
+                    m_SelectedEffect.SetActive(false);
+                }
+            } else {
+                m_SelectedEffect.SetActive(false);
+            }
+            Utility.EventSystem.Publish("ui_lock_target", "ui", newSelect);
+        }
 
         public int SceneId
         {
@@ -787,6 +851,10 @@ namespace GameFramework
                 m_IsStoryState = value;
                 OnStoryStateChanged();
             }
+        }
+        public LockTargetInfo SelectedTarget
+        {
+            get { return m_SelectedTarget; }
         }
         public bool IsRoomScene
         {
@@ -1002,6 +1070,9 @@ namespace GameFramework
 
         private bool m_IsStoryState = false;
         private int m_leaderID;
+        private bool m_UseNetwork = true;
+        private LockTargetInfo m_SelectedTarget = null;
+        private UnityEngine.GameObject m_SelectedEffect = null;
         private int m_CampId = (int)CampIdEnum.Blue;
     }
 }

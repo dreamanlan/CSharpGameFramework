@@ -66,7 +66,12 @@ message Msg_CR_Skill
 {
 	required int32 role_id = 1;
 	required int32 skill_id = 2;
-	required int32 target_id = 3;
+	optional int32 target_id = 3;
+	optional int32 target_dir = 4;
+}
+
+message Msg_CR_StopSkill
+{
 }
 
 message Msg_CR_SwitchDebug
@@ -222,6 +227,7 @@ message Msg_RC_NpcSkill
 	required int32 skill_id = 2;
 	required uint64 stand_pos = 3;
 	required int32 face_direction = 4;
+	required int32 target_id = 5;
 }
 
 message Msg_RC_NpcStopSkill

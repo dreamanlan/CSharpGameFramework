@@ -124,5 +124,28 @@ namespace GameFramework
             npcFaceBuilder.face_direction = ProtoHelper.EncodeFloat(npc.GetMovementStateInfo().GetFaceDir());
             return npcFaceBuilder;
         }
+
+        internal static Msg_RC_NpcSkill BuildNpcSkillMessage(EntityInfo obj, int skillId)
+        {
+            MovementStateInfo msi = obj.GetMovementStateInfo();
+            ScriptRuntime.Vector3 pos = msi.GetPosition3D();
+
+            Msg_RC_NpcSkill msg = new Msg_RC_NpcSkill();
+            msg.npc_id = obj.GetId();
+            msg.skill_id = skillId;
+            msg.stand_pos = ProtoHelper.EncodePosition2D(pos.X, pos.Z);
+            msg.face_direction = ProtoHelper.EncodeFloat(msi.GetFaceDir());
+            msg.target_id = obj.GetAiStateInfo().Target;
+
+            return msg;
+        }
+
+        internal static Msg_RC_NpcStopSkill BuildNpcStopSkillMessage(EntityInfo obj)
+        {
+            Msg_RC_NpcStopSkill msg = new Msg_RC_NpcStopSkill();
+            msg.npc_id = obj.GetId();
+
+            return msg;
+        }
     }
 }

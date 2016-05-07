@@ -75,7 +75,7 @@ public class Game : MonoBehaviour
         yield return StartCoroutine(ExtractDataFile());
 #endif
         //3、启动游戏逻辑
-        GameControler.InitGame();
+        GameControler.InitGame(true);
         yield return null;
         //4、切换到第一个场景
         SpriteManager.Init();
@@ -94,9 +94,14 @@ public class Game : MonoBehaviour
                 if (!BattleTopMenuManager.Instance.IsOn(screenPos) && !SkillBarManager.Instance.IsOn(screenPos)) {
                     Ray ray = Camera.main.ScreenPointToRay(screenPos);
                     RaycastHit hit;
-                    if (Physics.Raycast(ray, out hit, 100, 1 << LayerMask.NameToLayer("Terrain"))) {
-                        Vector3 pos = hit.point;
-                        ClientModule.Instance.MoveTo(pos.x, pos.y, pos.z);
+                    if (Physics.Raycast(ray, out hit, 100, (1 << LayerMask.NameToLayer("Terrain")) | (1 << LayerMask.NameToLayer("Default")))) {
+                        int objId = ClientModule.Instance.GetGameObjectId(hit.collider.gameObject);
+                        if (objId > 0) {
+                            ClientModule.Instance.ClickNpc(objId);
+                        } else {
+                            Vector3 pos = hit.point;
+                            ClientModule.Instance.MoveTo(pos.x, pos.y, pos.z);
+                        }
                     }
                 }
             }

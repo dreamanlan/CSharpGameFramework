@@ -20,6 +20,7 @@ namespace GameFrameworkMessage
 		Msg_CR_Quit,
 		Msg_CR_UserMoveToPos,
 		Msg_CR_Skill,
+		Msg_CR_StopSkill,
 		Msg_CR_OperateMode,
 		Msg_CR_GiveUpBattle,
 		Msg_CR_SwitchDebug,
@@ -93,6 +94,8 @@ namespace GameFrameworkMessage
 			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_ShakeHands), (int)RoomMessageDefine.Msg_CR_ShakeHands);
 			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_Skill, typeof(Msg_CR_Skill));
 			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_Skill), (int)RoomMessageDefine.Msg_CR_Skill);
+			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_StopSkill, typeof(Msg_CR_StopSkill));
+			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_StopSkill), (int)RoomMessageDefine.Msg_CR_StopSkill);
 			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_SwitchDebug, typeof(Msg_CR_SwitchDebug));
 			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_SwitchDebug), (int)RoomMessageDefine.Msg_CR_SwitchDebug);
 			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_UserMoveToPos, typeof(Msg_CR_UserMoveToPos));

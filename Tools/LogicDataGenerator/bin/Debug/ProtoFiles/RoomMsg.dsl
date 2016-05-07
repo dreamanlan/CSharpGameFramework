@@ -69,7 +69,11 @@ message(Msg_CR_UserMoveToPos) {
 message(Msg_CR_Skill) {
   member(role_id, int, required);
   member(skill_id, int, required);
-  member(target_id, int, required);
+  member(target_id, int, optional);
+  member(target_dir, int, optional);
+};
+
+message(Msg_CR_StopSkill) {
 };
 
 message(Msg_CR_OperateMode) {
@@ -128,6 +132,7 @@ message(Msg_RC_NpcSkill) {
   member(skill_id, int, required);
   member(stand_pos, ulong, required);
   member(face_direction, int, required);
+  member(target_id, int, required);
 };
 
 message(Msg_RC_NpcStopSkill) {

@@ -16,11 +16,15 @@ tabledef(Actor, dictionary, public)
 	fielddef(icon, icon, int32);
 	fielddef(type, type, int32);
 	fielddef(avatar, avatar, string);
-	fielddef(cooldown, cooldown, float);
+	fielddef(cooldown, cooldown, int32);
 	fielddef(hp, hp, int32);
 	fielddef(mp, mp, int32);
-	fielddef(baseattack, baseattack, int32);
+	fielddef(attack, attack, int32);
 	fielddef(defence, defence, int32);
+	fielddef(addhp, addhp, int32);
+	fielddef(addmp, addmp, int32);
+	fielddef(addattack, addattack, int32);
+	fielddef(adddefence, adddefence, int32);
 	fielddef(speed, speed, float);
 	fielddef(viewrange, viewrange, float);
 	fielddef(gohomerange, gohomerange, float);
@@ -95,6 +99,20 @@ tabledef(Level, dictionary, public)
 	fielddef(MaxUserCount, MaxUserCount, int32);
 	fielddef(CanPK, CanPK, bool);
 };
+tabledef(LevelMonster, list, public)
+{
+	recordmodifier(partial);
+	providermodifier(partial);
+	fielddef(group, group, int32);
+	fielddef(scene, scene, int32);
+	fielddef(camp, camp, int32);
+	fielddef(actorID, actorID, int32);
+	fielddef(x, x, float);
+	fielddef(y, y, float);
+	fielddef(dir, dir, float);
+	fielddef(level, level, int32);
+	fielddef(passive, passive, bool);
+};
 tabledef(Skill, dictionary, public)
 {
 	recordmodifier(partial);
@@ -104,19 +122,9 @@ tabledef(Skill, dictionary, public)
 	fielddef(type, type, int32);
 	fielddef(icon, icon, int32);
 	fielddef(distance, distance, float);
-	fielddef(cooldown, cooldown, float);
-	fielddef(duration, duration, float);
-	fielddef(interval, interval, float);
-	fielddef(damage, damage, int32);
-	fielddef(mpRecover, mpRecover, int32);
-	fielddef(hpRecover, hpRecover, int32);
-	fielddef(addAttack, addAttack, int32);
-	fielddef(addDefence, addDefence, int32);
-	fielddef(addRps, addRps, int32);
-	fielddef(addCritical, addCritical, int32);
-	fielddef(addCriticalPow, addCriticalPow, int32);
-	fielddef(addSpeed, addSpeed, float);
-	fielddef(addShield, addShield, int32);
+	fielddef(cooldown, cooldown, int32);
+	fielddef(duration, duration, int32);
+	fielddef(interval, interval, int32);
 	fielddef(canmove, canmove, int32);
 	fielddef(impactToSelf, impactToSelf, int32);
 	fielddef(impactToTarget, impactToTarget, int32);
@@ -129,6 +137,16 @@ tabledef(Skill, dictionary, public)
 	fielddef(aoeAngleOrLength, aoeAngleOrLength, float);
 	fielddef(maxAoeTargetCount, maxAoeTargetCount, int32);
 	fielddef(dslSkillId, dslSkillId, int32);
+	fielddef(damage, damage, float);
+	fielddef(mpRecover, mpRecover, int32);
+	fielddef(hpRecover, hpRecover, int32);
+	fielddef(addAttack, addAttack, int32);
+	fielddef(addDefence, addDefence, int32);
+	fielddef(addRps, addRps, int32);
+	fielddef(addCritical, addCritical, int32);
+	fielddef(addCriticalPow, addCriticalPow, int32);
+	fielddef(addSpeed, addSpeed, float);
+	fielddef(addShield, addShield, int32);
 };
 tabledef(SkillDsl, dictionary, public)
 {

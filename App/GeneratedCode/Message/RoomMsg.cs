@@ -207,13 +207,32 @@ namespace GameFrameworkMessage
       get { return _skill_id; }
       set { _skill_id = value; }
     }
-    private int _target_id;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"target_id", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    private int _target_id = default(int);
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"target_id", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
     public int target_id
     {
       get { return _target_id; }
       set { _target_id = value; }
     }
+    private int _target_dir = default(int);
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"target_dir", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int target_dir
+    {
+      get { return _target_dir; }
+      set { _target_dir = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_CR_StopSkill")]
+  public partial class Msg_CR_StopSkill : global::ProtoBuf.IExtensible
+  {
+    public Msg_CR_StopSkill() {}
+    
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -878,6 +897,13 @@ namespace GameFrameworkMessage
     {
       get { return _face_direction; }
       set { _face_direction = value; }
+    }
+    private int _target_id;
+    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"target_id", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int target_id
+    {
+      get { return _target_id; }
+      set { _target_id = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)

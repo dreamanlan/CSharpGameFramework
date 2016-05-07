@@ -13,6 +13,7 @@ public class FilePathDefine_Client
 	public const string C_Actor = C_RootPath + "Public/Actor.dat";
 	public const string C_Formation = C_RootPath + "Public/Formation.dat";
 	public const string C_Level = C_RootPath + "Public/Level.dat";
+	public const string C_LevelMonster = C_RootPath + "Public/LevelMonster.dat";
 	public const string C_Skill = C_RootPath + "Public/Skill.dat";
 	public const string C_SkillDsl = C_RootPath + "Public/SkillDsl.dat";
 	public const string C_SkillResources = C_RootPath + "Public/SkillResources.dat";
@@ -28,6 +29,7 @@ public class FilePathDefine_Server
 	public const string C_Actor = C_RootPath + "Public/Actor.dat";
 	public const string C_Formation = C_RootPath + "Public/Formation.dat";
 	public const string C_Level = C_RootPath + "Public/Level.dat";
+	public const string C_LevelMonster = C_RootPath + "Public/LevelMonster.dat";
 	public const string C_Skill = C_RootPath + "Public/Skill.dat";
 	public const string C_SkillDsl = C_RootPath + "Public/SkillDsl.dat";
 	public const string C_SkillResources = C_RootPath + "Public/SkillResources.dat";

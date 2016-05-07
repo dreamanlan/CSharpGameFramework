@@ -23,6 +23,30 @@ namespace GameFramework
     {
         public const int c_MaxViewRange = 30;
         public const int c_MaxViewRangeSqr = c_MaxViewRange * c_MaxViewRange;
+
+        public static EntityInfo GetNearstAttackerHelper(EntityInfo srcObj, CharacterRelation relation, AiData_General aidata)
+        {
+            EntityInfo ret = null;
+            float minDistSqr = 999999;
+            Vector2 dir = srcObj.GetMovementStateInfo().GetFaceDir2D();
+            Vector2 pos = srcObj.GetMovementStateInfo().GetPosition2D();
+            if (relation == CharacterRelation.RELATION_ENEMY) {
+                foreach (var pair in srcObj.AttackerInfos) {
+                    EntityInfo target = srcObj.SceneContext.GetEntityById(pair.Key);
+                    if (null != target) {
+                        float distSqr = Geometry.DistanceSquare(pos, target.GetMovementStateInfo().GetPosition2D());
+                        if (distSqr <= (srcObj.ViewRange + target.GetRadius()) * (srcObj.ViewRange + target.GetRadius())) {
+                            if (distSqr <= minDistSqr) {
+                                ret = target;
+                                minDistSqr = distSqr;
+                            }
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+
         public static EntityInfo GetNearstTargetHelper(EntityInfo srcObj, CharacterRelation relation)
         {
             return GetNearstTargetHelper(srcObj, relation, AiTargetType.ALL);
@@ -118,8 +142,7 @@ namespace GameFramework
         internal static void DoSkillCommandState(EntityInfo entity, long deltaTime, AbstractAiStateLogic logic, int skillId)
         {
             if (entity.GetMovementStateInfo().IsMoving) {
-                entity.GetMovementStateInfo().IsMoving = false;
-                logic.NotifyAiMove(entity);
+                logic.NotifyAiStopPursue(entity);
             }
             if (skillId > 0) {
                 AiStateInfo aiInfo = entity.GetAiStateInfo();
@@ -157,8 +180,7 @@ namespace GameFramework
                     Vector3 targetPos = new Vector3();
                     MoveToNext(entity, data, ref targetPos);
                     if (!data.IsFinish) {
-                        entity.GetMovementStateInfo().IsMoving = true;
-                        logic.NotifyAiMove(entity);
+                        logic.NotifyAiPursue(entity, targetPos);
                     }
                 } else {
                     AiStateInfo info = entity.GetAiStateInfo();
@@ -166,9 +188,7 @@ namespace GameFramework
                     if (info.Time > 500) {
                         info.Time = 0;
                         Vector3 targetPos = data.WayPoints[data.Index];
-                        entity.GetMovementStateInfo().TargetPosition = targetPos;
-                        entity.GetMovementStateInfo().IsMoving = true;
-                        logic.NotifyAiMove(entity);
+                        logic.NotifyAiPursue(entity, targetPos);
                     }
                 }
             }
@@ -177,8 +197,7 @@ namespace GameFramework
             if (data.IsFinish) {
                 logic.AiSendStoryMessage(entity, "npc_arrived:" + entity.GetUnitId(), entity.GetId());
                 logic.AiSendStoryMessage(entity, "obj_arrived", entity.GetId());
-                entity.GetMovementStateInfo().IsMoving = false;
-                logic.NotifyAiMove(entity);
+                logic.NotifyAiStopPursue(entity);
                 logic.ChangeToState(entity, (int)AiStateId.Idle);
             }
         }
@@ -227,19 +246,15 @@ namespace GameFramework
                     if (powDist < dist * dist) {
                         logic.AiSendStoryMessage(entity, "npc_pursuit_finish:" + entity.GetUnitId(), entity.GetId());
                         logic.AiSendStoryMessage(entity, "obj_pursuit_finish", entity.GetId());
-                        entity.GetMovementStateInfo().IsMoving = false;
-                        logic.NotifyAiMove(entity);
+                        logic.NotifyAiStopPursue(entity);
                         logic.ChangeToState(entity, (int)AiStateId.Idle);
                     } else {
-                        entity.GetMovementStateInfo().IsMoving = true;
-                        entity.GetMovementStateInfo().TargetPosition = targetPos;
-                        logic.NotifyAiMove(entity);
+                        logic.NotifyAiPursue(entity, targetPos);
                     }
                 } else {
                     logic.AiSendStoryMessage(entity, "npc_pursuit_exit:" + entity.GetUnitId(), entity.GetId());
                     logic.AiSendStoryMessage(entity, "obj_pursuit_exit", entity.GetId());
-                    entity.GetMovementStateInfo().IsMoving = false;
-                    logic.NotifyAiMove(entity);
+                    logic.NotifyAiStopPursue(entity);
                     logic.ChangeToState(entity, (int)AiStateId.Idle);
                 }
             }
@@ -266,21 +281,17 @@ namespace GameFramework
                 if (null != target) {
                     logic.AiSendStoryMessage(entity, "obj_patrol_exit", entity.GetId());
                     logic.AiSendStoryMessage(entity, string.Format("npc_patrol_exit:{0}", entity.GetUnitId()), entity.GetId());
-                    logic.ChangeToState(entity, (int)AiStateId.Pursuit);
+                    logic.ChangeToState(entity, (int)AiStateId.Idle);
                 } else {
                     AiData_ForPatrolCommand data = GetAiDataForPatrolCommand(entity);
                     if (null != data) {
                         ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
                         if (data.PatrolPath.HavePathPoint && !data.PatrolPath.IsReached(srcPos)) {
-                            entity.GetMovementStateInfo().TargetPosition = data.PatrolPath.CurPathPoint;
-                            entity.GetMovementStateInfo().IsMoving = true;
-                            logic.NotifyAiMove(entity);
+                            logic.NotifyAiPursue(entity, data.PatrolPath.CurPathPoint);
                         } else {
                             data.PatrolPath.UseNextPathPoint();
                             if (data.PatrolPath.HavePathPoint) {
-                                entity.GetMovementStateInfo().TargetPosition = data.PatrolPath.CurPathPoint;
-                                entity.GetMovementStateInfo().IsMoving = true;
-                                logic.NotifyAiMove(entity);
+                                logic.NotifyAiPursue(entity, data.PatrolPath.CurPathPoint);
                             } else {
                                 if (data.IsLoopPatrol) {
                                     logic.AiSendStoryMessage(entity, "obj_patrol_restart", entity.GetId());
@@ -289,16 +300,14 @@ namespace GameFramework
                                 } else {
                                     logic.AiSendStoryMessage(entity, "obj_patrol_finish", entity.GetId());
                                     logic.AiSendStoryMessage(entity, string.Format("npc_patrol_finish:{0}", entity.GetUnitId()), entity.GetId());
-                                    entity.GetMovementStateInfo().IsMoving = false;
-                                    logic.NotifyAiMove(entity);
+                                    logic.NotifyAiStopPursue(entity);
                                     logic.ChangeToState(entity, (int)AiStateId.Idle);
                                 }
                             }
                         }
                         info.HomePos = entity.GetMovementStateInfo().GetPosition3D();
                     } else {
-                        entity.GetMovementStateInfo().IsMoving = false;
-                        logic.NotifyAiMove(entity);
+                        logic.NotifyAiStopPursue(entity);
                         logic.ChangeToState(entity, (int)AiStateId.Idle);
                     }
                 }
@@ -309,15 +318,40 @@ namespace GameFramework
             AiData_ForPatrolCommand data = entity.GetAiStateInfo().AiDatas.GetData<AiData_ForPatrolCommand>();
             return data;
         }
-        
-        /// <summary>
-        /// 获得队长 npcInfo
-        /// </summary>
-        /// <returns></returns>
-        internal static EntityInfo GetLeaderInfo()
+        internal static SkillInfo NpcFindCanUseSkill(EntityInfo npc, AiData_General aidata, bool includeManualSkill)
         {
-            return null;
+            SkillInfo selectSkill = null;
+            SkillStateInfo skStateInfo = npc.GetSkillStateInfo();
+            int priority = -1;
+            SkillInfo skInfo = null;
+            long curTime = TimeUtility.GetLocalMilliseconds();
+            if (includeManualSkill && npc.ManualSkillId > 0) {
+                skInfo = skStateInfo.GetSkillInfoById(npc.ManualSkillId);
+                if (null != skInfo && !skInfo.IsInCd(curTime)) {
+                    selectSkill = skInfo;
+                }
+            }
+            if (null == selectSkill) {
+                if (npc.AutoSkillIds.Count <= 0)
+                    return null;
+                int randIndex = Helper.Random.Next(0, npc.AutoSkillIds.Count);
+                skInfo = skStateInfo.GetSkillInfoById(npc.AutoSkillIds[randIndex]);
+                if (null != skInfo && !skInfo.IsInCd(curTime)) {
+                    selectSkill = skInfo;
+                } else {
+                    for (int i = 0; i < npc.AutoSkillIds.Count; i++) {
+                        skInfo = skStateInfo.GetSkillInfoById(npc.AutoSkillIds[i]);
+                        if (null != skInfo && !skInfo.IsInCd(curTime) && skInfo.InterruptPriority > priority) {
+                            selectSkill = skInfo;
+                            priority = skInfo.InterruptPriority;
+                        }
+                    }
+                }
+            }
+            if (null != selectSkill) {
+                aidata.LastUseSkillTime = TimeUtility.GetLocalMilliseconds();
+            }
+            return selectSkill;
         }
-
     }
 }

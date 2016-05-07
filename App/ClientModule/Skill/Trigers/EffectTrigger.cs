@@ -79,7 +79,7 @@ namespace GameFramework.Skill.Trigers
                         m_RealDeleteTime = TriggerUtil.RefixDeleteTime((int)m_DeleteTime, instance.LocalVariables, senderObj.ConfigData);
                     }
                     if (m_RealDeleteTime <= 0) {
-                        m_RealDeleteTime = (long)(senderObj.ConfigData.duration * 1000);
+                        m_RealDeleteTime = (long)senderObj.ConfigData.duration;
                         if (m_RealDeleteTime <= 0) {
                             m_RealDeleteTime = EntityController.Instance.GetImpactDuration(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
                         }
@@ -255,7 +255,7 @@ namespace GameFramework.Skill.Trigers
                         m_RealDeleteTime = TriggerUtil.RefixDeleteTime((int)m_DeleteTime, instance.LocalVariables, senderObj.ConfigData);
                     }
                     if (m_RealDeleteTime <= 0) {
-                        m_RealDeleteTime = (long)(senderObj.ConfigData.duration * 1000);
+                        m_RealDeleteTime = (long)senderObj.ConfigData.duration;
                         if (m_RealDeleteTime <= 0) {
                             m_RealDeleteTime = EntityController.Instance.GetImpactDuration(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
                         }
@@ -414,7 +414,7 @@ namespace GameFramework.Skill.Trigers
                         m_RealDeleteTime = TriggerUtil.RefixDeleteTime((int)m_DeleteTime, instance.LocalVariables, senderObj.ConfigData);
                     }
                     if (m_RealDeleteTime <= 0) {
-                        m_RealDeleteTime = (long)(senderObj.ConfigData.duration * 1000);
+                        m_RealDeleteTime = (long)senderObj.ConfigData.duration;
                     }
                     if (m_RealDeleteTime <= 0) {
                         LogSystem.Warn("[skill:{0} dsl skill id:{1}] sceneeffect deleteTime <= 0.", senderObj.SkillId, instance.DslSkillId);

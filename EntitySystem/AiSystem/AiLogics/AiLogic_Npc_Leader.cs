@@ -10,7 +10,6 @@ namespace GameFramework
         protected override void OnInitStateHandlers()
         {
             SetStateHandler((int)AiStateId.Idle, this.IdleHandler);
-            SetStateHandler((int)AiStateId.Pursuit, this.PursuitHandler);
             SetStateHandler((int)AiStateId.Combat, this.CombatHandler);
             SetStateHandler((int)AiStateId.SkillCommand, this.SkillCommandHandler);
             SetStateHandler((int)AiStateId.MoveCommand, this.MoveCommandHandler);
@@ -31,8 +30,7 @@ namespace GameFramework
         {
             if (entity.IsDead()) {
                 if (entity.GetAiStateInfo().CurState != (int)AiStateId.Idle) {
-                    entity.GetMovementStateInfo().IsMoving = false;
-                    NotifyAiMove(entity);
+                    NotifyAiStopPursue(entity);
                     ChangeToState(entity, (int)AiStateId.Idle);
                 }
                 return false;
@@ -40,125 +38,83 @@ namespace GameFramework
             return true;
         }
 
-        private void IdleHandler(EntityInfo entity, long deltaTime)
+        private void IdleHandler(EntityInfo npc, long deltaTime)
         {
-            AiStateInfo info = entity.GetAiStateInfo();
-            info.Time += deltaTime;
-            if (info.Time > 100) {
-                info.Time = 0;
-                EntityInfo target = null;
-                if (info.IsExternalTarget) {
-                    target = AiLogicUtility.GetSeeingLivingCharacterInfoHelper(entity, info.Target);
-                    if (null == target) {
-                        target = AiLogicUtility.GetNearstTargetHelper(entity, CharacterRelation.RELATION_ENEMY);
-                        if (null != target)
-                            info.Target = target.GetId();
-                    }
-                } else {
-                    target = AiLogicUtility.GetNearstTargetHelper(entity, CharacterRelation.RELATION_ENEMY);
-                    if (null != target)
-                        info.Target = target.GetId();
-                }
-                if (null != target) {
-                    entity.GetMovementStateInfo().IsMoving = false;
-                    NotifyAiMove(entity);
-                    info.Time = 0;
-                    ChangeToState(entity, (int)AiStateId.Pursuit);
-                }
+            AiData_Leader aiData = GetAiData(npc);
+            SkillInfo skInfo = AiLogicUtility.NpcFindCanUseSkill(npc, aiData, aiData.IsAutoOperate);
+            if (skInfo == null) {
+                return;
+            }
+            CharacterRelation relation =
+                    (skInfo.TargetType == SkillTargetType.Friend ||
+                    skInfo.TargetType == SkillTargetType.RandFriend) ?
+                    CharacterRelation.RELATION_FRIEND :
+                    CharacterRelation.RELATION_ENEMY;
+
+            EntityInfo attackTarget = AiLogicUtility.GetNearstTargetHelper(npc, aiData.IsAutoOperate ? npc.ViewRange : skInfo.Distance, relation);
+            if (attackTarget != null) {
+                ChangeToState(npc, (int)AiStateId.Combat);
             }
         }
-        private void PursuitHandler(EntityInfo entity, long deltaTime)
+
+        private void CombatHandler(EntityInfo npc, long deltaTime)
         {
-            AiStateInfo info = entity.GetAiStateInfo();
-            info.Time += deltaTime;
-            if (info.Time > 200) {
-                AiData_Leader data = GetAiData(entity);
-                if (null != data) {
-                    EntityInfo target = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.Target);
-                    if (null != target) {
-                        float minDist = entity.GetRadius() + target.GetRadius();
-                        float dist = (float)entity.GetActualProperty().AttackRange + minDist;
-                        Vector3 targetPos = target.GetMovementStateInfo().GetPosition3D();
-                        ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
-                        float dir = Geometry.GetYRadian(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
-                        targetPos.X += (float)(minDist * Math.Sin(dir));
-                        targetPos.Z += (float)(minDist * Math.Cos(dir));
-                        float powDist = Geometry.DistanceSquare(srcPos, targetPos);
-                        if (powDist < dist * dist) {
-                            entity.GetMovementStateInfo().IsMoving = false;
-                            NotifyAiMove(entity);
-                            ChangeToState(entity, (int)AiStateId.Combat);
-                        } else if(data.IsAutoOperate) {
-                            entity.GetMovementStateInfo().IsMoving = true;
-                            entity.GetMovementStateInfo().TargetPosition = targetPos;
-                            NotifyAiMove(entity);
-                        }
-                    } else {
-                        entity.GetMovementStateInfo().IsMoving = false;
-                        NotifyAiMove(entity);
-                        ChangeToState(entity, (int)AiStateId.Idle);
-                    }
+            AiStateInfo aiInfo = npc.GetAiStateInfo();
+            AiData_Leader aiData = GetAiData(npc);
+            if (npc.GetSkillStateInfo().IsSkillActivated()) {
+                return;
+            }
+            ///
+            SkillStateInfo currSkInfo = npc.GetSkillStateInfo();
+            ///找到可以使用的技能
+            SkillInfo skInfo = AiLogicUtility.NpcFindCanUseSkill(npc, this.GetAiData(npc), aiData.IsAutoOperate);
+            NotifyAiSelectSkill(npc, skInfo);
+            if (skInfo == null) {
+                //没有可以使用的技能就切换到Idle状态
+                ChangeToState(npc, (int)AiStateId.Idle);
+                return;
+            }
+
+            CharacterRelation relation =
+                    (skInfo.TargetType == SkillTargetType.Friend ||
+                    skInfo.TargetType == SkillTargetType.RandFriend) ?
+                    CharacterRelation.RELATION_FRIEND :
+                    CharacterRelation.RELATION_ENEMY;
+            EntityInfo attackTarget = AiLogicUtility.GetNearstAttackerHelper(npc, relation, aiData);
+            if (null != attackTarget) {
+                NotifyAiTarget(npc, attackTarget);
+                if (Geometry.DistanceSquare(npc.GetMovementStateInfo().GetPosition3D(), attackTarget.GetMovementStateInfo().GetPosition3D()) < skInfo.Distance * skInfo.Distance) {
+                    aiInfo.Target = attackTarget.GetId();
+                    NotifyAiStopPursue(npc);
+                    NotifyAiSkill(npc, skInfo.SkillId);
+                    return;
                 }
             }
-        }
-        private void CombatHandler(EntityInfo entity, long deltaTime)
-        {
-            AiStateInfo info = entity.GetAiStateInfo();
-            info.Time += deltaTime;
-            if (info.Time > c_IntervalTime) {
-                AiData_Leader data = GetAiData(entity);
-                if (null != data) {
-                    info.Time = 0;
-                    EntityInfo target = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.Target);
-                    if (null != target) {
-                        float minDist = entity.GetRadius() + target.GetRadius();
-                        float dist = (float)entity.GetActualProperty().AttackRange + minDist;
-                        ScriptRuntime.Vector3 targetPos = target.GetMovementStateInfo().GetPosition3D();
-                        ScriptRuntime.Vector3 srcPos = entity.GetMovementStateInfo().GetPosition3D();
-                        float dir = Geometry.GetYRadian(new Vector2(targetPos.X, targetPos.Z), new Vector2(srcPos.X, srcPos.Z));
-                        targetPos.X += (float)(minDist * Math.Sin(dir));
-                        targetPos.Z += (float)(minDist * Math.Cos(dir));
-                        float powDist = Geometry.DistanceSquare(srcPos, targetPos);
-                        if (powDist < dist * dist) {
-                            if (!entity.GetSkillStateInfo().IsSkillActivated()) {
-                                float rps = entity.GetActualProperty().Rps;
-                                long curTime = TimeUtility.GetLocalMilliseconds();
-                                NotifyAiFace(entity);
-                                int skillId = 0;
-                                if (data.ManualSkillId > 0) {
-                                    skillId = data.ManualSkillId;
-                                } else {
-                                    if (data.IsAutoOperate && entity.ManualSkillId > 0 && Helper.Random.Next() <= 20) {
-                                        skillId = entity.ManualSkillId;
-                                    } else if (entity.AutoSkillIds.Count > 0) {
-                                        int index = Helper.Random.Next(entity.AutoSkillIds.Count);
-                                        skillId = entity.AutoSkillIds[index];
-                                    }
-                                }
-                                if (skillId > 0) {
-                                    SkillInfo skillInfo = entity.GetSkillStateInfo().GetSkillInfoById(skillId);
-                                    if (null != skillInfo && !skillInfo.IsInCd(curTime)) {
-                                        data.LastUseSkillTime = curTime;
-                                        NotifyAiSkill(entity, skillId);
-                                    }
-                                }
-                            }
-                        } else {
-                            NotifyAiStopSkill(entity);
-                            ChangeToState(entity, (int)AiStateId.Pursuit);
-                        }
-                    } else {
-                        NotifyAiStopSkill(entity);
-                        ChangeToState(entity, (int)AiStateId.Pursuit);
-                    }
-                } else {
-                    info.Time = 0;
+            attackTarget = AiLogicUtility.GetNearstTargetHelper(npc, skInfo.Distance, relation);
+            if (attackTarget != null && null != skInfo) { //攻击范围内找到可攻击目标
+                NotifyAiTarget(npc, attackTarget);
+                aiInfo.Target = attackTarget.GetId();
+                NotifyAiStopPursue(npc);
+                NotifyAiSkill(npc, skInfo.SkillId); //攻击目标
+                return;
+            }
+            if (aiData.IsAutoOperate) {
+                attackTarget = AiLogicUtility.GetNearstTargetHelper(npc, npc.ViewRange, relation);
+                if (attackTarget != null && null != skInfo) { //视野内找到可攻击目标
+                    NotifyAiPursue(npc, attackTarget.GetMovementStateInfo().GetPosition3D());
+                    return;
                 }
             }
+
+            ///退出战斗模式清理一下手动技能
+            currSkInfo.SetCurSkillInfo(0);
+            aiData.ManualSkillId = 0;
+            NotifyAiStopPursue(npc);
+            ChangeToState(npc, (int)AiStateId.Idle);
         }
         private void SkillCommandHandler(EntityInfo entity, long deltaTime)
         {
-            AiData_Leader data = GetAiData(entity);
+            AiData_General data = GetAiData(entity);
             if (null != data) {
                 AiLogicUtility.DoSkillCommandState(entity, deltaTime, this, data.ManualSkillId);
                 if (data.ManualSkillId > 0)

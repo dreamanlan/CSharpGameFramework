@@ -678,7 +678,7 @@ namespace GameFramework.Story.Commands
                 AiStateInfo aiInfo = entity.GetAiStateInfo();
                 aiInfo.Target = target.GetId();
                 aiInfo.LastChangeTargetTime = TimeUtility.GetLocalMilliseconds();
-                aiInfo.ChangeToState((int)AiStateId.Pursuit);
+                aiInfo.ChangeToState((int)AiStateId.Idle);
             }
             return false;
         }

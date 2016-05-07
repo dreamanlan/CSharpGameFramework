@@ -139,7 +139,7 @@ namespace GameFramework
                     }
                     entity.GetSkillStateInfo().SetCurSkillInfo(skillId);
                     skillInfo.IsSkillActivated = true;
-                    skillInfo.CdEndTime = TimeUtility.GetLocalMilliseconds() + (long)(skillInfo.ConfigData.cooldown * 1000);
+                    skillInfo.CdEndTime = TimeUtility.GetLocalMilliseconds() + (long)skillInfo.ConfigData.cooldown;
                     if (skillInfo.ConfigData.mpRecover > 0) {
                         //回蓝
                         entity.SetEnergy(Operate_Type.OT_Relative, skillInfo.ConfigData.mpRecover);
@@ -416,7 +416,7 @@ namespace GameFramework
                 } else {
                     ImpactInfo impactInfo = entity.GetSkillStateInfo().GetImpactInfoBySeq(seq);
                     if (null != impactInfo) {
-                        entity.SetShield(Operate_Type.OT_Relative, impactInfo.AddShield);
+                        entity.SetShield(Operate_Type.OT_Relative, impactInfo.DamageData.AddShield);
                     }
                 }
             }
@@ -527,11 +527,7 @@ namespace GameFramework
                     impactInfo.SkillId = trackImpactInfo.SkillId;
                     impactInfo.DurationTime = trackImpactInfo.DurationTime;
                     impactInfo.TargetType = trackImpactInfo.TargetType;
-                    impactInfo.Damage = trackImpactInfo.Damage;
-                    impactInfo.AddAttack = trackImpactInfo.AddAttack;
-                    impactInfo.AddShield = trackImpactInfo.AddShield;
-                    impactInfo.AddSpeed = trackImpactInfo.AddSpeed;
-                    impactInfo.HpRecover = trackImpactInfo.HpRecover;
+                    impactInfo.DamageData.CopyFrom(trackImpactInfo.DamageData);
                     targetObj.GetSkillStateInfo().AddImpact(impactInfo);
                     m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args);
                     return impactInfo;
@@ -548,16 +544,16 @@ namespace GameFramework
                 if (null != impactInfo && impactId == impactInfo.ImpactId) {
                     TableConfig.Skill cfg = impactInfo.ConfigData;
                     int targetType = impactInfo.TargetType;
-                    float damage = cfg.damage != 0 && null != srcObj ? srcObj.GetActualProperty().AttackBase * cfg.damage / 1000.0f : impactInfo.Damage;
-                    int addShield = cfg.addShield != 0 ? cfg.addShield : impactInfo.AddShield;
-                    int hpRecover = cfg.hpRecover != 0 ? cfg.hpRecover : impactInfo.HpRecover;
+                    float damage = impactInfo.DamageData.Damage;
+                    int addShield = impactInfo.DamageData.AddShield;
+                    int hpRecover = impactInfo.DamageData.HpRecover;
 
                     if (hpRecover != 0) {
-                        targetObj.SetHp(Operate_Type.OT_Relative, (int)impactInfo.HpRecover);
-                        targetObj.SetAttackerInfo(srcObjId, false, true, false, -impactInfo.HpRecover, 0);
+                        targetObj.SetHp(Operate_Type.OT_Relative, (int)impactInfo.DamageData.HpRecover);
+                        targetObj.SetAttackerInfo(srcObjId, false, true, false, -impactInfo.DamageData.HpRecover, 0);
                     }
                     if (addShield != 0) {
-                        targetObj.SetShield(Operate_Type.OT_Relative, impactInfo.AddShield);
+                        targetObj.SetShield(Operate_Type.OT_Relative, impactInfo.DamageData.AddShield);
                     }
                     if ((targetType == (int)SkillTargetType.Enemy || targetType == (int)SkillTargetType.RandEnemy) && damage != 0) {
                         if (targetObj.EntityType == (int)EntityTypeEnum.Tower) {
@@ -631,13 +627,9 @@ namespace GameFramework
             if (cfg.type == (int)SkillOrImpactType.Skill) {
                 impactInfo.SenderPosition = null != srcNpc ? srcNpc.GetMovementStateInfo().GetPosition3D() : ScriptRuntime.Vector3.Zero;
                 impactInfo.SkillId = cfg.id;
-                impactInfo.DurationTime = (int)(cfg.duration * 1000);
+                impactInfo.DurationTime = (int)cfg.duration;
                 impactInfo.TargetType = cfg.targetType;
-                impactInfo.Damage = null != srcNpc ? srcNpc.GetActualProperty().AttackBase * cfg.damage / 1000.0f : 0;
-                impactInfo.AddAttack = cfg.addAttack;
-                impactInfo.AddShield = cfg.addShield;
-                impactInfo.AddSpeed = cfg.addSpeed;
-                impactInfo.HpRecover = cfg.hpRecover;
+                impactInfo.DamageData.Merge(cfg.damageData);
                 impactInfo.ImpactToTarget = cfg.impactToTarget;
                 ret = true;
             } else {
@@ -650,13 +642,10 @@ namespace GameFramework
                     //如果当前技能配置有数据则继承当前配置数据，否则继承源impact记录的数据。
                     impactInfo.SenderPosition = srcImpactInfo.SenderPosition;
                     impactInfo.SkillId = srcImpactInfo.SkillId;
-                    impactInfo.DurationTime = (int)(cfg.duration * 1000);
+                    impactInfo.DurationTime = (int)cfg.duration;
                     impactInfo.TargetType = srcImpactInfo.TargetType;
-                    impactInfo.Damage = cfg.damage != 0 && null != srcNpc ? srcNpc.GetActualProperty().AttackBase * cfg.damage / 1000.0f : srcImpactInfo.Damage;
-                    impactInfo.AddAttack = cfg.addAttack != 0 ? cfg.addAttack : srcImpactInfo.AddAttack;
-                    impactInfo.AddShield = cfg.addShield != 0 ? cfg.addShield : srcImpactInfo.AddShield;
-                    impactInfo.AddSpeed = Math.Abs(cfg.addSpeed) > Geometry.c_FloatPrecision ? cfg.addSpeed : srcImpactInfo.AddSpeed;
-                    impactInfo.HpRecover = cfg.hpRecover != 0 ? cfg.hpRecover : srcImpactInfo.HpRecover;
+                    impactInfo.DamageData.Merge(srcImpactInfo.DamageData);
+                    impactInfo.DamageData.Merge(cfg.damageData);
                     impactInfo.ImpactToTarget = cfg.impactToTarget != 0 ? cfg.impactToTarget : srcImpactInfo.ImpactToTarget;
                     ret = true;
                 }

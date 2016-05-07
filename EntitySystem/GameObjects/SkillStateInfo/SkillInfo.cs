@@ -27,10 +27,12 @@ namespace GameFramework
     }
     public class SkillInfo
     {
-        public int SkillId;                // 技能Id
-        public int SkillLevel;             // 技能等级
-        public bool IsSkillActivated;      // 是否正在释放技能
-        public long CdEndTime;
+        public int SkillId;                 // 技能Id
+        public int SkillLevel;              // 技能等级
+        public bool IsSkillActivated;       // 是否正在释放技能
+        public long CdEndTime;              // CD结束时间
+
+        public int ManualSkillId;           // 记录释放技能时的手动技能ID
         
         //校验数据
         public int m_SkillCDRefreshCount = 0;
@@ -55,29 +57,34 @@ namespace GameFramework
         /// 获得攻击对象类型
         /// </summary>
         /// <returns></returns>
-        public SkillTargetType GetTargetType() {
-            return (SkillTargetType)ConfigData.targetType;
+        public SkillTargetType TargetType 
+        {
+            get
+            {
+                return (SkillTargetType)ConfigData.targetType;
+            }
         }
-
         /// <summary>
         /// add by laogao
         /// 攻击距离
         /// </summary>
-        public float distance
+        public float Distance
         {
             get
             {
                 return ConfigData.distance;
             }
         }
-
         /// <summary>
-        /// add by laogao
-        /// 技能优先级
+        /// 技能打断的优先级
         /// </summary>
         /// <returns></returns>
-        public int GetPriority(){
-            return 0;
+        public int InterruptPriority
+        {
+            get
+            {
+                return ConfigData.interruptPriority;
+            }
         }
 
         public void Reset()

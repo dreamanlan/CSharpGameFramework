@@ -11,7 +11,6 @@ namespace GameFramework
         protected override void OnInitStateHandlers()
         {
             SetStateHandler((int)AiStateId.Idle, this.IdleHandler);
-            SetStateHandler((int)AiStateId.Pursuit, this.PursuitHandler);
             SetStateHandler((int)AiStateId.DslLogic, this.DslLogicHandler);
             SetStateHandler((int)AiStateId.SkillCommand, this.SkillCommandHandler);
             SetStateHandler((int)AiStateId.MoveCommand, this.MoveCommandHandler);
@@ -33,8 +32,7 @@ namespace GameFramework
         {
             if (entity.IsDead()) {
                 if (entity.GetAiStateInfo().CurState != (int)AiStateId.Idle) {
-                    entity.GetMovementStateInfo().IsMoving = false;
-                    NotifyAiMove(entity);
+                    NotifyAiStopPursue(entity);
                     ChangeToState(entity, (int)AiStateId.Idle);
                 }
                 return false;
@@ -43,16 +41,6 @@ namespace GameFramework
         }
 
         private void IdleHandler(EntityInfo entity, long deltaTime)
-        {
-            AiStateInfo info = entity.GetAiStateInfo();
-            info.Time += deltaTime;
-            if (info.Time > 100) {
-                info.Time = 0;
-                ChangeToState(entity, (int)AiStateId.DslLogic);
-            }
-        }
-
-        private void PursuitHandler(EntityInfo entity, long deltaTime)
         {
             AiStateInfo info = entity.GetAiStateInfo();
             info.Time += deltaTime;

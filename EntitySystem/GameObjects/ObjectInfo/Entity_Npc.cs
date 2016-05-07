@@ -266,7 +266,8 @@ namespace GameFramework
             GohomeRange = cfg.gohomerange;
 
             GetBaseProperty().SetRps(Operate_Type.OT_Absolute, 1);
-            GetBaseProperty().SetAttackBase(Operate_Type.OT_Absolute, cfg.baseattack);
+            GetBaseProperty().SetAttackBase(Operate_Type.OT_Absolute, cfg.attack);
+            GetBaseProperty().SetDefenceBase(Operate_Type.OT_Absolute, cfg.defence);
             GetBaseProperty().SetAttackRange(Operate_Type.OT_Absolute, maxAttackRange);
             GetBaseProperty().SetHpMax(Operate_Type.OT_Absolute, cfg.hp);
             GetBaseProperty().SetEnergyMax(Operate_Type.OT_Absolute, cfg.mp);

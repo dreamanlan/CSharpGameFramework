@@ -136,15 +136,13 @@ internal class Msg_RC_NpcMove_Handler
             Vector2 targetPos = new Vector2(tx, ty);
 
             MovementStateInfo msi = npc.GetMovementStateInfo();
-            float movedir = Geometry.GetYRadian(msi.GetPosition2D(), targetPos);
             float velocity = ProtoHelper.DecodeFloat(targetmsg.velocity);
-            msi.SetMoveDir(movedir);
-            msi.SetFaceDir(movedir);
-            msi.IsMoving = true;
             npc.GetActualProperty().SetMoveSpeed(Operate_Type.OT_Absolute, velocity);
-            msi.TargetPosition = new Vector3(targetPos.X, 0, targetPos.Y);
-            
-            msi.SetPosition2D(curPos);
+            if (Geometry.DistanceSquare(msi.GetPosition2D(), curPos) > c_MaxPosDeltaSqr) {
+                msi.SetPosition2D(curPos);
+                UnityEngine.GameObject actor = EntityController.Instance.GetGameObject(npc.GetId());
+                GameFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, actor.transform.position.y, y));
+            }            
 
             EntityViewModel viewModel = EntityViewModelManager.Instance.GetEntityViewById(targetmsg.npc_id);
             if (null != viewModel) {
@@ -155,16 +153,20 @@ internal class Msg_RC_NpcMove_Handler
             ProtoHelper.DecodePosition2D(targetmsg.cur_pos, out x, out y);
             Vector2 curPos = new Vector2(x, y);
             MovementStateInfo msi = npc.GetMovementStateInfo();
-            msi.SetPosition2D(curPos);
-            /*
-            msi.IsMoving = false;
-            EntityViewModel viewModel = EntityViewModelManager.Instance.GetEntityViewById(targetmsg.npc_id);
-            if (null != viewModel) {
-                viewModel.StopMove();
+            if (Geometry.DistanceSquare(msi.GetPosition2D(), curPos) > c_MaxPosDeltaSqr) {
+                msi.SetPosition2D(curPos);
+                UnityEngine.GameObject actor = EntityController.Instance.GetGameObject(npc.GetId());
+                GameFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, actor.transform.position.y, y));
+            } else {
+                EntityViewModel viewModel = EntityViewModelManager.Instance.GetEntityViewById(targetmsg.npc_id);
+                if (null != viewModel) {
+                    viewModel.MoveTo(curPos.X, 0, curPos.Y);
+                }
             }
-            */
         }
     }
+
+    private const float c_MaxPosDeltaSqr = 36.0f;
 }
 internal class Msg_RC_NpcFace_Handler
 {
@@ -185,7 +187,6 @@ internal class Msg_RC_NpcFace_Handler
 
         UnityEngine.GameObject actor = EntityController.Instance.GetGameObject(npc.GetId());
         actor.transform.localRotation = UnityEngine.Quaternion.Euler(0, Utility.RadianToDegree(dir), 0);
-        //LogSystem.Info("NpcFace, npc:{0} face:{1}", other.GetId(), dir);
     }
 }
 internal class Msg_RC_NpcSkill_Handler
@@ -208,16 +209,27 @@ internal class Msg_RC_NpcSkill_Handler
         LogSystem.Info("Receive Msg_RC_NpcSkill, EntityId={0}, SkillId={1}", targetmsg.npc_id, skillId);
 
         MovementStateInfo msi = npc.GetMovementStateInfo();
-        msi.SetPosition2D(x, z);
-        msi.SetFaceDir(faceDir);
+        if (targetmsg.target_id <= 0) {
+            msi.SetPosition2D(x, z);
+            msi.SetFaceDir(faceDir);
+            npc.GetAiStateInfo().Target = 0;
+            UnityEngine.GameObject actor = EntityController.Instance.GetGameObject(npc.GetId());
+            GameFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, actor.transform.position.y, z));
+            actor.transform.localRotation = UnityEngine.Quaternion.Euler(0, Utility.RadianToDegree(faceDir), 0);
+        } else {
+            npc.GetAiStateInfo().Target = targetmsg.target_id;
+        }
 
-        UnityEngine.GameObject actor = EntityController.Instance.GetGameObject(npc.GetId());
-        GameFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, 0, z));
-        actor.transform.localRotation = UnityEngine.Quaternion.Euler(0, Utility.RadianToDegree(faceDir), 0);
         SkillInfo skillInfo = npc.GetSkillStateInfo().GetSkillInfoById(skillId);
         if (null != skillInfo) {
+            if (skillInfo.ConfigData.canmove == 0) {
+                EntityViewModel viewModel = EntityViewModelManager.Instance.GetEntityViewById(targetmsg.npc_id);
+                if (null != viewModel) {
+                    viewModel.StopMove();
+                }
+            }
             if (GfxSkillSystem.Instance.StartSkill(npc.GetId(), skillInfo.ConfigData, 0)) {
-                Utility.EventSystem.Publish("ui_skill_cooldown", "ui", npc.GetId(), skillId, skillInfo.ConfigData.cooldown);
+                Utility.EventSystem.Publish("ui_skill_cooldown", "ui", npc.GetId(), skillId, skillInfo.ConfigData.cooldown / 1000.0f);
             }
         }
     }

@@ -12,8 +12,12 @@ namespace GameFramework
         internal void Init()
         {
             AbstractAiStateLogic.OnAiInitDslLogic += this.OnAiInitDslLogic;
+            AbstractAiStateLogic.OnAiTarget += this.OnAiTarget;
             AbstractAiStateLogic.OnAiFace += this.OnAiFace;
-            AbstractAiStateLogic.OnAiMove += this.OnAiMove;
+            AbstractAiStateLogic.OnAiPursue += this.OnAiPursue;
+            AbstractAiStateLogic.OnAiStopPursue += this.OnAiStopPursue;
+            AbstractAiStateLogic.OnAiSelectSkill += this.OnAiSelectSkill;
+            AbstractAiStateLogic.OnAiDead += this.OnDeadNotify;
             AbstractAiStateLogic.OnAiSkill += this.OnAiSkill;
             AbstractAiStateLogic.OnAiStopSkill += this.OnAiStopSkill;
             AbstractAiStateLogic.OnAiAddImpact += this.OnAiAddImpact;
@@ -29,8 +33,23 @@ namespace GameFramework
                 string storyFile = aiInfo.AiParam[1];
                 if (!string.IsNullOrEmpty(storyId) && !string.IsNullOrEmpty(storyFile)) {
                     aiInfo.AiStoryInstanceInfo = GfxStorySystem.Instance.NewAiStoryInstance(storyId, string.Empty, storyFile);
-                    aiInfo.AiStoryInstanceInfo.m_StoryInstance.Start();
+                    if (null != aiInfo.AiStoryInstanceInfo) {
+                        aiInfo.AiStoryInstanceInfo.m_StoryInstance.SetVariable("@objid", entity.GetId());
+                        aiInfo.AiStoryInstanceInfo.m_StoryInstance.Start();
+                    }
                 }
+            }
+        }
+        private void OnAiTarget(EntityInfo npc, EntityInfo target)
+        {
+            if (null != target) {
+                if (null != ClientModule.Instance.SelectedTarget) {
+                    EntityInfo curTarget = ClientModule.Instance.GetEntityById(ClientModule.Instance.SelectedTarget.TargetId);
+                    if (curTarget == ClientModule.Instance.SelectedTarget.Target) {
+                        return;
+                    }
+                }
+                ClientModule.Instance.SetLockTarget(target.GetId());
             }
         }
         private void OnAiFace(EntityInfo entity)
@@ -41,17 +60,24 @@ namespace GameFramework
                 actor.transform.localRotation = Quaternion.Euler(0, Utility.RadianToDegree(dir), 0);
             }
         }
-        private void OnAiMove(EntityInfo entity)
+        private void OnAiPursue(EntityInfo entity, ScriptRuntime.Vector3 target)
         {
             if (null != entity) {
-                MovementStateInfo msi = entity.GetMovementStateInfo();
                 EntityViewModel npcViewModel = EntityViewModelManager.Instance.GetEntityViewById(entity.GetId());
-                if (!msi.IsMoving) {
-                    npcViewModel.StopMove();
-                } else {
-                    npcViewModel.MoveTo(msi.TargetPosition.X, msi.TargetPosition.Y, msi.TargetPosition.Z);
-                }
+                npcViewModel.MoveTo(target.X, target.Y, target.Z);
             }
+        }
+        private void OnAiStopPursue(EntityInfo entity)
+        {
+            EntityViewModel npcView = EntityViewModelManager.Instance.GetEntityViewById(entity.GetId());
+            npcView.StopMove();
+        }
+        private void OnAiSelectSkill(EntityInfo npc,SkillInfo skill)
+        {
+            if(skill == null)
+                npc.GetSkillStateInfo().SetCurSkillInfo(0);
+            else
+                npc.GetSkillStateInfo().SetCurSkillInfo(skill.SkillId);
         }
         private void OnAiSkill(EntityInfo entity, int skillId)
         {
@@ -59,15 +85,15 @@ namespace GameFramework
                 SkillInfo skillInfo = entity.GetSkillStateInfo().GetSkillInfoById(skillId);
                 if (null != skillInfo) {
                     if (GfxSkillSystem.Instance.StartSkill(entity.GetId(), skillInfo.ConfigData, 0)) {
-                        Utility.EventSystem.Publish("ui_skill_cooldown", "ui", entity.GetId(), skillId, skillInfo.ConfigData.cooldown);
+                        Utility.EventSystem.Publish("ui_skill_cooldown", "ui", entity.GetId(), skillId, skillInfo.ConfigData.cooldown / 1000.0f);
                     }
                 }
             }
         }
-        private void OnAiStopSkill(EntityInfo entity)
+        private void OnAiStopSkill(EntityInfo npc)
         {
-            if (null != entity) {
-                GfxSkillSystem.Instance.StopAllSkill(entity.GetId(), true);
+            if (null != npc) {
+                GfxSkillSystem.Instance.StopAllSkill(npc.GetId(), false);
             }
         }
         private void OnAiAddImpact(EntityInfo entity, int impactId)
@@ -89,6 +115,11 @@ namespace GameFramework
             if (null != impactInfo) {
                 GfxSkillSystem.Instance.StopSkill(entity.GetId(), impactId, impactInfo.Seq, false);
             }
+        }
+        private void OnDeadNotify(EntityInfo npc)
+        {
+            EntityViewModel view = EntityController.Instance.GetEntityViewById(npc.GetId());
+            view.Death();
         }
         private void OnAiSendStoryMessage(EntityInfo entity, string msgId, object[] args)
         {

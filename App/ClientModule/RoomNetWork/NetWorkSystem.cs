@@ -271,7 +271,20 @@ namespace GameFramework.Network
             }
         }
 
-        internal void SyncPlayerSkill(EntityInfo entity, int skillId)
+        internal void SyncPlayerStopMove()
+        {
+            EntityInfo userInfo = ClientModule.Instance.GetEntityById(ClientModule.Instance.LeaderID);
+            if (null != userInfo) {
+                MovementStateInfo msi = userInfo.GetMovementStateInfo();
+
+                Msg_CR_UserMoveToPos builder = new Msg_CR_UserMoveToPos();
+                builder.target_pos = ProtoHelper.EncodePosition2D(msi.PositionX, msi.PositionZ);
+                builder.is_stop = true;
+                SendMessage(RoomMessageDefine.Msg_CR_UserMoveToPos, builder);
+            }
+        }
+
+        internal void SyncPlayerSkill(EntityInfo entity, int skillId, int targetId, float faceDir)
         {
             if (entity.IsHaveStateFlag(CharacterState_Type.CST_Sleep)) {
                 return;
@@ -279,9 +292,23 @@ namespace GameFramework.Network
             Msg_CR_Skill bd = new Msg_CR_Skill();
             bd.role_id = entity.GetId();
             bd.skill_id = skillId;
+            if (targetId > 0) {
+                bd.target_id = targetId;
+            } else {
+                bd.target_dir = ProtoHelper.EncodeFloat(faceDir);
+            }
             SendMessage(RoomMessageDefine.Msg_CR_Skill, bd);
 
-            //LogSystem.Info("SyncPlayerSkill skill {0}, entity {1}, pos:{2}", skillId, entity.GetId(), entity.GetMovementStateInfo().GetPosition2D().ToString());
+        }
+
+        internal void SyncPlayerStopSkill(EntityInfo entity)
+        {
+            if (entity.IsHaveStateFlag(CharacterState_Type.CST_Sleep)) {
+                return;
+            }
+            Msg_CR_StopSkill bd = new Msg_CR_StopSkill();
+            SendMessage(RoomMessageDefine.Msg_CR_StopSkill, bd);
+
         }
 
         internal void SyncOperateMode(bool bAuto)

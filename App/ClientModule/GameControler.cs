@@ -134,10 +134,10 @@ namespace GameFramework
 
             Utility.GfxLog("GameControler.Init");
         }
-        public static void InitGame()
+        public static void InitGame(bool useNetwork)
         {
             Utility.GfxLog("GameControler.InitGame");
-            ClientModule.Instance.Init();
+            ClientModule.Instance.Init(useNetwork);
         }
         public static void PauseGame(bool isPause)
         {

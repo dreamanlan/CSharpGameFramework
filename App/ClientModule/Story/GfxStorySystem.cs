@@ -126,9 +126,12 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getentityview", new StoryValueFactoryHelper<Story.Values.GetEntityViewValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getuserinfo", new StoryValueFactoryHelper<StorySystem.CommonValues.DummyValue>());
 
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isclient", new StoryValueFactoryHelper<Story.Values.IsClientValue>());
+
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "blackboardget", new StoryValueFactoryHelper<Story.Values.BlackboardGetValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getdialogitem", new StoryValueFactoryHelper<Story.Values.GetDialogItemValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getactoricon", new StoryValueFactoryHelper<Story.Values.GetActorIconValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmonsterinfo", new StoryValueFactoryHelper<Story.Values.GetMonsterInfoValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getaidata", new StoryValueFactoryHelper<Story.Values.GetAiDataValue>());
             
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "npcidlist", new StoryValueFactoryHelper<Story.Values.NpcIdListValue>());

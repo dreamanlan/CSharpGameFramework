@@ -57,7 +57,7 @@ namespace GameFramework.Skill.Trigers
                     }
                 }
             } else if (0 == m_Type.CompareTo("impact")) {
-                int time = (int)(senderObj.ConfigData.duration * 1000);
+                int time = (int)senderObj.ConfigData.duration;
                 if (time <= 0) {
                     time = EntityController.Instance.GetImpactDuration(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
                 }

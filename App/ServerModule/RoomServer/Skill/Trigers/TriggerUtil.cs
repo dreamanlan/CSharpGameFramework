@@ -226,7 +226,8 @@ namespace GameFramework.Skill.Trigers
                         if (aoeType == (int)SkillAoeType.Capsule) {
                             isMatch = Geometry.IsCapsuleDiskIntersect(new ScriptRuntime.Vector2(center.X, center.Z), angleu, range, new ScriptRuntime.Vector2(kdTreeObj.Position.X, kdTreeObj.Position.Z), kdTreeObj.Radius);
                         } else {
-                            isMatch = Geometry.IsObbDiskIntersect(new ScriptRuntime.Vector2(center.X, center.Z), new ScriptRuntime.Vector2(range / 2, angleOrLength / 2), radian, new ScriptRuntime.Vector2(kdTreeObj.Position.X, kdTreeObj.Position.Z), kdTreeObj.Radius);
+                            ScriptRuntime.Vector2 half = new ScriptRuntime.Vector2(range / 2, angleOrLength / 2);
+                            isMatch = Geometry.IsObbDiskIntersect(c, half, radian, new ScriptRuntime.Vector2(kdTreeObj.Position.X, kdTreeObj.Position.Z), kdTreeObj.Radius);
                         }
                         if (isMatch) {
                             if (!callback(distSqr, kdTreeObj.Object.GetId())) {

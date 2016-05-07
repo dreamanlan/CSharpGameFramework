@@ -8,20 +8,44 @@ namespace GameFramework
     {
         internal AiView_NpcGeneral()
         {
-            AbstractAiStateLogic.OnAiMove += this.OnAiMove;
+            AbstractAiStateLogic.OnAiPursue += this.OnAiPursue;
+            AbstractAiStateLogic.OnAiStopPursue += this.OnAiStopPursue;
             AbstractAiStateLogic.OnAiFace += this.OnAiFace;
+            AbstractAiStateLogic.OnAiSelectSkill += this.OnAiSelectSkill;
             AbstractAiStateLogic.OnAiSkill += this.OnAiSkill;
             AbstractAiStateLogic.OnAiStopSkill += this.OnAiStopSkill;
             AbstractAiStateLogic.OnAiAddImpact += this.OnAiAddImpact;
             AbstractAiStateLogic.OnAiRemoveImpact += this.OnAiRemoveImpact;
             AbstractAiStateLogic.OnAiSendStoryMessage += this.OnAiSendStoryMessage;
         }
-        private void OnAiMove(EntityInfo npc)
+        private void OnAiPursue(EntityInfo npc, ScriptRuntime.Vector3 target)
         {
             Scene scene = npc.SceneContext.CustomData as Scene;
-            if (null != scene && !npc.GetMovementStateInfo().IsSkillMoving) {
+            if (null != scene) {
+                npc.GetMovementStateInfo().TargetPosition = target;
+                float dir = Geometry.GetYRadian(npc.GetMovementStateInfo().GetPosition3D(), target);
+                npc.GetMovementStateInfo().SetFaceDir(dir);
+                npc.GetMovementStateInfo().SetMoveDir(dir);
+                npc.GetMovementStateInfo().IsMoving = true;
+
                 if (npc.GetMovementStateInfo().IsMoveStatusChanged) {
                     npc.GetMovementStateInfo().IsMoveStatusChanged = false;
+
+                    Msg_RC_NpcMove npcMoveBuilder = DataSyncUtility.BuildNpcMoveMessage(npc);
+                    if (null != npcMoveBuilder)
+                        scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcMove, npcMoveBuilder);
+                }
+            }
+        }
+        private void OnAiStopPursue(EntityInfo npc)
+        {
+            Scene scene = npc.SceneContext.CustomData as Scene;
+            if (null != scene) {
+                npc.GetMovementStateInfo().IsMoving = false;
+
+                if (npc.GetMovementStateInfo().IsMoveStatusChanged) {
+                    npc.GetMovementStateInfo().IsMoveStatusChanged = false;
+
                     Msg_RC_NpcMove npcMoveBuilder = DataSyncUtility.BuildNpcMoveMessage(npc);
                     if (null != npcMoveBuilder)
                         scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcMove, npcMoveBuilder);
@@ -46,6 +70,13 @@ namespace GameFramework
                 }
             }
         }
+        private void OnAiSelectSkill(EntityInfo npc, SkillInfo skill)
+        {
+            if (skill == null)
+                npc.GetSkillStateInfo().SetCurSkillInfo(0);
+            else
+                npc.GetSkillStateInfo().SetCurSkillInfo(skill.SkillId);
+        }
         private void OnAiSkill(EntityInfo npc, int skillId)
         {
             Scene scene = npc.SceneContext.CustomData as Scene;
@@ -56,15 +87,8 @@ namespace GameFramework
                     if (null != curSkillInfo) {
                         long curTime = TimeUtility.GetLocalMilliseconds();
                         if (!curSkillInfo.IsInCd(curTime)) {
-                            TableConfig.Skill cfg = TableConfig.SkillProvider.Instance.GetSkill(skillId);
-                            if (scene.SkillSystem.StartSkill(npc.GetId(), cfg, 0)) {
-                                Msg_RC_NpcSkill skillBuilder = new Msg_RC_NpcSkill();
-                                skillBuilder.npc_id = npc.GetId();
-                                skillBuilder.skill_id = skillId;
-                                float x = npc.GetMovementStateInfo().GetPosition3D().X;
-                                float z = npc.GetMovementStateInfo().GetPosition3D().Z;
-                                skillBuilder.stand_pos = ProtoHelper.EncodePosition2D(x, z);
-                                skillBuilder.face_direction = ProtoHelper.EncodeFloat(npc.GetMovementStateInfo().GetFaceDir());
+                            if (scene.SkillSystem.StartSkill(npc.GetId(), curSkillInfo.ConfigData, 0)) {
+                                Msg_RC_NpcSkill skillBuilder = DataSyncUtility.BuildNpcSkillMessage(npc, skillId);
 
                                 LogSystem.Info("Send Msg_RC_NpcSkill, EntityId={0}, SkillId={1}",
                                   npc.GetId(), skillId);
@@ -84,8 +108,7 @@ namespace GameFramework
                     scene.SkillSystem.StopAllSkill(npc.GetId(), true);
                 }
 
-                Msg_RC_NpcStopSkill skillBuilder = new Msg_RC_NpcStopSkill();
-                skillBuilder.npc_id = npc.GetId();
+                Msg_RC_NpcStopSkill skillBuilder = DataSyncUtility.BuildNpcStopSkillMessage(npc);
 
                 LogSystem.Info("Send Msg_RC_NpcStopSkill, EntityId={0}",
                   npc.GetId());

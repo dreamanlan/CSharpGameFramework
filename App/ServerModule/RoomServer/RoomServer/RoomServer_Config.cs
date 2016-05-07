@@ -11,6 +11,8 @@ namespace RoomServer
         {
             try {
                 TableConfig.LevelProvider.Instance.LoadForServer();
+                TableConfig.LevelMonsterProvider.Instance.LoadForServer();
+                TableConfig.LevelMonsterProvider.Instance.BuildGroupedLevelMonsters();
                 TableConfig.ActorProvider.Instance.LoadForServer();
                 TableConfig.SkillProvider.Instance.LoadForServer();
                 TableConfig.SkillDslProvider.Instance.LoadForServer();
@@ -29,6 +31,16 @@ namespace RoomServer
                 TableConfig.Skill skill = pair.Value as TableConfig.Skill;
                 TableConfig.SkillDsl skillDsl = TableConfig.SkillDslProvider.Instance.GetSkillDsl(skill.dslSkillId);
                 skill.dslFile = skillDsl.dslFile;
+                skill.damageData.Damage = skill.damage;
+                skill.damageData.HpRecover = skill.hpRecover;
+                skill.damageData.MpRecover = skill.mpRecover;
+                skill.damageData.AddAttack = skill.addAttack;
+                skill.damageData.AddDefence = skill.addDefence;
+                skill.damageData.AddRps = skill.addRps;
+                skill.damageData.AddCritical = skill.addCritical;
+                skill.damageData.AddCriticalPow = skill.addCriticalPow;
+                skill.damageData.AddSpeed = skill.addSpeed;
+                skill.damageData.AddShield = skill.addShield;
             }
             var resources = TableConfig.SkillResourcesProvider.Instance.SkillResourcesMgr.GetData();
             foreach (var resource in resources) {

@@ -15,6 +15,7 @@ namespace GameFramework
 
         public long StartTime = 0;                 // 效果开始生效起始时间
         public int DurationTime = 0;               // 持续时间
+        /*
         public float Damage = 0;
         public int HpRecover = 0;
         public int MpRecover = 0;
@@ -25,9 +26,10 @@ namespace GameFramework
         public float AddCritical = 0;
         public float AddCriticalPow = 0;
         public float AddSpeed = 0;
-
+        */
         public int ImpactToTarget = 0;        
         public TableConfig.Skill ConfigData;
+        public TableConfig.SkillDamageData DamageData = new TableConfig.SkillDamageData();
 
         public ImpactInfo(int impactId)
         {
@@ -44,23 +46,23 @@ namespace GameFramework
 
         public void RefixCharacterProperty(EntityInfo entity)
         {
-            if (AddAttack != 0) {
-                entity.GetActualProperty().SetAttackBase(Operate_Type.OT_Relative, AddAttack);
+            if (DamageData.AddAttack != 0) {
+                entity.GetActualProperty().SetAttackBase(Operate_Type.OT_Relative, DamageData.AddAttack);
             }
-            if (AddDefence != 0) {
-                entity.GetActualProperty().SetDefenceBase(Operate_Type.OT_Relative, AddDefence);
+            if (DamageData.AddDefence != 0) {
+                entity.GetActualProperty().SetDefenceBase(Operate_Type.OT_Relative, DamageData.AddDefence);
             }
-            if (AddRps != 0) {
-                entity.GetActualProperty().SetRps(Operate_Type.OT_Relative, AddRps);
+            if (DamageData.AddRps != 0) {
+                entity.GetActualProperty().SetRps(Operate_Type.OT_Relative, DamageData.AddRps);
             }
-            if (AddCritical != 0) {
-                entity.GetActualProperty().SetCritical(Operate_Type.OT_Relative, AddCritical);
+            if (DamageData.AddCritical != 0) {
+                entity.GetActualProperty().SetCritical(Operate_Type.OT_Relative, DamageData.AddCritical);
             }
-            if (AddCriticalPow != 0) {
-                entity.GetActualProperty().SetCriticalPow(Operate_Type.OT_Relative, AddCriticalPow);
+            if (DamageData.AddCriticalPow != 0) {
+                entity.GetActualProperty().SetCriticalPow(Operate_Type.OT_Relative, DamageData.AddCriticalPow);
             }
-            if (Math.Abs(AddSpeed) > Geometry.c_FloatPrecision) {
-                entity.GetActualProperty().SetMoveSpeed(Operate_Type.OT_Relative, AddSpeed);
+            if (Math.Abs(DamageData.AddSpeed) > Geometry.c_FloatPrecision) {
+                entity.GetActualProperty().SetMoveSpeed(Operate_Type.OT_Relative, DamageData.AddSpeed);
             }
         }
     }

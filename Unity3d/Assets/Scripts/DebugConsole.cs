@@ -992,7 +992,11 @@ public class DebugConsole : MonoBehaviour
         if (_cmdTable.ContainsKey(cmd)) {
             Log(_cmdTable[cmd](input.ToArray()), MessageType.OUTPUT);
         } else {
-            LogMessage(Message.Output(string.Format("*** Unknown Command: {0} ***", cmd)));
+            input.Clear();
+            input.Add("cmd");
+            input.Add(inputString);
+            Log(_cmdTable["cmd"](input.ToArray()), MessageType.OUTPUT);
+            //LogMessage(Message.Output(string.Format("*** Unknown Command: {0} ***", cmd)));
         }
     }
     #endregion

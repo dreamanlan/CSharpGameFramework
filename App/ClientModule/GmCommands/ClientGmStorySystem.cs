@@ -17,6 +17,9 @@ namespace GameFramework.GmCommands
     internal void Init()
     {
       //注册Gm命令
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "resetdsl", new StoryCommandFactoryHelper<DoResetDslCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "scp", new StoryCommandFactoryHelper<DoScpCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "gm", new StoryCommandFactoryHelper<DoGmCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "setdebug", new StoryCommandFactoryHelper<SetDebugCommand>());
       StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "allocmemory", new StoryCommandFactoryHelper<AllocMemoryCommand>());
       StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "freememory", new StoryCommandFactoryHelper<FreeMemoryCommand>());

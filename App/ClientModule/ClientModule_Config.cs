@@ -18,6 +18,8 @@ namespace GameFramework
                 return cfg.Content;
             });
             TableConfig.LevelProvider.Instance.LoadForClient();
+            TableConfig.LevelMonsterProvider.Instance.LoadForClient();
+            TableConfig.LevelMonsterProvider.Instance.BuildGroupedLevelMonsters();
             TableConfig.ActorProvider.Instance.LoadForClient();
             TableConfig.SkillProvider.Instance.LoadForClient();
             TableConfig.SkillDslProvider.Instance.LoadForClient();
@@ -36,6 +38,16 @@ namespace GameFramework
                 TableConfig.Skill skill = pair.Value as TableConfig.Skill;
                 TableConfig.SkillDsl skillDsl = TableConfig.SkillDslProvider.Instance.GetSkillDsl(skill.dslSkillId);
                 skill.dslFile = skillDsl.dslFile;
+                skill.damageData.Damage = skill.damage;
+                skill.damageData.HpRecover = skill.hpRecover;
+                skill.damageData.MpRecover = skill.mpRecover;
+                skill.damageData.AddAttack = skill.addAttack;
+                skill.damageData.AddDefence = skill.addDefence;
+                skill.damageData.AddRps = skill.addRps;
+                skill.damageData.AddCritical = skill.addCritical;
+                skill.damageData.AddCriticalPow = skill.addCriticalPow;
+                skill.damageData.AddSpeed = skill.addSpeed;
+                skill.damageData.AddShield = skill.addShield;
             }
             var resources = TableConfig.SkillResourcesProvider.Instance.SkillResourcesMgr.GetData();
             foreach (var resource in resources) {
