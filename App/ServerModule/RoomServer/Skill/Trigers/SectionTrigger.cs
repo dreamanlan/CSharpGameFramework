@@ -40,10 +40,7 @@ namespace GameFramework.Skill.Trigers
             }
             if (0 == m_Type.CompareTo("anim")) {
             } else if (0 == m_Type.CompareTo("impact")) {
-                int time = (int)senderObj.ConfigData.duration;
-                if (time <= 0) {
-                    time = scene.EntityController.GetImpactDuration(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
-                }
+                int time = scene.EntityController.GetImpactDuration(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
                 if (time > 0) {
                     instance.SetCurSectionDuration((long)time + m_DeltaTime);
                 } else {
@@ -83,6 +80,73 @@ namespace GameFramework.Skill.Trigers
         private long m_DeltaTime = 50;
 
         private long m_RealStartTime = 0;
+    }
+
+    /// <summary>
+    /// keepsectionforbuff(internal_time[, start_time[, delta_time]]);
+    /// </summary>
+    public class KeepSectionForBuffTrigger : AbstractSkillTriger
+    {
+        public override ISkillTriger Clone()
+        {
+            KeepSectionForBuffTrigger copy = new KeepSectionForBuffTrigger();
+            copy.m_StartTime = m_StartTime;
+            copy.m_Interval = m_Interval;
+            copy.m_DeltaTime = m_DeltaTime;
+            copy.m_RealStartTime = m_RealStartTime;
+            return copy;
+        }
+
+        public override void Reset()
+        {
+            m_RealStartTime = m_StartTime;
+            m_LastKeepTime = 0;
+        }
+
+        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
+            if (null == senderObj) return false;
+            Scene scene = senderObj.Scene;
+            EntityInfo obj = senderObj.GfxObj;
+            if (null == obj) return false;
+            if (m_RealStartTime < 0) {
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+            }
+            if (curSectionTime < m_RealStartTime) {
+                return true;
+            }
+            if (m_LastKeepTime <= 0 || m_LastKeepTime + m_Interval >= curSectionTime) {
+                m_LastKeepTime = curSectionTime;
+                int time = scene.EntityController.GetImpactDuration(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                if (time > 0) {
+                    instance.SetCurSectionDuration((long)time + m_DeltaTime);
+                } else {
+                    LogSystem.Warn("adjustsectionduration impact duration is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
+                }
+            }
+            return true;
+        }
+
+        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        {
+            if (callData.GetParamNum() > 0) {
+                m_Interval = long.Parse(callData.GetParamId(0));
+            }
+            if (callData.GetParamNum() > 1) {
+                m_StartTime = long.Parse(callData.GetParamId(1));
+            }
+            if (callData.GetParamNum() > 2) {
+                m_DeltaTime = long.Parse(callData.GetParamId(2));
+            }
+            m_RealStartTime = m_StartTime;
+        }
+        
+        private long m_Interval = 100;
+        private long m_DeltaTime = 50;
+
+        private long m_RealStartTime = 0;
+        private long m_LastKeepTime = 0;
     }
 
     /// <summary>

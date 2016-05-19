@@ -245,6 +245,7 @@ namespace GameFramework.Skill
             SkillTrigerManager.Instance.RegisterTrigerFactory("restorepos", new SkillTrigerFactoryHelper<Trigers.RestorePosTrigger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("adjustsectionduration", new SkillTrigerFactoryHelper<Trigers.AdjustSectionDurationTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("keepsectionforbuff", new SkillTrigerFactoryHelper<Trigers.KeepSectionForBuffTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("stopsectionif", new SkillTrigerFactoryHelper<Trigers.StopSectionIfTrigger>());
         }
         public void Reset()

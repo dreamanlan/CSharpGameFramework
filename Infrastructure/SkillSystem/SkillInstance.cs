@@ -550,9 +550,8 @@ namespace SkillSystem
         }
         public void Start(object sender)
         {
-            m_CurTime = 0;
+            m_CurTime = 0;            
             m_CurSection = -1;
-            ChangeToSection(0);
         }
         public void SendMessage(string msgId)
         {
@@ -567,7 +566,12 @@ namespace SkillSystem
             long delta = (long)(deltaTime * m_TimeScale);
             m_CurSectionTime += delta;
             m_CurTime += delta;
-            TickMessageHandlers(sender, delta);
+            if (m_CurSection < 0) {
+                //first tick
+                TickMessageHandlers(sender, 0);
+            } else {
+                TickMessageHandlers(sender, delta);
+            }
             if (!IsSectionDone(m_CurSection)) {
                 m_Sections[m_CurSection].Tick(sender, this, delta);
             }
@@ -575,16 +579,19 @@ namespace SkillSystem
                 m_IsStopCurSection = false;
                 ResetCurSection();
                 ChangeToSection(m_CurSection + 1);
+                DoFirstSectionTick(sender);
             }
             // do change section task
             if (m_GoToSectionId >= 0) {
                 ResetCurSection();
                 ChangeToSection(m_GoToSectionId);
+                DoFirstSectionTick(sender);
                 m_GoToSectionId = -1;
             }
             if (IsSectionDone(m_CurSection) && m_CurSection < m_Sections.Count - 1) {
                 ResetCurSection();
                 ChangeToSection(m_CurSection + 1);
+                DoFirstSectionTick(sender);
             }
             if (IsMessageDone() && IsAllSectionDone()) {
                 OnSkillStop(sender);
@@ -705,8 +712,14 @@ namespace SkillSystem
                 m_CurSectionDuration = section.Duration * 1000;
                 m_CurSectionTime = 0;
                 section.Prepare();
-
                 LogSystem.Debug("ChangeToSection:{0} duration:{1}", index, m_CurSectionDuration);
+            }
+        }
+        private void DoFirstSectionTick(object sender)
+        {
+            if (m_CurSection >= 0 && m_CurSection < m_Sections.Count) {
+                SkillSection section = m_Sections[m_CurSection];
+                section.Tick(sender, this, 0);
             }
         }
         private void TickMessageHandlers(object sender, long delta)

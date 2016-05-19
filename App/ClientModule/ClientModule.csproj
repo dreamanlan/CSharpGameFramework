@@ -76,7 +76,7 @@
       <HintPath>..\..\ExternalLibrary\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>D:\work\newdemo\Client\CsLibrary\ExternLibrary\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\ExternalLibrary\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
