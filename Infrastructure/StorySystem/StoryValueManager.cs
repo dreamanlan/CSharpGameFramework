@@ -65,7 +65,12 @@ namespace StorySystem
                                 IStoryValue<object> ret = null;
                                 IStoryValueFactory factory = GetFactory("jsonarray");
                                 if (null != factory) {
-                                    ret = factory.Build(param);
+                                    try {
+                                        ret = factory.Build(param);
+                                    } catch (Exception ex) {
+                                        GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(), param.GetLine());
+                                        throw ex;
+                                    }
                                 }
                                 return ret;
                             }
@@ -80,7 +85,12 @@ namespace StorySystem
                             IStoryValue<object> ret = null;
                             IStoryValueFactory factory = GetFactory("jsonobject");
                             if (null != factory) {
-                                ret = factory.Build(param);
+                                try {
+                                    ret = factory.Build(param);
+                                } catch (Exception ex) {
+                                    GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(), param.GetLine());
+                                    throw ex;
+                                }
                             }
                             return ret;
                         } else {
@@ -146,7 +156,12 @@ namespace StorySystem
                 string id = param.GetId();
                 IStoryValueFactory factory = GetFactory(id);
                 if (null != factory) {
-                    ret = factory.Build(param);
+                    try {
+                        ret = factory.Build(param);
+                    } catch (Exception ex) {
+                        GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(), param.GetLine());
+                        throw ex;
+                    }
                 }
                 return ret;
             }

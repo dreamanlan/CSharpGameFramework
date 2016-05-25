@@ -90,13 +90,18 @@ namespace StorySystem
             string type = commandConfig.GetId();
             IStoryCommandFactory factory = GetFactory(type);
             if (null != factory) {
-                command = factory.Create(commandConfig);
+                try {
+                    command = factory.Create(commandConfig);
+                } catch (Exception ex) {
+                    GameFramework.LogSystem.Error("command:{0} line:{1} failed.", commandConfig.ToScriptString(), commandConfig.GetLine());
+                    throw ex;
+                }
             } else {
 #if DEBUG
                 string err = string.Format("CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString());
                 throw new Exception(err);
 #else
-      GameFramework.LogSystem.Error("CreateCommand failed, type:{0}", type, commandConfig.GetLine());
+                CsLibrary.LogSystem.Error("CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
 #endif
             }
             if (null != command) {
@@ -106,7 +111,7 @@ namespace StorySystem
                 string err = string.Format("CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString());
                 throw new Exception(err);
 #else
-      GameFramework.LogSystem.Error("CreateCommand failed, type:{0}", type, commandConfig.GetLine());
+                CsLibrary.LogSystem.Error("CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
 #endif
             }
             return command;

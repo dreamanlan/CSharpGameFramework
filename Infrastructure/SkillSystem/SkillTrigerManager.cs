@@ -24,17 +24,22 @@ namespace SkillSystem
             string type = trigerConfig.GetId();
             ISkillTrigerFactory factory = GetFactory(type);
             if (null != factory) {
-                triger = factory.Create(trigerConfig, dslSkillId);
+                try {
+                    triger = factory.Create(trigerConfig, dslSkillId);
+                } catch (Exception ex) {
+                    GameFramework.LogSystem.Error("triger:{0} line:{1} failed.", trigerConfig.ToScriptString(), trigerConfig.GetLine());
+                    throw ex;
+                }
             } else {
 #if !DEBUG
-        GameFramework.LogSystem.Error("CreateTriger failed, type:{0}", type);
+                CsLibrary.LogSystem.Error("CreateTriger failed, type:{0}", type);
 #endif
             }
             if (null != triger) {
                 GameFramework.LogSystem.Debug("CreateTriger, type:{0} triger:{1}", type, triger.GetType().Name);
             } else {
 #if !DEBUG
-        GameFramework.LogSystem.Error("CreateTriger failed, type:{0}", type);
+                CsLibrary.LogSystem.Error("CreateTriger failed, type:{0}", type);
 #endif
             }
             return triger;
