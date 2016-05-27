@@ -45,7 +45,7 @@ using GameFramework;
 /// </summary>
 namespace SkillSystem
 {
-    public sealed class SkillSection
+    public sealed class SkillSection : IPropertyVisitor
     {
         public long Duration
         {
@@ -60,6 +60,15 @@ namespace SkillSystem
         {
             get { return m_IsFinished; }
         }
+        //----------------------------------------------
+        public void VisitProperties(VisitPropertyDelegation callback)
+        {
+            m_AccessorHelper.VisitProperties(callback);
+            for (int i = 0; i < m_LoadedTrigers.Count; i++) {
+                m_LoadedTrigers[i].VisitProperties(callback);
+            }
+        }
+        //----------------------------------------------
         public SkillSection Clone()
         {
             SkillSection section = new SkillSection();
@@ -116,9 +125,9 @@ namespace SkillSystem
                 m_Trigers.Add(m_LoadedTrigers[i]);
             }
             m_Trigers.Sort((left, right) => {
-                if (left.GetStartTime() > right.GetStartTime()) {
+                if (left.StartTime > right.StartTime) {
                     return 1;
-                } else if (left.GetStartTime() == right.GetStartTime()) {
+                } else if (left.StartTime == right.StartTime) {
                     return 0;
                 } else {
                     return -1;
@@ -149,6 +158,12 @@ namespace SkillSystem
                 m_LoadedTrigers[i].Analyze(sender, instance);
             }
         }
+        
+        public SkillSection()
+        {
+            m_AccessorHelper.AddProperty("Duration", () => { return m_Duration; }, (object val) => { m_Duration = (long)Convert.ChangeType(val, typeof(long)); });
+            m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; }, (object val) => { m_CurTime = (long)Convert.ChangeType(val, typeof(long)); });
+        }
 
         private void RefreshTrigers(Dsl.FunctionData sectionData, int dslSkillId)
         {
@@ -171,8 +186,9 @@ namespace SkillSystem
         private bool m_IsFinished = true;
         private List<ISkillTriger> m_Trigers = new List<ISkillTriger>();
         private List<ISkillTriger> m_LoadedTrigers = new List<ISkillTriger>();
+        private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
     }
-    public sealed class SkillMessageHandler
+    public sealed class SkillMessageHandler : IPropertyVisitor
     {
         public string MsgId
         {
@@ -187,6 +203,15 @@ namespace SkillSystem
             get { return m_IsTriggered; }
             set { m_IsTriggered = value; }
         }
+        //----------------------------------------------
+        public void VisitProperties(VisitPropertyDelegation callback)
+        {
+            m_AccessorHelper.VisitProperties(callback);
+            for (int i = 0; i < m_LoadedTrigers.Count; i++) {
+                m_LoadedTrigers[i].VisitProperties(callback);
+            }
+        }
+        //----------------------------------------------
         public SkillMessageHandler Clone()
         {
             SkillMessageHandler section = new SkillMessageHandler();
@@ -228,9 +253,9 @@ namespace SkillSystem
                 m_Trigers.Add(m_LoadedTrigers[i]);
             }
             m_Trigers.Sort((left, right) => {
-                if (left.GetStartTime() > right.GetStartTime()) {
+                if (left.StartTime > right.StartTime) {
                     return -11;
-                } else if (left.GetStartTime() == right.GetStartTime()) {
+                } else if (left.StartTime == right.StartTime) {
                     return 0;
                 } else {
                     return 1;
@@ -265,6 +290,11 @@ namespace SkillSystem
             }
         }
 
+        public SkillMessageHandler()
+        {
+            //m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; }, (object val) => { m_CurTime = (long)Convert.ChangeType(val, typeof(long)); });
+        }
+
         private void RefreshTrigers(Dsl.FunctionData sectionData, int dslSkillId)
         {
             m_LoadedTrigers.Clear();
@@ -286,6 +316,13 @@ namespace SkillSystem
         private bool m_IsTriggered = false;
         private List<ISkillTriger> m_Trigers = new List<ISkillTriger>();
         private List<ISkillTriger> m_LoadedTrigers = new List<ISkillTriger>();
+        private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
+    }
+    public sealed class VisualSkillPropertyInfo
+    {
+        public string Group;
+        public string Key;
+        public IProperty Property;
     }
     public sealed class SkillInstance
     {
@@ -397,7 +434,55 @@ namespace SkillSystem
         {
             get { return m_Resources; }
         }
-
+        //----------------------------------------------
+        public List<VisualSkillPropertyInfo> CollectProperties()
+        {
+            List<VisualSkillPropertyInfo> list = new List<VisualSkillPropertyInfo>();
+            m_AccessorHelper.VisitProperties((string group, string key, IProperty property) => {
+                list.Add(new VisualSkillPropertyInfo { Group = "SkillInstance", Key = key, Property = property });
+            });
+            for (int i = 0; i < m_Sections.Count; ++i) {
+                List<VisualSkillPropertyInfo> temp = new List<VisualSkillPropertyInfo>();
+                temp.Add(new VisualSkillPropertyInfo { Group = "SkillSection", Key = "Section" + i, Property = null });
+                m_Sections[i].VisitProperties((string group, string key, IProperty property) => {
+                    temp.Add(new VisualSkillPropertyInfo { Group = string.IsNullOrEmpty(group) ? "SkillSection" : group, Key = key, Property = property });
+                });
+                if (temp.Count > 1) {
+                    list.AddRange(temp);
+                }
+            }
+            for (int i = 0; i < m_MessageHandlers.Count; ++i) {
+                List<VisualSkillPropertyInfo> temp = new List<VisualSkillPropertyInfo>();
+                temp.Add(new VisualSkillPropertyInfo { Group = "SkillMessageHandler", Key = m_MessageHandlers[i].MsgId, Property = null });
+                m_MessageHandlers[i].VisitProperties((string group, string key, IProperty property) => {
+                    temp.Add(new VisualSkillPropertyInfo { Group = string.IsNullOrEmpty(group) ? "SkillMessageHandler" : group, Key = key, Property = property });
+                });
+                if (temp.Count > 1) {
+                    list.AddRange(temp);
+                }
+            }
+            if (null != m_InterruptSection) {
+                List<VisualSkillPropertyInfo> temp = new List<VisualSkillPropertyInfo>();
+                temp.Add(new VisualSkillPropertyInfo { Group = "SkillMessageHandler", Key = "oninterrupt", Property = null });
+                m_InterruptSection.VisitProperties((string group, string key, IProperty property) => {
+                    temp.Add(new VisualSkillPropertyInfo { Group = string.IsNullOrEmpty(group) ? "SkillMessageHandler" : group, Key = key, Property = property });
+                });
+                if (temp.Count > 1) {
+                    list.AddRange(temp);
+                }
+            }
+            if (null != m_StopSection) {
+                List<VisualSkillPropertyInfo> temp = new List<VisualSkillPropertyInfo>();
+                temp.Add(new VisualSkillPropertyInfo { Group = "SkillMessageHandler", Key = "onstop", Property = null });
+                m_StopSection.VisitProperties((string group, string key, IProperty property) => {
+                    temp.Add(new VisualSkillPropertyInfo { Group = string.IsNullOrEmpty(group) ? "SkillMessageHandler" : group, Key = key, Property = property });
+                });
+                if (temp.Count > 1) {
+                    list.AddRange(temp);
+                }
+            }
+            return list;
+        }
         //----------------------------------------------
         public void SetLocalVariable(string varName, object varValue)
         {
@@ -677,6 +762,14 @@ namespace SkillSystem
             m_IsStopCurSection = true;
         }
 
+        public SkillInstance()
+        {
+            m_AccessorHelper.AddProperty("DslSkillId", () => { return m_DslSkillId; }, (object val) => { });
+            m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; }, (object val) => { m_CurTime = (long)Convert.ChangeType(val, typeof(long)); });
+            m_AccessorHelper.AddProperty("CurSection", () => { return m_CurSection; }, (object val) => { m_CurSection = (int)Convert.ChangeType(val, typeof(int)); });
+            m_AccessorHelper.AddProperty("CurSectionTime", () => { return m_CurSectionTime; }, (object val) => { m_CurSectionTime = (long)Convert.ChangeType(val, typeof(long)); });
+        }
+
         private bool IsSectionDone(int sectionnum)
         {
             if (sectionnum >= 0 && sectionnum < m_Sections.Count) {
@@ -800,5 +893,7 @@ namespace SkillSystem
         private Dictionary<string, object> m_LocalVariables = new Dictionary<string, object>();
         private Dictionary<string, object> m_GlobalVariables = null;
         private TypedDataCollection m_CustomDatas = new TypedDataCollection();
+
+        private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
     }
 }

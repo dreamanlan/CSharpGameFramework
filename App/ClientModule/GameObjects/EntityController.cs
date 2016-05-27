@@ -45,9 +45,17 @@ namespace GameFramework
         {
             return EntityViewModelManager.Instance.GetGameObject(objId);
         }
+        internal UnityEngine.GameObject GetGameObjectByUnitId(int unitId)
+        {
+            return EntityViewModelManager.Instance.GetGameObjectByUnitId(unitId);
+        }
         internal EntityViewModel GetEntityView(UnityEngine.GameObject obj)
         {
             return EntityViewModelManager.Instance.GetEntityView(obj);
+        }
+        internal int GetGameObjectUnitId(UnityEngine.GameObject obj)
+        {
+            return EntityViewModelManager.Instance.GetGameObjectUnitId(obj);
         }
         internal int GetGameObjectId(UnityEngine.GameObject obj)
         {
@@ -241,6 +249,19 @@ namespace GameFramework
                 UnityEngine.Animator animator = obj.GetComponent<UnityEngine.Animator>();
                 if (null != animator) {
                     animator.Play("Stand");
+                }
+            }
+        }
+        internal void PauseSkillAnimation(int actorId, bool pause)
+        {
+            UnityEngine.GameObject obj = GetGameObject(actorId);
+            if (null != obj) {
+                UnityEngine.Animator animator = obj.GetComponent<UnityEngine.Animator>();
+                if (null != animator) {
+                    if (pause)
+                        animator.speed = 0;
+                    else
+                        animator.speed = 1;
                 }
             }
         }
@@ -530,7 +551,7 @@ namespace GameFramework
             if(null!=view && null!=view.Entity){
                 SkillInfo skillInfo = view.Entity.GetSkillStateInfo().GetSkillInfoById(skillId);
                 GfxSkillSenderInfo senderInfo;
-                SkillInstance skillInst = GfxSkillSystem.Instance.GetSkillInstance(srcObjId,skillId,0,out senderInfo);
+                SkillInstance skillInst = GfxSkillSystem.Instance.FindActiveSkillInstance(srcObjId,skillId,0,out senderInfo);
                 if(null!=skillInst){
                     Dictionary<string, object> args;
                     Skill.Trigers.TriggerUtil.CalcHitConfig(skillInst.LocalVariables, senderInfo.ConfigData, out args);

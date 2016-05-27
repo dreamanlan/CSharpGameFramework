@@ -10,10 +10,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     class ReplaceShaderAndFadeColorTrigger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             ReplaceShaderAndFadeColorTrigger copy = new ReplaceShaderAndFadeColorTrigger();
-            copy.m_StartTime = m_StartTime;
+            
             copy.m_RemainTime = m_RemainTime;
             copy.m_ShaderName = m_ShaderName;
             copy.m_StartColor = m_StartColor;
@@ -25,7 +25,7 @@ namespace GameFramework.Skill.Trigers
         public override void Reset()
         {
             RestoreMaterials();
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             m_IsFinalColor = false;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -41,7 +41,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -98,7 +98,7 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num >= 5) {
-                m_StartTime = long.Parse(callData.GetParamId(0));
+                StartTime = long.Parse(callData.GetParamId(0));
                 m_RemainTime = long.Parse(callData.GetParamId(1));
                 m_ShaderName = callData.GetParamId(2);
                 m_StartColor = DslUtility.CalcColor(callData.GetParam(3) as Dsl.CallData);
@@ -107,7 +107,7 @@ namespace GameFramework.Skill.Trigers
             if (num >= 6) {
                 m_ChangeTime = long.Parse(callData.GetParamId(5));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
         
         private void RestoreMaterials()
@@ -146,10 +146,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     class FadeColorTrigger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             FadeColorTrigger copy = new FadeColorTrigger();
-            copy.m_StartTime = m_StartTime;
+            
             copy.m_RemainTime = m_RemainTime;
             copy.m_GoPath = m_GoPath;
             copy.m_ShaderName = m_ShaderName;
@@ -162,7 +162,7 @@ namespace GameFramework.Skill.Trigers
         public override void Reset()
         {
             m_material = null;
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             m_IsFinalColor = false;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -172,7 +172,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -215,7 +215,7 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num >= 6) {
-                m_StartTime = long.Parse(callData.GetParamId(0));
+                StartTime = long.Parse(callData.GetParamId(0));
                 m_RemainTime = long.Parse(callData.GetParamId(1));
                 m_GoPath = callData.GetParamId(2);
                 m_ShaderName = callData.GetParamId(3);
@@ -225,7 +225,7 @@ namespace GameFramework.Skill.Trigers
             if (num >= 7) {
                 m_ChangeTime = long.Parse(callData.GetParamId(6));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         private long m_RemainTime = 0;

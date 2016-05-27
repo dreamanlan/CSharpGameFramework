@@ -11,19 +11,42 @@ namespace GameFramework.Skill.Trigers
         {
             m_EffectObject.Add(obj);
         }
-
         public void SetParticleSpeed(float speed)
         {
             for (int i = 0; i < m_EffectObject.Count; i++) {
                 if (m_EffectObject[i].activeSelf) {
-                    ParticleSystem[] ps = m_EffectObject[i].GetComponentsInChildren<ParticleSystem>();
-                    for (int j = 0; j < ps.Length; j++) {
-                        ps[j].playbackSpeed = speed;
+                    ParticleSystem[] pss0 = m_EffectObject[i].GetComponents<ParticleSystem>();
+                    for (int j = 0; j < pss0.Length; j++) {
+                        pss0[j].playbackSpeed = speed;
+                    }
+                    ParticleSystem[] pss = m_EffectObject[i].GetComponentsInChildren<ParticleSystem>();
+                    for (int j = 0; j < pss.Length; j++) {
+                        pss[j].playbackSpeed = speed;
                     }
                 }
             }
         }
-
+        public void PauseEffects(bool pause)
+        {
+            for (int i = 0; i < m_EffectObject.Count; i++) {
+                if (m_EffectObject[i].activeSelf) {
+                    ParticleSystem[] pss0 = m_EffectObject[i].GetComponents<ParticleSystem>();
+                    for (int j = 0; j < pss0.Length; j++) {
+                        if (pause)
+                            pss0[j].Pause();
+                        else
+                            pss0[j].Play();
+                    }
+                    ParticleSystem[] pss = m_EffectObject[i].GetComponentsInChildren<ParticleSystem>();
+                    for (int j = 0; j < pss.Length; j++) {
+                        if (pause)
+                            pss[j].Pause();
+                        else
+                            pss[j].Play();
+                    }
+                }
+            }
+        }
         public void StopEffects()
         {
             for (int i = 0; i < m_EffectObject.Count; i++) {
@@ -45,13 +68,13 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class SelfEffectTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             SelfEffectTriger triger = new SelfEffectTriger();
             triger.m_EffectPath = m_EffectPath;
             triger.m_AttachPath = m_AttachPath;
             triger.m_DeleteTime = m_DeleteTime;
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_IsAttach = m_IsAttach;
             triger.m_Pos = m_Pos;
             triger.m_Dir = m_Dir;
@@ -62,7 +85,7 @@ namespace GameFramework.Skill.Trigers
         }
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             m_RealDeleteTime = m_DeleteTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -72,7 +95,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     if (m_RealDeleteTime < 0) {
@@ -154,12 +177,12 @@ namespace GameFramework.Skill.Trigers
                 m_AttachPath = callData.GetParamId(2);
             }
             if (num > 3) {
-                m_StartTime = long.Parse(callData.GetParamId(3));
+                StartTime = long.Parse(callData.GetParamId(3));
             }
             if (num > 4) {
                 m_IsAttach = bool.Parse(callData.GetParamId(4));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             m_RealDeleteTime = m_DeleteTime;
         }
 
@@ -217,13 +240,13 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class TargetEffectTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             TargetEffectTriger triger = new TargetEffectTriger();
             triger.m_EffectPath = m_EffectPath;
             triger.m_AttachPath = m_AttachPath;
             triger.m_DeleteTime = m_DeleteTime;
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_IsAttach = m_IsAttach;
             triger.m_Pos = m_Pos;
             triger.m_Dir = m_Dir;
@@ -234,7 +257,7 @@ namespace GameFramework.Skill.Trigers
         }
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             m_RealDeleteTime = m_DeleteTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -244,7 +267,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     GameObject target_obj = senderObj.TargetGfxObj;
@@ -325,12 +348,12 @@ namespace GameFramework.Skill.Trigers
                 m_AttachPath = callData.GetParamId(2);
             }
             if (num > 3) {
-                m_StartTime = long.Parse(callData.GetParamId(3));
+                StartTime = long.Parse(callData.GetParamId(3));
             }
             if (num > 4) {
                 m_IsAttach = bool.Parse(callData.GetParamId(4));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             m_RealDeleteTime = m_DeleteTime;
         }
 
@@ -381,7 +404,7 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class SceneEffectTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             SceneEffectTriger triger = new SceneEffectTriger();
             triger.m_EffectPath = m_EffectPath;
@@ -389,7 +412,7 @@ namespace GameFramework.Skill.Trigers
             triger.m_Dir = m_Dir;
             triger.m_Scale = m_Scale;
             triger.m_DeleteTime = m_DeleteTime;
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_IsRotateRelativeUser = m_IsRotateRelativeUser;
             triger.m_RealStartTime = m_RealStartTime;
             triger.m_RealDeleteTime = m_RealDeleteTime;
@@ -397,7 +420,7 @@ namespace GameFramework.Skill.Trigers
         }
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             m_RealDeleteTime = m_DeleteTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -407,7 +430,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     if (m_RealDeleteTime < 0) {
@@ -474,7 +497,7 @@ namespace GameFramework.Skill.Trigers
                 m_Pos = DslUtility.CalcVector3(callData.GetParam(2) as Dsl.CallData);
             }
             if (num > 3) {
-                m_StartTime = long.Parse(callData.GetParamId(3));
+                StartTime = long.Parse(callData.GetParamId(3));
             }
             if (num > 4) {
                 m_Dir = DslUtility.CalcEularRotation(callData.GetParam(4) as Dsl.CallData);
@@ -485,7 +508,7 @@ namespace GameFramework.Skill.Trigers
             if (num > 6) {
                 m_IsRotateRelativeUser = bool.Parse(callData.GetParamId(6));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             m_RealDeleteTime = m_DeleteTime;
         }
 
@@ -511,7 +534,7 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class EmitEffectTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             EmitEffectTriger triger = new EmitEffectTriger();
             triger.m_EffectPath = m_EffectPath;
@@ -521,13 +544,13 @@ namespace GameFramework.Skill.Trigers
             triger.m_Pos = m_Pos;
             triger.m_Dir = m_Dir;
             triger.m_Scale = m_Scale;
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -536,7 +559,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     int senderId;
@@ -587,9 +610,9 @@ namespace GameFramework.Skill.Trigers
                 m_EmitSpeed = float.Parse(callData.GetParamId(3));
             }
             if (num > 4) {
-                m_StartTime = long.Parse(callData.GetParamId(4));
+                StartTime = long.Parse(callData.GetParamId(4));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
@@ -645,7 +668,7 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class AoeEmitEffectTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             AoeEmitEffectTriger triger = new AoeEmitEffectTriger();
             triger.m_EffectPath = m_EffectPath;
@@ -657,13 +680,13 @@ namespace GameFramework.Skill.Trigers
             triger.m_Pos = m_Pos;
             triger.m_Dir = m_Dir;
             triger.m_Scale = m_Scale;
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -672,7 +695,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
@@ -736,9 +759,9 @@ namespace GameFramework.Skill.Trigers
                 m_EmitImpact = int.Parse(callData.GetParamId(7));
             }
             if (num > 8) {
-                m_StartTime = long.Parse(callData.GetParamId(8));
+                StartTime = long.Parse(callData.GetParamId(8));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
@@ -789,10 +812,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class LockFrameTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             LockFrameTriger triger = new LockFrameTriger();
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_NeedHit = m_NeedHit;
             triger.m_LockSpeed = m_LockSpeed;
             triger.m_LockTime = m_LockTime;
@@ -810,7 +833,7 @@ namespace GameFramework.Skill.Trigers
         public override void Reset()
         {
             m_IsInited = false;
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -821,7 +844,7 @@ namespace GameFramework.Skill.Trigers
             if (null == obj)
                 return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -874,7 +897,7 @@ namespace GameFramework.Skill.Trigers
             int num = callData.GetParamNum();
             int index = 0;
             if (num >= 6) {
-                m_StartTime = long.Parse(callData.GetParamId(index++));
+                StartTime = long.Parse(callData.GetParamId(index++));
                 m_NeedHit = bool.Parse(callData.GetParamId(index++));
                 m_LockSpeed = float.Parse(callData.GetParamId(index++));
                 m_LockTime = long.Parse(callData.GetParamId(index++));
@@ -887,7 +910,7 @@ namespace GameFramework.Skill.Trigers
                 m_AfterLockMoveSpeed = float.Parse(callData.GetParamId(index++));
                 m_AfterLockSkillSpeed = float.Parse(callData.GetParamId(index++));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
@@ -958,7 +981,7 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class HitEffectTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             HitEffectTriger triger = new HitEffectTriger();
             triger.m_HitEffect = m_HitEffect;
@@ -976,7 +999,7 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (curSectionTime < m_StartTime)
+            if (curSectionTime < StartTime)
                 return true;
             instance.SetLocalVariable("hitEffect", TriggerUtil.RefixResourceByConfig(m_HitEffect, instance.LocalVariables, senderObj.ConfigData));
             instance.SetLocalVariable("hitEffectBone", TriggerUtil.RefixStringVariable(m_HitEffectBone, instance.LocalVariables, senderObj.ConfigData));
@@ -1015,9 +1038,9 @@ namespace GameFramework.Skill.Trigers
                 m_HitDelayTime = 0;
             }
             if (num > 7) {
-                m_StartTime = long.Parse(callData.GetParamId(7));
+                StartTime = long.Parse(callData.GetParamId(7));
             } else {
-                m_StartTime = 0;
+                StartTime = 0;
             }
         }
 

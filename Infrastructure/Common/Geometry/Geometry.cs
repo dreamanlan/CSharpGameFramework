@@ -11,6 +11,14 @@ namespace GameFramework
         public const float c_MinDistance = 0.0001f;
         public const float c_FloatPrecision = 0.0001f;
         public const float c_DoublePrecision = 0.0000001f;
+        public static float RadianToDegree(float dir)
+        {
+            return (float)(dir * 180 / Math.PI);
+        }
+        public static float DegreeToRadian(float dir)
+        {
+            return (float)(dir * Math.PI / 180);
+        }
         public static bool IsInvalid(float v)
         {
             return float.IsNaN(v) || float.IsInfinity(v);
@@ -135,8 +143,9 @@ namespace GameFramework
         /// <returns></returns>
         public static bool IsObbDiskIntersect(Vector2 c, Vector2 h, float angle, Vector2 p, float r)
         {
-            Vector2 np = GetRotate(p, angle);
-            return IsAabbDiskIntersect(c, h, np, r);
+            Vector2 nc = GetRotate(c, -angle);
+            Vector2 np = GetRotate(p, -angle);
+            return IsAabbDiskIntersect(nc, h, np, r);
         }
         ///<summary>
         /// 扇形与圆盘相交测试

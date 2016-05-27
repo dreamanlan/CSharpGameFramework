@@ -8,10 +8,10 @@ namespace GameFramework.Skill.Trigers
 {
     public class RotateTrigger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             RotateTrigger copy = new RotateTrigger();
-            copy.m_StartTime = m_StartTime;
+            
             copy.m_RemainTime = m_RemainTime;
             copy.m_RotateSpeed = m_RotateSpeed;
             copy.m_RealStartTime = m_RealStartTime;
@@ -20,17 +20,17 @@ namespace GameFramework.Skill.Trigers
 
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             if (callData.GetParamNum() >= 3) {
-                m_StartTime = long.Parse(callData.GetParamId(0));
+                StartTime = long.Parse(callData.GetParamId(0));
                 m_RemainTime = long.Parse(callData.GetParamId(1));
                 m_RotateSpeed = DslUtility.CalcVector3(callData.GetParam(2) as Dsl.CallData);
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -40,7 +40,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;

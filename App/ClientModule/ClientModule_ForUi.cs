@@ -5,11 +5,45 @@ using System.IO;
 using GameFramework.GmCommands;
 using GameFramework.Story;
 using GameFramework.Skill;
+using SkillSystem;
 
 namespace GameFramework
 {
     public partial class ClientModule
     {
+        public bool IsLocalSkillEffect(GfxSkillSenderInfo info)
+        {
+            if (info.ActorId == m_leaderID || info.TargetActorId == m_leaderID) {
+                return true;
+            }
+            EntityInfo sender = GetEntityById(info.ActorId);
+            if (null != sender && !sender.IsServerEntity) {
+                return true;
+            }
+            EntityInfo target = GetEntityById(info.TargetActorId);
+            if (null != target && !target.IsServerEntity) {
+                return true;
+            }
+            return false;
+        }
+        public int UnitId2ObjId(int unitId)
+        {
+            int id = 0;
+            EntityInfo entity = GetEntityByUnitId(unitId);
+            if (null != entity) {
+                id = entity.GetId();
+            }
+            return id;
+        }
+        public int ObjId2UnitId(int actorId)
+        {
+            int id = 0;
+            EntityInfo entity = GetEntityById(actorId);
+            if (null != entity) {
+                id = entity.GetUnitId();
+            }
+            return id;
+        }
         public UnityEngine.GameObject GetGameObject(int actorId)
         {
             return EntityController.Instance.GetGameObject(actorId);
@@ -17,6 +51,31 @@ namespace GameFramework
         public int GetGameObjectId(UnityEngine.GameObject obj)
         {
             return EntityController.Instance.GetGameObjectId(obj);
+        }
+        public int GetGameObjectUnitId(UnityEngine.GameObject obj)
+        {
+            return EntityController.Instance.GetGameObjectUnitId(obj);
+        }
+        public int GetGameObjectCurSkillId(UnityEngine.GameObject obj)
+        {
+            int id = 0;
+            EntityViewModel view = EntityController.Instance.GetEntityView(obj);
+            if (null != view) {
+                SkillInfo skillInfo = view.Entity.GetSkillStateInfo().GetCurSkillInfo();
+                if (null != skillInfo) {
+                    id = skillInfo.SkillId;
+                }
+            }
+            return id;
+        }
+        public List<VisualSkillPropertyInfo> GetVisualSkillPropertyInfos(int skillId)
+        {
+            List<VisualSkillPropertyInfo> ret = null;
+            SkillInstance inst = GfxSkillSystem.Instance.FindSkillInstanceForSkillViewer(skillId);
+            if (null != inst) {
+                ret = inst.CollectProperties();
+            }
+            return ret;
         }
         public int GetGameObjectType(int id)
         {
@@ -26,6 +85,33 @@ namespace GameFramework
                 type = entity.EntityType;
             }
             return type;
+        }
+        public float GetGameObjectHp(int id)
+        {
+            float hp = -1;
+            EntityInfo entity = GetEntityById(id);
+            if (null != entity) {
+                hp = entity.Hp;
+            }
+            return hp;
+        }
+        public float GetGameObjectEnergy(int id)
+        {
+            float np = -1;
+            EntityInfo entity = GetEntityById(id);
+            if (null != entity) {
+                np = entity.Energy;
+            }
+            return np;
+        }
+        public CharacterProperty GetGameObjectMaxHp(int id)
+        {
+            CharacterProperty prop = null;
+            EntityInfo entity = GetEntityById(id);
+            if (null != entity) {
+                prop = entity.GetActualProperty();
+            }
+            return prop;
         }
         public int GetCampId(int actorId)
         {

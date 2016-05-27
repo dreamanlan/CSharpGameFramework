@@ -173,6 +173,11 @@ namespace GameFramework.Skill
                     return m_SkillInfo;
                 }
             }
+            public bool IsPaused
+            {
+                get { return m_IsPaused; }
+                set { m_IsPaused = value; }
+            }
 
             public SkillLogicInfo(GfxSkillSenderInfo sender, SkillInstanceInfo info)
             {
@@ -182,6 +187,7 @@ namespace GameFramework.Skill
 
             private GfxSkillSenderInfo m_Sender;
             private SkillInstanceInfo m_SkillInfo;
+            private bool m_IsPaused = false;
         }
         public void Init()
         {
@@ -284,12 +290,54 @@ namespace GameFramework.Skill
         {
             get { return m_GlobalVariables; }
         }
-        public SkillInstance GetSkillInstance(int actorId, int skillId, int seq)
+        public SkillInstance FindSkillInstanceForSkillViewer(int skillId)
         {
             GfxSkillSenderInfo sender;
-            return GetSkillInstance(actorId, skillId, seq, out sender);
+            return FindSkillInstanceForSkillViewer(skillId, out sender);
         }
-        public SkillInstance GetSkillInstance(int actorId, int skillId, int seq, out GfxSkillSenderInfo sender)
+        public SkillInstance FindSkillInstanceForSkillViewer(int skillId, out GfxSkillSenderInfo sender)
+        {
+            SkillInstance ret = null;
+            SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.SkillId == skillId);
+            if (null != logicInfo) {
+                sender = logicInfo.Sender;
+                ret = logicInfo.SkillInst;
+            } else {
+                sender = null;
+                var instInfo = GetUnusedSkillInstanceInfoFromPool(skillId);
+                if (null != instInfo) {
+                    ret = instInfo.m_SkillInstance;
+                }
+            }
+            return ret;
+        }
+        public int GetActiveSkillCount()
+        {
+            return m_SkillLogicInfos.Count;
+        }
+        public SkillInstance GetActiveSkillInfo(int index)
+        {
+            GfxSkillSenderInfo sender;
+            return GetActiveSkillInfo(index, out sender);
+        }
+        public SkillInstance GetActiveSkillInfo(int index, out GfxSkillSenderInfo sender)
+        {
+            int ct = m_SkillLogicInfos.Count;
+            if (index >= 0 && index < ct) {
+                var info = m_SkillLogicInfos[index];
+                sender = info.Sender;
+                return info.SkillInst;
+            } else {
+                sender = null;
+                return null;
+            }
+        }
+        public SkillInstance FindActiveSkillInstance(int actorId, int skillId, int seq)
+        {
+            GfxSkillSenderInfo sender;
+            return FindActiveSkillInstance(actorId, skillId, seq, out sender);
+        }
+        public SkillInstance FindActiveSkillInstance(int actorId, int skillId, int seq, out GfxSkillSenderInfo sender)
         {
             SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.ActorId == actorId && info.SkillId == skillId && info.Seq == seq);
             if (null != logicInfo) {
@@ -306,6 +354,11 @@ namespace GameFramework.Skill
         public bool StartSkill(int actorId, TableConfig.Skill configData, int seq, params Dictionary<string, object>[] locals)
         {
             bool ret = false;
+            if (null == configData) {
+                LogSystem.Error("{0} can't cast skill, config is null !", actorId, seq);
+                Helper.LogCallStack();
+                return false;
+            }
             if (!EntityController.Instance.CanCastSkill(actorId, configData, seq)) {
                 EntityController.Instance.CancelCastSkill(actorId);
                 LogSystem.Warn("{0} can't cast skill {1} {2}, cancel.", actorId, configData.id, seq);
@@ -362,6 +415,44 @@ namespace GameFramework.Skill
                     m_SkillLogicInfos.Remove(logicInfo);
                 }
             }
+        }
+        public void PauseSkill(int actorId, int skillId, int seq, bool pause)
+        {
+            GameObject obj = EntityController.Instance.GetGameObject(actorId);
+            if (null != obj) {
+                SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq);
+                if (null != logicInfo) {
+                    logicInfo.IsPaused = pause;
+
+                    Trigers.EffectManager effectMgr = logicInfo.SkillInst.CustomDatas.GetData<Trigers.EffectManager>();
+                    if (null != effectMgr) {
+                        effectMgr.PauseEffects(pause);
+                    }
+                    EntityController.Instance.PauseSkillAnimation(actorId, pause);
+                }
+            }
+        }
+        public void PauseAllSkill(int actorId, bool pause)
+        {
+            GameObject obj = EntityController.Instance.GetGameObject(actorId);
+            if (null == obj) {
+                return;
+            }
+            int count = m_SkillLogicInfos.Count;
+            for (int index = count - 1; index >= 0; --index) {
+                SkillLogicInfo info = m_SkillLogicInfos[index];
+                if (info != null) {
+                    if (info.GfxObj == obj) {
+                        info.IsPaused = pause;
+
+                        Trigers.EffectManager effectMgr = info.SkillInst.CustomDatas.GetData<Trigers.EffectManager>();
+                        if (null != effectMgr) {
+                            effectMgr.PauseEffects(pause);
+                        }
+                    }
+                }
+            }
+            EntityController.Instance.PauseSkillAnimation(actorId, pause);
         }
         public void StopSkill(int actorId, int skillId, int seq, bool isinterrupt)
         {
@@ -431,7 +522,7 @@ namespace GameFramework.Skill
                 for (int ix = ct - 1; ix >= 0; --ix) {
                     SkillLogicInfo info = m_SkillLogicInfos[ix];
                     bool exist = EntityController.Instance.ExistGameObject(info.GfxObj);
-                    if (exist) {
+                    if (exist && !info.IsPaused) {
                         info.SkillInst.Tick(info.Sender, delta);
                     }
                     if (!exist || info.SkillInst.IsFinished) {
