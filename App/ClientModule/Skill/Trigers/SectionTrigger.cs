@@ -10,10 +10,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     public class AdjustSectionDurationTrigger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             AdjustSectionDurationTrigger copy = new AdjustSectionDurationTrigger();
-            copy.m_StartTime = m_StartTime;
+            
             copy.m_Type = m_Type;
             copy.m_DeltaTime = m_DeltaTime;
             copy.m_RealStartTime = m_RealStartTime;
@@ -22,7 +22,7 @@ namespace GameFramework.Skill.Trigers
 
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -32,7 +32,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -80,12 +80,12 @@ namespace GameFramework.Skill.Trigers
                 m_Type = callData.GetParamId(0);
             }
             if (callData.GetParamNum() > 1) {
-                m_StartTime = long.Parse(callData.GetParamId(1));
+                StartTime = long.Parse(callData.GetParamId(1));
             }
             if (callData.GetParamNum() > 2) {
                 m_DeltaTime = long.Parse(callData.GetParamId(2));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         private int TryGetTimeFromConfig(Dictionary<string, object> variables, TableConfig.Skill cfg)
@@ -104,10 +104,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     public class KeepSectionForBuffTrigger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             KeepSectionForBuffTrigger copy = new KeepSectionForBuffTrigger();
-            copy.m_StartTime = m_StartTime;
+            
             copy.m_Interval = m_Interval;
             copy.m_DeltaTime = m_DeltaTime;
             copy.m_RealStartTime = m_RealStartTime;
@@ -116,7 +116,7 @@ namespace GameFramework.Skill.Trigers
 
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             m_LastKeepTime = 0;
         }
 
@@ -127,7 +127,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -150,12 +150,12 @@ namespace GameFramework.Skill.Trigers
                 m_Interval = long.Parse(callData.GetParamId(0));
             }
             if (callData.GetParamNum() > 1) {
-                m_StartTime = long.Parse(callData.GetParamId(1));
+                StartTime = long.Parse(callData.GetParamId(1));
             }
             if (callData.GetParamNum() > 2) {
                 m_DeltaTime = long.Parse(callData.GetParamId(2));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
         
         private long m_Interval = 100;
@@ -170,18 +170,18 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     public class StopSectionIfTrigger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             StopSectionIfTrigger copy = new StopSectionIfTrigger();
             copy.m_Type = m_Type;
-            copy.m_StartTime = m_StartTime;
+            
             copy.m_RealStartTime = m_RealStartTime;
             return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
@@ -191,11 +191,11 @@ namespace GameFramework.Skill.Trigers
                 m_Type = callData.GetParamId(0);
             }
             if (num > 1) {
-                m_StartTime = long.Parse(callData.GetParamId(1));
+                StartTime = long.Parse(callData.GetParamId(1));
             } else {
-                m_StartTime = 0;
+                StartTime = 0;
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -205,7 +205,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;

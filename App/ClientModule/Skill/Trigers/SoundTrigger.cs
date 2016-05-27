@@ -31,10 +31,10 @@ namespace GameFramework.Skill.Trigers
 
     public class PlaySoundTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             PlaySoundTriger triger = new PlaySoundTriger();
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_Name = m_Name;
             triger.m_AudioSourceName = m_AudioSourceName;
             triger.m_AudioSourceLifeTime = m_AudioSourceLifeTime;
@@ -45,7 +45,7 @@ namespace GameFramework.Skill.Trigers
             triger.m_BoneName = m_BoneName;
             triger.m_IsAttach = m_IsAttach;
             triger.m_volume = m_volume;
-            triger.m_RealStartTime = m_StartTime;
+            triger.m_RealStartTime = StartTime;
             return triger;
         }
 
@@ -55,7 +55,7 @@ namespace GameFramework.Skill.Trigers
             m_AudioSource = null;
             m_volume = 1.0f;
 
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -65,7 +65,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (!m_IsResourcePreloaded) {
                 PreloadResource(obj, instance);
@@ -130,7 +130,7 @@ namespace GameFramework.Skill.Trigers
             }
             GameObject audiosource_obj = ResourceSystem.Instance.NewObject(
                                                    m_AudioSourceName,
-                                                   (m_StartTime + m_AudioSourceLifeTime) / 1000.0f) as GameObject;
+                                                   (StartTime + m_AudioSourceLifeTime) / 1000.0f) as GameObject;
             if (audiosource_obj == null) {
                 return null;
             }
@@ -162,14 +162,14 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num >= 6) {
-                m_StartTime = long.Parse(callData.GetParamId(0));
+                StartTime = long.Parse(callData.GetParamId(0));
                 m_Name = callData.GetParamId(1);
                 m_AudioSourceName = callData.GetParamId(2);
                 m_AudioSourceLifeTime = long.Parse(callData.GetParamId(3));
                 m_AudioGroup.Add(callData.GetParamId(4));
                 m_IsNeedCollide = bool.Parse(callData.GetParamId(5));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
@@ -247,10 +247,10 @@ namespace GameFramework.Skill.Trigers
 
     public class StopSoundTrigger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             StopSoundTrigger copy = new StopSoundTrigger();
-            copy.m_StartTime = m_StartTime;
+            
             copy.m_Name = m_Name;
             copy.m_RealStartTime = m_RealStartTime;
             return copy;
@@ -258,16 +258,16 @@ namespace GameFramework.Skill.Trigers
 
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             if (callData.GetParamNum() >= 2) {
-                m_StartTime = long.Parse(callData.GetParamId(0));
+                StartTime = long.Parse(callData.GetParamId(0));
                 m_Name = callData.GetParamId(1);
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -277,7 +277,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;

@@ -36,17 +36,17 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class EnableMoveAgentTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             EnableMoveAgentTriger triger = new EnableMoveAgentTriger();
             triger.m_IsEnable = m_IsEnable;
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -57,7 +57,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime >= m_RealStartTime) {
                 EnableMoveAgent(obj, m_IsEnable);
@@ -76,11 +76,11 @@ namespace GameFramework.Skill.Trigers
                 m_IsEnable = true;
             }
             if (num > 1) {
-                m_StartTime = long.Parse(callData.GetParamId(1));
+                StartTime = long.Parse(callData.GetParamId(1));
             } else {
-                m_StartTime = 0;
+                StartTime = 0;
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         private void EnableMoveAgent(GameObject obj, bool isEnable)
@@ -102,10 +102,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     public class CurveMovementTrigger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             CurveMovementTrigger copy = new CurveMovementTrigger();
-            copy.m_StartTime = m_StartTime;
+            
             copy.m_IsLockRotate = m_IsLockRotate;
             copy.m_SectionList.AddRange(m_SectionList);
             copy.m_IsCurveMoving = true;
@@ -118,16 +118,16 @@ namespace GameFramework.Skill.Trigers
             m_IsCurveMoving = true;
             m_IsInited = false;
             GameObject.Destroy(m_StartTransform);
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             if (callData.GetParamNum() > 1) {
-                m_StartTime = int.Parse(callData.GetParamId(0));
+                StartTime = int.Parse(callData.GetParamId(0));
                 m_IsLockRotate = bool.Parse(callData.GetParamId(1));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             m_SectionList.Clear();
             int section_num = 0;
             while (callData.GetParamNum() >= 7 * (section_num + 1) + 2) {
@@ -158,7 +158,7 @@ namespace GameFramework.Skill.Trigers
             if (isTower)
                 return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime){
                 return true;
@@ -279,14 +279,14 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class ChargeTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             ChargeTriger triger = new ChargeTriger();
             triger.m_Duration = m_Duration;
             triger.m_Velocity = m_Velocity;
             triger.m_StopAtTarget = m_StopAtTarget;
             triger.m_Offset = m_Offset;
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
@@ -296,7 +296,7 @@ namespace GameFramework.Skill.Trigers
             m_RealDuration = 0;
             m_RealVelocity = 1;
             m_Forward = Vector3.zero;
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -307,7 +307,7 @@ namespace GameFramework.Skill.Trigers
             bool isTower = !EntityController.Instance.IsMovableEntity(senderObj.GfxObj);
             if (isTower) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (!m_TargetChecked) {
                 m_TargetChecked = true;
@@ -361,9 +361,9 @@ namespace GameFramework.Skill.Trigers
                 m_Offset = DslUtility.CalcVector3(callData.GetParam(3) as Dsl.CallData);
             }
             if (num > 4) {
-                m_StartTime = long.Parse(callData.GetParamId(4));
+                StartTime = long.Parse(callData.GetParamId(4));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         private long m_Duration = 0;
@@ -384,7 +384,7 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class JumpTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             JumpTriger triger = new JumpTriger();
             triger.m_Duration = m_Duration;
@@ -392,7 +392,7 @@ namespace GameFramework.Skill.Trigers
             triger.m_Velocity = m_Velocity;
             triger.m_StopAtTarget = m_StopAtTarget;
             triger.m_Offset = m_Offset;
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_YVelocity = m_YVelocity;
             triger.m_G = m_G;
             triger.m_RealStartTime = m_RealStartTime;
@@ -405,7 +405,7 @@ namespace GameFramework.Skill.Trigers
             m_RealVelocity = 1;
             m_InitY = -1;
             m_Forward = Vector3.zero;
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -417,7 +417,7 @@ namespace GameFramework.Skill.Trigers
             if (isTower)
                 return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (!m_TargetChecked) {
                 m_TargetChecked = true;
@@ -482,9 +482,9 @@ namespace GameFramework.Skill.Trigers
                 m_Offset = DslUtility.CalcVector3(callData.GetParam(4) as Dsl.CallData);
             }
             if (num > 5) {
-                m_StartTime = long.Parse(callData.GetParamId(5));
+                StartTime = long.Parse(callData.GetParamId(5));
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
             CalcYVelocityAndG();
         }
 

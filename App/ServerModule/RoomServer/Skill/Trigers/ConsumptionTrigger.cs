@@ -11,16 +11,16 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class ConsumeTriger : AbstractSkillTriger
     {
-        public override ISkillTriger Clone()
+        protected override ISkillTriger OnClone()
         {
             ConsumeTriger triger = new ConsumeTriger();
-            triger.m_StartTime = m_StartTime;
+            
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -31,7 +31,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime >= m_RealStartTime) {
                 if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
@@ -47,11 +47,11 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_StartTime = long.Parse(callData.GetParamId(0));
+                StartTime = long.Parse(callData.GetParamId(0));
             } else {
-                m_StartTime = 0;
+                StartTime = 0;
             }
-            m_RealStartTime = m_StartTime;
+            m_RealStartTime = StartTime;
         }
 
         private long m_RealStartTime = 0;
