@@ -10,10 +10,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     public class TransformTrigger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             TransformTrigger copy = new TransformTrigger();
-            
+            copy.m_StartTime = m_StartTime;
             copy.m_BoneName = m_BoneName;
             copy.m_Postion = m_Postion;
             copy.m_Rotate = m_Rotate;
@@ -27,13 +27,13 @@ namespace GameFramework.Skill.Trigers
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             if (callData.GetParamNum() >= 6) {
-                StartTime = long.Parse(callData.GetParamId(0));
+                m_StartTime = long.Parse(callData.GetParamId(0));
                 m_BoneName = callData.GetParamId(1);
                 if (m_BoneName == " ") {
                     m_BoneName = "";
@@ -49,7 +49,7 @@ namespace GameFramework.Skill.Trigers
             if (callData.GetParamNum() >= 8) {
                 m_RandomRotate = DslUtility.CalcVector3(callData.GetParam(7) as Dsl.CallData);
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -59,7 +59,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -130,10 +130,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     public class TeleportTrigger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             TeleportTrigger copy = new TeleportTrigger();
-            
+            copy.m_StartTime = m_StartTime;
             copy.m_RelativeOffset = m_RelativeOffset;
             copy.m_RealStartTime = m_RealStartTime;
             return copy;
@@ -141,7 +141,7 @@ namespace GameFramework.Skill.Trigers
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -153,7 +153,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -172,12 +172,12 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num >= 4) {
-                StartTime = long.Parse(callData.GetParamId(0));
+                m_StartTime = long.Parse(callData.GetParamId(0));
                 m_RelativeOffset.X = float.Parse(callData.GetParamId(1));
                 m_RelativeOffset.Y = float.Parse(callData.GetParamId(2));
                 m_RelativeOffset.Z = float.Parse(callData.GetParamId(3));
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         private Vector3 m_RelativeOffset = Vector3.Zero;
@@ -188,10 +188,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class FollowTrigger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             FollowTrigger triger = new FollowTrigger();
-            
+            triger.m_StartTime = m_StartTime;
             triger.m_RelativeOffset = m_RelativeOffset;
             triger.m_DurationTime = m_DurationTime;
             triger.m_RealStartTime = m_RealStartTime;
@@ -199,7 +199,7 @@ namespace GameFramework.Skill.Trigers
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -210,7 +210,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -232,13 +232,13 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num >= 5) {
-                StartTime = long.Parse(callData.GetParamId(0));
+                m_StartTime = long.Parse(callData.GetParamId(0));
                 m_RelativeOffset.X = float.Parse(callData.GetParamId(1));
                 m_RelativeOffset.Y = float.Parse(callData.GetParamId(2));
                 m_RelativeOffset.Z = float.Parse(callData.GetParamId(3));
                 m_DurationTime = long.Parse(callData.GetParamId(4));
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         private Vector3 m_RelativeOffset = Vector3.Zero;

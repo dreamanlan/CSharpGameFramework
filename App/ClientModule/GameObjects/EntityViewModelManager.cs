@@ -22,21 +22,10 @@ namespace GameFramework
                 EntityViewModel view = pair.Value;
                 view.Update();
             }
-            if (m_SpaceInfoViews.Count > 0) {
-                if (!GlobalVariables.Instance.IsDebug) {
-                    MarkSpaceInfoViews();
-                    DestroyUnusedSpaceInfoViews();
-                }
-            }
         }
 
         internal void CreateEntityView(int objId)
         {
-            if (objId <= 0) {
-                LogSystem.Error("Error:CreateEntityView objId<=0 !!!");
-                Helper.LogCallStack();
-                return;
-            }
             if (!m_EntityViews.ContainsKey(objId)) {
                 EntityInfo obj = ClientModule.Instance.EntityManager.GetEntityInfo(objId);
                 if (null != obj) {
@@ -91,15 +80,6 @@ namespace GameFramework
             }
             return obj;
         }
-        internal UnityEngine.GameObject GetGameObjectByUnitId(int unitId)
-        {
-            UnityEngine.GameObject obj = null;
-            EntityViewModel view = GetEntityViewByUnitId(unitId);
-            if (null != view) {
-                obj = view.Actor;
-            }
-            return obj;
-        }
         internal EntityViewModel GetEntityView(UnityEngine.GameObject obj)
         {
             EntityViewModel view = null;
@@ -108,15 +88,6 @@ namespace GameFramework
                 m_EntityViews.TryGetValue(id, out view);
             }
             return view;
-        }
-        internal int GetGameObjectUnitId(UnityEngine.GameObject obj)
-        {
-            int unitId = 0;
-            EntityViewModel view = GetEntityView(obj);
-            if (null != view) {
-                unitId = view.Entity.GetUnitId();
-            }
-            return unitId;
         }
         internal int GetGameObjectId(UnityEngine.GameObject obj)
         {

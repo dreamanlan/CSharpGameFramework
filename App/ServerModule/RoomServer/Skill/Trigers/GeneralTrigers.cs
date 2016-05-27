@@ -12,17 +12,17 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class BornFinishTriger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             BornFinishTriger triger = new BornFinishTriger();
-            
+            triger.m_StartTime = m_StartTime;
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -33,7 +33,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime >= m_RealStartTime) {
                 scene.EntityController.BornFinish(senderObj.ActorId);
@@ -47,11 +47,11 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                StartTime = long.Parse(callData.GetParamId(0));
+                m_StartTime = long.Parse(callData.GetParamId(0));
             } else {
-                StartTime = 0;
+                m_StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         private long m_RealStartTime = 0;
@@ -61,17 +61,17 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class DeadFinishTriger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             DeadFinishTriger triger = new DeadFinishTriger();
-            
+            triger.m_StartTime = m_StartTime;
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -82,7 +82,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime >= m_RealStartTime) {
                 scene.EntityController.DeadFinish(senderObj.ActorId);
@@ -96,11 +96,11 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                StartTime = long.Parse(callData.GetParamId(0));
+                m_StartTime = long.Parse(callData.GetParamId(0));
             } else {
-                StartTime = 0;
+                m_StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         private long m_RealStartTime = 0;
@@ -110,10 +110,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     public class SendStoryMessageTrigger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             SendStoryMessageTrigger copy = new SendStoryMessageTrigger();
-            
+            copy.m_StartTime = m_StartTime;
             copy.m_Msg = m_Msg;
             copy.m_Args.AddRange(m_Args);
             copy.m_RealStartTime = m_RealStartTime;
@@ -122,7 +122,7 @@ namespace GameFramework.Skill.Trigers
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -133,7 +133,7 @@ namespace GameFramework.Skill.Trigers
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -151,13 +151,13 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                StartTime = int.Parse(callData.GetParamId(0));
+                m_StartTime = int.Parse(callData.GetParamId(0));
                 m_Msg = callData.GetParamId(1);
             }
             for (int i = 2; i < num; ++i) {
                 m_Args.Add(callData.GetParamId(i));
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         private string m_Msg = string.Empty;

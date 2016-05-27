@@ -31,18 +31,18 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     public class SelectTargetTrigger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             SelectTargetTrigger copy = new SelectTargetTrigger();
             copy.m_Type = m_Type;
-            
+            copy.m_StartTime = m_StartTime;
             copy.m_RealStartTime = m_RealStartTime;
             return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
@@ -52,11 +52,11 @@ namespace GameFramework.Skill.Trigers
                 m_Type = callData.GetParamId(0);
             }
             if (num > 1) {
-                StartTime = long.Parse(callData.GetParamId(1));
+                m_StartTime = long.Parse(callData.GetParamId(1));
             } else {
-                StartTime = 0;
+                m_StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -68,7 +68,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -97,10 +97,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     public class FaceToTargetTrigger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             FaceToTargetTrigger copy = new FaceToTargetTrigger();
-            
+            copy.m_StartTime = m_StartTime;
             copy.m_RemainTime = m_RemainTime;
             copy.m_IsHaveRotateSpeed = m_IsHaveRotateSpeed;
             copy.m_RotateSpeed = m_RotateSpeed;
@@ -113,7 +113,7 @@ namespace GameFramework.Skill.Trigers
         public override void Reset()
         {
             m_IsExecuted = false;
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
             m_RealSelectTargetType = m_SelectTargetType;
         }
 
@@ -121,7 +121,7 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num >= 2) {
-                StartTime = long.Parse(callData.GetParamId(0));
+                m_StartTime = long.Parse(callData.GetParamId(0));
                 m_RemainTime = long.Parse(callData.GetParamId(1));
             }
             if (num >= 3) {
@@ -132,7 +132,7 @@ namespace GameFramework.Skill.Trigers
             if (num >= 4) {
                 m_SelectTargetType = callData.GetParamId(3);
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
             m_RealSelectTargetType = m_SelectTargetType;
         }
 
@@ -145,12 +145,12 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
             }
-            if (m_IsExecuted && curSectionTime > (StartTime + m_RemainTime)) {
+            if (m_IsExecuted && curSectionTime > (m_StartTime + m_RemainTime)) {
                 return false;
             }
 
@@ -203,17 +203,17 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     public class ClearTargetsTrigger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             ClearTargetsTrigger copy = new ClearTargetsTrigger();
-            
+            copy.m_StartTime = m_StartTime;
             copy.m_RealStartTime = m_RealStartTime;
             return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -225,7 +225,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
             }
             if (curSectionTime < m_RealStartTime) {
                 return true;
@@ -241,11 +241,11 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                StartTime = long.Parse(callData.GetParamId(0));
+                m_StartTime = long.Parse(callData.GetParamId(0));
             } else {
-                StartTime = 0;
+                m_StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         private long m_RealStartTime = 0;

@@ -10,10 +10,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class CameraFollowTriger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             CameraFollowTriger triger = new CameraFollowTriger();
-            
+            triger.m_StartTime = m_StartTime;
             triger.m_RemainTime = m_RemainTime;
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
@@ -21,7 +21,7 @@ namespace GameFramework.Skill.Trigers
         public override void Reset()
         {
             m_Triggered = false;
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -33,7 +33,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (m_RemainTime > 0 && m_RemainTime > curSectionTime) {
                     Utility.SendMessage("GameRoot", "CameraFollowPath", null);
@@ -58,12 +58,12 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                StartTime = long.Parse(callData.GetParamId(0));
+                m_StartTime = long.Parse(callData.GetParamId(0));
             }
             if (num > 1) {
                 m_RemainTime = long.Parse(callData.GetParamId(1));
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         private bool m_Triggered = false;
@@ -76,10 +76,10 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class CameraLookTriger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             CameraLookTriger triger = new CameraLookTriger();
-            
+            triger.m_StartTime = m_StartTime;
             triger.m_RemainTime = m_RemainTime;
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
@@ -87,7 +87,7 @@ namespace GameFramework.Skill.Trigers
         public override void Reset()
         {
             m_Triggered = false;
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -99,7 +99,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (m_RemainTime > 0 && m_RemainTime > curSectionTime) {
                     Utility.SendMessage("GameRoot", "CameraFollowPath", null);
@@ -125,12 +125,12 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                StartTime = long.Parse(callData.GetParamId(0));
+                m_StartTime = long.Parse(callData.GetParamId(0));
             }
             if (num > 1) {
                 m_RemainTime = long.Parse(callData.GetParamId(1));
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         private bool m_Triggered = false;
@@ -143,16 +143,16 @@ namespace GameFramework.Skill.Trigers
     /// </summary>
     internal class CameraFollowPathTriger : AbstractSkillTriger
     {
-        protected override ISkillTriger OnClone()
+        public override ISkillTriger Clone()
         {
             CameraFollowPathTriger triger = new CameraFollowPathTriger();
-            
+            triger.m_StartTime = m_StartTime;
             triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -164,7 +164,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
                 if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+                    m_RealStartTime = TriggerUtil.RefixStartTime((int)m_StartTime, instance.LocalVariables, senderObj.ConfigData);
                 }
                 if (curSectionTime >= m_RealStartTime) {
                     Utility.SendMessage("GameRoot", "CameraFollowPath", senderObj.ActorId);
@@ -182,9 +182,9 @@ namespace GameFramework.Skill.Trigers
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                StartTime = long.Parse(callData.GetParamId(0));
+                m_StartTime = long.Parse(callData.GetParamId(0));
             }
-            m_RealStartTime = StartTime;
+            m_RealStartTime = m_StartTime;
         }
 
         private long m_RealStartTime = 0;
