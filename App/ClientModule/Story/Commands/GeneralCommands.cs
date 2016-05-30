@@ -1698,4 +1698,53 @@ namespace GameFramework.Story.Commands
         private IStoryValue<string> m_DictId = new StoryValue<string>();
         private List<IStoryValue<object>> m_DictArgs = new List<IStoryValue<object>>();
     }
+    /// <summary>
+    /// setactorscale(name,value);
+    /// </summary>
+    internal class SetActorScaleCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SetActorScaleCommand cmd = new SetActorScaleCommand();
+            cmd.m_ObjId = m_ObjId.Clone();
+            cmd.m_Value = m_Value.Clone();
+            return cmd;
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_ObjId.Substitute(iterator, args);
+            m_Value.Substitute(iterator, args);
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_ObjId.Evaluate(instance);
+            m_Value.Evaluate(instance);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            int objId = m_ObjId.Value;
+            object value = m_Value.Value;
+            UnityEngine.GameObject obj = EntityController.Instance.GetGameObject(objId);
+            if (null != obj) {
+                ScriptRuntime.Vector3 scale = (ScriptRuntime.Vector3)value;
+                obj.transform.localScale = new UnityEngine.Vector3(scale.X, scale.Y, scale.Z);
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+                m_Value.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryValue<object> m_Value = new StoryValue();
+    }
 }

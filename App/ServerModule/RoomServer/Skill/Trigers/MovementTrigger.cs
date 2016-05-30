@@ -41,12 +41,11 @@ namespace GameFramework.Skill.Trigers
             EnableMoveAgentTriger triger = new EnableMoveAgentTriger();
             triger.m_IsEnable = m_IsEnable;
             
-            triger.m_RealStartTime = m_RealStartTime;
-            return triger;
+                        return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -56,10 +55,7 @@ namespace GameFramework.Skill.Trigers
             if (null == obj) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 EnableMoveAgent(obj, m_IsEnable);
                 return false;
             } else {
@@ -80,7 +76,7 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
 
         private void EnableMoveAgent(EntityInfo obj, bool isEnable)
@@ -88,7 +84,7 @@ namespace GameFramework.Skill.Trigers
         }
 
         private bool m_IsEnable = true;
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// curvemove(triggertime, is_lock_rotate, [movetime, speedx, speedy, speedz, accelx, accely, accelz]+)
@@ -102,15 +98,14 @@ namespace GameFramework.Skill.Trigers
             copy.m_IsLockRotate = m_IsLockRotate;
             copy.m_SectionList.AddRange(m_SectionList);
             copy.m_IsCurveMoving = true;
-            copy.m_RealStartTime = m_RealStartTime;
-            return copy;
+                        return copy;
         }
 
         public override void Reset()
         {
             m_IsCurveMoving = true;
             m_IsInited = false;
-            m_RealStartTime = StartTime;
+            
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
@@ -119,7 +114,7 @@ namespace GameFramework.Skill.Trigers
                 StartTime = int.Parse(callData.GetParamId(0));
                 m_IsLockRotate = bool.Parse(callData.GetParamId(1));
             }
-            m_RealStartTime = StartTime;
+            
             m_SectionList.Clear();
             int section_num = 0;
             while (callData.GetParamNum() >= 7 * (section_num + 1) + 2) {
@@ -150,10 +145,7 @@ namespace GameFramework.Skill.Trigers
             bool isTower = scene.EntityController.GetEntityType(senderObj.GfxObj) == (int)EntityTypeEnum.Tower;
             if (isTower)
                 return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime){
+            if (curSectionTime < StartTime){
                 return true;
             }
             if (!m_IsCurveMoving){
@@ -258,7 +250,7 @@ namespace GameFramework.Skill.Trigers
         private List<MoveSectionInfo> m_SectionListCopy = new List<MoveSectionInfo>();
         private bool m_IsCurveMoving = false;
 
-        private long m_RealStartTime = 0;
+        
 
         private Vector3 m_StartPos = Vector3.Zero;
         private float m_StartDir = 0;
@@ -280,8 +272,7 @@ namespace GameFramework.Skill.Trigers
             triger.m_StopAtTarget = m_StopAtTarget;
             triger.m_Offset = m_Offset;
             
-            triger.m_RealStartTime = m_RealStartTime;
-            return triger;
+                        return triger;
         }
         public override void Reset()
         {
@@ -289,7 +280,7 @@ namespace GameFramework.Skill.Trigers
             m_RealDuration = 0;
             m_RealVelocity = 1;
             m_Forward = Vector3.Zero;
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -300,9 +291,6 @@ namespace GameFramework.Skill.Trigers
             if (null == obj) return false;
             bool isTower = scene.EntityController.GetEntityType(senderObj.GfxObj) == (int)EntityTypeEnum.Tower;
             if (isTower) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
             if (!m_TargetChecked) {
                 m_TargetChecked = true;
 
@@ -326,9 +314,9 @@ namespace GameFramework.Skill.Trigers
                     m_Forward = Geometry.GetRotate(new Vector3(0, 0, 1), obj.GetMovementStateInfo().GetFaceDir());
                 }
             }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
-            } else if (curSectionTime <= m_RealStartTime + m_RealDuration) {
+            } else if (curSectionTime <= StartTime + m_RealDuration) {
                 Vector3 srcPos = obj.GetMovementStateInfo().GetPosition3D();
                 float dist = TriggerUtil.ConvertToSecond(delta) * m_RealVelocity;
                 Vector3 targetPos = srcPos + m_Forward * dist;
@@ -358,7 +346,7 @@ namespace GameFramework.Skill.Trigers
             if (num > 4) {
                 StartTime = long.Parse(callData.GetParamId(4));
             }
-            m_RealStartTime = StartTime;
+            
         }
 
         private long m_Duration = 0;
@@ -366,7 +354,7 @@ namespace GameFramework.Skill.Trigers
         private int m_StopAtTarget = 0;
         private Vector3 m_Offset = Vector3.Zero;
 
-        private long m_RealStartTime = 0;
+        
 
         private bool m_TargetChecked = false;
         private long m_RealDuration = 0;
@@ -390,8 +378,7 @@ namespace GameFramework.Skill.Trigers
             
             triger.m_YVelocity = m_YVelocity;
             triger.m_G = m_G;
-            triger.m_RealStartTime = m_RealStartTime;
-            return triger;
+                        return triger;
         }
         public override void Reset()
         {
@@ -400,7 +387,7 @@ namespace GameFramework.Skill.Trigers
             m_RealVelocity = 1;
             m_InitY = -1;
             m_Forward = Vector3.Zero;
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -412,9 +399,6 @@ namespace GameFramework.Skill.Trigers
             bool isTower = scene.EntityController.GetEntityType(senderObj.GfxObj) == (int)EntityTypeEnum.Tower;
             if (isTower)
                 return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
             if (!m_TargetChecked) {
                 m_TargetChecked = true;
 
@@ -440,10 +424,10 @@ namespace GameFramework.Skill.Trigers
                 }
                 m_InitY = obj.GetMovementStateInfo().PositionY;
             }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             } else if (curSectionTime <= m_RealDuration) {
-                float t = (float)(int)(curSectionTime - m_RealStartTime) / 1000.0f;
+                float t = (float)(int)(curSectionTime - StartTime) / 1000.0f;
                 float disty = m_YVelocity * t - m_G * t * t / 2;
                 float dist = TriggerUtil.ConvertToSecond(delta) * m_RealVelocity;
                 Vector3 targetPos = obj.GetMovementStateInfo().GetPosition3D() + m_Forward * dist;
@@ -479,7 +463,7 @@ namespace GameFramework.Skill.Trigers
             if (num > 5) {
                 StartTime = long.Parse(callData.GetParamId(5));
             }
-            m_RealStartTime = StartTime;
+            
             CalcYVelocityAndG();
         }
 
@@ -496,7 +480,7 @@ namespace GameFramework.Skill.Trigers
         private int m_StopAtTarget = 0;
         private Vector3 m_Offset = Vector3.Zero;
 
-        private long m_RealStartTime = 0;
+        
 
         private bool m_TargetChecked = false;
         private long m_RealDuration = 0;

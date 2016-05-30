@@ -46,7 +46,12 @@ namespace GameFramework
             ReceiptInfo r = receipt as ReceiptInfo;
             Delegate d;
             if (null != r && subscribers_.TryGetValue(r.name_, out d)) {
-                subscribers_[r.name_] = Delegate.Remove(d, r.delegate_);
+                Delegate left = Delegate.Remove(d, r.delegate_);
+                if (null == left) {
+                    subscribers_.Remove(r.name_);
+                } else {
+                    subscribers_[r.name_] = left;
+                }
             }
         }
 

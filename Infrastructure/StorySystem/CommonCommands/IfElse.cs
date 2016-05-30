@@ -88,7 +88,6 @@ namespace StorySystem.CommonCommands
                         foreach (IStoryCommand cmd in m_IfCommandQueue) {
                             cmd.Prepare(instance, m_Iterator, m_Arguments);
                         }
-                        ret = true;
                         isElse = false;
                     }
                 }
@@ -97,33 +96,31 @@ namespace StorySystem.CommonCommands
                     foreach (IStoryCommand cmd in m_ElseCommandQueue) {
                         cmd.Prepare(instance, m_Iterator, m_Arguments);
                     }
-                    ret = true;
                 }
                 m_AlreadyExecute = true;
-            } else {
-                if (m_IfCommandQueue.Count > 0) {
-                    while (m_IfCommandQueue.Count > 0) {
-                        IStoryCommand cmd = m_IfCommandQueue.Peek();
-                        if (cmd.Execute(instance, delta)) {
-                            break;
-                        } else {
-                            cmd.Reset();
-                            m_IfCommandQueue.Dequeue();
-                        }
+            }
+            if (m_IfCommandQueue.Count > 0) {
+                while (m_IfCommandQueue.Count > 0) {
+                    IStoryCommand cmd = m_IfCommandQueue.Peek();
+                    if (cmd.Execute(instance, delta)) {
+                        ret = true;
+                        break;
+                    } else {
+                        cmd.Reset();
+                        m_IfCommandQueue.Dequeue();
                     }
-                    ret = true;
                 }
-                if (m_ElseCommandQueue.Count > 0) {
-                    while (m_ElseCommandQueue.Count > 0) {
-                        IStoryCommand cmd = m_ElseCommandQueue.Peek();
-                        if (cmd.Execute(instance, delta)) {
-                            break;
-                        } else {
-                            cmd.Reset();
-                            m_ElseCommandQueue.Dequeue();
-                        }
+            }
+            if (m_ElseCommandQueue.Count > 0) {
+                while (m_ElseCommandQueue.Count > 0) {
+                    IStoryCommand cmd = m_ElseCommandQueue.Peek();
+                    if (cmd.Execute(instance, delta)) {
+                        ret = true;
+                        break;
+                    } else {
+                        cmd.Reset();
+                        m_ElseCommandQueue.Dequeue();
                     }
-                    ret = true;
                 }
             }
             return ret;

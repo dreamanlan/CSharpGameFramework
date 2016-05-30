@@ -10,6 +10,11 @@ namespace GameFramework
 {
     internal sealed class PredefinedSkill
     {
+        internal enum PredefinedSkillEnum
+        {
+            EmitSkillId = 0x1000000,
+            HitSkillId = 0x2000000,
+        }
         internal TableConfig.Skill EmitSkillCfg
         {
             get { return m_EmitSkillCfg; }
@@ -19,6 +24,14 @@ namespace GameFramework
             get { return m_HitSkillCfg; }
         }
 
+        internal void ReBuild()
+        {
+            m_EmitSkillCfg.type = (int)SkillOrImpactType.Impact;
+            AddPredefinedSkill(m_EmitSkillCfg, PredefinedSkillEnum.EmitSkillId);
+            m_HitSkillCfg.type = (int)SkillOrImpactType.Impact;
+            AddPredefinedSkill(m_HitSkillCfg, PredefinedSkillEnum.HitSkillId);
+
+        }
         internal void Preload(ServerSkillSystem skillSystem)
         {
             for (int i = 0; i < c_MaxEmitSkillNum; ++i) {
@@ -28,18 +41,10 @@ namespace GameFramework
                 skillSystem.PreloadSkillInstance(m_HitSkillCfg);
             }
         }
-
+        
         internal PredefinedSkill()
         {
-            m_EmitSkillCfg.type = (int)SkillOrImpactType.Impact;
-            AddPredefinedSkill(m_EmitSkillCfg, PredefinedSkillEnum.EmitSkillId);
-            m_HitSkillCfg.type = (int)SkillOrImpactType.Impact;
-            AddPredefinedSkill(m_HitSkillCfg, PredefinedSkillEnum.HitSkillId);
-        }
-        private enum PredefinedSkillEnum
-        {
-            EmitSkillId = 90000,
-            HitSkillId,
+            ReBuild();
         }
 
         private TableConfig.Skill m_EmitSkillCfg = new TableConfig.Skill();
@@ -49,8 +54,11 @@ namespace GameFramework
         {
             cfg.id = cfg.dslSkillId = (int)id;
             cfg.dslFile = "Skill/predefined.dsl";
+            //添加到技能表数据中
+            var skills = TableConfig.SkillProvider.Instance.SkillMgr.GetData();
+            skills[cfg.id] = cfg;
         }
-
+        
         private const int c_MaxEmitSkillNum = 10;
         private const int c_MaxHitSkillNum = 10;
     }
@@ -178,6 +186,11 @@ namespace GameFramework
                     return m_SkillInfo;
                 }
             }
+            internal bool IsPaused
+            {
+                get { return m_IsPaused; }
+                set { m_IsPaused = value; }
+            }
 
             internal SkillLogicInfo(GfxSkillSenderInfo sender, SkillInstanceInfo info)
             {
@@ -187,6 +200,7 @@ namespace GameFramework
 
             private GfxSkillSenderInfo m_Sender;
             private SkillInstanceInfo m_SkillInfo;
+            private bool m_IsPaused = false;
         }
 
         internal Scene Scene
@@ -227,6 +241,14 @@ namespace GameFramework
             if (null != skillData) {
                 SkillInstanceInfo info = NewSkillInstanceImpl(skillData.id, skillData);
                 RecycleSkillInstance(info);
+                if (null != info.m_SkillInstance.EmitSkillInstance) {
+                    SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl((int)PredefinedSkill.PredefinedSkillEnum.EmitSkillId, info.m_SkillInstance.EmitSkillInstance);
+                    RecycleSkillInstance(iinfo);
+                }
+                if (null != info.m_SkillInstance.HitSkillInstance) {
+                    SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl((int)PredefinedSkill.PredefinedSkillEnum.HitSkillId, info.m_SkillInstance.HitSkillInstance);
+                    RecycleSkillInstance(iinfo);
+                }
             }
         }
         internal void ClearSkillInstancePool()
@@ -238,12 +260,76 @@ namespace GameFramework
         {
             get { return m_GlobalVariables; }
         }
-        public SkillInstance GetSkillInstance(int actorId, int skillId, int seq)
+        internal SkillInstance FindSkillInstanceForSkillViewer(int skillId)
         {
             GfxSkillSenderInfo sender;
-            return GetSkillInstance(actorId, skillId, seq, out sender);
+            return FindSkillInstanceForSkillViewer(skillId, out sender);
         }
-        public SkillInstance GetSkillInstance(int actorId, int skillId, int seq, out GfxSkillSenderInfo sender)
+        internal SkillInstance FindSkillInstanceForSkillViewer(int skillId, out GfxSkillSenderInfo sender)
+        {
+            SkillInstance ret = null;
+            SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.SkillId == skillId);
+            if (null != logicInfo) {
+                sender = logicInfo.Sender;
+                ret = logicInfo.SkillInst;
+            } else {
+                sender = null;
+                var instInfo = GetUnusedSkillInstanceInfoFromPool(skillId);
+                if (null != instInfo) {
+                    ret = instInfo.m_SkillInstance;
+                }
+            }
+            return ret;
+        }
+        internal SkillInstance FindInnerSkillInstanceForSkillViewer(int skillId, SkillInstance innerInstance)
+        {
+            GfxSkillSenderInfo sender;
+            return FindInnerSkillInstanceForSkillViewer(skillId, innerInstance, out sender);
+        }
+        internal SkillInstance FindInnerSkillInstanceForSkillViewer(int skillId, SkillInstance innerInstance, out GfxSkillSenderInfo sender)
+        {
+            SkillInstance ret = null;
+            SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.SkillId == skillId && info.SkillInst.InitDslSkillId == innerInstance.InitDslSkillId);
+            if (null != logicInfo) {
+                sender = logicInfo.Sender;
+                ret = logicInfo.SkillInst;
+            } else {
+                int newSkillId = CalcUniqueInnerSkillId(skillId, innerInstance);
+                sender = null;
+                var instInfo = GetUnusedSkillInstanceInfoFromPool(newSkillId);
+                if (null != instInfo) {
+                    ret = instInfo.m_SkillInstance;
+                }
+            }
+            return ret;
+        }
+        internal int GetActiveSkillCount()
+        {
+            return m_SkillLogicInfos.Count;
+        }
+        internal SkillInstance GetActiveSkillInfo(int index)
+        {
+            GfxSkillSenderInfo sender;
+            return GetActiveSkillInfo(index, out sender);
+        }
+        internal SkillInstance GetActiveSkillInfo(int index, out GfxSkillSenderInfo sender)
+        {
+            int ct = m_SkillLogicInfos.Count;
+            if (index >= 0 && index < ct) {
+                var info = m_SkillLogicInfos[index];
+                sender = info.Sender;
+                return info.SkillInst;
+            } else {
+                sender = null;
+                return null;
+            }
+        }
+        internal SkillInstance FindActiveSkillInstance(int actorId, int skillId, int seq)
+        {
+            GfxSkillSenderInfo sender;
+            return FindActiveSkillInstance(actorId, skillId, seq, out sender);
+        }
+        internal SkillInstance FindActiveSkillInstance(int actorId, int skillId, int seq, out GfxSkillSenderInfo sender)
         {
             SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.ActorId == actorId && info.SkillId == skillId && info.Seq == seq);
             if (null != logicInfo) {
@@ -253,13 +339,14 @@ namespace GameFramework
             sender = null;
             return null;
         }
-        internal bool StartSkill(int actorId, TableConfig.Skill configData, int seq)
-        {
-            return StartSkill(actorId, configData, seq, null);
-        }
-        public bool StartSkill(int actorId, TableConfig.Skill configData, int seq, params Dictionary<string, object>[] locals)
+        internal bool StartSkill(int actorId, TableConfig.Skill configData, int seq, params Dictionary<string, object>[] locals)
         {
             bool ret = false;
+            if (null == configData) {
+                LogSystem.Error("{0} can't cast skill, config is null !", actorId, seq);
+                Helper.LogCallStack();
+                return false;
+            }
             if (!m_Scene.EntityController.CanCastSkill(actorId, configData, seq)) {
                 m_Scene.EntityController.CancelCastSkill(actorId);
                 LogSystem.Warn("{0} can't cast skill {1} {2}, cancel.", actorId, configData.id, seq);
@@ -274,7 +361,34 @@ namespace GameFramework
                     LogSystem.Warn("{0} is casting skill {1} {2}, cancel.", actorId, skillId, seq);
                     return false;
                 }
-                SkillInstanceInfo inst = NewSkillInstance(skillId, senderInfo.ConfigData);
+                SkillInstanceInfo inst = null;
+                SkillInstance innerInstance = null;
+                if (skillId == (int)PredefinedSkill.PredefinedSkillEnum.EmitSkillId) {
+                    for (int i = 0; i < locals.Length; ++i) {
+                        object instObj;
+                        if (locals[i].TryGetValue("emitskill", out instObj)) {
+                            innerInstance = instObj as SkillInstance;
+                        }
+                    }
+                    if (null == innerInstance) {
+                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found emitskill.", actorId, skillId, seq);
+                    }
+                } else if (skillId == (int)PredefinedSkill.PredefinedSkillEnum.HitSkillId) {
+                    for (int i = 0; i < locals.Length; ++i) {
+                        object instObj;
+                        if (locals[i].TryGetValue("hitskill", out instObj)) {
+                            innerInstance = instObj as SkillInstance;
+                        }
+                    }
+                    if (null == innerInstance) {
+                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found hitskill.", actorId, skillId, seq);
+                    }
+                }
+                if (null == innerInstance) {
+                    inst = NewSkillInstance(skillId, senderInfo.ConfigData);
+                } else {
+                    inst = NewInnerSkillInstance(skillId, innerInstance);
+                }
                 if (null != inst) {
                     m_SkillLogicInfos.Add(new SkillLogicInfo(senderInfo, inst));
                 } else {
@@ -315,6 +429,32 @@ namespace GameFramework
                     m_Scene.EntityController.DeactivateSkill(actorId, skillId, seq);
                     RecycleSkillInstance(logicInfo.Info);
                     m_SkillLogicInfos.Remove(logicInfo);
+                }
+            }
+        }
+        internal void PauseSkill(int actorId, int skillId, int seq, bool pause)
+        {
+            EntityInfo obj = m_Scene.EntityController.GetGameObject(actorId);
+            if (null != obj) {
+                SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq);
+                if (null != logicInfo) {
+                    logicInfo.IsPaused = pause;
+                }
+            }
+        }
+        internal void PauseAllSkill(int actorId, bool pause)
+        {
+            EntityInfo obj = m_Scene.EntityController.GetGameObject(actorId);
+            if (null == obj) {
+                return;
+            }
+            int count = m_SkillLogicInfos.Count;
+            for (int index = count - 1; index >= 0; --index) {
+                SkillLogicInfo info = m_SkillLogicInfos[index];
+                if (info != null) {
+                    if (info.GfxObj == obj) {
+                        info.IsPaused = pause;
+                    }
                 }
             }
         }
@@ -420,7 +560,20 @@ namespace GameFramework
             m_Scene.EntityController.DeactivateSkill(info.ActorId, info.SkillId, info.Sender.Seq);
             RecycleSkillInstance(info.Info);
         }
-
+        
+        private SkillInstanceInfo NewInnerSkillInstance(int skillId, SkillInstance innerInstance)
+        {
+            int newSkillId = CalcUniqueInnerSkillId(skillId, innerInstance);
+            if (newSkillId <= 0)
+                return null;
+            SkillInstanceInfo instInfo = GetUnusedSkillInstanceInfoFromPool(newSkillId);
+            if (null == instInfo) {
+                return NewInnerSkillInstanceImpl(skillId, innerInstance);
+            } else {
+                instInfo.m_IsUsed = true;
+                return instInfo;
+            }
+        }
         private SkillInstanceInfo NewSkillInstance(int skillId, TableConfig.Skill skillData)
         {
             SkillInstanceInfo instInfo = GetUnusedSkillInstanceInfoFromPool(skillId);
@@ -436,6 +589,22 @@ namespace GameFramework
                 return instInfo;
             }
         }
+        private SkillInstanceInfo NewInnerSkillInstanceImpl(int skillId, SkillInstance innerInstance)
+        {
+            int newSkillId = CalcUniqueInnerSkillId(skillId, innerInstance);
+            if (newSkillId <= 0)
+                return null;
+            SkillInstance newInst = innerInstance.Clone();
+            newInst.DslSkillId = skillId;
+
+            SkillInstanceInfo res = new SkillInstanceInfo();
+            res.m_SkillId = skillId;
+            res.m_SkillInstance = newInst;
+            res.m_IsUsed = true;
+
+            AddSkillInstanceInfoToPool(newSkillId, res);
+            return res;
+        }       
         private SkillInstanceInfo NewSkillInstanceImpl(int skillId, TableConfig.Skill skillData)
         {
             string filePath = GameFramework.HomePath.GetAbsolutePath(FilePathDefine_Server.C_DslPath + skillData.dslFile);
@@ -492,6 +661,15 @@ namespace GameFramework
         private Dictionary<int, List<SkillInstanceInfo>> m_SkillInstancePool = new Dictionary<int, List<SkillInstanceInfo>>();
         private Scene m_Scene = null;
         private long m_LastTickTime = 0;
+
+        internal static int CalcUniqueInnerSkillId(int skillId, SkillInstance innerInstance)
+        {
+            if (skillId == (int)PredefinedSkill.PredefinedSkillEnum.EmitSkillId || skillId == (int)PredefinedSkill.PredefinedSkillEnum.HitSkillId) {
+                return skillId + innerInstance.InitDslSkillId;
+            } else {
+                return 0;
+            }
+        }
 
         internal static void StaticInit()
         {

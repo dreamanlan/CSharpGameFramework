@@ -10,7 +10,6 @@ namespace GameFramework.Skill.Trigers
     {
         private static float s_RayCastMaxDistance = 50;
         private static int s_TerrainLayer = 1 << LayerMask.NameToLayer("Terrain");
-
         public static void Lookat(GameObject obj, Vector3 target, float rotateDegree)
         {
             if (!EntityController.Instance.IsRotatableEntity(obj))
@@ -49,7 +48,6 @@ namespace GameFramework.Skill.Trigers
             }
             return null;
         }
-
         public static bool AttachNodeToNode(GameObject source,
                                          string sourcenode,
                                          GameObject target,
@@ -70,7 +68,6 @@ namespace GameFramework.Skill.Trigers
             //target.transform.localPosition = Vector3.Scale(target.transform.localPosition, scale);
             return true;
         }
-
         public static void MoveChildToNode(GameObject obj, string childname, string nodename)
         {
             Transform child = GetChildNodeByName(obj, childname);
@@ -87,24 +84,19 @@ namespace GameFramework.Skill.Trigers
             child.localRotation = Quaternion.identity;
             child.localPosition = Vector3.zero;
         }
-
         public static GameObject DrawCircle(Vector3 center, float radius, Color color, float circle_step = 0.05f)
         {
             GameObject obj = new GameObject();
             LineRenderer linerender = obj.AddComponent<LineRenderer>();
             linerender.SetWidth(0.05f, 0.05f);
-
             Shader shader = Shader.Find("Particles/Additive");
             if (shader != null) {
                 linerender.material = new Material(shader);
             }
             linerender.SetColors(color, color);
-
             float step_degree = Mathf.Atan(circle_step / 2) * 2;
             int count = (int)(2 * Mathf.PI / step_degree);
-
             linerender.SetVertexCount(count + 1);
-
             for (int i = 0; i < count + 1; i++) {
                 float angle = 2 * Mathf.PI / count * i;
                 Vector3 pos = center + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
@@ -112,7 +104,6 @@ namespace GameFramework.Skill.Trigers
             }
             return obj;
         }
-
         public static List<GameObject> FindTargetInSector(Vector3 center,
                                                       float radius,
                                                       Vector3 direction,
@@ -131,7 +122,6 @@ namespace GameFramework.Skill.Trigers
             });
             return result;
         }
-
         public static GameObject GetObjectByPriority(GameObject source, List<GameObject> list,
                                                      float distance_priority, float degree_priority,
                                                      float max_distance, float max_degree)
@@ -152,7 +142,6 @@ namespace GameFramework.Skill.Trigers
             }
             return target;
         }
-
         public static List<GameObject> FiltByRelation(GameObject source, List<GameObject> list, GameFramework.CharacterRelation relation)
         {
             List<GameObject> result = new List<GameObject>();
@@ -164,12 +153,10 @@ namespace GameFramework.Skill.Trigers
             }
             return result;
         }
-
         public static float ConvertToSecond(long delta)
         {
             return delta / 1000000.0f;
         }
-
         public static void SetObjVisible(GameObject obj, bool isShow)
         {
             Renderer[] renders = obj.GetComponentsInChildren<Renderer>();
@@ -177,7 +164,6 @@ namespace GameFramework.Skill.Trigers
                 renders[i].enabled = isShow;
             }
         }
-
         public static void MoveObjTo(GameObject obj, Vector3 position)
         {
             EntityViewModel npcViewModel = (EntityViewModel)EntityController.Instance.GetEntityView(obj);
@@ -190,12 +176,10 @@ namespace GameFramework.Skill.Trigers
                 }
             }
         }
-
         public static float GetObjFaceDir(GameObject obj)
         {
             return obj.transform.rotation.eulerAngles.y * UnityEngine.Mathf.PI / 180.0f;
         }
-
         public static Vector3 GetGroundPos(Vector3 pos)
         {
             Vector3 sourcePos = pos;
@@ -206,7 +190,6 @@ namespace GameFramework.Skill.Trigers
             }
             return sourcePos;
         }
-
         public static bool FloatEqual(float a, float b)
         {
             if (Math.Abs(a - b) <= 0.0001) {
@@ -214,12 +197,10 @@ namespace GameFramework.Skill.Trigers
             }
             return false;
         }
-
         public static float GetHeightWithGround(GameObject obj)
         {
             return GetHeightWithGround(obj.transform.position);
         }
-
         public static float GetHeightWithGround(Vector3 pos)
         {
             if (Terrain.activeTerrain != null) {
@@ -234,85 +215,100 @@ namespace GameFramework.Skill.Trigers
                 return s_RayCastMaxDistance;
             }
         }
-
-        //-----------------------------------------------------------------------------------------------------------
-
-        public static void CalcHitConfig(Dictionary<string, object> variables, TableConfig.Skill cfg, out Dictionary<string, object> result)
+        public static bool GetSkillStartPosition(Vector3 srcPos, TableConfig.Skill cfg, SkillInstance instance, int srcId, int targetId, ref Vector3 targetPos)
         {
-            result = new Dictionary<string, object>(variables);
-            string hitEffect = RefixResourceByConfig("hitEffect", variables, cfg);
-            if (result.ContainsKey("hitEffect")) {
-                result["hitEffect"] = hitEffect;
+            ScriptRuntime.Vector3 pos;
+            object posVal;
+            if (instance.LocalVariables.TryGetValue("skill_targetpos", out posVal)) {
+                pos = (ScriptRuntime.Vector3)posVal;
+                targetPos = new Vector3(pos.X, pos.Y, pos.Z);
+                return true;
+            }
+            float dist = cfg.distance;
+            if (dist <= Geometry.c_FloatPrecision) {
+                object val;
+                if (instance.LocalVariables.TryGetValue("skill_distance", out val)) {
+                    dist = (float)Convert.ChangeType(val, typeof(float));
+                } else {
+                    dist = EntityController.Instance.CalcSkillDistance(dist, srcId, targetId);
+                }
             } else {
-                result.Add("hitEffect", hitEffect);
+                dist = EntityController.Instance.CalcSkillDistance(dist, srcId, targetId);
+            }
+            if (dist <= Geometry.c_FloatPrecision) {
+                dist = 0.1f;
+            }
+            float dir;
+            if(EntityController.Instance.CalcPosAndDir(targetId, out pos, out dir)) {
+                pos += Geometry.GetRotate(new ScriptRuntime.Vector3(0, 0, dist), dir);
+                targetPos = new Vector3(pos.X, pos.Y, pos.Z);
+                return true;
+            }
+            return false;
+        }
+        //-----------------------------------------------------------------------------------------------------------
+        public static void CalcImpactConfig(SkillInstance instance, TableConfig.Skill cfg, out Dictionary<string, object> result)
+        {
+            var variables = instance.LocalVariables;
+            result = new Dictionary<string, object>(variables);
+            if (null != instance.EmitSkillInstance) {
+                result["emitskill"] = instance.EmitSkillInstance;
+            }
+            if (null != instance.HitSkillInstance) {
+                result["hitskill"] = instance.HitSkillInstance;
+            }
+            string hitEffect = SkillParamUtility.RefixResourceVariable("hitEffect", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(hitEffect)) {
+                result["hitEffect"] = hitEffect;
+            }
+            string hitEffect1 = SkillParamUtility.RefixResourceVariable("hitEffect1", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(hitEffect1)) {
+                result["hitEffect1"] = hitEffect1;
+            }
+            string hitEffect2 = SkillParamUtility.RefixResourceVariable("hitEffect2", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(hitEffect2)) {
+                result["hitEffect2"] = hitEffect2;
+            }
+            string hitEffect3 = SkillParamUtility.RefixResourceVariable("hitEffect3", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(hitEffect3)) {
+                result["hitEffect3"] = hitEffect3;
+            }
+            string emitEffect = SkillParamUtility.RefixResourceVariable("emitEffect", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(emitEffect)) {
+                result["emitEffect"] = emitEffect;
+            }
+            string emitEffect1 = SkillParamUtility.RefixResourceVariable("emitEffect1", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(emitEffect1)) {
+                result["emitEffect1"] = emitEffect1;
+            }
+            string emitEffect2 = SkillParamUtility.RefixResourceVariable("emitEffect2", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(emitEffect2)) {
+                result["emitEffect2"] = emitEffect2;
+            }
+            string emitEffect3 = SkillParamUtility.RefixResourceVariable("emitEffect3", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(emitEffect3)) {
+                result["emitEffect3"] = emitEffect3;
             }
         }
-
-        public static string RefixResourceByConfig(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        public static int RefixImpact(int impactId, Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
-            object val;
-            if (variables.TryGetValue(key, out val)) {
-                return val.ToString();
+            if (impactId <= 0) {
+                if (cfg.id == PredefinedSkill.Instance.HitSkillCfg.id) {
+                    object idObj;
+                    if (variables.TryGetValue("impact", out idObj)) {
+                        impactId = (int)idObj;
+                    }
+                }
             }
-            string ret;
-            if (cfg.resources.TryGetValue(key, out ret)) {
-                return ret;
-            }
-            if (key.IndexOf("/") < 0)
-                return string.Empty;
-            return key;
-        }
-
-        public static string RefixStringVariable(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            object val;
-            if (variables.TryGetValue(key, out val)) {
-                return val.ToString();
-            }
-            return key;
-        }
-        public static int RefixIntVariable(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            object val;
-            if (variables.TryGetValue(key, out val)) {
-                return (int)val;
-            }
-            return 0;
-        }
-        public static int RefixAnimTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            if (timeTag < 0)
-                return RefixIntVariable("hitAnimTime", variables, cfg);
-            else
-                return timeTag;
-        }
-        public static int RefixStartTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            int index = -timeTag - 1;
-            switch (index) {
-                case 0:
-                    return RefixIntVariable("hitEffectStartTime", variables, cfg);
-                case 1:
-                    return RefixIntVariable("hitAnimTime", variables, cfg);
-                case 2:
-                    return RefixIntVariable("hitDelayTime", variables, cfg);
-                default:
-                    return timeTag;
-            }
-        }
-        public static int RefixDeleteTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            if (timeTag < 0)
-                return RefixIntVariable("hitEffectDeleteTime", variables, cfg);
-            else
-                return timeTag;
+            return impactId;
         }
         
         public static void AoeQuery(GfxSkillSenderInfo senderObj, SkillInstance instance, int senderId, int targetType, Vector3 relativeCenter, bool relativeToTarget, MyFunc<float, int, bool> callback)
         {
             GameObject srcObj = senderObj.GfxObj;
+            if (null != senderObj.TrackEffectObj)
+                srcObj = senderObj.TrackEffectObj;
             GameObject targetObj = senderObj.TargetGfxObj;
-
             float radian;
             Vector3 center;
             if (null != targetObj && relativeToTarget) {

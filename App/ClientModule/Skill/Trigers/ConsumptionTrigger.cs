@@ -15,12 +15,12 @@ namespace GameFramework.Skill.Trigers
         {
             ConsumeTriger triger = new ConsumeTriger();
             
-            triger.m_RealStartTime = m_RealStartTime;
+            
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -30,19 +30,14 @@ namespace GameFramework.Skill.Trigers
             if (null == obj) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-
                 }
                 return false;
             } else {
                 return true;
             }
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -51,9 +46,8 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
-        private long m_RealStartTime = 0;
+        
     }
 }

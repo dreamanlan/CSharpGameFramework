@@ -98,10 +98,11 @@ namespace SkillSystem
     }
     public interface ISkillTriger : IPropertyVisitor, IPropertyAccessor
     {
-        ISkillTriger Clone();//克隆触发器，触发器只会从DSL实例一次，之后都通过克隆产生新实例
         long StartTime { get; set; }
         string Name { get; set; }
+        ISkillTriger Clone();//克隆触发器，触发器只会从DSL实例一次，之后都通过克隆产生新实例
         void Init(Dsl.ISyntaxComponent config, int dslSkillId);//从DSL语言初始化触发器实例
+        void InitProperties();
         void Reset();//复位触发器到初始状态
         bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime);//执行触发器，返回false表示触发器结束，下一tick不再执行
         void Analyze(object sender, SkillInstance instance);//语义分析，配合上下文sender与instance进行语义分析，在执行前收集必要的信息
@@ -155,18 +156,25 @@ namespace SkillSystem
                     }
                 }
             }
+            InitProperties();
         }
         public ISkillTriger Clone()
         {
             ISkillTriger newObj = OnClone();
             newObj.StartTime = StartTime;
             newObj.Name = Name;
+            newObj.InitProperties();
             return newObj;
+        }
+        public void InitProperties()
+        {
+            AddProperty("StartTime", () => { return m_StartTime; }, (object val) => { m_StartTime = (long)Convert.ChangeType(val, typeof(long)); });
+            OnInitProperties();
         }
         public virtual void Reset() { }
         public virtual bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime) { return false; }
         public virtual void Analyze(object sender, SkillInstance instance) { }
-
+        
         protected abstract ISkillTriger OnClone();
 
         protected virtual void Load(Dsl.CallData callData, int dslSkillId)
@@ -179,7 +187,11 @@ namespace SkillSystem
         {
         }
 
-        //下面方法必须在子类构造函数里调用，不要在别的地方调用！
+        protected virtual void OnInitProperties()
+        {
+        }
+
+        //下面方法必须在子类的构造或重载的OnInitProperties里调用！
         protected void AddProperty(string key, PropertyAccessorHelper.GetDelegation onGet, PropertyAccessorHelper.SetDelegation onSet)
         {
             m_AccessorHelper.AddProperty(key, onGet, onSet);
@@ -196,5 +208,160 @@ namespace SkillSystem
             DummyTriger cmd = new DummyTriger();
             return cmd;
         }
+    }
+    public sealed class SkillParamUtility
+    {
+        public static string RefixResourceVariable(string key, SkillInstance instance, Dictionary<string, string> resources)
+        {
+            if (key.IndexOf("/") >= 0) {
+                return key;
+            } else {
+                object val;
+                if (instance.LocalVariables.TryGetValue(key, out val)) {
+                    return val.ToString();
+                } else {
+                    string ret;
+                    if (resources.TryGetValue(key, out ret)) {
+                        return ret;
+                    } else {
+                        return string.Empty;
+                    }
+                }
+            }
+        }
+        public static string RefixStringVariable(string key, SkillInstance instance)
+        {
+            object val;
+            if (instance.LocalVariables.TryGetValue(key, out val)) {
+                return val.ToString();
+            }
+            return key;
+        }
+        public static T RefixNonStringVariable<T>(string key, SkillInstance instance)
+        {
+            object val;
+            if (instance.LocalVariables.TryGetValue(key, out val)) {
+                return (T)Convert.ChangeType(val,typeof(T));
+            }
+            return default(T);
+        }
+    }
+    public class SkillResourceParam
+    {
+        public void CopyFrom(SkillResourceParam other)
+        {
+            m_KeyOrValue = other.m_KeyOrValue;
+        }
+        public void Set(string val)
+        {
+            m_KeyOrValue = val;
+        }
+        public void Set(Dsl.ISyntaxComponent p)
+        {
+            m_KeyOrValue = p.GetId();
+        }
+        public string Get(SkillInstance instance, Dictionary<string, string> resources)
+        {
+            return SkillParamUtility.RefixResourceVariable(m_KeyOrValue, instance, resources);
+        }
+        public object EditableValue
+        {
+            get
+            {
+                return m_KeyOrValue;
+            }
+            set
+            {
+                m_KeyOrValue = value as string;
+            }
+        }
+
+        private string m_KeyOrValue = string.Empty;
+    }
+    public class SkillStringParam
+    {
+        public void CopyFrom(SkillStringParam other)
+        {
+            m_KeyOrValue = other.m_KeyOrValue;
+        }
+        public void Set(string val)
+        {
+            m_KeyOrValue = val;
+        }
+        public void Set(Dsl.ISyntaxComponent p)
+        {
+            m_KeyOrValue = p.GetId();
+        }
+        public string Get(SkillInstance instance)
+        {
+            return SkillParamUtility.RefixStringVariable(m_KeyOrValue, instance);
+        }
+        public object EditableValue
+        {
+            get
+            {
+                return m_KeyOrValue;
+            }
+            set
+            {
+                m_KeyOrValue = value as string;
+            }
+        }
+
+        private string m_KeyOrValue = string.Empty;
+    }
+    public class SkillNonStringParam<T>
+    {
+        public void CopyFrom(SkillNonStringParam<T> other)
+        {
+            m_Key = other.m_Key;
+            m_Value = other.m_Value;
+        }
+        public void Set(T val)
+        {
+            m_Key = string.Empty;
+            m_Value = val;
+        }
+        public void Set(Dsl.ISyntaxComponent p)
+        {
+            string val = p.GetId();
+            int type = p.GetIdType();
+            if (!string.IsNullOrEmpty(val)) {
+                if (type == Dsl.CallData.NUM_TOKEN) {
+                    m_Key = string.Empty;
+                    m_Value = (T)Convert.ChangeType(val, typeof(T));
+                } else {
+                    m_Key = val;
+                }
+            }
+        }
+        public T Get(SkillInstance instance)
+        {
+            if (string.IsNullOrEmpty(m_Key)) {
+                return m_Value;
+            } else {
+                return SkillParamUtility.RefixNonStringVariable<T>(m_Key, instance);
+            }
+        }
+        public object EditableValue
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_Key))
+                    return m_Value;
+                else
+                    return m_Key;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(m_Key))
+                    m_Value = (T)Convert.ChangeType(value, typeof(T));
+                else
+                    m_Key = value as string;
+            }
+        }
+
+        private string m_Key = string.Empty;
+        private T m_Value;
     }
 }

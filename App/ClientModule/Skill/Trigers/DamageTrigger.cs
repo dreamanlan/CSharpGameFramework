@@ -15,12 +15,12 @@ namespace GameFramework.Skill.Trigers
         {
             DamageTriger triger = new DamageTriger();
             
-            triger.m_RealStartTime = m_RealStartTime;
+            
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -30,10 +30,7 @@ namespace GameFramework.Skill.Trigers
             if (null == obj) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 if (senderObj.ConfigData.type != (int)SkillOrImpactType.Skill) {
                     EntityController.Instance.ImpactDamage(senderObj.TargetActorId, senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
                 }
@@ -42,7 +39,6 @@ namespace GameFramework.Skill.Trigers
                 return true;
             }
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -51,10 +47,9 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// addstate(state[,start_time]);
@@ -66,12 +61,12 @@ namespace GameFramework.Skill.Trigers
             AddStateTriger triger = new AddStateTriger();
             triger.m_State = m_State;
             
-            triger.m_RealStartTime = m_RealStartTime;
+            
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -82,17 +77,17 @@ namespace GameFramework.Skill.Trigers
                 EntityController.Instance.RemoveState(senderObj.ActorId, m_State);
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 EntityController.Instance.AddState(senderObj.ActorId, m_State);
                 return false;
             } else {
                 return true;
             }
         }
-
+        protected override void OnInitProperties()
+        {
+            AddProperty("State", () => { return m_State; }, (object val) => { m_State = val as string; });
+        }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -104,11 +99,10 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private string m_State = string.Empty;
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// removestate(state[,start_time]);
@@ -118,14 +112,13 @@ namespace GameFramework.Skill.Trigers
         protected override ISkillTriger OnClone()
         {
             RemoveStateTriger triger = new RemoveStateTriger();
-            triger.m_State = m_State;
+            triger.m_State = m_State;            
             
-            triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -136,17 +129,17 @@ namespace GameFramework.Skill.Trigers
                 EntityController.Instance.RemoveState(senderObj.ActorId, m_State);
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 EntityController.Instance.RemoveState(senderObj.ActorId, m_State);
                 return false;
             } else {
                 return true;
             }
         }
-
+        protected override void OnInitProperties()
+        {
+            AddProperty("State", () => { return m_State; }, (object val) => { m_State = val as string; });
+        }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -158,11 +151,10 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private string m_State = string.Empty;
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// addshield([start_time]);
@@ -171,14 +163,13 @@ namespace GameFramework.Skill.Trigers
     {
         protected override ISkillTriger OnClone()
         {
-            AddShieldTriger triger = new AddShieldTriger();
+            AddShieldTriger triger = new AddShieldTriger();            
             
-            triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -189,17 +180,13 @@ namespace GameFramework.Skill.Trigers
                 EntityController.Instance.RemoveShield(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 EntityController.Instance.AddShield(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
                 return false;
             } else {
                 return true;
             }
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -208,10 +195,9 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// removeshield([start_time]);
@@ -222,12 +208,12 @@ namespace GameFramework.Skill.Trigers
         {
             RemoveShieldTriger triger = new RemoveShieldTriger();
             
-            triger.m_RealStartTime = m_RealStartTime;
+            
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -238,10 +224,7 @@ namespace GameFramework.Skill.Trigers
                 EntityController.Instance.RemoveShield(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 EntityController.Instance.RemoveShield(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
                 return false;
             } else {
@@ -257,9 +240,8 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
-        private long m_RealStartTime = 0;
+        
     }
 }

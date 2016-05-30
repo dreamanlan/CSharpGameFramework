@@ -19,13 +19,13 @@ namespace GameFramework.Skill.Trigers
             copy.m_StartColor = m_StartColor;
             copy.m_ChangeColor = m_ChangeColor;
             copy.m_ChangeTime = m_ChangeTime;
-            copy.m_RealStartTime = m_RealStartTime;
+            
             return copy;
         }
         public override void Reset()
         {
             RestoreMaterials();
-            m_RealStartTime = StartTime;
+            
             m_IsFinalColor = false;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -40,13 +40,13 @@ namespace GameFramework.Skill.Trigers
                 RestoreMaterials();
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+            if (null != senderObj.TrackEffectObj) {
+                obj = senderObj.TrackEffectObj;
             }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
-            if (curSectionTime > m_RealStartTime + m_RemainTime) {
+            if (curSectionTime > StartTime + m_RemainTime) {
                 RestoreMaterials();
                 return false;
             }
@@ -67,7 +67,6 @@ namespace GameFramework.Skill.Trigers
                                     m_Colors.Add(Color.white);
                                 }
                                 m_Materials.Add(mat);
-
                                 if (mat.shader.name == "Tut/Shader/Toon/toon" || mat.shader.name == "Standard" || mat.shader.name == "Mobile/Diffuse" || mat.shader.name == "Unlit/Transparent" || mat.shader.name == "LOLL/Toon/toonwithStencil") {
                                 } else {
                                     continue;
@@ -79,7 +78,7 @@ namespace GameFramework.Skill.Trigers
                     }
                 }
             } else {
-                if (curSectionTime > m_RealStartTime + m_ChangeTime) {
+                if (curSectionTime > StartTime + m_ChangeTime) {
                     if (!m_IsFinalColor) {
                         m_IsFinalColor = true;
                         for (int i = 0; i < m_Materials.Count; ++i) {
@@ -88,7 +87,7 @@ namespace GameFramework.Skill.Trigers
                     }
                 } else {
                     for (int i = 0; i < m_Materials.Count; ++i) {
-                        m_Materials[i].color = m_StartColor + m_ChangeColor * ((curSectionTime - m_RealStartTime) / (m_ChangeTime * 1.0f));
+                        m_Materials[i].color = m_StartColor + m_ChangeColor * ((curSectionTime - StartTime) / (m_ChangeTime * 1.0f));
                     }
                 }
             }
@@ -107,7 +106,7 @@ namespace GameFramework.Skill.Trigers
             if (num >= 6) {
                 m_ChangeTime = long.Parse(callData.GetParamId(5));
             }
-            m_RealStartTime = StartTime;
+            
         }
         
         private void RestoreMaterials()
@@ -127,15 +126,12 @@ namespace GameFramework.Skill.Trigers
             m_Shaders.Clear();
             m_Colors.Clear();
         }
-
         private long m_RemainTime = 0;
         private string m_ShaderName = "";
         private Color m_StartColor = Color.white;
         private Color m_ChangeColor = Color.white;
         private long m_ChangeTime = 1000;
-
-        private long m_RealStartTime = 0;
-
+        
         private bool m_IsFinalColor = false;
         private List<Material> m_Materials = new List<Material>();
         private List<Shader> m_Shaders = new List<Shader>();
@@ -156,13 +152,13 @@ namespace GameFramework.Skill.Trigers
             copy.m_StartColor = m_StartColor;
             copy.m_ChangeColor = m_ChangeColor;
             copy.m_ChangeTime = m_ChangeTime;
-            copy.m_RealStartTime = m_RealStartTime;
+            
             return copy;
         }
         public override void Reset()
         {
             m_material = null;
-            m_RealStartTime = StartTime;
+            
             m_IsFinalColor = false;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -171,13 +167,13 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+            if (null != senderObj.TrackEffectObj) {
+                obj = senderObj.TrackEffectObj;
             }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
-            if (curSectionTime > m_RealStartTime + m_RemainTime) {
+            if (curSectionTime > StartTime + m_RemainTime) {
                 return false;
             }
             if (m_material == null) {
@@ -200,13 +196,13 @@ namespace GameFramework.Skill.Trigers
                 }
             }
             if (m_material != null) {
-                if (curSectionTime > m_RealStartTime + m_ChangeTime) {
+                if (curSectionTime > StartTime + m_ChangeTime) {
                     if (!m_IsFinalColor) {
                         m_IsFinalColor = true;
                         m_material.color = m_StartColor + m_ChangeColor;
                     }
                 } else {
-                    m_material.color = m_StartColor + m_ChangeColor * ((curSectionTime - m_RealStartTime) / (m_ChangeTime * 1.0f));
+                    m_material.color = m_StartColor + m_ChangeColor * ((curSectionTime - StartTime) / (m_ChangeTime * 1.0f));
                 }
             }
             return true;
@@ -225,9 +221,8 @@ namespace GameFramework.Skill.Trigers
             if (num >= 7) {
                 m_ChangeTime = long.Parse(callData.GetParamId(6));
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private long m_RemainTime = 0;
         private Material m_material = null;
         private string m_GoPath = "";
@@ -235,8 +230,6 @@ namespace GameFramework.Skill.Trigers
         private Color m_StartColor = Color.white;
         private Color m_ChangeColor = Color.white;
         private long m_ChangeTime = 1000;
-
         private bool m_IsFinalColor = false;
-        private long m_RealStartTime = 0;
     }
 }

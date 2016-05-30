@@ -16,13 +16,12 @@ namespace GameFramework.Skill.Trigers
             
             copy.m_Type = m_Type;
             copy.m_DeltaTime = m_DeltaTime;
-            copy.m_RealStartTime = m_RealStartTime;
-            return copy;
+                        return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -32,10 +31,7 @@ namespace GameFramework.Skill.Trigers
             Scene scene = senderObj.Scene;
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             if (0 == m_Type.CompareTo("anim")) {
@@ -47,7 +43,7 @@ namespace GameFramework.Skill.Trigers
                     LogSystem.Warn("adjustsectionduration impact duration is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
                 }
             } else {
-                int time = TryGetTimeFromConfig(instance.LocalVariables, senderObj.ConfigData);
+                int time = TryGetTimeFromConfig(instance);
                 if (time > 0) {
                     instance.SetCurSectionDuration((long)time + m_DeltaTime);
                 } else {
@@ -68,18 +64,18 @@ namespace GameFramework.Skill.Trigers
             if (callData.GetParamNum() > 2) {
                 m_DeltaTime = long.Parse(callData.GetParamId(2));
             }
-            m_RealStartTime = StartTime;
+            
         }
 
-        private int TryGetTimeFromConfig(Dictionary<string, object> variables, TableConfig.Skill cfg)
+        private int TryGetTimeFromConfig(SkillInstance inst)
         {
-            return TriggerUtil.RefixIntVariable(m_Type, variables, cfg);
+            return SkillParamUtility.RefixNonStringVariable<int>(m_Type, inst);
         }
 
         private string m_Type = "anim";//anim/impact
         private long m_DeltaTime = 50;
 
-        private long m_RealStartTime = 0;
+        
     }
 
     /// <summary>
@@ -93,13 +89,12 @@ namespace GameFramework.Skill.Trigers
             
             copy.m_Interval = m_Interval;
             copy.m_DeltaTime = m_DeltaTime;
-            copy.m_RealStartTime = m_RealStartTime;
             return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
             m_LastKeepTime = 0;
         }
 
@@ -110,10 +105,7 @@ namespace GameFramework.Skill.Trigers
             Scene scene = senderObj.Scene;
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             if (m_LastKeepTime <= 0 || m_LastKeepTime + m_Interval >= curSectionTime) {
@@ -139,13 +131,13 @@ namespace GameFramework.Skill.Trigers
             if (callData.GetParamNum() > 2) {
                 m_DeltaTime = long.Parse(callData.GetParamId(2));
             }
-            m_RealStartTime = StartTime;
+            
         }
         
         private long m_Interval = 100;
         private long m_DeltaTime = 50;
 
-        private long m_RealStartTime = 0;
+        
         private long m_LastKeepTime = 0;
     }
 
@@ -158,14 +150,12 @@ namespace GameFramework.Skill.Trigers
         {
             StopSectionIfTrigger copy = new StopSectionIfTrigger();
             copy.m_Type = m_Type;
-            
-            copy.m_RealStartTime = m_RealStartTime;
             return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
@@ -179,7 +169,7 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -189,10 +179,7 @@ namespace GameFramework.Skill.Trigers
             Scene scene = senderObj.Scene;
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             if (0 == m_Type.CompareTo("shield") && scene.EntityController.HaveShield(senderObj.ActorId)) {
@@ -204,6 +191,6 @@ namespace GameFramework.Skill.Trigers
 
         private string m_Type = "shield";
 
-        private long m_RealStartTime = 0;
+        
     }
 }

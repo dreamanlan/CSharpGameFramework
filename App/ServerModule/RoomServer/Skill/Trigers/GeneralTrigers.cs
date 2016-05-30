@@ -16,13 +16,12 @@ namespace GameFramework.Skill.Trigers
         {
             BornFinishTriger triger = new BornFinishTriger();
             
-            triger.m_RealStartTime = m_RealStartTime;
-            return triger;
+                        return triger;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -32,10 +31,7 @@ namespace GameFramework.Skill.Trigers
             Scene scene = senderObj.Scene;
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 scene.EntityController.BornFinish(senderObj.ActorId);
                 return false;
             } else {
@@ -51,10 +47,10 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
 
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// deadfinish(start_time);
@@ -65,13 +61,12 @@ namespace GameFramework.Skill.Trigers
         {
             DeadFinishTriger triger = new DeadFinishTriger();
             
-            triger.m_RealStartTime = m_RealStartTime;
-            return triger;
+                        return triger;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -81,10 +76,7 @@ namespace GameFramework.Skill.Trigers
             Scene scene = senderObj.Scene;
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 scene.EntityController.DeadFinish(senderObj.ActorId);
                 return false;
             } else {
@@ -100,10 +92,10 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
 
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// sendstorymessage(start_time,msg,arg1,arg2,arg3,...);
@@ -116,13 +108,12 @@ namespace GameFramework.Skill.Trigers
             
             copy.m_Msg = m_Msg;
             copy.m_Args.AddRange(m_Args);
-            copy.m_RealStartTime = m_RealStartTime;
-            return copy;
+                        return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -132,10 +123,7 @@ namespace GameFramework.Skill.Trigers
             Scene scene = senderObj.Scene;
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             List<object> args = new List<object>();
@@ -157,12 +145,12 @@ namespace GameFramework.Skill.Trigers
             for (int i = 2; i < num; ++i) {
                 m_Args.Add(callData.GetParamId(i));
             }
-            m_RealStartTime = StartTime;
+            
         }
 
         private string m_Msg = string.Empty;
         private List<string> m_Args = new List<string>();
 
-        private long m_RealStartTime = 0;
+        
     }
 }

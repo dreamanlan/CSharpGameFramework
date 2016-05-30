@@ -1,4 +1,4 @@
-cd bin
+cd App\ServerModule\ServerEnv\bin
 start "center" ServerCenter.exe bigworld
 start "center" ServerCenter.exe
 start "node" node.exe nodejs/app.js

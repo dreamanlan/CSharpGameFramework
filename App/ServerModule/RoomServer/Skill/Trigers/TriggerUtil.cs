@@ -93,76 +93,60 @@ namespace GameFramework.Skill.Trigers
         }
 
         //-----------------------------------------------------------------------------------------------------------
-
-        public static void CalcHitConfig(Dictionary<string, object> variables, TableConfig.Skill cfg, out Dictionary<string, object> result)
+        public static void CalcImpactConfig(SkillInstance instance, TableConfig.Skill cfg, out Dictionary<string, object> result)
         {
+            var variables = instance.LocalVariables;
             result = new Dictionary<string, object>(variables);
-            string hitEffect = RefixResourceByConfig("hitEffect", variables, cfg);
-            if (result.ContainsKey("hitEffect")) {
+            if (null != instance.EmitSkillInstance) {
+                result["emitskill"] = instance.EmitSkillInstance;
+            }
+            if (null != instance.HitSkillInstance) {
+                result["hitskill"] = instance.HitSkillInstance;
+            }
+            string hitEffect = SkillParamUtility.RefixResourceVariable("hitEffect", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(hitEffect)) {
                 result["hitEffect"] = hitEffect;
-            } else {
-                result.Add("hitEffect", hitEffect);
+            }
+            string hitEffect1 = SkillParamUtility.RefixResourceVariable("hitEffect1", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(hitEffect1)) {
+                result["hitEffect1"] = hitEffect1;
+            }
+            string hitEffect2 = SkillParamUtility.RefixResourceVariable("hitEffect2", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(hitEffect2)) {
+                result["hitEffect2"] = hitEffect2;
+            }
+            string hitEffect3 = SkillParamUtility.RefixResourceVariable("hitEffect3", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(hitEffect3)) {
+                result["hitEffect3"] = hitEffect3;
+            }
+            string emitEffect = SkillParamUtility.RefixResourceVariable("emitEffect", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(emitEffect)) {
+                result["emitEffect"] = emitEffect;
+            }
+            string emitEffect1 = SkillParamUtility.RefixResourceVariable("emitEffect1", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(emitEffect1)) {
+                result["emitEffect1"] = emitEffect1;
+            }
+            string emitEffect2 = SkillParamUtility.RefixResourceVariable("emitEffect2", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(emitEffect2)) {
+                result["emitEffect2"] = emitEffect2;
+            }
+            string emitEffect3 = SkillParamUtility.RefixResourceVariable("emitEffect3", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(emitEffect3)) {
+                result["emitEffect3"] = emitEffect3;
             }
         }
-
-        public static string RefixResourceByConfig(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        public static int RefixImpact(int impactId, Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
-            object val;
-            if (variables.TryGetValue(key, out val)) {
-                return val.ToString();
+            if (impactId <= 0) {
+                if (cfg.id == (int)PredefinedSkill.PredefinedSkillEnum.HitSkillId) {
+                    object idObj;
+                    if (variables.TryGetValue("impact", out idObj)) {
+                        impactId = (int)idObj;
+                    }
+                }
             }
-            string ret;
-            if (cfg.resources.TryGetValue(key, out ret)) {
-                return ret;
-            }
-            if (key.IndexOf("/") < 0)
-                return string.Empty;
-            return key;
-        }
-
-        public static string RefixStringVariable(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            object val;
-            if (variables.TryGetValue(key, out val)) {
-                return val.ToString();
-            }
-            return key;
-        }
-        public static int RefixIntVariable(string key, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            object val;
-            if (variables.TryGetValue(key, out val)) {
-                return (int)val;
-            }
-            return 0;
-        }
-        public static int RefixAnimTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            if (timeTag < 0)
-                return RefixIntVariable("hitAnimTime", variables, cfg);
-            else
-                return timeTag;
-        }
-        public static int RefixStartTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            int index = -timeTag - 1;
-            switch (index) {
-                case 0:
-                    return RefixIntVariable("hitEffectStartTime", variables, cfg);
-                case 1:
-                    return RefixIntVariable("hitAnimTime", variables, cfg);
-                case 2:
-                    return RefixIntVariable("hitDelayTime", variables, cfg);
-                default:
-                    return timeTag;
-            }
-        }
-        public static int RefixDeleteTime(int timeTag, Dictionary<string, object> variables, TableConfig.Skill cfg)
-        {
-            if (timeTag < 0)
-                return RefixIntVariable("hitEffectDeleteTime", variables, cfg);
-            else
-                return timeTag;
+            return impactId;
         }
         
         public static void AoeQuery(GfxSkillSenderInfo senderObj, SkillInstance instance, int senderId, int targetType, Vector3 relativeCenter, bool relativeToTarget, MyFunc<float, int, bool> callback)
@@ -195,7 +179,7 @@ namespace GameFramework.Skill.Trigers
                 angleOrLength = cfg.aoeAngleOrLength;
             }
             if (aoeType == (int)SkillAoeType.Circle || aoeType == (int)SkillAoeType.Sector) {
-                angleOrLength = Helper.DegreeToRadian(angleOrLength);
+                angleOrLength = Geometry.DegreeToRadian(angleOrLength);
                 scene.KdTree.Query(center.X, center.Y, center.Z, range, (float distSqr, KdTreeObject kdTreeObj) => {
                     int targetId = kdTreeObj.Object.GetId();
                     if (targetType == (int)SkillTargetType.Enemy && CharacterRelation.RELATION_ENEMY == scene.EntityController.GetRelation(senderId, targetId) ||

@@ -11,13 +11,12 @@ namespace GameFramework.Skill.Trigers
         {
             StorePosTrigger copy = new StorePosTrigger();
             
-            copy.m_RealStartTime = m_RealStartTime;
-            return copy;
+                        return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
@@ -25,7 +24,7 @@ namespace GameFramework.Skill.Trigers
             if (callData.GetParamNum() >= 1) {
                 StartTime = long.Parse(callData.GetParamId(0));
             }
-            m_RealStartTime = StartTime;
+            
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -34,10 +33,7 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             Vector3 pos = obj.GetMovementStateInfo().GetPosition3D();
@@ -45,7 +41,7 @@ namespace GameFramework.Skill.Trigers
             return false;
         }
 
-        private long m_RealStartTime = 0;
+        
     }
 
     public class RestorePosTrigger : AbstractSkillTriger
@@ -54,13 +50,12 @@ namespace GameFramework.Skill.Trigers
         {
             RestorePosTrigger copy = new RestorePosTrigger();
             
-            copy.m_RealStartTime = m_RealStartTime;
-            return copy;
+                        return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
@@ -68,7 +63,7 @@ namespace GameFramework.Skill.Trigers
             if (callData.GetParamNum() >= 1) {
                 StartTime = long.Parse(callData.GetParamId(0));
             }
-            m_RealStartTime = StartTime;
+            
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -77,10 +72,7 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             Vector3 old_pos = instance.CustomDatas.GetData<Vector3>();
@@ -90,6 +82,6 @@ namespace GameFramework.Skill.Trigers
             return false;
         }
 
-        private long m_RealStartTime = 0;
+        
     }
 }

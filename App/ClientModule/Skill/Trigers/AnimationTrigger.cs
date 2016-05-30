@@ -6,11 +6,11 @@ using SkillSystem;
 namespace GameFramework.Skill.Trigers
 {
     /// <summary>
-    /// animation(anim_name[,start_time]);
+    /// animation(anim_name[,start_time[,normalized_anim_start_time]]);
     /// 
     /// or
     /// 
-    /// animation(anim_name[,start_time])
+    /// animation(anim_name[,start_time[,normalized_anim_start_time]])
     /// {
     ///   speed(0.6, isEffectSkillTime);
     ///   playmode(1, crossFadeTime);
@@ -21,18 +21,18 @@ namespace GameFramework.Skill.Trigers
         protected override ISkillTriger OnClone()
         {
             AnimationTriger triger = new AnimationTriger();
-            triger.m_AnimName = m_AnimName;
-            
+            triger.m_AnimName.CopyFrom(m_AnimName);
+            triger.m_NormalizedAnimStartTime.CopyFrom(m_NormalizedAnimStartTime);
             triger.m_Speed = m_Speed;
             triger.m_IsEffectSkillTime = m_IsEffectSkillTime;
             triger.m_PlayMode = m_PlayMode;
             triger.m_CrossFadeTime = m_CrossFadeTime;
-            triger.m_RealStartTime = m_RealStartTime;
+            
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -40,19 +40,18 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
-                if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-                }
-                if (curSectionTime >= m_RealStartTime) {
+                if (null != senderObj.TrackEffectObj)
+                    obj = senderObj.TrackEffectObj;
+                if (curSectionTime >= StartTime) {
                     Animator animator = obj.GetComponent<Animator>();
                     if (null != animator) {
-                        string anim = TriggerUtil.RefixStringVariable(m_AnimName, instance.LocalVariables, senderObj.ConfigData);
+                        string anim = m_AnimName.Get(instance);
                         if (!string.IsNullOrEmpty(anim)) {
                             try {
                                 if (m_PlayMode == 0) {
-                                    animator.Play(anim);
+                                    animator.Play(anim, -1, m_NormalizedAnimStartTime.Get(instance));
                                 } else {
-                                    animator.CrossFade(anim, m_CrossFadeTime / 1000.0f);
+                                    animator.CrossFade(anim, m_CrossFadeTime / 1000.0f, -1, m_NormalizedAnimStartTime.Get(instance));
                                 }
                                 animator.speed = m_Speed;
                                 if (m_IsEffectSkillTime) {
@@ -73,19 +72,29 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
         }
-
+        protected override void OnInitProperties()
+        {
+            AddProperty("AnimName", () => { return m_AnimName.EditableValue; }, (object val) => { m_AnimName.EditableValue = val; });
+            AddProperty("NormalizedAnimStartTime", () => { return m_NormalizedAnimStartTime.EditableValue; }, (object val) => { m_NormalizedAnimStartTime.EditableValue = val; });
+        }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_AnimName = callData.GetParamId(0);
+                m_AnimName.Set(callData.GetParam(0));
             }
             if (num > 1) {
                 StartTime = long.Parse(callData.GetParamId(1));
+            } else {
+                StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            if (num > 2) {
+                m_NormalizedAnimStartTime.Set(callData.GetParam(2));
+            } else {
+                m_NormalizedAnimStartTime.Set(0.0f);
+            }
+            
         }
-
         protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
         {
             Dsl.CallData callData = funcData.Call;
@@ -114,14 +123,13 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        private string m_AnimName = "";
-
+        private SkillStringParam m_AnimName = new SkillStringParam();
+        private SkillNonStringParam<float> m_NormalizedAnimStartTime = new SkillNonStringParam<float>();
         private float m_Speed = 1.0f;
         private bool m_IsEffectSkillTime = false;
         private int m_PlayMode = 0;
         private long m_CrossFadeTime = 300;
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// animationspeed(start_time, speed [, is_effect_skill_time]);
@@ -134,12 +142,12 @@ namespace GameFramework.Skill.Trigers
             
             copy.m_Speed = m_Speed;
             copy.m_IsEffectSkillTime = m_IsEffectSkillTime;
-            copy.m_RealStartTime = m_RealStartTime;
+            
             return copy;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -151,15 +159,14 @@ namespace GameFramework.Skill.Trigers
             if (obj == null) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (null != senderObj.TrackEffectObj)
+                obj = senderObj.TrackEffectObj;
+            if (curSectionTime < StartTime) {
                 return true;
             }
             Animator animator = obj.GetComponent<Animator>();
             if (animator != null) {
-                float passed_ms = curSectionTime - m_RealStartTime;
+                float passed_ms = curSectionTime - StartTime;
                 if (passed_ms > 0) {
                     float old_speed = animator.speed;
                     float time = animator.playbackTime;
@@ -177,7 +184,10 @@ namespace GameFramework.Skill.Trigers
             }
             return false;
         }
-
+        protected override void OnInitProperties()
+        {
+            AddProperty("Speed", () => { return m_Speed; }, (object val) => { m_Speed = (float)Convert.ChangeType(val, typeof(float)); });
+        }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -188,12 +198,111 @@ namespace GameFramework.Skill.Trigers
             if (num >= 3) {
                 m_IsEffectSkillTime = bool.Parse(callData.GetParamId(2));
             }
-            m_RealStartTime = StartTime;
+            
+        }
+        private float m_Speed = 1.0f;
+        private bool m_IsEffectSkillTime = false;        
+    }
+    /// <summary>
+    /// animationparameter([start_time])
+    /// {
+    ///     float(name,val);
+    ///     int(name,val);
+    ///     bool(name,val);
+    ///     trigger(name,val);
+    /// };
+    /// </summary>
+    internal class AnimationParameterTriger : AbstractSkillTriger
+    {
+        protected override ISkillTriger OnClone()
+        {
+            AnimationParameterTriger triger = new AnimationParameterTriger();
+            triger.m_Params = new Dictionary<string, object>(m_Params);
+            return triger;
+        }
+        public override void Reset()
+        {
+
+        }
+        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
+            if (null == senderObj) return false;
+            GameObject obj = senderObj.GfxObj;
+            if (null != obj) {
+                if (null != senderObj.TrackEffectObj)
+                    obj = senderObj.TrackEffectObj;
+                if (curSectionTime >= StartTime) {
+                    Animator animator = obj.GetComponent<Animator>();
+                    if (null != animator) {
+                        foreach (var pair in m_Params) {
+                            string key = pair.Key;
+                            object val = pair.Value;
+                            if (val is int) {
+                                animator.SetInteger(key, (int)val);
+                            } else if (val is bool) {
+                                animator.SetBool(key, (bool)val);
+                            } else if (val is float) {
+                                animator.SetFloat(key, (float)val);
+                            } else if (val is string) {
+                                string v = val as string;
+                                if (v == "false")
+                                    animator.ResetTrigger(key);
+                                else
+                                    animator.SetTrigger(key);
+                            }
+                        }
+                    }
+                    return false;
+                } else {
+                    return true;
+                }
+            } else {
+                return false;
+            }
+        }
+        protected override void OnInitProperties()
+        {
         }
 
-        private float m_Speed = 1.0f;
-        private bool m_IsEffectSkillTime = false;
+        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        {
+            m_Params = new Dictionary<string, object>();
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                StartTime = long.Parse(callData.GetParamId(0));
+            } else {
+                StartTime = 0;
+            }
+        }
 
-        private long m_RealStartTime = 0;
+        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        {
+            Dsl.CallData callData = funcData.Call;
+            if (null != callData) {
+                Load(callData, dslSkillId);
+                for (int i = 0; i < funcData.Statements.Count; ++i) {
+                    Dsl.ISyntaxComponent statement = funcData.Statements[i];
+                    Dsl.CallData stCall = statement as Dsl.CallData;
+                    if (null != stCall) {
+                        string id = stCall.GetId();
+                        string key = stCall.GetParamId(0);
+                        object val = string.Empty;
+                        if (id == "int") {
+                            val = int.Parse(stCall.GetParamId(1));
+                        } else if (id == "float") {
+                            val = float.Parse(stCall.GetParamId(1));
+                        } else if (id == "bool") {
+                            val = bool.Parse(stCall.GetParamId(1));
+                        } else if (id == "trigger") {
+                            val = stCall.GetParamId(1);
+                        }
+                        m_Params.Add(key, val);
+                    }
+                }
+            }
+        }
+
+        private Dictionary<string, object> m_Params = null;
     }
 }

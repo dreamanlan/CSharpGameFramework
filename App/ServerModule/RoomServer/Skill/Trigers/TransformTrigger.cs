@@ -21,13 +21,12 @@ namespace GameFramework.Skill.Trigers
             copy.m_IsAttach = m_IsAttach;
             copy.m_IsUseTerrainHeight = m_IsUseTerrainHeight;
             copy.m_RandomRotate = m_RandomRotate;
-            copy.m_RealStartTime = m_RealStartTime;
             return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
 
         protected override void Load(Dsl.CallData callData, int dslSkillId)
@@ -49,7 +48,7 @@ namespace GameFramework.Skill.Trigers
             if (callData.GetParamNum() >= 8) {
                 m_RandomRotate = DslUtility.CalcVector3(callData.GetParam(7) as Dsl.CallData);
             }
-            m_RealStartTime = StartTime;
+            
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -58,10 +57,7 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             EntityInfo obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             switch (m_RelativeType) {
@@ -73,7 +69,7 @@ namespace GameFramework.Skill.Trigers
                     break;
                 case "RelativeWorld":
                     obj.GetMovementStateInfo().SetPosition(m_Postion);
-                    obj.GetMovementStateInfo().SetFaceDir(Helper.DegreeToRadian(m_Rotate.Y));
+                    obj.GetMovementStateInfo().SetFaceDir(Geometry.DegreeToRadian(m_Rotate.Y));
                     break;
             }
             if (m_IsUseTerrainHeight) {
@@ -102,7 +98,7 @@ namespace GameFramework.Skill.Trigers
             Vector3 world_pos = TriggerUtil.TransformPoint(owner.GetMovementStateInfo().GetPosition3D(), m_Postion, owner.GetMovementStateInfo().GetFaceDir());
             TriggerUtil.MoveObjTo(obj, world_pos);
             float dir = obj.GetMovementStateInfo().GetFaceDir();
-            float radian = (dir + Helper.DegreeToRadian((Helper.Random.NextFloat() - 0.5f) * m_RandomRotate.Y)) % (float)(Math.PI * 2);
+            float radian = (dir + Geometry.DegreeToRadian((Helper.Random.NextFloat() - 0.5f) * m_RandomRotate.Y)) % (float)(Math.PI * 2);
             obj.GetMovementStateInfo().SetFaceDir(radian);
         }
 
@@ -111,7 +107,7 @@ namespace GameFramework.Skill.Trigers
             Vector3 new_pos = TriggerUtil.TransformPoint(obj.GetMovementStateInfo().GetPosition3D(), m_Postion, obj.GetMovementStateInfo().GetFaceDir());
             TriggerUtil.MoveObjTo(obj, new_pos);
             float dir = obj.GetMovementStateInfo().GetFaceDir();
-            float radian = (dir + Helper.DegreeToRadian((Helper.Random.NextFloat() - 0.5f) * m_Rotate.Y)) % (float)(Math.PI * 2);
+            float radian = (dir + Geometry.DegreeToRadian((Helper.Random.NextFloat() - 0.5f) * m_Rotate.Y)) % (float)(Math.PI * 2);
             obj.GetMovementStateInfo().SetFaceDir(radian);
         }
 
@@ -123,7 +119,7 @@ namespace GameFramework.Skill.Trigers
         private bool m_IsUseTerrainHeight = false;
         private Vector3 m_RandomRotate = Vector3.Zero;
 
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// teleport(starttime, offset_x, offset_y, offset_z);
@@ -135,13 +131,12 @@ namespace GameFramework.Skill.Trigers
             TeleportTrigger copy = new TeleportTrigger();
             
             copy.m_RelativeOffset = m_RelativeOffset;
-            copy.m_RealStartTime = m_RealStartTime;
             return copy;
         }
 
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
 
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -152,10 +147,7 @@ namespace GameFramework.Skill.Trigers
             if (obj == null) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             EntityInfo targetObj = senderObj.TargetGfxObj;
@@ -177,11 +169,11 @@ namespace GameFramework.Skill.Trigers
                 m_RelativeOffset.Y = float.Parse(callData.GetParamId(2));
                 m_RelativeOffset.Z = float.Parse(callData.GetParamId(3));
             }
-            m_RealStartTime = StartTime;
+            
         }
 
         private Vector3 m_RelativeOffset = Vector3.Zero;
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// follow(start_time, offset_x, offset_y, offset_z, duration);
@@ -194,12 +186,11 @@ namespace GameFramework.Skill.Trigers
             
             triger.m_RelativeOffset = m_RelativeOffset;
             triger.m_DurationTime = m_DurationTime;
-            triger.m_RealStartTime = m_RealStartTime;
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -209,13 +200,10 @@ namespace GameFramework.Skill.Trigers
             if (obj == null) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
-            if (m_RealStartTime + m_DurationTime < curSectionTime) {
+            if (StartTime + m_DurationTime < curSectionTime) {
                 return false;
             }
             EntityInfo targetObj = senderObj.TargetGfxObj;
@@ -238,12 +226,12 @@ namespace GameFramework.Skill.Trigers
                 m_RelativeOffset.Z = float.Parse(callData.GetParamId(3));
                 m_DurationTime = long.Parse(callData.GetParamId(4));
             }
-            m_RealStartTime = StartTime;
+            
         }
 
         private Vector3 m_RelativeOffset = Vector3.Zero;
         private long m_DurationTime = 1000;
 
-        private long m_RealStartTime = 0;
+        
     }
 }

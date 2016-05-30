@@ -68,12 +68,26 @@ namespace GameFramework
             }
             return id;
         }
-        public List<VisualSkillPropertyInfo> GetVisualSkillPropertyInfos(int skillId)
+        public List<InplaceSkillPropertyInfo> GetInplaceSkillPropertyInfos(int skillId)
         {
-            List<VisualSkillPropertyInfo> ret = null;
+            List<InplaceSkillPropertyInfo> ret = null;
             SkillInstance inst = GfxSkillSystem.Instance.FindSkillInstanceForSkillViewer(skillId);
             if (null != inst) {
                 ret = inst.CollectProperties();
+                if (null != inst.EmitSkillInstance) {
+                    SkillInstance iinst = GfxSkillSystem.Instance.FindInnerSkillInstanceForSkillViewer(PredefinedSkill.Instance.EmitSkillCfg.id, inst.EmitSkillInstance);
+                    if (null != iinst) {
+                        ret.Add(new InplaceSkillPropertyInfo { Group = "InnerSkillInstance", Key = "emitskill" });
+                        ret.AddRange(iinst.CollectProperties());
+                    }
+                }
+                if (null != inst.HitSkillInstance) {
+                    SkillInstance iinst = GfxSkillSystem.Instance.FindInnerSkillInstanceForSkillViewer(PredefinedSkill.Instance.HitSkillCfg.id, inst.HitSkillInstance);
+                    if (null != iinst) {
+                        ret.Add(new InplaceSkillPropertyInfo { Group = "InnerSkillInstance", Key = "hitskill" });
+                        ret.AddRange(iinst.CollectProperties());
+                    }
+                }
             }
             return ret;
         }

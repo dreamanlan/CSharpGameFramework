@@ -16,15 +16,13 @@ namespace GameFramework.Skill.Trigers
             
             copy.m_RelativeCenter = m_RelativeCenter;
             copy.m_RelativeToTarget = m_RelativeToTarget;
-            copy.m_RealStartTime = m_RealStartTime;
+            
             return copy;
         }
-
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
@@ -33,10 +31,7 @@ namespace GameFramework.Skill.Trigers
             if (obj == null) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
@@ -45,6 +40,7 @@ namespace GameFramework.Skill.Trigers
                 impactId = senderObj.ConfigData.impactToSelf;
             else
                 impactId = senderObj.ConfigData.impactToTarget;
+            impactId = TriggerUtil.RefixImpact(impactId, instance.LocalVariables, senderObj.ConfigData);
             int senderId;
             int targetId;
             EntityController.Instance.CalcSenderAndTarget(senderObj, out senderId, out targetId);
@@ -59,7 +55,7 @@ namespace GameFramework.Skill.Trigers
                 });
             }
             Dictionary<string, object> args;
-            TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+            TriggerUtil.CalcImpactConfig(instance, senderObj.ConfigData, out args);
             EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
             return false;
         }
@@ -76,13 +72,11 @@ namespace GameFramework.Skill.Trigers
                 m_RelativeCenter.z = float.Parse(callData.GetParamId(3));
                 m_RelativeToTarget = callData.GetParamId(4) == "true";
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private Vector3 m_RelativeCenter = Vector3.zero;
         private bool m_RelativeToTarget = false;
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// aoeimpact(start_time, center_x, center_y, center_z, relativeToTarget);
@@ -95,12 +89,12 @@ namespace GameFramework.Skill.Trigers
             
             triger.m_RelativeCenter = m_RelativeCenter;
             triger.m_RelativeToTarget = m_RelativeToTarget;
-            triger.m_RealStartTime = m_RealStartTime;
+            
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -110,10 +104,7 @@ namespace GameFramework.Skill.Trigers
             if (null == obj) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
                 int impactId = 0;
                 if (targetType == (int)SkillTargetType.Self)
@@ -127,10 +118,12 @@ namespace GameFramework.Skill.Trigers
                     senderId = senderObj.TargetActorId;
                 }
                 int ct = 0;
+                List<int> targetIds = new List<int>();
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                     Dictionary<string, object> args;
-                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                    TriggerUtil.CalcImpactConfig(instance, senderObj.ConfigData, out args);
                     EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, args);
+                    targetIds.Add(objId);
                     ++ct;
                     if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                         return true;
@@ -154,13 +147,11 @@ namespace GameFramework.Skill.Trigers
                 m_RelativeCenter.z = float.Parse(callData.GetParamId(3));
                 m_RelativeToTarget = callData.GetParamId(4) == "true";
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private Vector3 m_RelativeCenter = Vector3.zero;
         private bool m_RelativeToTarget = false;
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// chainaoeimpact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
@@ -173,9 +164,9 @@ namespace GameFramework.Skill.Trigers
             
             triger.m_RelativeCenter = m_RelativeCenter;
             triger.m_RelativeToTarget = m_RelativeToTarget;
-            triger.m_DurationTime = m_DurationTime;
-            triger.m_IntervalTime = m_IntervalTime;
-            triger.m_RealStartTime = m_RealStartTime;
+            triger.m_DurationTime.CopyFrom(m_DurationTime);
+            triger.m_IntervalTime.CopyFrom(m_IntervalTime);
+            
             return triger;
         }
         public override void Reset()
@@ -186,7 +177,7 @@ namespace GameFramework.Skill.Trigers
             m_CurTargetIndex = 0;
             m_SenderId = 0;
             m_ImpactId = 0;
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -196,18 +187,16 @@ namespace GameFramework.Skill.Trigers
             if (obj == null) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
-            if (curSectionTime > m_RealStartTime + m_DurationTime) {
+            long durationTime = m_DurationTime.Get(instance);
+            long intervalTime = m_IntervalTime.Get(instance);
+            if (curSectionTime > StartTime + durationTime) {
                 return false;
             }
-            if (m_LastTime + m_IntervalTime < curSectionTime) {
+            if (m_LastTime + intervalTime < curSectionTime) {
                 m_LastTime = curSectionTime;
-
                 int ct = m_Targets.Count;
                 if (ct <= 0) {
                     int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
@@ -225,7 +214,7 @@ namespace GameFramework.Skill.Trigers
                         return true;
                     });
                     var vals = m_SortedTargets.Values;
-                    if (vals.Count > senderObj.ConfigData.maxAoeTargetCount) {
+                    if (senderObj.ConfigData.maxAoeTargetCount > 0 && vals.Count > senderObj.ConfigData.maxAoeTargetCount) {
                         var enumerator = vals.GetEnumerator();
                         for (int ix = 0; ix < senderObj.ConfigData.maxAoeTargetCount; ++ix) {
                             enumerator.MoveNext();
@@ -239,7 +228,7 @@ namespace GameFramework.Skill.Trigers
                 }
                 if (ct > 0 && m_CurTargetIndex < ct) {
                     Dictionary<string, object> args;
-                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                    TriggerUtil.CalcImpactConfig(instance, senderObj.ConfigData, out args);
                     EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, m_SenderId, m_Targets[m_CurTargetIndex], m_ImpactId, args);
                     ++m_CurTargetIndex;
                 } else {
@@ -248,7 +237,11 @@ namespace GameFramework.Skill.Trigers
             }
             return true;
         }
-
+        protected override void OnInitProperties()
+        {
+            AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
+            AddProperty("Interval", () => { return m_IntervalTime.EditableValue; }, (object val) => { m_IntervalTime.EditableValue = val; });
+        }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -258,26 +251,22 @@ namespace GameFramework.Skill.Trigers
                 m_RelativeCenter.y = float.Parse(callData.GetParamId(2));
                 m_RelativeCenter.z = float.Parse(callData.GetParamId(3));
                 m_RelativeToTarget = callData.GetParamId(4) == "true";
-                m_DurationTime = long.Parse(callData.GetParamId(5));
-                m_IntervalTime = long.Parse(callData.GetParamId(6));
+                m_DurationTime.Set(callData.GetParam(5));
+                m_IntervalTime.Set(callData.GetParam(6));
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private Vector3 m_RelativeCenter = Vector3.zero;
         private bool m_RelativeToTarget = false;
-        private long m_DurationTime = 0;
-        private long m_IntervalTime = 0;
-
-        private long m_RealStartTime = 0;
-
+        private SkillNonStringParam<long> m_DurationTime = new SkillNonStringParam<long>();
+        private SkillNonStringParam<long> m_IntervalTime = new SkillNonStringParam<long>();
+        
         private long m_LastTime = 0;
         private int m_SenderId = 0;
         private int m_ImpactId = 0;
         private SortedDictionary<int, int> m_SortedTargets = new SortedDictionary<int, int>();
         private List<int> m_Targets = new List<int>();
         private int m_CurTargetIndex = 0;
-
         private const int c_MaxObjectId = 1000;
     }
     /// <summary>
@@ -291,18 +280,16 @@ namespace GameFramework.Skill.Trigers
             
             copy.m_RelativeCenter = m_RelativeCenter;
             copy.m_RelativeToTarget = m_RelativeToTarget;
-            copy.m_DurationTime = m_DurationTime;
-            copy.m_IntervalTime = m_IntervalTime;
-            copy.m_RealStartTime = m_RealStartTime;
+            copy.m_DurationTime.CopyFrom(m_DurationTime);
+            copy.m_IntervalTime.CopyFrom(m_IntervalTime);
+            
             return copy;
         }
-
         public override void Reset()
         {
             m_LastTime = 0;
-            m_RealStartTime = StartTime;
+            
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
@@ -311,26 +298,22 @@ namespace GameFramework.Skill.Trigers
             if (obj == null) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            long durationTime = m_DurationTime;
-            long intervalTime = m_IntervalTime;
+            long durationTime = m_DurationTime.Get(instance);
+            long intervalTime = m_IntervalTime.Get(instance);
             if (durationTime <= 0) {
-                durationTime = (long)senderObj.ConfigData.duration;
+                durationTime = senderObj.ConfigData.duration;
             }
             if (intervalTime <= 0) {
-                intervalTime = (long)senderObj.ConfigData.interval;
+                intervalTime = senderObj.ConfigData.interval;
             }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
-            if (curSectionTime > m_RealStartTime + durationTime) {
+            if (curSectionTime > StartTime + durationTime) {
                 return false;
             }
             if (m_LastTime + intervalTime < curSectionTime) {
                 m_LastTime = curSectionTime;
-
                 int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
                 int impactId = 0;
                 if (targetType == (int)SkillTargetType.Self)
@@ -351,12 +334,16 @@ namespace GameFramework.Skill.Trigers
                     });
                 }
                 Dictionary<string, object> args;
-                TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                TriggerUtil.CalcImpactConfig(instance, senderObj.ConfigData, out args);
                 EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
             }
             return true;
         }
-
+        protected override void OnInitProperties()
+        {
+            AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
+            AddProperty("Interval", () => { return m_IntervalTime.EditableValue; }, (object val) => { m_IntervalTime.EditableValue = val; });
+        }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -366,19 +353,17 @@ namespace GameFramework.Skill.Trigers
                 m_RelativeCenter.y = float.Parse(callData.GetParamId(2));
                 m_RelativeCenter.z = float.Parse(callData.GetParamId(3));
                 m_RelativeToTarget = callData.GetParamId(4) == "true";
-                m_DurationTime = long.Parse(callData.GetParamId(5));
-                m_IntervalTime = long.Parse(callData.GetParamId(6));
+                m_DurationTime.Set(callData.GetParam(5));
+                m_IntervalTime.Set(callData.GetParam(6));
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private Vector3 m_RelativeCenter = Vector3.zero;
         private bool m_RelativeToTarget = false;
-        private long m_DurationTime = 0;
-        private long m_IntervalTime = 0;
-
+        private SkillNonStringParam<long> m_DurationTime = new SkillNonStringParam<long>();
+        private SkillNonStringParam<long> m_IntervalTime = new SkillNonStringParam<long>();
         private long m_LastTime = 0;
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// periodicallyaoeimpact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
@@ -391,15 +376,15 @@ namespace GameFramework.Skill.Trigers
             
             triger.m_RelativeCenter = m_RelativeCenter;
             triger.m_RelativeToTarget = m_RelativeToTarget;
-            triger.m_DurationTime = m_DurationTime;
-            triger.m_IntervalTime = m_IntervalTime;
-            triger.m_RealStartTime = m_RealStartTime;
+            triger.m_DurationTime.CopyFrom(m_DurationTime);
+            triger.m_IntervalTime.CopyFrom(m_IntervalTime);
+            
             return triger;
         }
         public override void Reset()
         {
             m_LastTime = 0;
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -409,18 +394,16 @@ namespace GameFramework.Skill.Trigers
             if (obj == null) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
-            if (curSectionTime > m_RealStartTime + m_DurationTime) {
+            long duration = m_DurationTime.Get(instance);
+            long interval = m_IntervalTime.Get(instance);
+            if (curSectionTime > StartTime + duration) {
                 return false;
             }
-            if (m_LastTime + m_IntervalTime < curSectionTime) {
+            if (m_LastTime + interval < curSectionTime) {
                 m_LastTime = curSectionTime;
-
                 int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
                 int impactId = 0;
                 if (targetType == (int)SkillTargetType.Self)
@@ -434,10 +417,12 @@ namespace GameFramework.Skill.Trigers
                     senderId = senderObj.TargetActorId;
                 }
                 int ct = 0;
+                List<int> targetIds = new List<int>();
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                     Dictionary<string, object> args;
-                    TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                    TriggerUtil.CalcImpactConfig(instance, senderObj.ConfigData, out args);
                     EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, args);
+                    targetIds.Add(objId);
                     ++ct;
                     if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                         return true;
@@ -448,7 +433,11 @@ namespace GameFramework.Skill.Trigers
             }
             return true;
         }
-
+        protected override void OnInitProperties()
+        {
+            AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
+            AddProperty("Interval", () => { return m_IntervalTime.EditableValue; }, (object val) => { m_IntervalTime.EditableValue = val; });
+        }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -458,32 +447,29 @@ namespace GameFramework.Skill.Trigers
                 m_RelativeCenter.y = float.Parse(callData.GetParamId(2));
                 m_RelativeCenter.z = float.Parse(callData.GetParamId(3));
                 m_RelativeToTarget = callData.GetParamId(4) == "true";
-                m_DurationTime = long.Parse(callData.GetParamId(5));
-                m_IntervalTime = long.Parse(callData.GetParamId(6));
+                m_DurationTime.Set(callData.GetParam(5));
+                m_IntervalTime.Set(callData.GetParam(6));
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private Vector3 m_RelativeCenter = Vector3.zero;
         private bool m_RelativeToTarget = false;
-        private long m_DurationTime = 0;
-        private long m_IntervalTime = 0;
+        private SkillNonStringParam<long> m_DurationTime = new SkillNonStringParam<long>();
+        private SkillNonStringParam<long> m_IntervalTime = new SkillNonStringParam<long>();
         private long m_LastTime = 0;
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
-    /// track(speed[, start_time]);
+    /// track(trackBone[,start_time[,duration[,not_move]]]);
     /// </summary>
     internal class TrackTriger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
             TrackTriger triger = new TrackTriger();
-            triger.m_Speed = m_Speed;
-            
-            triger.m_RealStartTime = m_RealStartTime;
-            triger.m_RealSpeed = m_RealSpeed;
+            triger.m_TrackBone.CopyFrom(m_TrackBone);
+            triger.m_Duration.CopyFrom(m_Duration);
+            triger.m_NotMove = m_NotMove;
             return triger;
         }
         public override void Reset()
@@ -491,8 +477,7 @@ namespace GameFramework.Skill.Trigers
             m_IsStarted = false;
             m_Effect = null;
             m_BoneTransform = null;
-            m_RealStartTime = StartTime;
-            m_RealSpeed = m_Speed;
+            m_Lifetime = 0;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -505,16 +490,11 @@ namespace GameFramework.Skill.Trigers
             }
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
-                if (m_RealStartTime < 0) {
-                    m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-                }
-                if (curSectionTime >= m_RealStartTime) {
-
+                if (curSectionTime >= StartTime) {
                     if (!m_IsStarted) {
                         m_IsStarted = true;
-
                         Vector3 dest;
-                        string trackBone = TriggerUtil.RefixStringVariable("hitEffectBone", instance.LocalVariables, senderObj.ConfigData);
+                        string trackBone = m_TrackBone.Get(instance);
                         m_BoneTransform = Utility.FindChildRecursive(obj.transform, trackBone);
                         if (null != m_BoneTransform) {
                             dest = m_BoneTransform.position;
@@ -523,19 +503,23 @@ namespace GameFramework.Skill.Trigers
                             dest.y += 1.5f;
                             LogSystem.Warn("[skill:{0} dsl skill id:{1}] track bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, trackBone);
                         }
-
                         m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
                         dest = Utility.FrontOfTarget(m_StartPos, dest, 0.1f);
-
-                        if (m_RealSpeed < Geometry.c_FloatPrecision) {
-                            object speedObj;
-                            if (instance.LocalVariables.TryGetValue("emitSpeed", out speedObj)) {
-                                m_RealSpeed = (float)speedObj;
-                            }
+                        object speedObj;
+                        if (instance.LocalVariables.TryGetValue("emitSpeed", out speedObj)) {
+                            m_Speed = (float)speedObj;
+                        } else {
+                            return false;
                         }
                         m_Lifetime = 1.0f;
-                        if (m_RealSpeed >= Geometry.c_FloatPrecision) {
-                            m_Lifetime = (dest - m_StartPos).magnitude / m_RealSpeed;
+                        if (m_Speed >= Geometry.c_FloatPrecision) {
+                            m_Lifetime = (dest - m_StartPos).magnitude / m_Speed;
+                        }
+                        float duration = m_Duration.Get(instance);
+                        if (duration > 0) {
+                            float d = duration / 1000.0f;
+                            if (m_Lifetime < d)
+                                m_Lifetime = d;
                         }
                         Quaternion dir;
                         object dirObj;
@@ -551,14 +535,13 @@ namespace GameFramework.Skill.Trigers
                         } else {
                             scale = Vector3.one;
                         }
-
                         Vector3 lookDir = dest - m_StartPos;
                         Quaternion q = Quaternion.LookRotation(lookDir);
                         m_ControlPos = m_StartPos + Vector3.Scale(q * dir * Vector3.forward, scale * lookDir.magnitude * 0.5f);
-
-                        string effectPath = TriggerUtil.RefixResourceByConfig("emitEffect", instance.LocalVariables, senderObj.ConfigData);
+                        string effectPath = SkillParamUtility.RefixResourceVariable("emitEffect", instance, senderObj.ConfigData.resources);
                         m_Effect = ResourceSystem.Instance.NewObject(effectPath, m_Lifetime) as GameObject;
                         if (null != m_Effect) {
+                            senderObj.TrackEffectObj = m_Effect;
                             TriggerUtil.SetObjVisible(m_Effect, true);
                             m_Effect.SetActive(false);
                             m_Effect.transform.position = m_StartPos;
@@ -572,28 +555,31 @@ namespace GameFramework.Skill.Trigers
                             }
                         }
                     } else if (null != m_Effect) {
-                        Vector3 dest;
-                        if (null != m_BoneTransform) {
-                            dest = m_BoneTransform.position;
-                        } else {
-                            dest = obj.transform.position;
-                            dest.y += 1.5f;
+                        if (!m_NotMove) {
+                            Vector3 dest;
+                            if (null != m_BoneTransform) {
+                                dest = m_BoneTransform.position;
+                            } else {
+                                dest = obj.transform.position;
+                                dest.y += 1.5f;
+                            }
+                            dest = Utility.FrontOfTarget(m_StartPos, dest, 0.1f);
+                            //m_Effect.transform.position = Vector3.MoveTowards(m_Effect.transform.position, dest, m_RealSpeed * Time.deltaTime);
+                            m_Effect.transform.position = Utility.GetBezierPoint(m_StartPos, m_ControlPos, dest, (curSectionTime - StartTime) / 1000.0f / m_Lifetime);
+                            if ((dest - m_Effect.transform.position).sqrMagnitude <= 0.01f) {
+                                m_HitEffectRotation = Quaternion.LookRotation(m_StartPos - dest);
+                                Dictionary<string, object> args;
+                                TriggerUtil.CalcImpactConfig(instance, senderObj.ConfigData, out args);
+                                if (args.ContainsKey("hitEffectRotation"))
+                                    args["hitEffectRotation"] = m_HitEffectRotation;
+                                else
+                                    args.Add("hitEffectRotation", m_HitEffectRotation);
+                                EntityController.Instance.TrackSendImpact(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, args);
+                                int senderId, targetId;
+                                EntityController.Instance.CalcSenderAndTarget(senderObj, out senderId, out targetId);
+                            }
                         }
-                        dest = Utility.FrontOfTarget(m_StartPos, dest, 0.1f);
-                        //m_Effect.transform.position = Vector3.MoveTowards(m_Effect.transform.position, dest, m_RealSpeed * Time.deltaTime);
-                        m_Effect.transform.position = Utility.GetBezierPoint(m_StartPos, m_ControlPos, dest, (curSectionTime - m_RealStartTime) / 1000.0f / m_Lifetime);
-
-                        if ((dest - m_Effect.transform.position).sqrMagnitude <= 0.01f) {
-                            m_HitEffectRotation = Quaternion.LookRotation(m_StartPos - dest);
-                            Dictionary<string, object> args;
-                            TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
-                            if (args.ContainsKey("hitEffectRotation"))
-                                args["hitEffectRotation"] = m_HitEffectRotation;
-                            else
-                                args.Add("hitEffectRotation", m_HitEffectRotation);
-                            EntityController.Instance.TrackSendImpact(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, args);
-
-                            
+                        if (curSectionTime > StartTime + m_Lifetime * 1000) {
                             m_Effect.SetActive(false);
                             ResourceSystem.Instance.RecycleObject(m_Effect);
                             m_Effect = null;
@@ -615,28 +601,35 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
         }
+        protected override void OnInitProperties()
+        {
+            AddProperty("TrackBone", () => { return m_TrackBone.EditableValue; }, (object val) => { m_TrackBone.EditableValue = val; });
+            AddProperty("Duration", () => { return m_Duration.EditableValue; }, (object val) => { m_Duration.EditableValue = val; });
+        }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
-            int num = callData.GetParamNum();
+            int num = callData.GetParamNum(); 
             if (num > 0) {
-                m_Speed = float.Parse(callData.GetParamId(0));
+                m_TrackBone.Set(callData.GetParam(0));
             }
             if (num > 1) {
                 StartTime = long.Parse(callData.GetParamId(1));
             }
-            m_RealStartTime = StartTime;
-            m_RealSpeed = m_Speed;
+            if (num > 2) {
+                m_Duration.Set(callData.GetParam(2));
+            }            
+            if (num > 3) {
+                m_NotMove = callData.GetParamId(3) == "true";
+            }            
         }
-
-        private float m_Speed = 10f;
-
-        private long m_RealStartTime = 0;
-        private float m_RealSpeed = 10f;
-
+        private SkillStringParam m_TrackBone = new SkillStringParam();
+        private SkillNonStringParam<long> m_Duration = new SkillNonStringParam<long>();
+        private bool m_NotMove = false;
+        
         private Vector3 m_StartPos = Vector3.zero;
         private Vector3 m_ControlPos = Vector3.zero;
+        private float m_Speed = 10f;
         private float m_Lifetime = 1.0f;
-
         private bool m_IsStarted = false;
         private Quaternion m_HitEffectRotation;
         private GameObject m_Effect;
@@ -652,17 +645,17 @@ namespace GameFramework.Skill.Trigers
             ColliderImpactTriger triger = new ColliderImpactTriger();
             
             triger.m_RelativeCenter = m_RelativeCenter;
-            triger.m_DurationTime = m_DurationTime;
+            triger.m_DurationTime.CopyFrom(m_DurationTime);
             triger.m_FinishOnCollide = m_FinishOnCollide;
             triger.m_SingleHit = m_SingleHit;
-            triger.m_RealStartTime = m_RealStartTime;
+            
             return triger;
         }
         public override void Reset()
         {
             m_IsStarted = false;
             m_LastPos = Vector3.zero;
-            m_RealStartTime = StartTime;
+            
             m_Targets.Clear();
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
@@ -673,10 +666,9 @@ namespace GameFramework.Skill.Trigers
             if (obj == null) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (null != senderObj.TrackEffectObj)
+                obj = senderObj.TrackEffectObj;
+            if (curSectionTime < StartTime) {
                 return true;
             }
             int impactId = 0;
@@ -691,25 +683,25 @@ namespace GameFramework.Skill.Trigers
             } else {
                 senderId = senderObj.TargetActorId;
             }
-
             float range = 0;
             TableConfig.Skill cfg = senderObj.ConfigData;
             if (null != cfg) {
                 range = cfg.aoeSize;
             }
-            float angle = Utility.DegreeToRadian(obj.transform.localRotation.eulerAngles.y);
+            long duration = m_DurationTime.Get(instance);
+            float angle = Geometry.DegreeToRadian(obj.transform.localRotation.eulerAngles.y);
             Vector3 center = obj.transform.TransformPoint(m_RelativeCenter);
             if (!m_IsStarted) {
                 m_IsStarted = true;
                 m_LastPos = center;
-            } else if ((center - m_LastPos).sqrMagnitude >= 0.25f || m_RealStartTime + m_DurationTime < curSectionTime) {
+            } else if ((center - m_LastPos).sqrMagnitude >= 0.25f || StartTime + duration < curSectionTime) {
                 Vector3 c = (m_LastPos + center) / 2;
                 Vector3 angleu = center - m_LastPos;
                 float queryRadius = range + angleu.magnitude / 2;
-
                 int ct = 0;
                 bool isCollide = false;
-                ClientModule.Instance.KdTree.Query(c.x, c.y, c.z, queryRadius, (float distSqr, KdTreeObject kdTreeObj) => {
+                List<int> targetIds = new List<int>();
+                GameFramework.ClientModule.Instance.KdTree.Query(c.x, c.y, c.z, queryRadius, (float distSqr, GameFramework.KdTreeObject kdTreeObj) => {
                     int targetId = kdTreeObj.Object.GetId();
                     if (targetType == (int)SkillTargetType.Enemy && CharacterRelation.RELATION_ENEMY == EntityController.Instance.GetRelation(senderId, targetId) ||
                         targetType == (int)SkillTargetType.Friend && CharacterRelation.RELATION_FRIEND == EntityController.Instance.GetRelation(senderId, targetId)) {
@@ -719,8 +711,9 @@ namespace GameFramework.Skill.Trigers
                             if (!m_SingleHit || !m_Targets.Contains(targetId)) {
                                 m_Targets.Add(targetId);
                                 Dictionary<string, object> args;
-                                TriggerUtil.CalcHitConfig(instance.LocalVariables, senderObj.ConfigData, out args);
+                                TriggerUtil.CalcImpactConfig(instance, senderObj.ConfigData, out args);
                                 EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
+                                targetIds.Add(targetId);
                                 ++ct;
                                 if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                                     return true;
@@ -732,20 +725,21 @@ namespace GameFramework.Skill.Trigers
                     }
                     return true;
                 });
-
                 m_LastPos = center;
-
                 if (isCollide && m_FinishOnCollide) {
                     return false;
                 }
             }
-            if (m_RealStartTime + m_DurationTime < curSectionTime) {
+            if (StartTime + duration < curSectionTime) {
                 instance.StopCurSection();
                 return false;
             }
             return true;
         }
-
+        protected override void OnInitProperties()
+        {
+            AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
+        }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -754,7 +748,7 @@ namespace GameFramework.Skill.Trigers
                 m_RelativeCenter.x = float.Parse(callData.GetParamId(1));
                 m_RelativeCenter.y = float.Parse(callData.GetParamId(2));
                 m_RelativeCenter.z = float.Parse(callData.GetParamId(3));
-                m_DurationTime = long.Parse(callData.GetParamId(4));
+                m_DurationTime.Set(callData.GetParam(4));
             }
             if (num >= 6) {
                 m_FinishOnCollide = callData.GetParamId(5) == "true";
@@ -762,16 +756,13 @@ namespace GameFramework.Skill.Trigers
             if (num >= 7) {
                 m_SingleHit = callData.GetParamId(6) == "true";
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private Vector3 m_RelativeCenter = Vector3.zero;
-        private long m_DurationTime = 1000;
+        private SkillNonStringParam<long> m_DurationTime = new SkillNonStringParam<long>();
         private bool m_FinishOnCollide = false;
         private bool m_SingleHit = false;
-
-        private long m_RealStartTime = 0;
-
+        
         private bool m_IsStarted = false;
         private Vector3 m_LastPos = Vector3.zero;
         private HashSet<int> m_Targets = new HashSet<int>();

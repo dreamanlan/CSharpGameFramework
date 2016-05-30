@@ -5,8 +5,48 @@ namespace GameFramework
 {
     public class Converter
     {
-        private static string[] s_ListSplitString = new string[] { ",", " ", ", ", "|" };
+        private static string[] s_ListSplitString = new string[] { ";", " ", "|" };
 
+        public static string IntList2String(params int[] vals)
+        {
+            return IntList2String((IList<int>)vals);
+        }
+        public static string IntList2String(IList<int> vals)
+        {
+            if (vals.Count <= 0)
+                return string.Empty;
+            string[] strVals = new string[vals.Count];
+            for (int i = 0; i < vals.Count; ++i) {
+                strVals[i] = vals[i].ToString();
+            }
+            return StringList2String(strVals);
+        }
+        public static string FloatList2String(params float[] vals)
+        {
+            return FloatList2String((IList<float>)vals);
+        }
+        public static string FloatList2String(IList<float> vals)
+        {
+            if (vals.Count <= 0)
+                return string.Empty;
+            string[] strVals = new string[vals.Count];
+            for (int i = 0; i < vals.Count; ++i) {
+                strVals[i] = vals[i].ToString();
+            }
+            return StringList2String(strVals);
+        }
+        public static string StringList2String(List<string> vals)
+        {
+            string[] strVals = new string[vals.Count];
+            for (int i = 0; i < vals.Count; ++i) {
+                strVals[i] = vals[i];
+            }
+            return StringList2String(strVals);
+        }
+        public static string StringList2String(params string[] vals)
+        {
+            return string.Join(";", vals);
+        }
         public static ScriptRuntime.Vector2 ConvertVector2D(string vec)
         {
             try {

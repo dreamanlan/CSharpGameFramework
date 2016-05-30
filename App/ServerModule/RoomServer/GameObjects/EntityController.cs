@@ -441,10 +441,10 @@ namespace GameFramework
             if(null!=entity){
                 SkillInfo skillInfo = entity.GetSkillStateInfo().GetSkillInfoById(skillId);
                 GfxSkillSenderInfo senderInfo;
-                SkillInstance skillInst = m_Scene.SkillSystem.GetSkillInstance(srcObjId,skillId,0,out senderInfo);
+                SkillInstance skillInst = m_Scene.SkillSystem.FindActiveSkillInstance(srcObjId,skillId,0,out senderInfo);
                 if(null!=skillInst){
-                    Dictionary<string, object> args;
-                    Skill.Trigers.TriggerUtil.CalcHitConfig(skillInst.LocalVariables, senderInfo.ConfigData, out args);
+                    Dictionary<string, object> args;                    
+                    Skill.Trigers.TriggerUtil.CalcImpactConfig(skillInst, senderInfo.ConfigData, out args);
                     return SendImpact(senderInfo.ConfigData, senderInfo.Seq, senderInfo.ActorId, srcObjId, targetId, impactId, args);
                 }
             }
@@ -457,20 +457,41 @@ namespace GameFramework
                 if (null != cfg) {
                     Quaternion hitEffectRotation = Quaternion.Identity;
                     EntityInfo srcObj = m_Scene.EntityManager.GetEntityInfo(srcObjId);
+                    var addArgs = new Dictionary<string, object> { { "hitEffectRotation", hitEffectRotation } };
                     ImpactInfo impactInfo = null;
                     if (impactId <= 0) {
                         impactInfo = new ImpactInfo(m_Scene.SkillSystem.PredefinedSkill.HitSkillCfg);
                         impactId = m_Scene.SkillSystem.PredefinedSkill.HitSkillCfg.id;
                     } else {
-                        impactInfo = new ImpactInfo(impactId);
+                        TableConfig.Skill impactCfg = TableConfig.SkillProvider.Instance.GetSkill(impactId);
+                        if (null != impactCfg) {
+                            if (cfg.type != (int)SkillOrImpactType.Impact && impactCfg.type == (int)SkillOrImpactType.Buff) {
+                                //buff如果不是经由impact添加的，则使用预定义的impact
+                                addArgs.Add("impact", impactId);
+                                impactInfo = new ImpactInfo(m_Scene.SkillSystem.PredefinedSkill.HitSkillCfg);
+                                impactId = m_Scene.SkillSystem.PredefinedSkill.HitSkillCfg.id;
+                            } else {
+                                impactInfo = new ImpactInfo(impactCfg);
+                            }
+                        } else {
+                            LogSystem.Error("impact {0} config can't found !", impactId);
+                            return null;
+                        }
                     }
-                    if (TryInitImpactInfo(impactInfo, cfg, seq, curObjId, srcObjId)) {
+                        if (TryInitImpactInfo(impactInfo, cfg, seq, curObjId, srcObjId, args)) {
+                            if (impactInfo.ConfigData.type == (int)SkillOrImpactType.Buff) {
+                                ImpactInfo oldImpactInfo = targetObj.GetSkillStateInfo().FindImpactInfoById(impactInfo.ImpactId);
+                                if (null != oldImpactInfo) {
+                                    oldImpactInfo.DurationTime += impactInfo.DurationTime;
+                                    return oldImpactInfo;
+                                }
+                            }
                         targetObj.GetSkillStateInfo().AddImpact(impactInfo);
                         SkillInfo skillInfo = targetObj.GetSkillStateInfo().GetCurSkillInfo();
                         if (null != skillInfo && (cfg.isInterrupt || impactInfo.ConfigData.isInterrupt)) {
                             m_Scene.SkillSystem.StopSkill(targetId, skillInfo.SkillId, 0, true);
                         }
-                        m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args, new Dictionary<string, object> { { "hitEffectRotation", hitEffectRotation } });
+                        m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args, addArgs);
                         return impactInfo;
                     }
                 }
@@ -489,7 +510,7 @@ namespace GameFramework
                     } else {
                         impactInfo = new ImpactInfo(emitImpact);
                     }
-                    if (TryInitImpactInfo(impactInfo, cfg, seq, curObjId, srcObjId)) {
+                    if (TryInitImpactInfo(impactInfo, cfg, seq, curObjId, srcObjId, args)) {
                         if (null != srcObj) {
                             Vector3 pos = srcObj.GetMovementStateInfo().GetPosition3D();
                             pos.Y += srcObj.GetRadius();
@@ -518,18 +539,38 @@ namespace GameFramework
                             impactInfo = new ImpactInfo(m_Scene.SkillSystem.PredefinedSkill.HitSkillCfg);
                         }
                     }
+                    var addArgs = new Dictionary<string, object>();
                     if (null == impactInfo) {
-                        impactInfo = new ImpactInfo(targetImpactId);
+                        TableConfig.Skill impactCfg = TableConfig.SkillProvider.Instance.GetSkill(targetImpactId);
+                        if (null != impactCfg) {
+                            if (impactCfg.type == (int)SkillOrImpactType.Buff) {
+                                //buff如果不是经由impact添加的，则使用预定义的impact
+                                addArgs.Add("impact", targetImpactId);
+                                impactInfo = new ImpactInfo(m_Scene.SkillSystem.PredefinedSkill.HitSkillCfg);
+                            } else {
+                                impactInfo = new ImpactInfo(impactCfg);
+                            }
+                        } else {
+                            LogSystem.Error("impact {0} config can't found !", targetImpactId);
+                            return null;
+                        }
                     }
                     impactInfo.StartTime = TimeUtility.GetLocalMilliseconds();
                     impactInfo.ImpactSenderId = trackImpactInfo.ImpactSenderId;
                     impactInfo.SenderPosition = trackImpactInfo.SenderPosition;
                     impactInfo.SkillId = trackImpactInfo.SkillId;
-                    impactInfo.DurationTime = trackImpactInfo.DurationTime;
+                    impactInfo.DurationTime = trackImpactInfo.DurationTime > 0 ? trackImpactInfo.DurationTime : impactInfo.ConfigData.duration;
                     impactInfo.TargetType = trackImpactInfo.TargetType;
                     impactInfo.DamageData.CopyFrom(trackImpactInfo.DamageData);
+                    if (impactInfo.ConfigData.type == (int)SkillOrImpactType.Buff) {
+                        ImpactInfo oldImpactInfo = targetObj.GetSkillStateInfo().FindImpactInfoById(impactInfo.ImpactId);
+                        if (null != oldImpactInfo) {
+                            oldImpactInfo.DurationTime += impactInfo.DurationTime;
+                            return oldImpactInfo;
+                        }
+                    }
                     targetObj.GetSkillStateInfo().AddImpact(impactInfo);
-                    m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args);
+                    m_Scene.SkillSystem.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args, addArgs);
                     return impactInfo;
                 }
             }
@@ -618,7 +659,7 @@ namespace GameFramework
             }
         }
 
-        private bool TryInitImpactInfo(ImpactInfo impactInfo, TableConfig.Skill cfg, int seq, int curObjId, int srcObjId)
+        private bool TryInitImpactInfo(ImpactInfo impactInfo, TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, Dictionary<string, object> args)
         {
             bool ret = false;
             EntityInfo srcNpc = m_Scene.EntityManager.GetEntityInfo(srcObjId);
@@ -627,7 +668,7 @@ namespace GameFramework
             if (cfg.type == (int)SkillOrImpactType.Skill) {
                 impactInfo.SenderPosition = null != srcNpc ? srcNpc.GetMovementStateInfo().GetPosition3D() : ScriptRuntime.Vector3.Zero;
                 impactInfo.SkillId = cfg.id;
-                impactInfo.DurationTime = (int)cfg.duration;
+                impactInfo.DurationTime = cfg.duration > 0 ? cfg.duration : impactInfo.ConfigData.duration;
                 impactInfo.TargetType = cfg.targetType;
                 impactInfo.DamageData.Merge(cfg.damageData);
                 impactInfo.ImpactToTarget = cfg.impactToTarget;
@@ -642,9 +683,9 @@ namespace GameFramework
                     //如果当前技能配置有数据则继承当前配置数据，否则继承源impact记录的数据。
                     impactInfo.SenderPosition = srcImpactInfo.SenderPosition;
                     impactInfo.SkillId = srcImpactInfo.SkillId;
-                    impactInfo.DurationTime = (int)cfg.duration;
+                    impactInfo.DurationTime = srcImpactInfo.DurationTime > 0 ? srcImpactInfo.DurationTime : impactInfo.ConfigData.duration;
                     impactInfo.TargetType = srcImpactInfo.TargetType;
-                    impactInfo.DamageData.Merge(srcImpactInfo.DamageData);
+                    impactInfo.DamageData.Damage = srcImpactInfo.DamageData.Damage;
                     impactInfo.DamageData.Merge(cfg.damageData);
                     impactInfo.ImpactToTarget = cfg.impactToTarget != 0 ? cfg.impactToTarget : srcImpactInfo.ImpactToTarget;
                     ret = true;

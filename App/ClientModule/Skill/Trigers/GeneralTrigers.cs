@@ -17,14 +17,13 @@ namespace GameFramework.Skill.Trigers
             TimeScaleTriger triger = new TimeScaleTriger();
             triger.m_TimeScale = m_TimeScale;
             
-            triger.m_EndTime = m_EndTime;
+            triger.m_Duration = m_Duration;
             triger.m_FixedDeltaTime = m_FixedDeltaTime;
-            triger.m_RealStartTime = m_RealStartTime;
+            
             triger.m_RealTimeScale = m_RealTimeScale;
-            triger.m_RealEndTime = m_RealEndTime;
+            triger.m_RealDuration = m_RealDuration;
             return triger;
         }
-
         public override void Reset()
         {
             if (m_IsSet && !m_IsReset) {
@@ -33,41 +32,28 @@ namespace GameFramework.Skill.Trigers
             }
             m_IsSet = false;
             m_IsReset = false;
-            m_RealStartTime = StartTime;
+            
             m_RealTimeScale = m_TimeScale;
-            m_RealEndTime = m_EndTime;
+            m_RealDuration = m_Duration;
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
             if (!m_IsSet) {
-                if (curSectionTime >= m_RealStartTime) {
+                if (curSectionTime >= StartTime) {
                     m_IsSet = true;
+                    float rate = m_RealTimeScale;
+                    if (rate <= Geometry.c_FloatPrecision)
+                        rate = 0.01f;
                     m_UnityRealStartTime = Time.realtimeSinceStartup;
-                    m_UnityRealTimeToEnd = Time.realtimeSinceStartup + (m_RealEndTime - m_RealStartTime)/1000.0f;
+                    m_UnityRealTimeToEnd = Time.realtimeSinceStartup + m_RealDuration / rate / 1000.0f;
                     Time.timeScale = m_RealTimeScale;
                     Time.fixedDeltaTime = m_FixedDeltaTime * m_RealTimeScale;
                 }
             }
-
-            if (m_IsSet) {
-                float t = (Time.realtimeSinceStartup - m_UnityRealStartTime)/(m_UnityRealTimeToEnd - m_UnityRealStartTime);
-                const float m = 0.7f;
-                if (t > m) {
-                    t = (t - m) / (1 - m);
-                    float scale = Mathf.Lerp(m_RealTimeScale, 1, t);
-                    Time.timeScale = scale;
-                    Time.fixedDeltaTime = m_FixedDeltaTime * scale;
-                }
-            }
-
             if (m_IsSet && Time.realtimeSinceStartup > m_UnityRealTimeToEnd) {
                 if (!m_IsReset) {
                     m_IsReset = true;
@@ -76,10 +62,8 @@ namespace GameFramework.Skill.Trigers
                 }
                 return false;
             }
-
             return true;
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             if (callData.GetParamNum() > 0) {
@@ -89,38 +73,33 @@ namespace GameFramework.Skill.Trigers
                 m_TimeScale = float.Parse(callData.GetParamId(1));
             }
             if (callData.GetParamNum() > 2) {
-                m_EndTime = long.Parse(callData.GetParamId(2));
+                m_Duration = long.Parse(callData.GetParamId(2));
             }
             try {
                 m_FixedDeltaTime = GetFixedDeltaTime();
             } catch {
                 m_FixedDeltaTime = 0.1f;
             }
-            m_RealStartTime = StartTime;
-            m_RealEndTime = m_EndTime;
+            
+            m_RealDuration = m_Duration;
             m_RealTimeScale = m_TimeScale;
         }
-
         private float GetFixedDeltaTime()
         {
             //下面函数是引用C++库里的函数，不能直接捕获异常，必须封装一层C#函数再捕获。
             return Time.fixedDeltaTime;
         }
-
         private float m_TimeScale = 1.0f;
-        private float m_EndTime = 0;
+        private float m_Duration = 0;
         private float m_FixedDeltaTime = 0.1f;
-
-        private long m_RealStartTime = 0;
-        private float m_RealEndTime = 0;
+        
+        private float m_RealDuration = 0;
         private float m_RealTimeScale = 1.0f;
-
         private bool m_IsSet = false;
         private bool m_IsReset = false;
         private float m_UnityRealStartTime = 0;
         private float m_UnityRealTimeToEnd = 0;
     }
-
     /// <summary>
     /// bornfinish(start_time);
     /// </summary>
@@ -130,32 +109,26 @@ namespace GameFramework.Skill.Trigers
         {
             BornFinishTriger triger = new BornFinishTriger();
             
-            triger.m_RealStartTime = m_RealStartTime;
+            
             return triger;
         }
-
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 EntityController.Instance.BornFinish(senderObj.ActorId);
                 return false;
             } else {
                 return true;
             }
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -164,10 +137,9 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// deadfinish(start_time);
@@ -178,32 +150,26 @@ namespace GameFramework.Skill.Trigers
         {
             DeadFinishTriger triger = new DeadFinishTriger();
             
-            triger.m_RealStartTime = m_RealStartTime;
+            
             return triger;
         }
-
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 EntityController.Instance.DeadFinish(senderObj.ActorId);
                 return false;
             } else {
                 return true;
             }
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -212,10 +178,9 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// sendstorymessage(start_time,msg,arg1,arg2,arg3,...);
@@ -228,25 +193,20 @@ namespace GameFramework.Skill.Trigers
             
             copy.m_Msg = m_Msg;
             copy.m_Args.AddRange(m_Args);
-            copy.m_RealStartTime = m_RealStartTime;
+            
             return copy;
         }
-
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             List<object> args = new List<object>();
@@ -257,7 +217,6 @@ namespace GameFramework.Skill.Trigers
             GfxStorySystem.Instance.SendMessage(m_Msg, args.ToArray());
             return false;
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -268,13 +227,11 @@ namespace GameFramework.Skill.Trigers
             for (int i = 2; i < num; ++i) {
                 m_Args.Add(callData.GetParamId(i));
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private string m_Msg = string.Empty;
         private List<string> m_Args = new List<string>();
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// sendgfxmessage(start_time,objname,msg,arg1,arg2,arg3,...);
@@ -288,25 +245,20 @@ namespace GameFramework.Skill.Trigers
             copy.m_Object = m_Object;
             copy.m_Msg = m_Msg;
             copy.m_Args.AddRange(m_Args);
-            copy.m_RealStartTime = m_RealStartTime;
+            
             return copy;
         }
-
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             List<object> arglist = new List<object>();
@@ -323,7 +275,6 @@ namespace GameFramework.Skill.Trigers
                 Utility.SendMessage(m_Object, m_Msg, args);
             return false;
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -335,14 +286,12 @@ namespace GameFramework.Skill.Trigers
             for (int i = 3; i < num; ++i) {
                 m_Args.Add(callData.GetParamId(i));
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private string m_Object = string.Empty;
         private string m_Msg = string.Empty;
         private List<string> m_Args = new List<string>();
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// sendgfxmessagewithtag(start_time,tag,msg,arg1,arg2,arg3,...);
@@ -356,25 +305,20 @@ namespace GameFramework.Skill.Trigers
             copy.m_Tag = m_Tag;
             copy.m_Msg = m_Msg;
             copy.m_Args.AddRange(m_Args);
-            copy.m_RealStartTime = m_RealStartTime;
+            
             return copy;
         }
-
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             List<object> arglist = new List<object>();
@@ -391,7 +335,6 @@ namespace GameFramework.Skill.Trigers
                 Utility.SendMessageWithTag(m_Tag, m_Msg, args);
             return false;
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -403,14 +346,12 @@ namespace GameFramework.Skill.Trigers
             for (int i = 3; i < num; ++i) {
                 m_Args.Add(callData.GetParamId(i));
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private string m_Tag = string.Empty;
         private string m_Msg = string.Empty;
         private List<string> m_Args = new List<string>();
-
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// publishgfxevent(start_time,event,group,arg1,arg2,arg3,...);
@@ -424,25 +365,20 @@ namespace GameFramework.Skill.Trigers
             copy.m_Event = m_Event;
             copy.m_Group = m_Group;
             copy.m_Args.AddRange(m_Args);
-            copy.m_RealStartTime = m_RealStartTime;
+            
             return copy;
         }
-
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             List<object> arglist = new List<object>();
@@ -454,7 +390,6 @@ namespace GameFramework.Skill.Trigers
             Utility.EventSystem.Publish(m_Event, m_Group, args);
             return false;
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -466,13 +401,87 @@ namespace GameFramework.Skill.Trigers
             for (int i = 3; i < num; ++i) {
                 m_Args.Add(callData.GetParamId(i));
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private string m_Event = string.Empty;
         private string m_Group = string.Empty;
         private List<string> m_Args = new List<string>();
+        
+    }
+    /// <summary>
+    /// params([startTime])
+    /// {
+    ///     int(name,value);
+    ///     long(name,value);
+    ///     float(name,value);
+    ///     double(name,value);
+    ///     string(name,value);
+    ///     ...
+    /// };
+    /// </summary>
+    internal class ParamsTriger : AbstractSkillTriger
+    {
+        protected override ISkillTriger OnClone()
+        {
+            ParamsTriger triger = new ParamsTriger();
+            triger.m_Params = new Dictionary<string, object>(m_Params);
+            return triger;
+        }
+        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
+            if (null == senderObj) return false;
+            GameObject obj = senderObj.GfxObj;
+            if (null == obj) return false;
+            if (curSectionTime < StartTime)
+                return true;
+            foreach (var pair in m_Params) {
+                instance.SetLocalVariable(pair.Key, pair.Value);
+            }
+            return false;
+        }
 
-        private long m_RealStartTime = 0;
+        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        {
+            m_Params = new Dictionary<string, object>();
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                StartTime = long.Parse(callData.GetParamId(0));
+            } else {
+                StartTime = 0;
+            }
+        }
+
+        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        {
+            Dsl.CallData callData = funcData.Call;
+            if (null != callData) {
+                Load(callData, dslSkillId);
+
+                for (int i = 0; i < funcData.Statements.Count; ++i) {
+                    Dsl.ISyntaxComponent statement = funcData.Statements[i];
+                    Dsl.CallData stCall = statement as Dsl.CallData;
+                    if (null != stCall) {
+                        string id = stCall.GetId();
+                        string key = stCall.GetParamId(0);
+                        object val = string.Empty;
+                        if (id == "int") {
+                            val = int.Parse(stCall.GetParamId(1));
+                        } else if (id == "long") {
+                            val = long.Parse(stCall.GetParamId(1));
+                        } else if (id == "float") {
+                            val = float.Parse(stCall.GetParamId(1));
+                        } else if (id == "double") {
+                            val = double.Parse(stCall.GetParamId(1));
+                        } else if (id == "string") {
+                            val = stCall.GetParamId(1);
+                        }
+                        m_Params.Add(key, val);
+                    }
+                }
+            }
+        }
+
+        private Dictionary<string, object> m_Params = null;
     }
 }

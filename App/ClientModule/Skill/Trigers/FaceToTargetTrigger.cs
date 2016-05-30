@@ -36,15 +36,13 @@ namespace GameFramework.Skill.Trigers
             SelectTargetTrigger copy = new SelectTargetTrigger();
             copy.m_Type = m_Type;
             
-            copy.m_RealStartTime = m_RealStartTime;
+            
             return copy;
         }
-
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -56,9 +54,8 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
@@ -67,10 +64,7 @@ namespace GameFramework.Skill.Trigers
             if (obj == null) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             Vector3 pos = obj.transform.position;
@@ -88,9 +82,8 @@ namespace GameFramework.Skill.Trigers
             }
             return false;
         }
-
         private string m_Type = "minhp";
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
     /// facetotarget(starttime,remaintime[,rotate,selecttype]);
@@ -105,23 +98,23 @@ namespace GameFramework.Skill.Trigers
             copy.m_IsHaveRotateSpeed = m_IsHaveRotateSpeed;
             copy.m_RotateSpeed = m_RotateSpeed;
             copy.m_SelectTargetType = m_SelectTargetType;
-            copy.m_RealStartTime = m_RealStartTime;
+            
             copy.m_RealSelectTargetType = m_RealSelectTargetType;
             return copy;
         }
-
         public override void Reset()
         {
             m_IsExecuted = false;
-            m_RealStartTime = StartTime;
+            
             m_RealSelectTargetType = m_SelectTargetType;
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
-            if (num >= 2) {
+            if (num >= 1) {
                 StartTime = long.Parse(callData.GetParamId(0));
+            }
+            if (num >= 2) {
                 m_RemainTime = long.Parse(callData.GetParamId(1));
             }
             if (num >= 3) {
@@ -132,10 +125,9 @@ namespace GameFramework.Skill.Trigers
             if (num >= 4) {
                 m_SelectTargetType = callData.GetParamId(3);
             }
-            m_RealStartTime = StartTime;
+            
             m_RealSelectTargetType = m_SelectTargetType;
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
@@ -144,26 +136,15 @@ namespace GameFramework.Skill.Trigers
             if (null == obj) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             if (m_IsExecuted && curSectionTime > (StartTime + m_RemainTime)) {
                 return false;
             }
-
             Vector3 pos = obj.transform.position;
             GameObject target = senderObj.TargetGfxObj;
-            if (!m_IsExecuted && (null == target || !string.IsNullOrEmpty(m_SelectTargetType))) {
-                if (string.IsNullOrEmpty(m_SelectTargetType)) {
-                    int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
-                    if (targetType == (int)SkillTargetType.Friend || targetType == (int)SkillTargetType.RandFriend)
-                        m_RealSelectTargetType = "randfriend";
-                    else
-                        m_RealSelectTargetType = "randenemy";
-                }
+            if (!m_IsExecuted && (null == target && !string.IsNullOrEmpty(m_SelectTargetType))) {
                 TargetManager mgr = instance.CustomDatas.GetData<TargetManager>();
                 if (null == mgr) {
                     mgr = new TargetManager();
@@ -189,13 +170,12 @@ namespace GameFramework.Skill.Trigers
             return true;
         }
 
-        private long m_RemainTime;
+        private long m_RemainTime = 0;
         private bool m_IsHaveRotateSpeed = false;
-        private Vector3 m_RotateSpeed;
-        private string m_SelectTargetType;
+        private Vector3 m_RotateSpeed = Vector3.zero;
+        private string m_SelectTargetType = string.Empty;
         private bool m_IsExecuted = false;
-
-        private long m_RealStartTime = 0;
+        
         private string m_RealSelectTargetType = string.Empty;
     }
     /// <summary>
@@ -207,15 +187,13 @@ namespace GameFramework.Skill.Trigers
         {
             ClearTargetsTrigger copy = new ClearTargetsTrigger();
             
-            copy.m_RealStartTime = m_RealStartTime;
+            
             return copy;
         }
-
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
@@ -224,10 +202,7 @@ namespace GameFramework.Skill.Trigers
             if (obj == null) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
             }
             TargetManager mgr = instance.CustomDatas.GetData<TargetManager>();
@@ -236,7 +211,6 @@ namespace GameFramework.Skill.Trigers
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -245,9 +219,8 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
-        private long m_RealStartTime = 0;
+        
     }
 }

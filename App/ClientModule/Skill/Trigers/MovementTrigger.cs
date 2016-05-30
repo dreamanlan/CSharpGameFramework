@@ -21,16 +21,13 @@ namespace GameFramework.Skill.Trigers
             copy.accelVect = accelVect;
             return copy;
         }
-
         public float moveTime;
         public Vector3 speedVect;
         public Vector3 accelVect;
-
         public float startTime = 0;
         public float lastUpdateTime = 0;
         public Vector3 curSpeedVect = Vector3.zero;
     }
-
     /// <summary>
     /// enablemoveagent(true_or_false[,start_time]);
     /// </summary>
@@ -41,12 +38,12 @@ namespace GameFramework.Skill.Trigers
             EnableMoveAgentTriger triger = new EnableMoveAgentTriger();
             triger.m_IsEnable = m_IsEnable;
             
-            triger.m_RealStartTime = m_RealStartTime;
+            
             return triger;
         }
         public override void Reset()
         {
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -56,22 +53,18 @@ namespace GameFramework.Skill.Trigers
             if (null == obj) {
                 return false;
             }
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime >= m_RealStartTime) {
+            if (curSectionTime >= StartTime) {
                 EnableMoveAgent(obj, m_IsEnable);
                 return false;
             } else {
                 return true;
             }
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
-                m_IsEnable = callData.GetParamId(0)=="true";
+                m_IsEnable = callData.GetParamId(0) == "true";
             } else {
                 m_IsEnable = true;
             }
@@ -80,9 +73,8 @@ namespace GameFramework.Skill.Trigers
             } else {
                 StartTime = 0;
             }
-            m_RealStartTime = StartTime;
+            
         }
-
         private void EnableMoveAgent(GameObject obj, bool isEnable)
         {
             try {
@@ -93,12 +85,11 @@ namespace GameFramework.Skill.Trigers
                 LogSystem.Warn("SetMoveAgentEnable exception:{0}", ex.Message);
             }
         }
-
         private bool m_IsEnable = true;
-        private long m_RealStartTime = 0;
+        
     }
     /// <summary>
-    /// curvemove(triggertime, is_lock_rotate, [movetime, speedx, speedy, speedz, accelx, accely, accelz]+)
+    /// curvemove(triggertime, [movetime, speedx, speedy, speedz, accelx, accely, accelz]+, [isForRoundMove])
     /// </summary>
     public class CurveMovementTrigger : AbstractSkillTriger
     {
@@ -106,74 +97,75 @@ namespace GameFramework.Skill.Trigers
         {
             CurveMovementTrigger copy = new CurveMovementTrigger();
             
-            copy.m_IsLockRotate = m_IsLockRotate;
             copy.m_SectionList.AddRange(m_SectionList);
             copy.m_IsCurveMoving = true;
-            copy.m_RealStartTime = m_RealStartTime;
+            
+            copy.m_IsForRoundMove = m_IsForRoundMove;
             return copy;
         }
-
         public override void Reset()
         {
             m_IsCurveMoving = true;
             m_IsInited = false;
             GameObject.Destroy(m_StartTransform);
-            m_RealStartTime = StartTime;
+            
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
-            if (callData.GetParamNum() > 1) {
+            int num = callData.GetParamNum();
+            if (num > 0) {
                 StartTime = int.Parse(callData.GetParamId(0));
-                m_IsLockRotate = bool.Parse(callData.GetParamId(1));
             }
-            m_RealStartTime = StartTime;
+            
             m_SectionList.Clear();
             int section_num = 0;
-            while (callData.GetParamNum() >= 7 * (section_num + 1) + 2) {
+            while (num >= 7 * (section_num + 1) + 1) {
                 MoveSectionInfo section = new MoveSectionInfo();
-                section.moveTime = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 2));
-                section.speedVect.x = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 3));
-                section.speedVect.y = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 4));
-                section.speedVect.z = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 5));
-                section.accelVect.x = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 6));
-                section.accelVect.y = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 7));
-                section.accelVect.z = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 8));
+                section.moveTime = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 1));
+                section.speedVect.x = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 2));
+                section.speedVect.y = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 3));
+                section.speedVect.z = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 4));
+                section.accelVect.x = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 5));
+                section.accelVect.y = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 6));
+                section.accelVect.z = (float)System.Convert.ToDouble(callData.GetParamId((section_num * 7) + 7));
                 m_SectionList.Add(section);
                 section_num++;
+            }
+            if (num > 7 * (section_num + 1) + 1) {
+                m_IsForRoundMove = callData.GetParamId((section_num * 7) + 8) == "true";
             }
             if (m_SectionList.Count == 0) {
                 return;
             }
             m_IsCurveMoving = true;
         }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            bool isTower = !EntityController.Instance.IsMovableEntity(senderObj.GfxObj);
+            if (null != senderObj.TrackEffectObj)
+                obj = senderObj.TrackEffectObj;
+            bool isTower = !EntityController.Instance.IsMovableEntity(obj);
             if (isTower)
                 return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
-            if (curSectionTime < m_RealStartTime){
+            if (curSectionTime < StartTime) {
                 return true;
             }
-            if (!m_IsCurveMoving){
+            if (!m_IsCurveMoving) {
+                if (m_IsForRoundMove && m_TargetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
+                    obj.transform.position = m_TargetPos;
+                }
                 return false;
             }
-            if (!m_IsInited){
-                Init(obj, senderObj.TargetGfxObj, instance);
+            if (!m_IsInited) {
+                Init(senderObj, instance);
             }
             if (m_SectionListCopy.Count == 0) {
                 m_IsCurveMoving = false;
                 return false;
             }
-
             m_Now += TriggerUtil.ConvertToSecond((long)(instance.OriginalDelta * instance.MoveScale));
             MoveSectionInfo cur_section = m_SectionListCopy[0];
             if (m_Now - cur_section.startTime > cur_section.moveTime) {
@@ -195,21 +187,24 @@ namespace GameFramework.Skill.Trigers
             }
             return true;
         }
-
-        private void Init(GameObject obj, GameObject target, SkillInstance instance)
+        private void Init(GfxSkillSenderInfo senderObj, SkillInstance instance)
         {
             CopySectionList();
-            CalNewSpeedWithTarget(obj, target, instance);
+            CalNewSpeedWithTarget(senderObj, instance);
             m_Now = instance.CurTime / 1000.0f;
             m_SectionListCopy[0].startTime = m_Now;
             m_SectionListCopy[0].lastUpdateTime = m_Now;
             m_SectionListCopy[0].curSpeedVect = m_SectionListCopy[0].speedVect;
             m_StartTransform = new GameObject();
-            m_StartTransform.transform.position = obj.transform.position;
-            m_StartTransform.transform.rotation = obj.transform.rotation;
+            if (null != senderObj.TrackEffectObj) {
+                m_StartTransform.transform.position = senderObj.TrackEffectObj.transform.position;
+                m_StartTransform.transform.rotation = senderObj.TrackEffectObj.transform.rotation;
+            } else {
+                m_StartTransform.transform.position = senderObj.GfxObj.transform.position;
+                m_StartTransform.transform.rotation = senderObj.GfxObj.transform.rotation;
+            }
             m_IsInited = true;
         }
-
         private void CopySectionList()
         {
             m_SectionListCopy.Clear();
@@ -217,18 +212,30 @@ namespace GameFramework.Skill.Trigers
                 m_SectionListCopy.Add(m_SectionList[i].Clone());
             }
         }
-
-        private void CalNewSpeedWithTarget(GameObject obj, GameObject target, SkillInstance instance)
+        private void CalNewSpeedWithTarget(GfxSkillSenderInfo senderObj, SkillInstance instance)
         {
-            if (null == obj || null == target)
+            GameObject obj = senderObj.GfxObj;
+            GameObject target = senderObj.TargetGfxObj;
+            if (null == obj)
                 return;
-            obj.transform.localRotation = Quaternion.FromToRotation(obj.transform.position, target.transform.position);
+            Vector3 srcPos = obj.transform.position;
+            Vector3 targetPos = Vector3.zero;
+            if (null != target) {
+                targetPos = target.transform.position;
+            }
+            if (m_IsForRoundMove) {
+                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref targetPos);
+                m_TargetPos = targetPos;
+            } else if (null == target) {
+                return;
+            }
+            
             float cur_distance_z = 0;
             for (int i = 0; i < m_SectionListCopy.Count; i++) {
                 cur_distance_z += (m_SectionListCopy[i].speedVect.z * m_SectionListCopy[i].moveTime +
                                    m_SectionListCopy[i].accelVect.z * m_SectionListCopy[i].moveTime * m_SectionListCopy[i].moveTime / 2.0f);
             }
-            Vector3 target_motion = (target.transform.position - obj.transform.position);
+            Vector3 target_motion = (targetPos - obj.transform.position);
             target_motion.y = 0;
             float target_distance_z = target_motion.magnitude;
             float speed_ratio = 1;
@@ -240,13 +247,10 @@ namespace GameFramework.Skill.Trigers
                 m_SectionListCopy[i].accelVect.z *= speed_ratio;
             }
         }
-
         private Vector3 Move(GameObject obj, Vector3 speed_vect, Vector3 accel_vect, float time)
         {
             m_StartTransform.transform.position = obj.transform.position;
-            if (!m_IsLockRotate) {
-                m_StartTransform.transform.rotation = obj.transform.rotation;
-            }
+            m_StartTransform.transform.rotation = obj.transform.rotation;
             Vector3 local_motion = speed_vect * time + accel_vect * time * time / 2;
             Vector3 word_target_pos;
             while (local_motion.magnitude > m_MaxMoveStep) {
@@ -260,22 +264,19 @@ namespace GameFramework.Skill.Trigers
             TriggerUtil.MoveObjTo(obj, word_target_pos);
             return (speed_vect + accel_vect * time);
         }
-
-        private bool m_IsLockRotate = true;
         private List<MoveSectionInfo> m_SectionList = new List<MoveSectionInfo>();
         private List<MoveSectionInfo> m_SectionListCopy = new List<MoveSectionInfo>();
         private bool m_IsCurveMoving = false;
-
-        private long m_RealStartTime = 0;
-
+        private bool m_IsForRoundMove = false;
+        
         private GameObject m_StartTransform = null;
         private bool m_IsInited = false;
         private float m_Now;
         private static float m_MaxMoveStep = 3;
+        private Vector3 m_TargetPos = Vector3.zero;
     }
-
     /// <summary>
-    /// charge(duration,velocity,stopAtTarget[,distToTarget[,start_time]]);
+    /// charge(duration,velocity,stopAtTarget[,distToTarget[,start_time[, isForRoundMove]]]);
     /// </summary>
     internal class ChargeTriger : AbstractSkillTriger
     {
@@ -287,7 +288,8 @@ namespace GameFramework.Skill.Trigers
             triger.m_StopAtTarget = m_StopAtTarget;
             triger.m_Offset = m_Offset;
             
-            triger.m_RealStartTime = m_RealStartTime;
+            
+            triger.m_IsForRoundMove = m_IsForRoundMove;
             return triger;
         }
         public override void Reset()
@@ -296,7 +298,7 @@ namespace GameFramework.Skill.Trigers
             m_RealDuration = 0;
             m_RealVelocity = 1;
             m_Forward = Vector3.zero;
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -304,47 +306,60 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            bool isTower = !EntityController.Instance.IsMovableEntity(senderObj.GfxObj);
-            if (isTower) return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
+            GameObject targetObj = senderObj.TargetGfxObj;
+            if (null != senderObj.TrackEffectObj) {
+                obj = senderObj.TrackEffectObj;
+                targetObj = senderObj.GfxObj;
             }
+            bool isTower = !EntityController.Instance.IsMovableEntity(obj);
+            if (isTower) return false;
             if (!m_TargetChecked) {
                 m_TargetChecked = true;
-
                 m_RealDuration = m_Duration;
                 m_RealVelocity = m_Velocity;
-                GameObject targetObj = senderObj.TargetGfxObj;
-                if (null != targetObj) {
+                if (null != targetObj || m_IsForRoundMove) {
                     Vector3 srcPos = obj.transform.position;
-                    Vector3 targetPos = targetObj.transform.position;
-                    float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
-                    ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(targetPos.x, targetPos.z) + Geometry.GetRotate(new ScriptRuntime.Vector2(m_Offset.x, m_Offset.z), degree);
-                    targetPos = new Vector3(newPos.X, targetPos.y + m_Offset.y, newPos.Y);
-                    if (m_StopAtTarget == (int)StopAtTargetType.AdjustVelocity) {
-                        m_RealVelocity = (long)(1000.0f * (targetPos - obj.transform.position).magnitude / m_RealDuration);
-                    } else if (m_StopAtTarget == (int)StopAtTargetType.AdjustTime) {
-                        m_RealDuration = (long)(1000.0f * (targetPos - obj.transform.position).magnitude / m_RealVelocity);
+                    Vector3 targetPos = Vector3.zero;
+                    if (null != targetObj) {
+                        targetPos = targetObj.transform.position;
                     }
-                    m_Forward = targetPos - srcPos;
-                    m_Forward.Normalize();
+                    if (m_IsForRoundMove) {
+                        TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref targetPos);
+                    }
+                    if (targetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
+                        float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
+                        ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(targetPos.x, targetPos.z) + Geometry.GetRotate(new ScriptRuntime.Vector2(m_Offset.x, m_Offset.z), degree);
+                        targetPos = new Vector3(newPos.X, targetPos.y + m_Offset.y, newPos.Y);
+                        m_TargetPos = targetPos;
+                        if (m_StopAtTarget == (int)StopAtTargetType.AdjustVelocity) {
+                            m_RealVelocity = (long)(1000.0f * (targetPos - srcPos).magnitude / m_RealDuration);
+                        } else if (m_StopAtTarget == (int)StopAtTargetType.AdjustTime) {
+                            m_RealDuration = (long)(1000.0f * (targetPos - srcPos).magnitude / m_RealVelocity);
+                        }
+                        m_Forward = targetPos - srcPos;
+                        m_Forward.y = 0;
+                        m_Forward.Normalize();
+                    } else {
+                        m_Forward = obj.transform.forward;
+                    }
                 } else {
                     m_Forward = obj.transform.forward;
                 }
             }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
-            } else if (curSectionTime <= m_RealStartTime + m_RealDuration) {
+            } else if (curSectionTime <= StartTime + m_RealDuration) {
                 float dist = TriggerUtil.ConvertToSecond(delta) * m_RealVelocity;
                 Vector3 targetPos = obj.transform.position + m_Forward * dist;
                 TriggerUtil.MoveObjTo(obj, targetPos);
                 return true;
             } else {
-                //
+                if (m_IsForRoundMove && m_TargetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
+                    obj.transform.position = m_TargetPos;
+                }
                 return false;
             }
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -363,24 +378,25 @@ namespace GameFramework.Skill.Trigers
             if (num > 4) {
                 StartTime = long.Parse(callData.GetParamId(4));
             }
-            m_RealStartTime = StartTime;
+            if (num > 5) {
+                m_IsForRoundMove = callData.GetParamId(5) == "true";
+            }
+            
         }
-
         private long m_Duration = 0;
         private float m_Velocity = 1;
         private int m_StopAtTarget = 0;
         private Vector3 m_Offset = Vector3.zero;
-
-        private long m_RealStartTime = 0;
-
+        private bool m_IsForRoundMove = false;
+        
         private bool m_TargetChecked = false;
         private long m_RealDuration = 0;
         private float m_RealVelocity = 1;
         private Vector3 m_Forward = Vector3.zero;
+        private Vector3 m_TargetPos = Vector3.zero;
     }
-
     /// <summary>
-    /// jump(duration,height,velocity,stopAtTarget[,distToTarget[,start_time]]);
+    /// jump(duration,height,velocity,stopAtTarget[,distToTarget[,start_time[, isForRoundMove]]]);
     /// </summary>
     internal class JumpTriger : AbstractSkillTriger
     {
@@ -395,7 +411,8 @@ namespace GameFramework.Skill.Trigers
             
             triger.m_YVelocity = m_YVelocity;
             triger.m_G = m_G;
-            triger.m_RealStartTime = m_RealStartTime;
+            
+            triger.m_IsForRoundMove = m_IsForRoundMove;
             return triger;
         }
         public override void Reset()
@@ -405,7 +422,7 @@ namespace GameFramework.Skill.Trigers
             m_RealVelocity = 1;
             m_InitY = -1;
             m_Forward = Vector3.zero;
-            m_RealStartTime = StartTime;
+            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -413,41 +430,53 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
-            bool isTower = !EntityController.Instance.IsMovableEntity(senderObj.GfxObj);
+            GameObject targetObj = senderObj.TargetGfxObj;
+            if (null != senderObj.TrackEffectObj) {
+                obj = senderObj.TrackEffectObj;
+                targetObj = senderObj.GfxObj;
+            }
+            bool isTower = !EntityController.Instance.IsMovableEntity(obj);
             if (isTower)
                 return false;
-            if (m_RealStartTime < 0) {
-                m_RealStartTime = TriggerUtil.RefixStartTime((int)StartTime, instance.LocalVariables, senderObj.ConfigData);
-            }
             if (!m_TargetChecked) {
                 m_TargetChecked = true;
-
                 m_RealDuration = m_Duration;
                 m_RealVelocity = m_Velocity;
-                GameObject targetObj = senderObj.TargetGfxObj;
-                if (null != targetObj) {
+                if (null != targetObj || m_IsForRoundMove) {
                     Vector3 srcPos = obj.transform.position;
-                    Vector3 targetPos = targetObj.transform.position;
-                    float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
-                    ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(targetPos.x, targetPos.z) + Geometry.GetRotate(new ScriptRuntime.Vector2(m_Offset.x, m_Offset.z), degree);
-                    targetPos = new Vector3(newPos.X, targetPos.y + m_Offset.y, newPos.Y);
-                    if (m_StopAtTarget == (int)StopAtTargetType.AdjustVelocity) {
-                        m_RealVelocity = (long)(1000.0f * (targetPos - obj.transform.position).magnitude / m_RealDuration);
-                    } else if (m_StopAtTarget == (int)StopAtTargetType.AdjustTime) {
-                        m_RealDuration = (long)(1000.0f * (targetPos - obj.transform.position).magnitude / m_RealVelocity);
-                        CalcYVelocityAndG();
+                    Vector3 targetPos = Vector3.zero;
+                    if (null != targetObj) {
+                        targetPos = targetObj.transform.position;
                     }
-                    m_Forward = targetPos - srcPos;
-                    m_Forward.Normalize();
+                    if (m_IsForRoundMove) {
+                        TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref targetPos);
+                    }
+                    if (targetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
+                        float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
+                        ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(targetPos.x, targetPos.z) + Geometry.GetRotate(new ScriptRuntime.Vector2(m_Offset.x, m_Offset.z), degree);
+                        targetPos = new Vector3(newPos.X, targetPos.y + m_Offset.y, newPos.Y);
+                        m_TargetPos = targetPos;
+                        if (m_StopAtTarget == (int)StopAtTargetType.AdjustVelocity) {
+                            m_RealVelocity = (long)(1000.0f * (targetPos - srcPos).magnitude / m_RealDuration);
+                        } else if (m_StopAtTarget == (int)StopAtTargetType.AdjustTime) {
+                            m_RealDuration = (long)(1000.0f * (targetPos - srcPos).magnitude / m_RealVelocity);
+                            CalcYVelocityAndG();
+                        }
+                        m_Forward = targetPos - srcPos;
+                        m_Forward.y = 0;
+                        m_Forward.Normalize();
+                    } else {
+                        m_Forward = obj.transform.forward;
+                    }
                 } else {
                     m_Forward = obj.transform.forward;
                 }
                 m_InitY = obj.transform.position.y;
             }
-            if (curSectionTime < m_RealStartTime) {
+            if (curSectionTime < StartTime) {
                 return true;
-            } else if (curSectionTime <= m_RealStartTime + m_RealDuration) {
-                float t = (float)(int)(curSectionTime - m_RealStartTime) / 1000.0f;
+            } else if (curSectionTime <= StartTime + m_RealDuration) {
+                float t = (float)(int)(curSectionTime - StartTime) / 1000.0f;
                 float disty = m_YVelocity * t - m_G * t * t / 2;
                 float dist = TriggerUtil.ConvertToSecond(delta) * m_RealVelocity;
                 Vector3 targetPos = obj.transform.position + m_Forward * dist;
@@ -456,11 +485,13 @@ namespace GameFramework.Skill.Trigers
                 return true;
             } else {
                 Vector3 srcPos = obj.transform.position;
+                if (m_IsForRoundMove && m_TargetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
+                    srcPos = m_TargetPos;
+                }
                 obj.transform.position = new Vector3(srcPos.x, m_InitY, srcPos.z);
                 return false;
             }
         }
-
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -484,10 +515,12 @@ namespace GameFramework.Skill.Trigers
             if (num > 5) {
                 StartTime = long.Parse(callData.GetParamId(5));
             }
-            m_RealStartTime = StartTime;
+            if (num > 6) {
+                m_IsForRoundMove = callData.GetParamId(6) == "true";
+            }
+            
             CalcYVelocityAndG();
         }
-
         private void CalcYVelocityAndG()
         {
             float time_div = (float)(int)m_Duration / 1000.0f;
@@ -495,15 +528,13 @@ namespace GameFramework.Skill.Trigers
             m_YVelocity = m_Height * 2.0f / time_div;
             m_G = m_Height * 2.0f / (time_div * time_div);
         }
-
         private long m_Duration = 0;
         private float m_Height = 1;
         private float m_Velocity = 1;
         private int m_StopAtTarget = 0;
         private Vector3 m_Offset = Vector3.zero;
-
-        private long m_RealStartTime = 0;
-
+        private bool m_IsForRoundMove = false;
+        
         private bool m_TargetChecked = false;
         private long m_RealDuration = 0;
         private float m_RealVelocity = 1;
@@ -511,5 +542,6 @@ namespace GameFramework.Skill.Trigers
         private float m_YVelocity = 1;
         private float m_G = 10;
         private Vector3 m_Forward = Vector3.zero;
+        private Vector3 m_TargetPos = Vector3.zero;
     }
 }

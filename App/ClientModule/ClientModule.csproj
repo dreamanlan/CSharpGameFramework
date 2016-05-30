@@ -118,7 +118,6 @@
     <Compile Include="SceneLogic\SceneLogicViewModel\SceneLogicViewModel_General.cs" />
     <Compile Include="Skill\GfxSkillSystem.cs" />
     <Compile Include="Skill\Trigers\AnimationTrigger.cs" />
-    <Compile Include="Skill\Trigers\CameraTrigger.cs" />
     <Compile Include="Skill\Trigers\ConsumptionTrigger.cs" />
     <Compile Include="Skill\Trigers\DamageTrigger.cs" />
     <Compile Include="Skill\Trigers\FaceToTargetTrigger.cs" />

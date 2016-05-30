@@ -17,6 +17,14 @@ namespace GameFramework.Skill
             get { return m_HitSkillCfg; }
         }
 
+        public void ReBuild()
+        {
+            m_EmitSkillCfg.type = (int)SkillOrImpactType.Impact;
+            AddPredefinedSkill(m_EmitSkillCfg, PredefinedSkillEnum.EmitSkillId);
+            m_HitSkillCfg.type = (int)SkillOrImpactType.Impact;
+            AddPredefinedSkill(m_HitSkillCfg, PredefinedSkillEnum.HitSkillId);
+
+        }
         public void Preload()
         {
             for (int i = 0; i < c_MaxEmitSkillNum; ++i) {
@@ -29,15 +37,12 @@ namespace GameFramework.Skill
         
         private PredefinedSkill()
         {
-            m_EmitSkillCfg.type = (int)SkillOrImpactType.Impact;
-            AddPredefinedSkill(m_EmitSkillCfg, PredefinedSkillEnum.EmitSkillId);
-            m_HitSkillCfg.type = (int)SkillOrImpactType.Impact;
-            AddPredefinedSkill(m_HitSkillCfg, PredefinedSkillEnum.HitSkillId);
+            ReBuild();
         }
         private enum PredefinedSkillEnum
         {
-            EmitSkillId = 90000,
-            HitSkillId,
+            EmitSkillId = 0x1000000,
+            HitSkillId = 0x2000000,
         }
 
         private TableConfig.Skill m_EmitSkillCfg = new TableConfig.Skill();
@@ -47,6 +52,9 @@ namespace GameFramework.Skill
         {
             cfg.id = cfg.dslSkillId = (int)id;
             cfg.dslFile = "Skill/predefined.dsl";
+            //添加到技能表数据中
+            var skills = TableConfig.SkillProvider.Instance.SkillMgr.GetData();
+            skills[cfg.id] = cfg;
         }
         
         private const int c_MaxEmitSkillNum = 10;
@@ -92,6 +100,11 @@ namespace GameFramework.Skill
             get { return m_TargetGfxObj; }
             set { m_TargetGfxObj = value; }
         }
+        public GameObject TrackEffectObj
+        {
+            get { return m_EmitEffectObj; }
+            set { m_EmitEffectObj = value; }
+        }
         public GfxSkillSenderInfo(TableConfig.Skill configData, int seq, int actorId, GameObject gfxObj)
         {
             m_Seq = seq;
@@ -112,6 +125,7 @@ namespace GameFramework.Skill
         private GameObject m_GfxObj;
         private int m_TargetActorId;
         private GameObject m_TargetGfxObj;
+        private GameObject m_EmitEffectObj;
     }
     public sealed class GfxSkillSystem
     {
@@ -199,12 +213,11 @@ namespace GameFramework.Skill
             SkillTrigerManager.Instance.RegisterTrigerFactory("sendgfxmessage", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("sendgfxmessagewithtag", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageWithTagTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("publishgfxevent", new SkillTrigerFactoryHelper<Trigers.PublishGfxEventTrigger>());
-
-            SkillTrigerManager.Instance.RegisterTrigerFactory("camerafollow", new SkillTrigerFactoryHelper<Trigers.CameraFollowTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("cameralook", new SkillTrigerFactoryHelper<Trigers.CameraLookTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("params", new SkillTrigerFactoryHelper<Trigers.ParamsTriger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("animation", new SkillTrigerFactoryHelper<Trigers.AnimationTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("animationspeed", new SkillTrigerFactoryHelper<Trigers.AnimationSpeedTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("animationparameter", new SkillTrigerFactoryHelper<Trigers.AnimationParameterTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("playsound", new SkillTrigerFactoryHelper<Trigers.PlaySoundTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("stopsound", new SkillTrigerFactoryHelper<Trigers.StopSoundTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("selfeffect", new SkillTrigerFactoryHelper<Trigers.SelfEffectTriger>());
@@ -279,6 +292,14 @@ namespace GameFramework.Skill
             if (null != skillData) {
                 SkillInstanceInfo info = NewSkillInstanceImpl(skillData.id, skillData);
                 RecycleSkillInstance(info);
+                if (null != info.m_SkillInstance.EmitSkillInstance) {
+                    SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl(PredefinedSkill.Instance.EmitSkillCfg.id, info.m_SkillInstance.EmitSkillInstance);
+                    RecycleSkillInstance(iinfo);
+                }
+                if (null != info.m_SkillInstance.HitSkillInstance) {
+                    SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl(PredefinedSkill.Instance.HitSkillCfg.id, info.m_SkillInstance.HitSkillInstance);
+                    RecycleSkillInstance(iinfo);
+                }
             }
         }
         public void ClearSkillInstancePool()
@@ -305,6 +326,28 @@ namespace GameFramework.Skill
             } else {
                 sender = null;
                 var instInfo = GetUnusedSkillInstanceInfoFromPool(skillId);
+                if (null != instInfo) {
+                    ret = instInfo.m_SkillInstance;
+                }
+            }
+            return ret;
+        }
+        public SkillInstance FindInnerSkillInstanceForSkillViewer(int skillId, SkillInstance innerInstance)
+        {
+            GfxSkillSenderInfo sender;
+            return FindInnerSkillInstanceForSkillViewer(skillId, innerInstance, out sender);
+        }
+        public SkillInstance FindInnerSkillInstanceForSkillViewer(int skillId, SkillInstance innerInstance, out GfxSkillSenderInfo sender)
+        {
+            SkillInstance ret = null;
+            SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.SkillId == skillId && info.SkillInst.InitDslSkillId == innerInstance.InitDslSkillId);
+            if (null != logicInfo) {
+                sender = logicInfo.Sender;
+                ret = logicInfo.SkillInst;
+            } else {
+                int newSkillId = CalcUniqueInnerSkillId(skillId, innerInstance);
+                sender = null;
+                var instInfo = GetUnusedSkillInstanceInfoFromPool(newSkillId);
                 if (null != instInfo) {
                     ret = instInfo.m_SkillInstance;
                 }
@@ -347,10 +390,6 @@ namespace GameFramework.Skill
             sender = null;
             return null;
         }
-        public bool StartSkill(int actorId, TableConfig.Skill configData, int seq)
-        {
-            return StartSkill(actorId, configData, seq, null);
-        }
         public bool StartSkill(int actorId, TableConfig.Skill configData, int seq, params Dictionary<string, object>[] locals)
         {
             bool ret = false;
@@ -373,7 +412,34 @@ namespace GameFramework.Skill
                     LogSystem.Warn("{0} is casting skill {1} {2}, cancel.", actorId, skillId, seq);
                     return false;
                 }
-                SkillInstanceInfo inst = NewSkillInstance(skillId, senderInfo.ConfigData);
+                SkillInstanceInfo inst = null;
+                SkillInstance innerInstance = null;
+                if (skillId == PredefinedSkill.Instance.EmitSkillCfg.id) {
+                    for (int i = 0; i < locals.Length; ++i) {
+                        object instObj;
+                        if (locals[i].TryGetValue("emitskill", out instObj)) {
+                            innerInstance = instObj as SkillInstance;
+                        }
+                    }
+                    if (null == innerInstance) {
+                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found emitskill.", actorId, skillId, seq);
+                    }
+                } else if (skillId == PredefinedSkill.Instance.HitSkillCfg.id) {
+                    for (int i = 0; i < locals.Length; ++i) {
+                        object instObj;
+                        if (locals[i].TryGetValue("hitskill", out instObj)) {
+                            innerInstance = instObj as SkillInstance;
+                        }
+                    }
+                    if (null == innerInstance) {
+                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found hitskill.", actorId, skillId, seq);
+                    }
+                }
+                if (null == innerInstance) {
+                    inst = NewSkillInstance(skillId, senderInfo.ConfigData);
+                } else {
+                    inst = NewInnerSkillInstance(skillId, innerInstance);
+                }
                 if (null != inst) {
                     m_SkillLogicInfos.Add(new SkillLogicInfo(senderInfo, inst));
                 } else {
@@ -559,7 +625,20 @@ namespace GameFramework.Skill
             EntityController.Instance.DeactivateSkill(info.ActorId, info.SkillId, info.Sender.Seq);
             RecycleSkillInstance(info.Info);
         }
-
+        
+        private SkillInstanceInfo NewInnerSkillInstance(int skillId, SkillInstance innerInstance)
+        {
+            int newSkillId = CalcUniqueInnerSkillId(skillId, innerInstance);
+            if (newSkillId <= 0)
+                return null;
+            SkillInstanceInfo instInfo = GetUnusedSkillInstanceInfoFromPool(newSkillId);
+            if (null == instInfo) {
+                return NewInnerSkillInstanceImpl(skillId, innerInstance);
+            } else {
+                instInfo.m_IsUsed = true;
+                return instInfo;
+            }
+        }
         private SkillInstanceInfo NewSkillInstance(int skillId, TableConfig.Skill skillData)
         {
             SkillInstanceInfo instInfo = GetUnusedSkillInstanceInfoFromPool(skillId);
@@ -575,6 +654,22 @@ namespace GameFramework.Skill
                 return instInfo;
             }
         }
+        private SkillInstanceInfo NewInnerSkillInstanceImpl(int skillId, SkillInstance innerInstance)
+        {
+            int newSkillId = CalcUniqueInnerSkillId(skillId, innerInstance);
+            if (newSkillId <= 0)
+                return null;
+            SkillInstance newInst = innerInstance.Clone();
+            newInst.DslSkillId = skillId;
+
+            SkillInstanceInfo res = new SkillInstanceInfo();
+            res.m_SkillId = skillId;
+            res.m_SkillInstance = newInst;
+            res.m_IsUsed = true;
+
+            AddSkillInstanceInfoToPool(newSkillId, res);
+            return res;
+        }       
         private SkillInstanceInfo NewSkillInstanceImpl(int skillId, TableConfig.Skill skillData)
         {
             string filePath = GameFramework.HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + skillData.dslFile);
@@ -628,6 +723,15 @@ namespace GameFramework.Skill
 
         private List<SkillLogicInfo> m_SkillLogicInfos = new List<SkillLogicInfo>();
         private Dictionary<int, List<SkillInstanceInfo>> m_SkillInstancePool = new Dictionary<int, List<SkillInstanceInfo>>();
+
+        public static int CalcUniqueInnerSkillId(int skillId, SkillInstance innerInstance)
+        {
+            if (skillId == PredefinedSkill.Instance.EmitSkillCfg.id || skillId == PredefinedSkill.Instance.HitSkillCfg.id) {
+                return skillId + innerInstance.InitDslSkillId;
+            } else {
+                return 0;
+            }
+        }
 
         public static GfxSkillSystem Instance
         {
