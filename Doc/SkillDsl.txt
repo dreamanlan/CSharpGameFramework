@@ -1,11 +1,44 @@
-* 技能配置说明
+=======================================================================================================* 注意 *===========================================================================================
+  
+  DSL里每个section里面的trigger的执行是倒序执行的，在加载后，各trigger会按开始时间从大到小降序排序，然后执行时从最后一个往前依次执行（即开始时间从小到大的顺序执行）。排序采用稳定的冒泡排序，需要注意的是
+  由于是倒序执行，相同开始时间的触发器，执行顺序与在dsl里书写的顺序是相反的，相同开始时间的触发器执行时需要保持顺序的要按执行序的倒序书写！！！
+  
+=======================================================================================================********===========================================================================================
+
+* 技能系统的流程与几个概念
+基于DSL的技能系统里的一次技能释放，指的是攻击方发起一个技能(Skill)，在某个时刻对目标产生瞬间影响(Impact)，并有可能产生一个持续的影响（Buff）的过程。
+这里涉及到的Skill、Impact与Buff，三者都使用dsl来描述，Skill表里的type列用来区分这三种类型。
+
+Skill：在攻击方对象上实现流程，一般如果攻击方死亡就会消失。
+Impact：在受击方对象上实现流程，目前主要有2类，一个是子弹技能，一个是受击技能。与Skill拆分开是为了表达攻击方完成Skill后不用等受击方的处理完成即可开始做其它事情（典型的开枪打出子弹后，立即可以做其它事情）。
+Buff：在受击方对象上实现流程，主要表述对受击方的持续性的影响。
+
+一个对象上同时只能激活一个Skill，同时可以激活多个Impact与Buff。
+
+对不同的技能，完整过程可能有如下几种情形：
+
+Skill -> Impact (受击)
+
+Skill -> Impact (受击) -> Buff
+
+Skill -> Impact (子弹) -> Impact (受击)
+
+Skill -> Impact (子弹) -> Impact (受击) -> Buff
+
+* 相关技能配表
+
+Skill的dsl里面内嵌了emitskill（不是子弹技能不需要）与hitskill的情形，技能配表里的impactToSelf/impactToTarget填0，如果是受击后要加buff的则填buff ID。
+Skill的dsl里面没有内嵌emitskill（不是子弹技能不需要）与hitskill的情形，技能配表里的impactToSelf/impactToTarget填的是单独配置的受击技能ID（独立的子弹技能的ID在dsl里的emiteffect里指定），如果受击后要加buff，
+则在受击技能ID的配置行里的impactToSelf/impactToTarget里填buff ID。
+
+* 技能dsl说明
 skill(id)  // id对应技能配置表skill中的dslSkillId
 {
   section(time) //技能阶段，可为多段, time为该段执行时间
   {
   };
 
-  onmessage("oncollide")  //处理事件, "oncollide"是默认碰撞事件
+  onmessage("oncollide") //处理事件
   {
   };
 
@@ -16,22 +49,38 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
   onstop() //技能结束时(包括打断导致的结束)会运行该段逻辑
   {
   };
+  
+  emitskill //嵌入的子弹技能
+  {
+    section(time)
+    {
+      track(bone,0);
+    };
+  };
+  
+  hitskill  //嵌入的受击技能
+  {
+    section(time)
+    {
+      animation(hit);
+      selfeffect(hitEffect,1000,hit,0);
+      damage(0);
+    };
+  };
 };
 
 * 接口说明
-1. curvemove(triggertime, is_lock_rotate, [movetime, speedx, speedy, speedz, accelx, accely, accelz]+)
+1. curvemove(triggertime, [movetime, speedx, speedy, speedz, accelx, accely, accelz]+)
    功能：曲线移动，在triggertime时间开始移动，每个阶段速度speed, 加速度accel，时间movetime
-   参数：
-   - is_lock_rotate 移动过程是否锁定旋转，true时人物会在开始移动后确定方向，不会受玩家的旋转影响，反之则反
    Example：
-     curvemove(300, false, 0.05, 0, 0, 0, 0, 0, 160, 0.05, 0, 0, 8, 0, 0, 320);
+     curvemove(300, 0.05, 0, 0, 0, 0, 0, 160, 0.05, 0, 0, 8, 0, 0, 320);
 
 2. consume([starttime])
    功能：触发技能消耗计算
    参数：
    - starttime 开始时间
 
-3. animation(anim_name [,start_time])
+3. animation(anim_name [,start_time[,normalized_anim_start_time]])
    {
      speed(0.6[, is_effect_skill_time]); //is_effect_skill_time同setanimspeed
      playmode(mode[, time]);    //mode=0为play, 其它为crossfade, time为过渡时间，默认300
@@ -79,16 +128,16 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
      Example
        stopsound(200, "test");
 
-6. selfeffect(effect_path,delete_time,attach_bone[,start_time,is_attach]);
+6. selfeffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
    或
-   selfeffect(effect_path,delete_time,attach_bone[,start_time,is_attach])
+   selfeffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
    {
      transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
    };
    或
-   targeteffect(effect_path,delete_time,attach_bone[,start_time,is_attach]);
+   targeteffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]]);
    或
-   targeteffect(effect_path,delete_time,attach_bone[,start_time,is_attach])
+   targeteffect(effect_path,delete_time,attach_bone[,start_time[,is_attach]])
    {
      transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
    };
@@ -148,11 +197,11 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     Example：
      restorepos(8000);
 
-13. timescale(starttime, scale[, endtime])
+13. timescale(starttime, scale[, duration])
     功能：减慢世界速度
     参数：
      - scale 减慢比例, 1为正常速度
-     - endtime 结束时间，没有时在section结束时效果结束, 注意：该结束时间受到减速的影响
+     - duration 持续时间, 注意：实际时间受到scale的影响
     Example：
      timescale(0, 0.2, 500);
 
@@ -168,7 +217,7 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     Example：
       fadecolor(0,1000,"1_TieQuan_01","AlphaBlendDisorderWithLight",color(0,0,0,0),color(100,100,100,100));
       
-15. damage(start_time);
+15. damage([start_time]);
     功能：产生技能伤害。
    
 16. charge(duration,velocity,stopAtTarget[,vector3(x,y,z)[,start_time]]);
@@ -235,8 +284,8 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     
     控制点的计算方法：假设初始位置距目标S，则控制点在初始位置朝目标按偏转方向“S/2*缩放矢量”距离处。
     
-23. track(speed[, start_time]);
-    功能：将特效移向主角，这一触发器用在预定义技能emit_skill(90000)里用来移动子弹特效并触发受击。
+23. track(trackBone[,start_time[,duration[,not_move]]]);
+    功能：将特效移向主角，这一触发器用在预定义技能emit_skill里用来移动子弹特效并触发受击。
     
 24. replaceshaderandfadecolor(starttime,remaintime,"shadername",startcolor,changecolor[,changetime]);
     功能：改变shader并渐变material的颜色
@@ -259,29 +308,32 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     Example：
       impact(200);
       
-27. camerafollow(starttime[,remaintime]);
-    功能：像机跟随技能释放者
-    参数：
-    - remain_time 效果持续时间，默认0，不为0表明保持状态的时间，到时间后恢复像机正常状态。
+27. keepsectionforbuff(interval[, starttime[, deltatime]]);
+    功能：以interval时间间隔调整当前section持续时间为buff的持续时间（用于支持多个buff叠加导致持续时间动态变化）
+    Example：
+      keepsectionforbuff(100,0);
 
-28. cameralook(starttime[,remaintime]);
-    功能：像机看着目标点
-    参数：
-    - remain_time 效果持续时间，默认0，不为0表明保持状态的时间，到时间后恢复像机正常状态。
-    
-29. camerafollowpath(starttime);
-    功能：像机恢复正常状态。
-    
-30. addstate(state[,starttime]);
+28. params([startTime])
+    {
+        int(name,value);
+        long(name,value);
+        float(name,value);
+        double(name,value);
+        string(name,value);
+        ...
+    };
+    功能：定义技能参数，可以多次定义（此时startTime应不同且在间隔里会有使用参数的地方）。
+        
+29. addstate(state[,starttime]);
     功能：给当前impact对象添加状态，可以是"invincible","fixedposition","silence","sleep","hidden"
     
-31. removestate(state[,starttime]);
+30. removestate(state[,starttime]);
     功能：给当前impact对象添加状态，可以是"invincible","fixedposition","silence","sleep","hidden",""
     
-32. aoeimpact(start_time, center_x, center_y, center_z, relativeToTarget);
+31. aoeimpact(start_time, center_x, center_y, center_z, relativeToTarget);
     功能：按指定偏移位置与配表的范围对指定目标产生aoe impact
     
-33. aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time]);
+32. aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time]);
     或
     aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time])
     {
@@ -297,34 +349,34 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     
     控制点的计算方法：假设初始位置距目标S，则控制点在初始位置朝目标按偏转方向“S/2*缩放矢量”距离处。
     
-34. stopsectionif(type[,start_time]);
+33. stopsectionif(type[,start_time]);
     功能：如果指定条件满足则终止当前section。目前只支持type为"shield"，表示如果盾消失则停止。
     
-35. periodicallyimpact(starttime,centerx,centery,centerz,relativeToTarget,duration,interval);
+34. periodicallyimpact(starttime,centerx,centery,centerz,relativeToTarget,duration,interval);
     功能：按指定的周期产生impact
 
-36. sendstorymessage(start_time,msg,arg1,arg2,arg3,...);
+35. sendstorymessage(start_time,msg,arg1,arg2,arg3,...);
     功能：发送剧情消息
 
-37. sendgfxmessage(start_time,objname,msg,arg1,arg2,arg3,...);
+36. sendgfxmessage(start_time,objname,msg,arg1,arg2,arg3,...);
     功能：基于gameobject名字发送gfx脚本调用消息
 
-38. sendgfxmessagewithtag(start_time,tag,msg,arg1,arg2,arg3,...);
+37. sendgfxmessagewithtag(start_time,tag,msg,arg1,arg2,arg3,...);
     功能：基于gameobject Tag发送gfx脚本调用消息
 
-39. publishgfxevent(start_time,event,group,arg1,arg2,arg3,...);
+38. publishgfxevent(start_time,event,group,arg1,arg2,arg3,...);
     功能：发送gfx订阅事件，触发订阅了此event的函数
     
-44. addshield([start_time]);
+39. addshield([start_time]);
     功能：给目标加盾（根据配表数值）
     
-45. removeshield([start_time]);
+40. removeshield([start_time]);
     功能：移除目标的盾
     
-46. selecttarget(type[,start_time]);
+41. selecttarget(type[,start_time]);
     功能：按指定类别选择目标
     
-41. lockframe(startime, is_need_hit, lock_speed, locktime,
+42. lockframe(startime, lock_speed, locktime[,
               after_lock_anim_speed, restore_time[, is_effect_skill_time,
               after_lock_effect_speed, after_lock_move_speed,
               after_lock_skill_speed])
@@ -334,7 +386,6 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
    };
    功能：定帧
    参数：
-    - is_need_hit 是否需要击中敌人才定帧（目前未实现）
     - lock_speed 定帧后动画速度
     - locktime 定帧时间长度, 该时间不受技能时间影响
     - after_lock_anim_speed 定帧后动画速度
@@ -349,15 +400,15 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
       3. 运行场景，在日志输出窗口可以找到keyframe的输出, 复制后粘贴到技能配置文件中，注意：如果
          文件中出现科学计数法如1.221E-7或其他数字表达方式，需要手动改为一般的数字
    Example：
-     lockframe(700, false, 0, 100, 1, 50, true, 1, 1, 1);
+     lockframe(700, 0, 100, 1, 50, true, 1, 1, 1);
      
-42. periodicallyaoeimpact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
+43. periodicallyaoeimpact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
     周期性的产生范围impact。
     
-43. chainaoeimpact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
+44. chainaoeimpact(start_time, center_x, center_y, center_z, relativeToTarget, duration, interval);
     链式范围impact，首次确定目标，之后依次对目标产生impact。
     
-44. enablemoveagent(true_or_false[,start_time]);
+45. enablemoveagent(true_or_false[,start_time]);
     允许或禁用移动功能。（技能要控制角色位置时需要先禁用移动功能）
     
 46. teleport(starttime, offset_x, offset_y, offset_z);
@@ -374,3 +425,12 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     
 50. follow(start_time, offset_x, offset_y, offset_z, duration);
     在一段时间内跟随目标(放到指定的偏移位置)。
+    
+51. animationparameter([start_time])
+    {
+        float(name,val);    //val为浮点数
+        int(name,val);      //val为整数
+        bool(name,val);     //val为true或false
+        trigger(name,val);  //val为true或false
+    };
+    在指定时间修改动画控制器的参数，name为控制器配置里指定的名字。
