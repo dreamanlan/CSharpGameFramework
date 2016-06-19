@@ -60,7 +60,7 @@ public class SkillViewer : MonoBehaviour
         GameControler.Init(tempPath, streamingAssetsPath);        
         GameControler.InitGame(false);
         SpriteManager.Init();
-        ClientModule.Instance.ChangeScene(4);
+        ClientModule.Instance.ChangeScene(2);
     }
 
     void OnDestroy()
