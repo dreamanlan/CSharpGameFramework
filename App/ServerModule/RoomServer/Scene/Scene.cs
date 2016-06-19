@@ -78,6 +78,9 @@ namespace GameFramework
 
             m_SceneState = SceneState.Sleeping;
             m_IsStoryState = false;
+
+            m_ReloadMonstersQueue.Clear();
+            m_PreparedReloadMonsterCount = 0;
         }
 
         internal void SetRoom(Room room)
@@ -120,7 +123,9 @@ namespace GameFramework
 
             info.SceneContext = m_SceneContext;
             AddCareList(info);
-            m_StorySystem.SendMessage("user_enter_scene", info.GetId(), info.GetUnitId(), info.GetCampId(), info.GetMovementStateInfo().PositionX, info.GetMovementStateInfo().PositionZ);
+            if (newUser.IsEntered) {
+                m_StorySystem.SendMessage("user_enter_scene", info.GetId(), info.GetUnitId(), info.GetCampId(), info.GetMovementStateInfo().PositionX, info.GetMovementStateInfo().PositionZ);
+            }
         }
 
         internal void LeaveScene(User user)
@@ -128,7 +133,11 @@ namespace GameFramework
             EntityInfo info = user.Info;
             RemoveCareList(info);
             m_StorySystem.SendMessage("user_leave_scene", info.GetId(), info.GetUnitId(), info.GetCampId(), info.GetMovementStateInfo().PositionX, info.GetMovementStateInfo().PositionZ);
+            user.SetHpArmor(info.Hp, info.Energy);
+            user.HaveEnterPosition = false;
+            user.IsEntered = false;
             info.NeedDelete = true;
+            user.Info = null;
         }
 
         internal void AddCareList(EntityInfo info)
@@ -274,6 +283,11 @@ namespace GameFramework
             return true;
         }
 
+        internal Queue<TableConfig.LevelMonster> ReloadMonstersQueue
+        {
+            get { return m_ReloadMonstersQueue; }
+        }
+
         internal MovementSystem MovementSystem
         {
             get { return m_MovementSystem; }
@@ -365,6 +379,8 @@ namespace GameFramework
 
         private const long c_IntervalPerSecond = 5000;
         private long m_LastTickTimeForTickPerSecond = 0;
+        private const long c_IntervalPer5s = 5000;
+        private long m_LastTickTimeForTickPer5s = 0;
         private int m_SceneResId = 0;
         private TableConfig.Level m_SceneConfig = null;
         private Dictionary<string, bool> m_AirWallInfo = new Dictionary<string, bool>();
@@ -392,5 +408,11 @@ namespace GameFramework
 
         private SceneState m_SceneState = SceneState.Sleeping;
         private SceneProfiler m_SceneProfiler = new SceneProfiler();
+
+        private Queue<TableConfig.LevelMonster> m_ReloadMonstersQueue = new Queue<TableConfig.LevelMonster>();
+        private TableConfig.LevelMonster[] m_PreparedReloadMonsters = new TableConfig.LevelMonster[c_MaxReloadMonsterNum];
+        private int m_PreparedReloadMonsterCount = 0;
+
+        private const int c_MaxReloadMonsterNum = 32;
     }
 }

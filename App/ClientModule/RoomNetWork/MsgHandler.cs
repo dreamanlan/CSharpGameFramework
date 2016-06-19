@@ -412,10 +412,6 @@ internal class Msg_RC_ChangeScene_Handler
         if (null == _msg)
             return;
         int targetSceneId = _msg.target_scene_id;
-        TableConfig.Level cfg = TableConfig.LevelProvider.Instance.GetLevel(targetSceneId);
-        if (null != cfg && cfg.type == (int)SceneTypeEnum.Room) {
-            NetworkSystem.Instance.QuitBattle(false);
-        }
         ClientModule.Instance.ChangeScene(targetSceneId);
     }
 }

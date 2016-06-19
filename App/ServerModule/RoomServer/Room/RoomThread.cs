@@ -48,9 +48,9 @@ namespace GameFramework
             Interlocked.Increment(ref preactive_room_count_);
         }
 
-        internal void ActiveFieldRoom(int roomid, int scenetype)
+        internal void ActiveFieldRoom(int roomid, int sceneId)
         {
-            LogSys.Log(LOG_TYPE.INFO, "[0] active field room {0} scene {1} thread {2}", roomid, scenetype, cur_thread_id_);
+            LogSys.Log(LOG_TYPE.INFO, "[0] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             Room rm = room_pool_.NewRoom();
             if (null == rm) {
                 Interlocked.Decrement(ref preactive_room_count_);
@@ -59,18 +59,14 @@ namespace GameFramework
                     roomid, cur_thread_id_, preactive_room_count_);
                 return;
             }
-            LogSys.Log(LOG_TYPE.INFO, "[1] active field room {0} scene {1} thread {2}", roomid, scenetype, cur_thread_id_);
+            LogSys.Log(LOG_TYPE.INFO, "[1] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             rm.ScenePool = scene_pool_;
-            rm.Init(roomid, scenetype, user_pool_, connector_);
-            LogSys.Log(LOG_TYPE.INFO, "[2] active field room {0} scene {1} thread {2}", roomid, scenetype, cur_thread_id_);
+            rm.Init(roomid, sceneId, user_pool_, connector_);
+            LogSys.Log(LOG_TYPE.INFO, "[2] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
 
-            rm.MaxScore = 1000000;
-            rm.MaxLevel = 999;
-            rm.Monsters.Clear();
-            rm.Hps.Clear();
             rm.IsFieldRoom = true;
 
-            LogSys.Log(LOG_TYPE.INFO, "[3] active field room {0} scene {1} thread {2}", roomid, scenetype, cur_thread_id_);
+            LogSys.Log(LOG_TYPE.INFO, "[3] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
 
             //工作全部完成后再加到激活房间列表，开始tick
             active_room_.Add(rm);
@@ -80,47 +76,26 @@ namespace GameFramework
                 roomid, cur_thread_id_, preactive_room_count_);
         }
 
-        internal void ActiveRoom(int roomid, int scenetype, User[] users, List<int> monsters, List<int> hps)
+        internal void ActiveRoom(int roomid, int sceneId, MyAction<bool> callbackOnFinish)
         {
-            LogSys.Log(LOG_TYPE.INFO, "[0] active room {0} scene {1} thread {2} for {3} users", roomid, scenetype, cur_thread_id_, users.Length);
+            LogSys.Log(LOG_TYPE.INFO, "[0] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             Room rm = room_pool_.NewRoom();
             if (null == rm) {
-                //由于并发原因，有可能lobby或主线程会多发起一些房间激活，这种失败情形需要回收user。
+                //由于并发原因，有可能lobby或主线程会多发起一些房间激活。
                 //我们通过预留一定数量的房间来降低这种情形发生的概率。
-                foreach (User u in users) {
-                    LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [RoomThread.ActiveRoom]", u.LocalID, u.Guid, u.GetKey());
-                    user_pool_.FreeUser(u.LocalID);
-                }
                 Interlocked.Decrement(ref preactive_room_count_);
+                if (null != callbackOnFinish) {
+                    callbackOnFinish(false);
+                }
 
                 LogSys.Log(LOG_TYPE.ERROR, "Failed active room {0} in thread {1}, preactive room count {2}",
                     roomid, cur_thread_id_, preactive_room_count_);
                 return;
             }
-            LogSys.Log(LOG_TYPE.INFO, "[1] active room {0} scene {1} thread {2} for {3} users", roomid, scenetype, cur_thread_id_, users.Length);
+            LogSys.Log(LOG_TYPE.INFO, "[1] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             rm.ScenePool = scene_pool_;
-            rm.Init(roomid, scenetype, user_pool_, connector_);
-            LogSys.Log(LOG_TYPE.INFO, "[2] active room {0} scene {1} thread {2} for {3} users", roomid, scenetype, cur_thread_id_, users.Length);
-            if (null != users) {
-                int maxScore = 0;
-                int maxLevel = 0;
-                foreach (User us in users) {
-                    LogSys.Log(LOG_TYPE.INFO, "[3] active room {0} scene {1} thread {2} for user {3}({4})", roomid, scenetype, cur_thread_id_, us.Guid, us.GetKey());
-                    rm.AddNewUser(us);
-                }
-                ///
-
-                rm.MaxScore = maxScore;
-                rm.MaxLevel = maxLevel;
-                rm.Monsters.Clear();
-                rm.Hps.Clear();
-                if (null != monsters && null != hps
-                  && monsters.Count == hps.Count) {
-                    rm.Monsters.AddRange(monsters);
-                    rm.Hps.AddRange(hps);
-                }
-            }
-            LogSys.Log(LOG_TYPE.INFO, "[4] active room {0} scene {1} thread {2} for {3} users", roomid, scenetype, cur_thread_id_, users.Length);
+            rm.Init(roomid, sceneId, user_pool_, connector_);
+            LogSys.Log(LOG_TYPE.INFO, "[2] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             /*
             //临时添加测试观察者
             for (int obIx = 0; obIx < 5; ++obIx) {
@@ -136,77 +111,97 @@ namespace GameFramework
             //工作全部完成后再加到激活房间列表，开始tick
             active_room_.Add(rm);
             Interlocked.Decrement(ref preactive_room_count_);
+            if (null != callbackOnFinish) {
+                callbackOnFinish(true);
+            }
 
             LogSys.Log(LOG_TYPE.DEBUG, "active room {0} in thread {1}, preactive room count {2}",
                 roomid, cur_thread_id_, preactive_room_count_);
         }
-        internal void AddUser(ulong guid, int roomId, User user)
+        internal void AddUser(User user, int roomId, MyAction<bool, int, User> callbackOnFinish)
+        {
+            AddUser(new User[] { user }, roomId, (bool ret, int sceneId, IList<User> users) => {
+                if(users.Count>0)
+                    callbackOnFinish(ret, sceneId, users[0]);
+                else
+                    callbackOnFinish(ret, sceneId, null);
+            });
+        }
+        internal void AddUser(IList<User> users, int roomId, MyAction<bool, int, IList<User>> callbackOnFinish)
         {
             Room room = GetRoomByID(roomId);
             if (null != room) {
-                room.AddNewUser(user);
+                List<User> successUsers = new List<User>();
+                for (int i = 0; i < users.Count; ++i) {
+                    if (room.AddNewUser(users[i])) {
+                        successUsers.Add(users[i]);
+                    }
+                }
+                if (null != callbackOnFinish) {
+                    int sceneId = 0;
+                    Scene scene = room.GetActiveScene();
+                    if (null != scene) {
+                        sceneId = scene.SceneResId;
+                    }
+                    callbackOnFinish(true, sceneId, successUsers);
+                    return;
+                }
+            }
+            if (null != callbackOnFinish) {
+                callbackOnFinish(false, -1, null);
+            }
+        }
+        internal void RemoveUser(ulong guid, int roomId, bool free, MyAction<bool, int, User> callbackOnFinish)
+        {
+            RemoveUser(new ulong[] { guid }, roomId, free, (bool ret, int sceneId, IList<User> users) => {
+                if(users.Count>0)
+                    callbackOnFinish(ret, sceneId, users[0]);
+                else
+                    callbackOnFinish(ret, sceneId, null);
+            });
+        }
+        internal void RemoveUser(IList<ulong> guids, int roomId, bool free, MyAction<bool, int, IList<User>> callbackOnFinish)
+        {
+            Room room = GetRoomByID(roomId);
+            if (null != room) {
+                List<User> users = new List<User>();
+                for (int i = 0; i < guids.Count; ++i) {
+                    User user = room.GetUserByGuid(guids[i]);
+                    if (null != user) {
+                        room.RemoveUserFromRoomThread(user, free);
+                        users.Add(user);
+                    }
+                }
+                if (null != callbackOnFinish) {
+                    int sceneId = 0;
+                    Scene scene = room.GetActiveScene();
+                    if (null != scene) {
+                        sceneId = scene.SceneResId;
+                    }
+                    callbackOnFinish(true, sceneId, users);
+                    return;
+                }
+            }
+            if (null != callbackOnFinish) {
+                callbackOnFinish(false, -1, null);
             }
         }
 
-        internal void ChangeRoomScene(int roomid, int scenetype)
+        internal void ChangeRoomScene(int roomid, int sceneId, MyAction<bool> callbackOnFinish)
         {
             Room room = GetRoomByID(roomid);
             if (null != room) {
-                room.ChangeScene(scenetype);
-            }
-        }
-
-        internal void HandleEnterScene(ulong guid, int roomId, User user, PBChannel channel, int handle, uint seq)
-        {
-            Room room = GetRoomByID(roomId);
-            if (null != room) {
-                if (room.AddNewUser(user)) {
-                    Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
-                    replyBuilder.UserGuid = guid;
-                    replyBuilder.RoomID = roomId;
-                    replyBuilder.Result = (int)SceneOperationResultEnum.Success;
-                    channel.Send(replyBuilder);
-                } else {
-                    Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
-                    replyBuilder.UserGuid = guid;
-                    replyBuilder.RoomID = roomId;
-                    replyBuilder.Result = (int)SceneOperationResultEnum.User_Key_Exist;
-                    channel.Send(replyBuilder);
+                room.ChangeScene(sceneId);
+                if (null != callbackOnFinish) {
+                    callbackOnFinish(true);
+                    return;
                 }
-            } else {
-                Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
-                replyBuilder.UserGuid = guid;
-                replyBuilder.RoomID = roomId;
-                replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
-                channel.Send(replyBuilder);
+            }
+            if (null != callbackOnFinish) {
+                callbackOnFinish(false);
             }
         }
-
-        internal void HandleChangeScene(ulong userGuid, int roomId, int targetRoomId, PBChannel channel, int handle, uint seq)
-        {
-            Room room = GetRoomByID(roomId);
-            if (null != room) {
-                User user = room.GetUserByGuid(userGuid);
-                if (null != user) {
-                    RemoveUserForChangeScene(room, user, userGuid, roomId, targetRoomId, channel, handle, seq);
-                } else {
-                    Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
-                    replyBuilder.UserGuid = userGuid;
-                    replyBuilder.RoomID = roomId;
-                    replyBuilder.TargetRoomID = targetRoomId;
-                    replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_User;
-                    channel.Send(replyBuilder);
-                }
-            } else {
-                Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
-                replyBuilder.UserGuid = userGuid;
-                replyBuilder.RoomID = roomId;
-                replyBuilder.TargetRoomID = targetRoomId;
-                replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
-                channel.Send(replyBuilder);
-            }
-        }
-
+        
         internal void HandleReconnectUser(Msg_LR_ReconnectUser urMsg, PBChannel channel, int handle, uint seq)
         {
             Msg_RL_ReplyReconnectUser.ReconnectResultEnum result;
@@ -309,7 +304,7 @@ namespace GameFramework
                 replyBuilder.MP = info.Energy;
             }
 
-            room.RemoveUserFromRoomThread(user);
+            room.RemoveUserFromRoomThread(user, true);
 
             replyBuilder.UserGuid = userGuid;
             replyBuilder.RoomID = roomId;

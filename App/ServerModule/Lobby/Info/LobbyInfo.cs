@@ -34,6 +34,16 @@ namespace Lobby
             get { return m_UserCount; }
             set { m_UserCount = value; }
         }
+        internal int RoomCount
+        {
+            get { return m_RoomCount; }
+            set { m_RoomCount = value; }
+        }
+        internal int RoomUserCount
+        {
+            get { return m_RoomUserCount; }
+            set { m_RoomUserCount = value; }
+        }
 
         internal void Reset()
         {
@@ -41,10 +51,14 @@ namespace Lobby
 
             m_WorldId = 0;
             m_UserCount = 0;
+            m_RoomCount = 0;
+            m_RoomUserCount = 0;
         }
 
         private int m_WorldId = 0;
         private int m_UserCount = 0;
+        private int m_RoomCount = 0;
+        private int m_RoomUserCount = 0;
 
         private long m_LastUpdateTime = 0;
     }
@@ -98,6 +112,7 @@ namespace Lobby
                             for (int rix = 0; rix < cfg.RoomCountPerThread; ++rix) {
                                 RoomInfo room = NewRoomInfo();
                                 room.RoomId = ++m_CurRoomId;
+                                room.IsField = true;
                                 room.SceneType = cfg.id;
                                 room.RoomServerName = roomServerName;
                                 room.TotalCount = cfg.MaxUserCount;
@@ -123,6 +138,34 @@ namespace Lobby
             RoomInfo info = null;
             m_Rooms.TryGetValue(roomId, out info);
             return info;
+        }
+
+        internal int CreateAutoRoom(ulong[] users, int type)
+        {
+            RoomInfo room = NewRoomInfo();
+            room.RoomId = ++m_CurRoomId;
+            room.SceneType = type;
+            room.RoomServerName = GetIdlestRoomServer();
+            room.TotalCount = users.Length;
+            if (!room.IsPvp) {
+                room.AddUsers((int)CampIdEnum.Blue, users);
+            } else {
+                int ct = users.Length / 2;
+                ulong[] blues = new ulong[users.Length - ct];
+                ulong[] reds = new ulong[ct];
+                Array.Copy(users, 0, blues, 0, users.Length - ct);
+                Array.Copy(users, ct, reds, 0, ct);
+                room.AddUsers((int)CampIdEnum.Blue, blues);
+                room.AddUsers((int)CampIdEnum.Red, reds);
+            }
+
+            if (!m_Rooms.ContainsKey(room.RoomId)) {
+                m_Rooms.Add(room.RoomId, room);
+            } else {
+                m_Rooms[room.RoomId] = room;
+            }
+            room.Creator = 0;
+            return room.RoomId;
         }
 
         internal int FindSceneRoom(int sceneId)
@@ -185,19 +228,40 @@ namespace Lobby
             foreach (KeyValuePair<int, RoomInfo> pair in m_Rooms) {
                 RoomInfo room = pair.Value;
                 room.Tick();
-                if (room.CurrentState == RoomState.Close) {
+                if (!room.IsField && room.CurrentState == RoomState.Close) {
                     recycles.Enqueue(room);
                 }
             }
             while (recycles.Count > 0) {
                 RoomInfo room = recycles.Dequeue();
                 m_Rooms.Remove(room.RoomId);
-                if (room.IsCustomRoom)
-                    m_CustomRooms.Remove(room.RoomId);
                 RecycleRoomInfo(room);
             }
         }
-        
+
+        private string GetIdlestRoomServer()
+        {
+            string name = "";
+            int minNum = int.MaxValue;
+            RoomServerInfo retInfo = null;
+            foreach (KeyValuePair<string, RoomServerInfo> pair in m_RoomServerInfos) {
+                RoomServerInfo info = pair.Value;
+                if (info.IdleRoomNum > info.AllocedRoomNum && info.UserNum < minNum) {
+
+                    LogSys.Log(LOG_TYPE.DEBUG, "GetIdlestRoomServer, Bubble process, Server:{0} UserNum:{1} < {2}", info.RoomServerName, info.UserNum, minNum);
+
+                    minNum = info.UserNum;
+                    retInfo = info;
+                }
+            }
+            if (null != retInfo) {
+                ++retInfo.AllocedRoomNum;
+                name = retInfo.RoomServerName;
+            }
+            LogSys.Log(LOG_TYPE.DEBUG, "GetIdlestRoomServer, Name:{0} UserNum:{1}", name, minNum);
+            return name;
+        }
+
         private RoomInfo NewRoomInfo()
         {
             RoomInfo room = null;
@@ -221,7 +285,6 @@ namespace Lobby
         private SortedDictionary<string, RoomServerInfo> m_RoomServerInfos = new SortedDictionary<string, RoomServerInfo>();
         private SortedDictionary<int, RoomInfo> m_Rooms = new SortedDictionary<int, RoomInfo>();
         private SortedDictionary<int, SceneRoomsInfo> m_SceneInfos = new SortedDictionary<int, SceneRoomsInfo>();
-        private List<int> m_CustomRooms = new List<int>();
         private int m_CurRoomId = 0;
 
         private Queue<RoomInfo> m_UnusedRoomInfos = new Queue<RoomInfo>();

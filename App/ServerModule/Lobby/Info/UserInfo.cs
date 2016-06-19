@@ -22,9 +22,7 @@ namespace Lobby
     internal class UserInfo
     {
         internal const int c_NextLifeTime = 300000;
-        internal const int c_LifeTimeOfMatch = 1800000;
         internal const int c_LifeTimeWaitStartGame = 60000;
-        internal const int c_LifeTimeOfBattle = 3600000;
         internal const int c_LifeTimeWaitOffline = 20000;
 
         internal UserState CurrentState
@@ -65,9 +63,10 @@ namespace Lobby
         {
             get { return null == m_BaseUserInfo ? "" : m_BaseUserInfo.NodeName; }
         }
-        internal int FightingCapacity
+        internal int SceneId
         {
-            get { return null == m_BaseUserInfo ? 0 : m_BaseUserInfo.FightingCapacity; }
+            get { return null == m_BaseUserInfo ? 0 : m_BaseUserInfo.SceneId; }
+            set { if (null != m_BaseUserInfo) m_BaseUserInfo.SceneId = value; }
         }
         internal string ClientInfo
         {

@@ -245,6 +245,14 @@ namespace SkillSystem
             }
             return default(T);
         }
+        public static object RefixObjectVariable(string key, SkillInstance instance)
+        {
+            object val;
+            if (instance.LocalVariables.TryGetValue(key, out val)) {
+                return val;
+            }
+            return key;
+        }
     }
     public class SkillResourceParam
     {
@@ -363,5 +371,76 @@ namespace SkillSystem
 
         private string m_Key = string.Empty;
         private T m_Value;
+    }
+    public class SkillObjectParam
+    {
+        public void CopyFrom(SkillObjectParam other)
+        {
+            m_Key = other.m_Key;
+            m_Value = other.m_Value;
+        }
+        public void Set(object val)
+        {
+            m_Key = string.Empty;
+            m_Value = val;
+        }
+        public void Set(Dsl.ISyntaxComponent p)
+        {
+            string val = p.GetId();
+            int type = p.GetIdType();
+            if (!string.IsNullOrEmpty(val)) {
+                if (type == Dsl.CallData.NUM_TOKEN) {
+                    m_Key = string.Empty;
+                    if (val.IndexOf('.') >= 0) {
+                        m_Value = Convert.ChangeType(val, typeof(float));
+                    } else {
+                        m_Value = Convert.ChangeType(val, typeof(int));
+                    }
+                } else {
+                    m_Key = val;
+                }
+            }
+        }
+        public object Get(SkillInstance instance)
+        {
+            if (string.IsNullOrEmpty(m_Key)) {
+                return m_Value;
+            } else {
+                return SkillParamUtility.RefixObjectVariable(m_Key, instance);
+            }
+        }
+        public object EditableValue
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(m_Key))
+                    return m_Value;
+                else
+                    return m_Key;
+            }
+            set
+            {
+                m_Key = value as string;
+                if (null == m_Key) {
+                    m_Key = string.Empty;
+                    m_Value = value;
+                } else {
+                    if (m_Key.Length > 0) {
+                        if (char.IsDigit(m_Key[0]) || m_Key[0] == '.' || m_Key[0] == '+' || m_Key[0] == '-') {
+                            if (m_Key.IndexOf('.') >= 0) {
+                                m_Value = (float)Convert.ChangeType(m_Key, typeof(float));
+                                m_Key = string.Empty;
+                            } else {
+                                m_Value = (int)Convert.ChangeType(m_Key, typeof(int));
+                                m_Key = string.Empty;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private string m_Key = string.Empty;
+        private object m_Value;
     }
 }

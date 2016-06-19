@@ -14,7 +14,7 @@ story(main)
       var("@left","Left");
       var("@right","Right");
       var("@text","Panel/Text");
-      onclick("click","Panel/Text");
+      onevent("button","click","Panel/Text");
     };
     @window.SetActive(changetype(0,"bool"));
   };

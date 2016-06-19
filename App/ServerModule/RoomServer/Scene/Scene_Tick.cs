@@ -99,6 +99,18 @@ namespace GameFramework
                     TickProperty();
                 }
             }
+
+            if (0 == m_LastTickTimeForTickPer5s) {
+                m_LastTickTimeForTickPer5s = TimeUtility.GetLocalMilliseconds();
+                ReloadObjects();
+            } else {
+                long curTime = TimeUtility.GetLocalMilliseconds();
+                if (curTime > m_LastTickTimeForTickPer5s + c_IntervalPer5s) {
+                    m_LastTickTimeForTickPer5s = curTime; 
+                    ReloadObjects();
+                }
+            }
+
             m_SceneProfiler.TickAttrRecoverTime = TimeSnapshot.DoCheckPoint();
             //空间信息调试
             TickDebugSpaceInfo();
@@ -110,6 +122,7 @@ namespace GameFramework
             m_DeletedEntities.Clear();
             for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
+                info.RetireAttackerInfos(60000);
                 if (info.LevelChanged || info.GetSkillStateInfo().BuffChanged) {
                     AttrCalculator.Calc(info);
                     info.LevelChanged = false;
@@ -149,18 +162,31 @@ namespace GameFramework
                             m_SkillSystem.StartSkill(info.GetId(), skillInfo.ConfigData, 0);
                             OnEntityKilled(info);
                         } else {
+                            if (null == info.CustomData as User) {
+                                info.DeadTime = 0;
+                                info.NeedDelete = true;
+                                OnEntityKilled(info);
+                            } else {
+                                info.DeadTime = TimeUtility.GetLocalMilliseconds();
+                            }
+                        }
+                    } else {
+                        if (null == info.CustomData as User && info.DeadTime + info.DeadTimeout < TimeUtility.GetLocalMilliseconds()) {
                             info.DeadTime = 0;
                             info.NeedDelete = true;
-                            OnEntityKilled(info);
-                        }
-                    } else if (info.DeadTime + info.DeadTimeout < TimeUtility.GetLocalMilliseconds()) {
-                        info.DeadTime = 0;
-                        info.NeedDelete = true;
 
-                        //重新发送npc死亡消息
-                        Msg_RC_NpcDead npcDeadBuilder = new Msg_RC_NpcDead();
-                        npcDeadBuilder.npc_id = info.GetId();
-                        NotifyAllUser(RoomMessageDefine.Msg_RC_NpcDead, npcDeadBuilder);
+                            //重新发送npc死亡消息
+                            Msg_RC_NpcDead npcDeadBuilder = new Msg_RC_NpcDead();
+                            npcDeadBuilder.npc_id = info.GetId();
+                            NotifyAllUser(RoomMessageDefine.Msg_RC_NpcDead, npcDeadBuilder);
+                        } else if (null != info.CustomData as User && info.DeadTime + info.ReliveTimeout < TimeUtility.GetLocalMilliseconds()) {
+                            info.DeadTime = 0;
+                            info.SetHp(Operate_Type.OT_Absolute, info.GetActualProperty().HpMax);
+                            info.SetEnergy(Operate_Type.OT_Absolute, info.GetActualProperty().EnergyMax);
+
+                            Msg_RC_SyncProperty npcProp = DataSyncUtility.BuildSyncPropertyMessage(info);
+                            NotifyAllUser(RoomMessageDefine.Msg_RC_SyncProperty, npcProp);
+                        }
                     }
                 }
                 if (info.NeedDelete) {
@@ -247,57 +273,6 @@ namespace GameFramework
 
                     Msg_RC_SyncProperty builder = DataSyncUtility.BuildSyncPropertyMessage(info);
                     NotifyAllUser(RoomMessageDefine.Msg_RC_SyncProperty, builder);
-                }
-            }
-        }
-
-        private void HandleCorpsScene(Room room)
-        {
-            if (null == room) {
-                return;
-            }
-            int count = room.Monsters.Count;
-            if (!m_StorySystem.GlobalVariables.ContainsKey("@@BossNum")) {
-                m_StorySystem.GlobalVariables.Add("@@BossNum", count);
-            }
-            if (1 == count) {
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@FirstBoss")) {
-                    m_StorySystem.GlobalVariables.Add("@@FirstBoss", room.Monsters[0]);
-                }
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@FirstHp")) {
-                    m_StorySystem.GlobalVariables.Add("@@FirstHp", room.Hps[0]);
-                }
-            } else if (2 == count) {
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@FirstBoss")) {
-                    m_StorySystem.GlobalVariables.Add("@@FirstBoss", room.Monsters[0]);
-                }
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@FirstHp")) {
-                    m_StorySystem.GlobalVariables.Add("@@FirstHp", room.Hps[0]);
-                }
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@SecondBoss")) {
-                    m_StorySystem.GlobalVariables.Add("@@SecondBoss", room.Monsters[1]);
-                }
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@SecondHp")) {
-                    m_StorySystem.GlobalVariables.Add("@@SecondHp", room.Hps[1]);
-                }
-            } else if (3 == count) {
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@FirstBoss")) {
-                    m_StorySystem.GlobalVariables.Add("@@FirstBoss", room.Monsters[0]);
-                }
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@FirstHp")) {
-                    m_StorySystem.GlobalVariables.Add("@@FirstHp", room.Hps[0]);
-                }
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@SecondBoss")) {
-                    m_StorySystem.GlobalVariables.Add("@@SecondBoss", room.Monsters[1]);
-                }
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@SecondHp")) {
-                    m_StorySystem.GlobalVariables.Add("@@SecondHp", room.Hps[1]);
-                }
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@ThirdBoss")) {
-                    m_StorySystem.GlobalVariables.Add("@@ThirdBoss", room.Monsters[2]);
-                }
-                if (!m_StorySystem.GlobalVariables.ContainsKey("@@ThirdHp")) {
-                    m_StorySystem.GlobalVariables.Add("@@ThirdHp", room.Hps[2]);
                 }
             }
         }

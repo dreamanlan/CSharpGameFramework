@@ -313,6 +313,10 @@ namespace GameFramework.Story.Commands
                 if (aiInfo.CurState > (int)AiStateId.Invalid && aiInfo.CurState < (int)AiStateId.MaxNum)
                     aiInfo.ChangeToState((int)AiStateId.Idle);
             }
+            EntityViewModel viewModel = EntityController.Instance.GetEntityViewById(objId);
+            if (null != viewModel) {
+                viewModel.StopMove();
+            }
             return false;
         }
 
@@ -527,6 +531,10 @@ namespace GameFramework.Story.Commands
             if (null != obj) {
                 obj.SetAIEnable(m_Enable.Value != "false");
             }
+            EntityViewModel viewModel = EntityController.Instance.GetEntityViewById(objId);
+            if (null != viewModel) {
+                viewModel.StopMove();
+            }
             return false;
         }
 
@@ -656,15 +664,17 @@ namespace GameFramework.Story.Commands
         private IStoryValue<int> m_TargetId = new StoryValue<int>();
     }
     /// <summary>
-    /// objanimation(obj_id, anim);
+    /// objanimation(obj_id, anim[, normalized_time]);
     /// </summary>
     internal class ObjAnimationCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
             ObjAnimationCommand cmd = new ObjAnimationCommand();
+            cmd.m_ParamNum = m_ParamNum;
             cmd.m_ObjId = m_ObjId.Clone();
             cmd.m_Anim = m_Anim.Clone();
+            cmd.m_Time = m_Time.Clone();
             return cmd;
         }
 
@@ -676,12 +686,18 @@ namespace GameFramework.Story.Commands
         {
             m_ObjId.Substitute(iterator, args);
             m_Anim.Substitute(iterator, args);
+            if (m_ParamNum > 2) {
+                m_Time.Substitute(iterator, args);
+            }
         }
 
         protected override void Evaluate(StoryInstance instance)
         {
             m_ObjId.Evaluate(instance);
             m_Anim.Evaluate(instance);
+            if (m_ParamNum > 2) {
+                m_Time.Evaluate(instance);
+            }
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -692,8 +708,110 @@ namespace GameFramework.Story.Commands
             if (null != obj) {
                 UnityEngine.Animator animator = obj.GetComponent<UnityEngine.Animator>();
                 if (null != animator) {
-                    UnityEngine.Debug.Log("anim:" + anim);
-                    animator.Play(anim);
+                    float time = 0;
+                    if (m_ParamNum > 2) {
+                        time = m_Time.Value;
+                    }
+                    animator.Play(anim, -1, time);
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            m_ParamNum = callData.GetParamNum();
+            if (m_ParamNum > 1) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+                m_Anim.InitFromDsl(callData.GetParam(1));
+            }
+            if (m_ParamNum > 2) {
+                m_Time.InitFromDsl(callData.GetParam(2));
+            }
+        }
+
+        private int m_ParamNum = 0;
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryValue<string> m_Anim = new StoryValue<string>();
+        private IStoryValue<float> m_Time = new StoryValue<float>();
+    }
+    /// <summary>
+    /// objanimationparam(obj_id)
+    /// {
+    ///     float(name,val);
+    ///     int(name,val);
+    ///     bool(name,val);
+    ///     trigger(name,val);
+    /// };
+    /// </summary>
+    internal class ObjAnimationParamCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ObjAnimationParamCommand cmd = new ObjAnimationParamCommand();
+            cmd.m_ObjId = m_ObjId.Clone();
+            for (int i = 0; i < m_Params.Count; ++i) {
+                ParamInfo param = new ParamInfo();
+                param.CopyFrom(m_Params[i]);
+                cmd.m_Params.Add(param);
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_ObjId.Substitute(iterator, args);
+            for (int i = 0; i < m_Params.Count; ++i) {
+                var pair = m_Params[i];
+                pair.Key.Substitute(iterator, args);
+                pair.Value.Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_ObjId.Evaluate(instance);
+            for (int i = 0; i < m_Params.Count; ++i) {
+                var pair = m_Params[i];
+                pair.Key.Evaluate(instance);
+                pair.Value.Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            int objId = m_ObjId.Value;
+            UnityEngine.GameObject obj = EntityController.Instance.GetGameObject(objId);
+            if (null != obj) {
+                UnityEngine.Animator animator = obj.GetComponent<UnityEngine.Animator>();
+                if (null != animator) {
+                    for (int i = 0; i < m_Params.Count; ++i) {
+                        var param = m_Params[i];
+                        string type = param.Type;
+                        string key = param.Key.Value;
+                        object val = param.Value.Value;
+                        if (type == "int") {
+                            int v = (int)Convert.ChangeType(val, typeof(int));
+                            animator.SetInteger(key, v);
+                        } else if (type == "float") {
+                            float v = (float)Convert.ChangeType(val, typeof(float));
+                            animator.SetFloat(key, v);
+                        } else if (type == "bool") {
+                            bool v = (bool)Convert.ChangeType(val, typeof(bool));
+                            animator.SetBool(key, v);
+                        } else if (type == "trigger") {
+                            string v = val.ToString();
+                            if (v == "false") {
+                                animator.ResetTrigger(key);
+                            } else {
+                                animator.SetTrigger(key);
+                            }
+                        }
+                    }
                 }
             }
             return false;
@@ -702,14 +820,62 @@ namespace GameFramework.Story.Commands
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num > 1) {
+            if (num >= 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
-                m_Anim.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        protected override void Load(Dsl.FunctionData funcData)
+        {
+            Dsl.CallData callData = funcData.Call;
+            if (null != callData) {
+                Load(callData);
+                for (int i = 0; i < funcData.Statements.Count; ++i) {
+                    Dsl.ISyntaxComponent statement = funcData.Statements[i];
+                    Dsl.CallData stCall = statement as Dsl.CallData;
+                    if (null != stCall && stCall.GetParamNum() >= 2) {
+                        string id = stCall.GetId();
+                        ParamInfo param = new ParamInfo(id, stCall.GetParam(0), stCall.GetParam(1));
+                        m_Params.Add(param);
+                    }
+                }
+            }
+        }
+
+        private class ParamInfo
+        {
+            internal string Type;
+            internal IStoryValue<string> Key;
+            internal IStoryValue<object> Value;
+
+            internal ParamInfo()
+            {
+                Init();
+            }
+            internal ParamInfo(string type, Dsl.ISyntaxComponent keyDsl, Dsl.ISyntaxComponent valDsl)
+                : this()
+            {
+                Type = type;
+                Key.InitFromDsl(keyDsl);
+                Value.InitFromDsl(valDsl);
+            }
+            internal void CopyFrom(ParamInfo other)
+            {
+                Type = other.Type;
+                Key = other.Key.Clone();
+                Value = other.Value.Clone();
+            }
+
+            private void Init()
+            {
+                Type = string.Empty;
+                Key = new StoryValue<string>();
+                Value = new StoryValue();
             }
         }
 
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
-        private IStoryValue<string> m_Anim = new StoryValue<string>();
+        private List<ParamInfo> m_Params = new List<ParamInfo>();
     }
     /// <summary>
     /// objaddimpact(obj_id, impactid, arg1, arg2, ...)[seq("@seq")];

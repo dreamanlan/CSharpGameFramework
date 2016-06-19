@@ -2,10 +2,10 @@
 using System.Collections;
 
 public class CameraSetting : MonoBehaviour {
-    public float distance = 20;
-    public float up = 2;
+    public float distance = 25;
+    public float up = 1;
     public float yaw = 0;
-    public float pitch = 45;
+    public float pitch = 35;
 
     public Quaternion GetRotation()
     {

@@ -22,9 +22,17 @@ namespace RoomServer
     /// </remarks>
     internal sealed partial class RoomServer
     {
-        internal void ChangeRoomScene(int roomid, int scenetype)
+        internal void ChangeRoomScene(int roomid, int sceneId)
         {
-            room_mgr_.ChangeRoomScene(roomid, scenetype);
+            room_mgr_.ChangeRoomScene(roomid, sceneId);
+        }
+        internal void PlayerRequestActiveRoom(int targetSceneId, params ulong[] guids)
+        {
+            room_mgr_.PlayerRequestActiveRoom(targetSceneId, guids);
+        }
+        internal void PlayerRequestChangeRoom(int targetSceneId, params ulong[] guids)
+        {
+            room_mgr_.PlayerRequestChangeRoom(targetSceneId, guids);
         }
 
         private void Init(string[] args)
@@ -92,10 +100,8 @@ namespace RoomServer
 
             LogSys.Log(LOG_TYPE.DEBUG, "room server init ip: {0}  port: {1}", server_ip_, server_port_);
 
-            thread_count_ = 8;
-            per_thread_room_count_ = 32;
             uint tick_interval = 33;
-            room_mgr_ = new RoomManager(1280, thread_count_, per_thread_room_count_, tick_interval, lobby_connector_);
+            room_mgr_ = new RoomManager(1280, c_thread_count, c_per_thread_room_count, tick_interval, lobby_connector_);
             room_mgr_.Init(room_server_name_);
             IOManager.Instance.Init((int)server_port_);
             room_mgr_.StartRoomThread();
@@ -288,6 +294,9 @@ namespace RoomServer
         private CenterClientApi.HandleCommandCallback m_CmdCallback = null;
         private CenterClientApi.CenterLogHandler m_LogHandler = null;
 
+        private const int c_thread_count = 8;
+        private const int c_per_thread_room_count = 32;
+
         internal static RoomServer Instance
         {
             get { return s_Instance; }
@@ -300,6 +309,6 @@ namespace RoomServer
             s_Instance.Init(args);
             s_Instance.Loop();
             s_Instance.Release();
-        }
+        }        
     }
 }

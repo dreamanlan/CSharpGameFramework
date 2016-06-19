@@ -44,6 +44,12 @@ namespace Lobby
       }
     }
 
+    internal int AllocedRoomNum
+    {
+        get { return m_AllocedRoomNum; }
+        set { m_AllocedRoomNum = value; }
+    }
+
     internal string ServerIp
     {
       get {
@@ -68,6 +74,7 @@ namespace Lobby
     private int m_IdleRoomNum = 0;
     private int m_MaxRoomNum = 0;
     private int m_UserNum = 0;
+    private int m_AllocedRoomNum = 0;
 
     private string m_ServerIp="127.0.0.1";
     private uint m_ServerPort=5321;

@@ -24,6 +24,7 @@ namespace GameFrameworkMessage
 		Msg_LR_UserReLive,
 		Msg_LR_ActiveScene,
 		Msg_RL_ActiveSceneResult,
+		Msg_RL_ActiveScene,
 		Msg_LR_EnterScene,
 		Msg_RL_EnterSceneResult,
 		Msg_LR_ChangeScene,
@@ -38,7 +39,7 @@ namespace GameFrameworkMessage
 		Msg_LB_UserOffline,
 		Msg_BL_UserOffline,
 		Msg_LB_UserRelogin,
-		Msg_LB_CancelMatch,
+		Msg_BL_UserChangeScene,
 		Msg_LB_BigworldUserBaseInfo,
 		Msg_LB_RequestEnterScene,
 		MaxNum
@@ -66,12 +67,12 @@ namespace GameFrameworkMessage
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_BL_BroadcastText), (int)BigworldAndRoomServerMessageEnum.Msg_BL_BroadcastText);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_BL_QueryUserStateResult, typeof(Msg_BL_QueryUserStateResult));
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_BL_QueryUserStateResult), (int)BigworldAndRoomServerMessageEnum.Msg_BL_QueryUserStateResult);
+			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_BL_UserChangeScene, typeof(Msg_BL_UserChangeScene));
+			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_BL_UserChangeScene), (int)BigworldAndRoomServerMessageEnum.Msg_BL_UserChangeScene);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_BL_UserOffline, typeof(Msg_BL_UserOffline));
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_BL_UserOffline), (int)BigworldAndRoomServerMessageEnum.Msg_BL_UserOffline);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_LB_BigworldUserBaseInfo, typeof(Msg_LB_BigworldUserBaseInfo));
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LB_BigworldUserBaseInfo), (int)BigworldAndRoomServerMessageEnum.Msg_LB_BigworldUserBaseInfo);
-			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_LB_CancelMatch, typeof(Msg_LB_CancelMatch));
-			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LB_CancelMatch), (int)BigworldAndRoomServerMessageEnum.Msg_LB_CancelMatch);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_LB_QueryUserState, typeof(Msg_LB_QueryUserState));
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LB_QueryUserState), (int)BigworldAndRoomServerMessageEnum.Msg_LB_QueryUserState);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_LB_RequestEnterScene, typeof(Msg_LB_RequestEnterScene));
@@ -104,6 +105,8 @@ namespace GameFrameworkMessage
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LR_UserReLive), (int)BigworldAndRoomServerMessageEnum.Msg_LR_UserReLive);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_LRL_StoryMessage, typeof(Msg_LRL_StoryMessage));
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_LRL_StoryMessage), (int)BigworldAndRoomServerMessageEnum.Msg_LRL_StoryMessage);
+			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_RL_ActiveScene, typeof(Msg_RL_ActiveScene));
+			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_RL_ActiveScene), (int)BigworldAndRoomServerMessageEnum.Msg_RL_ActiveScene);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_RL_ActiveSceneResult, typeof(Msg_RL_ActiveSceneResult));
 			s_Type2BigworldAndRoomServerMessageEnum.Add(typeof(Msg_RL_ActiveSceneResult), (int)BigworldAndRoomServerMessageEnum.Msg_RL_ActiveSceneResult);
 			s_BigworldAndRoomServerMessageEnum2Type.Add((int)BigworldAndRoomServerMessageEnum.Msg_RL_ChangeScene, typeof(Msg_RL_ChangeScene));

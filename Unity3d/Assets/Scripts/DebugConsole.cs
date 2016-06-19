@@ -108,10 +108,10 @@ public class DebugConsole : MonoBehaviour
     #region GUI position values
     // Make these values public if you want to adjust layout of console window
 #if MOBILE
-    readonly Rect scrollRect = new Rect(10, 20, 280, 360);
-    readonly Rect inputRect = new Rect(10, 384, 228, 24);
-    readonly Rect enterRect = new Rect(240, 384, 50, 24);
-    readonly Rect toolbarRect = new Rect(16, 412, 266, 25);
+    readonly Rect scrollRect = new Rect(10, 20, 280, 190);
+    readonly Rect inputRect = new Rect(10, 214, 228, 24);
+    readonly Rect enterRect = new Rect(240, 214, 50, 24);
+    readonly Rect toolbarRect = new Rect(16, 242, 266, 25);
     Rect messageLine = new Rect(4, 0, 264, 20);
 #else
     readonly Rect scrollRect = new Rect(10, 20, 280, 360);
@@ -362,8 +362,8 @@ public class DebugConsole : MonoBehaviour
         Message.outputColor = outputColor;
 #if MOBILE
         this.useGUILayout = false;
-        _windowRect = new Rect(5.0f, 5.0f, 300.0f, 450.0f);
-        //_windowRect = new Rect(5.0f, 5.0f, 300.0f, 280.0f);
+        //_windowRect = new Rect(5.0f, 5.0f, 300.0f, 450.0f);
+        _windowRect = new Rect(5.0f, 5.0f, 300.0f, 280.0f);
         _fakeWindowRect = new Rect(0.0f, 0.0f, _windowRect.width, _windowRect.height);
         _fakeDragRect = new Rect(0.0f, 0.0f, _windowRect.width - 32, 24);
 #else

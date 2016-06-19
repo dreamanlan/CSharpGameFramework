@@ -3,3 +3,4 @@ id	name	path	dsl	visible
 1	LoginDlg	UI/Login	UI/LoginDlg.dsl	1
 2	NicknameDlg	UI/Nickname	UI/NicknameDlg.dsl	1
 100	StoryDlg	UI/StoryDlg	UI/StoryDlg.dsl	1
+101	SkillViewer	UI/SkillViewerButtons	UI/SkillViewer.dsl	1

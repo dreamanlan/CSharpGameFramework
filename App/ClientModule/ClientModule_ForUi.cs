@@ -74,18 +74,22 @@ namespace GameFramework
             SkillInstance inst = GfxSkillSystem.Instance.FindSkillInstanceForSkillViewer(skillId);
             if (null != inst) {
                 ret = inst.CollectProperties();
-                if (null != inst.EmitSkillInstance) {
-                    SkillInstance iinst = GfxSkillSystem.Instance.FindInnerSkillInstanceForSkillViewer(PredefinedSkill.Instance.EmitSkillCfg.id, inst.EmitSkillInstance);
-                    if (null != iinst) {
-                        ret.Add(new InplaceSkillPropertyInfo { Group = "InnerSkillInstance", Key = "emitskill" });
-                        ret.AddRange(iinst.CollectProperties());
+                if (null != inst.EmitSkillInstances) {
+                    foreach (var pair in inst.EmitSkillInstances) {
+                        SkillInstance iinst = GfxSkillSystem.Instance.FindInnerSkillInstanceForSkillViewer(PredefinedSkill.c_EmitSkillId, pair.Value);
+                        if (null != iinst) {
+                            ret.Add(new InplaceSkillPropertyInfo { Group = "InnerSkillInstance", Key = "emitskill" + iinst.InnerDslSkillId });
+                            ret.AddRange(iinst.CollectProperties());
+                        }
                     }
                 }
-                if (null != inst.HitSkillInstance) {
-                    SkillInstance iinst = GfxSkillSystem.Instance.FindInnerSkillInstanceForSkillViewer(PredefinedSkill.Instance.HitSkillCfg.id, inst.HitSkillInstance);
-                    if (null != iinst) {
-                        ret.Add(new InplaceSkillPropertyInfo { Group = "InnerSkillInstance", Key = "hitskill" });
-                        ret.AddRange(iinst.CollectProperties());
+                if (null != inst.HitSkillInstances) {
+                    foreach (var pair in inst.HitSkillInstances) {
+                        SkillInstance iinst = GfxSkillSystem.Instance.FindInnerSkillInstanceForSkillViewer(PredefinedSkill.c_HitSkillId, pair.Value);
+                        if (null != iinst) {
+                            ret.Add(new InplaceSkillPropertyInfo { Group = "InnerSkillInstance", Key = "hitskill" + iinst.InnerDslSkillId });
+                            ret.AddRange(iinst.CollectProperties());
+                        }
                     }
                 }
             }
@@ -118,7 +122,7 @@ namespace GameFramework
             }
             return np;
         }
-        public CharacterProperty GetGameObjectMaxHp(int id)
+        public CharacterProperty GetGameObjectProperty(int id)
         {
             CharacterProperty prop = null;
             EntityInfo entity = GetEntityById(id);

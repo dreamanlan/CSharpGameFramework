@@ -27,9 +27,9 @@ Skill -> Impact (子弹) -> Impact (受击) -> Buff
 
 * 相关技能配表
 
-Skill的dsl里面内嵌了emitskill（不是子弹技能不需要）与hitskill的情形，技能配表里的impactToSelf/impactToTarget填0，如果是受击后要加buff的则填buff ID。
-Skill的dsl里面没有内嵌emitskill（不是子弹技能不需要）与hitskill的情形，技能配表里的impactToSelf/impactToTarget填的是单独配置的受击技能ID（独立的子弹技能的ID在dsl里的emiteffect里指定），如果受击后要加buff，
-则在受击技能ID的配置行里的impactToSelf/impactToTarget里填buff ID。
+Skill的dsl里面内嵌了emitskill（不是子弹技能不需要）与hitskill的情形，技能配表里的impact填0，如果是受击后要加buff的则填buff ID。
+Skill的dsl里面没有内嵌emitskill（不是子弹技能不需要）与hitskill的情形，技能配表里的impact填的是单独配置的受击技能ID（独立的子弹技能的ID在dsl里的emiteffect里指定），如果受击后要加buff，
+则在受击技能ID的配置行里的impact里填buff ID。
 
 * 技能dsl说明
 skill(id)  // id对应技能配置表skill中的dslSkillId
@@ -176,12 +176,16 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     参数：
      Example
 
-10. facetotarget(starttime, remain_time[, rotate_speed, selecttype]);
+10. facetotarget(starttime, remain_time[, rotate_speed[, selecttype]]);
     功能：面向目标, 没有目标时不作方向调整
     参数：
        - remain_time 持续时间，不管时间长短，至少保证会执行一次
        - rotate_speed 旋转速度(度/s), 缺省或0时将直接朝向当前目标
-       - selecttype 选择目标的类型
+       - selecttype 选择目标的类型，指定此参数时如果当前技能没有目标，会按类型选择一个目标
+          minhp       --  选择血最少的目标
+          maxdist     --  选择距离最远的目标      
+          randenemy   --  选择随机敌人      
+          randfriend  -- 选择随机友方
     Example
        - facetotarget(10, 200, 360);
 
@@ -269,14 +273,16 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     Example
       transform(0, " ", vector3(0, 0, 3), eular(0, 0, 0), "RelativeSelf", false, true, vector3(10, 10, 10));
       
-22. emiteffect(effect_path,emitBone,emit_impact,emit_speed[,start_time]);
+22. emiteffect(effect_path,emitBone,emit_impact,emit_speed[,start_time[,is_external_impact]]);
     或
-    emiteffect(effect_path,emitBone,emit_impact,emit_speed[,start_time])
+    emiteffect(effect_path,emitBone,emit_impact,emit_speed[,start_time[,is_external_impact]])
     {
      transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
     };
-   
-    功能：发出一个飞向目标的特效，这个只是一个发起触发器，实际逻辑在emit_impact里处理（emit_impact为0使用预定义的emit impact 90000）。
+    
+    功能：发出一个飞向目标的特效，这个只是一个发起触发器，实际逻辑在emitskill里或者外部配表的emit skill处理。
+    is_external_impact为true表明emit_impact为外部配表的impact，否则为内嵌的emitskill。
+    
     transform的3个参数分别是位置偏移，发射轨迹偏转方向与控制点位置参数
     -位置偏移指明特效相对于施法者朝向的位置
     -默认子弹是沿初始位置到目标的直线运动，发射轨迹偏转方向用以与控制点位置参数一起确定控制点的位置，一般只使用第二个欧拉角即可（俯视情形，正数为顺时针转动角，负数为逆时针转动角）。
@@ -333,15 +339,17 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
 31. aoeimpact(start_time, center_x, center_y, center_z, relativeToTarget);
     功能：按指定偏移位置与配表的范围对指定目标产生aoe impact
     
-32. aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time]);
+32. aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]]);
     或
-    aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time])
+    aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]])
     {
      transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
     };
     功能：按指定偏移位置与配表的范围对指定目标发送轨迹impact
    
-    功能：发出一个飞向目标的特效，这个只是一个发起触发器，实际逻辑在emit_impact里处理（emit_impact为0使用预定义的emit impact 90000）。
+    功能：发出一个飞向目标的特效，这个只是一个发起触发器，实际逻辑在emitskill里或者外部配表的emit skill处理。
+    is_external_impact为true表明emit_impact为外部配表的impact，否则为内嵌的emitskill。
+    
     transform的3个参数分别是位置偏移，发射轨迹偏转方向与控制点位置参数
     -位置偏移指明特效相对于施法者朝向的位置
     -默认子弹是沿初始位置到目标的直线运动，发射轨迹偏转方向用以与控制点位置参数一起确定控制点的位置，一般只使用第二个欧拉角即可（俯视情形，正数为顺时针转动角，负数为逆时针转动角）。
@@ -349,8 +357,8 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     
     控制点的计算方法：假设初始位置距目标S，则控制点在初始位置朝目标按偏转方向“S/2*缩放矢量”距离处。
     
-33. stopsectionif(type[,start_time]);
-    功能：如果指定条件满足则终止当前section。目前只支持type为"shield"，表示如果盾消失则停止。
+33. stopsection([start_time])[if(type)];
+    功能：如果指定条件满足则终止当前section。目前只支持type为"shield"，表示如果盾消失则停止。没有if部分则在start_time终止当前section（此种情形一般用在onmessage里面）。
     
 34. periodicallyimpact(starttime,centerx,centery,centerz,relativeToTarget,duration,interval);
     功能：按指定的周期产生impact
@@ -375,17 +383,22 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     
 41. selecttarget(type[,start_time]);
     功能：按指定类别选择目标
+    type可为：
+      minhp       --  选择血最少的目标
+      maxdist     --  选择距离最远的目标      
+      randenemy   --  选择随机敌人      
+      randfriend  -- 选择随机友方
     
 42. lockframe(startime, lock_speed, locktime[,
               after_lock_anim_speed, restore_time[, is_effect_skill_time,
               after_lock_effect_speed, after_lock_move_speed,
-              after_lock_skill_speed])
-   {
-     keyframe(time, value, inTangent, outTangent);
-     ...
-   };
-   功能：定帧
-   参数：
+              after_lock_skill_speed]])
+    {
+      keyframe(time, value, inTangent, outTangent);
+      ...
+    };
+    功能：定帧
+    参数：
     - lock_speed 定帧后动画速度
     - locktime 定帧时间长度, 该时间不受技能时间影响
     - after_lock_anim_speed 定帧后动画速度
@@ -434,3 +447,25 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
         trigger(name,val);  //val为true或false
     };
     在指定时间修改动画控制器的参数，name为控制器配置里指定的名字。
+    
+52. keeptarget([starttime[,remaintime]]);
+    在每个Tick保证目标不会进入死亡过程。
+    
+53. animationevent(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
+    
+    or
+    
+    animationevent(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
+    {
+        int(name,value);
+        long(name,value);
+        float(name,value);
+        double(name,value);
+        string(name,value);
+        ...
+    };
+    指定动画事件，当动画播放到指定时间（0~1的normalized time）时发送指定的消息，可选设置技能的变量。
+  
+54. useimpact(impactid,[starttime[,is_external_impact]])[if(type)];
+    指定后续触发的impactid，默认是内嵌的hitskill的id，is_external_impact为true指明使用外部配表的hitskill。
+    if部分为可选，用以指明设置/修改参数的条件，目前支持block，用于指明触发格档时的受击impact。

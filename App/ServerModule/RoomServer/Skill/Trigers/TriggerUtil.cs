@@ -93,15 +93,37 @@ namespace GameFramework.Skill.Trigers
         }
 
         //-----------------------------------------------------------------------------------------------------------
-        public static void CalcImpactConfig(SkillInstance instance, TableConfig.Skill cfg, out Dictionary<string, object> result)
+        internal static void CalcImpactConfig(int emitImpact, int hitImpact, SkillInstance instance, TableConfig.Skill cfg, out Dictionary<string, object> result)
         {
             var variables = instance.LocalVariables;
             result = new Dictionary<string, object>(variables);
-            if (null != instance.EmitSkillInstance) {
-                result["emitskill"] = instance.EmitSkillInstance;
+            if (null != instance.EmitSkillInstances) {
+                if (emitImpact <= 0)
+                    emitImpact = SkillInstance.c_FirstInnerEmitSkillId;
+                TableConfig.Skill impactCfg = TableConfig.SkillProvider.Instance.GetSkill(emitImpact);
+                if (null != impactCfg) {
+                    if (impactCfg.type == (int)SkillOrImpactType.Buff) {
+                        emitImpact = SkillInstance.c_FirstInnerEmitSkillId;
+                    }
+                }
+                SkillInstance val;
+                if (instance.EmitSkillInstances.TryGetValue(emitImpact, out val)) {
+                    result["emitskill"] = val;
+                }
             }
-            if (null != instance.HitSkillInstance) {
-                result["hitskill"] = instance.HitSkillInstance;
+            if (null != instance.HitSkillInstances) {
+                if (hitImpact <= 0)
+                    hitImpact = SkillInstance.c_FirstInnerHitSkillId;
+                TableConfig.Skill impactCfg = TableConfig.SkillProvider.Instance.GetSkill(hitImpact); ;
+                if (null != impactCfg) {
+                    if (impactCfg.type == (int)SkillOrImpactType.Buff) {
+                        hitImpact = SkillInstance.c_FirstInnerHitSkillId;
+                    }
+                }
+                SkillInstance val;
+                if (instance.HitSkillInstances.TryGetValue(hitImpact, out val)) {
+                    result["hitskill"] = val;
+                }
             }
             string hitEffect = SkillParamUtility.RefixResourceVariable("hitEffect", instance, cfg.resources);
             if (!string.IsNullOrEmpty(hitEffect)) {
@@ -135,21 +157,52 @@ namespace GameFramework.Skill.Trigers
             if (!string.IsNullOrEmpty(emitEffect3)) {
                 result["emitEffect3"] = emitEffect3;
             }
+            string targetEffect = SkillParamUtility.RefixResourceVariable("targetEffect", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(targetEffect)) {
+                result["targetEffect"] = targetEffect;
+            }
+            string targetEffect1 = SkillParamUtility.RefixResourceVariable("targetEffect1", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(targetEffect1)) {
+                result["targetEffect1"] = targetEffect1;
+            }
+            string targetEffect2 = SkillParamUtility.RefixResourceVariable("targetEffect2", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(targetEffect2)) {
+                result["targetEffect2"] = targetEffect2;
+            }
+            string targetEffect3 = SkillParamUtility.RefixResourceVariable("targetEffect3", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(targetEffect3)) {
+                result["targetEffect3"] = targetEffect3;
+            }
+            string selfEffect = SkillParamUtility.RefixResourceVariable("selfEffect", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(selfEffect)) {
+                result["selfEffect"] = selfEffect;
+            }
+            string selfEffect1 = SkillParamUtility.RefixResourceVariable("selfEffect1", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(selfEffect1)) {
+                result["selfEffect1"] = selfEffect1;
+            }
+            string selfEffect2 = SkillParamUtility.RefixResourceVariable("selfEffect2", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(selfEffect2)) {
+                result["selfEffect2"] = selfEffect2;
+            }
+            string selfEffect3 = SkillParamUtility.RefixResourceVariable("selfEffect3", instance, cfg.resources);
+            if (!string.IsNullOrEmpty(selfEffect3)) {
+                result["selfEffect3"] = selfEffect3;
+            }
         }
-        public static int RefixImpact(int impactId, Dictionary<string, object> variables, TableConfig.Skill cfg)
+        internal static int GetSkillImpactId(Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
+            int impactId = cfg.impact;
             if (impactId <= 0) {
-                if (cfg.id == (int)PredefinedSkill.PredefinedSkillEnum.HitSkillId) {
-                    object idObj;
-                    if (variables.TryGetValue("impact", out idObj)) {
-                        impactId = (int)idObj;
-                    }
+                object idObj;
+                if (variables.TryGetValue("impact", out idObj)) {
+                    impactId = (int)idObj;
                 }
             }
             return impactId;
         }
         
-        public static void AoeQuery(GfxSkillSenderInfo senderObj, SkillInstance instance, int senderId, int targetType, Vector3 relativeCenter, bool relativeToTarget, MyFunc<float, int, bool> callback)
+        internal static void AoeQuery(GfxSkillSenderInfo senderObj, SkillInstance instance, int senderId, int targetType, Vector3 relativeCenter, bool relativeToTarget, MyFunc<float, int, bool> callback)
         {
             Scene scene = senderObj.Scene;
             EntityInfo srcObj = senderObj.GfxObj;

@@ -19,9 +19,13 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "startstory", new StoryCommandFactoryHelper<Story.Commands.StartStoryCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "stopstory", new StoryCommandFactoryHelper<Story.Commands.StopStoryCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitstory", new StoryCommandFactoryHelper<Story.Commands.WaitStoryCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "pausestory", new StoryCommandFactoryHelper<Story.Commands.PauseStoryCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "resumestory", new StoryCommandFactoryHelper<Story.Commands.ResumeStoryCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "firemessage", new StoryCommandFactoryHelper<Story.Commands.FireMessageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitallmessage", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageHandlerCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "pauseallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.PauseAllMessageHandlerCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "resumeallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.ResumeAllMessageHandlerCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendroomstorymessage", new StoryCommandFactoryHelper<Story.Commands.SendRoomStoryMessageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendserverstorymessage", new StoryCommandFactoryHelper<Story.Commands.SendServerStoryMessageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendclientstorymessage", new StoryCommandFactoryHelper<StorySystem.CommonCommands.DummyCommand>());
@@ -68,6 +72,7 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetai", new StoryCommandFactoryHelper<Story.Commands.NpcSetAiCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetaitarget", new StoryCommandFactoryHelper<Story.Commands.NpcSetAiTargetCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcanimation", new StoryCommandFactoryHelper<Story.Commands.NpcAnimationCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcanimationparam", new StoryCommandFactoryHelper<Story.Commands.NpcAnimationParamCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcaddimpact", new StoryCommandFactoryHelper<Story.Commands.NpcAddImpactCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcremoveimpact", new StoryCommandFactoryHelper<Story.Commands.NpcRemoveImpactCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npccastskill", new StoryCommandFactoryHelper<Story.Commands.NpcCastSkillCommand>());
@@ -90,6 +95,7 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetai", new StoryCommandFactoryHelper<Story.Commands.ObjSetAiCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetaitarget", new StoryCommandFactoryHelper<Story.Commands.ObjSetAiTargetCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objanimation", new StoryCommandFactoryHelper<Story.Commands.ObjAnimationCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objanimationparam", new StoryCommandFactoryHelper<Story.Commands.ObjAnimationParamCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objaddimpact", new StoryCommandFactoryHelper<Story.Commands.ObjAddImpactCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objremoveimpact", new StoryCommandFactoryHelper<Story.Commands.ObjRemoveImpactCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objcastskill", new StoryCommandFactoryHelper<Story.Commands.ObjCastSkillCommand>());
@@ -306,6 +312,23 @@ namespace GameFramework.Story
                 LogSystem.Info("StartStory {0}", storyId);
             }
         }
+        public void PauseStory(string storyId, bool pause)
+        {
+            PauseStory(storyId, string.Empty, pause);
+        }
+        public void PauseStory(string storyId, string _namespace, bool pause)
+        {
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }
+            int count = m_StoryLogicInfos.Count;
+            for (int index = count - 1; index >= 0; --index) {
+                StoryInstance info = m_StoryLogicInfos[index];
+                if (info.StoryId == storyId) {
+                    info.IsPaused = pause;
+                }
+            }
+        }
         public void StopStory(string storyId)
         {
             StopStory(storyId, string.Empty);
@@ -406,6 +429,23 @@ namespace GameFramework.Story
                 }
             }
             return sum;
+        }
+        public void PauseMessageHandler(string msgId, bool pause)
+        {
+            int ct = m_StoryLogicInfos.Count;
+            for (int ix = ct - 1; ix >= 0; --ix) {
+                StoryInstance info = m_StoryLogicInfos[ix];
+                info.PauseMessageHandler(msgId, pause);
+            }
+            foreach (var pair in m_AiStoryInstancePool) {
+                var infos = pair.Value;
+                int aiCt = infos.Count;
+                for (int ix = aiCt - 1; ix >= 0; --ix) {
+                    if (infos[ix].m_IsUsed && null != infos[ix].m_StoryInstance) {
+                        infos[ix].m_StoryInstance.PauseMessageHandler(msgId, pause);
+                    }
+                }
+            }
         }
 
         private StoryInstance NewStoryInstance(string storyId, string _namespace, bool logIfNotFound, params string[] overloadFiles)

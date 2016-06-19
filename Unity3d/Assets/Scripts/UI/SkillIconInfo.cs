@@ -15,4 +15,5 @@ public class SkillIconInfo : MonoBehaviour
     public Image deadMask;
     public Image disableMask;
     public Text mpChange;
+    public Text skillIdTxt;
 }

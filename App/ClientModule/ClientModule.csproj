@@ -138,7 +138,7 @@
     <Compile Include="Story\Commands\GeneralCommands.cs" />
     <Compile Include="Story\Commands\NpcCommands.cs" />
     <Compile Include="Story\GfxStorySystem.cs" />
-    <Compile Include="Story\UiStoryClickHandler.cs" />
+    <Compile Include="Story\UiStoryEventHandler.cs" />
     <Compile Include="Story\UiStoryInitializer.cs" />
     <Compile Include="Story\Values\ObjectValues.cs" />
     <Compile Include="Story\Values\GameLogicValues.cs" />

@@ -83,6 +83,7 @@ namespace GameFramework
                     UserInfo user = dataProcess.GetUserInfo(headerMsg.m_Guid);
                     if (user != null && protoMsg.result == 0) {
                         user.CurrentState = UserState.Room;
+                        user.SceneId = protoMsg.scene_type;
                     }
 
                 }
@@ -184,7 +185,7 @@ namespace GameFramework
                         baseInfoBuilder.WorldId = UserServerConfig.WorldId;
                         baseInfoBuilder.ClientInfo = user.ClientInfo;
                         baseInfoBuilder.StartServerTime = UserServerConfig.StartServerTime;
-                        baseInfoBuilder.FightingCapacity = user.FightingCapacity;
+                        baseInfoBuilder.SceneId = user.SceneId;
 
                         builder.BaseInfo = baseInfoBuilder;
                         builder.User = UserThread.BuildRoomUserInfo(user, 0, 0);

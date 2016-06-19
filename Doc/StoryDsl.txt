@@ -371,6 +371,29 @@
   waitlocalmessage等待当前story的指定消息之一触发。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)
   waitlocalmessagehandler等待当前story的指定消息处理全部执行完毕。(var部分用字符串指定变量名，这样允许一个变量或表达式的值作为变量)
   
+  21、pauselocalmessagehandler/resumelocalmessagehandler
+  用法：
+  pauselocalmessagehandler(msgid,msgid,...);
+  resumelocalmessagehandler(msgid,msgid,...);
+  
+  作用：
+  暂停或恢复同一story里的指定的消息处理。
+  
+  22、pauselocalnamespacedmessagehandler/resumelocalnamespacedmessagehandler
+  用法：
+  pauselocalnamespacedmessagehandler(msgid,msgid,...);
+  resumelocalnamespacedmessagehandler(msgid,msgid,...);
+  
+  作用：
+  暂停或恢复同一story里的指定的名字空间里的消息处理。
+  
+  23、pause
+  用法：
+  pause();
+  
+  作用：
+  暂停当前story
+  
 六、运算
 
   1、数字加     +
@@ -1530,7 +1553,46 @@
   作用：
   设置npc队形数据。
   
+  76、bindui
+  用法：
+  bindui(gameobject){
+      var("@varname","Panel/Input"); //指定dsl里的变量绑定到指定控件
+      inputs("",...);           
+      toggles("",...);
+      sliders("",...);
+      dropdowns("",...);
+      onevent("button","eventtag","Panel/Button"); //指定on_click事件的tag与绑定的控件
+      onevent("toogle","eventtag","Panel/Toggle"); //指定on_toggle事件的tag与绑定的控件
+      onevent("dropdown","eventtag","Panel/Dropdown"); //指定on_dropdown事件的tag与绑定的控件
+      onevent("slider","eventtag","Panel/Slider"); //指定on_slider事件的tag与绑定的控件
+      onevent("input","eventtag","Panel/Input"); //指定on_input事件的tag与绑定的控件
+  };
+  
+  作用：
+  与UI prefab绑定。其中inputs、toggles、sliders、dropdowns指定在事件处理里除固定参数外额外传递的参数，参数顺序为inputs、toggles、sliders、dropdowns，但没有指定的不会作为参数传递，此时后面顺序的参数相应前移。
+  on_click事件的固定参数为tag
+  on_toggle事件的固定参数为tag、toggle_value(整数值：1--选中 0--未选中)
+  on_dropdown事件的固定参数为tag、selected_index（整数值）
+  on_slider事件的固定参数为tag、slider_value（浮点数)
+  on_input事件的固定参数为tag、input_value（字符串)
     
+  
+  77、pausestory/resumestory
+  用法：
+  pausestory(storyid,storyid,...);
+  resumestory(storyid,storyid,...);
+  
+  作用：
+  暂停或恢复指定的story。
+  
+  78、pauseallmessagehandler/resumeallmessagehandler
+  用法：
+  pauseallmessagehandler(msgid,msgid,...);
+  resumeallmessagehandler(msgid,msgid,...);
+  
+  作用：
+  暂停或恢复当前所有story里的指定消息处理
+      
 十、游戏系统内实现的消息触发(非场景逻辑配置的消息触发)
   
   1、all_killed

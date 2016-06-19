@@ -12,15 +12,31 @@ namespace TableConfig
 {
 	public sealed partial class Actor : IDataRecord<int>
 	{
-		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 116)]
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 120)]
 		private struct ActorRecord
 		{
 			internal int id;
 			internal int name;
 			internal int icon;
+			internal int bigIcon;
 			internal int type;
 			internal int avatar;
-			internal int cooldown;
+			internal int skill0;
+			internal int skill1;
+			internal int skill2;
+			internal int skill3;
+			internal int skill4;
+			internal int skill5;
+			internal int skill6;
+			internal int skill7;
+			internal int skill8;
+			internal int bornskill;
+			internal int deadskill;
+			internal float size;
+			internal float logicsize;
+			internal float speed;
+			internal float viewrange;
+			internal float gohomerange;
 			internal int hp;
 			internal int mp;
 			internal int attack;
@@ -29,29 +45,30 @@ namespace TableConfig
 			internal int addmp;
 			internal int addattack;
 			internal int adddefence;
-			internal float speed;
-			internal float viewrange;
-			internal float gohomerange;
-			internal int skill0;
-			internal int skill1;
-			internal int skill2;
-			internal int skill3;
-			internal int skill4;
-			internal int passiveskill1;
-			internal int passiveskill2;
-			internal int passiveskill3;
-			internal int passiveskill4;
-			internal int bornskill;
-			internal int deadskill;
-			internal float size;
 		}
 
 		public int id;
 		public string name;
 		public int icon;
+		public int bigIcon;
 		public int type;
 		public string avatar;
-		public int cooldown;
+		public int skill0;
+		public int skill1;
+		public int skill2;
+		public int skill3;
+		public int skill4;
+		public int skill5;
+		public int skill6;
+		public int skill7;
+		public int skill8;
+		public int bornskill;
+		public int deadskill;
+		public float size;
+		public float logicsize;
+		public float speed;
+		public float viewrange;
+		public float gohomerange;
 		public int hp;
 		public int mp;
 		public int attack;
@@ -60,21 +77,6 @@ namespace TableConfig
 		public int addmp;
 		public int addattack;
 		public int adddefence;
-		public float speed;
-		public float viewrange;
-		public float gohomerange;
-		public int skill0;
-		public int skill1;
-		public int skill2;
-		public int skill3;
-		public int skill4;
-		public int passiveskill1;
-		public int passiveskill2;
-		public int passiveskill3;
-		public int passiveskill4;
-		public int bornskill;
-		public int deadskill;
-		public float size;
 
 		public bool ReadFromBinary(BinaryTable table, int index)
 		{
@@ -82,9 +84,25 @@ namespace TableConfig
 			id = DataRecordUtility.ExtractInt(table, record.id, 0);
 			name = DataRecordUtility.ExtractString(table, record.name, "");
 			icon = DataRecordUtility.ExtractInt(table, record.icon, 0);
+			bigIcon = DataRecordUtility.ExtractInt(table, record.bigIcon, 0);
 			type = DataRecordUtility.ExtractInt(table, record.type, 0);
 			avatar = DataRecordUtility.ExtractString(table, record.avatar, "");
-			cooldown = DataRecordUtility.ExtractInt(table, record.cooldown, 0);
+			skill0 = DataRecordUtility.ExtractInt(table, record.skill0, 0);
+			skill1 = DataRecordUtility.ExtractInt(table, record.skill1, 0);
+			skill2 = DataRecordUtility.ExtractInt(table, record.skill2, 0);
+			skill3 = DataRecordUtility.ExtractInt(table, record.skill3, 0);
+			skill4 = DataRecordUtility.ExtractInt(table, record.skill4, 0);
+			skill5 = DataRecordUtility.ExtractInt(table, record.skill5, 0);
+			skill6 = DataRecordUtility.ExtractInt(table, record.skill6, 0);
+			skill7 = DataRecordUtility.ExtractInt(table, record.skill7, 0);
+			skill8 = DataRecordUtility.ExtractInt(table, record.skill8, 0);
+			bornskill = DataRecordUtility.ExtractInt(table, record.bornskill, 0);
+			deadskill = DataRecordUtility.ExtractInt(table, record.deadskill, 0);
+			size = DataRecordUtility.ExtractFloat(table, record.size, 0);
+			logicsize = DataRecordUtility.ExtractFloat(table, record.logicsize, 0);
+			speed = DataRecordUtility.ExtractFloat(table, record.speed, 0);
+			viewrange = DataRecordUtility.ExtractFloat(table, record.viewrange, 0);
+			gohomerange = DataRecordUtility.ExtractFloat(table, record.gohomerange, 0);
 			hp = DataRecordUtility.ExtractInt(table, record.hp, 0);
 			mp = DataRecordUtility.ExtractInt(table, record.mp, 0);
 			attack = DataRecordUtility.ExtractInt(table, record.attack, 0);
@@ -93,21 +111,6 @@ namespace TableConfig
 			addmp = DataRecordUtility.ExtractInt(table, record.addmp, 0);
 			addattack = DataRecordUtility.ExtractInt(table, record.addattack, 0);
 			adddefence = DataRecordUtility.ExtractInt(table, record.adddefence, 0);
-			speed = DataRecordUtility.ExtractFloat(table, record.speed, 0);
-			viewrange = DataRecordUtility.ExtractFloat(table, record.viewrange, 0);
-			gohomerange = DataRecordUtility.ExtractFloat(table, record.gohomerange, 0);
-			skill0 = DataRecordUtility.ExtractInt(table, record.skill0, 0);
-			skill1 = DataRecordUtility.ExtractInt(table, record.skill1, 0);
-			skill2 = DataRecordUtility.ExtractInt(table, record.skill2, 0);
-			skill3 = DataRecordUtility.ExtractInt(table, record.skill3, 0);
-			skill4 = DataRecordUtility.ExtractInt(table, record.skill4, 0);
-			passiveskill1 = DataRecordUtility.ExtractInt(table, record.passiveskill1, 0);
-			passiveskill2 = DataRecordUtility.ExtractInt(table, record.passiveskill2, 0);
-			passiveskill3 = DataRecordUtility.ExtractInt(table, record.passiveskill3, 0);
-			passiveskill4 = DataRecordUtility.ExtractInt(table, record.passiveskill4, 0);
-			bornskill = DataRecordUtility.ExtractInt(table, record.bornskill, 0);
-			deadskill = DataRecordUtility.ExtractInt(table, record.deadskill, 0);
-			size = DataRecordUtility.ExtractFloat(table, record.size, 0);
 			return true;
 		}
 
@@ -117,9 +120,25 @@ namespace TableConfig
 			record.id = DataRecordUtility.SetValue(table, id, 0);
 			record.name = DataRecordUtility.SetValue(table, name, "");
 			record.icon = DataRecordUtility.SetValue(table, icon, 0);
+			record.bigIcon = DataRecordUtility.SetValue(table, bigIcon, 0);
 			record.type = DataRecordUtility.SetValue(table, type, 0);
 			record.avatar = DataRecordUtility.SetValue(table, avatar, "");
-			record.cooldown = DataRecordUtility.SetValue(table, cooldown, 0);
+			record.skill0 = DataRecordUtility.SetValue(table, skill0, 0);
+			record.skill1 = DataRecordUtility.SetValue(table, skill1, 0);
+			record.skill2 = DataRecordUtility.SetValue(table, skill2, 0);
+			record.skill3 = DataRecordUtility.SetValue(table, skill3, 0);
+			record.skill4 = DataRecordUtility.SetValue(table, skill4, 0);
+			record.skill5 = DataRecordUtility.SetValue(table, skill5, 0);
+			record.skill6 = DataRecordUtility.SetValue(table, skill6, 0);
+			record.skill7 = DataRecordUtility.SetValue(table, skill7, 0);
+			record.skill8 = DataRecordUtility.SetValue(table, skill8, 0);
+			record.bornskill = DataRecordUtility.SetValue(table, bornskill, 0);
+			record.deadskill = DataRecordUtility.SetValue(table, deadskill, 0);
+			record.size = DataRecordUtility.SetValue(table, size, 0);
+			record.logicsize = DataRecordUtility.SetValue(table, logicsize, 0);
+			record.speed = DataRecordUtility.SetValue(table, speed, 0);
+			record.viewrange = DataRecordUtility.SetValue(table, viewrange, 0);
+			record.gohomerange = DataRecordUtility.SetValue(table, gohomerange, 0);
 			record.hp = DataRecordUtility.SetValue(table, hp, 0);
 			record.mp = DataRecordUtility.SetValue(table, mp, 0);
 			record.attack = DataRecordUtility.SetValue(table, attack, 0);
@@ -128,21 +147,6 @@ namespace TableConfig
 			record.addmp = DataRecordUtility.SetValue(table, addmp, 0);
 			record.addattack = DataRecordUtility.SetValue(table, addattack, 0);
 			record.adddefence = DataRecordUtility.SetValue(table, adddefence, 0);
-			record.speed = DataRecordUtility.SetValue(table, speed, 0);
-			record.viewrange = DataRecordUtility.SetValue(table, viewrange, 0);
-			record.gohomerange = DataRecordUtility.SetValue(table, gohomerange, 0);
-			record.skill0 = DataRecordUtility.SetValue(table, skill0, 0);
-			record.skill1 = DataRecordUtility.SetValue(table, skill1, 0);
-			record.skill2 = DataRecordUtility.SetValue(table, skill2, 0);
-			record.skill3 = DataRecordUtility.SetValue(table, skill3, 0);
-			record.skill4 = DataRecordUtility.SetValue(table, skill4, 0);
-			record.passiveskill1 = DataRecordUtility.SetValue(table, passiveskill1, 0);
-			record.passiveskill2 = DataRecordUtility.SetValue(table, passiveskill2, 0);
-			record.passiveskill3 = DataRecordUtility.SetValue(table, passiveskill3, 0);
-			record.passiveskill4 = DataRecordUtility.SetValue(table, passiveskill4, 0);
-			record.bornskill = DataRecordUtility.SetValue(table, bornskill, 0);
-			record.deadskill = DataRecordUtility.SetValue(table, deadskill, 0);
-			record.size = DataRecordUtility.SetValue(table, size, 0);
 			byte[] bytes = GetRecordBytes(record);
 			table.Records.Add(bytes);
 		}
@@ -754,7 +758,7 @@ namespace TableConfig
 {
 	public sealed partial class Skill : IDataRecord<int>
 	{
-		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 120)]
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 136)]
 		private struct SkillRecord
 		{
 			internal int id;
@@ -762,13 +766,10 @@ namespace TableConfig
 			internal int type;
 			internal int icon;
 			internal float distance;
-			internal int cooldown;
 			internal int duration;
 			internal int interval;
 			internal int canmove;
-			internal int impactToSelf;
-			internal int impactToTarget;
-			internal int summonActor;
+			internal int impact;
 			internal int interruptPriority;
 			internal int isInterrupt;
 			internal int targetType;
@@ -777,16 +778,23 @@ namespace TableConfig
 			internal float aoeAngleOrLength;
 			internal int maxAoeTargetCount;
 			internal int dslSkillId;
-			internal float damage;
-			internal int mpRecover;
-			internal int hpRecover;
-			internal int addAttack;
-			internal int addDefence;
-			internal int addRps;
-			internal int addCritical;
-			internal int addCriticalPow;
-			internal float addSpeed;
-			internal int addShield;
+			internal int startupSkillId;
+			internal int flybackSkillId;
+			internal int startupPositionType;
+			internal int subsequentSkills;
+			internal int autoCast;
+			internal int needTarget;
+			internal int cooldown;
+			internal int damage;
+			internal int addhp;
+			internal int addmp;
+			internal int addattack;
+			internal int adddefence;
+			internal int addshield;
+			internal int addspeed;
+			internal int addcritical;
+			internal int addcriticalpow;
+			internal int addrps;
 		}
 
 		public int id;
@@ -794,13 +802,10 @@ namespace TableConfig
 		public int type;
 		public int icon;
 		public float distance;
-		public int cooldown;
 		public int duration;
 		public int interval;
 		public int canmove;
-		public int impactToSelf;
-		public int impactToTarget;
-		public int summonActor;
+		public int impact;
 		public int interruptPriority;
 		public bool isInterrupt;
 		public int targetType;
@@ -809,16 +814,23 @@ namespace TableConfig
 		public float aoeAngleOrLength;
 		public int maxAoeTargetCount;
 		public int dslSkillId;
-		public float damage;
-		public int mpRecover;
-		public int hpRecover;
-		public int addAttack;
-		public int addDefence;
-		public int addRps;
-		public int addCritical;
-		public int addCriticalPow;
-		public float addSpeed;
-		public int addShield;
+		public int startupSkillId;
+		public int flybackSkillId;
+		public int startupPositionType;
+		public List<int> subsequentSkills;
+		public int autoCast;
+		public bool needTarget;
+		public int cooldown;
+		public int damage;
+		public int addhp;
+		public int addmp;
+		public int addattack;
+		public int adddefence;
+		public int addshield;
+		public int addspeed;
+		public int addcritical;
+		public int addcriticalpow;
+		public int addrps;
 
 		public bool ReadFromBinary(BinaryTable table, int index)
 		{
@@ -828,13 +840,10 @@ namespace TableConfig
 			type = DataRecordUtility.ExtractInt(table, record.type, 0);
 			icon = DataRecordUtility.ExtractInt(table, record.icon, 0);
 			distance = DataRecordUtility.ExtractFloat(table, record.distance, 0);
-			cooldown = DataRecordUtility.ExtractInt(table, record.cooldown, 0);
 			duration = DataRecordUtility.ExtractInt(table, record.duration, 0);
 			interval = DataRecordUtility.ExtractInt(table, record.interval, 0);
 			canmove = DataRecordUtility.ExtractInt(table, record.canmove, 0);
-			impactToSelf = DataRecordUtility.ExtractInt(table, record.impactToSelf, 0);
-			impactToTarget = DataRecordUtility.ExtractInt(table, record.impactToTarget, 0);
-			summonActor = DataRecordUtility.ExtractInt(table, record.summonActor, 0);
+			impact = DataRecordUtility.ExtractInt(table, record.impact, 0);
 			interruptPriority = DataRecordUtility.ExtractInt(table, record.interruptPriority, 0);
 			isInterrupt = DataRecordUtility.ExtractBool(table, record.isInterrupt, false);
 			targetType = DataRecordUtility.ExtractInt(table, record.targetType, 0);
@@ -843,16 +852,23 @@ namespace TableConfig
 			aoeAngleOrLength = DataRecordUtility.ExtractFloat(table, record.aoeAngleOrLength, 0);
 			maxAoeTargetCount = DataRecordUtility.ExtractInt(table, record.maxAoeTargetCount, 0);
 			dslSkillId = DataRecordUtility.ExtractInt(table, record.dslSkillId, 0);
-			damage = DataRecordUtility.ExtractFloat(table, record.damage, 0);
-			mpRecover = DataRecordUtility.ExtractInt(table, record.mpRecover, 0);
-			hpRecover = DataRecordUtility.ExtractInt(table, record.hpRecover, 0);
-			addAttack = DataRecordUtility.ExtractInt(table, record.addAttack, 0);
-			addDefence = DataRecordUtility.ExtractInt(table, record.addDefence, 0);
-			addRps = DataRecordUtility.ExtractInt(table, record.addRps, 0);
-			addCritical = DataRecordUtility.ExtractInt(table, record.addCritical, 0);
-			addCriticalPow = DataRecordUtility.ExtractInt(table, record.addCriticalPow, 0);
-			addSpeed = DataRecordUtility.ExtractFloat(table, record.addSpeed, 0);
-			addShield = DataRecordUtility.ExtractInt(table, record.addShield, 0);
+			startupSkillId = DataRecordUtility.ExtractInt(table, record.startupSkillId, 0);
+			flybackSkillId = DataRecordUtility.ExtractInt(table, record.flybackSkillId, 0);
+			startupPositionType = DataRecordUtility.ExtractInt(table, record.startupPositionType, 0);
+			subsequentSkills = DataRecordUtility.ExtractIntList(table, record.subsequentSkills, null);
+			autoCast = DataRecordUtility.ExtractInt(table, record.autoCast, 0);
+			needTarget = DataRecordUtility.ExtractBool(table, record.needTarget, false);
+			cooldown = DataRecordUtility.ExtractInt(table, record.cooldown, 0);
+			damage = DataRecordUtility.ExtractInt(table, record.damage, 0);
+			addhp = DataRecordUtility.ExtractInt(table, record.addhp, 0);
+			addmp = DataRecordUtility.ExtractInt(table, record.addmp, 0);
+			addattack = DataRecordUtility.ExtractInt(table, record.addattack, 0);
+			adddefence = DataRecordUtility.ExtractInt(table, record.adddefence, 0);
+			addshield = DataRecordUtility.ExtractInt(table, record.addshield, 0);
+			addspeed = DataRecordUtility.ExtractInt(table, record.addspeed, 0);
+			addcritical = DataRecordUtility.ExtractInt(table, record.addcritical, 0);
+			addcriticalpow = DataRecordUtility.ExtractInt(table, record.addcriticalpow, 0);
+			addrps = DataRecordUtility.ExtractInt(table, record.addrps, 0);
 			return true;
 		}
 
@@ -864,13 +880,10 @@ namespace TableConfig
 			record.type = DataRecordUtility.SetValue(table, type, 0);
 			record.icon = DataRecordUtility.SetValue(table, icon, 0);
 			record.distance = DataRecordUtility.SetValue(table, distance, 0);
-			record.cooldown = DataRecordUtility.SetValue(table, cooldown, 0);
 			record.duration = DataRecordUtility.SetValue(table, duration, 0);
 			record.interval = DataRecordUtility.SetValue(table, interval, 0);
 			record.canmove = DataRecordUtility.SetValue(table, canmove, 0);
-			record.impactToSelf = DataRecordUtility.SetValue(table, impactToSelf, 0);
-			record.impactToTarget = DataRecordUtility.SetValue(table, impactToTarget, 0);
-			record.summonActor = DataRecordUtility.SetValue(table, summonActor, 0);
+			record.impact = DataRecordUtility.SetValue(table, impact, 0);
 			record.interruptPriority = DataRecordUtility.SetValue(table, interruptPriority, 0);
 			record.isInterrupt = DataRecordUtility.SetValue(table, isInterrupt, false);
 			record.targetType = DataRecordUtility.SetValue(table, targetType, 0);
@@ -879,16 +892,23 @@ namespace TableConfig
 			record.aoeAngleOrLength = DataRecordUtility.SetValue(table, aoeAngleOrLength, 0);
 			record.maxAoeTargetCount = DataRecordUtility.SetValue(table, maxAoeTargetCount, 0);
 			record.dslSkillId = DataRecordUtility.SetValue(table, dslSkillId, 0);
+			record.startupSkillId = DataRecordUtility.SetValue(table, startupSkillId, 0);
+			record.flybackSkillId = DataRecordUtility.SetValue(table, flybackSkillId, 0);
+			record.startupPositionType = DataRecordUtility.SetValue(table, startupPositionType, 0);
+			record.subsequentSkills = DataRecordUtility.SetValue(table, subsequentSkills, null);
+			record.autoCast = DataRecordUtility.SetValue(table, autoCast, 0);
+			record.needTarget = DataRecordUtility.SetValue(table, needTarget, false);
+			record.cooldown = DataRecordUtility.SetValue(table, cooldown, 0);
 			record.damage = DataRecordUtility.SetValue(table, damage, 0);
-			record.mpRecover = DataRecordUtility.SetValue(table, mpRecover, 0);
-			record.hpRecover = DataRecordUtility.SetValue(table, hpRecover, 0);
-			record.addAttack = DataRecordUtility.SetValue(table, addAttack, 0);
-			record.addDefence = DataRecordUtility.SetValue(table, addDefence, 0);
-			record.addRps = DataRecordUtility.SetValue(table, addRps, 0);
-			record.addCritical = DataRecordUtility.SetValue(table, addCritical, 0);
-			record.addCriticalPow = DataRecordUtility.SetValue(table, addCriticalPow, 0);
-			record.addSpeed = DataRecordUtility.SetValue(table, addSpeed, 0);
-			record.addShield = DataRecordUtility.SetValue(table, addShield, 0);
+			record.addhp = DataRecordUtility.SetValue(table, addhp, 0);
+			record.addmp = DataRecordUtility.SetValue(table, addmp, 0);
+			record.addattack = DataRecordUtility.SetValue(table, addattack, 0);
+			record.adddefence = DataRecordUtility.SetValue(table, adddefence, 0);
+			record.addshield = DataRecordUtility.SetValue(table, addshield, 0);
+			record.addspeed = DataRecordUtility.SetValue(table, addspeed, 0);
+			record.addcritical = DataRecordUtility.SetValue(table, addcritical, 0);
+			record.addcriticalpow = DataRecordUtility.SetValue(table, addcriticalpow, 0);
+			record.addrps = DataRecordUtility.SetValue(table, addrps, 0);
 			byte[] bytes = GetRecordBytes(record);
 			table.Records.Add(bytes);
 		}

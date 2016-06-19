@@ -59,20 +59,23 @@ namespace GameFramework.Skill.Trigers
                         Renderer[] renderers = _obj.GetComponentsInChildren<Renderer>();
                         if (null != renderers) {
                             for (int i = 0; i < renderers.Length; ++i) {
-                                Material mat = renderers[i].material;
-                                m_Shaders.Add(mat.shader);
-                                if (mat.HasProperty("_Color")) {
-                                    m_Colors.Add(mat.color);
-                                } else {
-                                    m_Colors.Add(Color.white);
+                                Material[] mats = renderers[i].materials;
+                                for (int j = 0; j < mats.Length; j++)
+                                {
+                                    m_Shaders.Add(mats[j].shader);
+                                    if (mats[j].HasProperty("_Color")) {
+                                        m_Colors.Add(mats[j].color);
+                                    } else {
+                                        m_Colors.Add(Color.white);
+                                    }
+                                    m_Materials.Add(mats[j]);
+                                    if (mats[j].shader.name == "Standard" || mats[j].shader.name == "Mobile/Diffuse" || mats[j].shader.name == "Unlit/Transparent" || mats[j].shader.name == "Standard_Edge/Edge") {
+                                    } else {
+                                        continue;
+                                    }
+                                    mats[j].shader = Shader.Find(m_ShaderName);
+                                    mats[j].color = m_StartColor;
                                 }
-                                m_Materials.Add(mat);
-                                if (mat.shader.name == "Tut/Shader/Toon/toon" || mat.shader.name == "Standard" || mat.shader.name == "Mobile/Diffuse" || mat.shader.name == "Unlit/Transparent" || mat.shader.name == "LOLL/Toon/toonwithStencil") {
-                                } else {
-                                    continue;
-                                }
-                                mat.shader = Shader.Find(m_ShaderName);
-                                mat.color = m_StartColor;
                             }
                         }
                     }

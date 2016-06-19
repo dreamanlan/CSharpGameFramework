@@ -314,9 +314,13 @@ namespace SkillSystem
     }
     public sealed class SkillInstance
     {
-        public int InitDslSkillId
+        public int InnerDslSkillId
         {
-            get { return m_InitDslSkillId; }
+            get { return m_InnerDslSkillId; }
+        }
+        public int OuterDslSkillId
+        {
+            get { return m_OuterDslSkillId; }
         }
         public int DslSkillId
         {
@@ -341,6 +345,14 @@ namespace SkillSystem
         public long CurTime
         {
             get { return m_CurTime / 1000; }
+        }
+        public int CurSection
+        {
+            get { return m_CurSection; }
+        }
+        public long CurSectionDuration
+        {
+            get { return m_CurSectionDuration / 1000; }
         }
         public long OriginalDelta
         {
@@ -428,13 +440,13 @@ namespace SkillSystem
             get { return m_Resources; }
         }
         //----------------------------------------------
-        public SkillInstance EmitSkillInstance
+        public Dictionary<int, SkillInstance> EmitSkillInstances
         {
-            get { return m_EmitSkillInstance; }
+            get { return m_EmitSkillInstances; }
         }
-        public SkillInstance HitSkillInstance
+        public Dictionary<int, SkillInstance> HitSkillInstances
         {
-            get { return m_HitSkillInstance; }
+            get { return m_HitSkillInstances; }
         }
         //----------------------------------------------
         public List<InplaceSkillPropertyInfo> CollectProperties()
@@ -519,7 +531,8 @@ namespace SkillSystem
             instance.m_CurTime = 0;
             instance.m_GoToSectionId = -1;
 
-            instance.m_InitDslSkillId = m_InitDslSkillId;
+            instance.m_InnerDslSkillId = m_InnerDslSkillId;
+            instance.m_OuterDslSkillId = m_OuterDslSkillId;
             instance.m_DslSkillId = m_DslSkillId;
             if (m_StopSection != null) {
                 instance.m_StopSection = m_StopSection.Clone();
@@ -531,8 +544,8 @@ namespace SkillSystem
                 instance.m_MessageHandlers.Add(m_MessageHandlers[i].Clone());
             }
             //嵌在技能内的技能实例只用作克隆的母本，可以为多个技能实例共享
-            instance.m_EmitSkillInstance = m_EmitSkillInstance;
-            instance.m_HitSkillInstance = m_HitSkillInstance;
+            instance.m_EmitSkillInstances = m_EmitSkillInstances;
+            instance.m_HitSkillInstances = m_HitSkillInstances;
             return instance;
         }
         public bool Init(Dsl.DslInfo config)
@@ -786,8 +799,8 @@ namespace SkillSystem
                 ret = true;
                 Dsl.CallData callData = skill.Call;
                 if (null != callData && callData.HaveParam()) {
-                    m_InitDslSkillId = int.Parse(callData.GetParamId(0));
-                    m_DslSkillId = m_InitDslSkillId;
+                    m_OuterDslSkillId = int.Parse(callData.GetParamId(0));
+                    m_DslSkillId = m_OuterDslSkillId;
                 }
 
                 for (int i = 0; i < skill.Statements.Count; i++) {
@@ -848,10 +861,30 @@ namespace SkillSystem
                     } else if (skill.Statements[i].GetId() == "emitskill") {
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
                         if (null != sectionData) {
-                            m_EmitSkillInstance = new SkillInstance();
-                            m_EmitSkillInstance.Init(sectionData);
-                            m_EmitSkillInstance.m_InitDslSkillId = m_InitDslSkillId;
-                            m_EmitSkillInstance.m_DslSkillId = m_DslSkillId;
+                            PrepareInnerEmitSkillInstances();
+                            SkillInstance inst= new SkillInstance();
+                            inst.Init(sectionData);
+                            Dsl.CallData header = sectionData.Call;
+                            int innerId = 0;
+                            if (header.GetParamNum() > 0) {
+                                innerId = int.Parse(header.GetParamId(0));
+                            }
+                            if (innerId <= 0 || innerId > c_MaxInnerSkillId) {
+                                innerId = 1;
+                            }
+                            inst.m_InnerDslSkillId = GenInnerEmitSkillId(innerId);
+                            inst.m_OuterDslSkillId = m_DslSkillId;
+                            inst.m_DslSkillId = m_DslSkillId;
+                            if (!m_EmitSkillInstances.ContainsKey(inst.InnerDslSkillId)) {
+                                m_EmitSkillInstances.Add(inst.InnerDslSkillId, inst);
+                            } else {
+#if DEBUG
+                                string err = string.Format("Skill {0} DSL, emitskill id duplicate ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString());
+                                throw new Exception(err);
+#else
+                                LogSystem.Error("Skill {0} DSL, emitskill id duplicate !", m_DslSkillId);
+#endif
+                            }
                         } else {
 #if DEBUG
                             string err = string.Format("Skill {0} DSL, emitskill must be a function ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString());
@@ -863,10 +896,30 @@ namespace SkillSystem
                     } else if (skill.Statements[i].GetId() == "hitskill") {
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
                         if (null != sectionData) {
-                            m_HitSkillInstance = new SkillInstance();
-                            m_HitSkillInstance.Init(sectionData);
-                            m_HitSkillInstance.m_InitDslSkillId = m_InitDslSkillId;
-                            m_HitSkillInstance.m_DslSkillId = m_DslSkillId;
+                            PrepareInnerHitSkillInstances();
+                            SkillInstance inst = new SkillInstance();
+                            inst.Init(sectionData);
+                            Dsl.CallData header = sectionData.Call;
+                            int innerId = 0;
+                            if (header.GetParamNum() > 0) {
+                                innerId = int.Parse(header.GetParamId(0));
+                            }
+                            if (innerId <= 0 || innerId > c_MaxInnerSkillId) {
+                                innerId = 1;
+                            }
+                            inst.m_InnerDslSkillId = GenInnerHitSkillId(innerId);
+                            inst.m_OuterDslSkillId = m_DslSkillId;
+                            inst.m_DslSkillId = m_DslSkillId;
+                            if (!m_HitSkillInstances.ContainsKey(inst.InnerDslSkillId)) {
+                                m_HitSkillInstances.Add(inst.InnerDslSkillId, inst);
+                            } else {
+#if DEBUG
+                                string err = string.Format("Skill {0} DSL, hitskill id duplicate ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString());
+                                throw new Exception(err);
+#else
+                                LogSystem.Error("Skill {0} DSL, hitskill id duplicate !", m_DslSkillId);
+#endif
+                            }
                         } else {
 #if DEBUG
                             string err = string.Format("Skill {0} DSL, hitskill must be a function ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString());
@@ -894,6 +947,19 @@ namespace SkillSystem
             }
             LogSystem.Debug("SkillInstance.Init section num:{0} {1} skill {2}", m_Sections.Count, ret, m_DslSkillId);
             return ret;
+        }
+
+        private void PrepareInnerEmitSkillInstances()
+        {
+            if (null == m_EmitSkillInstances) {
+                m_EmitSkillInstances = new Dictionary<int, SkillInstance>();
+            }
+        }
+        private void PrepareInnerHitSkillInstances()
+        {
+            if (null == m_HitSkillInstances) {
+                m_HitSkillInstances = new Dictionary<int, SkillInstance>();
+            }
         }
 
         private bool m_IsInterrupted = false;
@@ -936,10 +1002,28 @@ namespace SkillSystem
         private Dictionary<string, object> m_GlobalVariables = null;
         private TypedDataCollection m_CustomDatas = new TypedDataCollection();
 
-        private int m_InitDslSkillId = 0;
-        private SkillInstance m_EmitSkillInstance = null;
-        private SkillInstance m_HitSkillInstance = null;
+        private int m_InnerDslSkillId = 0;
+        private int m_OuterDslSkillId = 0;
+        private Dictionary<int, SkillInstance> m_EmitSkillInstances = null;
+        private Dictionary<int, SkillInstance> m_HitSkillInstances = null;
 
         private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
+        
+        public static int GenInnerEmitSkillId(int id)
+        {
+            return (c_InnerEmitSkillIdOffset + id) * c_InnerSkillIdAmplification;
+        }
+        public static int GenInnerHitSkillId(int id)
+        {
+            return (c_InnerHitSkillIdOffset + id) * c_InnerSkillIdAmplification;
+        }
+
+        public const int c_FirstInnerEmitSkillId = (1 + c_InnerEmitSkillIdOffset) * c_InnerSkillIdAmplification;
+        public const int c_FirstInnerHitSkillId = (1 + c_InnerHitSkillIdOffset) * c_InnerSkillIdAmplification;
+
+        private const int c_InnerSkillIdAmplification = 100000000;
+        private const int c_MaxInnerSkillId = 10;
+        private const int c_InnerEmitSkillIdOffset = 0;
+        private const int c_InnerHitSkillIdOffset = 10;
     }
 }

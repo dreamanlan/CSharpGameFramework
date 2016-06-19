@@ -21,6 +21,8 @@ namespace Lobby
             m_RoomSvrChannel.Register<Msg_RL_EnterSceneResult>(HandleEnterSceneResult);
             m_RoomSvrChannel.Register<Msg_RL_ChangeScene>(HandleChangeScene);
             m_RoomSvrChannel.Register<Msg_RL_ChangeSceneResult>(HandleChangeSceneResult);
+            m_RoomSvrChannel.Register<Msg_RL_ActiveScene>(HandleActiveScene);
+            m_RoomSvrChannel.Register<Msg_RL_ActiveSceneResult>(HandleActiveSceneResult);
             m_RoomSvrChannel.Register<Msg_RL_UserDrop>(HandleUserDrop);
             m_RoomSvrChannel.Register<Msg_RL_ReplyReconnectUser>(HandelReplyReconnectUser);
             m_RoomSvrChannel.Register<Msg_RL_UserQuit>(HandleUserQuit);
@@ -54,7 +56,7 @@ namespace Lobby
         private void HandleChangeScene(Msg_RL_ChangeScene msg, PBChannel channel, int src, uint session)
         {
             //响应RoomServer消息，进入野外场景结果消息
-            m_RoomProcessThread.OnChangeScene(msg.UserGuid, msg.SceneID);
+            m_RoomProcessThread.OnChangeScene(msg.UserGuids, msg.SceneID);
         }
         private void HandleChangeSceneResult(Msg_RL_ChangeSceneResult msg, PBChannel channel, int src, uint session)
         {
@@ -66,6 +68,16 @@ namespace Lobby
                 mp = msg.MP;
             }
             m_RoomProcessThread.OnChangeSceneResult(msg.UserGuid, msg.RoomID, msg.TargetRoomID, msg.Result, hp, mp);
+        }
+        private void HandleActiveScene(Msg_RL_ActiveScene msg, PBChannel channel, int src, uint session)
+        {
+            //响应RoomServer消息，激活副本请求消息
+            m_RoomProcessThread.OnActiveScene(msg.UserGuids, msg.SceneID);
+        }
+        private void HandleActiveSceneResult(Msg_RL_ActiveSceneResult msg, PBChannel channel, int src, uint session)
+        {
+            //响应RoomServer消息，激活副本结果消息
+            m_RoomProcessThread.OnActiveSceneResult(msg.UserGuids, msg.RoomID, msg.Result);
         }
         private void HandleUserDrop(Msg_RL_UserDrop msg, PBChannel channel, int src, uint session)
         {

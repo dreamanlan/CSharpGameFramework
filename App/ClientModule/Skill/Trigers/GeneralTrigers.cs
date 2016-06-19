@@ -8,7 +8,7 @@ using GameFramework.Story;
 namespace GameFramework.Skill.Trigers
 {
     /// <summary>
-    /// timescale(start_time, scale[, end_time]);
+    /// timescale(start_time, scale[, duration]);
     /// </summary>
     internal class TimeScaleTriger : AbstractSkillTriger
     {
@@ -84,6 +84,13 @@ namespace GameFramework.Skill.Trigers
             m_RealDuration = m_Duration;
             m_RealTimeScale = m_TimeScale;
         }
+
+        protected override void OnInitProperties()
+        {
+            AddProperty("TimeScale", () => { return m_RealTimeScale; }, (object val) => { m_RealTimeScale = (float)Convert.ChangeType(val,typeof(float)); });
+            AddProperty("Duration", () => { return m_RealDuration; }, (object val) => { m_RealDuration = (float)Convert.ChangeType(val, typeof(float)); });
+        }
+
         private float GetFixedDeltaTime()
         {
             //下面函数是引用C++库里的函数，不能直接捕获异常，必须封装一层C#函数再捕获。
@@ -483,5 +490,123 @@ namespace GameFramework.Skill.Trigers
         }
 
         private Dictionary<string, object> m_Params = null;
+    }
+    /// <summary>
+    /// keeptarget([starttime[,remaintime]]);
+    /// </summary>
+    public class KeepTargetTrigger : AbstractSkillTriger
+    {
+        protected override ISkillTriger OnClone()
+        {
+            KeepTargetTrigger copy = new KeepTargetTrigger();
+            copy.m_RemainTime = m_RemainTime;
+            return copy;
+        }
+        public override void Reset()
+        {
+        }
+        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 1) {
+                StartTime = long.Parse(callData.GetParamId(0));
+            }
+            if (num >= 2) {
+                m_RemainTime = long.Parse(callData.GetParamId(1));
+            }
+        }
+        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
+            if (null == senderObj) return false;
+            if (curSectionTime < StartTime) {
+                return true;
+            }
+            if (m_RemainTime > 0 && curSectionTime > (StartTime + m_RemainTime)) {
+                return false;
+            }
+            if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
+                EntityController.Instance.KeepTarget(senderObj.TargetActorId);
+            } else {
+                EntityController.Instance.KeepTarget(senderObj.ActorId);
+            }
+            return true;
+        }
+
+        private long m_RemainTime = 0;
+    }
+    /// <summary>
+    /// useimpact(impactid,[starttime[,is_external_impact]])[if(type)];
+    /// </summary>
+    public class UseImpactTrigger : AbstractSkillTriger
+    {
+        protected override ISkillTriger OnClone()
+        {
+            UseImpactTrigger copy = new UseImpactTrigger();
+            copy.m_Impact = m_Impact;
+            copy.m_IsExternalImpact = m_IsExternalImpact;
+            copy.m_Type = m_Type;
+            return copy;
+        }
+        public override void Reset()
+        {
+        }
+        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
+            if (null == senderObj) return false;
+            if (curSectionTime < StartTime) {
+                return true;
+            }
+            bool needSetImpact = false;
+            if (string.IsNullOrEmpty(m_Type)) {
+                needSetImpact = true;
+            } else {
+                if (m_Type == "block" && instance.LocalVariables.ContainsKey("impact_block")) {
+                    needSetImpact = true;
+                }
+            }
+            if (needSetImpact) {
+                int impact = m_Impact;
+                if (!m_IsExternalImpact) {
+                    impact = SkillInstance.GenInnerHitSkillId(m_Impact <= 0 ? 1 : m_Impact);
+                }
+                instance.SetLocalVariable("impact", impact);
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_Impact = int.Parse(callData.GetParamId(0));
+            }
+            if (num > 1) {
+                StartTime = long.Parse(callData.GetParamId(1));
+            }
+            if (num > 2) {
+                m_IsExternalImpact = callData.GetParamId(2) == "true";
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData, int dslSkillId)
+        {
+            Dsl.FunctionData func1 = statementData.First;
+            Dsl.FunctionData func2 = statementData.Second;
+            if (null != func1 && null != func2) {
+                Load(func1.Call, dslSkillId);
+                LoadIf(func2.Call, dslSkillId);
+            }
+        }
+        private void LoadIf(Dsl.CallData callData, int dslSkillId)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_Type = callData.GetParamId(0);
+            }
+        }
+
+        private int m_Impact = 0;
+        private bool m_IsExternalImpact = false;
+        private string m_Type = string.Empty;
     }
 }

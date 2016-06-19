@@ -34,6 +34,7 @@ namespace GameFramework
                     if (null != userInfo) {
                         if (scene.SceneState == SceneState.Running) {
                             scene.SyncForNewUser(user);
+                            scene.StorySystem.SendMessage("user_enter_scene", userInfo.GetId(), userInfo.GetUnitId(), userInfo.GetCampId(), userInfo.GetMovementStateInfo().PositionX, userInfo.GetMovementStateInfo().PositionZ);
                         }
                     }
                 }

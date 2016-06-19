@@ -52,10 +52,10 @@ message(Msg_LB_UserRelogin)
   member(Guid, uint64, required);
 };
 
-message(Msg_LB_CancelMatch)
+message(Msg_BL_UserChangeScene)
 {
   member(Guid, uint64, required);
-  member(Type, int32, required);
+  member(SceneId, int32, required);
 };
 
 message(Msg_LB_BigworldUserBaseInfo)
@@ -65,7 +65,7 @@ message(Msg_LB_BigworldUserBaseInfo)
   member(AccountId, string, required);
   member(ClientInfo, string, required);
   member(StartServerTime, string, required);
-  member(FightingCapacity, int32, required);
+  member(SceneId, int32, required);
 };
 
 message(Msg_LB_RequestEnterScene)

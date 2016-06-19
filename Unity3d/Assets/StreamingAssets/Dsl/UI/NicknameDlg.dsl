@@ -10,8 +10,8 @@ story(main)
     bindui(@window){
       var("@nickname","Panel/NicknameInput");
       inputs("Panel/NicknameInput");
-      onclick("roll","Panel/Roll");
-      onclick("ok","Panel/Button");
+      onevent("button","roll","Panel/Roll");
+      onevent("button","ok","Panel/Button");
     };
   	log("NicknameDlg start");
     @window.SetActive(changetype(0,"bool"));

@@ -233,6 +233,10 @@ namespace GameFramework
             //处理延迟调用
             m_AsyncActionProcessor.HandleActions(100);
 
+            if (!m_IsSceneLoaded) {
+                return;
+            }
+
             GmCommands.ClientGmStorySystem.Instance.Tick();
             GfxStorySystem.Instance.Tick();
             GfxSkillSystem.Instance.Tick();
@@ -286,7 +290,7 @@ namespace GameFramework
             if (lvl.type == (int)SceneTypeEnum.MainUi) {
                 m_LastMainUiSceneId = m_SceneId;
                 Utility.SendMessage("GameRoot", "OnLoadMainUiComplete", lvl.id);
-            } else if (lvl.type == (int)SceneTypeEnum.Battle || lvl.type == (int)SceneTypeEnum.Story) {
+            } else if (lvl.type == (int)SceneTypeEnum.Story) {
                 Utility.SendMessage("GameRoot", "OnLoadBattleComplete", lvl.id);
             } else if (lvl.type == (int)SceneTypeEnum.Room) {
                 Utility.SendMessage("GameRoot", "OnLoadBattleComplete", lvl.id);
@@ -595,24 +599,31 @@ namespace GameFramework
                     }
                 }
                 if (info.IsDead() && !info.NeedDelete) {
-                    if (info.DeadTime <= 0) {
-                        SkillInfo skillInfo = info.GetSkillStateInfo().GetSkillInfoById(info.DeadSkillId);
-                        if (info.DeadSkillId > 0 && null != skillInfo) {
-                            info.DeadTime = TimeUtility.GetLocalMilliseconds();
-                            GfxSkillSystem.Instance.StopAllSkill(info.GetId(), true, false, true);
-                            GfxSkillSystem.Instance.StartSkill(info.GetId(), skillInfo.ConfigData, 0);
-                            OnEntityKilled(info);
-                            EntityDrop(info); // 掉落
-                        } else {
+                    if (info.CanDead) {
+                        if (info.DeadTime <= 0) {
+                            SkillInfo skillInfo = info.GetSkillStateInfo().GetSkillInfoById(info.DeadSkillId);
+                            if (info.DeadSkillId > 0 && null != skillInfo) {
+                                info.DeadTime = TimeUtility.GetLocalMilliseconds();
+                                GfxSkillSystem.Instance.StopAllSkill(info.GetId(), true, false, true);
+                                GfxSkillSystem.Instance.StartSkill(info.GetId(), skillInfo.ConfigData, 0);
+                                OnEntityKilled(info);
+                                EntityDrop(info); // 掉落
+                            } else {
+                                info.DeadTime = 0;
+                                info.NeedDelete = true;
+                                OnEntityKilled(info);
+                                EntityDrop(info); // 掉落
+                            }
+                        } else if (info.DeadTime + info.DeadTimeout < TimeUtility.GetLocalMilliseconds()) {
                             info.DeadTime = 0;
                             info.NeedDelete = true;
-                            OnEntityKilled(info);
-                            EntityDrop(info); // 掉落
                         }
-                    } else if (info.DeadTime + info.DeadTimeout < TimeUtility.GetLocalMilliseconds()) {
-                        info.DeadTime = 0;
-                        info.NeedDelete = true;
+                    } else {
+                        info.CanDead = true;
                     }
+                } else {
+                    //每个tick复位CanDead，技能里需要鞭尸时应使用触发器每帧标记目标不可死亡（keeplive）
+                    info.CanDead = true;
                 }
                 if (info.NeedDelete) {
                     m_DeletedEntities.Add(info);
@@ -636,13 +647,6 @@ namespace GameFramework
 
         private void EntityDrop(EntityInfo info)
         {
-            UnityEngine.Debug.Log("=========Drop: " + info.GetId());
-
-            // Boss掉落？？
-            //if (info.NpcType == (int)NpcTypeEnum.Boss)
-            {
-                Utility.EventSystem.Publish("ui_drop", "ui", info.GetId());
-            }
         }
         private void DestroyEntity(EntityInfo ni)
         {
@@ -821,17 +825,6 @@ namespace GameFramework
                 return ret;
             }
         }
-        public bool IsBattleScene
-        {
-            get
-            {
-                bool ret = false;
-                if (null != m_SceneInfo) {
-                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Battle;
-                }
-                return ret;
-            }
-        }
         public bool IsStoryScene
         {
             get
@@ -839,6 +832,28 @@ namespace GameFramework
                 bool ret = false;
                 if (null != m_SceneInfo) {
                     ret = m_SceneInfo.type == (int)SceneTypeEnum.Story;
+                }
+                return ret;
+            }
+        }
+        public bool IsRoomScene
+        {
+            get
+            {
+                bool ret = false;
+                if (null != m_SceneInfo) {
+                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Room;
+                }
+                return ret;
+            }
+        }
+        public bool IsPvpScene
+        {
+            get
+            {
+                bool ret = false;
+                if (null != m_SceneInfo) {
+                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Pvp;
                 }
                 return ret;
             }
@@ -855,17 +870,6 @@ namespace GameFramework
         public LockTargetInfo SelectedTarget
         {
             get { return m_SelectedTarget; }
-        }
-        public bool IsRoomScene
-        {
-            get
-            {
-                bool ret = false;
-                if (null != m_SceneInfo) {
-                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Room;
-                }
-                return ret;
-            }
         }
         public int SummonerSkillId
         {

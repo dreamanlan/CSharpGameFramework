@@ -337,32 +337,42 @@ namespace Lobby
                 LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
             }
         }
-        internal void OnChangeScene(ulong userGuid, int sceneID)
+        internal void OnChangeScene(List<ulong> userGuids, int sceneID)
         {
-            UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(userGuid);
-            if (user == null) { return; }
+            bool failed = true;
             RoomInfo targetRoom = null;
             int roomId = m_LobbyInfo.FindSceneRoom(sceneID);
             if (roomId > 0) {
                 targetRoom = m_LobbyInfo.GetRoomByID(roomId);
-                if (null != user.Room && null != targetRoom) {
-                    RoomInfo curRoom = user.Room;
-                    if (curRoom.RoomId != targetRoom.RoomId && targetRoom.UserCount < targetRoom.TotalCount) {
-                        Msg_LR_ChangeScene msg = new Msg_LR_ChangeScene();
-                        msg.UserGuid = userGuid;
-                        msg.RoomID = curRoom.RoomId;
-                        msg.TargetRoomID = targetRoom.RoomId;
+                if (null != targetRoom && targetRoom.UserCount + userGuids.Count <= targetRoom.TotalCount) {
+                    for (int i = 0; i < userGuids.Count; ++i) {
+                        ulong userGuid = userGuids[i];
+                        UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(userGuid);
+                        if (user == null) { continue; }
+                        if (null != user.Room) {
+                            RoomInfo curRoom = user.Room;
+                            if (curRoom.RoomId != targetRoom.RoomId) {
+                                Msg_LR_ChangeScene msg = new Msg_LR_ChangeScene();
+                                msg.UserGuid = userGuid;
+                                msg.RoomID = curRoom.RoomId;
+                                msg.TargetRoomID = targetRoom.RoomId;
 
-                        LobbyServer.Instance.RoomSvrChannel.Send(curRoom.RoomServerName, msg);
-                        LogSys.Log(LOG_TYPE.INFO, "User change field ! , guid:{0} room:{1} target room:{2}", userGuid, curRoom.RoomId, targetRoom.RoomId);
-                    } else {
+                                LobbyServer.Instance.RoomSvrChannel.Send(curRoom.RoomServerName, msg);
+                                LogSys.Log(LOG_TYPE.INFO, "User change field ! , guid:{0} room:{1} target room:{2}", userGuid, curRoom.RoomId, targetRoom.RoomId);
+                                failed = false;
+                            }
+                        }
+                    }
+                }
+            }
+            if (failed) {
+                for (int i = 0; i < userGuids.Count; ++i) {
+                    ulong userGuid = userGuids[i];
+                    UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(userGuid);
+                    if (null != user) {
                         LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
                     }
-                } else {
-                    LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
                 }
-            } else {
-                LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
             }
         }
         internal void OnChangeSceneResult(ulong userGuid, int roomID, int targetRoomID, int result, int hp, int mp)
@@ -385,8 +395,18 @@ namespace Lobby
                     }
                     */
                     room.DelUsers(userGuid);
-                    user.CurrentState = UserState.Online;
-                    RequestEnterSceneRoom(user, targetRoomID, hp, mp, enterX, enterY);
+                    if (room.RoomServerName == targetRoom.RoomServerName) {
+                        targetRoom.AddUsers(user.CampId, userGuid);
+                        user.CurrentState = UserState.Room;
+
+                        Msg_BL_UserChangeScene msg = new Msg_BL_UserChangeScene();
+                        msg.Guid = userGuid;
+                        msg.SceneId = targetRoom.SceneType;
+                        LobbyServer.Instance.UserChannel.Send(user.UserSvrName, msg);
+                    } else {
+                        user.CurrentState = UserState.Online;
+                        RequestEnterSceneRoom(user, targetRoomID, hp, mp, enterX, enterY);
+                    }
                     LogSys.Log(LOG_TYPE.INFO, "User change field success ! , guid:{0} room:{1} target room:{2} result:{3}", userGuid, roomID, targetRoomID, (SceneOperationResultEnum)result);
                 } else {
                     LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
@@ -395,6 +415,28 @@ namespace Lobby
                 LogSys.Log(LOG_TYPE.INFO, "User change field failed ! guid:{0} room:{1} target room:{2} result:{3}", userGuid, roomID, targetRoomID, (SceneOperationResultEnum)result);
 
                 LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
+            }
+        }
+        internal void OnActiveScene(List<ulong> guids, int sceneID)
+        {
+            Msg_LR_ActiveScene msg = new Msg_LR_ActiveScene();
+            msg.UserGuids.AddRange(guids);
+            msg.RoomID = m_LobbyInfo.CreateAutoRoom(guids.ToArray(), sceneID);
+            msg.SceneID = sceneID;
+
+            RoomInfo room = m_LobbyInfo.GetRoomByID(msg.RoomID);
+            if (null != room) {
+                LobbyServer.Instance.RoomSvrChannel.Send(room.RoomServerName, msg);
+            }
+        }
+        internal void OnActiveSceneResult(List<ulong> guids, int roomID, int result)
+        {
+            //成功打开副本时，发起各个玩家的场景切换流程（注意是切到副本）
+            if (result == (int)SceneOperationResultEnum.Success) {
+                for (int i = 0; i < guids.Count; ++i) {
+                    ulong guid = guids[i];
+                    RequestChangeSceneRoom(guid, 0, roomID);
+                }
             }
         }
         //响应RoomServer玩家重新连接进入房间的反馈消息

@@ -133,18 +133,15 @@ public class SkillBar : MonoBehaviour
     //绑定控件
     public GameObject panelSkill;
     public GameObject prefabSkillIcon;
-    public SkillIconInfo summonerSkillIcon;
 
     //回调外层
     public delegate void SelectSkillFun(int objID,int skillID);
-    public SelectSkillFun onSelectSkill;//选中大招
-    public delegate void SelectSummonerSkillFun(int skillID);
-    public SelectSummonerSkillFun onSelectSummonerSkill;//选中召唤师技能
+    public SelectSkillFun onSelectSkill;
     public delegate void FunOnDestroy();
     public FunOnDestroy onDestroy;
     
-    List<SkillInfo> skills = new List<SkillInfo>();
-    public SkillInfo summonerSkill = new SkillInfo();
+    private List<SkillInfo> skills = new List<SkillInfo>();
+
     public void Start() {
         
     }
@@ -164,12 +161,13 @@ public class SkillBar : MonoBehaviour
         skill.icon = panelObj.GetComponent<SkillIconInfo>();
         skill.icon.gameObject.SetActive(true);
 
-        skill.icon.head.sprite = SpriteManager.GetActorBigIcon(icon);
+        skill.icon.head.sprite = SpriteManager.GetSkillIcon(icon);
         skill.icon.deadMask.gameObject.SetActive(false);
         skill.icon.button.enabled = canSelect;
         skill.objID = objID;
         skill.cooldownTime = cooldownTime;
         skill.skillID = skillID;
+        skill.icon.skillIdTxt.text = skillID.ToString();
 
         skills.Add(skill);
         UIEventTrigger.Get(skill.icon.button).onClick = () => {
@@ -179,31 +177,12 @@ public class SkillBar : MonoBehaviour
         };
         RefreshSkillPosition();
         return skill;
-    }    
-    public void SetSummonerSkill(int objID, int skillID, int icon, float cooldownTime)
-    {
-        summonerSkillIcon.gameObject.SetActive(true);
-        summonerSkillIcon.head.sprite = SpriteManager.GetSkillIcon(icon);
-        summonerSkillIcon.button.enabled = true;
-        summonerSkill.cooldownTime = cooldownTime;
-        summonerSkill.icon = summonerSkillIcon;
-        summonerSkill.skillID = skillID;
-        summonerSkill.objID = objID;
-
-        UIEventTrigger.Get(summonerSkillIcon.button).onClick = () => {
-            if (!summonerSkill.isCoolingDown) {
-                onSelectSummonerSkill(skillID);
-            }
-        };
-    }
-    public void HideSummonerSkill()
-    {
-        summonerSkillIcon.gameObject.SetActive(false);
     }
     private void RefreshSkillPosition() {
-        for(int i = 0; i<skills.Count; i++){
+        int ct = skills.Count;
+        for (int i = 0; i < ct; i++) {
             Vector3 pos = skills[i].icon.transform.localPosition;
-            pos.x = -(i) * 126 - 60;
+            pos.x = (ct / 2 - i) * 86 - 40;
             skills[i].icon.transform.localPosition = pos;
         }
     }
@@ -213,6 +192,13 @@ public class SkillBar : MonoBehaviour
             GameObject.Destroy(skill.icon.gameObject);
             skills.Remove(skill);
         }
+    }
+    public void RemoveAllSkills()
+    {
+        for (int i = 0; i < skills.Count; i++) {
+            GameObject.Destroy(skills[i].icon.gameObject);
+        }
+        skills.Clear();
     }
 
     public int GetSkillCount()
@@ -238,9 +224,6 @@ public class SkillBar : MonoBehaviour
     public void Update() {
         foreach (SkillInfo skill in skills) {
             skill.Update();
-        }
-        if (summonerSkill != null && summonerSkill.icon != null) {
-            summonerSkill.Update();
         }
     }
 }

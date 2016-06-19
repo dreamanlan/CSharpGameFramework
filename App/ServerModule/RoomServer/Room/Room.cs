@@ -17,28 +17,6 @@ namespace GameFramework
 
     internal class Room
     {
-        //-------------------------------------------------------------------------------------
-        //逻辑数据相关
-        //-------------------------------------------------------------------------------------
-        internal int MaxScore
-        {
-            get { return m_MaxScore; }
-            set { m_MaxScore = value; }
-        }
-        internal int MaxLevel
-        {
-            get { return m_MaxLevel; }
-            set { m_MaxLevel = value; }
-        }
-        internal List<int> Monsters
-        {
-            get { return m_Monsters; }
-        }
-        internal List<int> Hps
-        {
-            get { return m_Hps; }
-        }
-        //-------------------------------------------------------------------------------------
         internal bool IsFieldRoom
         {
             get { return m_IsFieldRoom; }
@@ -383,11 +361,11 @@ namespace GameFramework
             connector_.SendMsgToLobby(msg);
         }
 
-        internal void RemoveUserFromRoomThread(User user)
+        internal void RemoveUserFromRoomThread(User user, bool free)
         {
-            RemoveUser(user);
+            RemoveUser(user, free);
         }
-        
+                
         internal void DeleteUser(User user)
         {
             if (null != user) {
@@ -414,14 +392,6 @@ namespace GameFramework
                 // user.Info.Suicide();
             }
             LogSys.Log(LOG_TYPE.DEBUG, "Room {0} User {1}({2}) dropped.", RoomID, user.Guid, user.GetKey());
-        }
-
-        internal void RequestChangeScene(User user, int targetSceneId)
-        {
-            Msg_RL_ChangeScene builder = new Msg_RL_ChangeScene();
-            builder.UserGuid = user.Guid;
-            builder.SceneID = targetSceneId;
-            connector_.SendMsgToLobby(builder);
         }
 
         internal void EndBattle(int winnerCampID)
@@ -499,6 +469,10 @@ namespace GameFramework
 
         private void RemoveUser(User user)
         {
+            RemoveUser(user, true);
+        }
+        private void RemoveUser(User user, bool free)
+        {
             if (user == null) {
                 return;
             }
@@ -513,8 +487,10 @@ namespace GameFramework
                 scene.LeaveScene(user);
             }
             LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [Room.RemoveUser]", user.LocalID, user.Guid, user.GetKey());
-            user_pool_.FreeUser(user.LocalID);
             room_users_.Remove(user);
+            if (free) {
+                user_pool_.FreeUser(user.LocalID);
+            }
         }
         private Observer GetUnusedObserver()
         {
@@ -528,12 +504,6 @@ namespace GameFramework
             }
             return ret;
         }
-
-        //-------------------------------------------------------------------------
-        private int m_MaxScore = 0;
-        private int m_MaxLevel = 0;
-        private List<int> m_Monsters = new List<int>();
-        private List<int> m_Hps = new List<int>();
 
         //-------------------------------------------------------------------------
         private const long c_close_wait_time_ = 1000;

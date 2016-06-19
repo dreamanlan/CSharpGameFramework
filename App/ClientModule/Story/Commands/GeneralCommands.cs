@@ -62,7 +62,7 @@ namespace GameFramework.Story.Commands
             TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(resId);
             if (null != cfg) {
                 ResourceSystem.Instance.PreloadObject(cfg.avatar);
-                int[] skillIds = new int[] { cfg.skill0, cfg.skill1, cfg.skill2, cfg.skill3, cfg.skill4, cfg.passiveskill1, cfg.passiveskill2, cfg.passiveskill3, cfg.passiveskill4, cfg.bornskill, cfg.deadskill };
+                int[] skillIds = new int[] { cfg.skill0, cfg.skill1, cfg.skill2, cfg.skill3, cfg.skill4, cfg.skill5, cfg.skill6, cfg.skill7, cfg.skill8, cfg.bornskill, cfg.deadskill };
                 for (int ix = 0; ix < skillIds.Length; ++ix) {
                     int skillId = skillIds[ix];
                     if (skillId > 0) {
@@ -294,6 +294,110 @@ namespace GameFramework.Story.Commands
         private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
+    }
+    /// <summary>
+    /// pausestory(storyid1,storyid2,...);
+    /// </summary>
+    internal class PauseStoryCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            PauseStoryCommand cmd = new PauseStoryCommand();
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                cmd.m_StoryIds.Add(m_StoryIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                m_StoryIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                m_StoryIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                GfxStorySystem.Instance.PauseStory(m_StoryIds[i].Value, true);
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_StoryIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_StoryIds = new List<IStoryValue<string>>();
+    }
+    /// <summary>
+    /// resumestory(storyid1,storyid2,...);
+    /// </summary>
+    internal class ResumeStoryCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ResumeStoryCommand cmd = new ResumeStoryCommand();
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                cmd.m_StoryIds.Add(m_StoryIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                m_StoryIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                m_StoryIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                GfxStorySystem.Instance.PauseStory(m_StoryIds[i].Value, false);
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_StoryIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_StoryIds = new List<IStoryValue<string>>();
     }
     /// <summary>
     /// firemessage(msgid,arg1,arg2,...);
@@ -646,6 +750,110 @@ namespace GameFramework.Story.Commands
         private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
+    }
+    /// <summary>
+    /// pauseallmessagehandler(msgid1,msgid2,...);
+    /// </summary>
+    internal class PauseAllMessageHandlerCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            PauseAllMessageHandlerCommand cmd = new PauseAllMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                GfxStorySystem.Instance.PauseMessageHandler(m_MsgIds[i].Value, true);
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
+    }
+    /// <summary>
+    /// resumeallmessagehandler(msgid1,msgid2,...);
+    /// </summary>
+    internal class ResumeAllMessageHandlerCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ResumeAllMessageHandlerCommand cmd = new ResumeAllMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                GfxStorySystem.Instance.PauseMessageHandler(m_MsgIds[i].Value, false);
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
     /// <summary>
     /// sendroomstorymessage(msg,arg1,arg2,...);

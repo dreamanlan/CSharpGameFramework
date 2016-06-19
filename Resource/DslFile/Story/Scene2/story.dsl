@@ -11,11 +11,13 @@ story(story_main)
     npcsetformation(1000,0);
     npcaddskill(1000,22);
     npcaddskill(1000,23);
-    publishgfxevent("ui_add_actor_button", "ui", 1, unitid2objid(1000));
+    publishgfxevent("ui_add_skill_button", "ui", 1, unitid2objid(1000), 22);
+    publishgfxevent("ui_add_skill_button", "ui", 1, unitid2objid(1000), 23);
+    publishgfxevent("ui_add_skill_button", "ui", 1, unitid2objid(1000), 0);
     loop(4){
       createnpc(1001+$$,vector3(55+rndint(0,10),0,65+rndint(0,10)),0,3,$$+2,4,stringlist(""),getleaderid());
       npcsetformation(1001+$$,$$+1);
-      publishgfxevent("ui_add_actor_button","ui",$$+2,unitid2objid(1001+$$));
+      publishgfxevent("ui_add_skill_button","ui",$$+2,unitid2objid(1001+$$), 0);
     };
     camerafollow(1000);
     wait(1000);    

@@ -64,7 +64,7 @@ namespace GameFramework.Story.Commands
         {
             TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(resId);
             if (null != cfg) {
-                int[] skillIds = new int[] { cfg.skill0, cfg.skill1, cfg.skill2, cfg.skill3, cfg.skill4, cfg.passiveskill1, cfg.passiveskill2, cfg.passiveskill3, cfg.passiveskill4, cfg.bornskill, cfg.deadskill };
+                int[] skillIds = new int[] { cfg.skill0, cfg.skill1, cfg.skill2, cfg.skill3, cfg.skill4, cfg.skill5, cfg.skill6, cfg.skill7, cfg.skill8, cfg.bornskill, cfg.deadskill };
                 for (int ix = 0; ix < skillIds.Length; ++ix) {
                     int skillId = skillIds[ix];
                     if (skillId > 0) {
@@ -231,10 +231,10 @@ namespace GameFramework.Story.Commands
                     object varVal = m_SetVal.Value;
                     instance.SetVariable(varName, varVal);
                 } else {
-                int timeout = m_TimeoutVal.Value;
+                    int timeout = m_TimeoutVal.Value;
                     int curTime = m_CurTime;
                     m_CurTime += (int)delta;
-                if (timeout <= 0 || curTime <= timeout) {
+                    if (timeout <= 0 || curTime <= timeout) {
                         ret = true;
                     } else {
                         string varName = m_TimeoutSetVar.Value;
@@ -299,6 +299,116 @@ namespace GameFramework.Story.Commands
         private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
+    }
+    /// <summary>
+    /// pausestory(storyid1,storyid2,...);
+    /// </summary>
+    internal class PauseStoryCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            PauseStoryCommand cmd = new PauseStoryCommand();
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                cmd.m_StoryIds.Add(m_StoryIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                m_StoryIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                m_StoryIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                for (int i = 0; i < m_StoryIds.Count; i++) {
+                    scene.StorySystem.PauseStory(m_StoryIds[i].Value, true);
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_StoryIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_StoryIds = new List<IStoryValue<string>>();
+    }
+    /// <summary>
+    /// resumestory(storyid1,storyid2,...);
+    /// </summary>
+    internal class ResumeStoryCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ResumeStoryCommand cmd = new ResumeStoryCommand();
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                cmd.m_StoryIds.Add(m_StoryIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                m_StoryIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_StoryIds.Count; i++) {
+                m_StoryIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                for (int i = 0; i < m_StoryIds.Count; i++) {
+                    scene.StorySystem.PauseStory(m_StoryIds[i].Value, false);
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_StoryIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_StoryIds = new List<IStoryValue<string>>();
     }
     /// <summary>
     /// firemessage(msgid,arg1,arg2,...);
@@ -445,10 +555,10 @@ namespace GameFramework.Story.Commands
                     object varVal = m_SetVal.Value;
                     instance.SetVariable(varName, varVal);
                 } else {
-                int timeout = m_TimeoutVal.Value;
+                    int timeout = m_TimeoutVal.Value;
                     int curTime = m_CurTime;
                     m_CurTime += (int)delta;
-                if (timeout <= 0 || curTime <= timeout) {
+                    if (timeout <= 0 || curTime <= timeout) {
                         ret = true;
                     } else {
                         string varName = m_TimeoutSetVar.Value;
@@ -582,10 +692,10 @@ namespace GameFramework.Story.Commands
                     object varVal = m_SetVal.Value;
                     instance.SetVariable(varName, varVal);
                 } else {
-                int timeout = m_TimeoutVal.Value;
+                    int timeout = m_TimeoutVal.Value;
                     int curTime = m_CurTime;
                     m_CurTime += (int)delta;
-                if (timeout <= 0 || curTime <= timeout) {
+                    if (timeout <= 0 || curTime <= timeout) {
                         ret = true;
                     } else {
                         string varName = m_TimeoutSetVar.Value;
@@ -650,6 +760,116 @@ namespace GameFramework.Story.Commands
         private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
+    }
+    /// <summary>
+    /// pauseallmessagehandler(msgid1,msgid2,...);
+    /// </summary>
+    internal class PauseAllMessageHandlerCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            PauseAllMessageHandlerCommand cmd = new PauseAllMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    scene.StorySystem.PauseMessageHandler(m_MsgIds[i].Value, true);
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
+    }
+    /// <summary>
+    /// resumeallmessagehandler(msgid1,msgid2,...);
+    /// </summary>
+    internal class ResumeAllMessageHandlerCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ResumeAllMessageHandlerCommand cmd = new ResumeAllMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    scene.StorySystem.PauseMessageHandler(m_MsgIds[i].Value, false);
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
     /// <summary>
     /// sendserverstorymessage(msg,arg1,arg2,...)[touser(userid)];
@@ -1487,13 +1707,212 @@ namespace GameFramework.Story.Commands
         private IStoryValue<object> m_Value = new StoryValue();
     }
     /// <summary>
-    /// changescene(target_scene_id);
+    /// activescene(target_scene_id, obj_id);
+    /// </summary>
+    internal class ActiveSceneCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ActiveSceneCommand cmd = new ActiveSceneCommand();
+            cmd.m_TargetSceneId = m_TargetSceneId.Clone();
+            cmd.m_ObjId = m_ObjId.Clone();
+            return cmd;
+        }
+
+        protected override void ResetState()
+        { }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_TargetSceneId.Substitute(iterator, args);
+            m_ObjId.Substitute(iterator, args);
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_TargetSceneId.Evaluate(instance);
+            m_ObjId.Evaluate(instance);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                int sceneId = m_TargetSceneId.Value;
+                object idObj = m_ObjId.Value;
+                if (idObj is int) {
+                    int objId = (int)idObj;
+                    EntityInfo entity = scene.GetEntityById(objId);
+                    if (null != entity) {
+                        User us = entity.CustomData as User;
+                        if (null != us) {
+                            RoomServer.RoomServer.Instance.PlayerRequestActiveRoom(sceneId, us.Guid);
+                        }
+                    }
+                } else {
+                    IList<int> list = idObj as IList<int>;
+                    if (null != list) {
+                        List<ulong> guids = new List<ulong>();
+                        for (int i = 0; i < list.Count; ++i) {
+                            EntityInfo entity = scene.GetEntityById(list[i]);
+                            if (null != entity) {
+                                User us = entity.CustomData as User;
+                                if (null != us) {
+                                    guids.Add(us.Guid);
+                                }
+                            }
+                        }
+                        if (guids.Count > 0) {
+                            RoomServer.RoomServer.Instance.PlayerRequestActiveRoom(sceneId, guids.ToArray());
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_TargetSceneId.InitFromDsl(callData.GetParam(0));
+                m_ObjId.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<int> m_TargetSceneId = new StoryValue<int>();
+        private IStoryValue<object> m_ObjId = new StoryValue();
+    }
+    /// <summary>
+    /// changescene(target_scene_id, obj_id);
     /// </summary>
     internal class ChangeSceneCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
             ChangeSceneCommand cmd = new ChangeSceneCommand();
+            cmd.m_TargetSceneId = m_TargetSceneId.Clone();
+            cmd.m_ObjId = m_ObjId.Clone();
+            return cmd;
+        }
+
+        protected override void ResetState()
+        { }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_TargetSceneId.Substitute(iterator, args);
+            m_ObjId.Substitute(iterator, args);
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_TargetSceneId.Evaluate(instance);
+            m_ObjId.Evaluate(instance);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                int sceneId = m_TargetSceneId.Value;
+                object idObj = m_ObjId.Value;
+                if (idObj is int) {
+                    int objId = (int)idObj;
+                    EntityInfo entity = scene.GetEntityById(objId);
+                    if (null != entity) {
+                        User us = entity.CustomData as User;
+                        if (null != us) {
+                            RoomServer.RoomServer.Instance.PlayerRequestChangeRoom(sceneId, us.Guid);
+                        }
+                    }
+                } else {
+                    IList<int> list = idObj as IList<int>;
+                    if (null != list) {
+                        List<ulong> guids = new List<ulong>();
+                        for (int i = 0; i < list.Count; ++i) {
+                            EntityInfo entity = scene.GetEntityById(list[i]);
+                            if (null != entity) {
+                                User us = entity.CustomData as User;
+                                if (null != us) {
+                                    guids.Add(us.Guid);
+                                }
+                            }
+                        }
+                        if (guids.Count > 0) {
+                            RoomServer.RoomServer.Instance.PlayerRequestChangeRoom(sceneId, guids.ToArray());
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_TargetSceneId.InitFromDsl(callData.GetParam(0));
+                m_ObjId.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<int> m_TargetSceneId = new StoryValue<int>();
+        private IStoryValue<object> m_ObjId = new StoryValue();
+    }
+    /// <summary>
+    /// changeroomscene(target_scene_id);
+    /// </summary>
+    internal class ChangeRoomSceneCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ChangeRoomSceneCommand cmd = new ChangeRoomSceneCommand();
+            cmd.m_TargetSceneId = m_TargetSceneId.Clone();
+            return cmd;
+        }
+
+        protected override void ResetState()
+        { }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            m_TargetSceneId.Substitute(iterator, args);
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            m_TargetSceneId.Evaluate(instance);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            Scene scene = instance.Context as Scene;
+            if (null != scene) {
+                int targetSceneId = m_TargetSceneId.Value;
+                RoomServer.RoomServer.Instance.ChangeRoomScene(scene.GetRoom().RoomID, targetSceneId);
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_TargetSceneId.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private IStoryValue<int> m_TargetSceneId = new StoryValue<int>();
+    }
+    /// <summary>
+    /// notifychangescene(target_scene_id);
+    /// </summary>
+    internal class NotifyChangeSceneCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            NotifyChangeSceneCommand cmd = new NotifyChangeSceneCommand();
             cmd.m_TargetSceneId = m_TargetSceneId.Clone();
             return cmd;
         }

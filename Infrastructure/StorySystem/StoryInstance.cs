@@ -39,6 +39,11 @@ namespace StorySystem
             get { return m_IsTriggered; }
             set { m_IsTriggered = value; }
         }
+        public bool IsPaused
+        {
+            get { return m_IsPaused; }
+            set { m_IsPaused = value; }
+        }
         public bool IsInTick
         {
             get { return m_IsInTick; }
@@ -67,6 +72,7 @@ namespace StorySystem
         public void Reset()
         {
             m_IsTriggered = false;
+            m_IsPaused = false;
             foreach (IStoryCommand cmd in m_CommandQueue) {
                 cmd.Reset();
             }
@@ -81,6 +87,9 @@ namespace StorySystem
         }
         public void Tick(StoryInstance instance, long delta)
         {
+            if (m_IsPaused) {
+                return;
+            }
             try {
                 m_IsInTick = true;
                 while (m_CommandQueue.Count > 0) {
@@ -122,6 +131,7 @@ namespace StorySystem
 
         private string m_MessageId = "";
         private bool m_IsTriggered = false;
+        private bool m_IsPaused = false;
         private bool m_IsInTick = false;
         private Queue<IStoryCommand> m_CommandQueue = new Queue<IStoryCommand>();
 
@@ -145,6 +155,11 @@ namespace StorySystem
         {
             get { return m_IsTerminated; }
             set { m_IsTerminated = value; }
+        }
+        public bool IsPaused
+        {
+            get { return m_IsPaused; }
+            set { m_IsPaused = value; }
         }
         public bool IsInTick
         {
@@ -294,6 +309,7 @@ namespace StorySystem
         public void Reset()
         {
             m_IsTerminated = false;
+            m_IsPaused = false;
             int ct = m_MessageHandlers.Count;
             for (int i = ct - 1; i >= 0; --i) {
                 StoryMessageHandler handler = m_MessageHandlers[i];
@@ -365,8 +381,22 @@ namespace StorySystem
                 }
             }
         }
+        public void PauseMessageHandler(string msgId, bool pause)
+        {
+            for (int i = 0; i < m_MessageHandlers.Count; ++i) {
+                StoryMessageHandler handler = m_MessageHandlers[i];
+                if (handler.IsTriggered && !handler.IsInTick && handler.MessageId == msgId) {
+                    handler.IsPaused = pause;
+                    break;
+                }
+            }
+        }
         public void Tick(long curTime)
         {
+            if (m_IsPaused) {
+                m_LastTickTime = curTime;
+                return;
+            }
             try {
                 m_IsInTick = true;
                 const int c_MaxMsgCountPerTick = 256;
@@ -435,6 +465,7 @@ namespace StorySystem
         private string m_StoryId = string.Empty;
         private string m_Namespace = string.Empty;
         private bool m_IsTerminated = false;
+        private bool m_IsPaused = false;
         private bool m_IsInTick = false;
         private object m_Context = null;
         private Dictionary<string, Queue<MessageInfo>> m_MessageQueues = new Dictionary<string, Queue<MessageInfo>>();

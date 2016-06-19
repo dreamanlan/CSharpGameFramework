@@ -23,7 +23,6 @@ namespace GameFramework.Skill.Trigers
         {
             Targets.Clear();
         }
-
         private HashSet<int> m_Targets = new HashSet<int>();
     }
     /// <summary>
@@ -98,15 +97,16 @@ namespace GameFramework.Skill.Trigers
             copy.m_IsHaveRotateSpeed = m_IsHaveRotateSpeed;
             copy.m_RotateSpeed = m_RotateSpeed;
             copy.m_SelectTargetType = m_SelectTargetType;
-            
-            copy.m_RealSelectTargetType = m_RealSelectTargetType;
             return copy;
         }
         public override void Reset()
         {
+            if (m_IsExecuted && m_RemainTime > 0 && null != m_Myself && null != m_Target) {
+                TriggerUtil.Lookat(m_Myself, m_Target.transform.position);
+            }
             m_IsExecuted = false;
-            
-            m_RealSelectTargetType = m_SelectTargetType;
+            m_Myself = null;
+            m_Target = null;
         }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
@@ -120,20 +120,18 @@ namespace GameFramework.Skill.Trigers
             if (num >= 3) {
                 m_IsHaveRotateSpeed = true;
                 m_RotateSpeed = Vector3.zero;
-                m_RotateSpeed.y = (float)(float.Parse(callData.GetParamId(2)) * Math.PI / 180.0f);
+                m_RotateSpeed.y = float.Parse(callData.GetParamId(2));
             }
             if (num >= 4) {
                 m_SelectTargetType = callData.GetParamId(3);
             }
-            
-            m_RealSelectTargetType = m_SelectTargetType;
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
             if (null == senderObj) return false;
-            GameObject obj = senderObj.GfxObj;
-            if (null == obj) {
+            m_Myself = senderObj.GfxObj;
+            if (null == m_Myself) {
                 return false;
             }
             if (curSectionTime < StartTime) {
@@ -142,29 +140,29 @@ namespace GameFramework.Skill.Trigers
             if (m_IsExecuted && curSectionTime > (StartTime + m_RemainTime)) {
                 return false;
             }
-            Vector3 pos = obj.transform.position;
-            GameObject target = senderObj.TargetGfxObj;
-            if (!m_IsExecuted && (null == target && !string.IsNullOrEmpty(m_SelectTargetType))) {
+            Vector3 pos = m_Myself.transform.position;
+            m_Target = senderObj.TargetGfxObj;
+            if (!m_IsExecuted && (null == m_Target && !string.IsNullOrEmpty(m_SelectTargetType))) {
                 TargetManager mgr = instance.CustomDatas.GetData<TargetManager>();
                 if (null == mgr) {
                     mgr = new TargetManager();
                     instance.CustomDatas.AddData(mgr);
                 }
-                int targetId = EntityController.Instance.SelectTargetForSkill(m_RealSelectTargetType, senderObj.ActorId, senderObj.ConfigData, senderObj.Seq, mgr.Targets);
+                int targetId = EntityController.Instance.SelectTargetForSkill(m_SelectTargetType, senderObj.ActorId, senderObj.ConfigData, senderObj.Seq, mgr.Targets);
                 if (targetId > 0) {
                     mgr.Add(targetId);
-                    target = EntityController.Instance.GetGameObject(targetId);
+                    m_Target = EntityController.Instance.GetGameObject(targetId);
                     senderObj.TargetActorId = targetId;
-                    senderObj.TargetGfxObj = target;
+                    senderObj.TargetGfxObj = m_Target;
                 }
             }
-            if (null != target) {
+            if (null != m_Target) {
                 m_IsExecuted = true;
                 if (!m_IsHaveRotateSpeed || m_RotateSpeed.y == 0) {
-                    TriggerUtil.Lookat(obj, target.transform.position);
+                    TriggerUtil.Lookat(m_Myself, m_Target.transform.position);
                 } else {
                     float maxRotateDelta = m_RotateSpeed.y * TriggerUtil.ConvertToSecond(delta);
-                    TriggerUtil.Lookat(obj, target.transform.position, maxRotateDelta);
+                    TriggerUtil.Lookat(m_Myself, m_Target.transform.position, maxRotateDelta);
                 }
             }
             return true;
@@ -175,8 +173,9 @@ namespace GameFramework.Skill.Trigers
         private Vector3 m_RotateSpeed = Vector3.zero;
         private string m_SelectTargetType = string.Empty;
         private bool m_IsExecuted = false;
-        
-        private string m_RealSelectTargetType = string.Empty;
+
+        private GameObject m_Myself = null;
+        private GameObject m_Target = null;
     }
     /// <summary>
     /// cleartargets(starttime);

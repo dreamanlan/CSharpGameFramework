@@ -65,7 +65,7 @@ namespace GameFramework
                 GetHomePos(npc.GetMovementStateInfo().FormationIndex, leader);
             }
             float distSqrToHome = Geometry.DistanceSquare(srcPos, homePos);
-            if (distSqrToHome > npc.GohomeRange) {
+            if (distSqrToHome > npc.GohomeRange * npc.GohomeRange) {
                 NotifyAiStopPursue(npc);
                 ChangeToState(npc, (int)AiStateId.GoHome);
                 return;

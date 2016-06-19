@@ -400,6 +400,110 @@ namespace StorySystem.CommonCommands
         private int m_CurTime = 0;
     }
     /// <summary>
+    /// pauselocalmessagehandler(msgid1,msgid2,...);
+    /// </summary>
+    internal class PauseLocalMessageHandlerCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            PauseLocalMessageHandlerCommand cmd = new PauseLocalMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                instance.PauseMessageHandler(m_MsgIds[i].Value, true);
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
+    }
+    /// <summary>
+    /// resumelocalmessagehandler(msgid1,msgid2,...);
+    /// </summary>
+    internal class ResumeLocalMessageHandlerCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ResumeLocalMessageHandlerCommand cmd = new ResumeLocalMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                instance.PauseMessageHandler(m_MsgIds[i].Value, false);
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
+    }
+    /// <summary>
     /// localnamespacedmessage(msgid,arg1,arg2,...);
     /// </summary>
     internal class LocalNamespacedMessageCommand : AbstractStoryCommand
@@ -810,5 +914,123 @@ namespace StorySystem.CommonCommands
         private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
+    }
+    /// <summary>
+    /// pauselocalnamespacedmessagehandler(msgid1,msgid2,...);
+    /// </summary>
+    internal class PauseLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            PauseLocalNamespacedMessageHandlerCommand cmd = new PauseLocalNamespacedMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            string _namespace = instance.Namespace;
+            if (string.IsNullOrEmpty(_namespace)) {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    instance.PauseMessageHandler(m_MsgIds[i].Value, true);
+                }
+            } else {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    instance.PauseMessageHandler(string.Format("{0}:{1}", _namespace, m_MsgIds[i].Value), true);
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
+    }
+    /// <summary>
+    /// resumelocalnamespacedmessagehandler(msgid1,msgid2,...);
+    /// </summary>
+    internal class ResumeLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ResumeLocalNamespacedMessageHandlerCommand cmd = new ResumeLocalNamespacedMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Substitute(object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Substitute(iterator, args);
+            }
+        }
+
+        protected override void Evaluate(StoryInstance instance)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            string _namespace = instance.Namespace;
+            if (string.IsNullOrEmpty(_namespace)) {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    instance.PauseMessageHandler(m_MsgIds[i].Value, false);
+                }
+            } else {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    instance.PauseMessageHandler(string.Format("{0}:{1}", _namespace, m_MsgIds[i].Value), false);
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
 }

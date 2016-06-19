@@ -32,15 +32,15 @@ namespace RoomServer
                 TableConfig.SkillDsl skillDsl = TableConfig.SkillDslProvider.Instance.GetSkillDsl(skill.dslSkillId);
                 skill.dslFile = skillDsl.dslFile;
                 skill.damageData.Damage = skill.damage;
-                skill.damageData.HpRecover = skill.hpRecover;
-                skill.damageData.MpRecover = skill.mpRecover;
-                skill.damageData.AddAttack = skill.addAttack;
-                skill.damageData.AddDefence = skill.addDefence;
-                skill.damageData.AddRps = skill.addRps;
-                skill.damageData.AddCritical = skill.addCritical;
-                skill.damageData.AddCriticalPow = skill.addCriticalPow;
-                skill.damageData.AddSpeed = skill.addSpeed;
-                skill.damageData.AddShield = skill.addShield;
+                skill.damageData.HpRecover = skill.addhp;
+                skill.damageData.MpRecover = skill.addmp;
+                skill.damageData.AddAttack = skill.addattack;
+                skill.damageData.AddDefence = skill.adddefence;
+                skill.damageData.AddRps = skill.addrps;
+                skill.damageData.AddCritical = skill.addcritical;
+                skill.damageData.AddCriticalPow = skill.addcriticalpow;
+                skill.damageData.AddSpeed = skill.addspeed;
+                skill.damageData.AddShield = skill.addshield;
             }
             var resources = TableConfig.SkillResourcesProvider.Instance.SkillResourcesMgr.GetData();
             foreach (var resource in resources) {

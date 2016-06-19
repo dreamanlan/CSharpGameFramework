@@ -504,11 +504,11 @@ namespace GameFramework.Skill.Trigers
         private long m_RealDeleteTime = 0;
     }
     /// <summary>
-    /// emiteffect(effect_path,emit_bone,emit_impact,emit_speed[,start_time]);
+    /// emiteffect(effect_path,emit_bone,emit_impact,emit_speed[,start_time[,is_external_impact]]);
     /// 
     /// or
     /// 
-    /// emiteffect(effect_path,emit_bone,emit_impact,emit_speed[,start_time])
+    /// emiteffect(effect_path,emit_bone,emit_impact,emit_speed[,start_time[,is_external_impact]])
     /// {
     ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
     /// };
@@ -522,10 +522,10 @@ namespace GameFramework.Skill.Trigers
             triger.m_EmitBone.CopyFrom(m_EmitBone);
             triger.m_EmitSpeed.CopyFrom(m_EmitSpeed);
             triger.m_EmitImpact = m_EmitImpact;
+            triger.m_IsExternalImpact = m_IsExternalImpact;
             triger.m_Pos = m_Pos;
             triger.m_Dir = m_Dir;
-            triger.m_Scale = m_Scale;
-            
+            triger.m_Scale = m_Scale;            
             
             return triger;
         }
@@ -549,8 +549,13 @@ namespace GameFramework.Skill.Trigers
                     if (!string.IsNullOrEmpty(effectPath)) {
                         GameObject target = EntityController.Instance.GetGameObject(targetId);
                         if (null != target) {
+                            int emitImpact = m_EmitImpact;
+                            if (!m_IsExternalImpact) {
+                                emitImpact = SkillInstance.GenInnerEmitSkillId(m_EmitImpact <= 0 ? 1 : m_EmitImpact);
+                            }
+                            int impactId = TriggerUtil.GetSkillImpactId(instance.LocalVariables, senderObj.ConfigData);
                             Dictionary<string, object> args;
-                            TriggerUtil.CalcImpactConfig(instance, senderObj.ConfigData, out args);
+                            TriggerUtil.CalcImpactConfig(emitImpact, impactId, instance, senderObj.ConfigData, out args);
                             Dictionary<string, object> addArgs = new Dictionary<string, object>() { { "emitEffect", effectPath }, { "emitSpeed", emitSpeed }, { "emitDir", m_Dir }, { "emitScale", m_Scale } };
                             foreach (var pair in addArgs) {
                                 if (args.ContainsKey(pair.Key)) {
@@ -559,7 +564,7 @@ namespace GameFramework.Skill.Trigers
                                     args.Add(pair.Key, pair.Value);
                                 }
                             }
-                            EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, emitBone, m_EmitImpact, m_Pos, args);
+                            EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, emitBone, emitImpact, m_Pos, args);
                         }
                     } else {
                         LogSystem.Warn("[skill:{0} dsl skill id:{1}] emit effect is empty.", senderObj.SkillId, instance.DslSkillId);
@@ -596,7 +601,9 @@ namespace GameFramework.Skill.Trigers
             if (num > 4) {
                 StartTime = long.Parse(callData.GetParamId(4));
             }
-            
+            if (num > 5) {
+                m_IsExternalImpact = callData.GetParamId(5) == "true";
+            }
         }
         protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
         {
@@ -626,21 +633,22 @@ namespace GameFramework.Skill.Trigers
                 }
             }
         }
+
         private SkillResourceParam m_EffectPath = new SkillResourceParam();
         private SkillStringParam m_EmitBone = new SkillStringParam();
         private SkillNonStringParam<float> m_EmitSpeed = new SkillNonStringParam<float>();
         private int m_EmitImpact = 0;
+        private bool m_IsExternalImpact = false;
         private Vector3 m_Pos = Vector3.zero;
         private Quaternion m_Dir = Quaternion.identity;
-        private Vector3 m_Scale = Vector3.one;
-        
+        private Vector3 m_Scale = Vector3.one;        
     }
     /// <summary>
-    /// aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time]);
+    /// aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]]);
     /// 
     /// or
     /// 
-    /// aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time])
+    /// aoeemiteffect(effect_path,emit_bone,center_x,center_y,center_z,relativeToTarget,emit_impact,emit_speed[,start_time[,is_external_impact]])
     /// {
     ///   transform(vector3(0,1,0)[,eular(0,0,0)[,vector3(1,1,1)]]);
     /// };
@@ -656,11 +664,10 @@ namespace GameFramework.Skill.Trigers
             triger.m_RelativeCenter = m_RelativeCenter;
             triger.m_RelativeToTarget = m_RelativeToTarget;
             triger.m_EmitImpact = m_EmitImpact;
+            triger.m_IsExternalImpact = m_IsExternalImpact;
             triger.m_Pos = m_Pos;
             triger.m_Dir = m_Dir;
             triger.m_Scale = m_Scale;
-            
-            
             return triger;
         }
         public override void Reset()
@@ -684,10 +691,15 @@ namespace GameFramework.Skill.Trigers
                     string effectPath = m_EffectPath.Get(instance, senderObj.ConfigData.resources);
                     string emitBone = m_EmitBone.Get(instance);
                     float emitSpeed = m_EmitSpeed.Get(instance);
+                    int emitImpact = m_EmitImpact;
+                    if (!m_IsExternalImpact) {
+                        emitImpact = SkillInstance.GenInnerEmitSkillId(m_EmitImpact <= 0 ? 1 : m_EmitImpact);
+                    }
+                    int impactId = TriggerUtil.GetSkillImpactId(instance.LocalVariables, senderObj.ConfigData);
                     int ct = 0;
                     TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                         Dictionary<string, object> args;
-                        TriggerUtil.CalcImpactConfig(instance, senderObj.ConfigData, out args);
+                        TriggerUtil.CalcImpactConfig(emitImpact, impactId, instance, senderObj.ConfigData, out args);
                         Dictionary<string, object> addArgs = new Dictionary<string, object>() { { "emitEffect", effectPath }, { "emitSpeed", emitSpeed }, { "emitDir", m_Dir }, { "emitScale", m_Scale } };
                         foreach (var pair in addArgs) {
                             if (args.ContainsKey(pair.Key)) {
@@ -696,7 +708,7 @@ namespace GameFramework.Skill.Trigers
                                 args.Add(pair.Key, pair.Value);
                             }
                         }
-                        EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, emitBone, m_EmitImpact, m_Pos, args);
+                        EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, emitBone, emitImpact, m_Pos, args);
                         ++ct;
                         if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                             return true;
@@ -743,7 +755,9 @@ namespace GameFramework.Skill.Trigers
             if (num > 8) {
                 StartTime = long.Parse(callData.GetParamId(8));
             }
-            
+            if (num > 9) {
+                m_IsExternalImpact = callData.GetParamId(9) == "true";
+            }            
         }
         protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
         {
@@ -779,6 +793,7 @@ namespace GameFramework.Skill.Trigers
         private Vector3 m_RelativeCenter = Vector3.zero;
         private bool m_RelativeToTarget = false;
         private int m_EmitImpact = 0;
+        private bool m_IsExternalImpact = false;
         private Vector3 m_Pos = Vector3.zero;
         private Quaternion m_Dir = Quaternion.identity;
         private Vector3 m_Scale = Vector3.one;

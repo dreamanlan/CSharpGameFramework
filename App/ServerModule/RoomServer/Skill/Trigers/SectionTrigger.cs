@@ -142,36 +142,19 @@ namespace GameFramework.Skill.Trigers
     }
 
     /// <summary>
-    /// stopsectionif(type[, start_time]);
+    /// stopsection([start_time])[if(type)];
     /// </summary>
-    public class StopSectionIfTrigger : AbstractSkillTriger
+    public class StopSectionTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
-            StopSectionIfTrigger copy = new StopSectionIfTrigger();
+            StopSectionTrigger copy = new StopSectionTrigger();
             copy.m_Type = m_Type;
             return copy;
         }
-
         public override void Reset()
-        {
-            
+        {            
         }
-
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_Type = callData.GetParamId(0);
-            }
-            if (num > 1) {
-                StartTime = long.Parse(callData.GetParamId(1));
-            } else {
-                StartTime = 0;
-            }
-            
-        }
-
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
@@ -188,9 +171,32 @@ namespace GameFramework.Skill.Trigers
             instance.StopCurSection();
             return false;
         }
+        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                StartTime = long.Parse(callData.GetParamId(0));
+            } else {
+                StartTime = 0;
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData, int dslSkillId)
+        {
+            Dsl.FunctionData func1 = statementData.First;
+            Dsl.FunctionData func2 = statementData.Second;
+            if (null != func1 && null != func2) {
+                Load(func1.Call, dslSkillId);
+                LoadIf(func2.Call, dslSkillId);
+            }
+        }
+        private void LoadIf(Dsl.CallData callData, int dslSkillId)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_Type = callData.GetParamId(0);
+            }
+        }
 
-        private string m_Type = "shield";
-
-        
+        private string m_Type = "noshield";        
     }
 }

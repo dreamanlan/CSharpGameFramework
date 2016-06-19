@@ -21,7 +21,6 @@ namespace GameFramework
             }
             return null;
         }
-
         public static Sprite GetActorBigIcon(int id)
         {
             if (id >= 0 && id < m_AllActorBigIcons.Length) {
@@ -29,13 +28,25 @@ namespace GameFramework
             }
             return null;
         }
-
         public static Sprite GetSkillIcon(int id)
         {
             if (id >= 0 && id < m_AllSkillIcons.Length) {
                 return m_AllSkillIcons[id];
             }
             return null;
+        }
+
+        public static int GetActorIconIndex(Sprite obj)
+        {
+            return System.Array.IndexOf(m_AllActorIcons, obj);
+        }
+        public static int GetActorBigIconIndex(Sprite obj)
+        {
+            return System.Array.IndexOf(m_AllActorBigIcons, obj);
+        }
+        public static int GetSkillIconIndex(Sprite obj)
+        {
+            return System.Array.IndexOf(m_AllSkillIcons, obj);
         }
 
         private static Sprite[] m_AllActorIcons;

@@ -3,6 +3,17 @@ using System.Collections;
 
 public class StoryObject : MonoBehaviour
 {
+    public void SetLightVisible(int visible)
+    {
+        Light light = gameObject.GetComponent<Light>();
+        if (null != light) {
+            if(visible==0){
+                light.enabled = false;
+            } else {
+                light.enabled = true;
+            }
+        }
+    }
     public void SetVisible(int visible)
     {
         Renderer[] renderers = gameObject.GetComponentsInChildren<Renderer>();

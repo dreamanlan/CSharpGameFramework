@@ -850,7 +850,7 @@ namespace GameFramework.Story.Commands
                     instance.SetVariable(varName, elseVal);
                 }
             }
-            return false;         
+            return false;
         }
 
         protected override void Load(Dsl.CallData callData)

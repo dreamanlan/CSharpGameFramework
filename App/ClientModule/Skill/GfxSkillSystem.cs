@@ -8,6 +8,9 @@ namespace GameFramework.Skill
 {
     public sealed class PredefinedSkill
     {
+        public const int c_EmitSkillId = 2110000000;
+        public const int c_HitSkillId = 2120000000;
+
         public TableConfig.Skill EmitSkillCfg
         {
             get { return m_EmitSkillCfg; }
@@ -20,10 +23,9 @@ namespace GameFramework.Skill
         public void ReBuild()
         {
             m_EmitSkillCfg.type = (int)SkillOrImpactType.Impact;
-            AddPredefinedSkill(m_EmitSkillCfg, PredefinedSkillEnum.EmitSkillId);
+            AddPredefinedSkill(m_EmitSkillCfg, c_EmitSkillId);
             m_HitSkillCfg.type = (int)SkillOrImpactType.Impact;
-            AddPredefinedSkill(m_HitSkillCfg, PredefinedSkillEnum.HitSkillId);
-
+            AddPredefinedSkill(m_HitSkillCfg, c_HitSkillId);
         }
         public void Preload()
         {
@@ -39,18 +41,13 @@ namespace GameFramework.Skill
         {
             ReBuild();
         }
-        private enum PredefinedSkillEnum
-        {
-            EmitSkillId = 0x1000000,
-            HitSkillId = 0x2000000,
-        }
 
         private TableConfig.Skill m_EmitSkillCfg = new TableConfig.Skill();
         private TableConfig.Skill m_HitSkillCfg = new TableConfig.Skill();
 
-        private static void AddPredefinedSkill(TableConfig.Skill cfg, PredefinedSkillEnum id)
+        private static void AddPredefinedSkill(TableConfig.Skill cfg, int id)
         {
-            cfg.id = cfg.dslSkillId = (int)id;
+            cfg.id = cfg.dslSkillId = id;
             cfg.dslFile = "Skill/predefined.dsl";
             //添加到技能表数据中
             var skills = TableConfig.SkillProvider.Instance.SkillMgr.GetData();
@@ -214,10 +211,14 @@ namespace GameFramework.Skill
             SkillTrigerManager.Instance.RegisterTrigerFactory("sendgfxmessagewithtag", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageWithTagTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("publishgfxevent", new SkillTrigerFactoryHelper<Trigers.PublishGfxEventTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("params", new SkillTrigerFactoryHelper<Trigers.ParamsTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("keeptarget", new SkillTrigerFactoryHelper<Trigers.KeepTargetTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("useimpact", new SkillTrigerFactoryHelper<Trigers.UseImpactTrigger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("animation", new SkillTrigerFactoryHelper<Trigers.AnimationTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("animationspeed", new SkillTrigerFactoryHelper<Trigers.AnimationSpeedTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("animationparameter", new SkillTrigerFactoryHelper<Trigers.AnimationParameterTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("animationevent", new SkillTrigerFactoryHelper<Trigers.AnimationEventTriger>());
+
             SkillTrigerManager.Instance.RegisterTrigerFactory("playsound", new SkillTrigerFactoryHelper<Trigers.PlaySoundTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("stopsound", new SkillTrigerFactoryHelper<Trigers.StopSoundTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("selfeffect", new SkillTrigerFactoryHelper<Trigers.SelfEffectTriger>());
@@ -265,7 +266,7 @@ namespace GameFramework.Skill
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("adjustsectionduration", new SkillTrigerFactoryHelper<Trigers.AdjustSectionDurationTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("keepsectionforbuff", new SkillTrigerFactoryHelper<Trigers.KeepSectionForBuffTrigger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("stopsectionif", new SkillTrigerFactoryHelper<Trigers.StopSectionIfTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("stopsection", new SkillTrigerFactoryHelper<Trigers.StopSectionTrigger>());
         }
         public void Reset()
         {
@@ -292,13 +293,17 @@ namespace GameFramework.Skill
             if (null != skillData) {
                 SkillInstanceInfo info = NewSkillInstanceImpl(skillData.id, skillData);
                 RecycleSkillInstance(info);
-                if (null != info.m_SkillInstance.EmitSkillInstance) {
-                    SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl(PredefinedSkill.Instance.EmitSkillCfg.id, info.m_SkillInstance.EmitSkillInstance);
-                    RecycleSkillInstance(iinfo);
+                if (null != info.m_SkillInstance.EmitSkillInstances) {
+                    foreach (var pair in info.m_SkillInstance.EmitSkillInstances) {
+                        SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl(PredefinedSkill.c_EmitSkillId, pair.Value);
+                        RecycleSkillInstance(iinfo);
+                    }
                 }
-                if (null != info.m_SkillInstance.HitSkillInstance) {
-                    SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl(PredefinedSkill.Instance.HitSkillCfg.id, info.m_SkillInstance.HitSkillInstance);
-                    RecycleSkillInstance(iinfo);
+                if (null != info.m_SkillInstance.HitSkillInstances) {
+                    foreach (var pair in info.m_SkillInstance.HitSkillInstances) {
+                        SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl(PredefinedSkill.c_HitSkillId, pair.Value);
+                        RecycleSkillInstance(iinfo);
+                    }
                 }
             }
         }
@@ -340,7 +345,7 @@ namespace GameFramework.Skill
         public SkillInstance FindInnerSkillInstanceForSkillViewer(int skillId, SkillInstance innerInstance, out GfxSkillSenderInfo sender)
         {
             SkillInstance ret = null;
-            SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.SkillId == skillId && info.SkillInst.InitDslSkillId == innerInstance.InitDslSkillId);
+            SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.SkillId == skillId && info.SkillInst.InnerDslSkillId == innerInstance.InnerDslSkillId && info.SkillInst.OuterDslSkillId == innerInstance.OuterDslSkillId);
             if (null != logicInfo) {
                 sender = logicInfo.Sender;
                 ret = logicInfo.SkillInst;
@@ -401,6 +406,7 @@ namespace GameFramework.Skill
             if (!EntityController.Instance.CanCastSkill(actorId, configData, seq)) {
                 EntityController.Instance.CancelCastSkill(actorId);
                 LogSystem.Warn("{0} can't cast skill {1} {2}, cancel.", actorId, configData.id, seq);
+                EntityController.Instance.CancelIfImpact(actorId, configData, seq);
                 return false;
             }
             GfxSkillSenderInfo senderInfo = EntityController.Instance.BuildSkillInfo(actorId, configData, seq);
@@ -410,11 +416,12 @@ namespace GameFramework.Skill
                 SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq);
                 if (logicInfo != null) {
                     LogSystem.Warn("{0} is casting skill {1} {2}, cancel.", actorId, skillId, seq);
+                    EntityController.Instance.CancelIfImpact(actorId, configData, seq);
                     return false;
                 }
                 SkillInstanceInfo inst = null;
                 SkillInstance innerInstance = null;
-                if (skillId == PredefinedSkill.Instance.EmitSkillCfg.id) {
+                if (skillId == PredefinedSkill.c_EmitSkillId) {
                     for (int i = 0; i < locals.Length; ++i) {
                         object instObj;
                         if (locals[i].TryGetValue("emitskill", out instObj)) {
@@ -422,9 +429,11 @@ namespace GameFramework.Skill
                         }
                     }
                     if (null == innerInstance) {
-                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found emitskill.", actorId, skillId, seq);
+                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found emitskill, cancel.", actorId, skillId, seq);
+                        //EntityController.Instance.CancelIfImpact(actorId, configData, seq);
+                        //return false;
                     }
-                } else if (skillId == PredefinedSkill.Instance.HitSkillCfg.id) {
+                } else if (skillId == PredefinedSkill.c_HitSkillId) {
                     for (int i = 0; i < locals.Length; ++i) {
                         object instObj;
                         if (locals[i].TryGetValue("hitskill", out instObj)) {
@@ -432,7 +441,9 @@ namespace GameFramework.Skill
                         }
                     }
                     if (null == innerInstance) {
-                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found hitskill.", actorId, skillId, seq);
+                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found hitskill, cancel.", actorId, skillId, seq);
+                        //EntityController.Instance.CancelIfImpact(actorId, configData, seq);
+                        //return false;
                     }
                 }
                 if (null == innerInstance) {
@@ -444,6 +455,7 @@ namespace GameFramework.Skill
                     m_SkillLogicInfos.Add(new SkillLogicInfo(senderInfo, inst));
                 } else {
                     LogSystem.Warn("{0} cast skill {1} {2}, alloc failed.", actorId, skillId, seq);
+                    EntityController.Instance.CancelIfImpact(actorId, configData, seq);
                     return false;
                 }
 
@@ -726,11 +738,7 @@ namespace GameFramework.Skill
 
         public static int CalcUniqueInnerSkillId(int skillId, SkillInstance innerInstance)
         {
-            if (skillId == PredefinedSkill.Instance.EmitSkillCfg.id || skillId == PredefinedSkill.Instance.HitSkillCfg.id) {
-                return skillId + innerInstance.InitDslSkillId;
-            } else {
-                return 0;
-            }
+            return innerInstance.InnerDslSkillId + innerInstance.OuterDslSkillId;
         }
 
         public static GfxSkillSystem Instance

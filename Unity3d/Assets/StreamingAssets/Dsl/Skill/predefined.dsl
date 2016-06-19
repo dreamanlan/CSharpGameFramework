@@ -1,19 +1,19 @@
 //emit_skill
-skill(90000)
+skill(2110000000)
 {
-  section(10000)
-  {
-  	track(0,0);
-  };
+	section(10000)
+	{
+		track(hit,false,0);
+	};
 };
 //hit_skill
-skill(90001)
+skill(2120000000)
 {
   section(300)
   {
     animation(hitAnim);
     //adjustsectionduration("anim",100);
-    selfeffect(hitEffect,-1,hitEffectBone,-1)
+    selfeffect(hitEffect,1000,hitEffectBone,0)
     {
       transform(vector3(0,1,0));
     };

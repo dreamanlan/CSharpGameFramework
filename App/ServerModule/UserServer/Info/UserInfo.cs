@@ -102,16 +102,6 @@ namespace GameFramework
         {
             get { return m_Lock; }
         }
-        internal int FightingCapacity
-        {
-            get { return m_FightingScore; }
-            set
-            {
-                if (value > 0) {
-                    m_FightingScore = value;
-                }
-            }
-        }
         internal double LastLoginTime
         {
             get { return m_LastLoginTime; }
@@ -187,11 +177,11 @@ namespace GameFramework
             this.Level = 1;
             this.AccountId = string.Empty;
             this.Nickname = string.Empty;
+            this.SceneId = 0;
 
             this.m_LastLoginTime = 0;
             this.m_Money = 0;
             this.m_Gold = 0;
-            this.FightingCapacity = 0;
 
             this.m_ClientInfo = "0";
             this.NodeName = string.Empty;
@@ -236,10 +226,9 @@ namespace GameFramework
         private ItemBag m_ItemBag = new ItemBag();
         private MailStateInfo m_MailStateInfo = new MailStateInfo();
         
+        private double m_LastLoginTime = 0.0;
         private int m_Money = 0;
         private int m_Gold = 0;
-        private int m_FightingScore = 0;
-        private double m_LastLoginTime = 0.0;
         
         private string m_NodeName;
         private int m_UserThreadIndex = 0;
@@ -254,6 +243,7 @@ namespace GameFramework
         private long m_LastSaveTime = 0;
         private int m_NextUserSaveCount = 1;
         private int m_CurrentUserSaveCount = 0;
+
         private object m_Lock = new object();
     }
 }

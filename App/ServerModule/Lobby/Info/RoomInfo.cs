@@ -23,7 +23,6 @@ namespace Lobby
         }
         internal void Reset()
         {
-            m_IsPrepared = false;
             this.CurrentState = RoomState.Recycle;
             m_NextCampId = (int)CampIdEnum.FreedomCamp_Begin;
         }
@@ -79,6 +78,11 @@ namespace Lobby
             get { return m_SceneType; }
             set { m_SceneType = value; }
         }
+        public bool IsField
+        {
+            get { return m_IsField; }
+            set { m_IsField = value; }
+        }
         internal int TotalCount
         {
             get { return m_TotalCount; }
@@ -89,14 +93,9 @@ namespace Lobby
             get { return m_LifeTime; }
             set { m_LifeTime = value; }
         }
-        internal bool IsPrepared
+        internal bool IsPvp
         {
-            get { return m_IsPrepared; }
-            set { m_IsPrepared = value; }
-        }
-        internal bool IsCustomRoom
-        {
-            get { return m_Creator > 0; }
+            get { return m_SceneType==(int)SceneTypeEnum.Room; }
         }
         internal Dictionary<ulong, WeakReference> Users
         {
@@ -183,7 +182,7 @@ namespace Lobby
             }
             UpdateUserCount();
         }
-
+        
         internal void Tick()
         {
             //清除不在游戏中的玩家数据
@@ -206,8 +205,10 @@ namespace Lobby
                     UpdateUserCount();
                 }
             }
-            if (CurrentState != RoomState.Game)
-                CurrentState = RoomState.Game;
+            if (IsField) {
+                if (CurrentState != RoomState.Game)
+                    CurrentState = RoomState.Game;
+            }
         }
         
         internal void CloseRoom()
@@ -233,10 +234,10 @@ namespace Lobby
         private ulong m_Creator = 0;
         private string m_CreatorNick = "";
         private int m_RoomId = 0;
+        private bool m_IsField = false;
         private int m_SceneType = 0;
         private int m_TotalCount = 0;
         private float m_LifeTime = 0;
-        private bool m_IsPrepared = false;
         private int m_UserCountOfBlue = 0;
         private int m_UserCountOfRed = 0;
         private int m_NextCampId = (int)CampIdEnum.FreedomCamp_Begin;

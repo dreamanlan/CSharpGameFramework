@@ -22,6 +22,7 @@ namespace GameFramework
                 m_BigworldChannel.Register<Msg_BL_QueryUserStateResult>(HandleQueryUserStateResult);
                 m_BigworldChannel.Register<Msg_BL_UserOffline>(HandleUserOffline);
                 m_BigworldChannel.Register<Msg_BL_BroadcastText>(HandleBroadcastText);
+                m_BigworldChannel.Register<Msg_BL_UserChangeScene>(HandleUserChangeScene);
                 m_BigworldChannel.Register<Msg_RL_UserDrop>(HandleUserDrop);
                 m_BigworldChannel.Register<Msg_RL_UserQuit>(HandleUserQuit);
                 m_BigworldChannel.Register<Msg_RL_PickMoney>(HandlePickMoney);
@@ -66,6 +67,14 @@ namespace GameFramework
         private void HandleBroadcastText(Msg_BL_BroadcastText msg_, PBChannel channel, int src, uint session)
         {
             m_UserProcessScheduler.DefaultUserThread.QueueAction(m_UserProcessScheduler.HandleBroadcast, (BroadcastType)msg_.BroadcastType, msg_.Content, msg_.RollCount);
+        }
+        private void HandleUserChangeScene(Msg_BL_UserChangeScene msg_, PBChannel channel, int src, uint session)
+        {
+            UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
+            UserInfo user = dataProcess.GetUserInfo(msg_.Guid);
+            if (user != null) {
+                user.SceneId = msg_.SceneId;
+            }
         }
         private void HandleUserDrop(Msg_RL_UserDrop msg_, PBChannel channel, int src, uint session)
         {

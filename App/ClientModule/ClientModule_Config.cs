@@ -17,17 +17,27 @@ namespace GameFramework
                 TableConfig.StrDictionary cfg = TableConfig.StrDictionaryProvider.Instance.GetStrDictionary(key);
                 return cfg.Content;
             });
+            TableConfig.LevelProvider.Instance.Clear();
             TableConfig.LevelProvider.Instance.LoadForClient();
+            TableConfig.LevelMonsterProvider.Instance.Clear();
             TableConfig.LevelMonsterProvider.Instance.LoadForClient();
             TableConfig.LevelMonsterProvider.Instance.BuildGroupedLevelMonsters();
+            TableConfig.ActorProvider.Instance.Clear();
             TableConfig.ActorProvider.Instance.LoadForClient();
+            TableConfig.SkillProvider.Instance.Clear();
             TableConfig.SkillProvider.Instance.LoadForClient();
+            TableConfig.SkillDslProvider.Instance.Clear();
             TableConfig.SkillDslProvider.Instance.LoadForClient();
+            TableConfig.SkillResourcesProvider.Instance.Clear();
             TableConfig.SkillResourcesProvider.Instance.LoadForClient();
             JoinSkillDslResource();
+            TableConfig.StoryDlgProvider.Instance.Clear();
             TableConfig.StoryDlgProvider.Instance.LoadForClient();
+            TableConfig.StrDictionaryProvider.Instance.Clear();
             TableConfig.StrDictionaryProvider.Instance.LoadForClient();
+            TableConfig.UIProvider.Instance.Clear();
             TableConfig.UIProvider.Instance.LoadForClient();
+            TableConfig.FormationProvider.Instance.Clear();
             TableConfig.FormationProvider.Instance.LoadForClient();
             BuildFormationInfo();
         }
@@ -39,15 +49,15 @@ namespace GameFramework
                 TableConfig.SkillDsl skillDsl = TableConfig.SkillDslProvider.Instance.GetSkillDsl(skill.dslSkillId);
                 skill.dslFile = skillDsl.dslFile;
                 skill.damageData.Damage = skill.damage;
-                skill.damageData.HpRecover = skill.hpRecover;
-                skill.damageData.MpRecover = skill.mpRecover;
-                skill.damageData.AddAttack = skill.addAttack;
-                skill.damageData.AddDefence = skill.addDefence;
-                skill.damageData.AddRps = skill.addRps;
-                skill.damageData.AddCritical = skill.addCritical;
-                skill.damageData.AddCriticalPow = skill.addCriticalPow;
-                skill.damageData.AddSpeed = skill.addSpeed;
-                skill.damageData.AddShield = skill.addShield;
+                skill.damageData.HpRecover = skill.addhp;
+                skill.damageData.MpRecover = skill.addmp;
+                skill.damageData.AddAttack = skill.addattack;
+                skill.damageData.AddDefence = skill.adddefence;
+                skill.damageData.AddRps = skill.addrps;
+                skill.damageData.AddCritical = skill.addcritical;
+                skill.damageData.AddCriticalPow = skill.addcriticalpow;
+                skill.damageData.AddSpeed = skill.addspeed;
+                skill.damageData.AddShield = skill.addshield;
             }
             var resources = TableConfig.SkillResourcesProvider.Instance.SkillResourcesMgr.GetData();
             foreach (var resource in resources) {

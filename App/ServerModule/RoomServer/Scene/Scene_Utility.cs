@@ -15,6 +15,30 @@ namespace GameFramework
             m_GameTime.Start();
             m_SceneContext.StartTime = m_GameTime.StartTime;
 
+            for (int campId = (int)CampIdEnum.Friendly; campId <= (int)CampIdEnum.Red; ++campId) {
+                int key = this.SceneResId * 10 + campId;
+                List<TableConfig.LevelMonster> monsters;
+                if (TableConfig.LevelMonsterProvider.Instance.TryGetValue(key, out monsters)) {
+                    for (int i = 0; i < monsters.Count; ++i) {
+                        TableConfig.LevelMonster monster = monsters[i];
+                        if (null != monster) {
+                            TableConfig.Actor actor = TableConfig.ActorProvider.Instance.GetActor(monster.actorID);
+                            if (null != actor) {
+                                int unitId = campId * 10000 + i;
+                                EntityInfo npc = EntityManager.AddEntity(unitId, campId, actor, (int)AiStateLogicId.Entity_General);
+                                if (null != npc) {
+                                    npc.IsPassive = monster.passive;
+                                    npc.LevelMonsterData = monster;
+                                    npc.SetLevel(monster.level);
+                                    npc.GetMovementStateInfo().SetPosition2D(monster.x, monster.y);
+                                    npc.GetMovementStateInfo().SetFaceDir(Geometry.DegreeToRadian(monster.dir));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             ServerStorySystem.ThreadInitMask();
             m_StorySystem.ClearStoryInstancePool();
             m_StorySystem.PreloadSceneStories();
@@ -33,6 +57,9 @@ namespace GameFramework
                         if (null != npc) {
                             Msg_RC_CreateNpc bder = DataSyncUtility.BuildCreateNpcMessage(npc);
                             user.SendMessage(RoomMessageDefine.Msg_RC_CreateNpc, bder);
+
+                            Msg_RC_SyncProperty msg = DataSyncUtility.BuildSyncPropertyMessage(npc);
+                            user.SendMessage(RoomMessageDefine.Msg_RC_SyncProperty, msg);
                         }
                     }
                 }
@@ -44,6 +71,7 @@ namespace GameFramework
             if (null != user) {
                 EntityInfo userInfo = user.Info;
                 Msg_RC_CreateNpc bder = DataSyncUtility.BuildCreateNpcMessage(userInfo);
+                Msg_RC_SyncProperty msg = DataSyncUtility.BuildSyncPropertyMessage(userInfo);
                 Room room = GetRoom();
                 if (null != userInfo && null != room && null != room.GetActiveScene()) {
                     for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
@@ -52,6 +80,7 @@ namespace GameFramework
                             User other = npc.CustomData as User;
                             if (null != other) {
                                 other.SendMessage(RoomMessageDefine.Msg_RC_CreateNpc, bder);
+                                other.SendMessage(RoomMessageDefine.Msg_RC_SyncProperty, msg);
                             }
                         }
                     }

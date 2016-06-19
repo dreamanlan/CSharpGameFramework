@@ -22,9 +22,9 @@ public class Game : MonoBehaviour
     public EventSystem eventSystem;
 
     private bool m_IsInited;
-    private int levelID;
+    private int m_LevelId;
     private CameraController m_CameraController;
-    private GameObject mMainCamera = null;
+    private GameObject m_MainCamera = null;
     void Start()
     {
         try {
@@ -106,6 +106,12 @@ public class Game : MonoBehaviour
                 }
             }
         }
+
+#if UNITY_EDITOR
+        //Pause按键暂停
+        if (Input.GetKeyDown(KeyCode.Pause))
+            Debug.Break();
+#endif
     }
 
     public void LateUpdate()
@@ -131,9 +137,13 @@ public class Game : MonoBehaviour
         if (level == 2) {
             HighlightPromptManager.Instance.Init();
         } else if (level > 2) {
+            GameObject cameraObj = ResourceSystem.Instance.NewObject("UI/UiCamera") as GameObject;
+            if (null != cameraObj) {
+                cameraObj.transform.parent = Camera.main.transform;
+            }
             HighlightPromptManager.Instance.Init();
             BattleTopMenuManager.Instance.Init();
-            SkillBarManager.Instance.Init();
+            SkillBarManager.Instance.Init(cameraObj);
             OverHeadBarManager.Instance.Init();
         }
         m_CameraController = new CameraController(Camera.main);
@@ -147,16 +157,16 @@ public class Game : MonoBehaviour
         OverHeadBarManager.Instance.Release();
         m_CameraController = null;
         yield return null;
-        yield return Application.LoadLevelAsync("Loading");
+        yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Loading");
         yield return Resources.UnloadUnusedAssets();
-        yield return Application.LoadLevelAsync(lvl.prefab);
+        yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(lvl.prefab);
         ClientModule.Instance.OnSceneLoaded(lvl);
         Utility.EventSystem.Publish("loading_complete","ui",null);
     }
 
     private void OnLoadMainUiComplete(int levelId)
     {
-        this.levelID = levelId;
+        this.m_LevelId = levelId;
 
         LoadUi(levelId);
     }
@@ -164,12 +174,12 @@ public class Game : MonoBehaviour
     //装载结束后加入BattleManager脚本
     private void OnLoadBattleComplete(int levelId)
     {
-        this.levelID = levelId;
+        this.m_LevelId = levelId;
 
         GameObject obj = new GameObject();
-        mMainCamera = GameObject.FindGameObjectWithTag("MainCamera");
-        if (mMainCamera) {
-            Camera cameraMain = mMainCamera.GetComponent<Camera>();
+        m_MainCamera = GameObject.FindGameObjectWithTag("MainCamera");
+        if (m_MainCamera) {
+            Camera cameraMain = m_MainCamera.GetComponent<Camera>();
             cameraMain.cullingMask &= ~(1 << 5);
         }
 
@@ -273,6 +283,19 @@ public class Game : MonoBehaviour
         }
     }
 #endif
+
+    private void OnCastSkill(object[] fargs)
+    {
+        if (null != fargs && fargs.Length == 2) {
+            int objId = (int)fargs[0];
+            int skillId = (int)fargs[1];
+
+            bool bSuccess = ClientModule.Instance.CastSkill(objId, skillId);
+            if (bSuccess) {
+            }
+        }
+    }
+
     private void CameraLook(float[] poses)
     {
         if (null != poses && poses.Length >= 3) {

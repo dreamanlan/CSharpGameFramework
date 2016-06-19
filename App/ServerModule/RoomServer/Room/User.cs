@@ -320,8 +320,8 @@ namespace GameFramework
             set
             {
                 m_Info = value;
-                m_Info.CustomData = this;
                 if (null != m_Info) {
+                    m_Info.CustomData = this;
                     peer_.RoleId = m_Info.GetId();
                 }
             }
@@ -355,6 +355,7 @@ namespace GameFramework
         internal bool HaveEnterPosition
         {
             get { return m_HaveEnterPosition; }
+            set { m_HaveEnterPosition = value; }
         }
         internal float EnterX
         {

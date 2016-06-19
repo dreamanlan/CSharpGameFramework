@@ -533,7 +533,7 @@ namespace GameFramework
         }
         internal void DoUserLogin(UserInfo user)
         {
-            user.FightingCapacity = 0;
+            user.SceneId = 0;
             user.IsDisconnected = false;
             user.LeftLife = UserInfo.LifeTimeOfNoHeartbeat;
             user.LastSaveTime = TimeUtility.GetLocalMilliseconds();
@@ -699,7 +699,7 @@ namespace GameFramework
             ui.SceneId = 1010;
             ui.Level = 1;
             ui.CreateTime = DateTime.Now;
-            ui.FightingCapacity = 200;
+            ui.SceneId = 200;
             ui.SummonerSkillId = 22;
             //加4个队员
             for (int id = 2; id <= 5; ++id) {

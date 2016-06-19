@@ -100,13 +100,11 @@ namespace GameFramework.Skill.Trigers
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
                 Load(callData, dslSkillId);
-
                 foreach (Dsl.ISyntaxComponent statement in funcData.Statements) {
                     Dsl.CallData stCall = statement as Dsl.CallData;
                     if (null != stCall && stCall.GetParamNum() > 0) {
                         string id = stCall.GetId();
                         string param = stCall.GetParamId(0);
-
                         if (id == "speed") {
                             m_Speed = float.Parse(param);
                             if (stCall.GetParamNum() >= 2) {
@@ -303,6 +301,125 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
+        private Dictionary<string, object> m_Params = null;
+    }
+    /// <summary>
+    /// animationevent(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
+    /// 
+    /// or
+    /// 
+    /// animationevent(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);
+    /// {
+    ///     int(name,value);
+    ///     long(name,value);
+    ///     float(name,value);
+    ///     double(name,value);
+    ///     string(name,value);
+    ///     ...
+    /// };
+    /// </summary>
+    internal class AnimationEventTriger : AbstractSkillTriger
+    {
+        protected override ISkillTriger OnClone()
+        {
+            AnimationEventTriger triger = new AnimationEventTriger();
+            triger.m_AnimName.CopyFrom(m_AnimName);
+            triger.m_NormalizedFireEventTime.CopyFrom(m_NormalizedFireEventTime);
+            triger.m_MsgId.CopyFrom(m_MsgId);
+            triger.m_Params = new Dictionary<string, object>(m_Params);
+            return triger;
+        }
+        public override void Reset()
+        {
+
+        }
+        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
+            if (null == senderObj) return false;
+            GameObject obj = senderObj.GfxObj;
+            if (null == obj) return false;
+            if (null != senderObj.TrackEffectObj)
+                obj = senderObj.TrackEffectObj;
+            if (curSectionTime >= StartTime) {
+                Animator animator = obj.GetComponent<Animator>();
+                if (null != animator) {
+                    string anim = m_AnimName.Get(instance);
+                    string msgId = m_MsgId.Get(instance);
+                    float time = m_NormalizedFireEventTime.Get(instance);
+                    for (int ix = 0; ix < animator.layerCount; ++ix) {
+                        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(ix);
+                        if (!string.IsNullOrEmpty(anim) && !string.IsNullOrEmpty(msgId) && (stateInfo.IsName(anim) || stateInfo.IsTag(anim))) {
+                            if ((stateInfo.normalizedTime % 1.0f) >= time) {
+                                GfxSkillSystem.Instance.SendMessage(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, msgId, m_Params);
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+        protected override void OnInitProperties()
+        {
+            AddProperty("AnimName", () => { return m_AnimName.EditableValue; }, (object val) => { m_AnimName.EditableValue = val; });
+            AddProperty("NormalizedFireEventTime", () => { return m_NormalizedFireEventTime.EditableValue; }, (object val) => { m_NormalizedFireEventTime.EditableValue = val; });
+            AddProperty("MessageName", () => { return m_MsgId.EditableValue; }, (object val) => { m_MsgId.EditableValue = val; });
+        }
+        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        {
+            m_Params = new Dictionary<string, object>();
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_AnimName.Set(callData.GetParam(0));
+            }
+            if (num > 1) {
+                m_NormalizedFireEventTime.Set(callData.GetParam(1));
+            } else {
+                m_NormalizedFireEventTime.Set(0.0f);
+            }
+            if (num > 2) {
+                m_MsgId.Set(callData.GetParam(2));
+            }
+            if (num > 3) {
+                StartTime = long.Parse(callData.GetParamId(3));
+            } else {
+                StartTime = 0;
+            }
+        }
+        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        {
+            Dsl.CallData callData = funcData.Call;
+            if (null != callData) {
+                Load(callData, dslSkillId);
+
+                for (int i = 0; i < funcData.Statements.Count; ++i) {
+                    Dsl.ISyntaxComponent statement = funcData.Statements[i];
+                    Dsl.CallData stCall = statement as Dsl.CallData;
+                    if (null != stCall) {
+                        string id = stCall.GetId();
+                        string key = stCall.GetParamId(0);
+                        object val = string.Empty;
+                        if (id == "int") {
+                            val = int.Parse(stCall.GetParamId(1));
+                        } else if (id == "long") {
+                            val = long.Parse(stCall.GetParamId(1));
+                        } else if (id == "float") {
+                            val = float.Parse(stCall.GetParamId(1));
+                        } else if (id == "double") {
+                            val = double.Parse(stCall.GetParamId(1));
+                        } else if (id == "string") {
+                            val = stCall.GetParamId(1);
+                        }
+                        m_Params.Add(key, val);
+                    }
+                }
+            }
+        }
+
+        private SkillStringParam m_AnimName = new SkillStringParam();
+        private SkillNonStringParam<float> m_NormalizedFireEventTime = new SkillNonStringParam<float>();
+        private SkillStringParam m_MsgId = new SkillStringParam();
         private Dictionary<string, object> m_Params = null;
     }
 }

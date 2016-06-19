@@ -9,7 +9,7 @@ story(main)
   {
     bindui(@window){
       inputs("Panel/Account","Panel/Passwd");
-      onclick("ok","Panel/Button");
+      onevent("button","ok","Panel/Button");
     };
   	log("LoginDlg start");
     @window.SetActive(changetype(0,"bool"));

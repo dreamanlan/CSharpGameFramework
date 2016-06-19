@@ -7,15 +7,21 @@ using GameFramework.Story;
 
 public sealed class SkillBarManager
 {
-    public void Init()
+    public void Init(GameObject cameraObj)
     {
         GameObject obj = ResourceSystem.Instance.NewObject("UI/SkillBar") as GameObject;
+        Canvas canvas = obj.GetComponent<Canvas>();
+        if (null != canvas && null != cameraObj) {
+            canvas.renderMode = RenderMode.ScreenSpaceCamera;
+            canvas.worldCamera = cameraObj.GetComponent<Camera>();
+            uiCamera = canvas.worldCamera;
+        }
         skillBar = obj.GetComponent<SkillBar>();
         skillBar.Clear();
 
         //订阅
-        subscribes.Add(Utility.EventSystem.Subscribe<int,int>("ui_add_actor_button", "ui", AddSummonButton));//头像
-        subscribes.Add(Utility.EventSystem.Subscribe<int>("ui_remove_actor_button", "ui", RemoveSummonButton));
+        subscribes.Add(Utility.EventSystem.Subscribe<int, int, int>("ui_add_skill_button", "ui", AddSkillButton));
+        subscribes.Add(Utility.EventSystem.Subscribe("ui_remove_skill_buttons", "ui", RemoveAllSkillButtons));
         subscribes.Add(Utility.EventSystem.Subscribe<int, float, int>("ui_actor_mp", "ui", ChangeMp));
         subscribes.Add(Utility.EventSystem.Subscribe<int, float>("ui_actor_hp", "ui", ChangeHp));
         subscribes.Add(Utility.EventSystem.Subscribe<int, int, float>("ui_skill_cooldown", "ui", OnSkillCooldown));
@@ -25,11 +31,7 @@ public sealed class SkillBarManager
         //发布
         //队员技能
         skillBar.onSelectSkill = (int objID,int skillID) => {
-            bool bSuccess = ClientModule.Instance.CastSkill(objID, skillID);
-        };
-        //召唤师技能
-        skillBar.onSelectSummonerSkill = (int skillID) => {
-            bool bSuccess = ClientModule.Instance.CastSkill(ClientModule.Instance.LeaderID, skillID);
+            Utility.SendMessage("GameRoot", "OnCastSkill", new object[] { objID, skillID });
         };
 
     }
@@ -44,43 +46,38 @@ public sealed class SkillBarManager
         subscribes.Clear();
     }
 
-    private void AddSummonButton(int actorID,int objID)
+    private void AddSkillButton(int actorID, int objID, int skillId)
     {
         try {
             TableConfig.Actor actCfg = TableConfig.ActorProvider.Instance.GetActor(actorID);
             if (null != actCfg) {
-                TableConfig.Skill skillCfg0 = TableConfig.SkillProvider.Instance.GetSkill(actCfg.skill4);
-                if (null != skillCfg0) {
-                    SkillBar.SkillInfo skill = skillBar.AddSkill(objID, skillCfg0.id, actCfg.icon, skillCfg0.cooldown);
+                TableConfig.Skill skillCfg = TableConfig.SkillProvider.Instance.GetSkill(skillId);
+                if (null == skillCfg) {
+                    skillCfg = TableConfig.SkillProvider.Instance.GetSkill(actCfg.skill4);
+                }
+                if (null != skillCfg) {
+                    SkillBar.SkillInfo skill = skillBar.AddSkill(objID, skillCfg.id, skillCfg.icon, 0);
                     skill.SetMp(ClientModule.Instance.GetNpcMp(objID));
                 }
-
-                if (ClientModule.Instance.LeaderID == objID) {
-                    TableConfig.Skill skillCfg1 = TableConfig.SkillProvider.Instance.GetSkill(ClientModule.Instance.SummonerSkillId);
-                    if (null != skillCfg1) {
-                        skillBar.SetSummonerSkill(objID, skillCfg1.id, skillCfg1.icon, 0);
-                    }
-                }
             }
-        } catch (Exception ex) {
-            LogSystem.Error("exception:{0}\n{1}", ex.Message, ex.StackTrace);
+        } catch (System.Exception ex) {
+            Debug.LogErrorFormat("exception:{0}\n{1}", ex.Message, ex.StackTrace);
         }
     }
-    private void RemoveSummonButton(int objID)
+    private void RemoveAllSkillButtons()
     {
-        Debug.Log("RemoveSummonButton,id=" + objID.ToString());
-        try {
-            SkillBar.SkillInfo skill = skillBar.GetSkillByID(objID);
+        for (int i = 0; i < skillBar.GetSkillCount(); i++) {
+            SkillBar.SkillInfo skill = skillBar.GetSkillByIndex(i);
             if (skill != null) {
                 skill.StopEffect();
                 skill.SetSkillEmpty();
                 skill.SetMp(0);
                 skill.StopCooldown(0);
             }
-        } catch (Exception ex) {
-            LogSystem.Error("exception:{0}\n{1}", ex.Message, ex.StackTrace);
         }
+        skillBar.RemoveAllSkills();
     }
+
     private void OnSkillCooldown(int objID,int skillID,float cooldownTime)
     {
         try {
@@ -93,8 +90,6 @@ public sealed class SkillBarManager
                 } else {
                     if (skill.skillID == skillID) {
                         skill.StartCooldown(cooldownTime);
-                    } else if (skillID == skillBar.summonerSkill.skillID) {
-                        skillBar.summonerSkill.StartCooldown(cooldownTime);
                     }
                 }
             }
@@ -138,22 +133,9 @@ public sealed class SkillBarManager
     public bool IsOn(Vector3 pos)
     {
         if (null != skillBar) {
-            int ct = skillBar.GetSkillCount();
-            for (int i = 0; i < ct; ++i) {
-                SkillBar.SkillInfo skillInfo = skillBar.GetSkillByIndex(i);
-                if (null != skillInfo && null!=skillInfo.icon) {
-                    SkillIconInfo iconInfo = skillInfo.icon;
-                    RectTransform rect = iconInfo.button.transform as RectTransform;
-                    if (null != rect) {
-                        if(RectTransformUtility.RectangleContainsScreenPoint(rect, new Vector2(pos.x, pos.y)))
-                            return true;
-                    }
-                }
-            }
-            SkillIconInfo iconInfo2 = skillBar.summonerSkillIcon;
-            if (null != iconInfo2) {
-                RectTransform rect = iconInfo2.button.transform as RectTransform;
-                if (RectTransformUtility.RectangleContainsScreenPoint(rect, new Vector2(pos.x, pos.y)))
+            RectTransform rect = skillBar.panelSkill.transform as RectTransform;
+            if (null != rect) {
+                if (RectTransformUtility.RectangleContainsScreenPoint(rect, new Vector2(pos.x, pos.y), uiCamera))
                     return true;
             }
         }
@@ -162,6 +144,7 @@ public sealed class SkillBarManager
 
     private SkillBar skillBar;
     private List<object> subscribes = new List<object>();
+    private Camera uiCamera = null;
 
     public static SkillBarManager Instance
     {

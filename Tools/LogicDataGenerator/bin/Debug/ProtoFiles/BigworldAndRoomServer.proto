@@ -16,6 +16,12 @@ message Msg_BL_QueryUserStateResult
 	required int32 State = 2;
 }
 
+message Msg_BL_UserChangeScene
+{
+	required uint64 Guid = 1;
+	required int32 SceneId = 2;
+}
+
 message Msg_BL_UserOffline
 {
 	required uint64 Guid = 1;
@@ -28,13 +34,7 @@ message Msg_LB_BigworldUserBaseInfo
 	required string AccountId = 3;
 	required string ClientInfo = 4;
 	required string StartServerTime = 5;
-	required int32 FightingCapacity = 6;
-}
-
-message Msg_LB_CancelMatch
-{
-	required uint64 Guid = 1;
-	required int32 Type = 2;
+	required int32 SceneId = 6;
 }
 
 message Msg_LB_QueryUserState
@@ -82,12 +82,9 @@ message Msg_LBL_Message
 
 message Msg_LR_ActiveScene
 {
-	required uint64 UserGuid = 1;
+	repeated uint64 UserGuids = 1;
 	required int32 RoomID = 2;
-	required int32 SceneId = 3;
-	repeated Msg_LR_RoomUserInfo UserInfos = 4;
-	optional int32 HPs = 5;
-	optional int32 MPs = 6;
+	required int32 SceneID = 3;
 }
 
 message Msg_LR_ChangeScene
@@ -182,6 +179,12 @@ message Msg_LRL_StoryMessage
 	repeated MessageArg Args = 4;
 }
 
+message Msg_RL_ActiveScene
+{
+	repeated uint64 UserGuids = 1;
+	required int32 SceneID = 2;
+}
+
 message Msg_RL_ActiveSceneResult
 {
 	repeated uint64 UserGuids = 1;
@@ -191,7 +194,7 @@ message Msg_RL_ActiveSceneResult
 
 message Msg_RL_ChangeScene
 {
-	required uint64 UserGuid = 1;
+	repeated uint64 UserGuids = 1;
 	required int32 SceneID = 2;
 }
 

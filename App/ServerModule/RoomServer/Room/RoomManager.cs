@@ -53,7 +53,7 @@ namespace GameFramework
                                 fieldThread.Init(thread_tick_interval_, (uint)cfg.RoomCountPerThread, user_pool_, connector_);
                                 for (int rix = 0; rix < cfg.RoomCountPerThread; ++rix) {
                                     fieldThread.ActiveFieldRoom(startId, cfg.id);
-                                    AddActiveRoom(startId, c_field_thread_index_mask | field_roomthread_list_.Count);
+                                    AddActiveRoom(startId, field_roomthread_list_.Count, true);
                                     AddFieldSceneRoomId(cfg.id, startId);
                                     ++startId;
                                 }
@@ -72,6 +72,7 @@ namespace GameFramework
                 roomthread_list_[i] = new RoomThread(this);
                 roomthread_list_[i].Init(thread_tick_interval_, room_amount_, user_pool_, connector_);
             }
+            next_room_id_ = startId;
             return true;
         }
 
@@ -128,8 +129,11 @@ namespace GameFramework
             return ix;
         }
 
-        internal void AddActiveRoom(int roomid, int roomthreadindex)
+        internal void AddActiveRoom(int roomid, int roomthreadindex, bool isFieldScene)
         {
+            if (isFieldScene) {
+                roomthreadindex |= c_field_thread_index_mask;
+            }
             lock (lock_obj_) {
                 if (active_rooms_.ContainsKey(roomid)) {
                     active_rooms_[roomid] = roomthreadindex;
@@ -146,79 +150,32 @@ namespace GameFramework
             }
         }
 
-        internal bool ActiveRoom(int roomid, int scenetype, User[] users, List<int> monsters = null, List<int> hps = null)
-        {
-            int thread_id = GetIdleThread();
-            if (thread_id < 0) {
-                LogSys.Log(LOG_TYPE.ERROR, "all room are using, active room failed!");
-                foreach (User u in users) {
-                    LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [RoomManager.ActiveRoom]", u.LocalID, u.Guid, u.GetKey());
-                    user_pool_.FreeUser(u.LocalID);
-                }
-                return false;
-            }
-            RoomThread roomThread = roomthread_list_[thread_id];
-            AddActiveRoom(roomid, thread_id);
-            roomThread.PreActiveRoom();
-            LogSys.Log(LOG_TYPE.INFO, "queue active room {0} scene {1} thread {2} for {3} users", roomid, scenetype, thread_id, users.Length);
-            roomThread.QueueAction(roomThread.ActiveRoom, roomid, scenetype, users, monsters, hps);
-            return true;
-        }
-
-        internal void ChangeRoomScene(int roomid, int scenetype)
+        internal void ChangeRoomScene(int roomid, int sceneId)
         {
             bool isFieldThread;
             int ix = GetActiveRoomThreadIndex(roomid, out isFieldThread);
             if (ix >= 0 && !isFieldThread) {
                 RoomThread thread = roomthread_list_[ix];
-                thread.QueueAction(thread.ChangeRoomScene, roomid, scenetype);
+                thread.QueueAction(thread.ChangeRoomScene, roomid, sceneId, (MyAction<bool>)((bool success) => {
+
+                }));
             }
         }
+        
+        internal void PlayerRequestActiveRoom(int targetSceneId, params ulong[] guids)
+        {
+            Msg_RL_ActiveScene builder = new Msg_RL_ActiveScene();
+            builder.UserGuids.AddRange(guids);
+            builder.SceneID = targetSceneId;
+            connector_.SendMsgToLobby(builder);
+        }
 
-        internal void AddPlayer(string nick, int heroId, Lidgren.Network.NetConnection conn)
-        {            
-            int level = 1;
-            int sceneId = 4;
-            int roomId = GetFieldSceneFirstRoomId(sceneId);
-
-            uint key = s_next_key_++;
-            ulong guid = s_next_guid_++;
-            int campId = (int)CampIdEnum.Blue;
-            
-            bool isFieldThread;
-            int ix = GetActiveRoomThreadIndex(roomId, out isFieldThread);
-            if (ix < 0)
-                return;
-            //先检查是否玩家已经在room上。
-            if (RoomPeerMgr.Instance.IsKeyExist(key)) {
-                LogSys.Log(LOG_TYPE.WARN, "User {0} is already in room. Key:{1}", guid, key);
-                return;
-            }
-            List<User> users = new List<User>();
-            User rsUser = user_pool_.NewUser();
-            LogSys.Log(LOG_TYPE.INFO, "NewUser {0} for {1} {2}", rsUser.LocalID, guid, key);
-            rsUser.Init();
-            if (!rsUser.SetKey(key)) {
-                LogSys.Log(LOG_TYPE.WARN, "user who's key is {0} already in room!", key);
-                LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [RoomManager.HandleCreateBattleRoom]", rsUser.LocalID, guid, key);
-                user_pool_.FreeUser(rsUser.LocalID);
-                return;
-            }
-
-            Msg_LR_RoomUserInfo lobbyUserInfo = new Msg_LR_RoomUserInfo();
-            lobbyUserInfo.Guid = guid;
-            lobbyUserInfo.Nick = nick;
-            lobbyUserInfo.Hero = heroId;
-            lobbyUserInfo.Camp = campId;
-            lobbyUserInfo.Level = level;
-            rsUser.LobbyUserData = lobbyUserInfo;
-            rsUser.UserControlState = (int)UserControlState.User;
-
-            users.Add(rsUser);
-            LogSys.Log(LOG_TYPE.DEBUG, "enter room {0} scene {1} user info guid={2}, name={3}, key={4}, camp={5}", roomId, sceneId, guid, nick, key, campId);
-
-            RoomThread roomThread = field_roomthread_list_[ix];
-            roomThread.QueueAction(roomThread.AddUser, guid, roomId, rsUser);
+        internal void PlayerRequestChangeRoom(int targetSceneId, params ulong[] guids)
+        {
+            Msg_RL_ChangeScene builder = new Msg_RL_ChangeScene();
+            builder.UserGuids.AddRange(guids);
+            builder.SceneID = targetSceneId;
+            connector_.SendMsgToLobby(builder);
         }
 
         //--------------------------------------
@@ -236,59 +193,75 @@ namespace GameFramework
         //--------------------------------------
         private void HandleEnterScene(Msg_LR_EnterScene msg, PBChannel channel, int handle, uint seq)
         {
+            ulong guid = msg.UserGuid;
+            int roomId = msg.RoomID;
             bool isFieldThread;
-            int ix = GetActiveRoomThreadIndex(msg.RoomID, out isFieldThread);
+            int ix = GetActiveRoomThreadIndex(roomId, out isFieldThread);
             if (ix < 0) {
                 Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
-                replyBuilder.UserGuid = msg.UserGuid;
-                replyBuilder.RoomID = msg.RoomID;
+                replyBuilder.UserGuid = guid;
+                replyBuilder.RoomID = roomId;
                 replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
                 channel.Send(replyBuilder);
             } else {
+                RoomThread roomThread;
                 if (isFieldThread) {
-                    Msg_LR_RoomUserInfo rui = msg.UserInfo;
-
-                    User rsUser = user_pool_.NewUser();
-                    LogSys.Log(LOG_TYPE.INFO, "NewUser {0} for {1} {2}", rsUser.LocalID, rui.Guid, rui.Key);
-                    rsUser.Init();
-                    if (!rsUser.SetKey(rui.Key)) {
-                        LogSys.Log(LOG_TYPE.WARN, "user who's key is {0} already in room!", rui.Key);
-                        LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [RoomManager.HandleEnterScene]", rsUser.LocalID, rui.Guid, rui.Key);
-                        user_pool_.FreeUser(rsUser.LocalID);
-
-                        Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
-                        replyBuilder.UserGuid = msg.UserGuid;
-                        replyBuilder.RoomID = msg.RoomID;
-                        replyBuilder.Result = (int)SceneOperationResultEnum.User_Key_Exist;
-                        channel.Send(replyBuilder);
-                    } else {
-                        rsUser.LobbyUserData = rui;
-                        if (rui.IsMachine == true)
-                            rsUser.UserControlState = (int)UserControlState.Ai;
-                        else
-                            rsUser.UserControlState = (int)UserControlState.User;
-                        if (msg.HP > 0 && msg.MP > 0) {
-                            rsUser.SetHpArmor(msg.HP, msg.MP);
-                        }
-
-                        if (rui.EnterX > 0 && rui.EnterY > 0) {
-                            rsUser.SetEnterPoint(rui.EnterX, rui.EnterY);
-                        }
-
-                        RoomThread roomThread = field_roomthread_list_[ix];
-                        roomThread.QueueAction(roomThread.HandleEnterScene, rui.Guid, msg.RoomID, rsUser, channel, handle, seq);
-                    }
+                    roomThread = field_roomthread_list_[ix];
                 } else {
+                    roomThread = roomthread_list_[ix];
+                }
+                Msg_LR_RoomUserInfo rui = msg.UserInfo;
+
+                User rsUser = user_pool_.NewUser();
+                LogSys.Log(LOG_TYPE.INFO, "NewUser {0} for {1} {2}", rsUser.LocalID, rui.Guid, rui.Key);
+                rsUser.Init();
+                if (!rsUser.SetKey(rui.Key)) {
+                    LogSys.Log(LOG_TYPE.WARN, "user who's key is {0} already in room!", rui.Key);
+                    LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [RoomManager.HandleEnterScene]", rsUser.LocalID, rui.Guid, rui.Key);
+                    user_pool_.FreeUser(rsUser.LocalID);
+
                     Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
-                    replyBuilder.UserGuid = msg.UserGuid;
-                    replyBuilder.RoomID = msg.RoomID;
-                    replyBuilder.Result = (int)SceneOperationResultEnum.Not_Field_Room;
+                    replyBuilder.UserGuid = guid;
+                    replyBuilder.RoomID = roomId;
+                    replyBuilder.Result = (int)SceneOperationResultEnum.User_Key_Exist;
                     channel.Send(replyBuilder);
+                } else {
+                    rsUser.LobbyUserData = rui;
+                    if (rui.IsMachine == true)
+                        rsUser.UserControlState = (int)UserControlState.Ai;
+                    else
+                        rsUser.UserControlState = (int)UserControlState.User;
+                    if (msg.HP > 0 && msg.MP > 0) {
+                        rsUser.SetHpArmor(msg.HP, msg.MP);
+                    }
+
+                    if (rui.EnterX > 0 && rui.EnterY > 0) {
+                        rsUser.SetEnterPoint(rui.EnterX, rui.EnterY);
+                    }
+                        
+                    roomThread.QueueAction(roomThread.AddUser, rsUser, roomId, (MyAction<bool, int, User>)((bool success, int sceneId, User user) => {
+                        if (success) {
+                            Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
+                            replyBuilder.UserGuid = guid;
+                            replyBuilder.RoomID = roomId;
+                            replyBuilder.Result = (int)SceneOperationResultEnum.Success;
+                            channel.Send(replyBuilder);
+                        } else {
+                            Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
+                            replyBuilder.UserGuid = guid;
+                            replyBuilder.RoomID = roomId;
+                            replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
+                            channel.Send(replyBuilder);
+                        }
+                    }));
                 }
             }
         }
         private void HandleChangeScene(Msg_LR_ChangeScene msg, PBChannel channel, int handle, uint seq)
         {
+            ulong guid = msg.UserGuid;
+            int roomid = msg.RoomID;
+            int targetRoomId = msg.TargetRoomID;
             bool isFieldThread;
             int ix = GetActiveRoomThreadIndex(msg.RoomID, out isFieldThread);
             if (ix < 0) {
@@ -299,22 +272,81 @@ namespace GameFramework
                 replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
                 channel.Send(replyBuilder);
             } else {
+                RoomThread roomThread;
                 if (isFieldThread) {
-                    RoomThread roomThread = field_roomthread_list_[ix];
-                    roomThread.QueueAction(roomThread.HandleChangeScene, msg.UserGuid, msg.RoomID, msg.TargetRoomID, channel, handle, seq);
+                    roomThread = field_roomthread_list_[ix];
                 } else {
-                    Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
-                    replyBuilder.UserGuid = msg.UserGuid;
-                    replyBuilder.RoomID = msg.RoomID;
-                    replyBuilder.TargetRoomID = msg.TargetRoomID;
-                    replyBuilder.Result = (int)SceneOperationResultEnum.Not_Field_Room;
-                    channel.Send(replyBuilder);
+                    roomThread = roomthread_list_[ix];
+                }
+                bool targetIsFieldThread;
+                int targetIx = GetActiveRoomThreadIndex(targetRoomId, out targetIsFieldThread);
+                if (null != roomThread) {
+                    if (targetIx >= 0) {
+                        //同服切场景
+                        roomThread.QueueAction(roomThread.RemoveUser, guid, roomid, false, (MyAction<bool, int, User>)((bool success, int sceneId, User user) => {
+                            if (success) {
+                                PlayerGotoRoom(user, roomid, targetRoomId);
+                            } else {
+                                Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
+                                replyBuilder.UserGuid = guid;
+                                replyBuilder.RoomID = roomid;
+                                replyBuilder.TargetRoomID = targetRoomId;
+                                replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
+                                channel.Send(replyBuilder);
+                            }
+                        }));
+                    } else {
+                        //跨服切场景
+                        roomThread.QueueAction(roomThread.RemoveUser, guid, roomid, true, (MyAction<bool, int, User>)((bool success, int sceneId, User user) => {
+                            if (success) {
+                                Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
+                                EntityInfo info = user.Info;
+                                if (null != info) {
+                                    replyBuilder.HP = info.Hp;
+                                    replyBuilder.MP = info.Energy;
+                                }
+                                replyBuilder.UserGuid = guid;
+                                replyBuilder.RoomID = roomid;
+                                replyBuilder.TargetRoomID = targetRoomId;
+                                replyBuilder.Result = (int)SceneOperationResultEnum.Success;
+                                channel.Send(replyBuilder);
+                            } else {
+                                Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
+                                replyBuilder.UserGuid = guid;
+                                replyBuilder.RoomID = roomid;
+                                replyBuilder.TargetRoomID = targetRoomId;
+                                replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
+                                channel.Send(replyBuilder);
+                            }
+                        }));
+                    }
                 }
             }
         }
         private void HandleActiveScene(Msg_LR_ActiveScene msg, PBChannel channel, int handle, uint seq)
         {
-
+            int roomid = msg.RoomID;
+            int sceneId = msg.SceneID;
+            List<ulong> users = msg.UserGuids;
+            int thread_id = GetIdleThread();
+            if (thread_id < 0) {
+                LogSys.Log(LOG_TYPE.ERROR, "all room are using, active room failed!");
+                Msg_RL_ActiveSceneResult retMsg = new Msg_RL_ActiveSceneResult();
+                retMsg.UserGuids.AddRange(users);
+                retMsg.RoomID = roomid;
+                retMsg.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
+                return;
+            }
+            RoomThread roomThread = roomthread_list_[thread_id];
+            AddActiveRoom(roomid, thread_id, false);
+            roomThread.PreActiveRoom();
+            LogSys.Log(LOG_TYPE.INFO, "queue active room {0} scene {1} thread {2}", roomid, sceneId, thread_id);
+            roomThread.QueueAction(roomThread.ActiveRoom, roomid, sceneId, (MyAction<bool>)((bool val) => {
+                Msg_RL_ActiveSceneResult retMsg = new Msg_RL_ActiveSceneResult();
+                retMsg.UserGuids.AddRange(users);
+                retMsg.RoomID = roomid;
+                retMsg.Result = val ? (int)SceneOperationResultEnum.Success : (int)SceneOperationResultEnum.Cant_Find_Room;
+            }));
         }
         private void HandleReconnectUser(Msg_LR_ReconnectUser urMsg, PBChannel channel, int handle, uint seq)
         {
@@ -369,7 +401,6 @@ namespace GameFramework
                 channel.Send(replyBuilder);
             }
         }
-
         private void HandleReclaimItem(Msg_LR_ReclaimItem msg, PBChannel channel, int handle, uint seq)
         {
             bool isFieldThread;
@@ -424,16 +455,45 @@ namespace GameFramework
                 field_scene_rooms_.Add(sceneId, roomIds);
             }
         }
-        private int GetFieldSceneFirstRoomId(int sceneId)
+        private void PlayerGotoRoom(User user, int roomId, int targetRoomId)
         {
-            int roomId = 0;
-            HashSet<int> roomIds;
-            if (field_scene_rooms_.TryGetValue(sceneId, out roomIds)) {
-                var enumer = roomIds.GetEnumerator();
-                enumer.MoveNext();
-                roomId = enumer.Current;
+            bool isFieldThread;
+            int ix = GetActiveRoomThreadIndex(targetRoomId, out isFieldThread);
+            if (ix < 0)
+                return;
+
+            RoomThread roomThread;
+            if (isFieldThread) {
+                roomThread = field_roomthread_list_[ix];
+            } else {
+                roomThread = roomthread_list_[ix];
             }
-            return roomId;
+            roomThread.QueueAction(roomThread.AddUser, user, targetRoomId, (MyAction<bool, int, User>)((bool ret, int sceneId, User successUser) => {
+                if (ret) {
+                    Msg_RC_ChangeScene msg = new Msg_RC_ChangeScene();
+                    msg.target_scene_id = sceneId;
+                    successUser.SendMessage(RoomMessageDefine.Msg_RC_ChangeScene, msg);
+
+                    Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
+                    EntityInfo info = user.Info;
+                    if (null != info) {
+                        replyBuilder.HP = info.Hp;
+                        replyBuilder.MP = info.Energy;
+                    }
+                    replyBuilder.UserGuid = user.Guid;
+                    replyBuilder.RoomID = roomId;
+                    replyBuilder.TargetRoomID = targetRoomId;
+                    replyBuilder.Result = (int)SceneOperationResultEnum.Success;
+                    connector_.SendMsgToLobby(replyBuilder);
+                } else {
+                    Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
+                    replyBuilder.UserGuid = user.Guid;
+                    replyBuilder.RoomID = roomId;
+                    replyBuilder.TargetRoomID = targetRoomId;
+                    replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
+                    connector_.SendMsgToLobby(replyBuilder);
+                }
+            }));
         }
 
         // private attributes-------------------
@@ -453,6 +513,8 @@ namespace GameFramework
 
         private object lock_obj_;
         private Dictionary<int, int> active_rooms_;
+
+        private int next_room_id_ = 1;
 
         //demo使用
         private static uint s_next_key_ = 1;

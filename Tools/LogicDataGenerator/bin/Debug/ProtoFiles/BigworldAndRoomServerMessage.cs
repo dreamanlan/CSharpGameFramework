@@ -65,6 +65,30 @@ namespace GameFrameworkMessage
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_BL_UserChangeScene")]
+  public partial class Msg_BL_UserChangeScene : global::ProtoBuf.IExtensible
+  {
+    public Msg_BL_UserChangeScene() {}
+    
+    private ulong _Guid;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Guid", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public ulong Guid
+    {
+      get { return _Guid; }
+      set { _Guid = value; }
+    }
+    private int _SceneId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"SceneId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int SceneId
+    {
+      get { return _SceneId; }
+      set { _SceneId = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_BL_UserOffline")]
   public partial class Msg_BL_UserOffline : global::ProtoBuf.IExtensible
   {
@@ -122,36 +146,12 @@ namespace GameFrameworkMessage
       get { return _StartServerTime; }
       set { _StartServerTime = value; }
     }
-    private int _FightingCapacity;
-    [global::ProtoBuf.ProtoMember(6, IsRequired = true, Name=@"FightingCapacity", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int FightingCapacity
+    private int _SceneId;
+    [global::ProtoBuf.ProtoMember(6, IsRequired = true, Name=@"SceneId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int SceneId
     {
-      get { return _FightingCapacity; }
-      set { _FightingCapacity = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_LB_CancelMatch")]
-  public partial class Msg_LB_CancelMatch : global::ProtoBuf.IExtensible
-  {
-    public Msg_LB_CancelMatch() {}
-    
-    private ulong _Guid;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"Guid", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public ulong Guid
-    {
-      get { return _Guid; }
-      set { _Guid = value; }
-    }
-    private int _Type;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"Type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int Type
-    {
-      get { return _Type; }
-      set { _Type = value; }
+      get { return _SceneId; }
+      set { _SceneId = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -326,13 +326,13 @@ namespace GameFrameworkMessage
   {
     public Msg_LR_ActiveScene() {}
     
-    private ulong _UserGuid;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"UserGuid", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public ulong UserGuid
+    private readonly global::System.Collections.Generic.List<ulong> _UserGuids = new global::System.Collections.Generic.List<ulong>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"UserGuids", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public global::System.Collections.Generic.List<ulong> UserGuids
     {
-      get { return _UserGuid; }
-      set { _UserGuid = value; }
+      get { return _UserGuids; }
     }
+  
     private int _RoomID;
     [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public int RoomID
@@ -340,35 +340,12 @@ namespace GameFrameworkMessage
       get { return _RoomID; }
       set { _RoomID = value; }
     }
-    private int _SceneId;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"SceneId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int SceneId
+    private int _SceneID;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"SceneID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int SceneID
     {
-      get { return _SceneId; }
-      set { _SceneId = value; }
-    }
-    private readonly global::System.Collections.Generic.List<GameFrameworkMessage.Msg_LR_RoomUserInfo> _UserInfos = new global::System.Collections.Generic.List<GameFrameworkMessage.Msg_LR_RoomUserInfo>();
-    [global::ProtoBuf.ProtoMember(4, Name=@"UserInfos", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public global::System.Collections.Generic.List<GameFrameworkMessage.Msg_LR_RoomUserInfo> UserInfos
-    {
-      get { return _UserInfos; }
-    }
-  
-    private int _HPs = default(int);
-    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"HPs", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(int))]
-    public int HPs
-    {
-      get { return _HPs; }
-      set { _HPs = value; }
-    }
-    private int _MPs = default(int);
-    [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"MPs", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(int))]
-    public int MPs
-    {
-      get { return _MPs; }
-      set { _MPs = value; }
+      get { return _SceneID; }
+      set { _SceneID = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -787,6 +764,30 @@ namespace GameFrameworkMessage
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
+  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_RL_ActiveScene")]
+  public partial class Msg_RL_ActiveScene : global::ProtoBuf.IExtensible
+  {
+    public Msg_RL_ActiveScene() {}
+    
+    private readonly global::System.Collections.Generic.List<ulong> _UserGuids = new global::System.Collections.Generic.List<ulong>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"UserGuids", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public global::System.Collections.Generic.List<ulong> UserGuids
+    {
+      get { return _UserGuids; }
+    }
+  
+    private int _SceneID;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"SceneID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int SceneID
+    {
+      get { return _SceneID; }
+      set { _SceneID = value; }
+    }
+    private global::ProtoBuf.IExtension extensionObject;
+    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
+      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
+  }
+  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_RL_ActiveSceneResult")]
   public partial class Msg_RL_ActiveSceneResult : global::ProtoBuf.IExtensible
   {
@@ -823,13 +824,13 @@ namespace GameFrameworkMessage
   {
     public Msg_RL_ChangeScene() {}
     
-    private ulong _UserGuid;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"UserGuid", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public ulong UserGuid
+    private readonly global::System.Collections.Generic.List<ulong> _UserGuids = new global::System.Collections.Generic.List<ulong>();
+    [global::ProtoBuf.ProtoMember(1, Name=@"UserGuids", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public global::System.Collections.Generic.List<ulong> UserGuids
     {
-      get { return _UserGuid; }
-      set { _UserGuid = value; }
+      get { return _UserGuids; }
     }
+  
     private int _SceneID;
     [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"SceneID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public int SceneID

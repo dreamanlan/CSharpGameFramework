@@ -54,7 +54,7 @@ namespace GameFramework
             Vector3 targetPos = info.HomePos;
             ScriptRuntime.Vector3 srcPos = npc.GetMovementStateInfo().GetPosition3D();
             float distSqrToHome = Geometry.DistanceSquare(srcPos, info.HomePos);
-            if (distSqrToHome > npc.GohomeRange) {
+            if (distSqrToHome > npc.GohomeRange * npc.GohomeRange) {
                 NotifyAiStopPursue(npc);
                 ChangeToState(npc, (int)AiStateId.GoHome);
                 return;

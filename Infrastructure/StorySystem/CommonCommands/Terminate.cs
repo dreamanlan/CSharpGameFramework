@@ -22,4 +22,23 @@ namespace StorySystem.CommonCommands
         protected override void Load(Dsl.CallData callData)
         { }
     }
+    /// <summary>
+    /// pause();
+    /// </summary>
+    internal class PauseCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            PauseCommand cmd = new PauseCommand();
+            return cmd;
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            instance.IsPaused = true;
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        { }
+    }
 }

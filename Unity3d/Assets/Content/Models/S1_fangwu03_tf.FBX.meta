@@ -1,0 +1,147 @@
+fileFormatVersion: 2
+guid: e03b4a36f82030743851cc473591e6dc
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: S1_fangwu03k_tf
+    100002: S1_fangwu03h_tf
+    100004: S1_fangwu03p_tf
+    100006: S1_fangwu03b_tf
+    100008: S1_fangwu03i_tf
+    100010: S1_fangwu03f_tf
+    100012: S1_fangwu03e_tf
+    100014: S1_fangwu03l_tf
+    100016: S1_fangwu03m_tf
+    100018: S1_fangwu03q_tf
+    100020: //RootNode
+    100022: S1_fangwu03a_tf
+    100024: Object13
+    100026: S1_fangwu03n_tf
+    100028: S1_fangwu03o_tf
+    100030: S1_fangwu03d_tf
+    400000: S1_fangwu03k_tf
+    400002: S1_fangwu03h_tf
+    400004: S1_fangwu03p_tf
+    400006: S1_fangwu03b_tf
+    400008: S1_fangwu03i_tf
+    400010: S1_fangwu03f_tf
+    400012: S1_fangwu03e_tf
+    400014: S1_fangwu03l_tf
+    400016: S1_fangwu03m_tf
+    400018: S1_fangwu03q_tf
+    400020: //RootNode
+    400022: S1_fangwu03a_tf
+    400024: Object13
+    400026: S1_fangwu03n_tf
+    400028: S1_fangwu03o_tf
+    400030: S1_fangwu03d_tf
+    2300000: S1_fangwu03k_tf
+    2300002: S1_fangwu03h_tf
+    2300004: S1_fangwu03p_tf
+    2300006: S1_fangwu03b_tf
+    2300008: S1_fangwu03i_tf
+    2300010: S1_fangwu03f_tf
+    2300012: S1_fangwu03e_tf
+    2300014: S1_fangwu03l_tf
+    2300016: S1_fangwu03m_tf
+    2300018: S1_fangwu03q_tf
+    2300020: S1_fangwu03a_tf
+    2300022: Object13
+    2300024: S1_fangwu03n_tf
+    2300026: S1_fangwu03o_tf
+    2300028: S1_fangwu03d_tf
+    3300000: S1_fangwu03k_tf
+    3300002: S1_fangwu03h_tf
+    3300004: S1_fangwu03p_tf
+    3300006: S1_fangwu03b_tf
+    3300008: S1_fangwu03i_tf
+    3300010: S1_fangwu03f_tf
+    3300012: S1_fangwu03e_tf
+    3300014: S1_fangwu03l_tf
+    3300016: S1_fangwu03m_tf
+    3300018: S1_fangwu03q_tf
+    3300020: S1_fangwu03a_tf
+    3300022: Object13
+    3300024: S1_fangwu03n_tf
+    3300026: S1_fangwu03o_tf
+    3300028: S1_fangwu03d_tf
+    4300000: S1_fangwu03q_tf
+    4300002: S1_fangwu03m_tf
+    4300004: S1_fangwu03l_tf
+    4300006: S1_fangwu03e_tf
+    4300008: S1_fangwu03f_tf
+    4300010: S1_fangwu03i_tf
+    4300012: S1_fangwu03b_tf
+    4300014: S1_fangwu03p_tf
+    4300016: S1_fangwu03h_tf
+    4300018: S1_fangwu03k_tf
+    4300020: S1_fangwu03d_tf
+    4300022: S1_fangwu03o_tf
+    4300024: S1_fangwu03n_tf
+    4300026: Object13
+    4300028: S1_fangwu03a_tf
+    11100000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -50,6 +50,16 @@ namespace GameFramework
         {
             get { return m_CanRotate; }
         }
+        public bool CanDead
+        {
+            get { return m_CanDead; }
+            set { m_CanDead = value; }
+        }
+        public bool IsPassive
+        {
+            get { return m_IsPassive; }
+            set { m_IsPassive = value; }
+        }
         public bool IsServerEntity
         {
             get { return m_IsServerEntity; }
@@ -73,6 +83,10 @@ namespace GameFramework
         public long BornTimeout
         {
             get { return m_BornTimeout; }
+        }
+        public long ReliveTimeout
+        {
+            get { return m_ReliveTimeout; }
         }
         public bool NeedDelete
         {
@@ -121,6 +135,11 @@ namespace GameFramework
             get { return m_DropMoney; }
             set { m_DropMoney = value; }
         }
+        public TableConfig.LevelMonster LevelMonsterData
+        {
+            get { return m_LevelMonsterData; }
+            set { m_LevelMonsterData = value; }
+        }
         public EntityInfo(int id)
         {
             InitBase(id);
@@ -140,8 +159,12 @@ namespace GameFramework
             m_CanMove = true;
             m_CanRotate = true;
             m_CanHitMove = true;
+            m_CanDead = true;
 
+            m_IsPassive = false;
+            
             m_IsServerEntity = true;
+            m_LevelMonsterData = null;
             
             m_CreatorId = 0;
             m_BornSkillId = 0;
@@ -225,29 +248,29 @@ namespace GameFramework
                 m_ManualSkillId = cfg.skill4;
                 //m_AutoSkillIds.Add(cfg.skill4);
             }
-            if (cfg.passiveskill1 > 0) {
-                SkillInfo info = new SkillInfo(cfg.passiveskill1);
+            if (cfg.skill5 > 0) {
+                SkillInfo info = new SkillInfo(cfg.skill5);
                 GetSkillStateInfo().AddSkill(info);
 
-                m_PassiveSkillIds.Add(cfg.passiveskill1);
+                m_PassiveSkillIds.Add(cfg.skill5);
             }
-            if (cfg.passiveskill2 > 0) {
-                SkillInfo info = new SkillInfo(cfg.skill2);
+            if (cfg.skill6 > 0) {
+                SkillInfo info = new SkillInfo(cfg.skill6);
                 GetSkillStateInfo().AddSkill(info);
 
-                m_PassiveSkillIds.Add(cfg.skill2);
+                m_PassiveSkillIds.Add(cfg.skill6);
             }
-            if (cfg.passiveskill3 > 0) {
-                SkillInfo info = new SkillInfo(cfg.skill3);
+            if (cfg.skill7 > 0) {
+                SkillInfo info = new SkillInfo(cfg.skill7);
                 GetSkillStateInfo().AddSkill(info);
 
-                m_PassiveSkillIds.Add(cfg.skill3);
+                m_PassiveSkillIds.Add(cfg.skill7);
             }
-            if (cfg.passiveskill4 > 0) {
-                SkillInfo info = new SkillInfo(cfg.skill4);
+            if (cfg.skill8 > 0) {
+                SkillInfo info = new SkillInfo(cfg.skill8);
                 GetSkillStateInfo().AddSkill(info);
 
-                m_PassiveSkillIds.Add(cfg.skill4);
+                m_PassiveSkillIds.Add(cfg.skill8);
             }
             if (cfg.bornskill > 0) {
                 SkillInfo info = new SkillInfo(cfg.bornskill);
@@ -308,12 +331,15 @@ namespace GameFramework
         private bool m_CanMove = true;
         private bool m_CanRotate = true;
         private bool m_CanHitMove = true;
+        private bool m_CanDead = true;
 
+        private bool m_IsPassive = false;
         private bool m_IsServerEntity = true;
 
         private bool m_IsBorning = false;
         private long m_BornTime = 0;
         private long m_BornTimeout = 10000;
+        private long m_ReliveTimeout = 10000;
         private bool m_NeedDelete = false;
 
         private int m_DropMoney = 0;
@@ -328,6 +354,7 @@ namespace GameFramework
         private AiStateInfo m_AiStateInfo = new AiStateInfo();
 
         private TableConfig.Actor m_ConfigData;
+        private TableConfig.LevelMonster m_LevelMonsterData;
 
         public const int c_StartUserUnitId = 100000000;
     }

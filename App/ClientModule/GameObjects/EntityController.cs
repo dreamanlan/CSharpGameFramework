@@ -242,10 +242,10 @@ namespace GameFramework
                     entity.GetSkillStateInfo().SetCurSkillInfo(skillId);
                     skillInfo.IsSkillActivated = true;
                     skillInfo.CdEndTime = TimeUtility.GetLocalMilliseconds() + (long)skillInfo.ConfigData.cooldown;
-                    if (skillInfo.ConfigData.mpRecover > 0 && !ClientModule.Instance.IsRoomScene) {
+                    if (skillInfo.ConfigData.addmp > 0 && !ClientModule.Instance.IsRoomScene) {
                         //回蓝
-                        entity.SetEnergy(Operate_Type.OT_Relative, skillInfo.ConfigData.mpRecover);
-                        entity.EntityManager.FireDamageEvent(actorId, 0, false, false, 0, -skillInfo.ConfigData.mpRecover);
+                        entity.SetEnergy(Operate_Type.OT_Relative, skillInfo.ConfigData.addmp);
+                        entity.EntityManager.FireDamageEvent(actorId, 0, false, false, 0, -skillInfo.ConfigData.addmp);
                     }
                 }
             }
@@ -262,6 +262,15 @@ namespace GameFramework
                     skillInfo.IsSkillActivated = false;
                     view.Entity.IsControlByManual = false;
                 } else {
+                    view.Entity.GetSkillStateInfo().RemoveImpact(seq);
+                }
+            }
+        }
+        internal void CancelIfImpact(int actorId, TableConfig.Skill cfg, int seq)
+        {
+            EntityViewModel view = GetEntityViewById(actorId);
+            if (null != view && null != view.Entity) {
+                if (cfg.type != (int)SkillOrImpactType.Skill) {
                     view.Entity.GetSkillStateInfo().RemoveImpact(seq);
                 }
             }
@@ -545,7 +554,7 @@ namespace GameFramework
             if (null != view && null != view.Entity) {
                 EntityInfo entity = view.Entity;
                 if (cfg.type == (int)SkillOrImpactType.Skill) {
-                    entity.SetShield(Operate_Type.OT_Relative, cfg.addShield);
+                    entity.SetShield(Operate_Type.OT_Relative, cfg.addshield);
                 } else {
                     ImpactInfo impactInfo = entity.GetSkillStateInfo().GetImpactInfoBySeq(seq);
                     if (null != impactInfo) {
@@ -578,7 +587,7 @@ namespace GameFramework
                 SkillInstance skillInst = GfxSkillSystem.Instance.FindActiveSkillInstance(srcObjId,skillId,0,out senderInfo);
                 if(null!=skillInst){
                     Dictionary<string, object> args;
-                    Skill.Trigers.TriggerUtil.CalcImpactConfig(skillInst, senderInfo.ConfigData, out args);
+                    Skill.Trigers.TriggerUtil.CalcImpactConfig(0, impactId, skillInst, senderInfo.ConfigData, out args);
                     return EntityController.Instance.SendImpact(senderInfo.ConfigData, senderInfo.Seq, senderInfo.ActorId, srcObjId, targetId, impactId, args);
                 }
             }
@@ -587,20 +596,20 @@ namespace GameFramework
         internal ImpactInfo SendImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, int impactId, Dictionary<string, object> args)
         {
             EntityViewModel view = GetEntityViewById(targetId);
-            if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDead()) {
+            if (null != view && null != view.Entity && null != view.Actor && (!view.Entity.IsDead() || !view.Entity.CanDead)) {
                 EntityInfo npc = view.Entity;
                 if (null != cfg) {
                     UnityEngine.Quaternion hitEffectRotation = UnityEngine.Quaternion.identity;
                     UnityEngine.GameObject srcObj = GetGameObject(srcObjId);
                     UnityEngine.GameObject targetObj = view.Actor;
                     if (null != srcObj && null != targetObj) {
-                        hitEffectRotation = UnityEngine.Quaternion.Inverse(srcObj.transform.localRotation);
+                        hitEffectRotation = srcObj.transform.localRotation;
                     }
                     var addArgs = new Dictionary<string, object> { { "hitEffectRotation", hitEffectRotation } };
                     ImpactInfo impactInfo = null;
-                    if (impactId <= 0) {
+                    if (impactId <= 0 || impactId >= SkillInstance.c_FirstInnerHitSkillId) {
                         impactInfo = new ImpactInfo(PredefinedSkill.Instance.HitSkillCfg);
-                        impactId = PredefinedSkill.Instance.HitSkillCfg.id;
+                        impactId = PredefinedSkill.c_HitSkillId;
                     } else {
                         TableConfig.Skill impactCfg = TableConfig.SkillProvider.Instance.GetSkill(impactId);
                         if (null != impactCfg) {
@@ -608,7 +617,7 @@ namespace GameFramework
                                 //buff如果不是经由impact添加的，则使用预定义的impact
                                 addArgs.Add("impact", impactId);
                                 impactInfo = new ImpactInfo(PredefinedSkill.Instance.HitSkillCfg);
-                                impactId = PredefinedSkill.Instance.HitSkillCfg.id;
+                                impactId = PredefinedSkill.c_HitSkillId;
                             } else {
                                 impactInfo = new ImpactInfo(impactCfg);
                             }
@@ -645,11 +654,11 @@ namespace GameFramework
         {
             EntityViewModel view = GetEntityViewById(targetId);
             EntityViewModel srcView = GetEntityViewById(srcObjId);
-            if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDead()) {
+            if (null != view && null != view.Entity && null != view.Actor && (!view.Entity.IsDead() || !view.Entity.CanDead)) {
                 EntityInfo npc = view.Entity;
                 if (null != cfg) {
                     ImpactInfo impactInfo = null;
-                    if (emitImpact <= 0) {
+                    if (emitImpact <= 0 || emitImpact >= SkillInstance.c_FirstInnerEmitSkillId) {
                         impactInfo = new ImpactInfo(PredefinedSkill.Instance.EmitSkillCfg);
                     } else {
                         impactInfo = new ImpactInfo(emitImpact);
@@ -675,35 +684,54 @@ namespace GameFramework
             }
             return null;
         }
-        internal ImpactInfo TrackSendImpact(int targetId, int impactId, int seq, Dictionary<string, object> args)
+        internal int GetTrackSendImpact(int targetId, int seq, Dictionary<string, object> args)
+        {
+            int impactId = 0;
+            EntityViewModel view = GetEntityViewById(targetId);
+            if (null != view && null != view.Entity && null != view.Actor) {
+                EntityInfo npc = view.Entity;
+                ImpactInfo trackImpactInfo = npc.GetSkillStateInfo().GetImpactInfoBySeq(seq);
+                if (null != trackImpactInfo) {
+                    int targetImpactId = trackImpactInfo.ImpactToTarget;
+                    if (targetImpactId <= 0) {
+                        targetImpactId = trackImpactInfo.ConfigData.impact;
+                    }
+                    if (targetImpactId <= 0) {
+                        object v;
+                        if (args.TryGetValue("impact", out v)) {
+                            targetImpactId = (int)v;
+                        }
+                    }
+                    impactId = targetImpactId;
+                }
+            }
+            return impactId;
+        }
+        internal ImpactInfo TrackSendImpact(int targetId, int impactId, int seq, int impactToTarget, Dictionary<string, object> args)
         {
             EntityViewModel view = GetEntityViewById(targetId);
-            if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDead()) {
+            if (null != view && null != view.Entity && null != view.Actor && (!view.Entity.IsDead() || !view.Entity.CanDead)) {
                 EntityInfo npc = view.Entity;
                 ImpactInfo trackImpactInfo = npc.GetSkillStateInfo().GetImpactInfoBySeq(seq);
                 if (null != trackImpactInfo && impactId == trackImpactInfo.ImpactId) {
                     ImpactInfo impactInfo = null;
-                    int targetImpactId = trackImpactInfo.ImpactToTarget;
-                    if (targetImpactId <= 0) {
-                        targetImpactId = trackImpactInfo.ConfigData.impactToTarget;
-                        if (targetImpactId <= 0) {
-                            targetImpactId = PredefinedSkill.Instance.HitSkillCfg.id;
-                            impactInfo = new ImpactInfo(PredefinedSkill.Instance.HitSkillCfg);
-                        }
+                    if (impactToTarget <= 0 || impactToTarget >= SkillInstance.c_FirstInnerHitSkillId) {
+                        impactToTarget = PredefinedSkill.c_HitSkillId;
+                        impactInfo = new ImpactInfo(PredefinedSkill.Instance.HitSkillCfg);
                     }
                     var addArgs = new Dictionary<string, object>();
                     if (null == impactInfo) {
-                        TableConfig.Skill impactCfg = TableConfig.SkillProvider.Instance.GetSkill(targetImpactId);
+                        TableConfig.Skill impactCfg = TableConfig.SkillProvider.Instance.GetSkill(impactToTarget);
                         if (null != impactCfg) {
                             if (impactCfg.type == (int)SkillOrImpactType.Buff) {
                                 //buff如果不是经由impact添加的，则使用预定义的impact
-                                addArgs.Add("impact", targetImpactId);
+                                addArgs.Add("impact", impactToTarget);
                                 impactInfo = new ImpactInfo(PredefinedSkill.Instance.HitSkillCfg);
                             } else {
                                 impactInfo = new ImpactInfo(impactCfg);
                             }
                         } else {
-                            LogSystem.Error("impact {0} config can't found !", targetImpactId);
+                            LogSystem.Error("impact {0} config can't found !", impactToTarget);
                             return null;
                         }
                     }
@@ -714,6 +742,7 @@ namespace GameFramework
                     impactInfo.DurationTime = trackImpactInfo.DurationTime > 0 ? trackImpactInfo.DurationTime : impactInfo.ConfigData.duration;
                     impactInfo.TargetType = trackImpactInfo.TargetType;
                     impactInfo.DamageData.CopyFrom(trackImpactInfo.DamageData);
+                    impactInfo.DamageData.Merge(impactInfo.ConfigData.damageData);
                     if (impactInfo.ConfigData.type == (int)SkillOrImpactType.Buff) {
                         ImpactInfo oldImpactInfo = npc.GetSkillStateInfo().FindImpactInfoById(impactInfo.ImpactId);
                         if (null != oldImpactInfo) {
@@ -734,7 +763,7 @@ namespace GameFramework
                 return;
             EntityViewModel view = GetEntityViewById(targetId);
             EntityViewModel srcView = GetEntityViewById(srcObjId);
-            if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDead()) {
+            if (null != view && null != view.Entity && null != view.Actor) {
                 EntityInfo entity = view.Entity;
                 EntityInfo srcNpc = null;
                 if (null != srcView && null != srcView.Entity) {
@@ -811,6 +840,13 @@ namespace GameFramework
                 }
             }
         }
+        internal void KeepTarget(int targetId)
+        {
+            EntityViewModel view = GetEntityViewById(targetId);
+            if (null != view && null != view.Entity) {
+                view.Entity.CanDead = false;
+            }
+        }
         internal void BornFinish(int objId)
         {
             EntityViewModel view = GetEntityViewById(objId);
@@ -874,8 +910,9 @@ namespace GameFramework
                 impactInfo.SkillId = cfg.id;
                 impactInfo.DurationTime = cfg.duration > 0 ? cfg.duration : impactInfo.ConfigData.duration;
                 impactInfo.TargetType = cfg.targetType;
-                impactInfo.DamageData.Merge(cfg.damageData);
-                impactInfo.ImpactToTarget = cfg.impactToTarget;
+                impactInfo.DamageData.CopyFrom(cfg.damageData);
+                impactInfo.DamageData.Merge(impactInfo.ConfigData.damageData);
+                impactInfo.ImpactToTarget = cfg.impact;
                 ret = true;
             } else {
                 ImpactInfo srcImpactInfo = null;
@@ -889,9 +926,9 @@ namespace GameFramework
                     impactInfo.SkillId = srcImpactInfo.SkillId;
                     impactInfo.DurationTime = srcImpactInfo.DurationTime > 0 ? srcImpactInfo.DurationTime : impactInfo.ConfigData.duration;
                     impactInfo.TargetType = srcImpactInfo.TargetType;
-                    impactInfo.DamageData.Damage = srcImpactInfo.DamageData.Damage;
-                    impactInfo.DamageData.Merge(cfg.damageData);
-                    impactInfo.ImpactToTarget = cfg.impactToTarget != 0 ? cfg.impactToTarget : srcImpactInfo.ImpactToTarget;
+                    impactInfo.DamageData.CopyFrom(srcImpactInfo.DamageData);
+                    impactInfo.DamageData.Merge(impactInfo.ConfigData.damageData);
+                    impactInfo.ImpactToTarget = cfg.impact != 0 ? cfg.impact : srcImpactInfo.ImpactToTarget;
                     ret = true;
                 }
             }

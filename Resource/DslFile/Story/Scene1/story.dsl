@@ -14,8 +14,8 @@ story(story_main)
   };
   onmessage("dialog_over",1)
   {
-    //changescene(2);
-    changescene(3);
+    //changescene(3);
+    changescene(4);
   };
   onmessage("do_login")
   {  	

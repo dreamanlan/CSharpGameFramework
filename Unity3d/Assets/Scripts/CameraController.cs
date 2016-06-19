@@ -46,8 +46,7 @@ public class CameraController
         followPose.rot = cam.transform.rotation;
         fixPose.pos = cam.transform.position;
         fixPose.rot = cam.transform.rotation;
-        camera = cam;
-
+        camera = cam;        
     }
 
 
