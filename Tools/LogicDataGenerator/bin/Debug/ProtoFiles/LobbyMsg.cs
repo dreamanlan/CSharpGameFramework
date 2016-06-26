@@ -117,57 +117,6 @@ namespace GameFrameworkMessage
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
   }
   
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ActivateAccount")]
-  public partial class ActivateAccount : global::ProtoBuf.IExtensible
-  {
-    public ActivateAccount() {}
-    
-    private string _m_ActivationCode;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"m_ActivationCode", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string m_ActivationCode
-    {
-      get { return _m_ActivationCode; }
-      set { _m_ActivationCode = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ActivateAccountResult")]
-  public partial class ActivateAccountResult : global::ProtoBuf.IExtensible
-  {
-    public ActivateAccountResult() {}
-    
-    private GameFrameworkMessage.ActivateAccountResult.ActivateAccountResultEnum _m_Result;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"m_Result", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public GameFrameworkMessage.ActivateAccountResult.ActivateAccountResultEnum m_Result
-    {
-      get { return _m_Result; }
-      set { _m_Result = value; }
-    }
-    [global::ProtoBuf.ProtoContract(Name=@"ActivateAccountResultEnum")]
-    public enum ActivateAccountResultEnum
-    {
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"Success", Value=0)]
-      Success = 0,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"InvalidCode", Value=1)]
-      InvalidCode = 1,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"MistakenCode", Value=2)]
-      MistakenCode = 2,
-            
-      [global::ProtoBuf.ProtoEnum(Name=@"Error", Value=3)]
-      Error = 3
-    }
-  
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"ChangeName")]
   public partial class ChangeName : global::ProtoBuf.IExtensible
   {
@@ -289,50 +238,56 @@ namespace GameFrameworkMessage
   {
     public EnterSceneResult() {}
     
-    private string _server_ip;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"server_ip", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string server_ip
-    {
-      get { return _server_ip; }
-      set { _server_ip = value; }
-    }
-    private uint _server_port;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"server_port", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public uint server_port
-    {
-      get { return _server_port; }
-      set { _server_port = value; }
-    }
-    private uint _key;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"key", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public uint key
-    {
-      get { return _key; }
-      set { _key = value; }
-    }
-    private int _camp_id;
-    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"camp_id", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int camp_id
-    {
-      get { return _camp_id; }
-      set { _camp_id = value; }
-    }
-    private int _scene_type;
-    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"scene_type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int scene_type
-    {
-      get { return _scene_type; }
-      set { _scene_type = value; }
-    }
     private int _result;
-    [global::ProtoBuf.ProtoMember(6, IsRequired = true, Name=@"result", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"result", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public int result
     {
       get { return _result; }
       set { _result = value; }
     }
-    private int _prime;
-    [global::ProtoBuf.ProtoMember(7, IsRequired = true, Name=@"prime", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    private string _server_ip = "";
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"server_ip", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue("")]
+    public string server_ip
+    {
+      get { return _server_ip; }
+      set { _server_ip = value; }
+    }
+    private uint _server_port = default(uint);
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"server_port", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint server_port
+    {
+      get { return _server_port; }
+      set { _server_port = value; }
+    }
+    private uint _key = default(uint);
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"key", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(uint))]
+    public uint key
+    {
+      get { return _key; }
+      set { _key = value; }
+    }
+    private int _camp_id = default(int);
+    [global::ProtoBuf.ProtoMember(5, IsRequired = false, Name=@"camp_id", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int camp_id
+    {
+      get { return _camp_id; }
+      set { _camp_id = value; }
+    }
+    private int _scene_type = default(int);
+    [global::ProtoBuf.ProtoMember(6, IsRequired = false, Name=@"scene_type", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
+    public int scene_type
+    {
+      get { return _scene_type; }
+      set { _scene_type = value; }
+    }
+    private int _prime = default(int);
+    [global::ProtoBuf.ProtoMember(7, IsRequired = false, Name=@"prime", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::System.ComponentModel.DefaultValue(default(int))]
     public int prime
     {
       get { return _prime; }
@@ -1445,8 +1400,11 @@ namespace GameFrameworkMessage
       [global::ProtoBuf.ProtoEnum(Name=@"Wait", Value=1)]
       Wait = 1,
             
-      [global::ProtoBuf.ProtoEnum(Name=@"UnknownError", Value=2)]
-      UnknownError = 2
+      [global::ProtoBuf.ProtoEnum(Name=@"Reconnect", Value=2)]
+      Reconnect = 2,
+            
+      [global::ProtoBuf.ProtoEnum(Name=@"UnknownError", Value=3)]
+      UnknownError = 3
     }
   
     private global::ProtoBuf.IExtension extensionObject;

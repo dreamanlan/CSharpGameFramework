@@ -139,7 +139,7 @@ namespace GameFramework
                 }
                 if (null != callbackOnFinish) {
                     int sceneId = 0;
-                    Scene scene = room.GetActiveScene();
+                    Scene scene = room.ActiveScene;
                     if (null != scene) {
                         sceneId = scene.SceneResId;
                     }
@@ -174,7 +174,7 @@ namespace GameFramework
                 }
                 if (null != callbackOnFinish) {
                     int sceneId = 0;
-                    Scene scene = room.GetActiveScene();
+                    Scene scene = room.ActiveScene;
                     if (null != scene) {
                         sceneId = scene.SceneResId;
                     }
@@ -207,7 +207,7 @@ namespace GameFramework
             Msg_RL_ReplyReconnectUser.ReconnectResultEnum result;
             User us = GetUserByGuid(urMsg.UserGuid);
             if (null != us) {
-                if ((int)UserControlState.UserDropped == us.UserControlState) {
+                if ((int)UserControlState.UserDropped == us.UserControlState || !us.IsConnected()) {
                     result = Msg_RL_ReplyReconnectUser.ReconnectResultEnum.Drop;
                 } else {
                     result = Msg_RL_ReplyReconnectUser.ReconnectResultEnum.Online;
@@ -226,7 +226,7 @@ namespace GameFramework
         {
             Room room = GetRoomByID(msg.RoomID);
             if (null != room) {
-                Scene curScene = room.GetActiveScene();
+                Scene curScene = room.ActiveScene;
                 if (null != curScene) {
                     //curScene.DelayActionProcessor.QueueAction(curScene.OnUserRevive, msg);
                 }
@@ -253,7 +253,7 @@ namespace GameFramework
             Room room = GetRoomByID(msg.RoomID);
             if (null != room) {
                 User user = room.GetUserByGuid(msg.UserGuid);
-                Scene curScene = room.GetActiveScene();
+                Scene curScene = room.ActiveScene;
                 if (null != curScene) {
                 }
             }
@@ -264,7 +264,7 @@ namespace GameFramework
             Room room = GetRoomByID(msg.RoomId);
             if (null != room) {
                 User user = room.GetUserByGuid(msg.UserGuid);
-                Scene curScene = room.GetActiveScene();
+                Scene curScene = room.ActiveScene;
                 if (null != user && null != curScene) {
                     try {
                         string msgId = string.Format("server:{0}", msg.MsgId);
@@ -349,7 +349,7 @@ namespace GameFramework
                     if (elapsedTime >= tick_interval_us * 2) {
                         LogSys.Log(LOG_TYPE.DEBUG, "*** Warning, RoomThread tick interval is {0} us !", elapsedTime);
                         foreach (Room room in active_room_) {
-                            Scene scene = room.GetActiveScene();
+                            Scene scene = room.ActiveScene;
                             if (null != scene) {
                                 if (scene.SceneState == SceneState.Running) {
                                     SceneProfiler profiler = scene.SceneProfiler;

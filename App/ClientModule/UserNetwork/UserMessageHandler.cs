@@ -9,23 +9,6 @@ using LitJson;
 
 namespace GameFramework.Network
 {
-    public enum MpveAwardResult
-    {
-        Succeed = 0,
-        Gained = 1,
-        Nothing = 2,
-        Failure = 3,
-    }
-    internal enum ItemLogicId
-    {
-        ItemLogicStart = 1,         //道具逻辑ID基数
-        ItemLogic_Exchange = 2,     //兑换逻辑
-        ItemLogic_GiftPackage = 3,  //礼包
-        ItemLogic_Title = 4,        //称号
-        ItemLogic_Drop = 5,         //掉落
-        ItemLogic_VipCard = 6,      //vip卡
-        MaxNum,
-    }
     ///
     internal sealed partial class UserNetworkSystem
     {
@@ -34,7 +17,6 @@ namespace GameFramework.Network
             Utility.EventSystem.Subscribe<string>("ge_select_server", "lobby", SelectServer);
             Utility.EventSystem.Subscribe<string, string, string>("ge_account_login", "lobby", AccountLoginLobby);
             Utility.EventSystem.Subscribe("ge_stop_login", "lobby", StopLoginLobby);
-            Utility.EventSystem.Subscribe<string>("ge_activate_account", "lobby", ActivateAccount);
             Utility.EventSystem.Subscribe("ge_request_nickname", "lobby", RequestNickname);
             Utility.EventSystem.Subscribe<string>("ge_change_name", "lobby", ChangeName);
             Utility.EventSystem.Subscribe<int, int>("ge_enter_scene", "lobby", EnterScene);
@@ -59,7 +41,6 @@ namespace GameFramework.Network
             RegisterMsgHandler(LobbyMessageDefine.TooManyOperations, typeof(GameFrameworkMessage.NodeMessageWithGuid), HandleTooManyOperations);
             RegisterMsgHandler(LobbyMessageDefine.VersionVerifyResult, null, typeof(GameFrameworkMessage.VersionVerifyResult), HandleVersionVerifyResult);
             RegisterMsgHandler(LobbyMessageDefine.AccountLoginResult, typeof(GameFrameworkMessage.NodeMessageWithAccount), typeof(GameFrameworkMessage.AccountLoginResult), HandleAccountLoginResult);
-            RegisterMsgHandler(LobbyMessageDefine.ActivateAccountResult, typeof(GameFrameworkMessage.NodeMessageWithAccount), typeof(GameFrameworkMessage.ActivateAccountResult), HandleActivateAccountResult);
             RegisterMsgHandler(LobbyMessageDefine.RequestNicknameResult, typeof(GameFrameworkMessage.NodeMessageWithAccount), typeof(GameFrameworkMessage.RequestNicknameResult), HandleRequestNicknameResult);
             RegisterMsgHandler(LobbyMessageDefine.ChangeNameResult, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.ChangeNameResult), HandleChangeNameResult);
             RegisterMsgHandler(LobbyMessageDefine.RoleEnterResult, typeof(GameFrameworkMessage.NodeMessageWithAccountAndGuid), typeof(GameFrameworkMessage.RoleEnterResult), HandleRoleEnterResult);
@@ -165,19 +146,6 @@ namespace GameFramework.Network
                 LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-        private void ActivateAccount(string activationCode)
-        {
-            try {
-                NodeMessage sendMsg = new NodeMessage(LobbyMessageDefine.ActivateAccount, m_AccountId);
-                GameFrameworkMessage.ActivateAccount protoMsg = new GameFrameworkMessage.ActivateAccount();
-                sendMsg.m_ProtoData = protoMsg;
-
-                protoMsg.m_ActivationCode = activationCode;
-                SendMessage(sendMsg);
-            } catch (Exception ex) {
-                LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
-            }
-        }
         ////////////////////////////////////////////////////////////////////////////////
         private void HandleTooManyOperations(NodeMessage lobbyMsg)
         {
@@ -268,19 +236,8 @@ namespace GameFramework.Network
                     ClientModule.Instance.HighlightPrompt("Tip_QueueFull");
                 } else {
                     //账号登录失败
+                    ClientModule.Instance.HighlightPrompt("Tip_AccountLoginFailed");
                 }
-            }
-        }
-        private void HandleActivateAccountResult(NodeMessage lobbyMsg)
-        {
-            GameFrameworkMessage.ActivateAccountResult protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.ActivateAccountResult;
-            if (null == protoMsg)
-                return;
-            ActivateAccountResult.ActivateAccountResultEnum ret = protoMsg.m_Result;
-            if (ret == ActivateAccountResult.ActivateAccountResultEnum.Success) {
-                //激活成功，账号成功登陆
-            } else {
-                //激活失败
             }
         }
         private void HandleRequestNicknameResult(NodeMessage lobbyMsg)
@@ -298,6 +255,8 @@ namespace GameFramework.Network
             ChangeNameResult.ChangeNameResultEnum ret = protoMsg.m_Result;
             if (ret == ChangeNameResult.ChangeNameResultEnum.Success) {
                 ClientInfo.Instance.RoleData.Nickname = protoMsg.m_Nickname;
+            } else {
+                ClientModule.Instance.HighlightPrompt("Tip_OperationFailed");
             }
         }
         private void HandleRoleEnterResult(NodeMessage lobbyMsg)
@@ -310,7 +269,8 @@ namespace GameFramework.Network
                 ClientInfo.Instance.Guid = m_Guid;
                 ClientInfo.Instance.RoleData = protoData;
 
-                if (ret == RoleEnterResult.RoleEnterResultEnum.Wait) {
+                if (ret == RoleEnterResult.RoleEnterResultEnum.Wait) {                    
+                    ClientModule.Instance.HighlightPrompt("Tip_WaitOffline");
                     Thread.Sleep(2000);
                     NodeMessage msg = new NodeMessage(LobbyMessageDefine.RoleEnter, m_AccountId);
                     GameFrameworkMessage.RoleEnter data = new GameFrameworkMessage.RoleEnter();
@@ -325,8 +285,12 @@ namespace GameFramework.Network
                     m_IsLogining = false;
                     m_HasLoggedOn = true;
                     GfxStorySystem.Instance.SendMessage("start_game");
+                } else if (ret == RoleEnterResult.RoleEnterResultEnum.Reconnect) {
+                    //重连用户，等待服务器处理重连过程后返回进场景消息，这种情形不用做任何处理
+                    ClientModule.Instance.HighlightPrompt("Tip_Reconnecting");
                 } else {
                     //进入游戏失败
+                    ClientModule.Instance.HighlightPrompt("Tip_RoleEnterFailed");
                 }
             }
         }
@@ -345,6 +309,7 @@ namespace GameFramework.Network
                     //延迟处理，防止当前正在切场景过程中
                     ClientModule.Instance.QueueAction(ClientModule.Instance.TryEnterScene, key, ip, port, campId, sceneId);
                 } else {
+                    ClientModule.Instance.HighlightPrompt("Tip_SceneEnterFailed");
                 }
             }
         }

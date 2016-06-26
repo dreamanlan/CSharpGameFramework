@@ -28,7 +28,7 @@ namespace GameFramework
 
             Room room = user.OwnRoom;
             if (null != room) {
-                Scene scene = room.GetActiveScene();
+                Scene scene = room.ActiveScene;
                 if (null != scene) {
                     EntityInfo userInfo = user.Info;
                     if (null != userInfo) {
@@ -86,7 +86,7 @@ namespace GameFramework
 
                 Msg_RC_NpcMove npcMoveBuilder = DataSyncUtility.BuildNpcMoveMessage(charactor);
                 if (null != npcMoveBuilder) {
-                    Scene scene = user.OwnRoom.GetActiveScene();
+                    Scene scene = user.OwnRoom.ActiveScene;
                     if (null != scene) {
                         scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcMove, npcMoveBuilder);
                     }
@@ -107,7 +107,7 @@ namespace GameFramework
                 LogSys.Log(LOG_TYPE.DEBUG, "UseSkillHandler, charactor {0}({1},{2},{3}) not exist", user.RoleId, user.GetKey(), user.Guid, user.Name);
                 return;
             }
-            Scene scene = user.OwnRoom.GetActiveScene();
+            Scene scene = user.OwnRoom.ActiveScene;
             if (null != scene) {
                 EntityInfo obj = scene.GetEntityById(use_skill.role_id);
                 if (null != obj) {
@@ -148,7 +148,7 @@ namespace GameFramework
             if (null == stopMsg) return;
             EntityInfo userInfo = user.Info;
             if (null == userInfo) return;
-            Scene scene = user.OwnRoom.GetActiveScene();
+            Scene scene = user.OwnRoom.ActiveScene;
             if (null != scene) {
                 scene.SkillSystem.StopAllSkill(userInfo.GetId(), true);
 
@@ -183,7 +183,7 @@ namespace GameFramework
         {
             Msg_CR_GiveUpBattle gub_msg = msg as Msg_CR_GiveUpBattle;
             if (null == gub_msg) return;
-            Scene scene = user.OwnRoom.GetActiveScene();
+            Scene scene = user.OwnRoom.ActiveScene;
             if (null != scene) {
                 scene.StorySystem.SendMessage("mission_failed");
             }
@@ -208,7 +208,7 @@ namespace GameFramework
             Msg_CR_DlgClosed dialog_msg = msg as Msg_CR_DlgClosed;
             if (dialog_msg == null)
                 return;
-            Scene scene = user.OwnRoom.GetActiveScene();
+            Scene scene = user.OwnRoom.ActiveScene;
             if (null != scene) {
                 scene.StorySystem.SendMessage("dialog_over:" + dialog_msg.dialog_id);
             }
@@ -225,7 +225,7 @@ namespace GameFramework
             }
             if (!GlobalVariables.Instance.IsDebug)
                 return;
-            Scene scene = user.OwnRoom.GetActiveScene();
+            Scene scene = user.OwnRoom.ActiveScene;
             if (scene != null) {
                 switch (cmdMsg.type) {
                     case 0:
@@ -313,7 +313,7 @@ namespace GameFramework
             if (target_msg == null) {
                 return;
             }
-            Scene scene = user.OwnRoom.GetActiveScene();
+            Scene scene = user.OwnRoom.ActiveScene;
             if (scene != null) {
                 try {
                     //客户端发来的消息都加上前缀client，防止直接调用服务器端逻辑（服务器消息不能用client前缀！）

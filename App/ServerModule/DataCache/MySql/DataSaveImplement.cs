@@ -13,27 +13,31 @@ internal static class DataSaveImplement
     //向DB中写入一条数据
     internal static int SingleSaveItem(int msgId, InnerCacheItem cacheItem, int dataVersion)
     {
-        try {
-            DataDML.Save(msgId, cacheItem.Valid, dataVersion, cacheItem.DataMessage);
-        } catch (Exception ex) {
-            DBConn.Close();
-            LogSys.Log(LOG_TYPE.ERROR, "SingleSaveItem ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
-            throw ex;
+        if (DataCacheConfig.IsPersistent) {
+            try {
+                DataDML.Save(msgId, cacheItem.Valid, dataVersion, cacheItem.DataMessage);
+            } catch (Exception ex) {
+                DBConn.Close();
+                LogSys.Log(LOG_TYPE.ERROR, "SingleSaveItem ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
+                throw ex;
+            }
         }
         return 1;
     }
     //向DB中写入多条数据
     internal static int BatchSaveItemsProc(int msgId, List<InnerCacheItem> cacheItemList, int dataVersion)
     {
-        try {
-            foreach (var cacheItem in cacheItemList) {
-                DataDML.Save(msgId, cacheItem.Valid, dataVersion, cacheItem.DataMessage);
+        if (DataCacheConfig.IsPersistent) {
+            try {
+                foreach (var cacheItem in cacheItemList) {
+                    DataDML.Save(msgId, cacheItem.Valid, dataVersion, cacheItem.DataMessage);
+                }
+                LogSys.Log(LOG_TYPE.MONITOR, "BatchSaveItemsProc SUCCESS. MsgId:{0}, DataCount:{1}, DataVersion:{2}", msgId, cacheItemList.Count, dataVersion);
+            } catch (Exception ex) {
+                DBConn.Close();
+                LogSys.Log(LOG_TYPE.ERROR, "BatchSaveItemsProc ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
+                throw ex;
             }
-            LogSys.Log(LOG_TYPE.MONITOR, "BatchSaveItemsProc SUCCESS. MsgId:{0}, DataCount:{1}, DataVersion:{2}", msgId, cacheItemList.Count, dataVersion);
-        } catch (Exception ex) {
-            DBConn.Close();
-            LogSys.Log(LOG_TYPE.ERROR, "BatchSaveItemsProc ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
-            throw ex;
         }
         return cacheItemList.Count;
     }
@@ -42,19 +46,23 @@ internal static class DataSaveImplement
     internal static int BatchSaveItemsSql(int msgId, List<InnerCacheItem> cacheItemList, int dataVersion)
     {
         int count = 0;
-        try {
-            List<bool> validList = new List<bool>();
-            List<byte[]> dataList = new List<byte[]>();
-            foreach (var cacheItem in cacheItemList) {
-                validList.Add(cacheItem.Valid);
-                dataList.Add(cacheItem.DataMessage);
+        if (DataCacheConfig.IsPersistent) {
+            try {
+                List<bool> validList = new List<bool>();
+                List<byte[]> dataList = new List<byte[]>();
+                foreach (var cacheItem in cacheItemList) {
+                    validList.Add(cacheItem.Valid);
+                    dataList.Add(cacheItem.DataMessage);
+                }
+                count = DataDML.BatchSave(msgId, validList, dataList, dataVersion);
+                LogSys.Log(LOG_TYPE.MONITOR, "BatchSaveItemsSql SUCCESS. MsgId:{0}, DataCount:{1}, DataVersion:{2}", msgId, cacheItemList.Count, dataVersion);
+            } catch (Exception ex) {
+                DBConn.Close();
+                LogSys.Log(LOG_TYPE.ERROR, "BatchSaveItemsSql ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
+                throw ex;
             }
-            count = DataDML.BatchSave(msgId, validList, dataList, dataVersion);
-            LogSys.Log(LOG_TYPE.MONITOR, "BatchSaveItemsSql SUCCESS. MsgId:{0}, DataCount:{1}, DataVersion:{2}", msgId, cacheItemList.Count, dataVersion);
-        } catch (Exception ex) {
-            DBConn.Close();
-            LogSys.Log(LOG_TYPE.ERROR, "BatchSaveItemsSql ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
-            throw ex;
+        } else {
+            count = cacheItemList.Count;
         }
         return count;
     }

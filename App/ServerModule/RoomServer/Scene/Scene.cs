@@ -243,7 +243,7 @@ namespace GameFramework
             if (null != user) {
                 EntityInfo userInfo = user.Info;
                 Room room = GetRoom();
-                if (null != userInfo && null != room && null != room.GetActiveScene()) {
+                if (null != userInfo && null != room && null != room.ActiveScene) {
                     //发阵营给自己
                     Msg_RC_CampChanged msg = new Msg_RC_CampChanged();
                     msg.obj_id = 0;
@@ -260,7 +260,7 @@ namespace GameFramework
         {
             if (null != observer) {
                 Room room = GetRoom();
-                if (null != room && null != room.GetActiveScene()) {
+                if (null != room && null != room.ActiveScene) {
                     //同步场景数据给观察者
                     for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
                         EntityInfo npc = linkNode.Value;

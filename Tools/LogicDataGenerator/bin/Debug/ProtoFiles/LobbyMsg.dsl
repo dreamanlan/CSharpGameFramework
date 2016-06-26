@@ -104,23 +104,6 @@ message(RequestNicknameResult)
   member(m_Nicknames, string, repeated);
 };
 
-message(ActivateAccount)
-{
-  member(m_ActivationCode, string, required);
-};
-
-message(ActivateAccountResult)
-{
-	enum(ActivateAccountResultEnum)
-	{
-	  Success(0);    	//激活成功
-	  InvalidCode;    //失效的激活码（该激活码已经被使用）
-	  MistakenCode;   //错误的激活码（该激活码不存在）
-	  Error;          //激活失败(系统问题)
-	};
-  member(m_Result, ActivateAccountResultEnum, required);
-};
-
 message(ChangeName)
 {
   member(m_Nickname, string, required);
@@ -167,6 +150,7 @@ message(RoleEnterResult)
 	{
 	  Success(0);
 	  Wait;
+	  Reconnect;
 	  UnknownError;
 	};
   member(Result, RoleEnterResultEnum, required);
@@ -196,13 +180,13 @@ message(ChangeSceneRoom)
 };
 
 message(EnterSceneResult) {
-  member(server_ip, string, required);
-  member(server_port, uint, required);
-  member(key, uint, required);
-  member(camp_id, int, required);
-  member(scene_type, int, required);
   member(result, int, required);
-  member(prime, int, required);
+  member(server_ip, string, optional);
+  member(server_port, uint, optional);
+  member(key, uint, optional);
+  member(camp_id, int, optional);
+  member(scene_type, int, optional);
+  member(prime, int, optional);
 };
 
 message(QuitRoom) {

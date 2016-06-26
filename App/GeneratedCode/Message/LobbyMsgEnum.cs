@@ -30,8 +30,6 @@ namespace GameFrameworkMessage
 		AccountLoginResult,
 		QueueingCountResult,
 		RequestNicknameResult,
-		ActivateAccount,
-		ActivateAccountResult,
 		ChangeName,
 		ChangeNameResult,
 		RoleEnter,
@@ -93,10 +91,6 @@ namespace GameFrameworkMessage
 			s_Type2LobbyMessageDefine.Add(typeof(AccountLoginResult), (int)LobbyMessageDefine.AccountLoginResult);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.AccountLogout, typeof(AccountLogout));
 			s_Type2LobbyMessageDefine.Add(typeof(AccountLogout), (int)LobbyMessageDefine.AccountLogout);
-			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.ActivateAccount, typeof(ActivateAccount));
-			s_Type2LobbyMessageDefine.Add(typeof(ActivateAccount), (int)LobbyMessageDefine.ActivateAccount);
-			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.ActivateAccountResult, typeof(ActivateAccountResult));
-			s_Type2LobbyMessageDefine.Add(typeof(ActivateAccountResult), (int)LobbyMessageDefine.ActivateAccountResult);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.ChangeName, typeof(ChangeName));
 			s_Type2LobbyMessageDefine.Add(typeof(ChangeName), (int)LobbyMessageDefine.ChangeName);
 			s_LobbyMessageDefine2Type.Add((int)LobbyMessageDefine.ChangeNameResult, typeof(ChangeNameResult));

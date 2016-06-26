@@ -23,17 +23,19 @@ namespace GameFramework
             }
             m_LastElapsedTickTime = curTime;
 
-            if (m_LastTickTime + c_TickInterval < curTime) {
-                m_LastTickTime = curTime;
+            if (DataCacheConfig.IsPersistent) {
+                if (m_LastTickTime + c_TickInterval < curTime) {
+                    m_LastTickTime = curTime;
 
-                DBConn.KeepConnection();
-                try {
-                    MySqlConnection conn = DBConn.MySqlConn;
-                    using (MySqlCommand cmd = new MySqlCommand("select * from DSNodeInfo where 1=2", conn)) {
-                        cmd.ExecuteNonQuery();
+                    DBConn.KeepConnection();
+                    try {
+                        MySqlConnection conn = DBConn.MySqlConn;
+                        using (MySqlCommand cmd = new MySqlCommand("select * from DSNodeInfo where 1=2", conn)) {
+                            cmd.ExecuteNonQuery();
+                        }
+                    } catch (Exception ex) {
+                        LogSys.Log(LOG_TYPE.ERROR, "DbThread.Tick keep connection exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     }
-                } catch (Exception ex) {
-                    LogSys.Log(LOG_TYPE.ERROR, "DbThread.Tick keep connection exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
 

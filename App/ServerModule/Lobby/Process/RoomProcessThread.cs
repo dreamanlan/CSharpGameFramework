@@ -472,14 +472,20 @@ namespace Lobby
                     }
                     break;
                 case (int)Msg_RL_ReplyReconnectUser.ReconnectResultEnum.NotExist: {
-                        user.ResetRoomInfo();
-                        user.CurrentState = UserState.Online;
-
-                        LogSys.Log(LOG_TYPE.INFO, "user reconnected roomserver failed! guid {0}", userGuid);
+                        //不存在，执行进场景流程
+                        RequestEnterScene(userGuid, user.SceneId, roomID, 0);
+                        LogSys.Log(LOG_TYPE.INFO, "user reconnected roomserver, not exist, request enter scene ! guid {0}", userGuid);
                     }
                     break;
                 case (int)Msg_RL_ReplyReconnectUser.ReconnectResultEnum.Online: {
-                        LogSys.Log(LOG_TYPE.INFO, "user reconnected roomserver, user online, guid {0}", userGuid);
+                        NodeMessage startGameResultMsg = new NodeMessage(LobbyMessageDefine.EnterSceneResult, user.Guid);
+                        GameFrameworkMessage.EnterSceneResult protoData = new GameFrameworkMessage.EnterSceneResult();
+                        protoData.result = (int)GeneralOperationResult.LC_Failed;
+
+                        startGameResultMsg.m_ProtoData = protoData;
+                        LobbyServer.Instance.TransmitToWorld(user, startGameResultMsg);
+                        //room上玩家还是连接与在线状态，重连失败
+                        LogSys.Log(LOG_TYPE.INFO, "user reconnected roomserver, user already online, guid {0}", userGuid);
                     }
                     break;
             }

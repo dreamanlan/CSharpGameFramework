@@ -81,7 +81,7 @@ namespace GameFramework
           Msg_CR_Observer observerMsg = msg as Msg_CR_Observer;
           if (null != observerMsg) {
             IsEntered = true;
-            Scene scene = OwnRoom.GetActiveScene();
+            Scene scene = OwnRoom.ActiveScene;
             if (null != scene) {
               scene.SyncForNewObserver(this);
             }

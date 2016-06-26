@@ -7,5 +7,11 @@ Tip_TooManyPeople	当前尝试登录服务器的人数过多，请您稍后再尝试登录或选择其它服务
 Tip_Queueing	服务器已满，开始排队。。。
 Tip_QueueFull	服务器排队人数已满，请您稍后再尝试登录或选择其它服务器游戏。
 Tip_QueueingCount	当前排队号:{0}
+Tip_OperationFailed	操作失败
+Tip_AccountLoginFailed	登录失败，请重试。
+Tip_WaitOffline	等待上次登录正在离线，稍后自动重登录
+Tip_Reconnecting	正在重连中。。。
+Tip_RoleEnterFailed	登录失败，请重试。
+Tip_SceneEnterFailed	正在游戏中，请重试。
 Tip_0	诸神和人类的战争
 Tip_1	战斗开始了

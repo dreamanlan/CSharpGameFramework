@@ -219,7 +219,7 @@ namespace GameFramework
                     LogSys.Log(LOG_TYPE.WARN, "user who's key is {0} already in room!", rui.Key);
                     LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [RoomManager.HandleEnterScene]", rsUser.LocalID, rui.Guid, rui.Key);
                     user_pool_.FreeUser(rsUser.LocalID);
-
+                                        
                     Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
                     replyBuilder.UserGuid = guid;
                     replyBuilder.RoomID = roomId;

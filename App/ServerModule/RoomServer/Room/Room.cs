@@ -22,21 +22,14 @@ namespace GameFramework
             get { return m_IsFieldRoom; }
             set { m_IsFieldRoom = value; }
         }
-        internal RoomState CurrentState
-        { get; set; }
-        internal Room()
+        internal bool CanFinish
         {
-            dispatcher_ = new Dispatcher();
-            seat_player_dict_ = new MyDictionary<string, uint>();
-            disconnected_users_ = new List<User>();
-            request_delete_users_ = new List<User>();
-            can_close_time_ = 0;
-            room_users_ = new List<User>();
-
-            for (int i = 0; i < room_observers_.Length; ++i) {
-                room_observers_[i] = new Observer();
-                room_observers_[i].OwnRoom = this;
-            }
+            get { return m_CanFinish || m_ActiveTime+c_WaitUserTime<TimeUtility.GetLocalMicroseconds(); }
+        }
+        internal RoomState CurrentState
+        {
+            get { return m_RoomState; }
+            set { m_RoomState = value; }
         }
         internal List<User> RoomUsers
         {
@@ -52,6 +45,39 @@ namespace GameFramework
             {
                 return room_users_.Count;
             }
+        }
+        internal int RoomID
+        {
+            get
+            {
+                return cur_room_id_;
+            }
+        }
+        internal uint LocalID
+        { 
+            get { return m_LocalID; }
+            set { m_LocalID = value; }
+        }
+        internal bool IsIdle
+        {
+            get { return m_IsIdle; }
+            set { m_IsIdle = value; }
+        }
+        internal bool CanClose
+        {
+            get
+            {
+                return can_close_time_ > 0 && can_close_time_ + c_close_wait_time_ < TimeUtility.GetLocalMilliseconds();
+            }
+        }
+        internal Scene ActiveScene
+        {
+            get { return m_ActiveScene; }
+        }
+        internal ScenePool ScenePool
+        {
+            get { return m_ScenePool; }
+            set { m_ScenePool = value; }
         }
         internal int GetAiRoomUserCount()
         {
@@ -103,35 +129,6 @@ namespace GameFramework
             }
             return null;
         }
-        internal int RoomID
-        {
-            get
-            {
-                return cur_room_id_;
-            }
-        }
-        internal uint LocalID
-        { set; get; }
-        internal bool IsIdle
-        { set; get; }
-        internal bool CanClose
-        {
-            get
-            {
-                return can_close_time_ > 0 && can_close_time_ + c_close_wait_time_ < TimeUtility.GetLocalMilliseconds();
-            }
-        }
-        internal Scene GetActiveScene()
-        {
-            return m_ActiveScene;
-        }
-        internal GameFramework.ScenePool ScenePool
-        {
-            get { return m_ScenePool; }
-            set { m_ScenePool = value; }
-        }
-        internal bool UserIsAllReady
-        { get; set; }
         internal bool Init(int room_id, int scene_type, UserPool userpool, Connector conn)
         {
             LogSys.Log(LOG_TYPE.INFO, "[0] Room.Init {0} scene {1}", room_id, scene_type);
@@ -144,12 +141,12 @@ namespace GameFramework
             m_ActiveScene.SetRoom(this);
             //场景数据加载由加载线程执行（注：场景没有加载完成，场景状态仍然是sleep，Scene.Tick不会有实际的动作）
             SceneLoadThread.Instance.QueueAction(m_ActiveScene.LoadData, scene_type);
-            this.CurrentState = RoomState.Active;
-            this.UserIsAllReady = false;
+            m_ActiveTime = TimeUtility.GetLocalMicroseconds();
+            CurrentState = RoomState.Active;
+            m_CanFinish = false;
             LogSys.Log(LOG_TYPE.DEBUG, "Room Initialize: {0}  Scene: {1}", room_id, scene_type);
             return true;
         }
-
         internal void Destroy()
         {
             LogSys.Log(LOG_TYPE.INFO, "room {0}({1}) destroy.", RoomID, LocalID);
@@ -158,7 +155,6 @@ namespace GameFramework
             m_ActiveScene = null;
 
             this.CurrentState = RoomState.Unuse;
-            this.UserIsAllReady = false;
             int userCt = room_users_.Count;
             for (int i = userCt - 1; i >= 0; --i) {
                 User user = room_users_[i];
@@ -173,7 +169,6 @@ namespace GameFramework
                 room_observers_[i].Reset();
             }
         }
-
         internal void ChangeScene(int scene_type)
         {
             m_ActiveScene.Reset();
@@ -183,7 +178,6 @@ namespace GameFramework
             foreach (User us in room_users_) {
                 us.IsEntered = false;
             }
-            this.UserIsAllReady = false;
 
             can_close_time_ = 0;
             m_ActiveScene = m_ScenePool.NewScene();
@@ -214,7 +208,7 @@ namespace GameFramework
                 }
 
                 if (this.CurrentState == RoomState.Active) {
-                    Scene scene = GetActiveScene();
+                    Scene scene = ActiveScene;
                     if (null != scene) {
                         scene.Tick();
                     }
@@ -259,10 +253,10 @@ namespace GameFramework
                     }
                     if (!IsFieldRoom) {
                         int userCount = GetActiveRoomUserCount();
-                        if (userCount <= 0) {
+                        if (userCount <= 0 && CanFinish) {
                             if (GetMinimizeElapsedDroppedTime() > c_finish_time_for_no_users_) {
                                 //若房间内玩家数目为0，结束战斗，关闭房间
-                                EndBattle((int)CampIdEnum.Unkown);
+                                Finish((int)CampIdEnum.Unkown);
                             }
                         }
                     }
@@ -334,6 +328,7 @@ namespace GameFramework
             LogSys.Log(LOG_TYPE.DEBUG, "Add user success ! RoomID:{0} , UserGuid:{1}({2})",
               cur_room_id_, newUser.Guid, newUser.GetKey());
 
+            m_CanFinish = true;
             return true;
         }
 
@@ -394,7 +389,7 @@ namespace GameFramework
             LogSys.Log(LOG_TYPE.DEBUG, "Room {0} User {1}({2}) dropped.", RoomID, user.Guid, user.GetKey());
         }
 
-        internal void EndBattle(int winnerCampID)
+        internal void Finish(int winnerCampID)
         {
             if (IsFieldRoom) {
                 return;
@@ -412,8 +407,6 @@ namespace GameFramework
                     user.LastNotifyUserDropTime = TimeUtility.GetLocalMilliseconds();
                 }
             }
-            //向Lobby发送战斗结束消息
-
             this.CurrentState = RoomState.Finish;
             m_FinishTime = TimeUtility.GetLocalMilliseconds();
             LogSys.Log(LOG_TYPE.DEBUG, "Room {0}({1}) EndBattle.", RoomID, LocalID);
@@ -452,6 +445,20 @@ namespace GameFramework
                     connector_.SendMsgToLobby(unqBuilder);
                     user.LastNotifyUserDropTime = TimeUtility.GetLocalMilliseconds();
                 }
+            }
+        }
+        internal Room()
+        {
+            dispatcher_ = new Dispatcher();
+            seat_player_dict_ = new MyDictionary<string, uint>();
+            disconnected_users_ = new List<User>();
+            request_delete_users_ = new List<User>();
+            can_close_time_ = 0;
+            room_users_ = new List<User>();
+
+            for (int i = 0; i < room_observers_.Length; ++i) {
+                room_observers_[i] = new Observer();
+                room_observers_[i].OwnRoom = this;
             }
         }
 
@@ -512,9 +519,9 @@ namespace GameFramework
         private MyDictionary<string, uint> seat_player_dict_;
         private Dispatcher dispatcher_;
 
-        private List<User> room_users_;
-
         private UserPool user_pool_;
+
+        private List<User> room_users_;
         private List<User> disconnected_users_;
         private List<User> request_delete_users_;
         private Connector connector_;
@@ -525,12 +532,20 @@ namespace GameFramework
         private Observer[] room_observers_ = new Observer[c_max_observer_num_];
 
         private bool m_IsFieldRoom = false;
+        private bool m_CanFinish = false;
+
         private Scene m_ActiveScene = null;
         private ScenePool m_ScenePool = null;
 
+        private const long c_WaitUserTime = 60000;
         private const long c_NotifyUserDropInterval = 20000;
         private const long c_DeactiveWaitTime = 3000;
+        private long m_ActiveTime = 0;
         private long m_FinishTime = 0;
         private long m_LastLogTime = 0;
+
+        private RoomState m_RoomState = RoomState.Unuse;
+        private uint m_LocalID = 0;
+        private bool m_IsIdle = false;
     }
 }

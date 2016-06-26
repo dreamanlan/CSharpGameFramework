@@ -51,6 +51,7 @@ public class InplaceSkillInfo : MonoBehaviour
             if (actor.skill8 > 0)
                 args.Add(actor.skill8);
 
+            args = AddDepSkills(args);
             m_Properties.Clear();
             foreach (int skillId in args) {
                 if (!m_Properties.ContainsKey(skillId)) {
@@ -64,4 +65,31 @@ public class InplaceSkillInfo : MonoBehaviour
     }
 
     private Dictionary<int, InplaceSkillPropertyInfoGroup> m_Properties = new Dictionary<int, InplaceSkillPropertyInfoGroup>();
+
+    private static List<int> AddDepSkills(List<int> skills)
+    {
+        List<int> ret = new List<int>(skills);
+        foreach (int skillId in skills) {
+            AddDepSkillsRecursively(skillId, ret);
+        }
+        return ret;
+    }
+    private static void AddDepSkillsRecursively(int skillId, List<int> outList)
+    {
+        TableConfig.Skill cfg = TableConfig.SkillProvider.Instance.GetSkill(skillId);
+        if (null != cfg) {
+            if (cfg.impact > 0 && !outList.Contains(cfg.impact)) {
+                outList.Add(cfg.impact);
+                AddDepSkillsRecursively(cfg.impact, outList);
+            }
+            if (cfg.startupSkillId > 0 && !outList.Contains(cfg.startupSkillId)) {
+                outList.Add(cfg.startupSkillId);
+                AddDepSkillsRecursively(cfg.startupSkillId, outList);
+            }
+            if (cfg.flybackSkillId > 0 && !outList.Contains(cfg.flybackSkillId)) {
+                outList.Add(cfg.flybackSkillId);
+                AddDepSkillsRecursively(cfg.flybackSkillId, outList);
+            }
+        }
+    }
 }

@@ -287,9 +287,8 @@ namespace GameFramework.Skill.Trigers
             triger.m_Velocity = m_Velocity;
             triger.m_StopAtTarget = m_StopAtTarget;
             triger.m_Offset = m_Offset;
-            
-            
             triger.m_IsForRoundMove = m_IsForRoundMove;
+            triger.m_Curve = m_Curve;
             return triger;
         }
         public override void Reset()
@@ -297,8 +296,7 @@ namespace GameFramework.Skill.Trigers
             m_TargetChecked = false;
             m_RealDuration = 0;
             m_RealVelocity = 1;
-            m_Forward = Vector3.zero;
-            
+            m_Forward = Vector3.zero;            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -317,26 +315,26 @@ namespace GameFramework.Skill.Trigers
                 m_TargetChecked = true;
                 m_RealDuration = m_Duration;
                 m_RealVelocity = m_Velocity;
+                m_StartPos = obj.transform.position;
                 if (null != targetObj || m_IsForRoundMove) {
-                    Vector3 srcPos = obj.transform.position;
                     Vector3 targetPos = Vector3.zero;
                     if (null != targetObj) {
                         targetPos = targetObj.transform.position;
                     }
                     if (m_IsForRoundMove) {
-                        TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref targetPos);
+                        TriggerUtil.GetSkillStartPosition(m_StartPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref targetPos);
                     }
                     if (targetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
-                        float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
+                        float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(m_StartPos.x, m_StartPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
                         ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(targetPos.x, targetPos.z) + Geometry.GetRotate(new ScriptRuntime.Vector2(m_Offset.x, m_Offset.z), degree);
                         targetPos = new Vector3(newPos.X, targetPos.y + m_Offset.y, newPos.Y);
                         m_TargetPos = targetPos;
                         if (m_StopAtTarget == (int)StopAtTargetType.AdjustVelocity) {
-                            m_RealVelocity = (long)(1000.0f * (targetPos - srcPos).magnitude / m_RealDuration);
+                            m_RealVelocity = (long)(1000.0f * (targetPos - m_StartPos).magnitude / m_RealDuration);
                         } else if (m_StopAtTarget == (int)StopAtTargetType.AdjustTime) {
-                            m_RealDuration = (long)(1000.0f * (targetPos - srcPos).magnitude / m_RealVelocity);
+                            m_RealDuration = (long)(1000.0f * (targetPos - m_StartPos).magnitude / m_RealVelocity);
                         }
-                        m_Forward = targetPos - srcPos;
+                        m_Forward = targetPos - m_StartPos;
                         m_Forward.y = 0;
                         m_Forward.Normalize();
                     } else {
@@ -349,9 +347,16 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < StartTime) {
                 return true;
             } else if (curSectionTime <= StartTime + m_RealDuration) {
-                float dist = TriggerUtil.ConvertToSecond(delta) * m_RealVelocity;
-                Vector3 targetPos = obj.transform.position + m_Forward * dist;
-                TriggerUtil.MoveObjTo(obj, targetPos);
+                if (null != m_Curve) {
+                    float time = (curSectionTime - StartTime) * 1.0f / m_RealDuration;
+                    float val = m_Curve.Evaluate(time);
+                    Vector3 targetPos = Vector3.SlerpUnclamped(m_StartPos, m_TargetPos, val);
+                    TriggerUtil.MoveObjTo(obj, targetPos);
+                } else {
+                    float dist = TriggerUtil.ConvertToSecond(delta) * m_RealVelocity;
+                    Vector3 targetPos = obj.transform.position + m_Forward * dist;
+                    TriggerUtil.MoveObjTo(obj, targetPos);
+                }
                 return true;
             } else {
                 if (m_IsForRoundMove && m_TargetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
@@ -359,6 +364,13 @@ namespace GameFramework.Skill.Trigers
                 }
                 return false;
             }
+        }
+        protected override void OnInitProperties()
+        {
+            AddProperty("Duration", () => { return m_Duration; }, (object val) => { m_Duration = (long)Convert.ChangeType(val, typeof(long)); });
+            AddProperty("Velocity", () => { return m_Velocity; }, (object val) => { m_Velocity = (float)Convert.ChangeType(val, typeof(float)); });
+            AddProperty("StopAtTarget", () => { return m_StopAtTarget; }, (object val) => { m_StopAtTarget = (int)Convert.ChangeType(val, typeof(int)); });
+            AddProperty("Curve", () => { return m_Curve; }, (object val) => { m_Curve = val as AnimationCurve; });
         }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
@@ -381,8 +393,36 @@ namespace GameFramework.Skill.Trigers
             if (num > 5) {
                 m_IsForRoundMove = callData.GetParamId(5) == "true";
             }
-            
         }
+        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        {
+            Dsl.CallData callData = funcData.Call;
+            if (null == callData) {
+                return;
+            }
+            Load(callData, dslSkillId);
+            LoadKeyFrames(funcData.Statements);
+        }
+        private void LoadKeyFrames(List<Dsl.ISyntaxComponent> statements)
+        {
+            m_Curve = new AnimationCurve();
+            for (int i = 0; i < statements.Count; i++) {
+                Dsl.CallData stCall = statements[i] as Dsl.CallData;
+                if (stCall.GetId() == "keyframe") {
+                    if (stCall.GetParamNum() >= 4) {
+                        float time = float.Parse(stCall.GetParamId(0));
+                        float value = float.Parse(stCall.GetParamId(1));
+                        float inTangent = float.Parse(stCall.GetParamId(2));
+                        float outTangent = float.Parse(stCall.GetParamId(3));
+                        Keyframe keyframe = new Keyframe(time, value, inTangent, outTangent);
+                        m_Curve.AddKey(keyframe);
+                    }
+                }
+            }
+        }
+
+        private AnimationCurve m_Curve = null;
+
         private long m_Duration = 0;
         private float m_Velocity = 1;
         private int m_StopAtTarget = 0;
@@ -393,6 +433,7 @@ namespace GameFramework.Skill.Trigers
         private long m_RealDuration = 0;
         private float m_RealVelocity = 1;
         private Vector3 m_Forward = Vector3.zero;
+        private Vector3 m_StartPos = Vector3.zero;
         private Vector3 m_TargetPos = Vector3.zero;
     }
     /// <summary>
@@ -407,11 +448,9 @@ namespace GameFramework.Skill.Trigers
             triger.m_Height = m_Height;
             triger.m_Velocity = m_Velocity;
             triger.m_StopAtTarget = m_StopAtTarget;
-            triger.m_Offset = m_Offset;
-            
+            triger.m_Offset = m_Offset;            
             triger.m_YVelocity = m_YVelocity;
-            triger.m_G = m_G;
-            
+            triger.m_G = m_G;            
             triger.m_IsForRoundMove = m_IsForRoundMove;
             return triger;
         }
@@ -492,6 +531,13 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
         }
+        protected override void OnInitProperties()
+        {
+            AddProperty("Duration", () => { return m_Duration; }, (object val) => { m_Duration = (long)Convert.ChangeType(val, typeof(long)); });
+            AddProperty("Height", () => { return m_Height; }, (object val) => { m_Height = (float)Convert.ChangeType(val, typeof(float)); });
+            AddProperty("Velocity", () => { return m_Velocity; }, (object val) => { m_Velocity = (float)Convert.ChangeType(val, typeof(float)); });
+            AddProperty("StopAtTarget", () => { return m_StopAtTarget; }, (object val) => { m_StopAtTarget = (int)Convert.ChangeType(val, typeof(int)); });
+        }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
             int num = callData.GetParamNum();
@@ -521,6 +567,7 @@ namespace GameFramework.Skill.Trigers
             
             CalcYVelocityAndG();
         }
+
         private void CalcYVelocityAndG()
         {
             float time_div = (float)(int)m_Duration / 1000.0f;
@@ -528,6 +575,7 @@ namespace GameFramework.Skill.Trigers
             m_YVelocity = m_Height * 2.0f / time_div;
             m_G = m_Height * 2.0f / (time_div * time_div);
         }
+
         private long m_Duration = 0;
         private float m_Height = 1;
         private float m_Velocity = 1;

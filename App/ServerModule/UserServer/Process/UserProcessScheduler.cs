@@ -344,7 +344,7 @@ namespace GameFramework
                     accountInfo.TableAccount.AccountId = accountId;
                     accountInfo.TableAccount.IsBanned = false;
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
-                    protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.Success;
+                    protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.FirstLogin;
                     protoMsg.m_UserGuid = accountInfo.UserGuid;
                     //norm log    
                     accountInfo.LastLoginTime = TimeUtility.CurTimestamp;
@@ -355,7 +355,6 @@ namespace GameFramework
             } catch (Exception ex) {
                 LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Red, "ERROR LoginStep_4d. AccountId:{0}, LogicServerId:{1}, AccountId:{2}\nERROR Message:{3}\nStackTrace:{4}",
                             accountId, 0, accountId, ex.Message, ex.StackTrace);
-
             } finally {
                 if (protoMsg.m_Result != AccountLoginResult.AccountLoginResultEnum.Success && protoMsg.m_Result != AccountLoginResult.AccountLoginResultEnum.FirstLogin) {
                     m_AccountSystem.RemoveAccountById(accountId);
@@ -428,7 +427,7 @@ namespace GameFramework
                             //回复客户端
                             NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, user.AccountId, user.Guid);
                             GameFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(user);
-                            protoData.Result = RoleEnterResult.RoleEnterResultEnum.Success;
+                            protoData.Result = RoleEnterResult.RoleEnterResultEnum.Reconnect;
                             roleEnterResultMsg.m_ProtoData = protoData;
                             NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, roleEnterResultMsg);
                         } else {
@@ -437,23 +436,22 @@ namespace GameFramework
                             GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();
                             protoData.Result = RoleEnterResult.RoleEnterResultEnum.UnknownError;
                             roleEnterResultMsg.m_ProtoData = protoData;
-                            LogSys.Log(LOG_TYPE.ERROR, "LoginStep_8a: Role Reenter FAILED. AccountId:{0}, UserGuid:{1}, Nickname:{2}",
-                                accountId, userGuid, user.Nickname);
+                            LogSys.Log(LOG_TYPE.ERROR, "LoginStep_8a: Role Reenter FAILED. AccountId:{0}, UserGuid:{1}, Nickname:{2}, UserAccountId:{3}",
+                                accountId, userGuid, user.Nickname, user.AccountId);
                         }
                     }
                 } else {
                     var ds_thread = UserServer.Instance.DataCacheThread;
                     if (ds_thread.DataStoreAvailable == true) {
-                        //注意这里的回调在DataCacheThread里执行
                         LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_8b: Load UserInfo. AccountId:{0}, UserGuid:{1}", accountId, userGuid);
-                        ds_thread.DispatchAction(ds_thread.DSPLoadUser, userGuid, accountId);
+                        ds_thread.DispatchAction(ds_thread.DSPLoadUser, userGuid, accountId, nickname);
                     } else {
                         CreateRole(accountId, nickname, 1);
                     }
                 }
             }
         }
-        internal void DSPLoadUserCallback(Msg_DL_LoadResult ret, string accountId)
+        internal void DSPLoadUserCallback(Msg_DL_LoadResult ret, string accountId, string nickname)
         {
             AccountInfo accountInfo = m_AccountSystem.FindAccountById(accountId);
             if (accountInfo == null) {
@@ -490,6 +488,8 @@ namespace GameFramework
                 protoData.Result = RoleEnterResult.RoleEnterResultEnum.Success;
                 replyMsg.m_ProtoData = protoData;
                 NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, replyMsg);
+            } else if (Msg_DL_LoadResult.ErrorNoEnum.NotFound == ret.ErrorNo) {
+                CreateRole(accountId, nickname, 1);
             } else {
                 NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, accountInfo.AccountId, userGuid);
                 GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();

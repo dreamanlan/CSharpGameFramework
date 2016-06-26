@@ -7,6 +7,10 @@ using CSharpCenterClient;
 /// </summary>
 internal class DataCacheConfig
 {
+    internal static bool IsPersistent
+    {
+        get { return s_Instance.m_IsPersistent; }
+    }
     internal static string DataBase
     {
         get { return s_Instance.m_Database; }
@@ -42,6 +46,10 @@ internal class DataCacheConfig
     {
         try {
             StringBuilder sb = new StringBuilder(256);
+            if (CenterClientApi.GetConfig("IsPersistent", sb, 256)) {
+                string str = sb.ToString();
+                s_Instance.m_IsPersistent = int.Parse(str) != 0;
+            }
             if (CenterClientApi.GetConfig("Server", sb, 256)) {
                 string str = sb.ToString();
                 if (null == s_Instance.m_Server || 0 != s_Instance.m_Server.CompareTo(str))
@@ -87,6 +95,7 @@ internal class DataCacheConfig
         }
     }
 
+    private bool m_IsPersistent = false;
     private string m_Server = "127.0.0.1";
     private string m_User = "dfds";
     private string m_Password = "dfds";

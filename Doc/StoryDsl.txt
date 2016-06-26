@@ -936,7 +936,14 @@
   
   作用：
   获取指定剧情对话配表数据行（TableConfig.StoryDlg），对指定dlgId，对应的对话数据从0开始，下一条加1，直到读取返回null为止。
-    
+  
+  26、getmonsterinfo
+  用法：
+  getmonsterinfo(campId,index);
+  
+  作用：
+  获取指定阵营第index次刷npc数据。
+  
   27、npcfindimpactseqbyid
   用法：
   npcfindimpactseqbyid(unitId,impactId);
@@ -1215,9 +1222,10 @@
   作用：
   在剧情脚本里直接发布逻辑层或渲染层事件，从而触发订阅对应事件的处理。（注意：参数只支持整数、浮点数与字符串三种类型，所以并不是所有事件都能由此命令触发）（用在服务器上时可以用touser发给单个玩家，否则是广播）
   
-  22、objanimation
+  24、objanimation/npcanimation
   用法：
-  objanimation(objid,anim);
+  objanimation(objid,anim[,normalized_start_time]);
+  npcanimation(unitid,anim[,normalized_start_time]);
   
   作用：
   让指定对象播放指定动作anim。
@@ -1592,6 +1600,26 @@
   
   作用：
   暂停或恢复当前所有story里的指定消息处理
+  
+  85、objanimationparam/npcanimationparam
+  用法：
+  objanimationparam(obj_id)
+  {
+      float(name,val);
+      int(name,val);
+      bool(name,val);
+      trigger(name,val);
+  };
+  npcanimationparam(unit_id)
+  {
+      float(name,val);
+      int(name,val);
+      bool(name,val);
+      trigger(name,val);
+  };
+  
+  作用：
+  修改指定对象的动画控制器的参数或触发器。  
       
 十、游戏系统内实现的消息触发(非场景逻辑配置的消息触发)
   

@@ -35,8 +35,8 @@ public class SkillRecords : MonoBehaviour
         public int maxAoeTargetCount = 0;
         public int dslSkillId = 0;
         public string dslFile = string.Empty;
-        public int startupSkillId = 91002;
-        public int flybackSkillId = 91000;
+        public int startupSkillId = 0;
+        public int flybackSkillId = 0;
         public int startupPositionType = 3000;
         public int autoCast = 1;
         public bool needTarget = false;

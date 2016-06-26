@@ -70,7 +70,7 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
 };
 
 * 接口说明
-1. curvemove(triggertime, [movetime, speedx, speedy, speedz, accelx, accely, accelz]+)
+1. curvemove(triggertime, [movetime, speedx, speedy, speedz, accelx, accely, accelz]+[, isForRoundMove])
    功能：曲线移动，在triggertime时间开始移动，每个阶段速度speed, 加速度accel，时间movetime
    Example：
      curvemove(300, 0.05, 0, 0, 0, 0, 0, 160, 0.05, 0, 0, 8, 0, 0, 320);
@@ -224,7 +224,7 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
 15. damage([start_time]);
     功能：产生技能伤害。
    
-16. charge(duration,velocity,stopAtTarget[,vector3(x,y,z)[,start_time]]);
+16. charge(duration,velocity,stopAtTarget[,vector3(x,y,z)[,start_time[, isForRoundMove]]]);
     功能：冲锋。
     参数：
      - duration 冲锋时间
@@ -233,7 +233,7 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
      - vector3(x,y,z) 目标点的调整偏移（沿到目标的方向）
      - start_time 触发器开始工作时间（相对于所在section）
 
-17. jump(duration,height,velocity,stopAtTarget[,vector3(x,y,z)[,start_time]]);
+17. jump(duration,height,velocity,stopAtTarget[,vector3(x,y,z)[,start_time[, isForRoundMove]]]);
     功能：跳。
     参数：
      - duration 跳的时间
@@ -410,8 +410,9 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     - keyframe 曲线关键帧，可以通过以下方式生成
       1. 在随意一个场景中创建一个空的GameObject, 挂接PrintCurve脚本
       2. 在编辑中编辑曲线
-      3. 运行场景，在日志输出窗口可以找到keyframe的输出, 复制后粘贴到技能配置文件中，注意：如果
+      3. 点击“拷贝到剪贴板”, 粘贴到技能配置文件中，注意：如果
          文件中出现科学计数法如1.221E-7或其他数字表达方式，需要手动改为一般的数字
+      4. 编辑完后删除1中创建的GameObject
    Example：
      lockframe(700, 0, 100, 1, 50, true, 1, 1, 1);
      

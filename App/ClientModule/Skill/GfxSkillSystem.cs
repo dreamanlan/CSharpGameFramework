@@ -86,6 +86,10 @@ namespace GameFramework.Skill
             {
                 return m_GfxObj;
             }
+            set
+            {
+                m_GfxObj = value;
+            }
         }
         public int TargetActorId
         {
@@ -292,17 +296,19 @@ namespace GameFramework.Skill
         {
             if (null != skillData) {
                 SkillInstanceInfo info = NewSkillInstanceImpl(skillData.id, skillData);
-                RecycleSkillInstance(info);
-                if (null != info.m_SkillInstance.EmitSkillInstances) {
-                    foreach (var pair in info.m_SkillInstance.EmitSkillInstances) {
-                        SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl(PredefinedSkill.c_EmitSkillId, pair.Value);
-                        RecycleSkillInstance(iinfo);
+                if (null != info) {
+                    RecycleSkillInstance(info);
+                    if (null != info.m_SkillInstance.EmitSkillInstances) {
+                        foreach (var pair in info.m_SkillInstance.EmitSkillInstances) {
+                            SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl(PredefinedSkill.c_EmitSkillId, pair.Value);
+                            RecycleSkillInstance(iinfo);
+                        }
                     }
-                }
-                if (null != info.m_SkillInstance.HitSkillInstances) {
-                    foreach (var pair in info.m_SkillInstance.HitSkillInstances) {
-                        SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl(PredefinedSkill.c_HitSkillId, pair.Value);
-                        RecycleSkillInstance(iinfo);
+                    if (null != info.m_SkillInstance.HitSkillInstances) {
+                        foreach (var pair in info.m_SkillInstance.HitSkillInstances) {
+                            SkillInstanceInfo iinfo = NewInnerSkillInstanceImpl(PredefinedSkill.c_HitSkillId, pair.Value);
+                            RecycleSkillInstance(iinfo);
+                        }
                     }
                 }
             }

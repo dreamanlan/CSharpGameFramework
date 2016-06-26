@@ -71,7 +71,7 @@ namespace GameFramework
                     if (null != user) {
                         Msg_RC_NpcMove npcMoveBuilder = DataSyncUtility.BuildNpcMoveMessage(obj);
                         if (null != npcMoveBuilder) {
-                            Scene scene = user.OwnRoom.GetActiveScene();
+                            Scene scene = user.OwnRoom.ActiveScene;
                             if (null != scene) {
                                 scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcMove, npcMoveBuilder);
                             }

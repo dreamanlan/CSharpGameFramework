@@ -51,7 +51,7 @@ namespace GameFramework
             if (null != user) {
                 EntityInfo userInfo = user.Info;
                 Room room = GetRoom();
-                if (null != userInfo && null != room && null != room.GetActiveScene()) {
+                if (null != userInfo && null != room && null != room.ActiveScene) {
                     for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
                         EntityInfo npc = linkNode.Value;
                         if (null != npc) {
@@ -73,7 +73,7 @@ namespace GameFramework
                 Msg_RC_CreateNpc bder = DataSyncUtility.BuildCreateNpcMessage(userInfo);
                 Msg_RC_SyncProperty msg = DataSyncUtility.BuildSyncPropertyMessage(userInfo);
                 Room room = GetRoom();
-                if (null != userInfo && null != room && null != room.GetActiveScene()) {
+                if (null != userInfo && null != room && null != room.ActiveScene) {
                     for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
                         EntityInfo npc = linkNode.Value;
                         if (null != npc && npc != userInfo) {

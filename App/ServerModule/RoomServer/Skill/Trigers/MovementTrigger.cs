@@ -348,6 +348,18 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
+        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        {
+            Dsl.CallData callData = funcData.Call;
+            if (null == callData) {
+                return;
+            }
+            Load(callData, dslSkillId);
+            LoadKeyFrames(funcData.Statements);
+        }
+        private void LoadKeyFrames(List<Dsl.ISyntaxComponent> statements)
+        {
+        }
 
         private long m_Duration = 0;
         private float m_Velocity = 1;

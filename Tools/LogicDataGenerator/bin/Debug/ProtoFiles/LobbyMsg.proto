@@ -43,24 +43,6 @@ message AccountLogout
 {
 }
 
-message ActivateAccount
-{
-	required string m_ActivationCode = 1;
-}
-
-message ActivateAccountResult
-{
-
-	enum ActivateAccountResultEnum
-	{
-		Success = 0;
-		InvalidCode = 1;
-		MistakenCode = 2;
-		Error = 3;
-	}
-	required ActivateAccountResultEnum m_Result = 1;
-}
-
 message ChangeName
 {
 	required string m_Nickname = 1;
@@ -97,13 +79,13 @@ message EnterScene
 
 message EnterSceneResult
 {
-	required string server_ip = 1;
-	required uint32 server_port = 2;
-	required uint32 key = 3;
-	required int32 camp_id = 4;
-	required int32 scene_type = 5;
-	required int32 result = 6;
-	required int32 prime = 7;
+	required int32 result = 1;
+	optional string server_ip = 2;
+	optional uint32 server_port = 3;
+	optional uint32 key = 4;
+	optional int32 camp_id = 5;
+	optional int32 scene_type = 6;
+	optional int32 prime = 7;
 }
 
 message FriendInfoForMessage
@@ -377,7 +359,8 @@ message RoleEnterResult
 	{
 		Success = 0;
 		Wait = 1;
-		UnknownError = 2;
+		Reconnect = 2;
+		UnknownError = 3;
 	}
 	required RoleEnterResultEnum Result = 1;
 	required string Nickname = 2;

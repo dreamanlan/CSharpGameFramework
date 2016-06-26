@@ -34,7 +34,7 @@ public class InplaceSkillInfoInspector : Editor
                             if (!string.IsNullOrEmpty(lastGroup) && lastGroup != prop.Group) {
                                 sb.AppendLine();
                             }
-                            if (null != prop.Property && null != prop.Property.Value) {
+                            if (null != prop.Property && null != prop.Property.Value && !(prop.Property.Value is AnimationCurve)) {
                                 sb.AppendFormat("{0}:{1}\t{2}", prop.Group, prop.Key, prop.Property.Value.ToString());
                                 sb.AppendLine();
                             } else {
@@ -112,8 +112,38 @@ public class InplaceSkillInfoDrawer : PropertyDrawer
                             position.width = 160;
                             EditorGUI.LabelField(position, null == p.Key ? string.Empty : p.Key);
 
-                            position.x += 160;
-                            EditProperty(position, p.Property);
+                            var prop = p.Property;
+                            if (null != prop && prop.Value is AnimationCurve) {
+                                float tx = position.x;
+                                position.x += 160;
+                                EditorGUI.BeginChangeCheck();
+                                object v = EditorGUI.CurveField(position, prop.Value as AnimationCurve);
+                                if (EditorGUI.EndChangeCheck()) {
+                                    prop.Value = v;
+                                }
+                                position.x = tx + 120;
+                                position.width = 40;
+                                if (GUI.Button(position, "拷贝")) {
+                                    AnimationCurve curve = v as AnimationCurve;
+                                    if (null != curve) {
+                                        StringBuilder sb = new StringBuilder();
+                                        for (int i = 0; i < curve.keys.Length; ++i) {
+                                            Keyframe key = curve.keys[i];
+                                            sb.AppendFormat("keyframe({0},{1},{2},{3});", key.time, key.value, key.inTangent, key.outTangent);
+                                            sb.AppendLine();
+                                        }
+                                        string text = sb.ToString();
+                                        TextEditor editor = new TextEditor();
+                                        editor.text = text;
+                                        //editor.content = new GUIContent(text);
+                                        editor.OnFocus();
+                                        editor.Copy();
+                                    }
+                                }
+                            } else {
+                                position.x += 160;
+                                EditProperty(position, p.Property);
+                            }
 
                             lastGroup = p.Group;
                         }
@@ -277,4 +307,31 @@ public class InplaceSkillInfoDrawer : PropertyDrawer
     private const string c_Ext = ".prefab";
     private const float c_LabelWidth = 180;
     private const float c_FieldHeight = 16;
+}
+
+[CustomEditor(typeof(PrintCurve))]
+public class PrintCurveInspector : Editor
+{
+    public override void OnInspectorGUI()
+    {
+        DrawDefaultInspector();
+        if (GUILayout.Button("拷贝到剪贴板")) {
+            PrintCurve p = target as PrintCurve;
+            AnimationCurve curve = p.Curve as AnimationCurve;
+            if (null != curve) {
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < curve.keys.Length; ++i) {
+                    Keyframe key = curve.keys[i];
+                    sb.AppendFormat("keyframe({0},{1},{2},{3});", key.time, key.value, key.inTangent, key.outTangent);
+                    sb.AppendLine();
+                }
+                string text = sb.ToString();
+                TextEditor editor = new TextEditor();
+                editor.text = text;
+                //editor.content = new GUIContent(text);
+                editor.OnFocus();
+                editor.Copy();
+            }
+        }
+    }
 }
