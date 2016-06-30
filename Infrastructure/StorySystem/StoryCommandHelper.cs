@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 namespace StorySystem
 {
     /// <summary>
@@ -13,7 +12,6 @@ namespace StorySystem
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             m_Params.InitFromDsl(param, 0);
-            m_Result.Flag = m_Params.Flag | (int)StoryValueFlagMask.HAVE_VAR;
         }
         public IStoryValue<object> Clone()
         {
@@ -22,16 +20,13 @@ namespace StorySystem
             val.m_Result = m_Result.Clone();
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_Result.HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_Params.Substitute(iterator, args);
+            {
+                m_Params.Evaluate(instance, iterator, args);
             }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_Params.Evaluate(instance);
+        
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -48,22 +43,13 @@ namespace StorySystem
                 return m_Result.Value;
             }
         }
-        public int Flag
-        {
-            get
-            {
-                return m_Result.Flag;
-            }
-        }
         protected abstract void UpdateValue(StoryInstance instance, ValueParamType _params, StoryValueResult result);
-
         private void TryUpdateValue(StoryInstance instance)
         {
             if (m_Params.HaveValue) {
                 UpdateValue(instance, (ValueParamType)m_Params, m_Result);
             }
         }
-
         private IStoryValueParam m_Params = new ValueParamType();
         private StoryValueResult m_Result = new StoryValueResult();
     }
@@ -84,20 +70,20 @@ namespace StorySystem
             cmd.m_Params = m_Params.Clone();
             return cmd;
         }
+        public IStoryCommand LeadCommand
+        {
+            get { return null; }
+        }
         public void Reset()
         {
             m_LastExecResult = false;
             ResetState();
         }
-        public void Prepare(StoryInstance instance, object iterator, object[] args)
-        {
-            m_Params.Substitute(iterator, args);
-        }
-        public bool Execute(StoryInstance instance, long delta)
+        public bool Execute(StoryInstance instance, long delta, object iterator, object[] args)
         {
             if (!m_LastExecResult) {
                 //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
-                m_Params.Evaluate(instance);
+                m_Params.Evaluate(instance, iterator, args);
             }
             m_LastExecResult = ExecCommand(instance, (ValueParamType)m_Params, delta);
             return m_LastExecResult;
@@ -106,14 +92,12 @@ namespace StorySystem
         {
             SemanticAnalyze(instance);
         }
-
         protected virtual void ResetState() { }
         protected virtual bool ExecCommand(StoryInstance instance, ValueParamType _params, long delta)
         {
             return false;
         }
         protected virtual void SemanticAnalyze(StoryInstance instance) { }
-
         private bool m_LastExecResult = false;
         private IStoryValueParam m_Params = new ValueParamType();
     }

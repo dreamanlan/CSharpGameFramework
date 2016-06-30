@@ -129,7 +129,7 @@ namespace GameFramework.Skill.Trigers
                             effectObj.transform.parent = bone;
                             effectObj.transform.localPosition = m_Pos;
                             object effectRotation;
-                            if (instance.LocalVariables.TryGetValue("hitEffectRotation", out effectRotation)) {
+                            if (instance.Variables.TryGetValue("hitEffectRotation", out effectRotation)) {
                                 effectObj.transform.parent = null;
                                 effectObj.transform.rotation = (Quaternion)effectRotation;
                             } else {
@@ -553,7 +553,7 @@ namespace GameFramework.Skill.Trigers
                             if (!m_IsExternalImpact) {
                                 emitImpact = SkillInstance.GenInnerEmitSkillId(m_EmitImpact <= 0 ? 1 : m_EmitImpact);
                             }
-                            int impactId = TriggerUtil.GetSkillImpactId(instance.LocalVariables, senderObj.ConfigData);
+                            int impactId = TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
                             Dictionary<string, object> args;
                             TriggerUtil.CalcImpactConfig(emitImpact, impactId, instance, senderObj.ConfigData, out args);
                             Dictionary<string, object> addArgs = new Dictionary<string, object>() { { "emitEffect", effectPath }, { "emitSpeed", emitSpeed }, { "emitDir", m_Dir }, { "emitScale", m_Scale } };
@@ -695,7 +695,7 @@ namespace GameFramework.Skill.Trigers
                     if (!m_IsExternalImpact) {
                         emitImpact = SkillInstance.GenInnerEmitSkillId(m_EmitImpact <= 0 ? 1 : m_EmitImpact);
                     }
-                    int impactId = TriggerUtil.GetSkillImpactId(instance.LocalVariables, senderObj.ConfigData);
+                    int impactId = TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
                     int ct = 0;
                     TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                         Dictionary<string, object> args;
@@ -990,13 +990,13 @@ namespace GameFramework.Skill.Trigers
             if (null == obj) return false;
             if (curSectionTime < StartTime)
                 return true;
-            instance.SetLocalVariable("hitEffect", SkillParamUtility.RefixResourceVariable(m_HitEffect, instance, senderObj.ConfigData.resources));
-            instance.SetLocalVariable("hitEffectBone", m_HitEffectBone);
-            instance.SetLocalVariable("hitEffectStartTime", m_HitEffectStartTime);
-            instance.SetLocalVariable("hitEffectDeleteTime", m_HitEffectDeleteTime);
-            instance.SetLocalVariable("hitAnim", m_HitAnim);
-            instance.SetLocalVariable("hitAnimTime", m_HitAnimTime);
-            instance.SetLocalVariable("hitDelayTime", m_HitDelayTime);
+            instance.SetVariable("hitEffect", SkillParamUtility.RefixResourceVariable(m_HitEffect, instance, senderObj.ConfigData.resources));
+            instance.SetVariable("hitEffectBone", m_HitEffectBone);
+            instance.SetVariable("hitEffectStartTime", m_HitEffectStartTime);
+            instance.SetVariable("hitEffectDeleteTime", m_HitEffectDeleteTime);
+            instance.SetVariable("hitAnim", m_HitAnim);
+            instance.SetVariable("hitAnimTime", m_HitAnimTime);
+            instance.SetVariable("hitDelayTime", m_HitDelayTime);
             return false;
         }
 

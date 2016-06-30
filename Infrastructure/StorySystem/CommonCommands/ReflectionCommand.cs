@@ -3,13 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics;
-
 namespace StorySystem.CommonCommands
 {
     /// <summary>
     /// dotnetexec(obj,method,arg1,arg2,...);
     /// </summary>
-    internal class DotnetExecCommand : AbstractStoryCommand
+    internal sealed class DotnetExecCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -21,25 +20,14 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_Object.Substitute(iterator, args);
-            m_Method.Substitute(iterator, args);
+            m_Object.Evaluate(instance, iterator, args);
+            m_Method.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; i++) {
-                m_Args[i].Substitute(iterator, args);
+                m_Args[i].Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_Object.Evaluate(instance);
-            m_Method.Evaluate(instance);
-            for (int i = 0; i < m_Args.Count; i++) {
-                m_Args[i].Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             object obj = m_Object.Value;
@@ -57,7 +45,7 @@ namespace StorySystem.CommonCommands
                     } catch (Exception ex) {
                         GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     }
-                } else {
+                } else {                    
                     t = obj.GetType();
                     if (null != t) {
                         try {
@@ -70,7 +58,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -84,7 +71,6 @@ namespace StorySystem.CommonCommands
                 m_Args.Add(val);
             }
         }
-
         private IStoryValue<object> m_Object = new StoryValue();
         private IStoryValue<string> m_Method = new StoryValue<string>();
         private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
@@ -92,7 +78,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// dotnetset(obj,method,arg1,arg2,...);
     /// </summary>
-    internal class DotnetSetCommand : AbstractStoryCommand
+    internal sealed class DotnetSetCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -104,25 +90,14 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_Object.Substitute(iterator, args);
-            m_Method.Substitute(iterator, args);
+            m_Object.Evaluate(instance, iterator, args);
+            m_Method.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; i++) {
-                m_Args[i].Substitute(iterator, args);
+                m_Args[i].Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_Object.Evaluate(instance);
-            m_Method.Evaluate(instance);
-            for (int i = 0; i < m_Args.Count; i++) {
-                m_Args[i].Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             object obj = m_Object.Value;
@@ -153,7 +128,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -167,7 +141,6 @@ namespace StorySystem.CommonCommands
                 m_Args.Add(val);
             }
         }
-
         private IStoryValue<object> m_Object = new StoryValue();
         private IStoryValue<string> m_Method = new StoryValue<string>();
         private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
@@ -175,7 +148,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// system(file,args);
     /// </summary>
-    internal class SystemCommand : AbstractStoryCommand
+    internal sealed class SystemCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -184,19 +157,12 @@ namespace StorySystem.CommonCommands
             cmd.m_Arguments = m_Arguments.Clone();
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_FileName.Substitute(iterator, args);
-            m_Arguments.Substitute(iterator, args);
+            m_FileName.Evaluate(instance, iterator, args);
+            m_Arguments.Evaluate(instance, iterator, args);
+        
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_FileName.Evaluate(instance);
-            m_Arguments.Evaluate(instance);
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             try {
@@ -206,7 +172,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -215,7 +180,6 @@ namespace StorySystem.CommonCommands
                 m_Arguments.InitFromDsl(callData.GetParam(1));
             }
         }
-
         private IStoryValue<string> m_FileName = new StoryValue<string>();
         private IStoryValue<string> m_Arguments = new StoryValue<string>();
     }

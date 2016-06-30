@@ -8,7 +8,7 @@
     <ProjectGuid>{F1D962E1-3B17-4597-B542-BCB657E75829}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GameFramework</RootNamespace>
+    <RootNamespace>StorySystem</RootNamespace>
     <AssemblyName>StorySystem</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -55,23 +55,22 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Dsl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Dsl">
       <HintPath>..\..\ExternalLibrary\Dsl.dll</HintPath>
     </Reference>
-    <Reference Include="LitJson, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="LitJson">
       <HintPath>..\..\ExternalLibrary\LitJson.dll</HintPath>
     </Reference>
-    <Reference Include="ScriptFrameworkLibrary, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ScriptFrameworkLibrary">
       <HintPath>..\..\ExternalLibrary\ScriptFrameworkLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomCommandValueParser.cs" />
     <Compile Include="CommonCommands\Assign.cs" />
+    <Compile Include="CommonCommands\Composite.cs" />
     <Compile Include="CommonCommands\Foreach.cs" />
     <Compile Include="CommonCommands\IfElse.cs" />
     <Compile Include="CommonCommands\Json.cs" />
@@ -83,6 +82,7 @@
     <Compile Include="CommonCommands\While.cs" />
     <Compile Include="CommonValues\Arithmetic.cs" />
     <Compile Include="CommonValues\Compare.cs" />
+    <Compile Include="CommonValues\Composite.cs" />
     <Compile Include="CommonValues\GeneralValues.cs" />
     <Compile Include="CommonValues\Json.cs" />
     <Compile Include="CommonValues\Logic.cs" />

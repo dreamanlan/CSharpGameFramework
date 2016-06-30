@@ -315,6 +315,13 @@ namespace GameFramework.Skill.Trigers
                 m_TargetChecked = true;
                 m_RealDuration = m_Duration;
                 m_RealVelocity = m_Velocity;
+                if (m_RealDuration <= 0) {
+                    m_RealDuration += instance.CurSectionDuration;
+                }
+                if (m_RealDuration <= 0) {
+                    LogSystem.Warn("charge duration is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
+                    return false;
+                }
                 m_StartPos = obj.transform.position;
                 if (null != targetObj || m_IsForRoundMove) {
                     Vector3 targetPos = Vector3.zero;
@@ -347,8 +354,8 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < StartTime) {
                 return true;
             } else if (curSectionTime <= StartTime + m_RealDuration) {
-                if (null != m_Curve) {
-                    float time = (curSectionTime - StartTime) * 1.0f / m_RealDuration;
+                if (null != m_Curve && m_Curve.keys.Length >= 2) {
+                    float time = Mathf.Clamp01((curSectionTime - StartTime) * 1.0f / m_RealDuration);
                     float val = m_Curve.Evaluate(time);
                     Vector3 targetPos = Vector3.SlerpUnclamped(m_StartPos, m_TargetPos, val);
                     TriggerUtil.MoveObjTo(obj, targetPos);
@@ -481,6 +488,13 @@ namespace GameFramework.Skill.Trigers
                 m_TargetChecked = true;
                 m_RealDuration = m_Duration;
                 m_RealVelocity = m_Velocity;
+                if (m_RealDuration <= 0) {
+                    m_RealDuration += instance.CurSectionDuration;
+                }
+                if (m_RealDuration <= 0) {
+                    LogSystem.Warn("jump duration is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
+                    return false;
+                }
                 if (null != targetObj || m_IsForRoundMove) {
                     Vector3 srcPos = obj.transform.position;
                     Vector3 targetPos = Vector3.zero;

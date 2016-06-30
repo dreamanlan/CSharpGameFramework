@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics;
-
 namespace StorySystem.CommonValues
 {
     internal sealed class GetTypeValue : IStoryValue<object>
@@ -12,13 +11,10 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "gettype") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_TypeName.InitFromDsl(callData.GetParam(0));
-                    flag |= m_TypeName.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -27,19 +23,12 @@ namespace StorySystem.CommonValues
             val.m_TypeName = m_TypeName.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_TypeName.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_TypeName.Evaluate(instance);
+            m_TypeName.Evaluate(instance, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -54,13 +43,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -75,11 +57,9 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-
         private IStoryValue<string> m_TypeName = new StoryValue<string>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class DotnetCallValue : IStoryValue<object>
     {
@@ -87,21 +67,16 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "dotnetcall") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_Object.InitFromDsl(callData.GetParam(0));
                     m_Method.InitFromDsl(callData.GetParam(1));
-                    flag |= m_Object.Flag;
-                    flag |= m_Method.Flag;
                 }
                 for (int i = 2; i < callData.GetParamNum(); ++i) {
                     StoryValue val = new StoryValue();
                     val.InitFromDsl(callData.GetParam(i));
                     m_Args.Add(val);
-                    flag |= val.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -114,26 +89,15 @@ namespace StorySystem.CommonValues
             }
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_Object.Substitute(iterator, args);
-                m_Method.Substitute(iterator, args);
-                for (int i = 0; i < m_Args.Count; i++) {
-                    m_Args[i].Substitute(iterator, args);
-                }
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_Object.Evaluate(instance);
-            m_Method.Evaluate(instance);
+            m_Object.Evaluate(instance, iterator, args);
+            m_Method.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; i++) {
-                m_Args[i].Evaluate(instance);
+                m_Args[i].Evaluate(instance, iterator, args);
             }
             TryUpdateValue();
         }
@@ -149,13 +113,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -208,13 +165,11 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-
         private IStoryValue<object> m_Object = new StoryValue();
         private IStoryValue<string> m_Method = new StoryValue<string>();
         private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class DotnetGetValue : IStoryValue<object>
     {
@@ -222,21 +177,16 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "dotnetget") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_Object.InitFromDsl(callData.GetParam(0));
                     m_Method.InitFromDsl(callData.GetParam(1));
-                    flag |= m_Object.Flag;
-                    flag |= m_Method.Flag;
                 }
                 for (int i = 2; i < callData.GetParamNum(); ++i) {
                     StoryValue val = new StoryValue();
                     val.InitFromDsl(callData.GetParam(i));
                     m_Args.Add(val);
-                    flag |= val.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -249,26 +199,15 @@ namespace StorySystem.CommonValues
             }
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_Object.Substitute(iterator, args);
-                m_Method.Substitute(iterator, args);
-                for (int i = 0; i < m_Args.Count; i++) {
-                    m_Args[i].Substitute(iterator, args);
-                }
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_Object.Evaluate(instance);
-            m_Method.Evaluate(instance);
+            m_Object.Evaluate(instance, iterator, args);
+            m_Method.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; i++) {
-                m_Args[i].Evaluate(instance);
+                m_Args[i].Evaluate(instance, iterator, args);
             }
             TryUpdateValue();
         }
@@ -284,13 +223,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -343,13 +275,11 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-
         private IStoryValue<object> m_Object = new StoryValue();
         private IStoryValue<string> m_Method = new StoryValue<string>();
         private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class ChangeTypeValue : IStoryValue<object>
     {
@@ -357,14 +287,10 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "changetype") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 if (callData.GetParamNum() == 2) {
                     m_Object.InitFromDsl(callData.GetParam(0));
                     m_Type.InitFromDsl(callData.GetParam(1));
-                    flag |= m_Object.Flag;
-                    flag |= m_Type.Flag;
                 }
-                m_Flag = flag;
                 TryUpdateValue();
             }
         }
@@ -375,21 +301,13 @@ namespace StorySystem.CommonValues
             val.m_Type = m_Type.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_Object.Substitute(iterator, args);
-                m_Type.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_Object.Evaluate(instance);
-            m_Type.Evaluate(instance);
+            m_Object.Evaluate(instance, iterator, args);
+            m_Type.Evaluate(instance, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -404,13 +322,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -459,12 +370,10 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-
         private IStoryValue<object> m_Object = new StoryValue();
         private IStoryValue<string> m_Type = new StoryValue<string>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class PgrepValue : IStoryValue<object>
     {
@@ -472,12 +381,9 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "pgrep") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 if (callData.GetParamNum() == 1) {
                     m_Filter.InitFromDsl(callData.GetParam(0));
-                    flag |= m_Filter.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -486,19 +392,12 @@ namespace StorySystem.CommonValues
             val.m_Filter = m_Filter.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_Filter.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_Filter.Evaluate(instance);
+            m_Filter.Evaluate(instance, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -513,13 +412,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -548,11 +440,9 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-
         private IStoryValue<string> m_Filter = new StoryValue<string>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class PlistValue : IStoryValue<object>
     {
@@ -560,7 +450,6 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "plist") {
-                m_Flag = (int)StoryValueFlagMask.HAVE_VAR;
             }
         }
         public IStoryValue<object> Clone()
@@ -568,15 +457,12 @@ namespace StorySystem.CommonValues
             PlistValue val = new PlistValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-        }
-        public void Evaluate(StoryInstance instance)
-        {
+
             TryUpdateValue();
         }
         public void Analyze(StoryInstance instance)
@@ -594,13 +480,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -624,9 +503,7 @@ namespace StorySystem.CommonValues
                 m_Value = "";
             }
         }
-
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
 }

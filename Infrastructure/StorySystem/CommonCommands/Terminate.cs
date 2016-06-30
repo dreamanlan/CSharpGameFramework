@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-
 namespace StorySystem.CommonCommands
 {
     /// <summary>
     /// terminate();
     /// </summary>
-    internal class TerminateCommand : AbstractStoryCommand
+    internal sealed class TerminateCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
             TerminateCommand cmd = new TerminateCommand();
             return cmd;
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             instance.IsTerminated = true;
@@ -25,14 +23,13 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// pause();
     /// </summary>
-    internal class PauseCommand : AbstractStoryCommand
+    internal sealed class PauseCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
             PauseCommand cmd = new PauseCommand();
             return cmd;
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             instance.IsPaused = true;

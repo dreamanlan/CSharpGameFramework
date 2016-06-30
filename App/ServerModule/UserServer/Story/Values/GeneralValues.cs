@@ -12,7 +12,6 @@ namespace GameFramework.Story.Values
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "getuserinfo" && callData.GetParamNum() == 1) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_UserGuid.Flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -21,21 +20,12 @@ namespace GameFramework.Story.Values
             val.m_UserGuid = m_UserGuid.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_HaveValue = false;
-            m_Iterator = iterator;
-            m_Args = args;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_UserGuid.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_UserGuid.Evaluate(instance);
+            m_HaveValue = false;        
+            m_UserGuid.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -52,13 +42,6 @@ namespace GameFramework.Story.Values
                 return m_Value;
             }
         }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
-            }
-        }
 
         private void TryUpdateValue(StoryInstance instance)
         {
@@ -71,13 +54,8 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-
-        private object m_Iterator = null;
-        private object[] m_Args = null;
-
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
 }

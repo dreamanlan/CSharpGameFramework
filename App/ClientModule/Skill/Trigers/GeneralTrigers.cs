@@ -443,7 +443,7 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < StartTime)
                 return true;
             foreach (var pair in m_Params) {
-                instance.SetLocalVariable(pair.Key, pair.Value);
+                instance.SetVariable(pair.Key, pair.Value);
             }
             return false;
         }
@@ -562,7 +562,7 @@ namespace GameFramework.Skill.Trigers
             if (string.IsNullOrEmpty(m_Type)) {
                 needSetImpact = true;
             } else {
-                if (m_Type == "block" && instance.LocalVariables.ContainsKey("impact_block")) {
+                if (m_Type == "block" && instance.Variables.ContainsKey("impact_block")) {
                     needSetImpact = true;
                 }
             }
@@ -571,7 +571,7 @@ namespace GameFramework.Skill.Trigers
                 if (!m_IsExternalImpact) {
                     impact = SkillInstance.GenInnerHitSkillId(m_Impact <= 0 ? 1 : m_Impact);
                 }
-                instance.SetLocalVariable("impact", impact);
+                instance.SetVariable("impact", impact);
             }
             return false;
         }

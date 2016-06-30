@@ -72,6 +72,9 @@ namespace SkillSystem
         public SkillSection Clone()
         {
             SkillSection section = new SkillSection();
+            for (int i = 0; i < m_InitTrigers.Count; ++i) {
+                section.m_InitTrigers.Add(m_InitTrigers[i].Clone());
+            }
             for (int i = 0; i < m_LoadedTrigers.Count; i++) {
                 section.m_LoadedTrigers.Add(m_LoadedTrigers[i].Clone());
             }
@@ -82,10 +85,23 @@ namespace SkillSystem
         {
             Dsl.CallData callData = sectionData.Call;
             if (null != callData && callData.HaveParam()) {
-                if (callData.GetParamNum() > 0) {
-                    m_Duration = long.Parse(callData.GetParamId(0));
-                } else {
-                    m_Duration = 0;
+                m_InitTrigers.Clear();
+                int num = callData.GetParamNum();
+                for (int i = 0; i < num; ++i) {
+                    Dsl.ISyntaxComponent arg = callData.GetParam(i);
+                    if (arg is Dsl.ValueData) {
+                        m_Duration = long.Parse(arg.GetId());
+                    } else {
+                        ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(arg, dslSkillId);
+                        if (null != triger) {
+                            m_InitTrigers.Add(triger);
+                        } else {
+#if DEBUG
+                            string err = string.Format("CreateInitTriger failed, skill:{0} line:{1} triger:{2}", dslSkillId, arg.GetLine(), arg.ToScriptString());
+                            throw new Exception(err);
+#endif
+                        }
+                    }
                 }
             } else {
                 m_Duration = 0;
@@ -100,6 +116,7 @@ namespace SkillSystem
             m_Trigers.Clear();
             m_CurTime = 0;
             m_IsFinished = true;
+            m_IsInited = false;
         }
         public void Prepare()
         {
@@ -109,6 +126,7 @@ namespace SkillSystem
             m_Trigers.Clear();
             m_CurTime = 0;
             m_IsFinished = false;
+            m_IsInited = false;
             for (int i = 0; i < m_LoadedTrigers.Count; i++) {
                 m_Trigers.Add(m_LoadedTrigers[i]);
             }
@@ -127,6 +145,10 @@ namespace SkillSystem
             if (m_IsFinished) {
                 return;
             }
+            if (!m_IsInited) {
+                m_IsInited = true;
+                OnInit(sender, instance);
+            }
             m_CurTime += delta;
             int ct = m_Trigers.Count;
             for (int i = ct - 1; i >= 0; --i) {
@@ -136,23 +158,26 @@ namespace SkillSystem
                     m_Trigers.RemoveAt(i);
                 }
             }
-            if (m_CurTime / 1000 > m_Duration) {
+            if (m_Duration <= 0 || m_CurTime / 1000 > m_Duration) {
                 m_IsFinished = true;
             }
         }
-        public void Analyze(object sender, SkillInstance instance)
-        {
-            for (int i = 0; i < m_LoadedTrigers.Count; i++) {
-                m_LoadedTrigers[i].Analyze(sender, instance);
-            }
-        }
-        
+
         public SkillSection()
         {
             m_AccessorHelper.AddProperty("Duration", () => { return m_Duration; }, (object val) => { m_Duration = (long)Convert.ChangeType(val, typeof(long)); });
             m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; }, (object val) => { m_CurTime = (long)Convert.ChangeType(val, typeof(long)); });
         }
 
+        private void OnInit(object sender, SkillInstance instance)
+        {
+            for (int i = 0; i < m_InitTrigers.Count; ++i) {
+                m_InitTrigers[i].Reset();
+            }
+            for (int i = 0; i < m_InitTrigers.Count; ++i) {
+                m_InitTrigers[i].Execute(sender, instance, 0, 0);
+            }
+        }
         private void RefreshTrigers(Dsl.FunctionData sectionData, int dslSkillId)
         {
             m_LoadedTrigers.Clear();
@@ -172,7 +197,10 @@ namespace SkillSystem
         private long m_Duration = 0;
         private long m_CurTime = 0;
         private bool m_IsFinished = true;
+        private bool m_IsInited = false;
         private List<ISkillTriger> m_Trigers = new List<ISkillTriger>();
+
+        private List<ISkillTriger> m_InitTrigers = new List<ISkillTriger>();
         private List<ISkillTriger> m_LoadedTrigers = new List<ISkillTriger>();
         private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
     }
@@ -271,13 +299,6 @@ namespace SkillSystem
             return m_Trigers.Count <= 0 ? true : false;
         }
 
-        public void Analyze(object sender, SkillInstance instance)
-        {
-            for (int i = 0; i < m_LoadedTrigers.Count; i++) {
-                m_LoadedTrigers[i].Analyze(sender, instance);
-            }
-        }
-
         public SkillMessageHandler()
         {
             //m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; }, (object val) => { m_CurTime = (long)Convert.ChangeType(val, typeof(long)); });
@@ -352,7 +373,14 @@ namespace SkillSystem
         }
         public long CurSectionDuration
         {
-            get { return m_CurSectionDuration / 1000; }
+            get
+            {
+                long ret = 0;
+                if (m_CurSection >= 0 && m_CurSection < m_Sections.Count) {
+                    ret = m_Sections[m_CurSection].Duration;
+                }
+                return ret;
+            }
         }
         public long OriginalDelta
         {
@@ -378,66 +406,13 @@ namespace SkillSystem
             get { return m_GoToSectionId; }
             set { m_GoToSectionId = value; }
         }
-        public Dictionary<string, object> LocalVariables
+        public Dictionary<string, object> Variables
         {
-            get { return m_LocalVariables; }
-        }
-        public Dictionary<string, object> GlobalVariables
-        {
-            get { return m_GlobalVariables; }
-            set { m_GlobalVariables = value; }
+            get { return m_Variables; }
         }
         public TypedDataCollection CustomDatas
         {
             get { return m_CustomDatas; }
-        }
-        //----------------------------------------------
-        public bool AlreadyAnalyzed
-        {
-            get { return m_AlreadyAnalyzed; }
-            set { m_AlreadyAnalyzed = value; }
-        }
-        //下面几个property是Analyze获取的数据
-        public int StartWithoutStopMoveCount
-        {
-            get { return m_StartWithoutMoveCount; }
-            set { m_StartWithoutMoveCount = value; }
-        }
-        public int StopMoveCount
-        {
-            get { return m_StopMoveCount; }
-            set { m_StopMoveCount = value; }
-        }
-        //
-        public int EnableMoveCount
-        {
-            get { return m_EnableMoveCount; }
-            set { m_EnableMoveCount = value; }
-        }
-        public List<int> EnabledImpactsToOther
-        {
-            get { return m_EnabledImpactsToOther; }
-        }
-        public List<int> EnabledImpactsToMyself
-        {
-            get { return m_EnabledImpactsToMyself; }
-        }
-        public List<int> SummonNpcSkills
-        {
-            get { return m_SummonNpcSkills; }
-        }
-        public List<int> SummonNpcs
-        {
-            get { return m_SummonNpcs; }
-        }
-        public long MaxSkillLifeTime
-        {
-            get { return m_MaxSkillLifeTime; }
-            set { m_MaxSkillLifeTime = value; }
-        }
-        public List<string> Resources
-        {
-            get { return m_Resources; }
         }
         //----------------------------------------------
         public Dictionary<int, SkillInstance> EmitSkillInstances
@@ -498,22 +473,12 @@ namespace SkillSystem
             return list;
         }
         //----------------------------------------------
-        public void SetLocalVariable(string varName, object varValue)
+        public void SetVariable(string varName, object varValue)
         {
-            if (m_LocalVariables.ContainsKey(varName)) {
-                m_LocalVariables[varName] = varValue;
+            if (m_Variables.ContainsKey(varName)) {
+                m_Variables[varName] = varValue;
             } else {
-                m_LocalVariables.Add(varName, varValue);
-            }
-        }
-        public void SetGlobalVariable(string varName, object varValue)
-        {
-            if (null != m_GlobalVariables) {
-                if (m_GlobalVariables.ContainsKey(varName)) {
-                    m_GlobalVariables[varName] = varValue;
-                } else {
-                    m_GlobalVariables.Add(varName, varValue);
-                }
+                m_Variables.Add(varName, varValue);
             }
         }
         //----------------------------------------------
@@ -523,14 +488,6 @@ namespace SkillSystem
             for (int i = 0; i < m_Sections.Count; i++) {
                 instance.m_Sections.Add(m_Sections[i].Clone());
             }
-            instance.m_IsInterrupted = false;
-            instance.m_IsFinished = false;
-            instance.m_CurSection = 0;
-            instance.m_CurSectionDuration = 0;
-            instance.m_CurSectionTime = 0;
-            instance.m_CurTime = 0;
-            instance.m_GoToSectionId = -1;
-
             instance.m_InnerDslSkillId = m_InnerDslSkillId;
             instance.m_OuterDslSkillId = m_OuterDslSkillId;
             instance.m_DslSkillId = m_DslSkillId;
@@ -568,12 +525,12 @@ namespace SkillSystem
                 section.Reset();
             }
             m_MessageQueue.Clear();
-            m_LocalVariables.Clear();
+            m_Variables.Clear();
             m_CustomDatas.Clear();
         }
         public void Start(object sender)
         {
-            m_CurTime = 0;            
+            m_CurTime = 0;
             m_CurSection = -1;
         }
         public void SendMessage(string msgId)
@@ -619,42 +576,11 @@ namespace SkillSystem
             if (IsMessageDone() && IsAllSectionDone()) {
                 OnSkillStop(sender);
             }
-        }        
-        public void Analyze(object sender)
-        {
-            m_StartWithoutMoveCount = 0;
-            m_StopMoveCount = 0;
-
-            m_EnableMoveCount = 0;
-            m_EnabledImpactsToOther.Clear();
-            m_EnabledImpactsToMyself.Clear();
-            m_SummonNpcSkills.Clear();
-            m_SummonNpcs.Clear();
-            m_MaxSkillLifeTime = 0;
-
-            for (int i = 0; i < m_Sections.Count; i++) {
-                m_Sections[i].Analyze(sender, this);
-                m_MaxSkillLifeTime += m_Sections[i].Duration;
-            }
-            for (int i = 0; i < m_MessageHandlers.Count; i++) {
-                m_MessageHandlers[i].Analyze(sender, this);
-                m_MaxSkillLifeTime += 1000;
-            }
-            if (null != m_InterruptSection) {
-                m_InterruptSection.Analyze(sender, this);
-            }
-            if (null != m_StopSection) {
-                m_StopSection.Analyze(sender, this);
-            }
-
-            m_EnableMoveCount = m_StopMoveCount + (m_StartWithoutMoveCount > 0 ? 1 : 0);
-
-            m_AlreadyAnalyzed = true;
         }
         public void OnInterrupt(object sender)
         {
             if (m_InterruptSection != null) {
-                m_InterruptSection.Prepare();                
+                m_InterruptSection.Prepare();
                 m_InterruptSection.Tick(sender, this, m_CurTime);
             }
             ResetCurSection();
@@ -687,7 +613,7 @@ namespace SkillSystem
                 SkillSection section = m_Sections[m_CurSection];
                 section.Duration = duration;
             }
-        }    
+        }
         public void AdjustCurSectionDuration(long leftDuration)
         {
             if (!IsSectionDone(m_CurSection)) {
@@ -740,10 +666,9 @@ namespace SkillSystem
             if (index >= 0 && index < m_Sections.Count) {
                 SkillSection section = m_Sections[index];
                 m_CurSection = index;
-                m_CurSectionDuration = section.Duration * 1000;
                 m_CurSectionTime = 0;
                 section.Prepare();
-                LogSystem.Debug("ChangeToSection:{0} duration:{1}", index, m_CurSectionDuration);
+                LogSystem.Debug("ChangeToSection:{0} duration:{1}", index, section.Duration);
             }
         }
         private void DoFirstSectionTick(object sender)
@@ -862,7 +787,7 @@ namespace SkillSystem
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
                         if (null != sectionData) {
                             PrepareInnerEmitSkillInstances();
-                            SkillInstance inst= new SkillInstance();
+                            SkillInstance inst = new SkillInstance();
                             inst.Init(sectionData);
                             Dsl.CallData header = sectionData.Call;
                             int innerId = 0;
@@ -968,7 +893,6 @@ namespace SkillSystem
 
         private int m_CurSection = -1;
         private int m_GoToSectionId = -1;
-        private long m_CurSectionDuration = 0;
         private long m_CurSectionTime = 0;
         private long m_CurTime = 0;
         private long m_OriginalDelta = 0;
@@ -984,22 +908,7 @@ namespace SkillSystem
         private SkillMessageHandler m_StopSection = null;
         private SkillMessageHandler m_InterruptSection = null;
 
-        private bool m_AlreadyAnalyzed = false;
-
-        private int m_StartWithoutMoveCount = 0;
-        private int m_StopMoveCount = 0;
-        private int m_EnableMoveCount = 0;
-
-        private List<int> m_EnabledImpactsToOther = new List<int>();
-        private List<int> m_EnabledImpactsToMyself = new List<int>();
-        private List<int> m_SummonNpcSkills = new List<int>();
-        private List<int> m_SummonNpcs = new List<int>();
-        private List<string> m_Resources = new List<string>();
-
-        private long m_MaxSkillLifeTime = 0;
-        
-        private Dictionary<string, object> m_LocalVariables = new Dictionary<string, object>();
-        private Dictionary<string, object> m_GlobalVariables = null;
+        private Dictionary<string, object> m_Variables = new Dictionary<string, object>();
         private TypedDataCollection m_CustomDatas = new TypedDataCollection();
 
         private int m_InnerDslSkillId = 0;
@@ -1008,7 +917,7 @@ namespace SkillSystem
         private Dictionary<int, SkillInstance> m_HitSkillInstances = null;
 
         private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
-        
+
         public static int GenInnerEmitSkillId(int id)
         {
             return (c_InnerEmitSkillIdOffset + id) * c_InnerSkillIdAmplification;

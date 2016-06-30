@@ -22,14 +22,9 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_StoryId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_StoryId.Evaluate(instance);
+            m_StoryId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -66,14 +61,9 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_StoryId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_StoryId.Evaluate(instance);
+            m_StoryId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -120,31 +110,17 @@ namespace GameFramework.Story.Commands
             m_CurTime = 0;
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_StoryIds.Count; i++) {
-                m_StoryIds[i].Substitute(iterator, args);
+                m_StoryIds[i].Evaluate(instance, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Substitute(iterator, args);
-                m_SetVal.Substitute(iterator, args);
-                m_TimeoutVal.Substitute(iterator, args);
-                m_TimeoutSetVar.Substitute(iterator, args);
-                m_TimeoutSetVal.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_StoryIds.Count; i++) {
-                m_StoryIds[i].Evaluate(instance);
-            }
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance);
-                m_SetVal.Evaluate(instance);
-                m_TimeoutVal.Evaluate(instance);
-                m_TimeoutSetVar.Evaluate(instance);
-                m_TimeoutSetVal.Evaluate(instance);
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
             }
         }
 
@@ -249,21 +225,12 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_MsgId.Substitute(iterator, args);
+            m_MsgId.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_MsgArgs.Count; ++i) {
                 IStoryValue<object> val = m_MsgArgs[i];
-                val.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_MsgId.Evaluate(instance);
-            for (int i = 0; i < m_MsgArgs.Count; ++i) {
-                IStoryValue<object> val = m_MsgArgs[i];
-                val.Evaluate(instance);
+                val.Evaluate(instance, iterator, args);
             }
         }
 
@@ -325,31 +292,17 @@ namespace GameFramework.Story.Commands
             m_StartTime = 0;
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Substitute(iterator, args);
-                m_SetVal.Substitute(iterator, args);
-                m_TimeoutVal.Substitute(iterator, args);
-                m_TimeoutSetVar.Substitute(iterator, args);
-                m_TimeoutSetVal.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance);
-                m_SetVal.Evaluate(instance);
-                m_TimeoutVal.Evaluate(instance);
-                m_TimeoutSetVar.Evaluate(instance);
-                m_TimeoutSetVal.Evaluate(instance);
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
             }
         }
 
@@ -469,31 +422,17 @@ namespace GameFramework.Story.Commands
             m_CurTime = 0;
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Substitute(iterator, args);
-                m_SetVal.Substitute(iterator, args);
-                m_TimeoutVal.Substitute(iterator, args);
-                m_TimeoutSetVar.Substitute(iterator, args);
-                m_TimeoutSetVal.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance);
-                m_SetVal.Evaluate(instance);
-                m_TimeoutVal.Evaluate(instance);
-                m_TimeoutSetVar.Evaluate(instance);
-                m_TimeoutSetVal.Evaluate(instance);
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
             }
         }
 
@@ -597,25 +536,14 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             if (m_HaveUserGuid)
-                m_UserGuid.Substitute(iterator, args);
-            m_Msg.Substitute(iterator, args);
+                m_UserGuid.Evaluate(instance, iterator, args);
+            m_Msg.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> val = m_Args[i];
-                val.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            if (m_HaveUserGuid)
-                m_UserGuid.Evaluate(instance);
-            m_Msg.Evaluate(instance);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
-                val.Evaluate(instance);
+                val.Evaluate(instance, iterator, args);
             }
         }
 
@@ -720,25 +648,14 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             if (m_HaveUserGuid)
-                m_UserGuid.Substitute(iterator, args);
-            m_Msg.Substitute(iterator, args);
+                m_UserGuid.Evaluate(instance, iterator, args);
+            m_Msg.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> val = m_Args[i];
-                val.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            if (m_HaveUserGuid)
-                m_UserGuid.Evaluate(instance);
-            m_Msg.Evaluate(instance);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
-                val.Evaluate(instance);
+                val.Evaluate(instance, iterator, args);
             }
         }
 
@@ -843,27 +760,15 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             if (m_HaveUserGuid)
-                m_UserGuid.Substitute(iterator, args);
-            m_EventName.Substitute(iterator, args);
-            m_Group.Substitute(iterator, args);
+                m_UserGuid.Evaluate(instance, iterator, args);
+            m_EventName.Evaluate(instance, iterator, args);
+            m_Group.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> val = m_Args[i];
-                val.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            if (m_HaveUserGuid)
-                m_UserGuid.Evaluate(instance);
-            m_EventName.Evaluate(instance);
-            m_Group.Evaluate(instance);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
-                val.Evaluate(instance);
+                val.Evaluate(instance, iterator, args);
             }
         }
 
@@ -973,27 +878,15 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             if (m_HaveUserGuid)
-                m_UserGuid.Substitute(iterator, args);
-            m_ObjName.Substitute(iterator, args);
-            m_Msg.Substitute(iterator, args);
+                m_UserGuid.Evaluate(instance, iterator, args);
+            m_ObjName.Evaluate(instance, iterator, args);
+            m_Msg.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> val = m_Args[i];
-                val.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            if (m_HaveUserGuid)
-                m_UserGuid.Evaluate(instance);
-            m_ObjName.Evaluate(instance);
-            m_Msg.Evaluate(instance);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
-                val.Evaluate(instance);
+                val.Evaluate(instance, iterator, args);
             }
         }
 
@@ -1103,27 +996,15 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             if (m_HaveUserGuid)
-                m_UserGuid.Substitute(iterator, args);
-            m_ObjTag.Substitute(iterator, args);
-            m_Msg.Substitute(iterator, args);
+                m_UserGuid.Evaluate(instance, iterator, args);
+            m_ObjTag.Evaluate(instance, iterator, args);
+            m_Msg.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> val = m_Args[i];
-                val.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            if (m_HaveUserGuid)
-                m_UserGuid.Evaluate(instance);
-            m_ObjTag.Evaluate(instance);
-            m_Msg.Evaluate(instance);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
-                val.Evaluate(instance);
+                val.Evaluate(instance, iterator, args);
             }
         }
 
@@ -1234,23 +1115,13 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UserGuid.Substitute(iterator, args);
-            m_DictId.Substitute(iterator, args);
+            m_UserGuid.Evaluate(instance, iterator, args);
+            m_DictId.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_DictArgs.Count; ++i) {
                 IStoryValue<object> val = m_DictArgs[i];
-                val.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UserGuid.Evaluate(instance);
-            m_DictId.Evaluate(instance);
-            for (int i = 0; i < m_DictArgs.Count; ++i) {
-                IStoryValue<object> val = m_DictArgs[i];
-                val.Evaluate(instance);
+                val.Evaluate(instance, iterator, args);
             }
         }
 

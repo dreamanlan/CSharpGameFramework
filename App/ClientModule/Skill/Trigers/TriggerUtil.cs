@@ -219,12 +219,12 @@ namespace GameFramework.Skill.Trigers
         {
             ScriptRuntime.Vector3 pos;
             object posVal;
-            if (instance.LocalVariables.TryGetValue("skill_targetpos", out posVal)) {
+            if (instance.Variables.TryGetValue("skill_targetpos", out posVal)) {
                 pos = (ScriptRuntime.Vector3)posVal;
                 targetPos = new Vector3(pos.X, pos.Y, pos.Z);
                 return true;
             }
-            if (instance.LocalVariables.TryGetValue("skill_homepos", out posVal)) {
+            if (instance.Variables.TryGetValue("skill_homepos", out posVal)) {
                 pos = (ScriptRuntime.Vector3)posVal;
                 targetPos = new Vector3(pos.X, pos.Y, pos.Z);
                 return true;
@@ -232,7 +232,7 @@ namespace GameFramework.Skill.Trigers
             float dist = cfg.distance;
             if (dist <= Geometry.c_FloatPrecision) {
                 object val;
-                if (instance.LocalVariables.TryGetValue("skill_distance", out val)) {
+                if (instance.Variables.TryGetValue("skill_distance", out val)) {
                     dist = (float)Convert.ChangeType(val, typeof(float));
                 } else {
                     dist = EntityController.Instance.CalcSkillDistance(dist, srcId, targetId);
@@ -254,7 +254,7 @@ namespace GameFramework.Skill.Trigers
         //-----------------------------------------------------------------------------------------------------------
         public static void CalcImpactConfig(int emitImpact, int hitImpact, SkillInstance instance, TableConfig.Skill cfg, out Dictionary<string, object> result)
         {
-            var variables = instance.LocalVariables;
+            var variables = instance.Variables;
             result = new Dictionary<string, object>(variables);
             if (null != instance.EmitSkillInstances) {
                 if (emitImpact <= 0)

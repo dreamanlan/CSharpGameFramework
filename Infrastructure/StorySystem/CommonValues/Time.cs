@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameFramework;
-
 namespace StorySystem.CommonValues
 {
     internal sealed class TimeValue : IStoryValue<object>
@@ -10,7 +9,6 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "time") {
-                m_Flag = (int)StoryValueFlagMask.HAVE_VAR;
             }
         }
         public IStoryValue<object> Clone()
@@ -18,15 +16,12 @@ namespace StorySystem.CommonValues
             TimeValue val = new TimeValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-        }
-        public void Evaluate(StoryInstance instance)
-        {
+
             m_Value = (int)TimeUtility.GetLocalMilliseconds();
             m_HaveValue = true;
         }
@@ -47,16 +42,8 @@ namespace StorySystem.CommonValues
                 return m_Value;
             }
         }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
-            }
-        }
 
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
 }

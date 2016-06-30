@@ -105,7 +105,6 @@ namespace SkillSystem
         void InitProperties();
         void Reset();//复位触发器到初始状态
         bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime);//执行触发器，返回false表示触发器结束，下一tick不再执行
-        void Analyze(object sender, SkillInstance instance);//语义分析，配合上下文sender与instance进行语义分析，在执行前收集必要的信息
     }
     public abstract class AbstractSkillTriger : ISkillTriger
     {
@@ -173,7 +172,6 @@ namespace SkillSystem
         }
         public virtual void Reset() { }
         public virtual bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime) { return false; }
-        public virtual void Analyze(object sender, SkillInstance instance) { }
         
         protected abstract ISkillTriger OnClone();
 
@@ -217,7 +215,7 @@ namespace SkillSystem
                 return key;
             } else {
                 object val;
-                if (instance.LocalVariables.TryGetValue(key, out val)) {
+                if (instance.Variables.TryGetValue(key, out val)) {
                     return val.ToString();
                 } else {
                     string ret;
@@ -232,7 +230,7 @@ namespace SkillSystem
         public static string RefixStringVariable(string key, SkillInstance instance)
         {
             object val;
-            if (instance.LocalVariables.TryGetValue(key, out val)) {
+            if (instance.Variables.TryGetValue(key, out val)) {
                 return val.ToString();
             }
             return key;
@@ -240,7 +238,7 @@ namespace SkillSystem
         public static T RefixNonStringVariable<T>(string key, SkillInstance instance)
         {
             object val;
-            if (instance.LocalVariables.TryGetValue(key, out val)) {
+            if (instance.Variables.TryGetValue(key, out val)) {
                 return (T)Convert.ChangeType(val,typeof(T));
             }
             return default(T);
@@ -248,7 +246,7 @@ namespace SkillSystem
         public static object RefixObjectVariable(string key, SkillInstance instance)
         {
             object val;
-            if (instance.LocalVariables.TryGetValue(key, out val)) {
+            if (instance.Variables.TryGetValue(key, out val)) {
                 return val;
             }
             return key;

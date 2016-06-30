@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameFramework;
-
 namespace StorySystem
 {
     /// <summary>
@@ -48,6 +47,10 @@ namespace StorySystem
         {
             get { return m_IsInTick; }
         }
+        public Dictionary<string, object> StackVariables
+        {
+            get { return m_StackVariables; }
+        }
         public StoryMessageHandler Clone()
         {
             StoryMessageHandler handler = new StoryMessageHandler();
@@ -55,19 +58,45 @@ namespace StorySystem
                 handler.m_LoadedCommands.Add(m_LoadedCommands[i].Clone());
             }
             handler.m_MessageId = m_MessageId;
+            handler.m_ArgumentNames = m_ArgumentNames;
             return handler;
         }
         public void Load(Dsl.FunctionData messageHandlerData)
         {
             Dsl.CallData callData = messageHandlerData.Call;
             if (null != callData && callData.HaveParam()) {
-                string[] args = new string[callData.GetParamNum()];
-                for (int i = 0; i < callData.GetParamNum(); ++i) {
+                int paramNum = callData.GetParamNum();
+                string[] args = new string[paramNum];
+                for (int i = 0; i < paramNum; ++i) {
                     args[i] = callData.GetParamId(i);
                 }
                 m_MessageId = string.Join(":", args);
             }
             RefreshCommands(messageHandlerData);
+        }
+        public void Load(Dsl.StatementData messageHandlerData)
+        {
+            Dsl.CallData first = messageHandlerData.First.Call;
+            Dsl.FunctionData func = messageHandlerData.Second;
+            Dsl.CallData second = func.Call;
+            if (null != first && first.HaveParam()) {
+                int paramNum = first.GetParamNum();
+                string[] args = new string[paramNum];
+                for (int i = 0; i < paramNum; ++i) {
+                    args[i] = first.GetParamId(i);
+                }
+                m_MessageId = string.Join(":", args);
+            }
+            if (null != second && second.GetId() == "args" && second.HaveParam()) {
+                int paramNum = second.GetParamNum();
+                if (paramNum > 0) {
+                    m_ArgumentNames = new string[paramNum];
+                    for (int i = 0; i < paramNum; ++i) {
+                        m_ArgumentNames[i] = second.GetParamId(i);
+                    }
+                }
+            }
+            RefreshCommands(func);
         }
         public void Reset()
         {
@@ -77,12 +106,16 @@ namespace StorySystem
                 cmd.Reset();
             }
             m_CommandQueue.Clear();
+            m_StackVariables.Clear();
         }
         public void Prepare()
         {
             Reset();
             for (int i = 0; i < m_LoadedCommands.Count; i++) {
-                m_CommandQueue.Enqueue(m_LoadedCommands[i]);
+                IStoryCommand cmd = m_LoadedCommands[i];
+                if (null != cmd.LeadCommand)
+                    m_CommandQueue.Enqueue(cmd.LeadCommand);
+                m_CommandQueue.Enqueue(cmd);
             }
         }
         public void Tick(StoryInstance instance, long delta)
@@ -91,10 +124,11 @@ namespace StorySystem
                 return;
             }
             try {
+                instance.StackVariables = StackVariables;
                 m_IsInTick = true;
                 while (m_CommandQueue.Count > 0) {
                     IStoryCommand cmd = m_CommandQueue.Peek();
-                    if (cmd.Execute(instance, delta)) {
+                    if (cmd.Execute(instance, delta, null, m_Arguments)) {
                         break;
                     } else {
                         cmd.Reset();
@@ -111,13 +145,15 @@ namespace StorySystem
         public void Trigger(StoryInstance instance, object[] args)
         {
             Prepare();
+            instance.StackVariables = StackVariables;
             m_IsTriggered = true;
             m_Arguments = args;
-            foreach (IStoryCommand cmd in m_CommandQueue) {
-                cmd.Prepare(instance, args.Length, args);
+            if (null != m_ArgumentNames) {
+                for(int i=0;i<m_ArgumentNames.Length && i<args.Length;++i) {
+                    instance.SetVariable(m_ArgumentNames[i], args[i]);
+                };
             }
         }
-
         private void RefreshCommands(Dsl.FunctionData handlerData)
         {
             m_LoadedCommands.Clear();
@@ -128,16 +164,15 @@ namespace StorySystem
                 }
             }
         }
-
         private string m_MessageId = "";
         private bool m_IsTriggered = false;
         private bool m_IsPaused = false;
         private bool m_IsInTick = false;
         private Queue<IStoryCommand> m_CommandQueue = new Queue<IStoryCommand>();
-
+        private string[] m_ArgumentNames = null;
         private object[] m_Arguments = null;
-
         private List<IStoryCommand> m_LoadedCommands = new List<IStoryCommand>();
+        private Dictionary<string, object> m_StackVariables = new Dictionary<string, object>();
     }
     public sealed class StoryInstance
     {
@@ -179,13 +214,26 @@ namespace StorySystem
             get { return m_GlobalVariables; }
             set { m_GlobalVariables = value; }
         }
+        public Dictionary<string, object> StackVariables
+        {
+            get { return m_StackVariables; }
+            set { m_StackVariables = value; }
+        }
         public TypedDataCollection CustomDatas
         {
             get { return m_CustomDatas; }
         }
         public void SetVariable(string varName, object varValue)
         {
-            if (varName.StartsWith("@") && !varName.StartsWith("@@")) {
+            if (varName.StartsWith("$")) {
+                if (null != m_StackVariables) {
+                    if (m_StackVariables.ContainsKey(varName)) {
+                        m_StackVariables[varName] = varValue;
+                    } else {
+                        m_StackVariables.Add(varName, varValue);
+                    }
+                }
+            } else if (varName.StartsWith("@") && !varName.StartsWith("@@")) {
                 if (m_LocalVariables.ContainsKey(varName)) {
                     m_LocalVariables[varName] = varValue;
                 } else {
@@ -200,6 +248,23 @@ namespace StorySystem
                     }
                 }
             }
+        }
+        public bool TryGetVariable(string varName, out object val)
+        {
+            bool ret = false;
+            val = null;
+            if (varName.StartsWith("$")) {
+                if(null!=m_StackVariables){
+                    ret = m_StackVariables.TryGetValue(varName, out val);
+                }
+            } else if (varName.StartsWith("@") && !varName.StartsWith("@@")) {
+                ret = m_LocalVariables.TryGetValue(varName, out val);
+            } else {
+                if (null != m_GlobalVariables) {
+                    ret = m_GlobalVariables.TryGetValue(varName, out val);
+                }
+            }
+            return ret;
         }
         public StoryInstance Clone()
         {
@@ -252,14 +317,23 @@ namespace StorySystem
                             string err = string.Format("Story {0} DSL, local must be a function ! line:{1} local:{2}", m_StoryId, story.Statements[i].GetLine(), story.Statements[i].ToScriptString());
                             throw new Exception(err);
 #else
-              LogSystem.Error("Story {0} DSL, local must be a function !", m_StoryId);
+                            LogSystem.Error("Story {0} DSL, local must be a function !", m_StoryId);
 #endif
                         }
                     } else if (story.Statements[i].GetId() == "onmessage" || story.Statements[i].GetId() == "onnamespacedmessage") {
-                        Dsl.FunctionData sectionData = story.Statements[i] as Dsl.FunctionData;
-                        if (null != sectionData) {
-                            StoryMessageHandler handler = new StoryMessageHandler();
-                            handler.Load(sectionData);
+                        StoryMessageHandler handler = null;
+                        Dsl.StatementData msgData = story.Statements[i] as Dsl.StatementData;
+                        if (null != msgData) {
+                            handler = new StoryMessageHandler();
+                            handler.Load(msgData);
+                        } else {
+                            Dsl.FunctionData sectionData = story.Statements[i] as Dsl.FunctionData;
+                            if (null != sectionData) {
+                                handler = new StoryMessageHandler();
+                                handler.Load(sectionData);
+                            }
+                        }
+                        if (null != handler) {
                             string msgId;
                             if (!string.IsNullOrEmpty(m_Namespace) && story.Statements[i].GetId() == "onnamespacedmessage") {
                                 msgId = string.Format("{0}:{1}", m_Namespace, handler.MessageId);
@@ -275,15 +349,15 @@ namespace StorySystem
                                 string err = string.Format("Story {0} DSL, onmessage or onnamespacedmessage {1} duplicate, discard it ! line:{2}", m_StoryId, msgId, story.Statements[i].GetLine());
                                 throw new Exception(err);
 #else
-                LogSystem.Error("Story {0} DSL, onmessage {1} duplicate, discard it !", m_StoryId, msgId);
+                                LogSystem.Error("Story {0} DSL, onmessage {1} duplicate, discard it !", m_StoryId, msgId);
 #endif
                             }
                         } else {
 #if DEBUG
-                            string err = string.Format("Story {0} DSL, onmessage must be a function ! line:{1} onmessage:{2}", m_StoryId, story.Statements[i].GetLine(), story.Statements[i].ToScriptString());
+                            string err = string.Format("Story {0} DSL, onmessage must be a function or statement ! line:{1} onmessage:{2}", m_StoryId, story.Statements[i].GetLine(), story.Statements[i].ToScriptString());
                             throw new Exception(err);
 #else
-              LogSystem.Error("Story {0} DSL, onmessage must be a function !", m_StoryId);
+                            LogSystem.Error("Story {0} DSL, onmessage must be a function !", m_StoryId);
 #endif
                         }
                     } else {
@@ -291,7 +365,7 @@ namespace StorySystem
                         string err = string.Format("StoryInstance::Init, Story {0} unknown part {1}, line:{2} section:{3}", m_StoryId, story.Statements[i].GetId(), story.Statements[i].GetLine(), story.Statements[i].ToScriptString());
                         throw new Exception(err);
 #else
-            LogSystem.Error("StoryInstance::Init, Story {0} unknown part {1}", m_StoryId, story.Statements[i].GetId());
+                        LogSystem.Error("StoryInstance::Init, Story {0} unknown part {1}", m_StoryId, story.Statements[i].GetId());
 #endif
                     }
                 }
@@ -300,7 +374,7 @@ namespace StorySystem
                 string err = string.Format("StoryInstance::Init, isn't story DSL, line:{0} story:{1}", story.GetLine(), story.ToScriptString());
                 throw new Exception(err);
 #else
-        LogSystem.Error("StoryInstance::Init, isn't story DSL");
+                LogSystem.Error("StoryInstance::Init, isn't story DSL");
 #endif
             }
             LogSystem.Debug("StoryInstance.Init message handler num:{0} {1}", m_MessageHandlers.Count, ret);
@@ -440,7 +514,6 @@ namespace StorySystem
             m_Message2TriggerTimes.TryGetValue(msgId, out time);
             return time;
         }
-
         private void UpdateMessageTriggerTime(string msgId, long time)
         {
             if (m_Message2TriggerTimes.ContainsKey(msgId)) {
@@ -449,19 +522,16 @@ namespace StorySystem
                 m_Message2TriggerTimes.Add(msgId, time);
             }
         }
-
         private class MessageInfo
         {
             public string m_MsgId = null;
             public object[] m_Args = null;
         }
-
         private long m_CurTime = 0;
         private long m_LastTickTime = 0;
-
         private Dictionary<string, object> m_LocalVariables = new Dictionary<string, object>();
         private Dictionary<string, object> m_GlobalVariables = null;
-
+        private Dictionary<string, object> m_StackVariables = null;
         private string m_StoryId = string.Empty;
         private string m_Namespace = string.Empty;
         private bool m_IsTerminated = false;
@@ -472,7 +542,6 @@ namespace StorySystem
         private List<StoryMessageHandler> m_MessageHandlers = new List<StoryMessageHandler>();
         private Dictionary<string, object> m_PreInitedLocalVariables = new Dictionary<string, object>();
         private Dictionary<string, long> m_Message2TriggerTimes = new Dictionary<string, long>();
-
         private TypedDataCollection m_CustomDatas = new TypedDataCollection();
     }
 }

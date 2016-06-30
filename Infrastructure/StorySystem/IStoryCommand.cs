@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 namespace StorySystem
 {
     /// <summary>
@@ -11,14 +10,15 @@ namespace StorySystem
     {
         void Init(Dsl.ISyntaxComponent config);//从DSL语言初始化命令实例
         IStoryCommand Clone();//克隆一个新实例，每个命令只从DSL语言初始化一次，之后的实例由克隆产生，提升性能
+        IStoryCommand LeadCommand { get; }   //用DSL实现的支持递归的command，自身不知道何时是新调用开始，此时借助一个引导命令来发起新调用。
         void Reset();//复位实例，保证实例状态为初始状态。
-        void Prepare(StoryInstance instance, object iterator, object[] args);//准备执行，处理参数与一些上下文相关且在执行过程中不再更新的依赖
-        bool Execute(StoryInstance instance, long delta);//执行命令，包括处理变量及命令逻辑
+        bool Execute(StoryInstance instance, long delta, object iterator, object[] args);//执行命令，包括处理参数、变量及命令逻辑
     }
     public abstract class AbstractStoryCommand : IStoryCommand
     {
         //此命令是否复合命令。
-        //注意：复合命令需要自己手动调用Evaluate方法，系统不为复合命令调用此方法！
+        //注意：复合命令需要自己手动调用Evaluate方法，系统不为复合命令调用此方法
+        //(也就是说此种情形Evaluate只是推荐了一个与其它命令相似的方法接口)！
         public bool IsCompositeCommand
         {
             get { return m_IsCompositeCommand; }
@@ -44,35 +44,41 @@ namespace StorySystem
                 }
             }
         }
-
         public void Reset()
         {
-            m_LastExecResult = false;
+            if (!IsCompositeCommand) {
+                m_LastExecResult = false;
+            }
             ResetState();
         }
-
-        public void Prepare(StoryInstance instance, object iterator, object[] args)
+        public bool Execute(StoryInstance instance, long delta, object iterator, object[] args)
         {
-            Substitute(iterator, args);
-        }
-        public bool Execute(StoryInstance instance, long delta)
-        {
-            if (!IsCompositeCommand && !m_LastExecResult) {
-                //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
-                Evaluate(instance);
+            if (IsCompositeCommand) {
+                return ExecCommand(instance, delta, iterator, args);
+            } else {
+                if (!m_LastExecResult) {
+                    //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
+                    Evaluate(instance, iterator, args);
+                }
+                m_LastExecResult = ExecCommand(instance, delta);
+                return m_LastExecResult;
             }
-            m_LastExecResult = ExecCommand(instance, delta);
-            return m_LastExecResult;
         }
         public abstract IStoryCommand Clone();
+        public virtual IStoryCommand LeadCommand
+        {
+            get { return null; }
+        }
         protected virtual void ResetState() { }
-        protected virtual void Substitute(object iterator, object[] args) { }
-        protected virtual void Evaluate(StoryInstance instance) { }
+        protected virtual void Evaluate(StoryInstance instance, object iterator, object[] args) { }
         protected virtual bool ExecCommand(StoryInstance instance, long delta)
         {
             return false;
         }
-
+        protected virtual bool ExecCommand(StoryInstance instance, long delta, object iterator, object[] args)
+        {
+            return false;
+        }
         protected virtual void Load(Dsl.CallData callData) { }
         protected virtual void Load(Dsl.FunctionData funcData) { }
         protected virtual void Load(Dsl.StatementData statementData) { }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
 namespace StorySystem.CommonValues
 {
     internal sealed class FormatValue : IStoryValue<object>
@@ -10,19 +9,16 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "format") {
-                int flag = 0;
+
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_Format.InitFromDsl(callData.GetParam(0));
-                    flag |= m_Format.Flag;
                 }
                 for (int i = 1; i < callData.GetParamNum(); ++i) {
                     StoryValue val = new StoryValue();
                     val.InitFromDsl(callData.GetParam(i));
                     m_FormatArgs.Add(val);
-                    flag |= val.Flag;
                 }
-                m_Flag = flag;
                 TryUpdateValue();
             }
         }
@@ -35,24 +31,14 @@ namespace StorySystem.CommonValues
             }
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_Format.Substitute(iterator, args);
-                for (int i = 0; i < m_FormatArgs.Count; i++) {
-                    m_FormatArgs[i].Substitute(iterator, args);
-                }
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_Format.Evaluate(instance);
+            m_Format.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_FormatArgs.Count; i++) {
-                m_FormatArgs[i].Evaluate(instance);
+                m_FormatArgs[i].Evaluate(instance, iterator, args);
             }
             TryUpdateValue();
         }
@@ -68,13 +54,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -102,12 +81,10 @@ namespace StorySystem.CommonValues
                 m_Value = string.Format(format, args);
             }
         }
-
         private IStoryValue<string> m_Format = new StoryValue<string>();
         private List<IStoryValue<object>> m_FormatArgs = new List<IStoryValue<object>>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class SubstringValue : IStoryValue<object>
     {
@@ -115,18 +92,15 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "substring" && callData.GetParamNum() > 0) {
-                int flag = 0;
+
                 m_ParamNum = callData.GetParamNum();
                 m_Start.InitFromDsl(callData.GetParam(0));
                 if (m_ParamNum > 1) {
                     m_Start.InitFromDsl(callData.GetParam(1));
-                    flag |= m_Start.Flag;
                 }
                 if (m_ParamNum > 2) {
                     m_Length.InitFromDsl(callData.GetParam(2));
-                    flag |= m_Length.Flag;
                 }
-                m_Flag = flag;
                 TryUpdateValue();
             }
         }
@@ -139,27 +113,16 @@ namespace StorySystem.CommonValues
             val.m_Length = m_Length.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_String.Substitute(iterator, args);
-                if (m_ParamNum > 1)
-                    m_Start.Substitute(iterator, args);
-                if (m_ParamNum > 2)
-                    m_Length.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_String.Evaluate(instance);
+            m_String.Evaluate(instance, iterator, args);
             if (m_ParamNum > 1)
-                m_Start.Evaluate(instance);
+                m_Start.Evaluate(instance, iterator, args);
             if (m_ParamNum > 2)
-                m_Length.Evaluate(instance);
+                m_Length.Evaluate(instance, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -174,13 +137,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -212,14 +168,12 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-
         private int m_ParamNum = 0;
         private IStoryValue<string> m_String = new StoryValue<string>();
         private IStoryValue<int> m_Start = new StoryValue<int>();
         private IStoryValue<int> m_Length = new StoryValue<int>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class Str2IntValue : IStoryValue<object>
     {
@@ -228,7 +182,6 @@ namespace StorySystem.CommonValues
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "str2int" && callData.GetParamNum() > 0) {
                 m_String.InitFromDsl(callData.GetParam(0));
-                m_Flag = m_String.Flag;
                 TryUpdateValue();
             }
         }
@@ -238,19 +191,12 @@ namespace StorySystem.CommonValues
             val.m_String = m_String.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_String.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_String.Evaluate(instance);
+            m_String.Evaluate(instance, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -265,13 +211,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -287,11 +226,9 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-
         private IStoryValue<string> m_String = new StoryValue<string>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class Str2FloatValue : IStoryValue<object>
     {
@@ -300,7 +237,6 @@ namespace StorySystem.CommonValues
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "str2float" && callData.GetParamNum() > 0) {
                 m_String.InitFromDsl(callData.GetParam(0));
-                m_Flag = m_String.Flag;
                 TryUpdateValue();
             }
         }
@@ -310,19 +246,12 @@ namespace StorySystem.CommonValues
             val.m_String = m_String.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_String.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_String.Evaluate(instance);
+            m_String.Evaluate(instance, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -337,13 +266,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -359,11 +281,9 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-
         private IStoryValue<string> m_String = new StoryValue<string>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class DictFormatValue : IStoryValue<object>
     {
@@ -371,19 +291,16 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "dictformat") {
-                int flag = 0;
+
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_DictId.InitFromDsl(callData.GetParam(0));
-                    flag |= m_DictId.Flag;
                 }
                 for (int i = 1; i < callData.GetParamNum(); ++i) {
                     StoryValue val = new StoryValue();
                     val.InitFromDsl(callData.GetParam(i));
                     m_FormatArgs.Add(val);
-                    flag |= val.Flag;
                 }
-                m_Flag = flag;
                 TryUpdateValue();
             }
         }
@@ -396,24 +313,14 @@ namespace StorySystem.CommonValues
             }
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_DictId.Substitute(iterator, args);
-                for (int i = 0; i < m_FormatArgs.Count; i++) {
-                    m_FormatArgs[i].Substitute(iterator, args);
-                }
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_DictId.Evaluate(instance);
+            m_DictId.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_FormatArgs.Count; i++) {
-                m_FormatArgs[i].Evaluate(instance);
+                m_FormatArgs[i].Evaluate(instance, iterator, args);
             }
             TryUpdateValue();
         }
@@ -429,13 +336,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -463,12 +363,10 @@ namespace StorySystem.CommonValues
                 m_Value = Dict.Format((string)dictId, args);
             }
         }
-
         private IStoryValue<object> m_DictId = new StoryValue();
         private List<IStoryValue<object>> m_FormatArgs = new List<IStoryValue<object>>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class DictGetValue : IStoryValue<object>
     {
@@ -477,7 +375,6 @@ namespace StorySystem.CommonValues
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "dictget" && callData.GetParamNum() > 0) {
                 m_DictId.InitFromDsl(callData.GetParam(0));
-                m_Flag = m_DictId.Flag;
                 TryUpdateValue();
             }
         }
@@ -487,19 +384,12 @@ namespace StorySystem.CommonValues
             val.m_DictId = m_DictId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_DictId.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_DictId.Evaluate(instance);
+            m_DictId.Evaluate(instance, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -514,13 +404,6 @@ namespace StorySystem.CommonValues
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -532,11 +415,9 @@ namespace StorySystem.CommonValues
                 m_Value = Dict.Get((string)dictId);
             }
         }
-
         private IStoryValue<object> m_DictId = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class DictParseValue : IStoryValue<object>
     {
@@ -545,7 +426,6 @@ namespace StorySystem.CommonValues
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "dictparse" && callData.GetParamNum() > 0) {
                 m_String.InitFromDsl(callData.GetParam(0));
-                m_Flag = m_String.Flag;
                 TryUpdateValue();
             }
         }
@@ -555,19 +435,12 @@ namespace StorySystem.CommonValues
             val.m_String = m_String.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_String.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_String.Evaluate(instance);
+            m_String.Evaluate(instance, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -584,13 +457,6 @@ namespace StorySystem.CommonValues
                 return m_Value;
             }
         }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
-            }
-        }
 
         private void TryUpdateValue()
         {
@@ -600,10 +466,8 @@ namespace StorySystem.CommonValues
                 m_Value = Dict.Parse(str);
             }
         }
-
         private IStoryValue<string> m_String = new StoryValue<string>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
 }

@@ -296,6 +296,13 @@ namespace GameFramework.Skill.Trigers
 
                 m_RealDuration = m_Duration;
                 m_RealVelocity = m_Velocity;
+                if (m_RealDuration <= 0) {
+                    m_RealDuration += instance.CurSectionDuration;
+                }
+                if (m_RealDuration <= 0) {
+                    LogSystem.Warn("charge duration is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
+                    return false;
+                }
                 EntityInfo targetObj = senderObj.TargetGfxObj;
                 if (null != targetObj) {
                     Vector3 srcPos = obj.GetMovementStateInfo().GetPosition3D();
@@ -416,6 +423,13 @@ namespace GameFramework.Skill.Trigers
 
                 m_RealDuration = m_Duration;
                 m_RealVelocity = m_Velocity;
+                if (m_RealDuration <= 0) {
+                    m_RealDuration += instance.CurSectionDuration;
+                }
+                if (m_RealDuration <= 0) {
+                    LogSystem.Warn("jump duration is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
+                    return false;
+                }
                 EntityInfo targetObj = senderObj.TargetGfxObj;
                 if (null != targetObj) {
                     Vector3 srcPos = obj.GetMovementStateInfo().GetPosition3D();

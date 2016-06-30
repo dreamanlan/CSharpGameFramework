@@ -95,7 +95,7 @@ namespace GameFramework.Skill.Trigers
         //-----------------------------------------------------------------------------------------------------------
         internal static void CalcImpactConfig(int emitImpact, int hitImpact, SkillInstance instance, TableConfig.Skill cfg, out Dictionary<string, object> result)
         {
-            var variables = instance.LocalVariables;
+            var variables = instance.Variables;
             result = new Dictionary<string, object>(variables);
             if (null != instance.EmitSkillInstances) {
                 if (emitImpact <= 0)

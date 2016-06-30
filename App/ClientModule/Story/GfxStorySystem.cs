@@ -188,9 +188,13 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmembercount", new StoryValueFactoryHelper<Story.Values.GetMemberCountValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlinkid", new StoryValueFactoryHelper<Story.Values.GetMemberLinkIdValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlevel", new StoryValueFactoryHelper<Story.Values.GetMemberLevelValue>());
+
+            LoadCustomCommandsAndValues();
         }
         public void Reset()
         {
+            LoadCustomCommandsAndValues();
+
             m_GlobalVariables.Clear();
             int count = m_StoryLogicInfos.Count;
             for (int index = count - 1; index >= 0; --index) {
@@ -516,7 +520,16 @@ namespace GameFramework.Story
             m_StoryInstancePool.TryGetValue(storyId, out info);
             return info;
         }
+        private void LoadCustomCommandsAndValues()
+        {
+            string cmdFile = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + "Story/Common/CustomCommands.dsl");
+            string valFile = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + "Story/Common/CustomValues.dsl");
 
+            Dsl.DslFile file1 = CustomCommandValueParser.LoadStory(cmdFile);
+            Dsl.DslFile file2 = CustomCommandValueParser.LoadStory(valFile);
+            CustomCommandValueParser.FirstParse(file1, file2);
+            CustomCommandValueParser.FinalParse(file1, file2);
+        }
         private AiStoryInstanceInfo NewAiStoryInstance(string storyId, string _namespace, bool logIfNotFound, params string[] overloadFiles)
         {
             if (!string.IsNullOrEmpty(_namespace)) {

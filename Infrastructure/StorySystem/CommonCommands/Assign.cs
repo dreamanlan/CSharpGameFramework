@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
 namespace StorySystem.CommonCommands
 {
     /// <summary>
@@ -9,7 +8,7 @@ namespace StorySystem.CommonCommands
     /// or
     /// assign(@@global,value);
     /// </summary>
-    internal class AssignCommand : AbstractStoryCommand
+    internal sealed class AssignCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -18,17 +17,10 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_Value.Substitute(iterator, args);
+            m_Value.Evaluate(instance, iterator, args);
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_Value.Evaluate(instance);
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             if (m_Value.HaveValue) {
@@ -36,7 +28,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -45,7 +36,6 @@ namespace StorySystem.CommonCommands
                 m_Value.InitFromDsl(callData.GetParam(1));
             }
         }
-
         private string m_VarName = null;
         private IStoryValue<object> m_Value = new StoryValue();
     }
@@ -54,7 +44,7 @@ namespace StorySystem.CommonCommands
     /// or
     /// inc(@@global,value);
     /// </summary>
-    internal class IncCommand : AbstractStoryCommand
+    internal sealed class IncCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -64,17 +54,10 @@ namespace StorySystem.CommonCommands
             cmd.m_ParamNum = m_ParamNum;
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_Value.Substitute(iterator, args);
+            m_Value.Evaluate(instance, iterator, args);
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_Value.Evaluate(instance);
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             if (m_VarName.StartsWith("@@")) {
@@ -132,7 +115,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -144,7 +126,6 @@ namespace StorySystem.CommonCommands
                 m_Value.InitFromDsl(callData.GetParam(1));
             }
         }
-
         private int m_ParamNum = 0;
         private string m_VarName = null;
         private IStoryValue<object> m_Value = new StoryValue();
@@ -154,7 +135,7 @@ namespace StorySystem.CommonCommands
     /// or
     /// dec(@@global,value);
     /// </summary>
-    internal class DecCommand : AbstractStoryCommand
+    internal sealed class DecCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -164,17 +145,10 @@ namespace StorySystem.CommonCommands
             cmd.m_ParamNum = m_ParamNum;
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_Value.Substitute(iterator, args);
+            m_Value.Evaluate(instance, iterator, args);
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_Value.Evaluate(instance);
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             if (m_VarName.StartsWith("@@")) {
@@ -232,7 +206,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -244,7 +217,6 @@ namespace StorySystem.CommonCommands
                 m_Value.InitFromDsl(callData.GetParam(1));
             }
         }
-
         private int m_ParamNum = 0;
         private string m_VarName = null;
         private IStoryValue<object> m_Value = new StoryValue();
@@ -252,7 +224,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// propset(name,value);
     /// </summary>
-    internal class PropSetCommand : AbstractStoryCommand
+    internal sealed class PropSetCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -261,19 +233,11 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_VarName.Substitute(iterator, args);
-            m_Value.Substitute(iterator, args);
+            m_VarName.Evaluate(instance, iterator, args);
+            m_Value.Evaluate(instance, iterator, args);
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_VarName.Evaluate(instance);
-            m_Value.Evaluate(instance);
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             if (m_VarName.HaveValue && m_Value.HaveValue) {
@@ -282,7 +246,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -291,14 +254,13 @@ namespace StorySystem.CommonCommands
                 m_Value.InitFromDsl(callData.GetParam(1));
             }
         }
-
         private IStoryValue<string> m_VarName = new StoryValue<string>();
         private IStoryValue<object> m_Value = new StoryValue();
     }
     /// <summary>
     /// listset(list,index,value);
     /// </summary>
-    internal class ListSetCommand : AbstractStoryCommand
+    internal sealed class ListSetCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -308,21 +270,12 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_ListValue.Substitute(iterator, args);
-            m_IndexValue.Substitute(iterator, args);
-            m_Value.Substitute(iterator, args);
+            m_ListValue.Evaluate(instance, iterator, args);
+            m_IndexValue.Evaluate(instance, iterator, args);
+            m_Value.Evaluate(instance, iterator, args);
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_ListValue.Evaluate(instance);
-            m_IndexValue.Evaluate(instance);
-            m_Value.Evaluate(instance);
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             if (m_ListValue.HaveValue && m_IndexValue.HaveValue && m_Value.HaveValue) {
@@ -338,7 +291,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -348,7 +300,6 @@ namespace StorySystem.CommonCommands
                 m_Value.InitFromDsl(callData.GetParam(2));
             }
         }
-
         private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
         private IStoryValue<int> m_IndexValue = new StoryValue<int>();
         private IStoryValue<object> m_Value = new StoryValue();

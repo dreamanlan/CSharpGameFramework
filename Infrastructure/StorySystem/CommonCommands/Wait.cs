@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-
 namespace StorySystem.CommonCommands
 {
     /// <summary>
     /// sleep(milliseconds);
     /// </summary>
-    internal class SleepCommand : AbstractStoryCommand
+    internal sealed class SleepCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -16,39 +15,29 @@ namespace StorySystem.CommonCommands
             cmd.m_HaveCondition = m_HaveCondition;
             return cmd;
         }
-
         protected override void ResetState()
         {
             m_CurTime = 0;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_Time.Substitute(iterator, args);
+            m_Time.Evaluate(instance, iterator, args);
             if (m_HaveCondition)
-                m_Condition.Substitute(iterator, args);
+                m_Condition.Evaluate(instance, iterator, args);
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_Time.Evaluate(instance);
-            if (m_HaveCondition)
-                m_Condition.Evaluate(instance);
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             if (m_HaveCondition && m_Condition.HaveValue && m_Condition.Value == 0) {
                 return false;
-            }
+            }            
             int curTime = m_CurTime;
             m_CurTime += (int)delta;
-            if (curTime <= m_Time.Value)
+            int val = m_Time.Value;
+            if (curTime <= val && val < StoryValueHelper.c_MaxWaitCommandTime)
                 return true;
             else
                 return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -56,7 +45,6 @@ namespace StorySystem.CommonCommands
                 m_Time.InitFromDsl(callData.GetParam(0));
             }
         }
-
         protected override void Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
@@ -68,7 +56,6 @@ namespace StorySystem.CommonCommands
                 }
             }
         }
-
         private void LoadCondition(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -77,7 +64,6 @@ namespace StorySystem.CommonCommands
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
         }
-
         private IStoryValue<int> m_Time = new StoryValue<int>();
         private IStoryValue<int> m_Condition = new StoryValue<int>();
         private bool m_HaveCondition = false;

@@ -406,12 +406,11 @@ namespace GameFramework
 
                 logicInfo = m_SkillLogicInfos.Find(info => info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq);
                 if (null != logicInfo) {
-                    logicInfo.SkillInst.GlobalVariables = m_GlobalVariables;
                     if (null != locals) {
                         int localCount = locals.Length;
                         for (int i = 0; i < localCount; ++i) {
                             foreach (KeyValuePair<string, object> pair in locals[i]) {
-                                logicInfo.SkillInst.SetLocalVariable(pair.Key, pair.Value);
+                                logicInfo.SkillInst.SetVariable(pair.Key, pair.Value);
                             }
                         }
                     }
@@ -518,7 +517,7 @@ namespace GameFramework
                 if (null != logicInfo && null != logicInfo.SkillInst) {
                     if (null != locals) {
                         foreach (KeyValuePair<string, object> pair in locals) {
-                            logicInfo.SkillInst.SetLocalVariable(pair.Key, pair.Value);
+                            logicInfo.SkillInst.SetVariable(pair.Key, pair.Value);
                         }
                     }
                     logicInfo.SkillInst.SendMessage(msgId);

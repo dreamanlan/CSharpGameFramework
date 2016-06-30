@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections;
-
 namespace StorySystem.CommonCommands
 {
     /// <summary>
     /// dummy命令，用于注册没有对应实现的命令（为了解析需要注册）。
     /// </summary>
-    public class DummyCommand : AbstractStoryCommand
+    public sealed class DummyCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -18,7 +17,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// localmessage(msgid,arg1,arg2,...);
     /// </summary>
-    internal class LocalMessageCommand : AbstractStoryCommand
+    internal sealed class LocalMessageCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -29,23 +28,13 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_MsgId.Substitute(iterator, args);
+            m_MsgId.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_MsgArgs.Count; i++) {
-                m_MsgArgs[i].Substitute(iterator, args);
+                m_MsgArgs[i].Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_MsgId.Evaluate(instance);
-            for (int i = 0; i < m_MsgArgs.Count; i++) {
-                m_MsgArgs[i].Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             string msgId = m_MsgId.Value;
@@ -57,7 +46,6 @@ namespace StorySystem.CommonCommands
             instance.SendMessage(msgId, args);
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -70,14 +58,13 @@ namespace StorySystem.CommonCommands
                 m_MsgArgs.Add(val);
             }
         }
-
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
         private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
     }
     /// <summary>
     /// clearmessage(msgid1,msgid2,...);
     /// </summary>
-    internal class ClearMessageCommand : AbstractStoryCommand
+    internal sealed class ClearMessageCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -87,21 +74,12 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             string[] arglist = new string[m_MsgIds.Count];
@@ -111,7 +89,6 @@ namespace StorySystem.CommonCommands
             instance.ClearMessage(arglist);
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -121,13 +98,12 @@ namespace StorySystem.CommonCommands
                 m_MsgIds.Add(val);
             }
         }
-
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
     /// <summary>
     /// waitlocalmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal class WaitLocalMessageCommand : AbstractStoryCommand
+    internal sealed class WaitLocalMessageCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -143,41 +119,24 @@ namespace StorySystem.CommonCommands
             cmd.m_HaveSet = m_HaveSet;
             return cmd;
         }
-
         protected override void ResetState()
         {
             m_CurTime = 0;
             m_StartTime = 0;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Substitute(iterator, args);
-                m_SetVal.Substitute(iterator, args);
-                m_TimeoutVal.Substitute(iterator, args);
-                m_TimeoutSetVar.Substitute(iterator, args);
-                m_TimeoutSetVal.Substitute(iterator, args);
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance);
-                m_SetVal.Evaluate(instance);
-                m_TimeoutVal.Evaluate(instance);
-                m_TimeoutSetVar.Evaluate(instance);
-                m_TimeoutSetVal.Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             if (m_StartTime <= 0) {
@@ -211,7 +170,6 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -221,7 +179,6 @@ namespace StorySystem.CommonCommands
                 m_MsgIds.Add(val);
             }
         }
-
         protected override void Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
@@ -230,14 +187,12 @@ namespace StorySystem.CommonCommands
                 Dsl.CallData third = statementData.Functions[2].Call;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
-
                     Load(first);
                     LoadSet(second);
                     LoadTimeoutSet(third);
                 }
             }
         }
-
         private void LoadSet(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -246,7 +201,6 @@ namespace StorySystem.CommonCommands
                 m_SetVal.InitFromDsl(callData.GetParam(1));
             }
         }
-
         private void LoadTimeoutSet(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -256,7 +210,6 @@ namespace StorySystem.CommonCommands
                 m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
             }
         }
-
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
         private IStoryValue<object> m_SetVal = new StoryValue();
@@ -270,7 +223,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// waitlocalmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal class WaitLocalMessageHandlerCommand : AbstractStoryCommand
+    internal sealed class WaitLocalMessageHandlerCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -286,40 +239,23 @@ namespace StorySystem.CommonCommands
             cmd.m_HaveSet = m_HaveSet;
             return cmd;
         }
-
         protected override void ResetState()
         {
             m_CurTime = 0;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Substitute(iterator, args);
-                m_SetVal.Substitute(iterator, args);
-                m_TimeoutVal.Substitute(iterator, args);
-                m_TimeoutSetVar.Substitute(iterator, args);
-                m_TimeoutSetVal.Substitute(iterator, args);
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance);
-                m_SetVal.Evaluate(instance);
-                m_TimeoutVal.Evaluate(instance);
-                m_TimeoutSetVar.Evaluate(instance);
-                m_TimeoutSetVal.Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             int ct = 0;
@@ -344,7 +280,6 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -354,7 +289,6 @@ namespace StorySystem.CommonCommands
                 m_MsgIds.Add(val);
             }
         }
-
         protected override void Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
@@ -363,14 +297,12 @@ namespace StorySystem.CommonCommands
                 Dsl.CallData third = statementData.Functions[2].Call;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
-
                     Load(first);
                     LoadSet(second);
                     LoadTimeoutSet(third);
                 }
             }
         }
-
         private void LoadSet(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -379,7 +311,6 @@ namespace StorySystem.CommonCommands
                 m_SetVal.InitFromDsl(callData.GetParam(1));
             }
         }
-
         private void LoadTimeoutSet(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -389,7 +320,6 @@ namespace StorySystem.CommonCommands
                 m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
             }
         }
-
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
         private IStoryValue<object> m_SetVal = new StoryValue();
@@ -402,7 +332,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// pauselocalmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal class PauseLocalMessageHandlerCommand : AbstractStoryCommand
+    internal sealed class PauseLocalMessageHandlerCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -412,25 +342,15 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -438,7 +358,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -448,13 +367,12 @@ namespace StorySystem.CommonCommands
                 m_MsgIds.Add(val);
             }
         }
-
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
     /// <summary>
     /// resumelocalmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal class ResumeLocalMessageHandlerCommand : AbstractStoryCommand
+    internal sealed class ResumeLocalMessageHandlerCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -464,25 +382,15 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -490,7 +398,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -500,13 +407,12 @@ namespace StorySystem.CommonCommands
                 m_MsgIds.Add(val);
             }
         }
-
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
     /// <summary>
     /// localnamespacedmessage(msgid,arg1,arg2,...);
     /// </summary>
-    internal class LocalNamespacedMessageCommand : AbstractStoryCommand
+    internal sealed class LocalNamespacedMessageCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -517,23 +423,13 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_MsgId.Substitute(iterator, args);
+            m_MsgId.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_MsgArgs.Count; i++) {
-                m_MsgArgs[i].Substitute(iterator, args);
+                m_MsgArgs[i].Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_MsgId.Evaluate(instance);
-            for (int i = 0; i < m_MsgArgs.Count; i++) {
-                m_MsgArgs[i].Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             string msgId = m_MsgId.Value;
@@ -549,7 +445,6 @@ namespace StorySystem.CommonCommands
             instance.SendMessage(msgId, args);
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -562,14 +457,13 @@ namespace StorySystem.CommonCommands
                 m_MsgArgs.Add(val);
             }
         }
-
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
         private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
     }
     /// <summary>
     /// clearnamespacedmessage(msgid1,msgid2,...);
     /// </summary>
-    internal class ClearNamespacedMessageCommand : AbstractStoryCommand
+    internal sealed class ClearNamespacedMessageCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -579,21 +473,12 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             string[] arglist = new string[m_MsgIds.Count];
@@ -610,7 +495,6 @@ namespace StorySystem.CommonCommands
             instance.ClearMessage(arglist);
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -620,13 +504,12 @@ namespace StorySystem.CommonCommands
                 m_MsgIds.Add(val);
             }
         }
-
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
     /// <summary>
     /// waitlocalnamespacedmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal class WaitLocalNamespacedMessageCommand : AbstractStoryCommand
+    internal sealed class WaitLocalNamespacedMessageCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -642,41 +525,24 @@ namespace StorySystem.CommonCommands
             cmd.m_HaveSet = m_HaveSet;
             return cmd;
         }
-
         protected override void ResetState()
         {
             m_CurTime = 0;
             m_StartTime = 0;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Substitute(iterator, args);
-                m_SetVal.Substitute(iterator, args);
-                m_TimeoutVal.Substitute(iterator, args);
-                m_TimeoutSetVar.Substitute(iterator, args);
-                m_TimeoutSetVal.Substitute(iterator, args);
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance);
-                m_SetVal.Evaluate(instance);
-                m_TimeoutVal.Evaluate(instance);
-                m_TimeoutSetVar.Evaluate(instance);
-                m_TimeoutSetVal.Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             if (m_StartTime <= 0) {
@@ -720,7 +586,6 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -730,7 +595,6 @@ namespace StorySystem.CommonCommands
                 m_MsgIds.Add(val);
             }
         }
-
         protected override void Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
@@ -739,14 +603,12 @@ namespace StorySystem.CommonCommands
                 Dsl.CallData third = statementData.Functions[2].Call;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
-
                     Load(first);
                     LoadSet(second);
                     LoadTimeoutSet(third);
                 }
             }
         }
-
         private void LoadSet(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -755,7 +617,6 @@ namespace StorySystem.CommonCommands
                 m_SetVal.InitFromDsl(callData.GetParam(1));
             }
         }
-
         private void LoadTimeoutSet(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -765,7 +626,6 @@ namespace StorySystem.CommonCommands
                 m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
             }
         }
-
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
         private IStoryValue<object> m_SetVal = new StoryValue();
@@ -779,7 +639,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// waitlocalnamespacedmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal class WaitLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    internal sealed class WaitLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -795,40 +655,23 @@ namespace StorySystem.CommonCommands
             cmd.m_HaveSet = m_HaveSet;
             return cmd;
         }
-
         protected override void ResetState()
         {
             m_CurTime = 0;
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Substitute(iterator, args);
-                m_SetVal.Substitute(iterator, args);
-                m_TimeoutVal.Substitute(iterator, args);
-                m_TimeoutSetVar.Substitute(iterator, args);
-                m_TimeoutSetVal.Substitute(iterator, args);
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-            if (m_HaveSet) {
-                m_SetVar.Evaluate(instance);
-                m_SetVal.Evaluate(instance);
-                m_TimeoutVal.Evaluate(instance);
-                m_TimeoutSetVar.Evaluate(instance);
-                m_TimeoutSetVal.Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             int ct = 0;
@@ -860,7 +703,6 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -870,7 +712,6 @@ namespace StorySystem.CommonCommands
                 m_MsgIds.Add(val);
             }
         }
-
         protected override void Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
@@ -879,14 +720,12 @@ namespace StorySystem.CommonCommands
                 Dsl.CallData third = statementData.Functions[2].Call;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
-
                     Load(first);
                     LoadSet(second);
                     LoadTimeoutSet(third);
                 }
             }
         }
-
         private void LoadSet(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -895,7 +734,6 @@ namespace StorySystem.CommonCommands
                 m_SetVal.InitFromDsl(callData.GetParam(1));
             }
         }
-
         private void LoadTimeoutSet(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -905,7 +743,6 @@ namespace StorySystem.CommonCommands
                 m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
             }
         }
-
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
         private IStoryValue<object> m_SetVal = new StoryValue();
@@ -918,7 +755,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// pauselocalnamespacedmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal class PauseLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    internal sealed class PauseLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -928,25 +765,15 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             string _namespace = instance.Namespace;
@@ -961,7 +788,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -971,13 +797,12 @@ namespace StorySystem.CommonCommands
                 m_MsgIds.Add(val);
             }
         }
-
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
     /// <summary>
     /// resumelocalnamespacedmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal class ResumeLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    internal sealed class ResumeLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
@@ -987,25 +812,15 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Substitute(iterator, args);
+                m_MsgIds[i].Evaluate(instance, iterator, args);
             }
         }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance);
-            }
-        }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             string _namespace = instance.Namespace;
@@ -1020,7 +835,6 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -1030,7 +844,6 @@ namespace StorySystem.CommonCommands
                 m_MsgIds.Add(val);
             }
         }
-
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
 }

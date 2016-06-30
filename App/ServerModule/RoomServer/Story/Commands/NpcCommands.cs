@@ -35,47 +35,25 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             if (m_ParamNum >= 5) {
-                m_UnitId.Substitute(iterator, args);
-                m_Pos.Substitute(iterator, args);
-                m_Dir.Substitute(iterator, args);
-                m_Camp.Substitute(iterator, args);
-                m_LinkId.Substitute(iterator, args);
+                m_UnitId.Evaluate(instance, iterator, args);
+                m_Pos.Evaluate(instance, iterator, args);
+                m_Dir.Evaluate(instance, iterator, args);
+                m_Camp.Evaluate(instance, iterator, args);
+                m_LinkId.Evaluate(instance, iterator, args);
 
                 if (m_ParamNum > 6) {
-                    m_AiLogic.Substitute(iterator, args);
-                    m_AiParams.Substitute(iterator, args);
+                    m_AiLogic.Evaluate(instance, iterator, args);
+                    m_AiParams.Evaluate(instance, iterator, args);
                     if (m_ParamNum > 7) {
-                        m_LeaderId.Substitute(iterator, args);
+                        m_LeaderId.Evaluate(instance, iterator, args);
                     }
                 }
             }
             if (m_HaveObjId) {
-                m_ObjIdVarName.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            if (m_ParamNum >= 5) {
-                m_UnitId.Evaluate(instance);
-                m_Pos.Evaluate(instance);
-                m_Dir.Evaluate(instance);
-                m_Camp.Evaluate(instance);
-                m_LinkId.Evaluate(instance);
-
-                if (m_ParamNum > 6) {
-                    m_AiLogic.Evaluate(instance);
-                    m_AiParams.Evaluate(instance);
-                    if (m_ParamNum > 7) {
-                        m_LeaderId.Evaluate(instance);
-                    }
-                }
-            }
-            if (m_HaveObjId) {
-                m_ObjIdVarName.Evaluate(instance);
+                m_ObjIdVarName.Evaluate(instance, iterator, args);
             }
         }
 
@@ -197,14 +175,9 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -246,14 +219,9 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_ObjId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_ObjId.Evaluate(instance);
+            m_ObjId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -296,16 +264,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_Dir.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_Dir.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_Dir.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -352,16 +314,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_Pos.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_Pos.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_Pos.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -420,16 +376,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_WayPoints.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_WayPoints.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_WayPoints.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -494,20 +444,12 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_WayPoints.Substitute(iterator, args);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_WayPoints.Evaluate(instance, iterator, args);
             if (m_ParamNum > 2)
-                m_IsLoop.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_WayPoints.Evaluate(instance);
-            if (m_ParamNum > 2)
-                m_IsLoop.Evaluate(instance);
+                m_IsLoop.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -572,14 +514,9 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -629,16 +566,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_TargetId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_TargetId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_TargetId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -688,16 +619,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_TargetUnitId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_TargetUnitId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_TargetUnitId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -749,16 +674,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_FormationIndex.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_FormationIndex.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_FormationIndex.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -802,16 +721,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_Enable.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_Enable.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_Enable.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -852,18 +765,11 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_AiLogic.Substitute(iterator, args);
-            m_AiParams.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_AiLogic.Evaluate(instance);
-            m_AiParams.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_AiLogic.Evaluate(instance, iterator, args);
+            m_AiParams.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -918,16 +824,10 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_TargetId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_TargetId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_TargetId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -974,16 +874,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_Anim.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_Anim.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_Anim.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -1042,29 +936,16 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_ImpactId.Substitute(iterator, args);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_ImpactId.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> val = m_Args[i];
-                val.Substitute(iterator, args);
+                val.Evaluate(instance, iterator, args);
             }
             if (m_HaveSeq) {
-                m_SeqVarName.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_ImpactId.Evaluate(instance);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
-                val.Evaluate(instance);
-            }
-            if (m_HaveSeq) {
-                m_SeqVarName.Evaluate(instance);
+                m_SeqVarName.Evaluate(instance, iterator, args);
             }
         }
 
@@ -1168,16 +1049,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_Seq.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_Seq.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_Seq.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -1236,23 +1111,13 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_SkillId.Substitute(iterator, args);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_SkillId.Evaluate(instance, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> val = m_Args[i];
-                val.Substitute(iterator, args);
-            }
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_SkillId.Evaluate(instance);
-            for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
-                val.Evaluate(instance);
+                val.Evaluate(instance, iterator, args);
             }
         }
 
@@ -1325,14 +1190,9 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -1380,16 +1240,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_SkillId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_SkillId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_SkillId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -1442,16 +1296,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_SkillId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_SkillId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_SkillId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -1503,18 +1351,11 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_Event.Substitute(iterator, args);
-            m_Enable.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_Event.Evaluate(instance);
-            m_Enable.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_Event.Evaluate(instance, iterator, args);
+            m_Enable.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -1568,16 +1409,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_CampId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_CampId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_CampId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -1626,16 +1461,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_SummonerId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_SummonerId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_SummonerId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
@@ -1680,16 +1509,10 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Substitute(object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_UnitId.Substitute(iterator, args);
-            m_SummonSkillId.Substitute(iterator, args);
-        }
-
-        protected override void Evaluate(StoryInstance instance)
-        {
-            m_UnitId.Evaluate(instance);
-            m_SummonSkillId.Evaluate(instance);
+            m_UnitId.Evaluate(instance, iterator, args);
+            m_SummonSkillId.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)

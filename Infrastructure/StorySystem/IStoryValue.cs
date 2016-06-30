@@ -1,15 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
 namespace StorySystem
 {
-    public enum StoryValueFlagMask : int
-    {
-        CONST_VALUE = 0x00,
-        HAVE_ARG = 0x01,
-        HAVE_VAR = 0x02,
-        HAVE_ARG_AND_VAR = 0x03,
-    }
     /// <summary>
     /// 描述剧情命令中用到的值，此接口用以支持参数、局部变量、全局变量与内建函数（返回一个剧情命令用到的值）。
     /// </summary>
@@ -18,11 +10,9 @@ namespace StorySystem
     {
         void InitFromDsl(Dsl.ISyntaxComponent param);//从DSL语言初始化值实例
         IStoryValue<T> Clone();//克隆一个新实例，每个值只从DSL语言初始化一次，之后的实例由克隆产生，提升性能
-        void Substitute(object iterator, object[] args);//参数替换为参数值
-        void Evaluate(StoryInstance instance);//计算StoryValue的值
+        void Evaluate(StoryInstance instance, object iterator, object[] args);//参数替换为参数值并计算StoryValue的值
         bool HaveValue { get; }//是否已经有值，对常量初始化后即产生值，对参数、变量与函数则在Evaluate后产生值
         T Value { get; }//具体的值
-        int Flag { get; }
     }
     public sealed class StoryValue : IStoryValue<object>
     {
@@ -35,10 +25,16 @@ namespace StorySystem
                 string id = param.GetId();
                 int idType = param.GetIdType();
                 if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("$")) {
-                    if (0 == id.CompareTo("$$"))
+                    if (0 == id.CompareTo("$$")) {
                         SetArgument(c_Iterator);
-                    else
-                        SetArgument(int.Parse(id.Substring(1)));
+                    } else {
+                        string idName = id.Substring(1);
+                        if (idName.Length > 0 && char.IsDigit(idName[0])) {
+                            SetArgument(int.Parse(idName));
+                        } else {
+                            SetStack(id);
+                        }
+                    }
                 } else if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("@")) {
                     if (id.StartsWith("@@"))
                         SetGlobal(id);
@@ -57,17 +53,18 @@ namespace StorySystem
             obj.m_ArgIndex = m_ArgIndex;
             obj.m_LocalName = m_LocalName;
             obj.m_GlobalName = m_GlobalName;
+            obj.m_StackName = m_StackName;
             if (null != m_Proxy) {
                 obj.m_Proxy = m_Proxy.Clone();
             }
             obj.m_HaveValue = m_HaveValue;
             obj.m_Value = m_Value;
-            obj.m_Flag = m_Flag;
+            obj.m_IsConst = m_IsConst;
             return obj;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            if (StoryValueHelper.IsConstValue(Flag))
+            if (IsConst)
                 return;
             if (m_ArgIndex >= 0 && m_ArgIndex < args.Length) {
                 m_Value = args[m_ArgIndex];
@@ -76,40 +73,24 @@ namespace StorySystem
                 m_Value = iterator;
                 m_HaveValue = true;
             } else if (null != m_Proxy) {
-                m_Proxy.Substitute(iterator, args);
+                m_Proxy.Evaluate(instance, iterator, args);
                 if (m_Proxy.HaveValue) {
                     m_Value = m_Proxy.Value;
                     m_HaveValue = true;
                 } else {
                     m_HaveValue = false;
                 }
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            if (StoryValueHelper.IsConstValue(Flag))
-                return;
-            if (null != m_LocalName) {
-                Dictionary<string, object> locals = instance.LocalVariables;
-                object val;
-                if (locals.TryGetValue(m_LocalName, out val)) {
-                    m_Value = val;
-                    m_HaveValue = true;
+            } else {
+                string name = string.Empty;
+                if (null != m_LocalName) {
+                    name = m_LocalName;
+                } else if (null != m_GlobalName) {
+                    name = m_GlobalName;
+                } else if (null != m_StackName) {
+                    name = m_StackName;
                 }
-            } else if (null != m_GlobalName) {
-                Dictionary<string, object> globals = instance.GlobalVariables;
-                if (null != globals) {
-                    object val;
-                    if (globals.TryGetValue(m_GlobalName, out val)) {
-                        m_Value = val;
-                        m_HaveValue = true;
-                    }
-                }
-            } else if (null != m_Proxy) {
-                m_Proxy.Evaluate(instance);
-                if (m_Proxy.HaveValue) {
-                    m_Value = m_Proxy.Value;
-                    m_HaveValue = true;
+                if (!string.IsNullOrEmpty(name)) {
+                    m_HaveValue = instance.TryGetVariable(name, out m_Value);
                 }
             }
         }
@@ -127,11 +108,11 @@ namespace StorySystem
                 return m_Value;
             }
         }
-        public int Flag
+        public bool IsConst
         {
             get
             {
-                return m_Flag;
+                return m_IsConst;
             }
         }
         private void SetArgument(int index)
@@ -140,9 +121,10 @@ namespace StorySystem
             m_ArgIndex = index;
             m_LocalName = null;
             m_GlobalName = null;
+            m_StackName = null;
             m_Proxy = null;
             m_Value = null;
-            m_Flag = (int)StoryValueFlagMask.HAVE_ARG;
+            m_IsConst = false;
         }
         private void SetLocal(string name)
         {
@@ -150,9 +132,10 @@ namespace StorySystem
             m_ArgIndex = c_NotArg;
             m_LocalName = name;
             m_GlobalName = null;
+            m_StackName = null;
             m_Proxy = null;
             m_Value = null;
-            m_Flag = (int)StoryValueFlagMask.HAVE_VAR;
+            m_IsConst = false;
         }
         private void SetGlobal(string name)
         {
@@ -160,9 +143,21 @@ namespace StorySystem
             m_ArgIndex = c_NotArg;
             m_LocalName = null;
             m_GlobalName = name;
+            m_StackName = null;
             m_Proxy = null;
             m_Value = null;
-            m_Flag = (int)StoryValueFlagMask.HAVE_VAR;
+            m_IsConst = false;
+        }
+        private void SetStack(string name)
+        {
+            m_HaveValue = false;
+            m_ArgIndex = c_NotArg;
+            m_LocalName = null;
+            m_GlobalName = null;
+            m_StackName = name;
+            m_Proxy = null;
+            m_Value = null;
+            m_IsConst = false;
         }
         private void SetProxy(IStoryValue<object> proxy)
         {
@@ -170,9 +165,10 @@ namespace StorySystem
             m_ArgIndex = c_NotArg;
             m_LocalName = null;
             m_GlobalName = null;
+            m_StackName = null;
             m_Proxy = proxy;
             m_Value = null;
-            m_Flag = proxy.Flag;
+            m_IsConst = false;
         }
         private void SetValue(object val)
         {
@@ -180,9 +176,10 @@ namespace StorySystem
             m_ArgIndex = c_NotArg;
             m_LocalName = null;
             m_GlobalName = null;
+            m_StackName = null;
             m_Proxy = null;
             m_Value = val;
-            m_Flag = (int)StoryValueFlagMask.CONST_VALUE;
+            m_IsConst = true;
         }
         private void CalcInitValue(Dsl.ISyntaxComponent param)
         {
@@ -216,14 +213,14 @@ namespace StorySystem
 #endif
             }
         }
-
         private bool m_HaveValue = false;
         private int m_ArgIndex = c_NotArg;
         private string m_LocalName = null;
         private string m_GlobalName = null;
+        private string m_StackName = null;
         private IStoryValue<object> m_Proxy = null;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+        private bool m_IsConst = false;
     }
     public sealed class StoryValue<T> : IStoryValue<T>
     {
@@ -236,10 +233,16 @@ namespace StorySystem
                 string id = param.GetId();
                 int idType = param.GetIdType();
                 if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("$")) {
-                    if (0 == id.CompareTo("$$"))
+                    if (0 == id.CompareTo("$$")) {
                         SetArgument(c_Iterator);
-                    else
-                        SetArgument(int.Parse(id.Substring(1)));
+                    } else {
+                        string idName = id.Substring(1);
+                        if (idName.Length > 0 && char.IsDigit(idName[0])) {
+                            SetArgument(int.Parse(id.Substring(1)));
+                        } else {
+                            SetStack(id);
+                        }
+                    }
                 } else if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("@")) {
                     if (id.StartsWith("@@"))
                         SetGlobal(id);
@@ -258,16 +261,18 @@ namespace StorySystem
             obj.m_ArgIndex = m_ArgIndex;
             obj.m_LocalName = m_LocalName;
             obj.m_GlobalName = m_GlobalName;
+            obj.m_StackName = m_StackName;
             if (null != m_Proxy) {
                 obj.m_Proxy = m_Proxy.Clone();
             }
             obj.m_HaveValue = m_HaveValue;
             obj.m_Value = m_Value;
+            obj.m_IsConst = m_IsConst;
             return obj;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            if (StoryValueHelper.IsConstValue(Flag))
+            if (IsConst)
                 return;
             if (m_ArgIndex >= 0 && m_ArgIndex < args.Length) {
                 m_Value = StoryValueHelper.CastTo<T>(args[m_ArgIndex]);
@@ -276,40 +281,28 @@ namespace StorySystem
                 m_Value = StoryValueHelper.CastTo<T>(iterator);
                 m_HaveValue = true;
             } else if (null != m_Proxy) {
-                m_Proxy.Substitute(iterator, args);
+                m_Proxy.Evaluate(instance, iterator, args);
                 if (m_Proxy.HaveValue) {
                     m_Value = StoryValueHelper.CastTo<T>(m_Proxy.Value);
                     m_HaveValue = true;
                 } else {
                     m_HaveValue = false;
                 }
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            if (StoryValueHelper.IsConstValue(Flag))
-                return;
-            if (null != m_LocalName) {
-                Dictionary<string, object> locals = instance.LocalVariables;
-                object val;
-                if (locals.TryGetValue(m_LocalName, out val)) {
-                    m_Value = StoryValueHelper.CastTo<T>(val);
-                    m_HaveValue = true;
+            } else {
+                string name = string.Empty;
+                if (null != m_LocalName) {
+                    name = m_LocalName;
+                } else if (null != m_GlobalName) {
+                    name = m_GlobalName;
+                } else if (null != m_StackName) {
+                    name = m_StackName;
                 }
-            } else if (null != m_GlobalName) {
-                Dictionary<string, object> globals = instance.GlobalVariables;
-                if (null != globals) {
+                if (!string.IsNullOrEmpty(name)) {
                     object val;
-                    if (globals.TryGetValue(m_GlobalName, out val)) {
+                    m_HaveValue = instance.TryGetVariable(name, out val);
+                    if (m_HaveValue) {
                         m_Value = StoryValueHelper.CastTo<T>(val);
-                        m_HaveValue = true;
                     }
-                }
-            } else if (null != m_Proxy) {
-                m_Proxy.Evaluate(instance);
-                if (m_Proxy.HaveValue) {
-                    m_Value = StoryValueHelper.CastTo<T>(m_Proxy.Value);
-                    m_HaveValue = true;
                 }
             }
         }
@@ -327,14 +320,13 @@ namespace StorySystem
                 return m_Value;
             }
         }
-        public int Flag
+        public bool IsConst
         {
             get
             {
-                return m_Flag;
+                return m_IsConst;
             }
         }
-
         private void SetArgument(int index)
         {
             m_HaveValue = false;
@@ -343,7 +335,7 @@ namespace StorySystem
             m_GlobalName = null;
             m_Proxy = null;
             m_Value = default(T);
-            m_Flag = (int)StoryValueFlagMask.HAVE_ARG;
+            m_IsConst = false;
         }
         private void SetLocal(string name)
         {
@@ -351,9 +343,10 @@ namespace StorySystem
             m_ArgIndex = c_NotArg;
             m_LocalName = name;
             m_GlobalName = null;
+            m_StackName = null;
             m_Proxy = null;
             m_Value = default(T);
-            m_Flag = (int)StoryValueFlagMask.HAVE_VAR;
+            m_IsConst = false;
         }
         private void SetGlobal(string name)
         {
@@ -361,9 +354,21 @@ namespace StorySystem
             m_ArgIndex = c_NotArg;
             m_LocalName = null;
             m_GlobalName = name;
+            m_StackName = null;
             m_Proxy = null;
             m_Value = default(T);
-            m_Flag = (int)StoryValueFlagMask.HAVE_VAR;
+            m_IsConst = false;
+        }
+        private void SetStack(string name)
+        {
+            m_HaveValue = false;
+            m_ArgIndex = c_NotArg;
+            m_LocalName = null;
+            m_GlobalName = null;
+            m_StackName = name;
+            m_Proxy = null;
+            m_Value = default(T);
+            m_IsConst = false;
         }
         private void SetProxy(IStoryValue<object> proxy)
         {
@@ -371,9 +376,9 @@ namespace StorySystem
             m_ArgIndex = c_NotArg;
             m_LocalName = null;
             m_GlobalName = null;
+            m_StackName = null;
             m_Proxy = proxy;
             m_Value = default(T);
-            m_Flag = proxy.Flag;
         }
         private void SetValue(T val)
         {
@@ -381,9 +386,10 @@ namespace StorySystem
             m_ArgIndex = c_NotArg;
             m_LocalName = null;
             m_GlobalName = null;
+            m_StackName = null;
             m_Proxy = null;
             m_Value = val;
-            m_Flag = (int)StoryValueFlagMask.CONST_VALUE;
+            m_IsConst = true;
         }
         private void CalcInitValue(Dsl.ISyntaxComponent param)
         {
@@ -417,14 +423,14 @@ namespace StorySystem
 #endif
             }
         }
-
         private bool m_HaveValue = false;
         private int m_ArgIndex = c_NotArg;
         private string m_LocalName = null;
         private string m_GlobalName = null;
+        private string m_StackName = null;
         private IStoryValue<object> m_Proxy = null;
         private T m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
+        private bool m_IsConst = false;
     }
     internal sealed class StoryValueAdapter<T> : IStoryValue<object>
     {
@@ -438,13 +444,10 @@ namespace StorySystem
             StoryValueAdapter<T> val = new StoryValueAdapter<T>(newOriginal);
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_Original.Substitute(iterator, args);
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_Original.Evaluate(instance);
+            m_Original.Evaluate(instance, iterator, args);
+        
         }
         public bool HaveValue
         {
@@ -460,21 +463,10 @@ namespace StorySystem
                 return m_Original.Value;
             }
         }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
-            }
-        }
-
         public StoryValueAdapter(IStoryValue<T> original)
         {
             m_Original = original;
-            m_Flag = original.Flag;
         }
-
         private IStoryValue<T> m_Original = null;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
 }

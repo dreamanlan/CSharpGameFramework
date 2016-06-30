@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-
 namespace StorySystem
 {
     public static class StoryValueHelper
     {
+        public const int c_MaxWaitCommandTime = 3600000;
         public static T CastTo<T>(object obj)
         {
             if (obj is T) {
@@ -22,14 +22,6 @@ namespace StorySystem
         {
             return new StoryValueAdapter<T>(original);
         }
-        public static bool HaveArg(int flag)
-        {
-            return (flag & (int)StoryValueFlagMask.HAVE_ARG) == (int)StoryValueFlagMask.HAVE_ARG;
-        }
-        public static bool IsConstValue(int flag)
-        {
-            return flag == (int)StoryValueFlagMask.CONST_VALUE;
-        }
     }
     public sealed class StoryValueResult
     {
@@ -38,7 +30,6 @@ namespace StorySystem
             StoryValueResult val = new StoryValueResult();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.Flag = m_Flag;
             return val;
         }
         public bool HaveValue
@@ -64,30 +55,15 @@ namespace StorySystem
                 m_Value = value;
             }
         }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
-            }
-            set
-            {
-                m_Flag = value;
-            }
-        }
-
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     public interface IStoryValueParam
     {
         void InitFromDsl(Dsl.ISyntaxComponent param, int startIndex);
         IStoryValueParam Clone();
-        void Substitute(object iterator, object[] args);
-        void Evaluate(StoryInstance instance);
+        void Evaluate(StoryInstance instance, object iterator, object[] args);
         bool HaveValue { get; }
-        int Flag { get; }
     }
     public sealed class StoryValueParam : IStoryValueParam
     {
@@ -98,17 +74,11 @@ namespace StorySystem
             StoryValueParam val = new StoryValueParam();
             return val;
         }
-        public void Substitute(object iterator, object[] args)
-        { }
-        public void Evaluate(StoryInstance instance)
-        { }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {  }
         public bool HaveValue
         {
             get { return true; }
-        }
-        public int Flag
-        {
-            get { return (int)StoryValueFlagMask.CONST_VALUE; }
         }
     }
     public sealed class StoryValueParam<P1> : IStoryValueParam
@@ -126,13 +96,10 @@ namespace StorySystem
             val.m_P1 = m_P1.Clone();
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_P1.Substitute(iterator, args);
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_P1.Evaluate(instance);
+            m_P1.Evaluate(instance, iterator, args);
+        
         }
         public bool HaveValue
         {
@@ -142,11 +109,6 @@ namespace StorySystem
         {
             get { return m_P1.Value; }
         }
-        public int Flag
-        {
-            get { return m_P1.Flag; }
-        }
-
         private IStoryValue<P1> m_P1 = new StoryValue<P1>();
     }
     public sealed class StoryValueParam<P1, P2> : IStoryValueParam
@@ -166,15 +128,11 @@ namespace StorySystem
             val.m_P2 = m_P2.Clone();
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_P1.Substitute(iterator, args);
-            m_P2.Substitute(iterator, args);
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_P1.Evaluate(instance);
-            m_P2.Evaluate(instance);
+            m_P1.Evaluate(instance, iterator, args);
+            m_P2.Evaluate(instance, iterator, args);
+        
         }
         public bool HaveValue
         {
@@ -188,11 +146,6 @@ namespace StorySystem
         {
             get { return m_P2.Value; }
         }
-        public int Flag
-        {
-            get { return m_P1.Flag | m_P2.Flag; }
-        }
-
         private IStoryValue<P1> m_P1 = new StoryValue<P1>();
         private IStoryValue<P2> m_P2 = new StoryValue<P2>();
     }
@@ -215,17 +168,12 @@ namespace StorySystem
             val.m_P3 = m_P3.Clone();
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_P1.Substitute(iterator, args);
-            m_P2.Substitute(iterator, args);
-            m_P3.Substitute(iterator, args);
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_P1.Evaluate(instance);
-            m_P2.Evaluate(instance);
-            m_P3.Evaluate(instance);
+            m_P1.Evaluate(instance, iterator, args);
+            m_P2.Evaluate(instance, iterator, args);
+            m_P3.Evaluate(instance, iterator, args);
+        
         }
         public bool HaveValue
         {
@@ -243,11 +191,6 @@ namespace StorySystem
         {
             get { return m_P3.Value; }
         }
-        public int Flag
-        {
-            get { return m_P1.Flag | m_P2.Flag | m_P3.Flag; }
-        }
-
         private IStoryValue<P1> m_P1 = new StoryValue<P1>();
         private IStoryValue<P2> m_P2 = new StoryValue<P2>();
         private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -273,19 +216,13 @@ namespace StorySystem
             val.m_P4 = m_P4.Clone();
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_P1.Substitute(iterator, args);
-            m_P2.Substitute(iterator, args);
-            m_P3.Substitute(iterator, args);
-            m_P4.Substitute(iterator, args);
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_P1.Evaluate(instance);
-            m_P2.Evaluate(instance);
-            m_P3.Evaluate(instance);
-            m_P4.Evaluate(instance);
+            m_P1.Evaluate(instance, iterator, args);
+            m_P2.Evaluate(instance, iterator, args);
+            m_P3.Evaluate(instance, iterator, args);
+            m_P4.Evaluate(instance, iterator, args);
+        
         }
         public bool HaveValue
         {
@@ -307,11 +244,6 @@ namespace StorySystem
         {
             get { return m_P4.Value; }
         }
-        public int Flag
-        {
-            get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag; }
-        }
-
         private IStoryValue<P1> m_P1 = new StoryValue<P1>();
         private IStoryValue<P2> m_P2 = new StoryValue<P2>();
         private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -340,21 +272,14 @@ namespace StorySystem
             val.m_P5 = m_P5.Clone();
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_P1.Substitute(iterator, args);
-            m_P2.Substitute(iterator, args);
-            m_P3.Substitute(iterator, args);
-            m_P4.Substitute(iterator, args);
-            m_P5.Substitute(iterator, args);
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_P1.Evaluate(instance);
-            m_P2.Evaluate(instance);
-            m_P3.Evaluate(instance);
-            m_P4.Evaluate(instance);
-            m_P5.Evaluate(instance);
+            m_P1.Evaluate(instance, iterator, args);
+            m_P2.Evaluate(instance, iterator, args);
+            m_P3.Evaluate(instance, iterator, args);
+            m_P4.Evaluate(instance, iterator, args);
+            m_P5.Evaluate(instance, iterator, args);
+        
         }
         public bool HaveValue
         {
@@ -380,11 +305,6 @@ namespace StorySystem
         {
             get { return m_P5.Value; }
         }
-        public int Flag
-        {
-            get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag; }
-        }
-
         private IStoryValue<P1> m_P1 = new StoryValue<P1>();
         private IStoryValue<P2> m_P2 = new StoryValue<P2>();
         private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -416,23 +336,15 @@ namespace StorySystem
             val.m_P6 = m_P6.Clone();
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_P1.Substitute(iterator, args);
-            m_P2.Substitute(iterator, args);
-            m_P3.Substitute(iterator, args);
-            m_P4.Substitute(iterator, args);
-            m_P5.Substitute(iterator, args);
-            m_P6.Substitute(iterator, args);
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_P1.Evaluate(instance);
-            m_P2.Evaluate(instance);
-            m_P3.Evaluate(instance);
-            m_P4.Evaluate(instance);
-            m_P5.Evaluate(instance);
-            m_P6.Evaluate(instance);
+            m_P1.Evaluate(instance, iterator, args);
+            m_P2.Evaluate(instance, iterator, args);
+            m_P3.Evaluate(instance, iterator, args);
+            m_P4.Evaluate(instance, iterator, args);
+            m_P5.Evaluate(instance, iterator, args);
+            m_P6.Evaluate(instance, iterator, args);
+        
         }
         public bool HaveValue
         {
@@ -462,11 +374,6 @@ namespace StorySystem
         {
             get { return m_P6.Value; }
         }
-        public int Flag
-        {
-            get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag; }
-        }
-
         private IStoryValue<P1> m_P1 = new StoryValue<P1>();
         private IStoryValue<P2> m_P2 = new StoryValue<P2>();
         private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -501,25 +408,16 @@ namespace StorySystem
             val.m_P7 = m_P7.Clone();
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_P1.Substitute(iterator, args);
-            m_P2.Substitute(iterator, args);
-            m_P3.Substitute(iterator, args);
-            m_P4.Substitute(iterator, args);
-            m_P5.Substitute(iterator, args);
-            m_P6.Substitute(iterator, args);
-            m_P7.Substitute(iterator, args);
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_P1.Evaluate(instance);
-            m_P2.Evaluate(instance);
-            m_P3.Evaluate(instance);
-            m_P4.Evaluate(instance);
-            m_P5.Evaluate(instance);
-            m_P6.Evaluate(instance);
-            m_P7.Evaluate(instance);
+            m_P1.Evaluate(instance, iterator, args);
+            m_P2.Evaluate(instance, iterator, args);
+            m_P3.Evaluate(instance, iterator, args);
+            m_P4.Evaluate(instance, iterator, args);
+            m_P5.Evaluate(instance, iterator, args);
+            m_P6.Evaluate(instance, iterator, args);
+            m_P7.Evaluate(instance, iterator, args);
+        
         }
         public bool HaveValue
         {
@@ -553,11 +451,6 @@ namespace StorySystem
         {
             get { return m_P7.Value; }
         }
-        public int Flag
-        {
-            get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag | m_P7.Flag; }
-        }
-
         private IStoryValue<P1> m_P1 = new StoryValue<P1>();
         private IStoryValue<P2> m_P2 = new StoryValue<P2>();
         private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -595,27 +488,17 @@ namespace StorySystem
             val.m_P8 = m_P8.Clone();
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_P1.Substitute(iterator, args);
-            m_P2.Substitute(iterator, args);
-            m_P3.Substitute(iterator, args);
-            m_P4.Substitute(iterator, args);
-            m_P5.Substitute(iterator, args);
-            m_P6.Substitute(iterator, args);
-            m_P7.Substitute(iterator, args);
-            m_P8.Substitute(iterator, args);
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_P1.Evaluate(instance);
-            m_P2.Evaluate(instance);
-            m_P3.Evaluate(instance);
-            m_P4.Evaluate(instance);
-            m_P5.Evaluate(instance);
-            m_P6.Evaluate(instance);
-            m_P7.Evaluate(instance);
-            m_P8.Evaluate(instance);
+            m_P1.Evaluate(instance, iterator, args);
+            m_P2.Evaluate(instance, iterator, args);
+            m_P3.Evaluate(instance, iterator, args);
+            m_P4.Evaluate(instance, iterator, args);
+            m_P5.Evaluate(instance, iterator, args);
+            m_P6.Evaluate(instance, iterator, args);
+            m_P7.Evaluate(instance, iterator, args);
+            m_P8.Evaluate(instance, iterator, args);
+        
         }
         public bool HaveValue
         {
@@ -653,11 +536,6 @@ namespace StorySystem
         {
             get { return m_P8.Value; }
         }
-        public int Flag
-        {
-            get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag | m_P7.Flag | m_P8.Flag; }
-        }
-
         private IStoryValue<P1> m_P1 = new StoryValue<P1>();
         private IStoryValue<P2> m_P2 = new StoryValue<P2>();
         private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -700,29 +578,18 @@ namespace StorySystem
         val.m_P9 = m_P9.Clone();
         return val;
       }
-      public void Substitute(object iterator, object[] args)
+      public void Evaluate(StoryInstance instance, object iterator, object[] args)
           {
-        m_P1.Substitute(iterator, args);
-        m_P2.Substitute(iterator, args);
-        m_P3.Substitute(iterator, args);
-        m_P4.Substitute(iterator, args);
-        m_P5.Substitute(iterator, args);
-        m_P6.Substitute(iterator, args);
-        m_P7.Substitute(iterator, args);
-        m_P8.Substitute(iterator, args);
-        m_P9.Substitute(iterator, args);
-      }
-      public void Evaluate(StoryInstance instance)
-      {
-        m_P1.Evaluate(instance);
-        m_P2.Evaluate(instance);
-        m_P3.Evaluate(instance);
-        m_P4.Evaluate(instance);
-        m_P5.Evaluate(instance);
-        m_P6.Evaluate(instance);
-        m_P7.Evaluate(instance);
-        m_P8.Evaluate(instance);
-        m_P9.Evaluate(instance);
+        m_P1.Evaluate(instance, iterator, args);
+        m_P2.Evaluate(instance, iterator, args);
+        m_P3.Evaluate(instance, iterator, args);
+        m_P4.Evaluate(instance, iterator, args);
+        m_P5.Evaluate(instance, iterator, args);
+        m_P6.Evaluate(instance, iterator, args);
+        m_P7.Evaluate(instance, iterator, args);
+        m_P8.Evaluate(instance, iterator, args);
+        m_P9.Evaluate(instance, iterator, args);
+      
       }
       public bool HaveValue
       {
@@ -764,11 +631,6 @@ namespace StorySystem
       {
         get { return m_P9.Value; }
       }
-      public int Flag
-      {
-        get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag | m_P7.Flag | m_P8.Flag | m_P9.Flag; }
-      }
-
       private IStoryValue<P1> m_P1 = new StoryValue<P1>();
       private IStoryValue<P2> m_P2 = new StoryValue<P2>();
       private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -812,31 +674,19 @@ namespace StorySystem
         val.m_P10 = m_P10.Clone();
         return val;
       }
-      public void Substitute(object iterator, object[] args)
+      public void Evaluate(StoryInstance instance, object iterator, object[] args)
           {
-        m_P1.Substitute(iterator, args);
-        m_P2.Substitute(iterator, args);
-        m_P3.Substitute(iterator, args);
-        m_P4.Substitute(iterator, args);
-        m_P5.Substitute(iterator, args);
-        m_P6.Substitute(iterator, args);
-        m_P7.Substitute(iterator, args);
-        m_P8.Substitute(iterator, args);
-        m_P9.Substitute(iterator, args);
-        m_P10.Substitute(iterator, args);
-      }
-      public void Evaluate(StoryInstance instance)
-      {
-        m_P1.Evaluate(instance);
-        m_P2.Evaluate(instance);
-        m_P3.Evaluate(instance);
-        m_P4.Evaluate(instance);
-        m_P5.Evaluate(instance);
-        m_P6.Evaluate(instance);
-        m_P7.Evaluate(instance);
-        m_P8.Evaluate(instance);
-        m_P9.Evaluate(instance);
-        m_P10.Evaluate(instance);
+        m_P1.Evaluate(instance, iterator, args);
+        m_P2.Evaluate(instance, iterator, args);
+        m_P3.Evaluate(instance, iterator, args);
+        m_P4.Evaluate(instance, iterator, args);
+        m_P5.Evaluate(instance, iterator, args);
+        m_P6.Evaluate(instance, iterator, args);
+        m_P7.Evaluate(instance, iterator, args);
+        m_P8.Evaluate(instance, iterator, args);
+        m_P9.Evaluate(instance, iterator, args);
+        m_P10.Evaluate(instance, iterator, args);
+      
       }
       public bool HaveValue
       {
@@ -882,11 +732,6 @@ namespace StorySystem
       {
         get { return m_P10.Value; }
       }
-      public int Flag
-      {
-        get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag | m_P7.Flag | m_P8.Flag | m_P9.Flag | m_P10.Flag; }
-      }
-
       private IStoryValue<P1> m_P1 = new StoryValue<P1>();
       private IStoryValue<P2> m_P2 = new StoryValue<P2>();
       private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -933,33 +778,20 @@ namespace StorySystem
         val.m_P11 = m_P11.Clone();
         return val;
       }
-      public void Substitute(object iterator, object[] args)
+      public void Evaluate(StoryInstance instance, object iterator, object[] args)
           {
-        m_P1.Substitute(iterator, args);
-        m_P2.Substitute(iterator, args);
-        m_P3.Substitute(iterator, args);
-        m_P4.Substitute(iterator, args);
-        m_P5.Substitute(iterator, args);
-        m_P6.Substitute(iterator, args);
-        m_P7.Substitute(iterator, args);
-        m_P8.Substitute(iterator, args);
-        m_P9.Substitute(iterator, args);
-        m_P10.Substitute(iterator, args);
-        m_P11.Substitute(iterator, args);
-      }
-      public void Evaluate(StoryInstance instance)
-      {
-        m_P1.Evaluate(instance);
-        m_P2.Evaluate(instance);
-        m_P3.Evaluate(instance);
-        m_P4.Evaluate(instance);
-        m_P5.Evaluate(instance);
-        m_P6.Evaluate(instance);
-        m_P7.Evaluate(instance);
-        m_P8.Evaluate(instance);
-        m_P9.Evaluate(instance);
-        m_P10.Evaluate(instance);
-        m_P11.Evaluate(instance);
+        m_P1.Evaluate(instance, iterator, args);
+        m_P2.Evaluate(instance, iterator, args);
+        m_P3.Evaluate(instance, iterator, args);
+        m_P4.Evaluate(instance, iterator, args);
+        m_P5.Evaluate(instance, iterator, args);
+        m_P6.Evaluate(instance, iterator, args);
+        m_P7.Evaluate(instance, iterator, args);
+        m_P8.Evaluate(instance, iterator, args);
+        m_P9.Evaluate(instance, iterator, args);
+        m_P10.Evaluate(instance, iterator, args);
+        m_P11.Evaluate(instance, iterator, args);
+      
       }
       public bool HaveValue
       {
@@ -1009,11 +841,6 @@ namespace StorySystem
       {
         get { return m_P11.Value; }
       }
-      public int Flag
-      {
-        get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag | m_P7.Flag | m_P8.Flag | m_P9.Flag | m_P10.Flag | m_P11.Flag; }
-      }
-
       private IStoryValue<P1> m_P1 = new StoryValue<P1>();
       private IStoryValue<P2> m_P2 = new StoryValue<P2>();
       private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -1063,35 +890,21 @@ namespace StorySystem
         val.m_P12 = m_P12.Clone();
         return val;
       }
-      public void Substitute(object iterator, object[] args)
+      public void Evaluate(StoryInstance instance, object iterator, object[] args)
           {
-        m_P1.Substitute(iterator, args);
-        m_P2.Substitute(iterator, args);
-        m_P3.Substitute(iterator, args);
-        m_P4.Substitute(iterator, args);
-        m_P5.Substitute(iterator, args);
-        m_P6.Substitute(iterator, args);
-        m_P7.Substitute(iterator, args);
-        m_P8.Substitute(iterator, args);
-        m_P9.Substitute(iterator, args);
-        m_P10.Substitute(iterator, args);
-        m_P11.Substitute(iterator, args);
-        m_P12.Substitute(iterator, args);
-      }
-      public void Evaluate(StoryInstance instance)
-      {
-        m_P1.Evaluate(instance);
-        m_P2.Evaluate(instance);
-        m_P3.Evaluate(instance);
-        m_P4.Evaluate(instance);
-        m_P5.Evaluate(instance);
-        m_P6.Evaluate(instance);
-        m_P7.Evaluate(instance);
-        m_P8.Evaluate(instance);
-        m_P9.Evaluate(instance);
-        m_P10.Evaluate(instance);
-        m_P11.Evaluate(instance);
-        m_P12.Evaluate(instance);
+        m_P1.Evaluate(instance, iterator, args);
+        m_P2.Evaluate(instance, iterator, args);
+        m_P3.Evaluate(instance, iterator, args);
+        m_P4.Evaluate(instance, iterator, args);
+        m_P5.Evaluate(instance, iterator, args);
+        m_P6.Evaluate(instance, iterator, args);
+        m_P7.Evaluate(instance, iterator, args);
+        m_P8.Evaluate(instance, iterator, args);
+        m_P9.Evaluate(instance, iterator, args);
+        m_P10.Evaluate(instance, iterator, args);
+        m_P11.Evaluate(instance, iterator, args);
+        m_P12.Evaluate(instance, iterator, args);
+      
       }
       public bool HaveValue
       {
@@ -1145,11 +958,6 @@ namespace StorySystem
       {
         get { return m_P12.Value; }
       }
-      public int Flag
-      {
-        get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag | m_P7.Flag | m_P8.Flag | m_P9.Flag | m_P10.Flag | m_P11.Flag | m_P12.Flag; }
-      }
-
       private IStoryValue<P1> m_P1 = new StoryValue<P1>();
       private IStoryValue<P2> m_P2 = new StoryValue<P2>();
       private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -1202,37 +1010,22 @@ namespace StorySystem
         val.m_P13 = m_P13.Clone();
         return val;
       }
-      public void Substitute(object iterator, object[] args)
+      public void Evaluate(StoryInstance instance, object iterator, object[] args)
           {
-        m_P1.Substitute(iterator, args);
-        m_P2.Substitute(iterator, args);
-        m_P3.Substitute(iterator, args);
-        m_P4.Substitute(iterator, args);
-        m_P5.Substitute(iterator, args);
-        m_P6.Substitute(iterator, args);
-        m_P7.Substitute(iterator, args);
-        m_P8.Substitute(iterator, args);
-        m_P9.Substitute(iterator, args);
-        m_P10.Substitute(iterator, args);
-        m_P11.Substitute(iterator, args);
-        m_P12.Substitute(iterator, args);
-        m_P13.Substitute(iterator, args);
-      }
-      public void Evaluate(StoryInstance instance)
-      {
-        m_P1.Evaluate(instance);
-        m_P2.Evaluate(instance);
-        m_P3.Evaluate(instance);
-        m_P4.Evaluate(instance);
-        m_P5.Evaluate(instance);
-        m_P6.Evaluate(instance);
-        m_P7.Evaluate(instance);
-        m_P8.Evaluate(instance);
-        m_P9.Evaluate(instance);
-        m_P10.Evaluate(instance);
-        m_P11.Evaluate(instance);
-        m_P12.Evaluate(instance);
-        m_P13.Evaluate(instance);
+        m_P1.Evaluate(instance, iterator, args);
+        m_P2.Evaluate(instance, iterator, args);
+        m_P3.Evaluate(instance, iterator, args);
+        m_P4.Evaluate(instance, iterator, args);
+        m_P5.Evaluate(instance, iterator, args);
+        m_P6.Evaluate(instance, iterator, args);
+        m_P7.Evaluate(instance, iterator, args);
+        m_P8.Evaluate(instance, iterator, args);
+        m_P9.Evaluate(instance, iterator, args);
+        m_P10.Evaluate(instance, iterator, args);
+        m_P11.Evaluate(instance, iterator, args);
+        m_P12.Evaluate(instance, iterator, args);
+        m_P13.Evaluate(instance, iterator, args);
+      
       }
       public bool HaveValue
       {
@@ -1290,11 +1083,6 @@ namespace StorySystem
       {
         get { return m_P13.Value; }
       }
-      public int Flag
-      {
-        get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag | m_P7.Flag | m_P8.Flag | m_P9.Flag | m_P10.Flag | m_P11.Flag | m_P12.Flag | m_P13.Flag; }
-      }
-
       private IStoryValue<P1> m_P1 = new StoryValue<P1>();
       private IStoryValue<P2> m_P2 = new StoryValue<P2>();
       private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -1350,39 +1138,23 @@ namespace StorySystem
         val.m_P14 = m_P14.Clone();
         return val;
       }
-      public void Substitute(object iterator, object[] args)
+      public void Evaluate(StoryInstance instance, object iterator, object[] args)
           {
-        m_P1.Substitute(iterator, args);
-        m_P2.Substitute(iterator, args);
-        m_P3.Substitute(iterator, args);
-        m_P4.Substitute(iterator, args);
-        m_P5.Substitute(iterator, args);
-        m_P6.Substitute(iterator, args);
-        m_P7.Substitute(iterator, args);
-        m_P8.Substitute(iterator, args);
-        m_P9.Substitute(iterator, args);
-        m_P10.Substitute(iterator, args);
-        m_P11.Substitute(iterator, args);
-        m_P12.Substitute(iterator, args);
-        m_P13.Substitute(iterator, args);
-        m_P14.Substitute(iterator, args);
-      }
-      public void Evaluate(StoryInstance instance)
-      {
-        m_P1.Evaluate(instance);
-        m_P2.Evaluate(instance);
-        m_P3.Evaluate(instance);
-        m_P4.Evaluate(instance);
-        m_P5.Evaluate(instance);
-        m_P6.Evaluate(instance);
-        m_P7.Evaluate(instance);
-        m_P8.Evaluate(instance);
-        m_P9.Evaluate(instance);
-        m_P10.Evaluate(instance);
-        m_P11.Evaluate(instance);
-        m_P12.Evaluate(instance);
-        m_P13.Evaluate(instance);
-        m_P14.Evaluate(instance);
+        m_P1.Evaluate(instance, iterator, args);
+        m_P2.Evaluate(instance, iterator, args);
+        m_P3.Evaluate(instance, iterator, args);
+        m_P4.Evaluate(instance, iterator, args);
+        m_P5.Evaluate(instance, iterator, args);
+        m_P6.Evaluate(instance, iterator, args);
+        m_P7.Evaluate(instance, iterator, args);
+        m_P8.Evaluate(instance, iterator, args);
+        m_P9.Evaluate(instance, iterator, args);
+        m_P10.Evaluate(instance, iterator, args);
+        m_P11.Evaluate(instance, iterator, args);
+        m_P12.Evaluate(instance, iterator, args);
+        m_P13.Evaluate(instance, iterator, args);
+        m_P14.Evaluate(instance, iterator, args);
+      
       }
       public bool HaveValue
       {
@@ -1444,11 +1216,6 @@ namespace StorySystem
       {
         get { return m_P14.Value; }
       }
-      public int Flag
-      {
-        get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag | m_P7.Flag | m_P8.Flag | m_P9.Flag | m_P10.Flag | m_P11.Flag | m_P12.Flag | m_P13.Flag | m_P14.Flag; }
-      }
-
       private IStoryValue<P1> m_P1 = new StoryValue<P1>();
       private IStoryValue<P2> m_P2 = new StoryValue<P2>();
       private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -1507,41 +1274,24 @@ namespace StorySystem
         val.m_P15 = m_P15.Clone();
         return val;
       }
-      public void Substitute(object iterator, object[] args)
+      public void Evaluate(StoryInstance instance, object iterator, object[] args)
           {
-        m_P1.Substitute(iterator, args);
-        m_P2.Substitute(iterator, args);
-        m_P3.Substitute(iterator, args);
-        m_P4.Substitute(iterator, args);
-        m_P5.Substitute(iterator, args);
-        m_P6.Substitute(iterator, args);
-        m_P7.Substitute(iterator, args);
-        m_P8.Substitute(iterator, args);
-        m_P9.Substitute(iterator, args);
-        m_P10.Substitute(iterator, args);
-        m_P11.Substitute(iterator, args);
-        m_P12.Substitute(iterator, args);
-        m_P13.Substitute(iterator, args);
-        m_P14.Substitute(iterator, args);
-        m_P15.Substitute(iterator, args);
-      }
-      public void Evaluate(StoryInstance instance)
-      {
-        m_P1.Evaluate(instance);
-        m_P2.Evaluate(instance);
-        m_P3.Evaluate(instance);
-        m_P4.Evaluate(instance);
-        m_P5.Evaluate(instance);
-        m_P6.Evaluate(instance);
-        m_P7.Evaluate(instance);
-        m_P8.Evaluate(instance);
-        m_P9.Evaluate(instance);
-        m_P10.Evaluate(instance);
-        m_P11.Evaluate(instance);
-        m_P12.Evaluate(instance);
-        m_P13.Evaluate(instance);
-        m_P14.Evaluate(instance);
-        m_P15.Evaluate(instance);
+        m_P1.Evaluate(instance, iterator, args);
+        m_P2.Evaluate(instance, iterator, args);
+        m_P3.Evaluate(instance, iterator, args);
+        m_P4.Evaluate(instance, iterator, args);
+        m_P5.Evaluate(instance, iterator, args);
+        m_P6.Evaluate(instance, iterator, args);
+        m_P7.Evaluate(instance, iterator, args);
+        m_P8.Evaluate(instance, iterator, args);
+        m_P9.Evaluate(instance, iterator, args);
+        m_P10.Evaluate(instance, iterator, args);
+        m_P11.Evaluate(instance, iterator, args);
+        m_P12.Evaluate(instance, iterator, args);
+        m_P13.Evaluate(instance, iterator, args);
+        m_P14.Evaluate(instance, iterator, args);
+        m_P15.Evaluate(instance, iterator, args);
+      
       }
       public bool HaveValue
       {
@@ -1607,11 +1357,6 @@ namespace StorySystem
       {
         get { return m_P15.Value; }
       }
-      public int Flag
-      {
-        get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag | m_P7.Flag | m_P8.Flag | m_P9.Flag | m_P10.Flag | m_P11.Flag | m_P12.Flag | m_P13.Flag | m_P14.Flag | m_P15.Flag; }
-      }
-
       private IStoryValue<P1> m_P1 = new StoryValue<P1>();
       private IStoryValue<P2> m_P2 = new StoryValue<P2>();
       private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -1673,43 +1418,25 @@ namespace StorySystem
         val.m_P16 = m_P16.Clone();
         return val;
       }
-      public void Substitute(object iterator, object[] args)
+      public void Evaluate(StoryInstance instance, object iterator, object[] args)
           {
-        m_P1.Substitute(iterator, args);
-        m_P2.Substitute(iterator, args);
-        m_P3.Substitute(iterator, args);
-        m_P4.Substitute(iterator, args);
-        m_P5.Substitute(iterator, args);
-        m_P6.Substitute(iterator, args);
-        m_P7.Substitute(iterator, args);
-        m_P8.Substitute(iterator, args);
-        m_P9.Substitute(iterator, args);
-        m_P10.Substitute(iterator, args);
-        m_P11.Substitute(iterator, args);
-        m_P12.Substitute(iterator, args);
-        m_P13.Substitute(iterator, args);
-        m_P14.Substitute(iterator, args);
-        m_P15.Substitute(iterator, args);
-        m_P16.Substitute(iterator, args);
-      }
-      public void Evaluate(StoryInstance instance)
-      {
-        m_P1.Evaluate(instance);
-        m_P2.Evaluate(instance);
-        m_P3.Evaluate(instance);
-        m_P4.Evaluate(instance);
-        m_P5.Evaluate(instance);
-        m_P6.Evaluate(instance);
-        m_P7.Evaluate(instance);
-        m_P8.Evaluate(instance);
-        m_P9.Evaluate(instance);
-        m_P10.Evaluate(instance);
-        m_P11.Evaluate(instance);
-        m_P12.Evaluate(instance);
-        m_P13.Evaluate(instance);
-        m_P14.Evaluate(instance);
-        m_P15.Evaluate(instance);
-        m_P16.Evaluate(instance);
+        m_P1.Evaluate(instance, iterator, args);
+        m_P2.Evaluate(instance, iterator, args);
+        m_P3.Evaluate(instance, iterator, args);
+        m_P4.Evaluate(instance, iterator, args);
+        m_P5.Evaluate(instance, iterator, args);
+        m_P6.Evaluate(instance, iterator, args);
+        m_P7.Evaluate(instance, iterator, args);
+        m_P8.Evaluate(instance, iterator, args);
+        m_P9.Evaluate(instance, iterator, args);
+        m_P10.Evaluate(instance, iterator, args);
+        m_P11.Evaluate(instance, iterator, args);
+        m_P12.Evaluate(instance, iterator, args);
+        m_P13.Evaluate(instance, iterator, args);
+        m_P14.Evaluate(instance, iterator, args);
+        m_P15.Evaluate(instance, iterator, args);
+        m_P16.Evaluate(instance, iterator, args);
+      
       }
       public bool HaveValue
       {
@@ -1779,11 +1506,6 @@ namespace StorySystem
       {
         get { return m_P16.Value; }
       }
-      public int Flag
-      {
-        get { return m_P1.Flag | m_P2.Flag | m_P3.Flag | m_P4.Flag | m_P5.Flag | m_P6.Flag | m_P7.Flag | m_P8.Flag | m_P9.Flag | m_P10.Flag | m_P11.Flag | m_P12.Flag | m_P13.Flag | m_P14.Flag | m_P15.Flag | m_P16.Flag; }
-      }
-
       private IStoryValue<P1> m_P1 = new StoryValue<P1>();
       private IStoryValue<P2> m_P2 = new StoryValue<P2>();
       private IStoryValue<P3> m_P3 = new StoryValue<P3>();
@@ -1824,18 +1546,15 @@ namespace StorySystem
             }
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<P> val = m_Args[i];
-                val.Substitute(iterator, args);
+                val.Evaluate(instance, iterator, args);
             }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
+        
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<P> val = m_Args[i];
-                val.Evaluate(instance);
             }
         }
         public bool HaveValue
@@ -1865,19 +1584,6 @@ namespace StorySystem
                 return vals;
             }
         }
-        public int Flag
-        {
-            get
-            {
-                int flag = 0;
-                for (int i = 0; i < m_Args.Count; ++i) {
-                    IStoryValue<P> val = m_Args[i];
-                    flag |= val.Flag;
-                }
-                return flag;
-            }
-        }
-
         private List<IStoryValue<P>> m_Args = new List<IStoryValue<P>>();
     }
 }

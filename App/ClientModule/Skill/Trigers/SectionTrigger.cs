@@ -62,13 +62,35 @@ namespace GameFramework.Skill.Trigers
                     LogSystem.Warn("adjustsectionduration impact duration is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
                 }
             } else {
-                int time = TryGetTimeFromConfig(instance);
-                if (time > 0) {
-                    long newDuration = (long)time + m_DeltaTime;
-                    if (instance.CurSectionDuration < newDuration)
-                        instance.SetCurSectionDuration(newDuration);
-                } else {
-                    LogSystem.Warn("adjustsectionduration variable time is 0, skill id:{0} dsl skill id:{1}", senderObj.SkillId, instance.DslSkillId);
+                bool handled = false;
+                Animator animator = obj.GetComponent<Animator>();
+                if (null != animator && null != animator.runtimeAnimatorController) {
+                    float length = 0;
+                    var clips = animator.runtimeAnimatorController.animationClips;
+                    for (int i = 0; i < clips.Length; ++i) {
+                        if (clips[i].name == m_Type) {
+                            length = clips[i].length;
+                            handled = true;
+                            break;
+                        }
+                    }
+                    if (length > Geometry.c_FloatPrecision) {
+                        long newDuration = (long)(length * 1000) + m_DeltaTime;
+                        if (instance.CurSectionDuration < newDuration)
+                            instance.SetCurSectionDuration(newDuration);
+                    } else {
+                        LogSystem.Warn("adjustsectionduration variable time is 0, skill id:{0} dsl skill id:{1} type:{2}", senderObj.SkillId, instance.DslSkillId, m_Type);
+                    }
+                }
+                if (!handled) {
+                    int time = TryGetTimeFromConfig(instance);
+                    if (time > 0) {
+                        long newDuration = (long)time + m_DeltaTime;
+                        if (instance.CurSectionDuration < newDuration)
+                            instance.SetCurSectionDuration(newDuration);
+                    } else {
+                        LogSystem.Warn("adjustsectionduration variable time is 0, skill id:{0} dsl skill id:{1} type:{2}", senderObj.SkillId, instance.DslSkillId, m_Type);
+                    }
                 }
             }
             return false;

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using ScriptRuntime;
 using GameFramework;
-
 namespace StorySystem
 {
     /// <summary>
@@ -11,127 +10,164 @@ namespace StorySystem
     public sealed class StoryCommandManager
     {
         public const int c_MaxCommandGroupNum = (int)StoryCommandGroupDefine.NUM;
-
         public void RegisterCommandFactory(string type, IStoryCommandFactory factory)
         {
-            if (!m_StoryCommandFactories.ContainsKey(type)) {
-                m_StoryCommandFactories.Add(type, factory);
-            } else {
-                //error
-            }
+            RegisterCommandFactory(type, factory, false);
         }
-        public void RegisterCommandFactory(StoryCommandGroupDefine group, string type, IStoryCommandFactory factory)
+        public void RegisterCommandFactory(string type, IStoryCommandFactory factory, bool replace)
         {
-            int ix = (int)group;
-            if (ix >= 0 && ix < c_MaxCommandGroupNum) {
-                Dictionary<string, IStoryCommandFactory> factories = m_GroupedCommandFactories[ix];
-                if (!factories.ContainsKey(type)) {
-                    factories.Add(type, factory);
+            lock (m_Lock) {
+                if (!m_StoryCommandFactories.ContainsKey(type)) {
+                    m_StoryCommandFactories.Add(type, factory);
+                } else if (replace) {
+                    m_StoryCommandFactories[type] = factory;
                 } else {
                     //error
                 }
             }
         }
-        public IStoryCommand CreateCommand(Dsl.ISyntaxComponent commandConfig)
+        public void RegisterCommandFactory(StoryCommandGroupDefine group, string type, IStoryCommandFactory factory)
         {
-            Dsl.CallData callData = commandConfig as Dsl.CallData;
-            if (null != callData) {
-                if (callData.IsHighOrder) {
-                    Dsl.CallData innerCall = callData.Call;
-                    if (innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                      innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                      innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                      innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                      innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
-                        if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS) {
-                            //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> execinstance(obj,member,a,b,...)
-                            Dsl.CallData newCall = new Dsl.CallData();
-                            newCall.Name = new Dsl.ValueData("dotnetexec", Dsl.ValueData.ID_TOKEN);
-                            newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
-                            if (innerCall.IsHighOrder) {
-                                newCall.Params.Add(innerCall.Call);
-                                newCall.Params.Add(innerCall.GetParam(0));
-                                for (int i = 0; i < callData.GetParamNum(); ++i) {
-                                    Dsl.ISyntaxComponent p = callData.Params[i];
-                                    newCall.Params.Add(p);
-                                }
-                            } else {
-                                newCall.Params.Add(innerCall.Name);
-                                newCall.Params.Add(innerCall.GetParam(0));
-                                for (int i = 0; i < callData.GetParamNum(); ++i) {
-                                    Dsl.ISyntaxComponent p = callData.Params[i];
-                                    newCall.Params.Add(p);
-                                }
-                            }
-                            return CreateCommand(newCall);
-                        }
-                    }
-                } else if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_OPERATOR && callData.GetId() == "=") {
-                    Dsl.CallData innerCall = callData.GetParam(0) as Dsl.CallData;
-                    if (null != innerCall) {
-                        //obj.property = val -> setinstance(obj,property,val)
-                        Dsl.CallData newCall = new Dsl.CallData();
-                        newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
-                        newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
-                        if (innerCall.IsHighOrder) {
-                            newCall.Params.Add(innerCall.Call);
-                            newCall.Params.Add(innerCall.GetParam(0));
-                            newCall.Params.Add(callData.GetParam(1));
-                        } else {
-                            newCall.Params.Add(innerCall.Name);
-                            newCall.Params.Add(innerCall.GetParam(0));
-                            newCall.Params.Add(callData.GetParam(1));
-                        }
-                        return CreateCommand(newCall);
-                    }
-                }
-            }
-            IStoryCommand command = null;
-            string type = commandConfig.GetId();
-            IStoryCommandFactory factory = GetFactory(type);
-            if (null != factory) {
-                try {
-                    command = factory.Create(commandConfig);
-                } catch (Exception ex) {
-                    GameFramework.LogSystem.Error("command:{0} line:{1} failed.", commandConfig.ToScriptString(), commandConfig.GetLine());
-                    throw ex;
-                }
-            } else {
-#if DEBUG
-                string err = string.Format("CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString());
-                throw new Exception(err);
-#else
-                CsLibrary.LogSystem.Error("CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
-#endif
-            }
-            if (null != command) {
-                GameFramework.LogSystem.Debug("CreateCommand, type:{0} command:{1}", type, command.GetType().Name);
-            } else {
-#if DEBUG
-                string err = string.Format("CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString());
-                throw new Exception(err);
-#else
-                CsLibrary.LogSystem.Error("CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
-#endif
-            }
-            return command;
+            RegisterCommandFactory(group, type, factory, false);
         }
-
-        private IStoryCommandFactory GetFactory(string type)
+        public void RegisterCommandFactory(StoryCommandGroupDefine group, string type, IStoryCommandFactory factory, bool replace)
+        {
+            lock (m_Lock) {
+                int ix = (int)group;
+                if (ix >= 0 && ix < c_MaxCommandGroupNum) {
+                    Dictionary<string, IStoryCommandFactory> factories = m_GroupedCommandFactories[ix];
+                    if (!factories.ContainsKey(type)) {
+                        factories.Add(type, factory);
+                    } else if (replace) {
+                        factories[type] = factory;
+                    } else {
+                        //error
+                    }
+                }
+            }
+        }
+        public IStoryCommandFactory FindFactory(string type)
         {
             IStoryCommandFactory factory;
-            if (m_StoryCommandFactories.TryGetValue(type, out factory)) {
-                return factory;
+            lock (m_Lock) {
+                m_StoryCommandFactories.TryGetValue(type, out factory);
             }
-            const ulong one = 1;
-            for (int ix = 0; ix < c_MaxCommandGroupNum; ++ix) {
-                if ((s_ThreadCommandGroupsMask & (one << ix)) != 0 && m_GroupedCommandFactories[ix].TryGetValue(type, out factory)) {
-                    return factory;
+            return factory;
+        }
+        public IStoryCommandFactory FindFactory(StoryCommandGroupDefine group, string type)
+        {
+            IStoryCommandFactory factory = null;
+            lock (m_Lock) {
+                int ix = (int)group;
+                if (ix >= 0 && ix < c_MaxCommandGroupNum) {
+                    Dictionary<string, IStoryCommandFactory> factories = m_GroupedCommandFactories[ix];
+                    factories.TryGetValue(type, out factory);
                 }
             }
             return factory;
         }
-
+        public IStoryCommand CreateCommand(Dsl.ISyntaxComponent commandConfig)
+        {
+            lock (m_Lock) {
+                Dsl.CallData callData = commandConfig as Dsl.CallData;
+                if (null != callData) {
+                    if (callData.IsHighOrder) {
+                        Dsl.CallData innerCall = callData.Call;
+                        if (innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                          innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                          innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                          innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                          innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
+                            if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS) {
+                                //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> execinstance(obj,member,a,b,...)
+                                Dsl.CallData newCall = new Dsl.CallData();
+                                newCall.Name = new Dsl.ValueData("dotnetexec", Dsl.ValueData.ID_TOKEN);
+                                newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                                if (innerCall.IsHighOrder) {
+                                    newCall.Params.Add(innerCall.Call);
+                                    newCall.Params.Add(innerCall.GetParam(0));
+                                    for (int i = 0; i < callData.GetParamNum(); ++i) {
+                                        Dsl.ISyntaxComponent p = callData.Params[i];
+                                        newCall.Params.Add(p);
+                                    }
+                                } else {
+                                    newCall.Params.Add(innerCall.Name);
+                                    newCall.Params.Add(innerCall.GetParam(0));
+                                    for (int i = 0; i < callData.GetParamNum(); ++i) {
+                                        Dsl.ISyntaxComponent p = callData.Params[i];
+                                        newCall.Params.Add(p);
+                                    }
+                                }
+                                return CreateCommand(newCall);
+                            }
+                        }
+                    } else if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_OPERATOR && callData.GetId() == "=") {
+                        Dsl.CallData innerCall = callData.GetParam(0) as Dsl.CallData;
+                        if (null != innerCall) {
+                            //obj.property = val -> setinstance(obj,property,val)
+                            Dsl.CallData newCall = new Dsl.CallData();
+                            newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
+                            newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                            if (innerCall.IsHighOrder) {
+                                newCall.Params.Add(innerCall.Call);
+                                newCall.Params.Add(innerCall.GetParam(0));
+                                newCall.Params.Add(callData.GetParam(1));
+                            } else {
+                                newCall.Params.Add(innerCall.Name);
+                                newCall.Params.Add(innerCall.GetParam(0));
+                                newCall.Params.Add(callData.GetParam(1));
+                            }
+                            return CreateCommand(newCall);
+                        }
+                    }
+                }
+                IStoryCommand command = null;
+                string type = commandConfig.GetId();
+                IStoryCommandFactory factory = GetFactory(type);
+                if (null != factory) {
+                    try {
+                        command = factory.Create();
+                        command.Init(commandConfig);
+                    } catch (Exception ex) {
+                        GameFramework.LogSystem.Error("command:{0} line:{1} failed.", commandConfig.ToScriptString(), commandConfig.GetLine());
+                        throw ex;
+                    }
+                } else {
+#if DEBUG
+                    string err = string.Format("CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString());
+                    throw new Exception(err);
+#else
+                GameFramework.LogSystem.Error("CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
+#endif
+                }
+                if (null != command) {
+                    GameFramework.LogSystem.Debug("CreateCommand, type:{0} command:{1}", type, command.GetType().Name);
+                } else {
+#if DEBUG
+                    string err = string.Format("CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString());
+                    throw new Exception(err);
+#else
+                GameFramework.LogSystem.Error("CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
+#endif
+                }
+                return command;
+            }
+        }
+        private IStoryCommandFactory GetFactory(string type)
+        {
+            IStoryCommandFactory factory;
+            lock (m_Lock) {
+                if (!m_StoryCommandFactories.TryGetValue(type, out factory)) {
+                    const ulong one = 1;
+                    for (int ix = 0; ix < c_MaxCommandGroupNum; ++ix) {
+                        if ((s_ThreadCommandGroupsMask & (one << ix)) != 0 && m_GroupedCommandFactories[ix].TryGetValue(type, out factory)) {
+                            break;
+                        }
+                    }
+                }
+            }
+            return factory;
+        }
         private StoryCommandManager()
         {
             for (int i = 0; i < c_MaxCommandGroupNum; ++i) {
@@ -172,7 +208,6 @@ namespace StorySystem
             RegisterCommandFactory("jsonadd", new StoryCommandFactoryHelper<CommonCommands.JsonAddCommand>());
             RegisterCommandFactory("jsonset", new StoryCommandFactoryHelper<CommonCommands.JsonSetCommand>());
             RegisterCommandFactory("jsonremove", new StoryCommandFactoryHelper<CommonCommands.JsonRemoveCommand>());
-
             //注册通用值与内部函数
             //object
             StoryValueManager.Instance.RegisterValueFactory("namespace", new StoryValueFactoryHelper<CommonValues.NamespaceValue>());
@@ -251,12 +286,10 @@ namespace StorySystem
             StoryValueManager.Instance.RegisterValueFactory("jsonvalues", new StoryValueFactoryHelper<CommonValues.JsonValuesValue>());
             StoryValueManager.Instance.RegisterValueFactory("isjsonarray", new StoryValueFactoryHelper<CommonValues.IsJsonArrayValue>());
             StoryValueManager.Instance.RegisterValueFactory("isjsonobject", new StoryValueFactoryHelper<CommonValues.IsJsonObjectValue>());
-
         }
-
+        private object m_Lock = new object();
         private Dictionary<string, IStoryCommandFactory> m_StoryCommandFactories = new Dictionary<string, IStoryCommandFactory>();
         private Dictionary<string, IStoryCommandFactory>[] m_GroupedCommandFactories = new Dictionary<string, IStoryCommandFactory>[c_MaxCommandGroupNum];
-
         public static ulong ThreadCommandGroupsMask
         {
             get { return s_ThreadCommandGroupsMask; }
@@ -264,7 +297,6 @@ namespace StorySystem
         }
         [ThreadStatic]
         private static ulong s_ThreadCommandGroupsMask = 0;
-
         public static StoryCommandManager Instance
         {
             get { return s_Instance; }

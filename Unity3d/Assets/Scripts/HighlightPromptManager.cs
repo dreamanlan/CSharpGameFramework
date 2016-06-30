@@ -39,7 +39,7 @@ public sealed class HighlightPromptManager
                     RectTransform rect = ui.transform as RectTransform;
                     if (null != rect) {
                         rect.anchoredPosition = new Vector2(0, 150);
-                    }                 
+                    }
                 }
                 Animation anim = obj.GetComponent<Animation>();
                 if (null != anim) {

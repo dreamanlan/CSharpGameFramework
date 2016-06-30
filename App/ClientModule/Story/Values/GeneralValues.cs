@@ -11,17 +11,13 @@ namespace GameFramework.Story.Values
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "gfxget") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 m_ParamNum = callData.GetParamNum();
                 if (m_ParamNum > 0) {
                     m_AttrName.InitFromDsl(callData.GetParam(0));
-                    flag |= m_AttrName.Flag;
                 }
                 if (m_ParamNum > 1) {
                     m_DefaultValue.InitFromDsl(callData.GetParam(1));
-                    flag |= m_DefaultValue.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -32,30 +28,16 @@ namespace GameFramework.Story.Values
             val.m_DefaultValue = m_DefaultValue.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_Iterator = iterator;
-            m_Args = args;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                if (m_ParamNum > 0) {
-                    m_AttrName.Substitute(iterator, args);
-                }
-                if (m_ParamNum > 1) {
-                    m_DefaultValue.Substitute(iterator, args);
-                }
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
             if (m_ParamNum > 0) {
-                m_AttrName.Evaluate(instance);
+                m_AttrName.Evaluate(instance, iterator, args);
             }
             if (m_ParamNum > 1) {
-                m_DefaultValue.Evaluate(instance);
+                m_DefaultValue.Evaluate(instance, iterator, args);
             }
             TryUpdateValue(instance);
         }
@@ -71,13 +53,6 @@ namespace GameFramework.Story.Values
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -94,15 +69,11 @@ namespace GameFramework.Story.Values
             }
         }
 
-        private object m_Iterator = null;
-        private object[] m_Args = null;
-
         private int m_ParamNum = 0;
         private IStoryValue<string> m_AttrName = new StoryValue<string>();
         private IStoryValue<object> m_DefaultValue = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class GfxTimeValue : IStoryValue<object>
     {
@@ -110,7 +81,6 @@ namespace GameFramework.Story.Values
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "gfxtime") {
-                m_Flag = (int)StoryValueFlagMask.HAVE_VAR;
             }
         }
         public IStoryValue<object> Clone()
@@ -118,17 +88,12 @@ namespace GameFramework.Story.Values
             GfxTimeValue val = new GfxTimeValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_Iterator = iterator;
-            m_Args = args;
-        }
-        public void Evaluate(StoryInstance instance)
-        {
+        
             TryUpdateValue(instance);
         }
         public void Analyze(StoryInstance instance)
@@ -146,13 +111,6 @@ namespace GameFramework.Story.Values
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -162,12 +120,8 @@ namespace GameFramework.Story.Values
             m_Value = UnityEngine.Time.time;
         }
 
-        private object m_Iterator = null;
-        private object[] m_Args = null;
-
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class GfxTimeScaleValue : IStoryValue<object>
     {
@@ -175,7 +129,6 @@ namespace GameFramework.Story.Values
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "gfxtimescale") {
-                m_Flag = (int)StoryValueFlagMask.HAVE_VAR;
             }
         }
         public IStoryValue<object> Clone()
@@ -183,17 +136,12 @@ namespace GameFramework.Story.Values
             GfxTimeScaleValue val = new GfxTimeScaleValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_Iterator = iterator;
-            m_Args = args;
-        }
-        public void Evaluate(StoryInstance instance)
-        {
+        
             TryUpdateValue(instance);
         }
         public void Analyze(StoryInstance instance)
@@ -213,13 +161,6 @@ namespace GameFramework.Story.Values
                 return m_Value;
             }
         }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
-            }
-        }
 
         private void TryUpdateValue(StoryInstance instance)
         {
@@ -227,12 +168,8 @@ namespace GameFramework.Story.Values
             m_Value = UnityEngine.Time.timeScale;
         }
 
-        private object m_Iterator = null;
-        private object[] m_Args = null;
-
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class IsActiveValue : IStoryValue<object>
     {
@@ -240,13 +177,10 @@ namespace GameFramework.Story.Values
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "isactive") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
-                    flag |= m_ObjPath.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -255,19 +189,12 @@ namespace GameFramework.Story.Values
             val.m_ObjPath = m_ObjPath.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_ObjPath.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_ObjPath.Evaluate(instance);
+            m_ObjPath.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -282,13 +209,6 @@ namespace GameFramework.Story.Values
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -324,7 +244,6 @@ namespace GameFramework.Story.Values
         private IStoryValue<object> m_ObjPath = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class IsReallyActiveValue : IStoryValue<object>
     {
@@ -332,13 +251,10 @@ namespace GameFramework.Story.Values
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "isreallyactive") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
-                    flag |= m_ObjPath.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -347,19 +263,12 @@ namespace GameFramework.Story.Values
             val.m_ObjPath = m_ObjPath.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_ObjPath.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_ObjPath.Evaluate(instance);
+            m_ObjPath.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -374,13 +283,6 @@ namespace GameFramework.Story.Values
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -416,7 +318,6 @@ namespace GameFramework.Story.Values
         private IStoryValue<object> m_ObjPath = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class GetComponentValue : IStoryValue<object>
     {
@@ -424,15 +325,11 @@ namespace GameFramework.Story.Values
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "getcomponent") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
                     m_ComponentType.InitFromDsl(callData.GetParam(1));
-                    flag |= m_ObjPath.Flag;
-                    flag |= m_ComponentType.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -442,21 +339,13 @@ namespace GameFramework.Story.Values
             val.m_ComponentType = m_ComponentType.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_ObjPath.Substitute(iterator, args);
-                m_ComponentType.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_ObjPath.Evaluate(instance);
-            m_ComponentType.Evaluate(instance);
+            m_ObjPath.Evaluate(instance, iterator, args);
+            m_ComponentType.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -471,13 +360,6 @@ namespace GameFramework.Story.Values
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -516,7 +398,6 @@ namespace GameFramework.Story.Values
         private IStoryValue<object> m_ComponentType = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class GetGameObjectValue : IStoryValue<object>
     {
@@ -524,13 +405,10 @@ namespace GameFramework.Story.Values
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "getgameobject") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
-                    flag |= m_ObjPath.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -539,19 +417,12 @@ namespace GameFramework.Story.Values
             val.m_ObjPath = m_ObjPath.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_ObjPath.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_ObjPath.Evaluate(instance);
+            m_ObjPath.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -566,13 +437,6 @@ namespace GameFramework.Story.Values
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -603,7 +467,6 @@ namespace GameFramework.Story.Values
         private IStoryValue<object> m_ObjPath = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class GetUnityTypeValue : IStoryValue<object>
     {
@@ -611,13 +474,10 @@ namespace GameFramework.Story.Values
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "getunitytype") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_TypeName.InitFromDsl(callData.GetParam(0));
-                    flag |= m_TypeName.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -626,19 +486,12 @@ namespace GameFramework.Story.Values
             val.m_TypeName = m_TypeName.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_TypeName.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_TypeName.Evaluate(instance);
+            m_TypeName.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -653,13 +506,6 @@ namespace GameFramework.Story.Values
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -687,7 +533,6 @@ namespace GameFramework.Story.Values
         private IStoryValue<string> m_TypeName = new StoryValue<string>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class GetUnityUiTypeValue : IStoryValue<object>
     {
@@ -695,13 +540,10 @@ namespace GameFramework.Story.Values
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "getunityuitype") {
-                int flag = (int)StoryValueFlagMask.HAVE_VAR;
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_TypeName.InitFromDsl(callData.GetParam(0));
-                    flag |= m_TypeName.Flag;
                 }
-                m_Flag = flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -710,19 +552,12 @@ namespace GameFramework.Story.Values
             val.m_TypeName = m_TypeName.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_TypeName.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_TypeName.Evaluate(instance);
+            m_TypeName.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -737,13 +572,6 @@ namespace GameFramework.Story.Values
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -771,7 +599,6 @@ namespace GameFramework.Story.Values
         private IStoryValue<string> m_TypeName = new StoryValue<string>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class GetEntityInfoValue : IStoryValue<object>
     {
@@ -780,7 +607,6 @@ namespace GameFramework.Story.Values
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "getentityinfo" && callData.GetParamNum() == 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
-                m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_ObjId.Flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -789,21 +615,12 @@ namespace GameFramework.Story.Values
             val.m_ObjId = m_ObjId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_Iterator = iterator;
-            m_Args = args;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_ObjId.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_ObjId.Evaluate(instance);
+            m_ObjId.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -818,13 +635,6 @@ namespace GameFramework.Story.Values
             get
             {
                 return m_Value;
-            }
-        }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
             }
         }
 
@@ -837,13 +647,9 @@ namespace GameFramework.Story.Values
             }
         }
 
-        private object m_Iterator = null;
-        private object[] m_Args = null;
-
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
     internal sealed class GetEntityViewValue : IStoryValue<object>
     {
@@ -852,7 +658,6 @@ namespace GameFramework.Story.Values
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "getentityview" && callData.GetParamNum() == 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
-                m_Flag = (int)StoryValueFlagMask.HAVE_VAR | m_ObjId.Flag;
             }
         }
         public IStoryValue<object> Clone()
@@ -861,21 +666,12 @@ namespace GameFramework.Story.Values
             val.m_ObjId = m_ObjId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
-            val.m_Flag = m_Flag;
             return val;
         }
-        public void Substitute(object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_Iterator = iterator;
-            m_Args = args;
-            if (StoryValueHelper.HaveArg(Flag)) {
-                m_ObjId.Substitute(iterator, args);
-            }
-        }
-        public void Evaluate(StoryInstance instance)
-        {
-            m_ObjId.Evaluate(instance);
+            m_ObjId.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -892,13 +688,6 @@ namespace GameFramework.Story.Values
                 return m_Value;
             }
         }
-        public int Flag
-        {
-            get
-            {
-                return m_Flag;
-            }
-        }
 
         private void TryUpdateValue(StoryInstance instance)
         {
@@ -909,12 +698,8 @@ namespace GameFramework.Story.Values
             }
         }
 
-        private object m_Iterator = null;
-        private object[] m_Args = null;
-
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private bool m_HaveValue;
         private object m_Value;
-        private int m_Flag = (int)StoryValueFlagMask.HAVE_ARG_AND_VAR;
     }
 }

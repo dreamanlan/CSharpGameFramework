@@ -608,9 +608,21 @@ namespace GameFramework
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmembercount", new StoryValueFactoryHelper<Story.Values.GetMemberCountValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlinkid", new StoryValueFactoryHelper<Story.Values.GetMemberLinkIdValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlevel", new StoryValueFactoryHelper<Story.Values.GetMemberLevelValue>());
+
+                LoadCustomCommandsAndValues();
             }
         }
 
+        private static void LoadCustomCommandsAndValues()
+        {
+            string cmdFile = HomePath.GetAbsolutePath(FilePathDefine_Server.C_DslPath + "Story/Common/CustomCommands.dsl");
+            string valFile = HomePath.GetAbsolutePath(FilePathDefine_Server.C_DslPath + "Story/Common/CustomValues.dsl");
+
+            Dsl.DslFile file1 = CustomCommandValueParser.LoadStory(cmdFile);
+            Dsl.DslFile file2 = CustomCommandValueParser.LoadStory(valFile);
+            CustomCommandValueParser.FirstParse(file1, file2);
+            CustomCommandValueParser.FinalParse(file1, file2);
+        }
         private static bool s_IsInited = false;
     }
 }
