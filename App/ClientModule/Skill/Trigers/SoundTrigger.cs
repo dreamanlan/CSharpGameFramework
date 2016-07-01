@@ -95,7 +95,7 @@ namespace GameFramework.Skill.Trigers
             if (audio_mgr == null) {
                 audio_mgr = new AudioManager();
                 instance.CustomDatas.AddData<AudioManager>(audio_mgr);
-                audio_mgr.AddAudioSource(DefaultAudioName, obj.GetComponent<AudioSource>());
+                audio_mgr.AddAudioSource(DefaultAudioName, obj.GetComponentInChildren<AudioSource>());
             }
             m_AudioSource = audio_mgr.GetAudioSource(m_Name);
             if (m_AudioSource == null) {
@@ -103,7 +103,7 @@ namespace GameFramework.Skill.Trigers
                 if (m_AudioSource != null) {
                     audio_mgr.AddAudioSource(m_Name, m_AudioSource);
                 } else {
-                    m_AudioSource = obj.GetComponent<AudioSource>();
+                    m_AudioSource = obj.GetComponentInChildren<AudioSource>();
                 }
             }
         }
@@ -147,7 +147,7 @@ namespace GameFramework.Skill.Trigers
                     audiosource_obj.transform.parent = obj.transform;
                 }
             }
-            return audiosource_obj.GetComponent<AudioSource>();
+            return audiosource_obj.GetComponentInChildren<AudioSource>();
         }
         protected override void Load(Dsl.CallData callData, int dslSkillId)
         {
@@ -261,7 +261,7 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < StartTime) {
                 return true;
             }
-            if (obj.GetComponent<AudioSource>() == null) {
+            if (obj.GetComponentInChildren<AudioSource>() == null) {
                 return false;
             }
             AudioManager mgr = instance.CustomDatas.GetData<AudioManager>();

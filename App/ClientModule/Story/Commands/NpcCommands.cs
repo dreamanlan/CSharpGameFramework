@@ -852,7 +852,7 @@ namespace GameFramework.Story.Commands
             string anim = m_Anim.Value;
             UnityEngine.GameObject obj = EntityController.Instance.GetGameObjectByUnitId(unitId);
             if (null != obj) {
-                UnityEngine.Animator animator = obj.GetComponent<UnityEngine.Animator>();
+                UnityEngine.Animator animator = obj.GetComponentInChildren<UnityEngine.Animator>();
                 if (null != animator) {
                     float time = 0;
                     if (m_ParamNum > 2) {
@@ -923,7 +923,7 @@ namespace GameFramework.Story.Commands
             int unitId = m_UnitId.Value;
             UnityEngine.GameObject obj = EntityController.Instance.GetGameObjectByUnitId(unitId);
             if (null != obj) {
-                UnityEngine.Animator animator = obj.GetComponent<UnityEngine.Animator>();
+                UnityEngine.Animator animator = obj.GetComponentInChildren<UnityEngine.Animator>();
                 if (null != animator) {
                     for (int i = 0; i < m_Params.Count; ++i) {
                         var param = m_Params[i];

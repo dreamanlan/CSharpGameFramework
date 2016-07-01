@@ -43,7 +43,7 @@ namespace GameFramework.Skill.Trigers
                 if (null != senderObj.TrackEffectObj)
                     obj = senderObj.TrackEffectObj;
                 if (curSectionTime >= StartTime) {
-                    Animator animator = obj.GetComponent<Animator>();
+                    Animator animator = obj.GetComponentInChildren<Animator>();
                     if (null != animator) {
                         string anim = m_AnimName.Get(instance);
                         if (!string.IsNullOrEmpty(anim)) {
@@ -162,7 +162,7 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < StartTime) {
                 return true;
             }
-            Animator animator = obj.GetComponent<Animator>();
+            Animator animator = obj.GetComponentInChildren<Animator>();
             if (animator != null) {
                 float passed_ms = curSectionTime - StartTime;
                 if (passed_ms > 0) {
@@ -231,7 +231,7 @@ namespace GameFramework.Skill.Trigers
                 if (null != senderObj.TrackEffectObj)
                     obj = senderObj.TrackEffectObj;
                 if (curSectionTime >= StartTime) {
-                    Animator animator = obj.GetComponent<Animator>();
+                    Animator animator = obj.GetComponentInChildren<Animator>();
                     if (null != animator) {
                         foreach (var pair in m_Params) {
                             string key = pair.Key;
@@ -342,7 +342,7 @@ namespace GameFramework.Skill.Trigers
             if (null != senderObj.TrackEffectObj)
                 obj = senderObj.TrackEffectObj;
             if (curSectionTime >= StartTime) {
-                Animator animator = obj.GetComponent<Animator>();
+                Animator animator = obj.GetComponentInChildren<Animator>();
                 if (null != animator) {
                     string anim = m_AnimName.Get(instance);
                     string msgId = m_MsgId.Get(instance);

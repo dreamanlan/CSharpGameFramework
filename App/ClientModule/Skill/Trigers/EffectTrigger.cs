@@ -15,10 +15,6 @@ namespace GameFramework.Skill.Trigers
         {
             for (int i = 0; i < m_EffectObject.Count; i++) {
                 if (m_EffectObject[i].activeSelf) {
-                    ParticleSystem[] pss0 = m_EffectObject[i].GetComponents<ParticleSystem>();
-                    for (int j = 0; j < pss0.Length; j++) {
-                        pss0[j].playbackSpeed = speed;
-                    }
                     ParticleSystem[] pss = m_EffectObject[i].GetComponentsInChildren<ParticleSystem>();
                     for (int j = 0; j < pss.Length; j++) {
                         pss[j].playbackSpeed = speed;
@@ -30,13 +26,6 @@ namespace GameFramework.Skill.Trigers
         {
             for (int i = 0; i < m_EffectObject.Count; i++) {
                 if (m_EffectObject[i].activeSelf) {
-                    ParticleSystem[] pss0 = m_EffectObject[i].GetComponents<ParticleSystem>();
-                    for (int j = 0; j < pss0.Length; j++) {
-                        if (pause)
-                            pss0[j].Pause();
-                        else
-                            pss0[j].Play();
-                    }
                     ParticleSystem[] pss = m_EffectObject[i].GetComponentsInChildren<ParticleSystem>();
                     for (int j = 0; j < pss.Length; j++) {
                         if (pause)
@@ -844,7 +833,7 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < StartTime) {
                 return true;
             }
-            Animator animator = obj.GetComponent<Animator>();
+            Animator animator = obj.GetComponentInChildren<Animator>();
             if (animator == null) {
                 return false;
             }

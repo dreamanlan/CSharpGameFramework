@@ -42,7 +42,7 @@ namespace GameFramework
                         m_Agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
                         m_Agent.ResetPath();
                     }
-                    m_Animator = Actor.GetComponent<Animator>();
+                    m_Animator = Actor.GetComponentInChildren<Animator>();
                     EntityDrawGizmos gizmos = Actor.GetComponent<EntityDrawGizmos>();
                     if (null == gizmos) {
                         gizmos = Actor.AddComponent<EntityDrawGizmos>();

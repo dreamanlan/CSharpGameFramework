@@ -279,7 +279,7 @@ namespace GameFramework
         {
             UnityEngine.GameObject obj = GetGameObject(actorId);
             if (null != obj) {
-                UnityEngine.Animator animator = obj.GetComponent<UnityEngine.Animator>();
+                UnityEngine.Animator animator = obj.GetComponentInChildren<UnityEngine.Animator>();
                 if (null != animator) {
                     animator.Play("Stand");
                 }
@@ -289,7 +289,7 @@ namespace GameFramework
         {
             UnityEngine.GameObject obj = GetGameObject(actorId);
             if (null != obj) {
-                UnityEngine.Animator animator = obj.GetComponent<UnityEngine.Animator>();
+                UnityEngine.Animator animator = obj.GetComponentInChildren<UnityEngine.Animator>();
                 if (null != animator) {
                     if (pause)
                         animator.speed = 0;

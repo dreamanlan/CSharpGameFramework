@@ -492,7 +492,9 @@ namespace GameFramework.Skill.Trigers
         private Dictionary<string, object> m_Params = null;
     }
     /// <summary>
-    /// keeptarget([starttime[,remaintime]]);
+    /// keeptarget([starttime[,remaintime]]){
+    ///     aoecenter(x,y,z,relativeToTarget);
+    /// };
     /// </summary>
     public class KeepTargetTrigger : AbstractSkillTriger
     {
@@ -505,16 +507,6 @@ namespace GameFramework.Skill.Trigers
         public override void Reset()
         {
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
-        {
-            int num = callData.GetParamNum();
-            if (num >= 1) {
-                StartTime = long.Parse(callData.GetParamId(0));
-            }
-            if (num >= 2) {
-                m_RemainTime = long.Parse(callData.GetParamId(1));
-            }
-        }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
             GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
@@ -525,15 +517,67 @@ namespace GameFramework.Skill.Trigers
             if (m_RemainTime > 0 && curSectionTime > (StartTime + m_RemainTime)) {
                 return false;
             }
-            if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                EntityController.Instance.KeepTarget(senderObj.TargetActorId);
+            if (senderObj.ConfigData.aoeType != (int)SkillAoeType.Unknown) {
+                int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                int senderId = 0;
+                if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
+                    senderId = senderObj.ActorId;
+                } else {
+                    senderId = senderObj.TargetActorId;
+                }
+                int ct = 0;
+                TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
+                    ++ct;
+                    if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
+                        EntityController.Instance.KeepTarget(objId);
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
             } else {
-                EntityController.Instance.KeepTarget(senderObj.ActorId);
+                if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
+                    EntityController.Instance.KeepTarget(senderObj.TargetActorId);
+                } else {
+                    EntityController.Instance.KeepTarget(senderObj.ActorId);
+                }
             }
             return true;
         }
+        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 1) {
+                StartTime = long.Parse(callData.GetParamId(0));
+            }
+            if (num >= 2) {
+                m_RemainTime = long.Parse(callData.GetParamId(1));
+            }
+        }
+        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        {
+            Dsl.CallData callData = funcData.Call;
+            if (null != callData) {
+                Load(callData, dslSkillId);
+                Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "aoecenter");
+                if (null != statement) {
+                    Dsl.CallData stCall = statement as Dsl.CallData;
+                    if (null != stCall) {
+                        int num = stCall.GetParamNum();
+                        if (num >= 4) {
+                            m_RelativeCenter.x = float.Parse(callData.GetParamId(0));
+                            m_RelativeCenter.y = float.Parse(callData.GetParamId(1));
+                            m_RelativeCenter.z = float.Parse(callData.GetParamId(2));
+                            m_RelativeToTarget = callData.GetParamId(3) == "true";
+                        }
+                    }
+                }
+            }
+        }
 
         private long m_RemainTime = 0;
+        private Vector3 m_RelativeCenter = Vector3.zero;
+        private bool m_RelativeToTarget = false;
     }
     /// <summary>
     /// useimpact(impactid,[starttime[,is_external_impact]])[if(type)];

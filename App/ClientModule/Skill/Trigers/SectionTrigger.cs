@@ -32,7 +32,7 @@ namespace GameFramework.Skill.Trigers
                 return true;
             }
             if (0 == m_Type.CompareTo("anim")) {
-                Animator animator = obj.GetComponent<Animator>();
+                Animator animator = obj.GetComponentInChildren<Animator>();
                 if (null != animator) {
                     float length = 0;
                     int layerCount = animator.layerCount;
@@ -63,7 +63,7 @@ namespace GameFramework.Skill.Trigers
                 }
             } else {
                 bool handled = false;
-                Animator animator = obj.GetComponent<Animator>();
+                Animator animator = obj.GetComponentInChildren<Animator>();
                 if (null != animator && null != animator.runtimeAnimatorController) {
                     float length = 0;
                     var clips = animator.runtimeAnimatorController.animationClips;

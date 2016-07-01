@@ -275,23 +275,12 @@ namespace GameFramework
                     SetLayer(obj, layer);
                 }
                 */
-                ParticleSystem[] pss0 = obj.GetComponents<ParticleSystem>();
-                for (int i = 0; i < pss0.Length; i++) {
-                    if (null != pss0[i] && pss0[i].playOnAwake) {
-                        //pss0[i].Clear(true);
-                        pss0[i].Play(true);
-                    }
-                }
                 ParticleSystem[] pss = obj.GetComponentsInChildren<ParticleSystem>(true);
                 for (int i = 0; i < pss.Length; i++) {
                     if (null != pss[i] && pss[i].playOnAwake) {
                         //pss[i].Clear(true);
                         pss[i].Play(true);
                     }
-                }
-                AudioSource audioSource = obj.GetComponent<AudioSource>();
-                if (null != audioSource && audioSource.playOnAwake) {
-                    audioSource.Play();
                 }
                 AudioSource[] audioSources = obj.GetComponentsInChildren<AudioSource>(true);
                 for (int i = 0; i < audioSources.Length; i++) {
@@ -303,15 +292,10 @@ namespace GameFramework
                 if (null != agent) {
                     agent.enabled = false;
                 }
-                AbstractScriptBehavior scriptBehavior = obj.GetComponent<AbstractScriptBehavior>();
-                if (null != scriptBehavior) {
-                    scriptBehavior.ResourceEnabled = true;
-                } else {
-                    AbstractScriptBehavior[] scriptBehaviors = obj.GetComponentsInChildren<AbstractScriptBehavior>(true);
-                    for (int i = 0; i < scriptBehaviors.Length; ++i) {
-                        if (null != scriptBehaviors[i]) {
-                            scriptBehaviors[i].ResourceEnabled = true;
-                        }
+                AbstractScriptBehavior[] scriptBehaviors = obj.GetComponentsInChildren<AbstractScriptBehavior>(true);
+                for (int i = 0; i < scriptBehaviors.Length; ++i) {
+                    if (null != scriptBehaviors[i]) {
+                        scriptBehaviors[i].ResourceEnabled = true;
                     }
                 }
             } else {
@@ -320,23 +304,12 @@ namespace GameFramework
                     m_LayerDict[obj] = obj.layer;
                 SetLayer(obj, m_DeactiveLayer);
                 */
-                ParticleSystem[] pss0 = obj.GetComponents<ParticleSystem>();
-                for (int i = 0; i < pss0.Length; i++) {
-                    if (null != pss0[i] && pss0[i].playOnAwake) {
-                        pss0[i].Clear(true);
-                        pss0[i].Stop(true);
-                    }
-                }
                 ParticleSystem[] pss = obj.GetComponentsInChildren<ParticleSystem>(true);
                 for (int i = 0; i < pss.Length; i++) {
                     if (null != pss[i] && pss[i].playOnAwake) {
                         pss[i].Clear(true);
                         pss[i].Stop(true);
                     }
-                }
-                AudioSource audioSource = obj.GetComponent<AudioSource>();
-                if (null != audioSource && audioSource.playOnAwake) {
-                    audioSource.Stop();
                 }
                 AudioSource[] audioSources = obj.GetComponentsInChildren<AudioSource>(true);
                 for (int i = 0; i < audioSources.Length; i++) {
@@ -349,15 +322,10 @@ namespace GameFramework
                 if (null != agent) {
                     agent.enabled = false;
                 }
-                AbstractScriptBehavior scriptBehavior = obj.GetComponent<AbstractScriptBehavior>();
-                if (null != scriptBehavior) {
-                    scriptBehavior.ResourceEnabled = false;
-                } else {
-                    AbstractScriptBehavior[] scriptBehaviors = obj.GetComponentsInChildren<AbstractScriptBehavior>(true);
-                    for (int i = 0; i < scriptBehaviors.Length; ++i) {
-                        if (null != scriptBehaviors[i]) {
-                            scriptBehaviors[i].ResourceEnabled = false;
-                        }
+                AbstractScriptBehavior[] scriptBehaviors = obj.GetComponentsInChildren<AbstractScriptBehavior>(true);
+                for (int i = 0; i < scriptBehaviors.Length; ++i) {
+                    if (null != scriptBehaviors[i]) {
+                        scriptBehaviors[i].ResourceEnabled = false;
                     }
                 }
             }
