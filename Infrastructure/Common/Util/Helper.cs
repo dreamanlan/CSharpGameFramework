@@ -10,16 +10,15 @@ namespace GameFramework
         public static void BubbleSort<T>(List<T> list, Comparison<T> comparison)
         {
             int ct = list.Count;
-            for (int i = 0; i < ct; ++i) {
-                T iv = list[i];
-                for (int j = i + 1; j < ct; ++j) {
-                    T jv = list[j];
+            for (int i = ct - 1; i >= 0; --i) {
+                for (int j = 0; j < i; ++j) {
+                    T iv = list[j];
+                    T jv = list[j + 1];
                     if (comparison(iv, jv) > 0) {
-                        list[j] = iv;
-                        iv = jv;
+                        list[j] = jv;
+                        list[j + 1] = iv;
                     }
                 }
-                list[i] = iv;
             }
         }
         public static byte CalcCrc8(byte[] data)
