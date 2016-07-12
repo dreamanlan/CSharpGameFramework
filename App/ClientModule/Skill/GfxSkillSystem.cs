@@ -242,8 +242,6 @@ namespace GameFramework.Skill
             SkillTrigerManager.Instance.RegisterTrigerFactory("jump", new SkillTrigerFactoryHelper<Trigers.JumpTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("curvemove", new SkillTrigerFactoryHelper<Trigers.CurveMovementTrigger>());
 
-            SkillTrigerManager.Instance.RegisterTrigerFactory("consume", new SkillTrigerFactoryHelper<Trigers.ConsumeTriger>());
-
             SkillTrigerManager.Instance.RegisterTrigerFactory("damage", new SkillTrigerFactoryHelper<Trigers.DamageTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("addstate", new SkillTrigerFactoryHelper<Trigers.AddStateTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("removestate", new SkillTrigerFactoryHelper<Trigers.RemoveStateTriger>());

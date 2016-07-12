@@ -29,7 +29,7 @@ namespace GameFramework.Skill.Trigers
             
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() >= 6) {
                 StartTime = long.Parse(callData.GetParamId(0));
@@ -160,7 +160,7 @@ namespace GameFramework.Skill.Trigers
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 4) {
@@ -216,7 +216,7 @@ namespace GameFramework.Skill.Trigers
             return true;
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 5) {

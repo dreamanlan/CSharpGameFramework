@@ -63,7 +63,7 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -108,7 +108,7 @@ namespace GameFramework.Skill.Trigers
             
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() > 1) {
                 StartTime = int.Parse(callData.GetParamId(0));
@@ -335,7 +335,7 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -355,13 +355,13 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null == callData) {
                 return;
             }
-            Load(callData, dslSkillId);
+            Load(callData, instance);
             LoadKeyFrames(funcData.Statements);
         }
         private void LoadKeyFrames(List<Dsl.ISyntaxComponent> statements)
@@ -466,7 +466,7 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

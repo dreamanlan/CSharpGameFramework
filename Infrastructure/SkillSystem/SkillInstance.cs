@@ -81,7 +81,7 @@ namespace SkillSystem
             section.m_Duration = m_Duration;
             return section;
         }
-        public void Load(Dsl.FunctionData sectionData, int dslSkillId)
+        public void Load(Dsl.FunctionData sectionData, SkillInstance instance)
         {
             Dsl.CallData callData = sectionData.Call;
             if (null != callData && callData.HaveParam()) {
@@ -92,12 +92,12 @@ namespace SkillSystem
                     if (arg is Dsl.ValueData) {
                         m_Duration = long.Parse(arg.GetId());
                     } else {
-                        ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(arg, dslSkillId);
+                        ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(arg, instance);
                         if (null != triger) {
                             m_InitTrigers.Add(triger);
                         } else {
 #if DEBUG
-                            string err = string.Format("CreateInitTriger failed, skill:{0} line:{1} triger:{2}", dslSkillId, arg.GetLine(), arg.ToScriptString());
+                            string err = string.Format("CreateInitTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, arg.GetLine(), arg.ToScriptString());
                             throw new Exception(err);
 #endif
                         }
@@ -106,7 +106,7 @@ namespace SkillSystem
             } else {
                 m_Duration = 0;
             }
-            RefreshTrigers(sectionData, dslSkillId);
+            RefreshTrigers(sectionData, instance);
         }
         public void Reset()
         {
@@ -178,16 +178,16 @@ namespace SkillSystem
                 m_InitTrigers[i].Execute(sender, instance, 0, 0);
             }
         }
-        private void RefreshTrigers(Dsl.FunctionData sectionData, int dslSkillId)
+        private void RefreshTrigers(Dsl.FunctionData sectionData, SkillInstance instance)
         {
             m_LoadedTrigers.Clear();
             for (int i = 0; i < sectionData.Statements.Count; i++) {
-                ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(sectionData.Statements[i], dslSkillId);
+                ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(sectionData.Statements[i], instance);
                 if (null != triger) {
                     m_LoadedTrigers.Add(triger);
                 } else {
 #if DEBUG
-                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", dslSkillId, sectionData.Statements[i].GetLine(), sectionData.Statements[i].ToScriptString());
+                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, sectionData.Statements[i].GetLine(), sectionData.Statements[i].ToScriptString());
                     throw new Exception(err);
 #endif
                 }
@@ -237,7 +237,7 @@ namespace SkillSystem
             section.m_MsgId = m_MsgId;
             return section;
         }
-        public void Load(Dsl.FunctionData sectionData, int dslSkillId)
+        public void Load(Dsl.FunctionData sectionData, SkillInstance instance)
         {
             Dsl.CallData callData = sectionData.Call;
             if (null != callData && callData.HaveParam()) {
@@ -247,7 +247,7 @@ namespace SkillSystem
                 }
                 m_MsgId = string.Join(":", args);
             }
-            RefreshTrigers(sectionData, dslSkillId);
+            RefreshTrigers(sectionData, instance);
         }
         public void Reset()
         {
@@ -304,16 +304,16 @@ namespace SkillSystem
             //m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; }, (object val) => { m_CurTime = (long)Convert.ChangeType(val, typeof(long)); });
         }
 
-        private void RefreshTrigers(Dsl.FunctionData sectionData, int dslSkillId)
+        private void RefreshTrigers(Dsl.FunctionData sectionData, SkillInstance instance)
         {
             m_LoadedTrigers.Clear();
             for (int i = 0; i < sectionData.Statements.Count; i++) {
-                ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(sectionData.Statements[i], dslSkillId);
+                ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(sectionData.Statements[i], instance);
                 if (null != triger) {
                     m_LoadedTrigers.Add(triger);
                 } else {
 #if DEBUG
-                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", dslSkillId, sectionData.Statements[i].GetLine(), sectionData.Statements[i].ToScriptString());
+                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, sectionData.Statements[i].GetLine(), sectionData.Statements[i].ToScriptString());
                     throw new Exception(err);
 #endif
                 }
@@ -720,6 +720,8 @@ namespace SkillSystem
         private bool Init(Dsl.FunctionData skill)
         {
             bool ret = false;
+            m_ImpactsForInit = new List<SkillSectionOrMessageTriggers>();
+            m_DamagesForInit = new List<SkillSectionOrMessageTriggers>();
             if (null != skill && (skill.GetId() == "skill" || skill.GetId() == "emitskill" || skill.GetId() == "hitskill")) {
                 ret = true;
                 Dsl.CallData callData = skill.Call;
@@ -730,10 +732,12 @@ namespace SkillSystem
 
                 for (int i = 0; i < skill.Statements.Count; i++) {
                     if (skill.Statements[i].GetId() == "section") {
+                        m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Section));
+                        m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Section));
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
                         if (null != sectionData) {
                             SkillSection section = new SkillSection();
-                            section.Load(sectionData, m_DslSkillId);
+                            section.Load(sectionData, this);
                             m_Sections.Add(section);
                         } else {
 #if DEBUG
@@ -744,10 +748,12 @@ namespace SkillSystem
 #endif
                         }
                     } else if (skill.Statements[i].GetId() == "onmessage") {
+                        m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Message));
+                        m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Message));
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
                         if (null != sectionData) {
                             SkillMessageHandler handler = new SkillMessageHandler();
-                            handler.Load(sectionData, m_DslSkillId);
+                            handler.Load(sectionData, this);
                             m_MessageHandlers.Add(handler);
                         } else {
 #if DEBUG
@@ -758,10 +764,12 @@ namespace SkillSystem
 #endif
                         }
                     } else if (skill.Statements[i].GetId() == "onstop") {
+                        m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnStop));
+                        m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnStop));
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
                         if (null != sectionData) {
                             m_StopSection = new SkillMessageHandler();
-                            m_StopSection.Load(sectionData, m_DslSkillId);
+                            m_StopSection.Load(sectionData, this);
                         } else {
 #if DEBUG
                             string err = string.Format("Skill {0} DSL, onstop must be a function ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString());
@@ -771,10 +779,12 @@ namespace SkillSystem
 #endif
                         }
                     } else if (skill.Statements[i].GetId() == "oninterrupt") {
+                        m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnInterrupt));
+                        m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnInterrupt));
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
                         if (null != sectionData) {
                             m_InterruptSection = new SkillMessageHandler();
-                            m_InterruptSection.Load(sectionData, m_DslSkillId);
+                            m_InterruptSection.Load(sectionData, this);
                         } else {
 #if DEBUG
                             string err = string.Format("Skill {0} DSL, oninterrupt must be a function ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString());
@@ -870,6 +880,7 @@ namespace SkillSystem
         LogSystem.Error("SkillInstance::Init, isn't skill DSL");
 #endif
             }
+            BuildImpactAndDamageInfo();
             LogSystem.Debug("SkillInstance.Init section num:{0} {1} skill {2}", m_Sections.Count, ret, m_DslSkillId);
             return ret;
         }
@@ -886,6 +897,150 @@ namespace SkillSystem
                 m_HitSkillInstances = new Dictionary<int, SkillInstance>();
             }
         }
+
+
+        //----------------------------------------------
+        public void AddImpactForInit(ISkillTriger trigger)
+        {
+            int ct = m_ImpactsForInit.Count;
+            if (ct > 0) {
+                SkillSectionOrMessageTriggers group = m_ImpactsForInit[ct - 1];
+                if (null != group) {
+                    group.Triggers.Add(trigger);
+                }
+            }
+        }
+        public void AddDamageForInit(ISkillTriger trigger)
+        {
+            int ct = m_DamagesForInit.Count;
+            if (ct > 0) {
+                SkillSectionOrMessageTriggers group = m_DamagesForInit[ct - 1];
+                if (null != group) {
+                    group.Triggers.Add(trigger);
+                }
+            }
+        }
+        //----------------------------------------------
+        private void BuildImpactAndDamageInfo()
+        {
+            Comparison<ISkillTriger> comp = ((left, right) => {
+                if (left.StartTime > right.StartTime) {
+                    return -1;
+                } else if (left.StartTime == right.StartTime) {
+                    return 0;
+                } else {
+                    return 1;
+                }
+            });
+            //排序
+            for (int i = 0; i < m_ImpactsForInit.Count; ++i) {
+                var group = m_ImpactsForInit[i];
+                Helper.BubbleSort(group.Triggers, comp);
+            }
+            for (int i = 0; i < m_DamagesForInit.Count; ++i) {
+                var group = m_DamagesForInit[i];
+                Helper.BubbleSort(group.Triggers, comp);
+            }
+            //message handler里面的impact与damage独立计数
+            int ict = m_ImpactsForInit.Count;
+            for (int i = 0; i < ict; ++i) {
+                var group = m_ImpactsForInit[i];
+                if (group.GroupType != SectionOrMessageType.Section) {
+                    int jct = group.Triggers.Count;
+                    for (int j = 0; j < jct; ++j) {
+                        var trigger = group.Triggers[j];
+                        trigger.OrderInSection = j + 1;
+                        trigger.OrderInSkill = j + 1;
+                        if (j != jct - 1) {
+                            trigger.IsFinal = false;
+                        }
+                    }
+                }
+            }
+            ict = m_DamagesForInit.Count;
+            for (int i = 0; i < ict; ++i) {
+                var group = m_DamagesForInit[i];
+                if (group.GroupType != SectionOrMessageType.Section) {
+                    int jct = group.Triggers.Count;
+                    for (int j = 0; j < jct; ++j) {
+                        var trigger = group.Triggers[j];
+                        trigger.OrderInSection = j + 1;
+                        trigger.OrderInSkill = j + 1;
+                        if (j != jct - 1) {
+                            trigger.IsFinal = false;
+                        }
+                    }
+                }
+            }
+            //删除message handler
+            int ct = m_ImpactsForInit.Count;
+            for (int i = ct - 1; i >= 0; --i) {
+                var group = m_ImpactsForInit[i];
+                if (group.GroupType != SectionOrMessageType.Section) {
+                    m_ImpactsForInit.Remove(group);
+                }
+            }
+            ct = m_DamagesForInit.Count;
+            for (int i = ct - 1; i >= 0; --i) {
+                var group = m_DamagesForInit[i];
+                if (group.GroupType != SectionOrMessageType.Section) {
+                    m_DamagesForInit.Remove(group);
+                }
+            }
+            //对section里的impact与damage按整个skill计数
+            int index = 0;
+            ict = m_ImpactsForInit.Count;
+            for (int i = 0; i < ict; ++i) {
+                var group = m_ImpactsForInit[i];
+                int jct = group.Triggers.Count;
+                for (int j = 0; j < jct; ++j) {
+                    var trigger = group.Triggers[j];
+                    trigger.OrderInSection = j + 1;
+                    trigger.OrderInSkill = ++index;
+                    if (i != ict - 1 || j != jct - 1) {
+                        trigger.IsFinal = false;
+                    }
+                }
+            }
+            index = 0;
+            ict = m_DamagesForInit.Count;
+            for (int i = 0; i < ict; ++i) {
+                var group = m_DamagesForInit[i];
+                int jct = group.Triggers.Count;
+                for (int j = 0; j < jct; ++j) {
+                    var trigger = group.Triggers[j];
+                    trigger.OrderInSection = j + 1;
+                    trigger.OrderInSkill = ++index;
+                    if (i != ict - 1 || j != jct - 1) {
+                        trigger.IsFinal = false;
+                    }
+                }
+            }
+            //信息获取完毕，清空缓存
+            m_ImpactsForInit.Clear();
+            m_ImpactsForInit = null;
+            m_DamagesForInit.Clear();
+            m_DamagesForInit = null;
+        }
+        //----------------------------------------------
+        private enum SectionOrMessageType
+        {
+            Section = 0,
+            Message,
+            OnInterrupt,
+            OnStop,
+        }
+        private sealed class SkillSectionOrMessageTriggers
+        {
+            public SectionOrMessageType GroupType = SectionOrMessageType.Section;
+            public List<ISkillTriger> Triggers = new List<ISkillTriger>();
+
+            public SkillSectionOrMessageTriggers(SectionOrMessageType groupType)
+            {
+                GroupType = groupType;
+            }
+        }
+        //----------------------------------------------
 
         private bool m_IsInterrupted = false;
         private bool m_IsFinished = false;
@@ -915,6 +1070,9 @@ namespace SkillSystem
         private int m_OuterDslSkillId = 0;
         private Dictionary<int, SkillInstance> m_EmitSkillInstances = null;
         private Dictionary<int, SkillInstance> m_HitSkillInstances = null;
+
+        private List<SkillSectionOrMessageTriggers> m_ImpactsForInit = null;
+        private List<SkillSectionOrMessageTriggers> m_DamagesForInit = null;
 
         private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
 

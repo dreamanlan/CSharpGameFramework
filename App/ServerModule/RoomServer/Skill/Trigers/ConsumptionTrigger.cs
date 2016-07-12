@@ -39,7 +39,7 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

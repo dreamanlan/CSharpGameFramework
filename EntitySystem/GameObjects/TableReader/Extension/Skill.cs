@@ -17,6 +17,7 @@ namespace TableConfig
         public int AddCriticalPow;
         public float AddSpeed;
         public int AddShield;
+        public bool IsFinal;
 
         public void CopyFrom(SkillDamageData other)
         {
@@ -31,6 +32,7 @@ namespace TableConfig
                 AddCriticalPow = other.AddCriticalPow;
                 AddSpeed = other.AddSpeed;
                 AddShield = other.AddShield;
+                IsFinal = other.IsFinal;
             }
         }
         public void Merge(SkillDamageData other)
@@ -46,6 +48,8 @@ namespace TableConfig
                 AddCriticalPow += other.AddCriticalPow;
                 AddSpeed += other.AddSpeed;
                 AddShield += other.AddShield;
+                if (other.IsFinal)
+                    IsFinal = other.IsFinal;
             }
         }
     }

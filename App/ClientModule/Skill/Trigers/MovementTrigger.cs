@@ -60,7 +60,7 @@ namespace GameFramework.Skill.Trigers
                 return true;
             }
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -110,7 +110,7 @@ namespace GameFramework.Skill.Trigers
             GameObject.Destroy(m_StartTransform);
             
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -379,7 +379,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("StopAtTarget", () => { return m_StopAtTarget; }, (object val) => { m_StopAtTarget = (int)Convert.ChangeType(val, typeof(int)); });
             AddProperty("Curve", () => { return m_Curve; }, (object val) => { m_Curve = val as AnimationCurve; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -401,13 +401,13 @@ namespace GameFramework.Skill.Trigers
                 m_IsForRoundMove = callData.GetParamId(5) == "true";
             }
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null == callData) {
                 return;
             }
-            Load(callData, dslSkillId);
+            Load(callData, instance);
             LoadKeyFrames(funcData.Statements);
         }
         private void LoadKeyFrames(List<Dsl.ISyntaxComponent> statements)
@@ -552,7 +552,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("Velocity", () => { return m_Velocity; }, (object val) => { m_Velocity = (float)Convert.ChangeType(val, typeof(float)); });
             AddProperty("StopAtTarget", () => { return m_StopAtTarget; }, (object val) => { m_StopAtTarget = (int)Convert.ChangeType(val, typeof(int)); });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

@@ -18,7 +18,7 @@ namespace SkillSystem
                 //error
             }
         }
-        public ISkillTriger CreateTriger(Dsl.ISyntaxComponent trigerConfig, int dslSkillId)
+        public ISkillTriger CreateTriger(Dsl.ISyntaxComponent trigerConfig, SkillInstance instance)
         {
             ISkillTriger triger = null;
             string type = trigerConfig.GetId();
@@ -26,7 +26,7 @@ namespace SkillSystem
             if (null != factory) {
                 try {
                     triger = factory.Create();
-                    triger.Init(trigerConfig, dslSkillId);
+                    triger.Init(trigerConfig, instance);
                 } catch (Exception ex) {
                     GameFramework.LogSystem.Error("triger:{0} line:{1} failed.", trigerConfig.ToScriptString(), trigerConfig.GetLine());
                     throw ex;

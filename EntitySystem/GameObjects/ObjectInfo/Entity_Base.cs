@@ -280,6 +280,10 @@ namespace GameFramework
         {
             return Hp <= 0;
         }
+        public bool IsDeadSkillCasting()
+        {
+            return Hp <= 0 && DeadTime > 0;
+        }
         public void SetHp(Operate_Type opType, int tVal)
         {
             int key = CharacterProperty.Key;

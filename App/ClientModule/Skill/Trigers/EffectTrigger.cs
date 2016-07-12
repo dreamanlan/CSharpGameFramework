@@ -154,7 +154,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("DeleteTime", () => { return m_DeleteTime.EditableValue; }, (object val) => { m_DeleteTime.EditableValue = val; });
             AddProperty("AttachPath", () => { return m_AttachPath.EditableValue; }, (object val) => { m_AttachPath.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -173,11 +173,11 @@ namespace GameFramework.Skill.Trigers
                 m_IsAttach = bool.Parse(callData.GetParamId(4));
             }
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
                 Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
                 if (null != statement) {
                     Dsl.CallData stCall = statement as Dsl.CallData;
@@ -316,7 +316,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("DeleteTime", () => { return m_DeleteTime.EditableValue; }, (object val) => { m_DeleteTime.EditableValue = val; });
             AddProperty("AttachPath", () => { return m_AttachPath.EditableValue; }, (object val) => { m_AttachPath.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -335,11 +335,11 @@ namespace GameFramework.Skill.Trigers
                 m_IsAttach = bool.Parse(callData.GetParamId(4));
             }
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
                 Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
                 if (null != statement) {
                     Dsl.CallData stCall = statement as Dsl.CallData;
@@ -458,7 +458,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("DeleteTime", () => { return m_DeleteTime.EditableValue; }, (object val) => { m_DeleteTime.EditableValue = val; });
             //AddProperty("Position", () => { return m_Pos; }, (object val) => { m_Pos = (Vector3)val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -553,7 +553,7 @@ namespace GameFramework.Skill.Trigers
                                     args.Add(pair.Key, pair.Value);
                                 }
                             }
-                            EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, emitBone, emitImpact, m_Pos, args);
+                            EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, emitBone, emitImpact, m_Pos, IsFinal, args);
                         }
                     } else {
                         LogSystem.Warn("[skill:{0} dsl skill id:{1}] emit effect is empty.", senderObj.SkillId, instance.DslSkillId);
@@ -572,8 +572,9 @@ namespace GameFramework.Skill.Trigers
             AddProperty("EmitBone", () => { return m_EmitBone.EditableValue; }, (object val) => { m_EmitBone.EditableValue = val; });
             AddProperty("EmitSpeed", () => { return m_EmitSpeed.EditableValue; }, (object val) => { m_EmitSpeed.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
+            instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_EffectPath.Set(callData.GetParam(0));
@@ -594,11 +595,11 @@ namespace GameFramework.Skill.Trigers
                 m_IsExternalImpact = callData.GetParamId(5) == "true";
             }
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
                 Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
                 if (null != statement) {
                     Dsl.CallData stCall = statement as Dsl.CallData;
@@ -697,7 +698,7 @@ namespace GameFramework.Skill.Trigers
                                 args.Add(pair.Key, pair.Value);
                             }
                         }
-                        EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, emitBone, emitImpact, m_Pos, args);
+                        EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, emitBone, emitImpact, m_Pos, IsFinal, args);
                         ++ct;
                         if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                             return true;
@@ -720,8 +721,9 @@ namespace GameFramework.Skill.Trigers
             AddProperty("EmitBone", () => { return m_EmitBone.EditableValue; }, (object val) => { m_EmitBone.EditableValue = val; });
             AddProperty("EmitSpeed", () => { return m_EmitSpeed.EditableValue; }, (object val) => { m_EmitSpeed.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
+            instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_EffectPath.Set(callData.GetParam(0));
@@ -748,11 +750,11 @@ namespace GameFramework.Skill.Trigers
                 m_IsExternalImpact = callData.GetParamId(9) == "true";
             }            
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
                 Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
                 if (null != statement) {
                     Dsl.CallData stCall = statement as Dsl.CallData;
@@ -877,7 +879,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("LockSpeed", () => { return m_LockSpeed; }, (object val) => { m_LockSpeed = (float)Convert.ChangeType(val, typeof(float)); });
             AddProperty("LockTime", () => { return m_LockTime; }, (object val) => { m_LockTime = (long)Convert.ChangeType(val, typeof(long)); });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             int index = 0;
@@ -898,13 +900,13 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null == callData) {
                 return;
             }
-            Load(callData, dslSkillId);
+            Load(callData, instance);
             LoadKeyFrames(funcData.Statements);
         }
         private void LoadKeyFrames(List<Dsl.ISyntaxComponent> statements)
@@ -989,7 +991,7 @@ namespace GameFramework.Skill.Trigers
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

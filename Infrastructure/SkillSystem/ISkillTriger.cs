@@ -100,8 +100,11 @@ namespace SkillSystem
     {
         long StartTime { get; set; }
         string Name { get; set; }
+        int OrderInSkill { get; set; }
+        int OrderInSection { get; set; }
+        bool IsFinal { get; set; }
         ISkillTriger Clone();//克隆触发器，触发器只会从DSL实例一次，之后都通过克隆产生新实例
-        void Init(Dsl.ISyntaxComponent config, int dslSkillId);//从DSL语言初始化触发器实例
+        void Init(Dsl.ISyntaxComponent config, SkillInstance instance);//从DSL语言初始化触发器实例
         void InitProperties();
         void Reset();//复位触发器到初始状态
         bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime);//执行触发器，返回false表示触发器结束，下一tick不再执行
@@ -122,6 +125,21 @@ namespace SkillSystem
             get { return m_StartTime; }
             set { m_StartTime = value; }
         }
+        public int OrderInSkill
+        {
+            get { return m_OrderInSkill; }
+            set { m_OrderInSkill = value; }
+        }
+        public int OrderInSection
+        {
+            get { return m_OrderInSection; }
+            set { m_OrderInSection = value; }
+        }
+        public bool IsFinal
+        {
+            get { return m_IsFinal; }
+            set { m_IsFinal = value; }
+        }
         public void VisitProperties(VisitPropertyDelegation callback)
         {
             m_AccessorHelper.VisitProperties(callback);
@@ -135,21 +153,20 @@ namespace SkillSystem
             m_AccessorHelper.SetProperty(key, val);
         }
 
-        public void Init(Dsl.ISyntaxComponent config, int dslSkillId)
+        public void Init(Dsl.ISyntaxComponent config, SkillInstance instance)
         {
             m_Name = config.GetId();
             Dsl.CallData callData = config as Dsl.CallData;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
             } else {
                 Dsl.FunctionData funcData = config as Dsl.FunctionData;
                 if (null != funcData) {
-                    Load(funcData, dslSkillId);
+                    Load(funcData, instance);
                 } else {
                     Dsl.StatementData statementData = config as Dsl.StatementData;
                     if (null != statementData) {
-                        //是否支持语句类型的触发器语法？
-                        Load(statementData, dslSkillId);
+                        Load(statementData, instance);
                     } else {
                         //error
                     }
@@ -162,6 +179,9 @@ namespace SkillSystem
             ISkillTriger newObj = OnClone();
             newObj.StartTime = StartTime;
             newObj.Name = Name;
+            newObj.OrderInSkill = OrderInSkill;
+            newObj.OrderInSection = OrderInSection;
+            newObj.IsFinal = IsFinal;
             newObj.InitProperties();
             return newObj;
         }
@@ -175,13 +195,13 @@ namespace SkillSystem
         
         protected abstract ISkillTriger OnClone();
 
-        protected virtual void Load(Dsl.CallData callData, int dslSkillId)
+        protected virtual void Load(Dsl.CallData callData, SkillInstance instance)
         {
         }
-        protected virtual void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected virtual void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
         }
-        protected virtual void Load(Dsl.StatementData statementData, int dslSkillId)
+        protected virtual void Load(Dsl.StatementData statementData, SkillInstance instance)
         {
         }
 
@@ -197,6 +217,9 @@ namespace SkillSystem
 
         private string m_Name = string.Empty;
         private long m_StartTime = 0;
+        private int m_OrderInSkill = 0;
+        private int m_OrderInSection = 0;
+        private bool m_IsFinal = true;
         private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
     }
     public class DummyTriger : AbstractSkillTriger

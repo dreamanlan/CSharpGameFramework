@@ -13,7 +13,6 @@ namespace GameFramework.Skill.Trigers
         protected override ISkillTriger OnClone()
         {
             ImpactTrigger copy = new ImpactTrigger();
-            
             copy.m_RelativeCenter = m_RelativeCenter;
             copy.m_RelativeToTarget = m_RelativeToTarget;
             
@@ -51,12 +50,15 @@ namespace GameFramework.Skill.Trigers
             }
             Dictionary<string, object> args;
             TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
-            EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
+            EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, IsFinal, args);
             return false;
         }
-
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void OnInitProperties()
         {
+        }
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        {
+            instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
             if (num >= 1) {
                 StartTime = long.Parse(callData.GetParamId(0));
@@ -69,9 +71,9 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
+
         private Vector3 m_RelativeCenter = Vector3.zero;
-        private bool m_RelativeToTarget = false;
-        
+        private bool m_RelativeToTarget = false;        
     }
     /// <summary>
     /// aoeimpact(start_time, center_x, center_y, center_z, relativeToTarget);
@@ -81,7 +83,7 @@ namespace GameFramework.Skill.Trigers
         protected override ISkillTriger OnClone()
         {
             AoeImpactTriger triger = new AoeImpactTriger();
-            
+
             triger.m_RelativeCenter = m_RelativeCenter;
             triger.m_RelativeToTarget = m_RelativeToTarget;
             
@@ -113,7 +115,7 @@ namespace GameFramework.Skill.Trigers
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                     Dictionary<string, object> args;
                     TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
-                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, args);
+                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, IsFinal, args);
                     targetIds.Add(objId);
                     ++ct;
                     if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
@@ -127,9 +129,12 @@ namespace GameFramework.Skill.Trigers
                 return true;
             }
         }
-
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void OnInitProperties()
         {
+        }
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        {
+            instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
             if (num >= 5) {
                 StartTime = long.Parse(callData.GetParamId(0));
@@ -140,6 +145,7 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
+
         private Vector3 m_RelativeCenter = Vector3.zero;
         private bool m_RelativeToTarget = false;
         
@@ -152,7 +158,7 @@ namespace GameFramework.Skill.Trigers
         protected override ISkillTriger OnClone()
         {
             ChainAoeImpactTriger triger = new ChainAoeImpactTriger();
-            
+
             triger.m_RelativeCenter = m_RelativeCenter;
             triger.m_RelativeToTarget = m_RelativeToTarget;
             triger.m_DurationTime.CopyFrom(m_DurationTime);
@@ -217,7 +223,7 @@ namespace GameFramework.Skill.Trigers
                 if (ct > 0 && m_CurTargetIndex < ct) {
                     Dictionary<string, object> args;
                     TriggerUtil.CalcImpactConfig(0, m_ImpactId, instance, senderObj.ConfigData, out args);
-                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, m_SenderId, m_Targets[m_CurTargetIndex], m_ImpactId, args);
+                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, m_SenderId, m_Targets[m_CurTargetIndex], m_ImpactId, IsFinal, args);
                     ++m_CurTargetIndex;
                 } else {
                     return false;
@@ -230,8 +236,9 @@ namespace GameFramework.Skill.Trigers
             AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
             AddProperty("Interval", () => { return m_IntervalTime.EditableValue; }, (object val) => { m_IntervalTime.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
+            instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
             if (num >= 7) {
                 StartTime = long.Parse(callData.GetParamId(0));
@@ -244,6 +251,7 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
+
         private Vector3 m_RelativeCenter = Vector3.zero;
         private bool m_RelativeToTarget = false;
         private SkillNonStringParam<long> m_DurationTime = new SkillNonStringParam<long>();
@@ -265,7 +273,7 @@ namespace GameFramework.Skill.Trigers
         protected override ISkillTriger OnClone()
         {
             PeriodicallyImpactTrigger copy = new PeriodicallyImpactTrigger();
-            
+
             copy.m_RelativeCenter = m_RelativeCenter;
             copy.m_RelativeToTarget = m_RelativeToTarget;
             copy.m_DurationTime.CopyFrom(m_DurationTime);
@@ -319,7 +327,7 @@ namespace GameFramework.Skill.Trigers
                 }
                 Dictionary<string, object> args;
                 TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
-                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
+                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, IsFinal, args);
             }
             return true;
         }
@@ -328,8 +336,9 @@ namespace GameFramework.Skill.Trigers
             AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
             AddProperty("Interval", () => { return m_IntervalTime.EditableValue; }, (object val) => { m_IntervalTime.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
+            instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
             if (num >= 7) {
                 StartTime = long.Parse(callData.GetParamId(0));
@@ -342,6 +351,7 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
+
         private Vector3 m_RelativeCenter = Vector3.zero;
         private bool m_RelativeToTarget = false;
         private SkillNonStringParam<long> m_DurationTime = new SkillNonStringParam<long>();
@@ -357,7 +367,7 @@ namespace GameFramework.Skill.Trigers
         protected override ISkillTriger OnClone()
         {
             PeriodicallyAoeImpactTriger triger = new PeriodicallyAoeImpactTriger();
-            
+
             triger.m_RelativeCenter = m_RelativeCenter;
             triger.m_RelativeToTarget = m_RelativeToTarget;
             triger.m_DurationTime.CopyFrom(m_DurationTime);
@@ -401,7 +411,7 @@ namespace GameFramework.Skill.Trigers
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                     Dictionary<string, object> args;
                     TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
-                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, args);
+                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, IsFinal, args);
                     targetIds.Add(objId);
                     ++ct;
                     if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
@@ -418,8 +428,9 @@ namespace GameFramework.Skill.Trigers
             AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
             AddProperty("Interval", () => { return m_IntervalTime.EditableValue; }, (object val) => { m_IntervalTime.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
+            instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
             if (num >= 6) {
                 StartTime = long.Parse(callData.GetParamId(0));
@@ -432,6 +443,7 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
+
         private Vector3 m_RelativeCenter = Vector3.zero;
         private bool m_RelativeToTarget = false;
         private SkillNonStringParam<long> m_DurationTime = new SkillNonStringParam<long>();
@@ -447,6 +459,7 @@ namespace GameFramework.Skill.Trigers
         protected override ISkillTriger OnClone()
         {
             TrackTriger triger = new TrackTriger();
+
             triger.m_TrackBone.CopyFrom(m_TrackBone);
             triger.m_NoImpact = m_NoImpact;
             triger.m_Duration.CopyFrom(m_Duration);
@@ -598,7 +611,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("TrackBone", () => { return m_TrackBone.EditableValue; }, (object val) => { m_TrackBone.EditableValue = val; });
             AddProperty("Duration", () => { return m_Duration.EditableValue; }, (object val) => { m_Duration.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum(); 
             if (num > 0) {
@@ -617,6 +630,7 @@ namespace GameFramework.Skill.Trigers
                 m_NotMove = callData.GetParamId(4) == "true";
             }            
         }
+
         private SkillStringParam m_TrackBone = new SkillStringParam();
         private bool m_NoImpact = false;
         private SkillNonStringParam<long> m_Duration = new SkillNonStringParam<long>();
@@ -640,7 +654,7 @@ namespace GameFramework.Skill.Trigers
         protected override ISkillTriger OnClone()
         {
             ColliderImpactTriger triger = new ColliderImpactTriger();
-            
+
             triger.m_RelativeCenter = m_RelativeCenter;
             triger.m_DurationTime.CopyFrom(m_DurationTime);
             triger.m_FinishOnCollide = m_FinishOnCollide;
@@ -705,7 +719,7 @@ namespace GameFramework.Skill.Trigers
                                 m_Targets.Add(targetId);
                                 Dictionary<string, object> args;
                                 TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
-                                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
+                                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, IsFinal, args);
                                 targetIds.Add(targetId);
                                 ++ct;
                                 if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
@@ -733,8 +747,9 @@ namespace GameFramework.Skill.Trigers
         {
             AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
+            instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
             if (num >= 5) {
                 StartTime = long.Parse(callData.GetParamId(0));
@@ -749,8 +764,9 @@ namespace GameFramework.Skill.Trigers
             if (num >= 7) {
                 m_SingleHit = callData.GetParamId(6) == "true";
             }
-            
+
         }
+
         private Vector3 m_RelativeCenter = Vector3.zero;
         private SkillNonStringParam<long> m_DurationTime = new SkillNonStringParam<long>();
         private bool m_FinishOnCollide = false;

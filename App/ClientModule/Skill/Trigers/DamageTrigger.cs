@@ -7,15 +7,13 @@ using GameFramework;
 namespace GameFramework.Skill.Trigers
 {
     /// <summary>
-    /// damage(start_time);
+    /// damage([start_time[,isFinal]]);
     /// </summary>
     internal class DamageTriger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
             DamageTriger triger = new DamageTriger();
-            
-            
             return triger;
         }
         public override void Reset()
@@ -32,24 +30,32 @@ namespace GameFramework.Skill.Trigers
             }
             if (curSectionTime >= StartTime) {
                 if (senderObj.ConfigData.type != (int)SkillOrImpactType.Skill) {
-                    EntityController.Instance.ImpactDamage(senderObj.TargetActorId, senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                    EntityController.Instance.ImpactDamage(senderObj.TargetActorId, senderObj.ActorId, senderObj.SkillId, senderObj.Seq, IsFinal);
                 }
                 return false;
             } else {
                 return true;
             }
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void OnInitProperties()
         {
+            AddProperty("IsFinal", () => { return IsFinal; }, (object val) => { IsFinal = (bool)Convert.ChangeType(val, typeof(bool)); });
+        }
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        {
+            instance.AddDamageForInit(this);
             int num = callData.GetParamNum();
             if (num > 0) {
                 StartTime = long.Parse(callData.GetParamId(0));
             } else {
                 StartTime = 0;
             }
-            
-        }
-        
+            if (num > 1) {
+                IsFinal = callData.GetParamId(1) == "true";
+            } else {
+                IsFinal = true;
+            }
+        }     
     }
     /// <summary>
     /// addstate(state[,start_time]);
@@ -88,7 +94,7 @@ namespace GameFramework.Skill.Trigers
         {
             AddProperty("State", () => { return m_State; }, (object val) => { m_State = val as string; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -140,7 +146,7 @@ namespace GameFramework.Skill.Trigers
         {
             AddProperty("State", () => { return m_State; }, (object val) => { m_State = val as string; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -187,7 +193,7 @@ namespace GameFramework.Skill.Trigers
                 return true;
             }
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -232,7 +238,7 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

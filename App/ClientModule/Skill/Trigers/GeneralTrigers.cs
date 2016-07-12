@@ -64,7 +64,7 @@ namespace GameFramework.Skill.Trigers
             }
             return true;
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() > 0) {
                 StartTime = long.Parse(callData.GetParamId(0));
@@ -136,7 +136,7 @@ namespace GameFramework.Skill.Trigers
                 return true;
             }
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -177,7 +177,7 @@ namespace GameFramework.Skill.Trigers
                 return true;
             }
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -224,7 +224,7 @@ namespace GameFramework.Skill.Trigers
             GfxStorySystem.Instance.SendMessage(m_Msg, args.ToArray());
             return false;
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -282,7 +282,7 @@ namespace GameFramework.Skill.Trigers
                 Utility.SendMessage(m_Object, m_Msg, args);
             return false;
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 2) {
@@ -342,7 +342,7 @@ namespace GameFramework.Skill.Trigers
                 Utility.SendMessageWithTag(m_Tag, m_Msg, args);
             return false;
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 2) {
@@ -397,7 +397,7 @@ namespace GameFramework.Skill.Trigers
             Utility.EventSystem.Publish(m_Event, m_Group, args);
             return false;
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 2) {
@@ -448,7 +448,7 @@ namespace GameFramework.Skill.Trigers
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             m_Params = new Dictionary<string, object>();
             int num = callData.GetParamNum();
@@ -459,11 +459,11 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
 
                 for (int i = 0; i < funcData.Statements.Count; ++i) {
                     Dsl.ISyntaxComponent statement = funcData.Statements[i];
@@ -544,7 +544,7 @@ namespace GameFramework.Skill.Trigers
             }
             return true;
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 1) {
@@ -554,11 +554,11 @@ namespace GameFramework.Skill.Trigers
                 m_RemainTime = long.Parse(callData.GetParamId(1));
             }
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
                 Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "aoecenter");
                 if (null != statement) {
                     Dsl.CallData stCall = statement as Dsl.CallData;
@@ -619,7 +619,7 @@ namespace GameFramework.Skill.Trigers
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -632,16 +632,16 @@ namespace GameFramework.Skill.Trigers
                 m_IsExternalImpact = callData.GetParamId(2) == "true";
             }
         }
-        protected override void Load(Dsl.StatementData statementData, int dslSkillId)
+        protected override void Load(Dsl.StatementData statementData, SkillInstance instance)
         {
             Dsl.FunctionData func1 = statementData.First;
             Dsl.FunctionData func2 = statementData.Second;
             if (null != func1 && null != func2) {
-                Load(func1.Call, dslSkillId);
-                LoadIf(func2.Call, dslSkillId);
+                Load(func1.Call, instance);
+                LoadIf(func2.Call, instance);
             }
         }
-        private void LoadIf(Dsl.CallData callData, int dslSkillId)
+        private void LoadIf(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

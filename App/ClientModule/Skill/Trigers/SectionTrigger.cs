@@ -95,7 +95,7 @@ namespace GameFramework.Skill.Trigers
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() > 0) {
                 m_Type = callData.GetParamId(0);
@@ -155,7 +155,7 @@ namespace GameFramework.Skill.Trigers
             }
             return true;
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() > 0) {
                 m_Interval = long.Parse(callData.GetParamId(0));
@@ -203,7 +203,7 @@ namespace GameFramework.Skill.Trigers
             instance.StopCurSection();
             return false;
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -212,16 +212,16 @@ namespace GameFramework.Skill.Trigers
                 StartTime = 0;
             }
         }
-        protected override void Load(Dsl.StatementData statementData, int dslSkillId)
+        protected override void Load(Dsl.StatementData statementData, SkillInstance instance)
         {
             Dsl.FunctionData func1 = statementData.First;
             Dsl.FunctionData func2 = statementData.Second;
             if (null != func1 && null != func2) {
-                Load(func1.Call, dslSkillId);
-                LoadIf(func2.Call, dslSkillId);
+                Load(func1.Call, instance);
+                LoadIf(func2.Call, instance);
             }
         }
-        private void LoadIf(Dsl.CallData callData, int dslSkillId)
+        private void LoadIf(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

@@ -588,15 +588,15 @@ namespace GameFramework
                 if(null!=skillInst){
                     Dictionary<string, object> args;
                     Skill.Trigers.TriggerUtil.CalcImpactConfig(0, impactId, skillInst, senderInfo.ConfigData, out args);
-                    return EntityController.Instance.SendImpact(senderInfo.ConfigData, senderInfo.Seq, senderInfo.ActorId, srcObjId, targetId, impactId, args);
+                    return EntityController.Instance.SendImpact(senderInfo.ConfigData, senderInfo.Seq, senderInfo.ActorId, srcObjId, targetId, impactId, true, args);
                 }
             }
             return null;
         }
-        internal ImpactInfo SendImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, int impactId, Dictionary<string, object> args)
+        internal ImpactInfo SendImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, int impactId, bool isFinal, Dictionary<string, object> args)
         {
             EntityViewModel view = GetEntityViewById(targetId);
-            if (null != view && null != view.Entity && null != view.Actor && (!view.Entity.IsDead() || !view.Entity.CanDead)) {
+            if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDeadSkillCasting()) {
                 EntityInfo npc = view.Entity;
                 if (null != cfg) {
                     UnityEngine.Quaternion hitEffectRotation = UnityEngine.Quaternion.identity;
@@ -635,6 +635,7 @@ namespace GameFramework
                                     return oldImpactInfo;
                                 }
                             }
+                            impactInfo.DamageData.IsFinal = isFinal;
                             npc.GetSkillStateInfo().AddImpact(impactInfo);
                             SkillInfo skillInfo = npc.GetSkillStateInfo().GetCurSkillInfo();
                             if (null != skillInfo && (cfg.isInterrupt || impactInfo.ConfigData.isInterrupt)) {
@@ -650,11 +651,11 @@ namespace GameFramework
             }
             return null;
         }
-        internal ImpactInfo TrackImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, string emitBone, int emitImpact, UnityEngine.Vector3 offset, Dictionary<string, object> args)
+        internal ImpactInfo TrackImpact(TableConfig.Skill cfg, int seq, int curObjId, int srcObjId, int targetId, string emitBone, int emitImpact, UnityEngine.Vector3 offset, bool isFinal, Dictionary<string, object> args)
         {
             EntityViewModel view = GetEntityViewById(targetId);
             EntityViewModel srcView = GetEntityViewById(srcObjId);
-            if (null != view && null != view.Entity && null != view.Actor && (!view.Entity.IsDead() || !view.Entity.CanDead)) {
+            if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDeadSkillCasting()) {
                 EntityInfo npc = view.Entity;
                 if (null != cfg) {
                     ImpactInfo impactInfo = null;
@@ -676,6 +677,7 @@ namespace GameFramework
                                 impactInfo.SenderPosition = new ScriptRuntime.Vector3(pos.x, pos.y, pos.z);
                             }
                         }
+                        impactInfo.DamageData.IsFinal = isFinal;
                         npc.GetSkillStateInfo().AddImpact(impactInfo);
                         GfxSkillSystem.Instance.StartSkill(targetId, impactInfo.ConfigData, impactInfo.Seq, args);
                         return impactInfo;
@@ -710,7 +712,7 @@ namespace GameFramework
         internal ImpactInfo TrackSendImpact(int targetId, int impactId, int seq, int impactToTarget, Dictionary<string, object> args)
         {
             EntityViewModel view = GetEntityViewById(targetId);
-            if (null != view && null != view.Entity && null != view.Actor && (!view.Entity.IsDead() || !view.Entity.CanDead)) {
+            if (null != view && null != view.Entity && null != view.Actor && !view.Entity.IsDeadSkillCasting()) {
                 EntityInfo npc = view.Entity;
                 ImpactInfo trackImpactInfo = npc.GetSkillStateInfo().GetImpactInfoBySeq(seq);
                 if (null != trackImpactInfo && impactId == trackImpactInfo.ImpactId) {
@@ -757,7 +759,7 @@ namespace GameFramework
             }
             return null;
         }
-        internal void ImpactDamage(int srcObjId, int targetId, int impactId, int seq)
+        internal void ImpactDamage(int srcObjId, int targetId, int impactId, int seq, bool isFinal)
         {
             if (ClientModule.Instance.IsRoomScene)
                 return;

@@ -77,7 +77,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("AnimName", () => { return m_AnimName.EditableValue; }, (object val) => { m_AnimName.EditableValue = val; });
             AddProperty("NormalizedAnimStartTime", () => { return m_NormalizedAnimStartTime.EditableValue; }, (object val) => { m_NormalizedAnimStartTime.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance )
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -95,11 +95,11 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance )
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
                 foreach (Dsl.ISyntaxComponent statement in funcData.Statements) {
                     Dsl.CallData stCall = statement as Dsl.CallData;
                     if (null != stCall && stCall.GetParamNum() > 0) {
@@ -186,7 +186,7 @@ namespace GameFramework.Skill.Trigers
         {
             AddProperty("Speed", () => { return m_Speed; }, (object val) => { m_Speed = (float)Convert.ChangeType(val, typeof(float)); });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance )
         {
             int num = callData.GetParamNum();
             if (num >= 2) {
@@ -263,7 +263,7 @@ namespace GameFramework.Skill.Trigers
         {
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance )
         {
             m_Params = new Dictionary<string, object>();
             int num = callData.GetParamNum();
@@ -274,11 +274,11 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance )
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
                 for (int i = 0; i < funcData.Statements.Count; ++i) {
                     Dsl.ISyntaxComponent statement = funcData.Statements[i];
                     Dsl.CallData stCall = statement as Dsl.CallData;
@@ -366,7 +366,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("NormalizedFireEventTime", () => { return m_NormalizedFireEventTime.EditableValue; }, (object val) => { m_NormalizedFireEventTime.EditableValue = val; });
             AddProperty("MessageName", () => { return m_MsgId.EditableValue; }, (object val) => { m_MsgId.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance )
         {
             m_Params = new Dictionary<string, object>();
             int num = callData.GetParamNum();
@@ -387,11 +387,11 @@ namespace GameFramework.Skill.Trigers
                 StartTime = 0;
             }
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance )
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
 
                 for (int i = 0; i < funcData.Statements.Count; ++i) {
                     Dsl.ISyntaxComponent statement = funcData.Statements[i];

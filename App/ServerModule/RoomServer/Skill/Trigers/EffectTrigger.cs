@@ -80,7 +80,7 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -102,11 +102,11 @@ namespace GameFramework.Skill.Trigers
                 m_IsExternalImpact = callData.GetParamId(5) == "true";
             }
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
 
                 Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
                 if (null != statement) {
@@ -229,7 +229,7 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -257,11 +257,11 @@ namespace GameFramework.Skill.Trigers
                 m_IsExternalImpact = callData.GetParamId(9) == "true";
             }            
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null != callData) {
-                Load(callData, dslSkillId);
+                Load(callData, instance);
 
                 Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
                 if (null != statement) {
@@ -337,7 +337,7 @@ namespace GameFramework.Skill.Trigers
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

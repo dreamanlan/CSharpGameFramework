@@ -102,7 +102,6 @@
     <Compile Include="Scene\Scene_Tick.cs" />
     <Compile Include="Scene\Scene_Utility.cs" />
     <Compile Include="Skill\ServerSkillSystem.cs" />
-    <Compile Include="Skill\Trigers\ConsumptionTrigger.cs" />
     <Compile Include="Skill\Trigers\DamageTrigger.cs" />
     <Compile Include="Skill\Trigers\EffectTrigger.cs" />
     <Compile Include="Skill\Trigers\FaceToTargetTrigger.cs" />

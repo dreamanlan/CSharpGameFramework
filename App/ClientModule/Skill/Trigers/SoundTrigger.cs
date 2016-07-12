@@ -149,7 +149,7 @@ namespace GameFramework.Skill.Trigers
             }
             return audiosource_obj.GetComponentInChildren<AudioSource>();
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 6) {
@@ -162,13 +162,13 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
-        protected override void Load(Dsl.FunctionData funcData, int dslSkillId)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
             Dsl.CallData callData = funcData.Call;
             if (null == callData) {
                 return;
             }
-            Load(callData, dslSkillId);
+            Load(callData, instance);
             for (int i = 0; i < funcData.Statements.Count; i++) {
                 Dsl.CallData stCall = funcData.Statements[i] as Dsl.CallData;
                 if (null == stCall) {
@@ -241,7 +241,7 @@ namespace GameFramework.Skill.Trigers
         {
             
         }
-        protected override void Load(Dsl.CallData callData, int dslSkillId)
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() >= 2) {
                 StartTime = long.Parse(callData.GetParamId(0));
