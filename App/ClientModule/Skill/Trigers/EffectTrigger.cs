@@ -540,7 +540,7 @@ namespace GameFramework.Skill.Trigers
                         if (null != target) {
                             int emitImpact = m_EmitImpact;
                             if (!m_IsExternalImpact) {
-                                emitImpact = SkillInstance.GenInnerEmitSkillId(m_EmitImpact <= 0 ? 1 : m_EmitImpact);
+                                emitImpact = SkillInstance.GenInnerEmitSkillId(m_EmitImpact);
                             }
                             int impactId = TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
                             Dictionary<string, object> args;
@@ -574,7 +574,6 @@ namespace GameFramework.Skill.Trigers
         }
         protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
-            instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_EffectPath.Set(callData.GetParam(0));
@@ -594,6 +593,7 @@ namespace GameFramework.Skill.Trigers
             if (num > 5) {
                 m_IsExternalImpact = callData.GetParamId(5) == "true";
             }
+            instance.AddImpactForInit(this, m_EmitImpact, m_IsExternalImpact);
         }
         protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
@@ -683,7 +683,7 @@ namespace GameFramework.Skill.Trigers
                     float emitSpeed = m_EmitSpeed.Get(instance);
                     int emitImpact = m_EmitImpact;
                     if (!m_IsExternalImpact) {
-                        emitImpact = SkillInstance.GenInnerEmitSkillId(m_EmitImpact <= 0 ? 1 : m_EmitImpact);
+                        emitImpact = SkillInstance.GenInnerEmitSkillId(m_EmitImpact);
                     }
                     int impactId = TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
                     int ct = 0;
@@ -723,7 +723,6 @@ namespace GameFramework.Skill.Trigers
         }
         protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
-            instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_EffectPath.Set(callData.GetParam(0));
@@ -748,7 +747,8 @@ namespace GameFramework.Skill.Trigers
             }
             if (num > 9) {
                 m_IsExternalImpact = callData.GetParamId(9) == "true";
-            }            
+            }
+            instance.AddImpactForInit(this, m_EmitImpact, m_IsExternalImpact);     
         }
         protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {

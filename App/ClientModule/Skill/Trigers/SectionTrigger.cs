@@ -231,4 +231,42 @@ namespace GameFramework.Skill.Trigers
 
         private string m_Type = "noshield";        
     }
+    /// <summary>
+    /// gotosection(starttime,sectionnum);
+    /// </summary>
+    public class GotoSectionTrigger : AbstractSkillTriger
+    {
+        protected override ISkillTriger OnClone()
+        {
+            GotoSectionTrigger copy = new GotoSectionTrigger();
+            copy.m_SectionNum = m_SectionNum;
+            return copy;
+        }
+
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        {
+            if (callData.GetParamNum() >= 2) {
+                StartTime = long.Parse(callData.GetParamId(0));
+                m_SectionNum = int.Parse(callData.GetParamId(1));
+            }
+        }
+
+        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            if (curSectionTime < StartTime) {
+                return true;
+            }
+            GameObject obj = sender as GameObject;
+            if (obj == null) {
+                return false;
+            }
+            if (m_SectionNum < 0) {
+                return false;
+            }
+            instance.GoToSection = m_SectionNum;
+            return false;
+        }
+
+        private int m_SectionNum = -1;
+    }
 }

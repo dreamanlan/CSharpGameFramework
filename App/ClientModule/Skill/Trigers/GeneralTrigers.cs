@@ -613,7 +613,7 @@ namespace GameFramework.Skill.Trigers
             if (needSetImpact) {
                 int impact = m_Impact;
                 if (!m_IsExternalImpact) {
-                    impact = SkillInstance.GenInnerHitSkillId(m_Impact <= 0 ? 1 : m_Impact);
+                    impact = SkillInstance.GenInnerHitSkillId(m_Impact);
                 }
                 instance.SetVariable("impact", impact);
             }
@@ -631,6 +631,7 @@ namespace GameFramework.Skill.Trigers
             if (num > 2) {
                 m_IsExternalImpact = callData.GetParamId(2) == "true";
             }
+            instance.AddUseImpactForInit(this, m_Impact, m_IsExternalImpact);
         }
         protected override void Load(Dsl.StatementData statementData, SkillInstance instance)
         {

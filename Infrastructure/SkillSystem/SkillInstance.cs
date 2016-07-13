@@ -166,7 +166,7 @@ namespace SkillSystem
         public SkillSection()
         {
             m_AccessorHelper.AddProperty("Duration", () => { return m_Duration; }, (object val) => { m_Duration = (long)Convert.ChangeType(val, typeof(long)); });
-            m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; }, (object val) => { m_CurTime = (long)Convert.ChangeType(val, typeof(long)); });
+            m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; });
         }
 
         private void OnInit(object sender, SkillInstance instance)
@@ -301,7 +301,7 @@ namespace SkillSystem
 
         public SkillMessageHandler()
         {
-            //m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; }, (object val) => { m_CurTime = (long)Convert.ChangeType(val, typeof(long)); });
+            //m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; });
         }
 
         private void RefreshTrigers(Dsl.FunctionData sectionData, SkillInstance instance)
@@ -424,6 +424,15 @@ namespace SkillSystem
             get { return m_HitSkillInstances; }
         }
         //----------------------------------------------
+        public int ImpactCount
+        {
+            get { return m_ImpactCount; }
+        }
+        public int DamageCount
+        {
+            get { return m_DamageCount; }
+        }
+        //----------------------------------------------
         public List<InplaceSkillPropertyInfo> CollectProperties()
         {
             List<InplaceSkillPropertyInfo> list = new List<InplaceSkillPropertyInfo>();
@@ -503,6 +512,8 @@ namespace SkillSystem
             //嵌在技能内的技能实例只用作克隆的母本，可以为多个技能实例共享
             instance.m_EmitSkillInstances = m_EmitSkillInstances;
             instance.m_HitSkillInstances = m_HitSkillInstances;
+            instance.m_ImpactCount = m_ImpactCount;
+            instance.m_DamageCount = m_DamageCount;
             return instance;
         }
         public bool Init(Dsl.DslInfo config)
@@ -628,10 +639,12 @@ namespace SkillSystem
 
         public SkillInstance()
         {
-            m_AccessorHelper.AddProperty("DslSkillId", () => { return m_DslSkillId; }, (object val) => { });
-            m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; }, (object val) => { m_CurTime = (long)Convert.ChangeType(val, typeof(long)); });
-            m_AccessorHelper.AddProperty("CurSection", () => { return m_CurSection; }, (object val) => { m_CurSection = (int)Convert.ChangeType(val, typeof(int)); });
-            m_AccessorHelper.AddProperty("CurSectionTime", () => { return m_CurSectionTime; }, (object val) => { m_CurSectionTime = (long)Convert.ChangeType(val, typeof(long)); });
+            m_AccessorHelper.AddProperty("DslSkillId", () => { return m_DslSkillId; });
+            m_AccessorHelper.AddProperty("CurTime", () => { return m_CurTime; });
+            m_AccessorHelper.AddProperty("CurSection", () => { return m_CurSection; });
+            m_AccessorHelper.AddProperty("CurSectionTime", () => { return m_CurSectionTime; });
+            m_AccessorHelper.AddProperty("ImpactCount", () => { return m_ImpactCount; });
+            m_AccessorHelper.AddProperty("DamageCount", () => { return m_DamageCount; });
         }
 
         private bool IsSectionDone(int sectionnum)
@@ -720,6 +733,7 @@ namespace SkillSystem
         private bool Init(Dsl.FunctionData skill)
         {
             bool ret = false;
+            m_UseImpactsForInit = new List<SkillSectionOrMessageTriggers>();
             m_ImpactsForInit = new List<SkillSectionOrMessageTriggers>();
             m_DamagesForInit = new List<SkillSectionOrMessageTriggers>();
             if (null != skill && (skill.GetId() == "skill" || skill.GetId() == "emitskill" || skill.GetId() == "hitskill")) {
@@ -732,6 +746,7 @@ namespace SkillSystem
 
                 for (int i = 0; i < skill.Statements.Count; i++) {
                     if (skill.Statements[i].GetId() == "section") {
+                        m_UseImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Section));
                         m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Section));
                         m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Section));
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
@@ -748,6 +763,7 @@ namespace SkillSystem
 #endif
                         }
                     } else if (skill.Statements[i].GetId() == "onmessage") {
+                        m_UseImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Message));
                         m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Message));
                         m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Message));
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
@@ -764,6 +780,7 @@ namespace SkillSystem
 #endif
                         }
                     } else if (skill.Statements[i].GetId() == "onstop") {
+                        m_UseImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnStop));
                         m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnStop));
                         m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnStop));
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
@@ -779,6 +796,7 @@ namespace SkillSystem
 #endif
                         }
                     } else if (skill.Statements[i].GetId() == "oninterrupt") {
+                        m_UseImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnInterrupt));
                         m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnInterrupt));
                         m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnInterrupt));
                         Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
@@ -803,9 +821,6 @@ namespace SkillSystem
                             int innerId = 0;
                             if (header.GetParamNum() > 0) {
                                 innerId = int.Parse(header.GetParamId(0));
-                            }
-                            if (innerId <= 0 || innerId > c_MaxInnerSkillId) {
-                                innerId = 1;
                             }
                             inst.m_InnerDslSkillId = GenInnerEmitSkillId(innerId);
                             inst.m_OuterDslSkillId = m_DslSkillId;
@@ -838,9 +853,6 @@ namespace SkillSystem
                             int innerId = 0;
                             if (header.GetParamNum() > 0) {
                                 innerId = int.Parse(header.GetParamId(0));
-                            }
-                            if (innerId <= 0 || innerId > c_MaxInnerSkillId) {
-                                innerId = 1;
                             }
                             inst.m_InnerDslSkillId = GenInnerHitSkillId(innerId);
                             inst.m_OuterDslSkillId = m_DslSkillId;
@@ -900,13 +912,27 @@ namespace SkillSystem
 
 
         //----------------------------------------------
+        public void AddUseImpactForInit(ISkillTriger trigger, int impactId, bool isExternalImpact)
+        {
+            int ct = m_UseImpactsForInit.Count;
+            if (ct > 0) {
+                SkillSectionOrMessageTriggers group = m_UseImpactsForInit[ct - 1];
+                if (null != group) {
+                    group.Triggers.Add(new TriggerInfo { Trigger = trigger, ImpactId = impactId, IsExternalImpact = isExternalImpact, IsEmitImpact = false });
+                }
+            }
+        }
         public void AddImpactForInit(ISkillTriger trigger)
+        {
+            AddImpactForInit(trigger, 0, false);
+        }
+        public void AddImpactForInit(ISkillTriger trigger, int impactId, bool isExternalImpact)
         {
             int ct = m_ImpactsForInit.Count;
             if (ct > 0) {
                 SkillSectionOrMessageTriggers group = m_ImpactsForInit[ct - 1];
                 if (null != group) {
-                    group.Triggers.Add(trigger);
+                    group.Triggers.Add(new TriggerInfo { Trigger = trigger, ImpactId = impactId, IsExternalImpact = isExternalImpact, IsEmitImpact = true });
                 }
             }
         }
@@ -916,23 +942,27 @@ namespace SkillSystem
             if (ct > 0) {
                 SkillSectionOrMessageTriggers group = m_DamagesForInit[ct - 1];
                 if (null != group) {
-                    group.Triggers.Add(trigger);
+                    group.Triggers.Add(new TriggerInfo { Trigger = trigger, ImpactId = 0, IsExternalImpact = false, IsEmitImpact = false });
                 }
             }
         }
         //----------------------------------------------
         private void BuildImpactAndDamageInfo()
         {
-            Comparison<ISkillTriger> comp = ((left, right) => {
-                if (left.StartTime > right.StartTime) {
+            Comparison<TriggerInfo> comp = ((left, right) => {
+                if (left.Trigger.StartTime > right.Trigger.StartTime) {
                     return -1;
-                } else if (left.StartTime == right.StartTime) {
+                } else if (left.Trigger.StartTime == right.Trigger.StartTime) {
                     return 0;
                 } else {
                     return 1;
                 }
             });
             //排序
+            for (int i = 0; i < m_UseImpactsForInit.Count; ++i) {
+                var group = m_UseImpactsForInit[i];
+                Helper.BubbleSort(group.Triggers, comp);
+            }
             for (int i = 0; i < m_ImpactsForInit.Count; ++i) {
                 var group = m_ImpactsForInit[i];
                 Helper.BubbleSort(group.Triggers, comp);
@@ -940,6 +970,44 @@ namespace SkillSystem
             for (int i = 0; i < m_DamagesForInit.Count; ++i) {
                 var group = m_DamagesForInit[i];
                 Helper.BubbleSort(group.Triggers, comp);
+            }
+            //确定impact信息
+            for (int i = 0; i < m_ImpactsForInit.Count && i < m_UseImpactsForInit.Count; ++i) {
+                var refGroup = m_UseImpactsForInit[i];
+                var group = m_ImpactsForInit[i];
+                int impactId = 0;
+                bool isExternal = false;
+                long nextTime = long.MaxValue;
+                int nextImpactId = 0;
+                bool nextIsExternal = false;
+                int refIndex = 0;
+                if (refIndex < refGroup.Triggers.Count) {
+                    nextTime = refGroup.Triggers[refIndex].Trigger.StartTime;
+                    nextImpactId = refGroup.Triggers[refIndex].ImpactId;
+                    nextIsExternal = refGroup.Triggers[refIndex].IsExternalImpact;
+                }
+                for (int j = 0; j < group.Triggers.Count; ++j) {
+                    if (group.Triggers[j].ImpactId > 0)
+                        continue;
+                    long time = group.Triggers[j].Trigger.StartTime;
+                    while(time >= nextTime) {
+                        impactId = nextImpactId;
+                        isExternal = nextIsExternal;
+
+                        ++refIndex;
+                        if (refIndex < refGroup.Triggers.Count) {
+                            nextTime = refGroup.Triggers[refIndex].Trigger.StartTime;
+                            nextImpactId = refGroup.Triggers[refIndex].ImpactId;
+                            nextIsExternal = refGroup.Triggers[refIndex].IsExternalImpact;
+                        } else {
+                            nextTime = long.MaxValue;
+                            break;
+                        }
+                    }
+                    group.Triggers[j].ImpactId = impactId;
+                    group.Triggers[j].IsExternalImpact = isExternal;
+                    group.Triggers[j].IsEmitImpact = false;
+                }
             }
             //message handler里面的impact与damage独立计数
             int ict = m_ImpactsForInit.Count;
@@ -949,10 +1017,10 @@ namespace SkillSystem
                     int jct = group.Triggers.Count;
                     for (int j = 0; j < jct; ++j) {
                         var trigger = group.Triggers[j];
-                        trigger.OrderInSection = j + 1;
-                        trigger.OrderInSkill = j + 1;
+                        trigger.Trigger.OrderInSection = j + 1;
+                        trigger.Trigger.OrderInSkill = j + 1;
                         if (j != jct - 1) {
-                            trigger.IsFinal = false;
+                            trigger.Trigger.IsFinal = false;
                         }
                     }
                 }
@@ -964,10 +1032,10 @@ namespace SkillSystem
                     int jct = group.Triggers.Count;
                     for (int j = 0; j < jct; ++j) {
                         var trigger = group.Triggers[j];
-                        trigger.OrderInSection = j + 1;
-                        trigger.OrderInSkill = j + 1;
+                        trigger.Trigger.OrderInSection = j + 1;
+                        trigger.Trigger.OrderInSkill = j + 1;
                         if (j != jct - 1) {
-                            trigger.IsFinal = false;
+                            trigger.Trigger.IsFinal = false;
                         }
                     }
                 }
@@ -988,6 +1056,7 @@ namespace SkillSystem
                 }
             }
             //对section里的impact与damage按整个skill计数
+            int subDamageCount = 0;
             int index = 0;
             ict = m_ImpactsForInit.Count;
             for (int i = 0; i < ict; ++i) {
@@ -995,13 +1064,29 @@ namespace SkillSystem
                 int jct = group.Triggers.Count;
                 for (int j = 0; j < jct; ++j) {
                     var trigger = group.Triggers[j];
-                    trigger.OrderInSection = j + 1;
-                    trigger.OrderInSkill = ++index;
+                    trigger.Trigger.OrderInSection = j + 1;
+                    trigger.Trigger.OrderInSkill = ++index;
                     if (i != ict - 1 || j != jct - 1) {
-                        trigger.IsFinal = false;
+                        trigger.Trigger.IsFinal = false;
+                    }
+                    if (!trigger.IsExternalImpact) {
+                        if (trigger.IsEmitImpact) {
+                            int innerId = GenInnerEmitSkillId(trigger.ImpactId);
+                            SkillInstance inst;
+                            if (null != m_EmitSkillInstances && m_EmitSkillInstances.TryGetValue(innerId, out inst)) {
+                                subDamageCount += inst.DamageCount;
+                            }
+                        } else {
+                            int innerId = GenInnerHitSkillId(trigger.ImpactId);
+                            SkillInstance inst;
+                            if (null != m_HitSkillInstances && m_HitSkillInstances.TryGetValue(innerId, out inst)) {
+                                subDamageCount += inst.DamageCount;
+                            }
+                        }
                     }
                 }
             }
+            m_ImpactCount = index;
             index = 0;
             ict = m_DamagesForInit.Count;
             for (int i = 0; i < ict; ++i) {
@@ -1009,14 +1094,17 @@ namespace SkillSystem
                 int jct = group.Triggers.Count;
                 for (int j = 0; j < jct; ++j) {
                     var trigger = group.Triggers[j];
-                    trigger.OrderInSection = j + 1;
-                    trigger.OrderInSkill = ++index;
+                    trigger.Trigger.OrderInSection = j + 1;
+                    trigger.Trigger.OrderInSkill = ++index;
                     if (i != ict - 1 || j != jct - 1) {
-                        trigger.IsFinal = false;
+                        trigger.Trigger.IsFinal = false;
                     }
                 }
             }
+            m_DamageCount = index + subDamageCount;
             //信息获取完毕，清空缓存
+            m_UseImpactsForInit.Clear();
+            m_UseImpactsForInit = null;
             m_ImpactsForInit.Clear();
             m_ImpactsForInit = null;
             m_DamagesForInit.Clear();
@@ -1030,12 +1118,19 @@ namespace SkillSystem
             OnInterrupt,
             OnStop,
         }
+        private sealed class TriggerInfo
+        {
+            internal ISkillTriger Trigger;
+            internal int ImpactId;
+            internal bool IsExternalImpact;
+            internal bool IsEmitImpact;
+        }
         private sealed class SkillSectionOrMessageTriggers
         {
-            public SectionOrMessageType GroupType = SectionOrMessageType.Section;
-            public List<ISkillTriger> Triggers = new List<ISkillTriger>();
+            internal SectionOrMessageType GroupType = SectionOrMessageType.Section;
+            internal List<TriggerInfo> Triggers = new List<TriggerInfo>();
 
-            public SkillSectionOrMessageTriggers(SectionOrMessageType groupType)
+            internal SkillSectionOrMessageTriggers(SectionOrMessageType groupType)
             {
                 GroupType = groupType;
             }
@@ -1071,17 +1166,27 @@ namespace SkillSystem
         private Dictionary<int, SkillInstance> m_EmitSkillInstances = null;
         private Dictionary<int, SkillInstance> m_HitSkillInstances = null;
 
+        private List<SkillSectionOrMessageTriggers> m_UseImpactsForInit = null;
         private List<SkillSectionOrMessageTriggers> m_ImpactsForInit = null;
         private List<SkillSectionOrMessageTriggers> m_DamagesForInit = null;
+
+        private int m_ImpactCount = 0;
+        private int m_DamageCount = 0;
 
         private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
 
         public static int GenInnerEmitSkillId(int id)
         {
+            if (id <= 0 || id > c_MaxInnerSkillId) {
+                id = 1;
+            }
             return (c_InnerEmitSkillIdOffset + id) * c_InnerSkillIdAmplification;
         }
         public static int GenInnerHitSkillId(int id)
         {
+            if (id <= 0 || id > c_MaxInnerSkillId) {
+                id = 1;
+            }
             return (c_InnerHitSkillIdOffset + id) * c_InnerSkillIdAmplification;
         }
 

@@ -88,6 +88,10 @@ namespace SkillSystem
         {
             m_Group = group;
         }
+        public void AddProperty(string key, GetDelegation onGet)
+        {
+            m_Properties.Add(key, new PropertyWrap { OnGet = onGet, OnSet = null });
+        }
         public void AddProperty(string key, GetDelegation onGet, SetDelegation onSet)
         {
             m_Properties.Add(key, new PropertyWrap { OnGet = onGet, OnSet = onSet });

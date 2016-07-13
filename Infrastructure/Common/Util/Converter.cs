@@ -35,7 +35,21 @@ namespace GameFramework
             }
             return StringList2String(strVals);
         }
-        public static string StringList2String(List<string> vals)
+        public static string BoolList2String(params bool[] vals)
+        {
+            return BoolList2String((IList<bool>)vals);
+        }
+        public static string BoolList2String(IList<bool> vals)
+        {
+            if (vals.Count <= 0)
+                return string.Empty;
+            string[] strVals = new string[vals.Count];
+            for (int i = 0; i < vals.Count; ++i) {
+                strVals[i] = vals[i] ? "1" : "0";
+            }
+            return StringList2String(strVals);
+        }
+        public static string StringList2String(IList<string> vals)
         {
             string[] strVals = new string[vals.Count];
             for (int i = 0; i < vals.Count; ++i) {
@@ -46,59 +60,6 @@ namespace GameFramework
         public static string StringList2String(params string[] vals)
         {
             return string.Join(";", vals);
-        }
-        public static ScriptRuntime.Vector2 ConvertVector2D(string vec)
-        {
-            try {
-                string strPos = vec;
-                string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
-                ScriptRuntime.Vector2 vector = new ScriptRuntime.Vector2(Convert.ToSingle(resut[0]), Convert.ToSingle(resut[1]));
-                return vector;
-            } catch (System.Exception ex) {
-                LogSystem.Error("ConvertVector2D {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
-                throw;
-            }
-        }
-        public static List<string> ConvertStringList(string vec)
-        {
-            List<string> list = new List<string>();
-            try {
-                string[] resut = vec.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
-                for (int i = 0; i < resut.Length; ++i) {
-                    string str = resut[i];
-                    list.Add(str);
-                }
-                return list;
-            } catch (System.Exception ex) {
-                LogSystem.Error("ConvertStringList {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
-                throw;
-            }
-        }
-        public static ScriptRuntime.Vector3 ConvertVector3D(string vec)
-        {
-            try {
-                string strPos = vec;
-                string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
-                ScriptRuntime.Vector3 vector = new ScriptRuntime.Vector3(
-                  Convert.ToSingle(resut[0]), Convert.ToSingle(resut[1]), Convert.ToSingle(resut[2]));
-                return vector;
-            } catch (System.Exception ex) {
-                LogSystem.Error("ConvertVector3D {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
-                throw;
-            }
-        }
-        public static ScriptRuntime.Vector4 ConvertVector4D(string vec)
-        {
-            try {
-                string strPos = vec;
-                string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
-                ScriptRuntime.Vector4 vector = new ScriptRuntime.Vector4(
-                  Convert.ToSingle(resut[0]), Convert.ToSingle(resut[1]), Convert.ToSingle(resut[2]), Convert.ToSingle(resut[3]));
-                return vector;
-            } catch (System.Exception ex) {
-                LogSystem.Error("ConvertVector4D {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
-                throw;
-            }
         }
         public static List<T> ConvertNumericList<T>(string vec)
         {
@@ -118,6 +79,65 @@ namespace GameFramework
             }
 
             return list;
+        }
+        public static List<bool> ConvertBoolList(string vec)
+        {
+            List<bool> list = new List<bool>();
+            try {
+                string[] resut = vec.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < resut.Length; ++i) {
+                    string str = resut[i];
+                    if (str == "true" || str.Length > 0 && char.IsNumber(str[0]) && int.Parse(str) != 0) {
+                        list.Add(true);
+                    } else {
+                        list.Add(false);
+                    }
+                }
+                return list;
+            } catch (System.Exception ex) {
+                LogSystem.Error("ConvertBoolList {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
+                throw;
+            }
+        }
+        public static List<string> ConvertStringList(string vec)
+        {
+            List<string> list = new List<string>();
+            try {
+                string[] resut = vec.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
+                for (int i = 0; i < resut.Length; ++i) {
+                    string str = resut[i];
+                    list.Add(str);
+                }
+                return list;
+            } catch (System.Exception ex) {
+                LogSystem.Error("ConvertStringList {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
+                throw;
+            }
+        }
+        public static ScriptRuntime.Vector2 ConvertVector2D(string vec)
+        {
+            try {
+                string strPos = vec;
+                string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
+                ScriptRuntime.Vector2 vector = new ScriptRuntime.Vector2(Convert.ToSingle(resut[0]), Convert.ToSingle(resut[1]));
+                return vector;
+            } catch (System.Exception ex) {
+                LogSystem.Error("ConvertVector2D {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
+                throw;
+            }
+        }
+        public static ScriptRuntime.Vector3 ConvertVector3D(string vec)
+        {
+            try {
+                string strPos = vec;
+                string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
+                ScriptRuntime.Vector3 vector = new ScriptRuntime.Vector3(
+                  Convert.ToSingle(resut[0]), Convert.ToSingle(resut[1]), Convert.ToSingle(resut[2]));
+                return vector;
+            } catch (System.Exception ex) {
+                LogSystem.Error("ConvertVector3D {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
+                throw;
+            }
         }
         public static List<ScriptRuntime.Vector2> ConvertVector2DList(string vec)
         {

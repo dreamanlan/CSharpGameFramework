@@ -269,6 +269,7 @@ namespace GameFramework.Skill
             SkillTrigerManager.Instance.RegisterTrigerFactory("adjustsectionduration", new SkillTrigerFactoryHelper<Trigers.AdjustSectionDurationTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("keepsectionforbuff", new SkillTrigerFactoryHelper<Trigers.KeepSectionForBuffTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("stopsection", new SkillTrigerFactoryHelper<Trigers.StopSectionTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("gotosection", new SkillTrigerFactoryHelper<Trigers.GotoSectionTrigger>());
         }
         public void Reset()
         {
