@@ -143,6 +143,7 @@ namespace GameFramework.Skill.Trigers
 
     /// <summary>
     /// stopsection([start_time])[if(type)];
+    /// stopsection([start_time])[ifnot(type)];
     /// </summary>
     public class StopSectionTrigger : AbstractSkillTriger
     {
@@ -150,6 +151,7 @@ namespace GameFramework.Skill.Trigers
         {
             StopSectionTrigger copy = new StopSectionTrigger();
             copy.m_Type = m_Type;
+            copy.m_HaveIsContinue = m_HaveIsContinue;
             return copy;
         }
         public override void Reset()
@@ -165,8 +167,22 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < StartTime) {
                 return true;
             }
-            if (0 == m_Type.CompareTo("shield") && scene.EntityController.HaveShield(senderObj.ActorId)) {
-                return true;
+            if (m_HaveIsContinue) {
+                if (0 == m_Type.CompareTo("shield")) {
+                    if (scene.EntityController.HaveShield(senderObj.ActorId))
+                        return true;
+                } else {
+                    if (scene.EntityController.HaveState(senderObj.ActorId, m_Type))
+                        return true;
+                }
+            } else {
+                if (0 == m_Type.CompareTo("shield")) {
+                    if (!scene.EntityController.HaveShield(senderObj.ActorId))
+                        return true;
+                } else {
+                    if (!scene.EntityController.HaveState(senderObj.ActorId, m_Type))
+                        return true;
+                }
             }
             instance.StopCurSection();
             return false;
@@ -195,8 +211,10 @@ namespace GameFramework.Skill.Trigers
             if (num > 0) {
                 m_Type = callData.GetParamId(0);
             }
+            m_HaveIsContinue = callData.GetId() != "if";
         }
 
-        private string m_Type = "noshield";        
+        private string m_Type = "shield";
+        private bool m_HaveIsContinue = true;
     }
 }

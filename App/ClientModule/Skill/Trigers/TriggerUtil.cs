@@ -351,12 +351,10 @@ namespace GameFramework.Skill.Trigers
         }
         public static int GetSkillImpactId(Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
-            int impactId = cfg.impact;
-            if (impactId <= 0) {
-                object idObj;
-                if (variables.TryGetValue("impact", out idObj)) {
-                    impactId = (int)idObj;
-                }
+            int impactId = 0;
+            object idObj;
+            if (variables.TryGetValue("impact", out idObj)) {
+                impactId = (int)idObj;
             }
             return impactId;
         }
@@ -367,6 +365,19 @@ namespace GameFramework.Skill.Trigers
             if (null != senderObj.TrackEffectObj)
                 srcObj = senderObj.TrackEffectObj;
             GameObject targetObj = senderObj.TargetGfxObj;
+            int aoeType = 0;
+            float range = 0;
+            float angleOrLength = 0;
+            TableConfig.Skill cfg = senderObj.ConfigData;
+            if (null != cfg) {
+                aoeType = cfg.aoeType;
+                range = cfg.aoeSize;
+                angleOrLength = cfg.aoeAngleOrLength;
+            }
+            AoeQuery(srcObj, targetObj, aoeType, range, angleOrLength, instance, senderId, targetType, relativeCenter, relativeToTarget, callback);
+        }
+        public static void AoeQuery(GameObject srcObj, GameObject targetObj, int aoeType, float range, float angleOrLength, SkillInstance instance, int senderId, int targetType, Vector3 relativeCenter, bool relativeToTarget, MyFunc<float, int, bool> callback)
+        {
             float radian;
             Vector3 center;
             if (null != targetObj && relativeToTarget) {
@@ -378,15 +389,6 @@ namespace GameFramework.Skill.Trigers
             } else {
                 radian = Geometry.DegreeToRadian(srcObj.transform.localRotation.eulerAngles.y);
                 center = srcObj.transform.TransformPoint(relativeCenter);
-            }
-            int aoeType = 0;
-            float range = 0;
-            float angleOrLength = 0;
-            TableConfig.Skill cfg = senderObj.ConfigData;
-            if (null != cfg) {
-                aoeType = cfg.aoeType;
-                range = cfg.aoeSize;
-                angleOrLength = cfg.aoeAngleOrLength;
             }
             if (aoeType == (int)SkillAoeType.Circle || aoeType == (int)SkillAoeType.Sector) {
                 angleOrLength = Geometry.DegreeToRadian(angleOrLength);

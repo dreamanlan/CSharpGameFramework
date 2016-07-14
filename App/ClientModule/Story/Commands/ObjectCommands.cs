@@ -1186,7 +1186,7 @@ namespace GameFramework.Story.Commands
             string enable = m_Enable.Value;
             EntityInfo obj = ClientModule.Instance.GetEntityById(objId);
             if (null != obj) {
-                if (eventName == "damage") {
+                if (StoryListenFlagEnum.Damage == StoryListenFlagUtility.FromString(eventName)) {
                     if (0 == string.Compare(enable, "true"))
                         obj.AddStoryFlag(StoryListenFlagEnum.Damage);
                     else

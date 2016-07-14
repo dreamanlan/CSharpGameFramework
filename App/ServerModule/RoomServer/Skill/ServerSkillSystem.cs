@@ -723,6 +723,9 @@ namespace GameFramework
                 SkillTrigerManager.Instance.RegisterTrigerFactory("addshield", new SkillTrigerFactoryHelper<AddShieldTriger>());
                 SkillTrigerManager.Instance.RegisterTrigerFactory("removeshield", new SkillTrigerFactoryHelper<RemoveShieldTriger>());
 
+                SkillTrigerManager.Instance.RegisterTrigerFactory("bufftotarget", new SkillTrigerFactoryHelper<BuffToTargetTrigger>());
+                SkillTrigerManager.Instance.RegisterTrigerFactory("bufftoself", new SkillTrigerFactoryHelper<BuffToSelfTrigger>());
+
                 SkillTrigerManager.Instance.RegisterTrigerFactory("impact", new SkillTrigerFactoryHelper<ImpactTrigger>());
                 SkillTrigerManager.Instance.RegisterTrigerFactory("aoeimpact", new SkillTrigerFactoryHelper<AoeImpactTriger>());
                 SkillTrigerManager.Instance.RegisterTrigerFactory("periodicallyaoeimpact", new SkillTrigerFactoryHelper<PeriodicallyAoeImpactTriger>());

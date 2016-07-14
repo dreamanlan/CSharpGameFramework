@@ -29,23 +29,55 @@ namespace GameFramework
         CST_Silence = 1 << 2,           // 沉默，不能释放技能
         CST_Sleep = 1 << 3,             // 昏迷，不能移动，不能攻击，不能放技能
         CST_Hidden = 1 << 4,            // 隐身的
+        CST_Bit_6 = 1 << 5,
+        CST_Bit_7 = 1 << 6,
+        CST_Bit_8 = 1 << 7,
+        CST_Bit_9 = 1 << 8,
+        CST_Bit_10 = 1 << 9,
+        CST_Bit_11 = 1 << 10,
+        CST_Bit_12 = 1 << 11,
+        CST_Bit_13 = 1 << 12,
+        CST_Bit_14 = 1 << 13,
+        CST_Bit_15 = 1 << 14,
+        CST_Bit_16 = 1 << 15,
+        CST_Bit_17 = 1 << 16,
+        CST_Bit_18 = 1 << 17,
+        CST_Bit_19 = 1 << 18,
+        CST_Bit_20 = 1 << 19,
+        CST_Bit_21 = 1 << 20,
+        CST_Bit_22 = 1 << 21,
+        CST_Bit_23 = 1 << 22,
+        CST_Bit_24 = 1 << 23,
+        CST_Bit_25 = 1 << 24,
+        CST_Bit_26 = 1 << 25,
+        CST_Bit_27 = 1 << 26,
+        CST_Bit_28 = 1 << 27,
+        CST_Bit_29 = 1 << 28,
+        CST_Bit_30 = 1 << 29,           // 通用标记位 3
+        CST_Bit_31 = 1 << 30,           // 通用标记位 2
+        CST_Bit_32 = 1 << 31,           // 通用标记位 1  -- 用于刚体状态标记
     }
     public static class CharacterStateUtility
     {
+        public const string c_state_bit_prefix = "state_bit_";
         public static CharacterState_Type FromString(string name)
         {
-            if (name.CompareTo("invincible") == 0)
+            if (name.CompareTo("invincible") == 0) {
                 return CharacterState_Type.CST_Invincible;
-            else if (name.CompareTo("fixedposition") == 0)
+            } else if (name.CompareTo("fixedposition") == 0) {
                 return CharacterState_Type.CST_FixedPosition;
-            else if (name.CompareTo("silence") == 0)
+            } else if (name.CompareTo("silence") == 0) {
                 return CharacterState_Type.CST_Silence;
-            else if (name.CompareTo("sleep") == 0)
+            } else if (name.CompareTo("sleep") == 0) {
                 return CharacterState_Type.CST_Sleep;
-            else if (name.CompareTo("hidden") == 0)
+            } else if (name.CompareTo("hidden") == 0) {
                 return CharacterState_Type.CST_Hidden;
-            else
-                return 0;
+            } else if(name.StartsWith(c_state_bit_prefix)) {
+                int bit = int.Parse(name.Substring(c_state_bit_prefix.Length));
+                return (CharacterState_Type)(1 << (bit - 1));
+            } else {
+                return (CharacterState_Type)0;
+            }
         }
         public static string ToString(CharacterState_Type type)
         {
@@ -70,6 +102,64 @@ namespace GameFramework
     public enum StoryListenFlagEnum
     {
         Damage = 1,
+        Story_Bit_2 = 1 << 1,
+        Story_Bit_3 = 1 << 2,
+        Story_Bit_4 = 1 << 3,
+        Story_Bit_5 = 1 << 4,
+        Story_Bit_6 = 1 << 5,
+        Story_Bit_7 = 1 << 6,
+        Story_Bit_8 = 1 << 7,
+        Story_Bit_9 = 1 << 8,
+        Story_Bit_10 = 1 << 9,
+        Story_Bit_11 = 1 << 10,
+        Story_Bit_12 = 1 << 11,
+        Story_Bit_13 = 1 << 12,
+        Story_Bit_14 = 1 << 13,
+        Story_Bit_15 = 1 << 14,
+        Story_Bit_16 = 1 << 15,
+        Story_Bit_17 = 1 << 16,
+        Story_Bit_18 = 1 << 17,
+        Story_Bit_19 = 1 << 18,
+        Story_Bit_20 = 1 << 19,
+        Story_Bit_21 = 1 << 20,
+        Story_Bit_22 = 1 << 21,
+        Story_Bit_23 = 1 << 22,
+        Story_Bit_24 = 1 << 23,
+        Story_Bit_25 = 1 << 24,
+        Story_Bit_26 = 1 << 25,
+        Story_Bit_27 = 1 << 26,
+        Story_Bit_28 = 1 << 27,
+        Story_Bit_29 = 1 << 28,
+        Story_Bit_30 = 1 << 29,           // 通用标记位 3
+        Story_Bit_31 = 1 << 30,           // 通用标记位 2
+        Story_Bit_32 = 1 << 31,           // 通用标记位 1
+    }
+    public static class StoryListenFlagUtility
+    {
+        public const string c_story_bit_prefix = "story_bit_";
+        public static StoryListenFlagEnum FromString(string name)
+        {
+            if (name.CompareTo("damage") == 0) {
+                return StoryListenFlagEnum.Damage;
+            } else if (name.StartsWith(c_story_bit_prefix)) {
+                int bit = int.Parse(name.Substring(c_story_bit_prefix.Length));
+                return (StoryListenFlagEnum)(1 << (bit - 1));
+            } else {
+                return (StoryListenFlagEnum)0;
+            }
+        }
+        public static string ToString(StoryListenFlagEnum type)
+        {
+            switch (type) {
+                case (StoryListenFlagEnum)0:
+                    return string.Empty;
+                case StoryListenFlagEnum.Damage:
+                    return "damage";
+                default:
+                    int bit = (int)Math.Log((int)type, 2) + 1;
+                    return c_story_bit_prefix + bit;
+            }
+        }
     }
 
     public partial class EntityInfo

@@ -528,6 +528,15 @@ namespace GameFramework
             else
                 return EntityInfo.GetRelation(view1.Entity, view2.Entity);
         }
+        internal bool HaveState(int objId, string state)
+        {
+            EntityViewModel view = GetEntityViewById(objId);
+            if (null != view && null != view.Entity) {
+                EntityInfo npc = view.Entity;
+                return npc.IsHaveStateFlag(CharacterStateUtility.FromString(state));
+            }
+            return false;
+        }
         internal void AddState(int objId, string state)
         {
             EntityViewModel view = GetEntityViewById(objId);
@@ -611,20 +620,7 @@ namespace GameFramework
                         impactInfo = new ImpactInfo(PredefinedSkill.Instance.HitSkillCfg);
                         impactId = PredefinedSkill.c_HitSkillId;
                     } else {
-                        TableConfig.Skill impactCfg = TableConfig.SkillProvider.Instance.GetSkill(impactId);
-                        if (null != impactCfg) {
-                            if (cfg.type != (int)SkillOrImpactType.Impact && impactCfg.type == (int)SkillOrImpactType.Buff) {
-                                //buff如果不是经由impact添加的，则使用预定义的impact
-                                addArgs.Add("impact", impactId);
-                                impactInfo = new ImpactInfo(PredefinedSkill.Instance.HitSkillCfg);
-                                impactId = PredefinedSkill.c_HitSkillId;
-                            } else {
-                                impactInfo = new ImpactInfo(impactCfg);
-                            }
-                        } else {
-                            LogSystem.Error("impact {0} config can't found !", impactId);
-                            return null;
-                        }
+                        impactInfo = new ImpactInfo(impactId);
                     }
                     if (null != impactInfo.ConfigData) {
                         if (TryInitImpactInfo(impactInfo, cfg, seq, curObjId, srcObjId, args)) {
@@ -723,19 +719,7 @@ namespace GameFramework
                     }
                     var addArgs = new Dictionary<string, object>();
                     if (null == impactInfo) {
-                        TableConfig.Skill impactCfg = TableConfig.SkillProvider.Instance.GetSkill(impactToTarget);
-                        if (null != impactCfg) {
-                            if (impactCfg.type == (int)SkillOrImpactType.Buff) {
-                                //buff如果不是经由impact添加的，则使用预定义的impact
-                                addArgs.Add("impact", impactToTarget);
-                                impactInfo = new ImpactInfo(PredefinedSkill.Instance.HitSkillCfg);
-                            } else {
-                                impactInfo = new ImpactInfo(impactCfg);
-                            }
-                        } else {
-                            LogSystem.Error("impact {0} config can't found !", impactToTarget);
-                            return null;
-                        }
+                        impactInfo = new ImpactInfo(impactId);
                     }
                     impactInfo.StartTime = TimeUtility.GetLocalMilliseconds();
                     impactInfo.ImpactSenderId = trackImpactInfo.ImpactSenderId;

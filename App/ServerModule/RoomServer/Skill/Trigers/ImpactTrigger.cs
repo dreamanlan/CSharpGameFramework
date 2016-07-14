@@ -6,6 +6,159 @@ using SkillSystem;
 namespace GameFramework.Skill.Trigers
 {
     /// <summary>
+    /// bufftotarget(starttime);
+    /// </summary>
+    public class BuffToTargetTrigger : AbstractSkillTriger
+    {
+        protected override ISkillTriger OnClone()
+        {
+            BuffToTargetTrigger copy = new BuffToTargetTrigger();
+            return copy;
+        }
+        public override void Reset()
+        {
+
+        }
+        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
+            if (null == senderObj) return false;
+            Scene scene = senderObj.Scene;
+            EntityInfo obj = senderObj.GfxObj;
+            if (obj == null) {
+                return false;
+            }
+            if (curSectionTime < StartTime) {
+                return true;
+            }
+            int senderId;
+            int targetId;
+            scene.EntityController.CalcSenderAndTarget(senderObj, out senderId, out targetId);
+            int impactId = senderObj.ConfigData.impact;
+            if (senderObj.ConfigData.type != (int)SkillOrImpactType.Skill) {
+                if (impactId <= 0) {
+                    int skillId = scene.EntityController.GetImpactSkillId(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                    TableConfig.Skill cfg = TableConfig.SkillProvider.Instance.GetSkill(skillId);
+                    if (null != cfg) {
+                        impactId = cfg.impact;
+                    }
+                }
+            }
+            Dictionary<string, object> args;
+            TriggerUtil.CalcImpactConfig(0, 0, instance, senderObj.ConfigData, out args);
+            scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, args);
+            return false;
+        }
+        protected override void OnInitProperties()
+        {
+        }
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 1) {
+                StartTime = long.Parse(callData.GetParamId(0));
+            }
+        }
+    }
+    /// <summary>
+    /// bufftoself(starttime[,centerx,centery,centerz,radius,angle_or_length,aoetype,maxCount,relativeToTarget]);
+    /// </summary>
+    public class BuffToSelfTrigger : AbstractSkillTriger
+    {
+        protected override ISkillTriger OnClone()
+        {
+            BuffToSelfTrigger copy = new BuffToSelfTrigger();
+            copy.m_RelativeCenter = m_RelativeCenter;
+            copy.m_Radius = m_Radius;
+            copy.m_AngleOrLength = m_AngleOrLength;
+            copy.m_AoeType = m_AoeType;
+            copy.m_MaxCount = m_MaxCount;
+            copy.m_RelativeToTarget = m_RelativeToTarget;
+
+            return copy;
+        }
+        public override void Reset()
+        {
+
+        }
+        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
+            if (null == senderObj) return false;
+            Scene scene = senderObj.Scene;
+            EntityInfo obj = senderObj.GfxObj;
+            if (obj == null) {
+                return false;
+            }
+            if (curSectionTime < StartTime) {
+                return true;
+            }
+            int senderId = senderObj.ActorId;
+            if (senderObj.ConfigData.type != (int)SkillOrImpactType.Skill) {
+                senderId = senderObj.TargetActorId;
+            }
+            int impactId = senderObj.ConfigData.impacttoself;
+            if (senderObj.ConfigData.type != (int)SkillOrImpactType.Skill) {
+                if (impactId <= 0) {
+                    int skillId = scene.EntityController.GetImpactSkillId(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                    TableConfig.Skill cfg = TableConfig.SkillProvider.Instance.GetSkill(skillId);
+                    if (null != cfg) {
+                        impactId = cfg.impacttoself;
+                    }
+                }
+            }
+            if (m_Radius <= Geometry.c_FloatPrecision) {
+                Dictionary<string, object> args;
+                TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
+                scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, senderId, impactId, args);
+            } else {
+                EntityInfo targetObj = senderObj.TargetGfxObj;
+                int ct = 0;
+                List<int> targetIds = new List<int>();
+                TriggerUtil.AoeQuery(scene, obj, targetObj, m_AoeType, m_Radius, m_AngleOrLength, instance, senderId, (int)SkillTargetType.Friend, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
+                    Dictionary<string, object> args;
+                    TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
+                    scene.EntityController.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, args);
+                    targetIds.Add(objId);
+                    ++ct;
+                    if (m_MaxCount <= 0 || ct < m_MaxCount) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+            }
+            return false;
+        }
+        protected override void OnInitProperties()
+        {
+        }
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 1) {
+                StartTime = long.Parse(callData.GetParamId(0));
+            }
+            if (num >= 9) {
+                m_RelativeCenter.X = float.Parse(callData.GetParamId(1));
+                m_RelativeCenter.Y = float.Parse(callData.GetParamId(2));
+                m_RelativeCenter.Z = float.Parse(callData.GetParamId(3));
+                m_Radius = float.Parse(callData.GetParamId(4));
+                m_AngleOrLength = float.Parse(callData.GetParamId(5));
+                m_AoeType = int.Parse(callData.GetParamId(6));
+                m_MaxCount = int.Parse(callData.GetParamId(7));
+                m_RelativeToTarget = callData.GetParamId(8) == "true";
+            }
+        }
+
+        private Vector3 m_RelativeCenter = Vector3.Zero;
+        private float m_Radius = 0;
+        private float m_AngleOrLength = 0;
+        private int m_AoeType = 0;
+        private int m_MaxCount = 0;
+        private bool m_RelativeToTarget = false;
+    }
+    /// <summary>
     /// impact(starttime[,centerx,centery,centerz,relativeToTarget]);
     /// </summary>
     public class ImpactTrigger : AbstractSkillTriger

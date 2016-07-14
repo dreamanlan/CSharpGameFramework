@@ -23,6 +23,7 @@ public class SkillRecordDrawer : PropertyDrawer
             SerializedProperty duration = property.FindPropertyRelative("duration");
             SerializedProperty interval = property.FindPropertyRelative("interval");
             SerializedProperty canmove = property.FindPropertyRelative("canmove");
+            SerializedProperty impacttoself = property.FindPropertyRelative("impacttoself");
             SerializedProperty impact = property.FindPropertyRelative("impact");
             SerializedProperty interruptPriority = property.FindPropertyRelative("interruptPriority");
             SerializedProperty isInterrupt = property.FindPropertyRelative("isInterrupt");
@@ -124,8 +125,8 @@ public class SkillRecordDrawer : PropertyDrawer
                 dslSkillId.intValue = v;
             }
 
-            SerializedProperty[] p = new SerializedProperty[] { desc, type, icon, distance, duration, interval, canmove, impact, interruptPriority, isInterrupt, targetType, aoeType, aoeSize, aoeAngleOrLength, maxAoeTargetCount, startupPositionType, autoCast, needTarget, cooldown, dslSkillId, startupSkillId, flybackSkillId, damage, addhp, addmp, addattack, adddefence, addshield, addspeed, addcritical, addcriticalpow, addrps };
-            string[] titles = new string[] { "描述", "类型", "技能图标", "技能有效距离", "持续时间", "作用周期", "能否移动", "效果", "打断优先级", "自己能否打断", "目标类型", "AOE类型", "AOE半径", "AOE角度或矩形长度", "最大AOE目标数", "启动位置类型", "autoCast", "是否指向性技能", "冷却时间", "dslSkillId", "启动技能ID", "归位技能ID", "伤害", "加血", "加蓝", "加攻击", "加防御", "加盾", "加速", "加暴击概率", "加暴击率", "加攻速" };
+            SerializedProperty[] p = new SerializedProperty[] { desc, type, icon, distance, duration, interval, canmove, impacttoself, impact, interruptPriority, isInterrupt, targetType, aoeType, aoeSize, aoeAngleOrLength, maxAoeTargetCount, startupPositionType, autoCast, needTarget, cooldown, dslSkillId, startupSkillId, flybackSkillId, damage, addhp, addmp, addattack, adddefence, addshield, addspeed, addcritical, addcriticalpow, addrps };
+            string[] titles = new string[] { "描述", "类型", "技能图标", "技能有效距离", "持续时间", "作用周期", "能否移动", "给自己加的效果", "效果", "打断优先级", "自己能否打断", "目标类型", "AOE类型", "AOE半径", "AOE角度或矩形长度", "最大AOE目标数", "启动位置类型", "autoCast", "是否指向性技能", "冷却时间", "dslSkillId", "启动技能ID", "归位技能ID", "伤害", "加血", "加蓝", "加攻击", "加防御", "加盾", "加速", "加暴击概率", "加暴击率", "加攻速" };
             for (int i = 0; i < p.Length; ++i) {
                 position.x = x;
                 position.y += c_FieldHeight;

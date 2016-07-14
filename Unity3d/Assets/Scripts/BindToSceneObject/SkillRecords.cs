@@ -25,6 +25,7 @@ public class SkillRecords : MonoBehaviour
         public int duration = 0;
         public int interval = 0;
         public int canmove = 0;
+        public int impacttoself = 0;
         public int impact = 0;
         public int interruptPriority = 0;
         public bool isInterrupt = false;
@@ -64,6 +65,7 @@ public class SkillRecords : MonoBehaviour
             duration = skill.duration;
             interval = skill.interval;
             canmove = skill.canmove;
+            impacttoself = skill.impacttoself;
             impact = skill.impact;
             interruptPriority = skill.interruptPriority;
             isInterrupt = skill.isInterrupt;
@@ -115,6 +117,7 @@ public class SkillRecords : MonoBehaviour
             skill.duration = duration;
             skill.interval = interval;
             skill.canmove = canmove;
+            skill.impacttoself = impacttoself;
             skill.impact = impact;
             skill.interruptPriority = interruptPriority;
             skill.isInterrupt = isInterrupt;
@@ -156,7 +159,7 @@ public class SkillRecords : MonoBehaviour
 
         public string GetSkillClipboardText()
         {
-            return string.Format("{0}\t\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}\t{22}\t{23}\t{24}\t{25}\t{26}\t{27}\t{28}\t{29}\t{30}\t{31}\t{32}\t{33}\t{34}", id, desc, type, icon, distance, duration, interval, canmove, impact, interruptPriority, isInterrupt ? 1 : 0, targetType, aoeType, aoeSize, aoeAngleOrLength, maxAoeTargetCount, dslSkillId, ""/*dslFile*/, startupSkillId, flybackSkillId, startupPositionType, GameFramework.Converter.IntList2String(subsequentSkills), autoCast, needTarget ? 1 : 0, cooldown, damage, addhp, addmp, addattack, adddefence, addshield, addspeed, addcritical, addcriticalpow, addrps);
+            return string.Format("{0}\t\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}\t{22}\t{23}\t{24}\t{25}\t{26}\t{27}\t{28}\t{29}\t{30}\t{31}\t{32}\t{33}\t{34}\t{35}", id, desc, type, icon, distance, duration, interval, canmove, impacttoself, impact, interruptPriority, isInterrupt ? 1 : 0, targetType, aoeType, aoeSize, aoeAngleOrLength, maxAoeTargetCount, dslSkillId, ""/*dslFile*/, startupSkillId, flybackSkillId, startupPositionType, GameFramework.Converter.IntList2String(subsequentSkills), autoCast, needTarget ? 1 : 0, cooldown, damage, addhp, addmp, addattack, adddefence, addshield, addspeed, addcritical, addcriticalpow, addrps);
         }
         public string GetSkillDslClipboardText()
         {

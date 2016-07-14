@@ -192,12 +192,10 @@ namespace GameFramework.Skill.Trigers
         }
         internal static int GetSkillImpactId(Dictionary<string, object> variables, TableConfig.Skill cfg)
         {
-            int impactId = cfg.impact;
-            if (impactId <= 0) {
-                object idObj;
-                if (variables.TryGetValue("impact", out idObj)) {
-                    impactId = (int)idObj;
-                }
+            int impactId = 0;
+            object idObj;
+            if (variables.TryGetValue("impact", out idObj)) {
+                impactId = (int)idObj;
             }
             return impactId;
         }
@@ -207,7 +205,20 @@ namespace GameFramework.Skill.Trigers
             Scene scene = senderObj.Scene;
             EntityInfo srcObj = senderObj.GfxObj;
             EntityInfo targetObj = senderObj.TargetGfxObj;
+            int aoeType = 0;
+            float range = 0;
+            float angleOrLength = 0;
+            TableConfig.Skill cfg = senderObj.ConfigData;
+            if (null != cfg) {
+                aoeType = cfg.aoeType;
+                range = cfg.aoeSize;
+                angleOrLength = cfg.aoeAngleOrLength;
+            }
 
+            AoeQuery(scene, srcObj, targetObj, aoeType, range, angleOrLength, instance, senderId, targetType, relativeCenter, relativeToTarget, callback);
+        }
+        public static void AoeQuery(Scene scene, EntityInfo srcObj, EntityInfo targetObj, int aoeType, float range, float angleOrLength, SkillInstance instance, int senderId, int targetType, Vector3 relativeCenter, bool relativeToTarget, MyFunc<float, int, bool> callback)
+        {
             float radian;
             Vector3 center;
             Vector3 srcPos = srcObj.GetMovementStateInfo().GetPosition3D();
@@ -222,15 +233,6 @@ namespace GameFramework.Skill.Trigers
                 center = srcPos + new Vector3(newOffset.X, relativeCenter.Y, newOffset.Y);
             }
 
-            int aoeType = 0;
-            float range = 0;
-            float angleOrLength = 0;
-            TableConfig.Skill cfg = senderObj.ConfigData;
-            if (null != cfg) {
-                aoeType = cfg.aoeType;
-                range = cfg.aoeSize;
-                angleOrLength = cfg.aoeAngleOrLength;
-            }
             if (aoeType == (int)SkillAoeType.Circle || aoeType == (int)SkillAoeType.Sector) {
                 angleOrLength = Geometry.DegreeToRadian(angleOrLength);
                 scene.KdTree.Query(center.X, center.Y, center.Z, range, (float distSqr, KdTreeObject kdTreeObj) => {
