@@ -29,9 +29,6 @@ namespace StorySystem.CommonCommands
             m_CurIterator = null;
             m_AlreadyExecute = false;
             m_Iterators.Clear();
-            for (int i = 0; i < m_LoadedIterators.Count; i++) {
-                m_Iterators.Enqueue(m_LoadedIterators[i]);
-            }
             foreach (IStoryCommand cmd in m_CommandQueue) {
                 cmd.Reset();
             }
@@ -40,8 +37,13 @@ namespace StorySystem.CommonCommands
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             if (!m_AlreadyExecute) {
-                foreach (IStoryValue<object> val in m_Iterators) {
-                    val.Evaluate(instance, iterator, args);
+                if (m_Iterators.Count <= 0 && m_LoadedIterators.Count > 0) {
+                    for (int i = 0; i < m_LoadedIterators.Count; i++) {
+                        m_LoadedIterators[i].Evaluate(instance, iterator, args);
+                    }
+                    for (int i = 0; i < m_LoadedIterators.Count; i++) {
+                        m_Iterators.Enqueue(m_LoadedIterators[i].Value);
+                    }
                 }
             }
         }
@@ -86,7 +88,6 @@ namespace StorySystem.CommonCommands
                     StoryValue val = new StoryValue();
                     val.InitFromDsl(param);
                     m_LoadedIterators.Add(val);
-                    m_Iterators.Enqueue(val);
                 }
                 for (int i = 0; i < functionData.Statements.Count; i++) {
                     IStoryCommand cmd = StoryCommandManager.Instance.CreateCommand(functionData.Statements[i]);
@@ -110,8 +111,8 @@ namespace StorySystem.CommonCommands
             }
         }
 
-        private IStoryValue<object> m_CurIterator = null; 
-        private Queue<IStoryValue<object>> m_Iterators = new Queue<IStoryValue<object>>();
+        private object m_CurIterator = null; 
+        private Queue<object> m_Iterators = new Queue<object>();
         private Queue<IStoryCommand> m_CommandQueue = new Queue<IStoryCommand>();
         private List<IStoryValue<object>> m_LoadedIterators = new List<IStoryValue<object>>();
         private List<IStoryCommand> m_LoadedCommands = new List<IStoryCommand>();
@@ -149,8 +150,12 @@ namespace StorySystem.CommonCommands
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             if (!m_AlreadyExecute) {
-                m_LoadedList.Evaluate(instance, iterator, args);
-                TryUpdateValue();
+                if (m_Iterators.Count <= 0) {
+                    m_LoadedList.Evaluate(instance, iterator, args);
+                    foreach (object obj in m_LoadedList.Value) {
+                        m_Iterators.Enqueue(obj);
+                    }
+                }
             }
         }
         protected override bool ExecCommand(StoryInstance instance, long delta, object iterator, object[] args)
@@ -191,7 +196,6 @@ namespace StorySystem.CommonCommands
             if (null != callData) {
                 if (callData.GetParamNum() > 0) {
                     m_LoadedList.InitFromDsl(callData.GetParam(0));
-                    TryUpdateValue();
                 }
                 for (int i = 0; i < functionData.Statements.Count; i++) {
                     IStoryCommand cmd = StoryCommandManager.Instance.CreateCommand(functionData.Statements[i]);
@@ -200,15 +204,6 @@ namespace StorySystem.CommonCommands
                 }
             }
             IsCompositeCommand = true;
-        }
-        private void TryUpdateValue()
-        {
-            if (m_LoadedList.HaveValue) {
-                m_Iterators.Clear();
-                foreach (object obj in m_LoadedList.Value) {
-                    m_Iterators.Enqueue(obj);
-                }
-            }
         }
         private void Prepare()
         {
