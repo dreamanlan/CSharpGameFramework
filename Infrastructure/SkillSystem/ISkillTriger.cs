@@ -241,15 +241,15 @@ namespace SkillSystem
             if (key.IndexOf("/") >= 0) {
                 return key;
             } else {
-                object val;
-                if (instance.Variables.TryGetValue(key, out val)) {
-                    return val.ToString();
+                string ret;
+                if (resources.TryGetValue(key, out ret)) {
+                    return ret;
                 } else {
-                    string ret;
-                    if (resources.TryGetValue(key, out ret)) {
-                        return ret;
+                    object val;
+                    if (instance.Variables.TryGetValue(key, out val)) {
+                        return val.ToString();
                     } else {
-                        return string.Empty;
+                        return key;
                     }
                 }
             }
