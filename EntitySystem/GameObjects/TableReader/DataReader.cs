@@ -769,7 +769,6 @@ namespace TableConfig
 			internal int duration;
 			internal int interval;
 			internal int canmove;
-			internal int impacttoself;
 			internal int impact;
 			internal int interruptPriority;
 			internal int isInterrupt;
@@ -796,6 +795,7 @@ namespace TableConfig
 			internal int addcritical;
 			internal int addcriticalpow;
 			internal int addrps;
+			internal int impacttoself;
 		}
 
 		public int id;
@@ -806,7 +806,6 @@ namespace TableConfig
 		public int duration;
 		public int interval;
 		public int canmove;
-		public int impacttoself;
 		public int impact;
 		public int interruptPriority;
 		public bool isInterrupt;
@@ -833,6 +832,7 @@ namespace TableConfig
 		public int addcritical;
 		public int addcriticalpow;
 		public int addrps;
+		public int impacttoself;
 
 		public bool ReadFromBinary(BinaryTable table, int index)
 		{
@@ -845,7 +845,6 @@ namespace TableConfig
 			duration = DataRecordUtility.ExtractInt(table, record.duration, 0);
 			interval = DataRecordUtility.ExtractInt(table, record.interval, 0);
 			canmove = DataRecordUtility.ExtractInt(table, record.canmove, 0);
-			impacttoself = DataRecordUtility.ExtractInt(table, record.impacttoself, 0);
 			impact = DataRecordUtility.ExtractInt(table, record.impact, 0);
 			interruptPriority = DataRecordUtility.ExtractInt(table, record.interruptPriority, 0);
 			isInterrupt = DataRecordUtility.ExtractBool(table, record.isInterrupt, false);
@@ -872,6 +871,7 @@ namespace TableConfig
 			addcritical = DataRecordUtility.ExtractInt(table, record.addcritical, 0);
 			addcriticalpow = DataRecordUtility.ExtractInt(table, record.addcriticalpow, 0);
 			addrps = DataRecordUtility.ExtractInt(table, record.addrps, 0);
+			impacttoself = DataRecordUtility.ExtractInt(table, record.impacttoself, 0);
 			return true;
 		}
 
@@ -886,7 +886,6 @@ namespace TableConfig
 			record.duration = DataRecordUtility.SetValue(table, duration, 0);
 			record.interval = DataRecordUtility.SetValue(table, interval, 0);
 			record.canmove = DataRecordUtility.SetValue(table, canmove, 0);
-			record.impacttoself = DataRecordUtility.SetValue(table, impacttoself, 0);
 			record.impact = DataRecordUtility.SetValue(table, impact, 0);
 			record.interruptPriority = DataRecordUtility.SetValue(table, interruptPriority, 0);
 			record.isInterrupt = DataRecordUtility.SetValue(table, isInterrupt, false);
@@ -913,6 +912,7 @@ namespace TableConfig
 			record.addcritical = DataRecordUtility.SetValue(table, addcritical, 0);
 			record.addcriticalpow = DataRecordUtility.SetValue(table, addcriticalpow, 0);
 			record.addrps = DataRecordUtility.SetValue(table, addrps, 0);
+			record.impacttoself = DataRecordUtility.SetValue(table, impacttoself, 0);
 			byte[] bytes = GetRecordBytes(record);
 			table.Records.Add(bytes);
 		}

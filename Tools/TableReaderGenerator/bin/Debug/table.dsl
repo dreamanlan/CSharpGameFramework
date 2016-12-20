@@ -152,6 +152,7 @@ tabledef(Skill, dictionary, public)
 	fielddef(addcritical, addcritical, int32);
 	fielddef(addcriticalpow, addcriticalpow, int32);
 	fielddef(addrps, addrps, int32);
+	fielddef(impacttoself, impacttoself, int32);
 };
 tabledef(SkillDsl, dictionary, public)
 {
