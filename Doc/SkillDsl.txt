@@ -450,6 +450,12 @@ skill(id)  // id对应技能配置表skill中的dslSkillId
     在指定时间修改动画控制器的参数，name为控制器配置里指定的名字。
     
 52. keeptarget([starttime[,remaintime]]);
+    
+    or
+    
+    keeptarget([starttime[,remaintime]]){
+      aoecenter(x,y,z,relativeToTarget);
+    };
     在每个Tick保证目标不会进入死亡过程。
     
 53. animationevent(anim_name_or_tag, normalized_fire_event_time, message[, start_time]);

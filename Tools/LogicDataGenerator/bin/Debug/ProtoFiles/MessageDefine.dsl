@@ -36,7 +36,7 @@ message(Msg_LR_RoomUserInfo)
 message(Msg_LR_ReconnectUser)
 {
 	member(UserGuid, uint64, required);
-	member(RoomID, int32, required);
+	member(RoomId, int32, required);
 };
 
 message(Msg_RL_ReplyReconnectUser)
@@ -47,7 +47,7 @@ message(Msg_RL_ReplyReconnectUser)
     Online;
   };
 	member(UserGuid, uint64, required);
-	member(RoomID, int32, required);	
+	member(RoomId, int32, required);	
 	member(Result, int32, required);
 };
 
@@ -73,7 +73,7 @@ message(Msg_RL_PickMoney)
 message(Msg_RL_PickItem)
 {
   member(UserGuid, uint64, required);
-	member(RoomID, int32, required);
+	member(RoomId, int32, required);
   member(ItemId, int32, required);
   member(Model, string, required);
   member(Particle, string, required);
@@ -83,7 +83,7 @@ message(Msg_RL_PickItem)
 message(Msg_LR_ReclaimItem)
 {
   member(UserGuid, uint64, required);
-	member(RoomID, int32, required);
+	member(RoomId, int32, required);
   member(ItemId, int32, required);
   member(Model, string, required);
   member(Particle, string, required);
@@ -93,52 +93,52 @@ message(Msg_LR_ReclaimItem)
 message(Msg_RL_UserDrop)
 {
 	member(UserGuid, uint64, required);
-	member(RoomID, int32, required);
+	member(RoomId, int32, required);
 	member(IsBattleEnd, bool, required);
 };
 
 message(Msg_LR_UserQuit)
 {
 	member(UserGuid, uint64, required);
-	member(RoomID, int32, required);
+	member(RoomId, int32, required);
 };
 
 message(Msg_RL_UserQuit)
 {
 	member(UserGuid, uint64, required);
-	member(RoomID, int32, required);
+	member(RoomId, int32, required);
 };
 
 message(Msg_LR_UserReLive)
 {
   member(UserGuid, uint64, required);
-  member(RoomID, int32, required);
+  member(RoomId, int32, required);
 };
 
 message(Msg_LR_ActiveScene)
 {
 	member(UserGuids, uint64, repeated);
-	member(RoomID, int32, required);
-	member(SceneID, int32, required);
+	member(RoomId, int32, required);
+	member(SceneId, int32, required);
 };
 
 message(Msg_RL_ActiveSceneResult)
 {
 	member(UserGuids, uint64, repeated);
-	member(RoomID, int32, required);
+	member(RoomId, int32, required);
 	member(Result, int32, required);
 };
 
 message(Msg_RL_ActiveScene)
 {
 	member(UserGuids, uint64, repeated);
-	member(SceneID, int32, required);
+	member(SceneId, int32, required);
 };
 
 message(Msg_LR_EnterScene)
 {
 	member(UserGuid, uint64, required);
-	member(RoomID, int32, required);
+	member(RoomId, int32, required);
 	member(UserInfo, Msg_LR_RoomUserInfo, required);
 	member(HP, int32, optional);
 	member(MP, int32, optional);
@@ -147,22 +147,22 @@ message(Msg_LR_EnterScene)
 message(Msg_RL_EnterSceneResult)
 {
 	member(UserGuid, uint64, required);
-	member(RoomID, int32, required);
+	member(RoomId, int32, required);
 	member(Result, int32, required);
 };
 
 message(Msg_LR_ChangeScene)
 {
 	member(UserGuid, uint64, required);
-	member(RoomID, int32, required);
-	member(TargetRoomID, int32, required);
+	member(RoomId, int32, required);
+	member(TargetRoomId, int32, required);
 };
 
 message(Msg_RL_ChangeSceneResult)
 {
 	member(UserGuid, uint64, required);
-	member(RoomID, int32, required);
-	member(TargetRoomID, int32, required);
+	member(RoomId, int32, required);
+	member(TargetRoomId, int32, required);
 	member(Result, int32, required);
 	member(HP, int32, optional);
 	member(MP, int32, optional);
@@ -171,7 +171,7 @@ message(Msg_RL_ChangeSceneResult)
 message(Msg_RL_ChangeScene)
 {
 	member(UserGuids, uint64, repeated);
-	member(SceneID, int32, required);
+	member(SceneId, int32, required);
 };
 
 message(Msg_LRL_StoryMessage)

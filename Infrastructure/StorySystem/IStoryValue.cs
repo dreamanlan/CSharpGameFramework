@@ -14,7 +14,9 @@ namespace StorySystem
         bool HaveValue { get; }//是否已经有值，对常量初始化后即产生值，对参数、变量与函数则在Evaluate后产生值
         T Value { get; }//具体的值
     }
-    public sealed class StoryValue : IStoryValue<object>
+    public interface IStoryValue : IStoryValue<object>
+    { }
+    public sealed class StoryValue : IStoryValue
     {
         public const int c_Iterator = -2;
         public const int c_NotArg = -1;

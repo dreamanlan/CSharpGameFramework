@@ -1,0 +1,79 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using GameFramework;
+using GameFramework.Plugin;
+using GameFramework.Skill;
+using SkillSystem;
+using StorySystem;
+
+public class AiGetSkill : ISimpleStoryValuePlugin
+{
+    public void SetProxy(StoryValueResult result)
+    {
+        m_Proxy = result;
+    }
+    public ISimpleStoryValuePlugin Clone()
+    {
+        return new AiGetSkill();
+    }
+    public void Evaluate(StoryInstance instance, StoryValueParams _params)
+    {
+        Scene scene = instance.Context as Scene;
+        if (null != scene) {
+            ArrayList args = _params.Values;
+            int objId = (int)args[0];
+            int index = (int)System.Convert.ChangeType(args[1], typeof(int));
+            EntityInfo npc = scene.GetEntityById(objId);
+            if (null != npc) {
+                int skillId = 0;
+                switch (index) {
+                    case 0:
+                        skillId = npc.ConfigData.skill0;
+                        break;
+                    case 1:
+                        skillId = npc.ConfigData.skill1;
+                        break;
+                    case 2:
+                        skillId = npc.ConfigData.skill2;
+                        break;
+                    case 3:
+                        skillId = npc.ConfigData.skill3;
+                        break;
+                    case 4:
+                        skillId = npc.ConfigData.skill4;
+                        break;
+                    case 5:
+                        skillId = npc.ConfigData.skill5;
+                        break;
+                    case 6:
+                        skillId = npc.ConfigData.skill6;
+                        break;
+                    case 7:
+                        skillId = npc.ConfigData.skill7;
+                        break;
+                    case 8:
+                        skillId = npc.ConfigData.skill8;
+                        break;
+                    default:
+                        skillId = 0;
+                        break;
+                }
+                if (skillId > 0) {
+                    SkillInfo skillInfo = npc.GetSkillStateInfo().GetSkillInfoById(skillId);
+                    if (null == skillInfo) {
+                        skillInfo = new SkillInfo(skillId);
+                        npc.GetSkillStateInfo().AddSkill(skillInfo);
+                    }
+                    m_Proxy.Value = skillInfo;
+                } else {
+                    m_Proxy.Value = null;
+                }
+            }
+        }
+    }
+
+    private StoryValueResult m_Proxy = null;
+}

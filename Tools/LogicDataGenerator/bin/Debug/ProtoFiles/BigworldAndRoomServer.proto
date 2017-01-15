@@ -83,21 +83,21 @@ message Msg_LBL_Message
 message Msg_LR_ActiveScene
 {
 	repeated uint64 UserGuids = 1;
-	required int32 RoomID = 2;
-	required int32 SceneID = 3;
+	required int32 RoomId = 2;
+	required int32 SceneId = 3;
 }
 
 message Msg_LR_ChangeScene
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
-	required int32 TargetRoomID = 3;
+	required int32 RoomId = 2;
+	required int32 TargetRoomId = 3;
 }
 
 message Msg_LR_EnterScene
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 	required Msg_LR_RoomUserInfo UserInfo = 3;
 	optional int32 HP = 4;
 	optional int32 MP = 5;
@@ -106,7 +106,7 @@ message Msg_LR_EnterScene
 message Msg_LR_ReclaimItem
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 	required int32 ItemId = 3;
 	required string Model = 4;
 	required string Particle = 5;
@@ -116,7 +116,7 @@ message Msg_LR_ReclaimItem
 message Msg_LR_ReconnectUser
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 }
 
 message Msg_LR_ReplyRegisterRoomServer
@@ -148,13 +148,13 @@ message Msg_LR_RoomUserInfo
 message Msg_LR_UserQuit
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 }
 
 message Msg_LR_UserReLive
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 }
 
 message Msg_LRL_StoryMessage
@@ -182,27 +182,27 @@ message Msg_LRL_StoryMessage
 message Msg_RL_ActiveScene
 {
 	repeated uint64 UserGuids = 1;
-	required int32 SceneID = 2;
+	required int32 SceneId = 2;
 }
 
 message Msg_RL_ActiveSceneResult
 {
 	repeated uint64 UserGuids = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 	required int32 Result = 3;
 }
 
 message Msg_RL_ChangeScene
 {
 	repeated uint64 UserGuids = 1;
-	required int32 SceneID = 2;
+	required int32 SceneId = 2;
 }
 
 message Msg_RL_ChangeSceneResult
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
-	required int32 TargetRoomID = 3;
+	required int32 RoomId = 2;
+	required int32 TargetRoomId = 3;
 	required int32 Result = 4;
 	optional int32 HP = 5;
 	optional int32 MP = 6;
@@ -211,14 +211,14 @@ message Msg_RL_ChangeSceneResult
 message Msg_RL_EnterSceneResult
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 	required int32 Result = 3;
 }
 
 message Msg_RL_PickItem
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 	required int32 ItemId = 3;
 	required string Model = 4;
 	required string Particle = 5;
@@ -249,7 +249,7 @@ message Msg_RL_ReplyReconnectUser
 		Online = 2;
 	}
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 	required int32 Result = 3;
 }
 
@@ -263,7 +263,7 @@ message Msg_RL_RoomServerUpdateInfo
 message Msg_RL_UserDrop
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 	required bool IsBattleEnd = 3;
 }
 
@@ -276,5 +276,5 @@ message Msg_RL_UserLobbyItemInfo
 message Msg_RL_UserQuit
 {
 	required uint64 UserGuid = 1;
-	required int32 RoomID = 2;
+	required int32 RoomId = 2;
 }

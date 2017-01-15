@@ -1,0 +1,39 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "Cs2LuaScript__Plugin";
+
+StoryRegister = {
+	Register = function()
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand(wrapstring("ai_do_normal"), wrapstring("AiDoNormal"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand(wrapstring("ai_cast_skill"), wrapstring("AiCastSkill"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand(wrapstring("ai_chase"), wrapstring("AiChase"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand(wrapstring("ai_keep_away"), wrapstring("AiKeepAway"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand(wrapstring("ai_go_home"), wrapstring("AiGohome"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand(wrapstring("ai_rand_move"), wrapstring("AiRandMove"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue(wrapstring("ai_select_skill_by_distance"), wrapstring("AiSelectSkillByDistance"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue(wrapstring("ai_need_chase"), wrapstring("AiNeedChase"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue(wrapstring("ai_need_keep_away"), wrapstring("AiNeedKeepAway"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue(wrapstring("ai_select_skill"), wrapstring("AiSelectSkill"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue(wrapstring("ai_select_target"), wrapstring("AiSelectTarget"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue(wrapstring("ai_get_skill"), wrapstring("AiGetSkill"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue(wrapstring("ai_get_target"), wrapstring("AiGetTarget"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue(wrapstring("ai_get_skills"), wrapstring("AiGetSkills"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue(wrapstring("ai_get_entities"), wrapstring("AiGetEntities"));
+		Cs2LuaScript.Plugin.Proxy:RegisterStoryValue(wrapstring("select"), wrapstring("AiQuery"));
+	end,
+	cctor = function()
+	end,
+
+	__define_class = function()
+		local static = StoryRegister;
+		local static_fields = nil;
+		local static_props = nil;
+		local static_events = nil;
+
+		return defineclass(nil, "StoryRegister", static, static_fields, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	end,
+};
+
+
+StoryRegister.__define_class();
+

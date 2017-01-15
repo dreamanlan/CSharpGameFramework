@@ -10,6 +10,6 @@ start "lobby" Lobby.exe nostore
 start "datacache" DataCache.exe
 start "userserver" UserServer.exe
 start "roomserver" RoomServer.exe
-start "roomserver" RoomServer.exe 21
+rem start "roomserver" RoomServer.exe 21
 rem start "roomserver" RoomServer.exe 22
 

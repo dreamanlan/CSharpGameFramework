@@ -25,6 +25,13 @@ public class Game : MonoBehaviour
     private int m_LevelId;
     private CameraController m_CameraController;
     private GameObject m_MainCamera = null;
+    private RectTransform m_MainUiRectTransform = null;
+    private Camera m_UiCamera = null;
+
+    void Awake()
+    {
+        Cs2LuaAssembly.Instance.Init();
+    }
     void Start()
     {
         try {
@@ -57,7 +64,7 @@ public class Game : MonoBehaviour
 #else
             GlobalVariables.Instance.IsDevice = false;
             if (Application.isEditor && !GlobalVariables.Instance.IsPublish)
-                GameControler.Init(tempPath, streamingAssetsPath);
+                GameControler.Init(".", streamingAssetsPath);
             else
                 GameControler.Init(dataPath, streamingAssetsPath);
 #endif
@@ -79,7 +86,8 @@ public class Game : MonoBehaviour
         yield return null;
         //4、切换到第一个场景
         SpriteManager.Init();
-        ClientModule.Instance.ChangeScene(1);
+        LoadingManager.Instance.Init();
+        PluginFramework.Instance.ChangeScene(1);
     }
     
     void Update()
@@ -89,18 +97,28 @@ public class Game : MonoBehaviour
 
         if (Input.GetMouseButtonDown((int)MouseButton.LEFT)) {
             GameObject storyDlg = GameObject.Find("StoryDlg");
+            if (null == m_MainUiRectTransform) {
+                GameObject mainUi = GameObject.Find("MainUI");
+                if (null != mainUi) {
+                    m_UiCamera = mainUi.GetComponent<Canvas>().worldCamera;
+                }
+                GameObject mainPanel = GameObject.Find("MainUI/Panel");
+                if (null != mainPanel) {
+                    m_MainUiRectTransform = mainPanel.transform as RectTransform;
+                }
+            }
             if (null == storyDlg || !storyDlg.activeSelf) {
                 Vector3 screenPos = Input.mousePosition;
-                if (!BattleTopMenuManager.Instance.IsOn(screenPos) && !SkillBarManager.Instance.IsOn(screenPos)) {
+                if (!IsPointOnMainUI(screenPos)) {
                     Ray ray = Camera.main.ScreenPointToRay(screenPos);
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, 100, (1 << LayerMask.NameToLayer("Terrain")) | (1 << LayerMask.NameToLayer("Default")))) {
-                        int objId = ClientModule.Instance.GetGameObjectId(hit.collider.gameObject);
+                        int objId = PluginFramework.Instance.GetGameObjectId(hit.collider.gameObject);
                         if (objId > 0) {
-                            ClientModule.Instance.ClickNpc(objId);
+                            PluginFramework.Instance.ClickNpc(objId);
                         } else {
                             Vector3 pos = hit.point;
-                            ClientModule.Instance.MoveTo(pos.x, pos.y, pos.z);
+                            PluginFramework.Instance.MoveTo(pos.x, pos.y, pos.z);
                         }
                     }
                 }
@@ -129,6 +147,7 @@ public class Game : MonoBehaviour
 
     void OnApplicationQuit()
     {
+        LoadingManager.Instance.Release();
         GameControler.Release();
     }
         
@@ -141,27 +160,30 @@ public class Game : MonoBehaviour
             if (null != cameraObj) {
                 cameraObj.transform.parent = Camera.main.transform;
             }
+            TopMenuManager.Instance.Init();
             HighlightPromptManager.Instance.Init();
-            BattleTopMenuManager.Instance.Init();
-            SkillBarManager.Instance.Init(cameraObj);
             OverHeadBarManager.Instance.Init();
         }
         m_CameraController = new CameraController(Camera.main);
     }
-
+    
     private IEnumerator LoadLevel(TableConfig.Level lvl)
     {
+        LoadingManager.Instance.Show();
+        TopMenuManager.Instance.Release();
         HighlightPromptManager.Instance.Release();
-        BattleTopMenuManager.Instance.Release();
-        SkillBarManager.Instance.Release();
         OverHeadBarManager.Instance.Release();
         m_CameraController = null;
         yield return null;
+        LoadingManager.Instance.SetProgress(0.1f);
         yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Loading");
+        LoadingManager.Instance.SetProgress(0.2f);
         yield return Resources.UnloadUnusedAssets();
-        yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(lvl.prefab);
-        ClientModule.Instance.OnSceneLoaded(lvl);
-        Utility.EventSystem.Publish("loading_complete","ui",null);
+        LoadingManager.Instance.SetProgress(0.3f);
+        var asyncOper = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(lvl.prefab);
+        LoadingManager.Instance.SetAsync(asyncOper, 0.3f, 0.7f);
+        yield return asyncOper;
+        PluginFramework.Instance.OnSceneLoaded(lvl);
     }
 
     private void OnLoadMainUiComplete(int levelId)
@@ -215,6 +237,15 @@ public class Game : MonoBehaviour
                 }
             }
         }
+    }
+
+    private bool IsPointOnMainUI(Vector3 pos)
+    {
+        if (null != m_MainUiRectTransform) {
+            if (RectTransformUtility.RectangleContainsScreenPoint(m_MainUiRectTransform, new Vector2(pos.x, pos.y), m_UiCamera))
+                return true;
+        }
+        return false;
     }
 
 #if UNITY_ANDROID || UNITY_IPHONE     
@@ -290,7 +321,7 @@ public class Game : MonoBehaviour
             int objId = (int)fargs[0];
             int skillId = (int)fargs[1];
 
-            bool bSuccess = ClientModule.Instance.CastSkill(objId, skillId);
+            bool bSuccess = PluginFramework.Instance.CastSkill(objId, skillId);
             if (bSuccess) {
             }
         }

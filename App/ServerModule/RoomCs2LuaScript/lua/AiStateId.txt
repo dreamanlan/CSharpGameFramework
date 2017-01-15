@@ -1,0 +1,7 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+
+AiStateId = {
+	Combat = 101,
+	Gohome = 102,
+};

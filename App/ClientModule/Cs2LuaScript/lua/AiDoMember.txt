@@ -1,0 +1,190 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+require "AiLogicUtility";
+require "AiCommand";
+
+AiDoMember = {
+	__new_object = function(...)
+		return newobject(AiDoMember, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = AiDoMember;
+
+		local static_methods = {
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+				c_IntervalTime = 200,
+			};
+			return static_fields;
+		end;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			Clone = function(this)
+				return newobject(AiDoMember, "ctor", {});
+			end,
+			ResetState = function(this)
+				this.m_ParamReaded = false;
+				this.m_EnableLearning = false;
+			end,
+			ExecCommand = function(this, instance, _params, delta)
+				local args; args = _params.Values;
+				if (not this.m_ParamReaded) then
+					this.m_ParamReaded = true;
+					this.m_ObjId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32, false);
+					if (args.Count > 1) then
+						this.m_EnableLearning = (typecast(getexterninstanceindexer(args, nil, "get_Item", 1), System.Int32, false) ~= 0);
+					end;
+				end;
+				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
+				if ((nil ~= npc) and (not npc:IsUnderControl())) then
+					local info; info = npc:GetAiStateInfo();
+					local __compiler_switch_37 = info.CurState;
+					if __compiler_switch_37 == 1 then
+						info:ChangeToState(101);
+						return true;
+					elseif __compiler_switch_37 == 101 then
+						return this:CombatHandler(npc, info, delta);
+					elseif __compiler_switch_37 == 102 then
+						return this:GohomeHandler(npc, info, delta);
+					end;
+				end;
+				return false;
+			end,
+			CombatHandler = function(this, npc, info, deltaTime)
+				if npc:GetSkillStateInfo():IsSkillActivated() then
+					return true;
+				end;
+				local leader; leader = AiLogicUtility.GetLivingCharacterInfoHelper(npc, info.LeaderID);
+				local srcPos; srcPos = npc:GetMovementStateInfo():GetPosition3D();
+				local homePos; homePos = ScriptRuntime.Vector3.Zero;
+				if (nil ~= leader) then
+					homePos = this:GetHomePos(npc:GetMovementStateInfo().FormationIndex, leader);
+				end;
+				local distSqrToHome; distSqrToHome = GameFramework.Geometry.DistanceSquare(srcPos, homePos);
+				if (distSqrToHome > (npc.GohomeRange * npc.GohomeRange)) then
+					AiCommand.AiStopPursue(npc);
+					info:ChangeToState(102);
+					return true;
+				end;
+				local attackTarget; attackTarget = nil;
+				local currSkInfo; currSkInfo = npc:GetSkillStateInfo();
+				local skInfo; skInfo = AiLogicUtility.NpcFindCanUseSkill(npc);
+				AiCommand.AiSelectSkill(npc, skInfo);
+				if (skInfo == nil) then
+--没有可以使用的技能就切换到Idle状态
+					info:ChangeToState(1);
+					return false;
+				end;
+				local relation; relation = condexp(( ((skInfo.TargetType == 2) or (skInfo.TargetType == 4)) ), true, 1, true, 0);
+				attackTarget = AiLogicUtility.GetNearstTargetHelper__GameFramework_EntityInfo__System_Single__GameFramework_CharacterRelation(npc, skInfo.Distance, relation);
+				if ((attackTarget ~= nil) and (nil ~= skInfo)) then
+					info.Target = attackTarget:GetId();
+					AiCommand.AiStopPursue(npc);
+					AiCommand.AiSkill(npc, skInfo.SkillId);
+--攻击目标
+					return true;
+--攻击范围内找到可攻击目标            
+				end;
+				attackTarget = AiLogicUtility.GetNearstTargetHelper__GameFramework_EntityInfo__System_Single__GameFramework_CharacterRelation(npc, npc.ViewRange, relation);
+				if (attackTarget ~= nil) then
+					AiCommand.AiPursue(npc, attackTarget:GetMovementStateInfo():GetPosition3D());
+-- 追赶目标
+					return true;
+--视野范围内找到可攻击目标
+				end;
+				currSkInfo:SetCurSkillInfo(0);
+				AiCommand.AiStopPursue(npc);
+				info:ChangeToState(102);
+				return true;
+			end,
+			GohomeHandler = function(this, entity, info, deltaTime)
+				info.Time = (info.Time + deltaTime);
+				if (info.Time > 200) then
+					info.Time = 0;
+					local leader; leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderID);
+					if (nil ~= leader) then
+						local minDist; minDist = (entity:GetRadius() + leader:GetRadius());
+						local targetPos; targetPos = this:GetHomePos(entity:GetMovementStateInfo().FormationIndex, leader);
+						local srcPos; srcPos = entity:GetMovementStateInfo():GetPosition3D();
+						local powDistToHome; powDistToHome = GameFramework.Geometry.DistanceSquare(srcPos, targetPos);
+						if (powDistToHome <= (( (minDist + 1) ) * ( (minDist + 1) ))) then
+							AiCommand.AiStopPursue(entity);
+							info:ChangeToState(1);
+							return false;
+						else
+							AiCommand.AiPursue(entity, targetPos);
+						end;
+					else
+						AiCommand.AiStopPursue(entity);
+						info:ChangeToState(1);
+						return false;
+					end;
+				end;
+				return true;
+			end,
+			GetFormationId = function(this, leader)
+				local ret; ret = 0;
+				if (nil ~= leader) then
+					ret = leader:GetAiStateInfo().FormationId;
+				end;
+				return ret;
+			end,
+			GetHomePos = function(this, formationIndex, leader)
+				local pos;
+				local id; id = this:GetFormationId(leader);
+				local formation; formation = TableConfig.FormationProvider.Instance:GetFormation(id);
+				if (nil ~= formation) then
+					local posDir; posDir = formation:GetPosDir(formationIndex);
+					local dir;
+					pos, dir = posDir:CalcPosDir(leader:GetMovementStateInfo().TargetPosition, leader:GetMovementStateInfo():GetFaceDir(), __cs2lua_out);
+				else
+					pos = ScriptRuntime.Vector3.Zero;
+				end;
+				return pos;
+			end,
+			IsLeaderDead = function(this, entity)
+				local ret; ret = true;
+				local info; info = entity:GetAiStateInfo();
+				local leader; leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderID);
+				if (nil ~= leader) then
+					ret = leader:IsDead();
+				end;
+				return ret;
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_fields_build = function()
+			local instance_fields = {
+				m_ObjId = 0,
+				m_EnableLearning = false,
+				m_ParamReaded = false,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"GameFramework.Plugin.ISimpleStoryCommandPlugin",
+		};
+
+		local interface_map = {
+			ISimpleStoryCommandPlugin_Clone = "Clone",
+			ISimpleStoryCommandPlugin_ResetState = "ResetState",
+			ISimpleStoryCommandPlugin_ExecCommand = "ExecCommand",
+		};
+
+
+		return defineclass(nil, "AiDoMember", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+AiDoMember.__define_class();

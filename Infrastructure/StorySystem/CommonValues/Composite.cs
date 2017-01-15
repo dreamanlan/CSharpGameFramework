@@ -79,8 +79,12 @@ namespace StorySystem.CommonValues
             //实参处理完，进入函数体执行，创建新的栈
             PushStack(instance, stackInfo);
             try {
-                for (int i = 0; i < m_ArgNames.Count && i < stackInfo.m_Args.Count; ++i) {
-                    instance.SetVariable(m_ArgNames[i], stackInfo.m_Args[i].Value);
+                for (int i = 0; i < m_ArgNames.Count; ++i) {
+                    if (i < stackInfo.m_Args.Count) {
+                        instance.SetVariable(m_ArgNames[i], stackInfo.m_Args[i].Value);
+                    } else {
+                        instance.SetVariable(m_ArgNames[i], null);
+                    }
                 }
                 Prepare(stackInfo);
                 stackInfo.m_HaveValue = true;

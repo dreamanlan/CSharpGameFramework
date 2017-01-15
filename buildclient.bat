@@ -67,7 +67,7 @@ if NOT %ERRORLEVEL% EQU 0 (
 
 echo [client]: generate *mdb debug files for mono
 
-pushd %workdir%\App\ClientModule\bin\%cfg%
+pushd %workdir%\App\ClientModule\PluginFramework\bin\%cfg%
 for /r %%i in (*.pdb) do (
   %pdb2mdb% %%~dpni.dll
 )
@@ -76,8 +76,8 @@ echo done. & echo.
 
 rem copy dll to unity3d's plugin directory
 echo "update binaries"
-xcopy %workdir%\App\ClientModule\bin\%cfg%\*.dll %plugindir% /y /q
-xcopy %workdir%\App\ClientModule\bin\%cfg%\*.mdb %plugindir% /y /q
+xcopy %workdir%\App\ClientModule\PluginFramework\bin\%cfg%\*.dll %plugindir% /y /q
+xcopy %workdir%\App\ClientModule\PluginFramework\bin\%cfg%\*.mdb %plugindir% /y /q
 del /a /f %plugindir%\Library.dll
 del /a /f %plugindir%\UnityEngine.dll
 del /a /f %plugindir%\UnityEngine.UI.dll

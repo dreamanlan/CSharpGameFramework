@@ -139,8 +139,8 @@ namespace Lobby
                         RequestEnterSceneRoom(info, roomId, 0, 0, enterX, enterY);
                     }
                 } else {
-                    RoomInfo roomInfo = m_LobbyInfo.GetRoomByID(wantRoomId);
-                    if (null != roomInfo && roomInfo.UserCount < roomInfo.TotalCount) {
+                    RoomInfo roomUserMgr = m_LobbyInfo.GetRoomByID(wantRoomId);
+                    if (null != roomUserMgr && roomUserMgr.UserCount < roomUserMgr.TotalCount) {
                         RequestEnterSceneRoom(info, wantRoomId, 0, 0, enterX, enterY);
                     } else {
                         LobbyServer.Instance.HighlightPrompt(info, 42);//进入游戏失败，请稍后重试
@@ -165,8 +165,8 @@ namespace Lobby
                 if (curRoom.RoomId != targetRoom.RoomId && targetRoom.UserCount < targetRoom.TotalCount) {
                     Msg_LR_ChangeScene msg = new Msg_LR_ChangeScene();
                     msg.UserGuid = guid;
-                    msg.RoomID = curRoom.RoomId;
-                    msg.TargetRoomID = targetRoom.RoomId;
+                    msg.RoomId = curRoom.RoomId;
+                    msg.TargetRoomId = targetRoom.RoomId;
 
                     LobbyServer.Instance.RoomSvrChannel.Send(curRoom.RoomServerName, msg);
                 } else {
@@ -186,7 +186,7 @@ namespace Lobby
                     if (null != room) {
                         Msg_LR_UserQuit msg = new Msg_LR_UserQuit();
                         msg.UserGuid = guid;
-                        msg.RoomID = room.RoomId;
+                        msg.RoomId = room.RoomId;
                         LobbyServer.Instance.RoomSvrChannel.Send(room.RoomServerName, msg);
                     }
                 } else if (null != user.Room) {
@@ -215,7 +215,7 @@ namespace Lobby
                 if (null != room) {
                     Msg_LR_UserReLive resultBuilder = new Msg_LR_UserReLive();
                     resultBuilder.UserGuid = guid;
-                    resultBuilder.RoomID = user.CurrentRoomID;
+                    resultBuilder.RoomId = user.CurrentRoomID;
                     LobbyServer.Instance.RoomSvrChannel.Send(room.RoomServerName, resultBuilder);
 
                     LogSys.Log(LOG_TYPE.INFO, "BuyLife Guid {0}", guid);
@@ -229,7 +229,7 @@ namespace Lobby
                 if (null != user.Room) {
                     Msg_LR_UserQuit msg = new Msg_LR_UserQuit();
                     msg.UserGuid = guid;
-                    msg.RoomID = user.Room.RoomId;
+                    msg.RoomId = user.Room.RoomId;
                     LobbyServer.Instance.RoomSvrChannel.Send(user.Room.RoomServerName, msg);
 
                     Msg_BL_UserOffline builder = new Msg_BL_UserOffline();
@@ -250,7 +250,7 @@ namespace Lobby
                         //向RoomServer发送消息，重新进入房间
                         Msg_LR_ReconnectUser urBuilder = new Msg_LR_ReconnectUser();
                         urBuilder.UserGuid = guid;
-                        urBuilder.RoomID = user.CurrentRoomID;
+                        urBuilder.RoomId = user.CurrentRoomID;
                         LobbyServer.Instance.RoomSvrChannel.Send(room.RoomServerName, urBuilder);
 
                         LogSys.Log(LOG_TYPE.INFO, "User Restart GameClient , guid:{0}", guid);
@@ -354,8 +354,8 @@ namespace Lobby
                             if (curRoom.RoomId != targetRoom.RoomId) {
                                 Msg_LR_ChangeScene msg = new Msg_LR_ChangeScene();
                                 msg.UserGuid = userGuid;
-                                msg.RoomID = curRoom.RoomId;
-                                msg.TargetRoomID = targetRoom.RoomId;
+                                msg.RoomId = curRoom.RoomId;
+                                msg.TargetRoomId = targetRoom.RoomId;
 
                                 LobbyServer.Instance.RoomSvrChannel.Send(curRoom.RoomServerName, msg);
                                 LogSys.Log(LOG_TYPE.INFO, "User change field ! , guid:{0} room:{1} target room:{2}", userGuid, curRoom.RoomId, targetRoom.RoomId);
@@ -417,14 +417,14 @@ namespace Lobby
                 LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
             }
         }
-        internal void OnActiveScene(List<ulong> guids, int sceneID)
+        internal void OnActiveScene(List<ulong> guids, int sceneId)
         {
             Msg_LR_ActiveScene msg = new Msg_LR_ActiveScene();
             msg.UserGuids.AddRange(guids);
-            msg.RoomID = m_LobbyInfo.CreateAutoRoom(guids.ToArray(), sceneID);
-            msg.SceneID = sceneID;
+            msg.RoomId = m_LobbyInfo.CreateAutoRoom(guids.ToArray(), sceneId);
+            msg.SceneId = sceneId;
 
-            RoomInfo room = m_LobbyInfo.GetRoomByID(msg.RoomID);
+            RoomInfo room = m_LobbyInfo.GetRoomByID(msg.RoomId);
             if (null != room) {
                 LobbyServer.Instance.RoomSvrChannel.Send(room.RoomServerName, msg);
             }
@@ -506,7 +506,7 @@ namespace Lobby
                 if (null != oldRoom && oldRoom != curRoom) {
                     Msg_LR_UserQuit msg = new Msg_LR_UserQuit();
                     msg.UserGuid = guid;
-                    msg.RoomID = roomid;
+                    msg.RoomId = roomid;
                     LobbyServer.Instance.RoomSvrChannel.Send(oldRoom.RoomServerName, msg);
                 }
                 LobbyServer.Instance.ForwardToWorld(user.UserSvrName, originalMsg);
@@ -517,7 +517,7 @@ namespace Lobby
                 if (null != oldRoom) {
                     Msg_LR_UserQuit msg = new Msg_LR_UserQuit();
                     msg.UserGuid = guid;
-                    msg.RoomID = roomid;
+                    msg.RoomId = roomid;
                     LobbyServer.Instance.RoomSvrChannel.Send(oldRoom.RoomServerName, msg);
                 }
 
@@ -560,7 +560,7 @@ namespace Lobby
             UserInfo user = dataProcess.GetUserInfo(msg.UserGuid);
             if (user != null && null != user.Room) {
                 RoomInfo room = user.Room;
-                if (room.RoomId == msg.RoomID) {
+                if (room.RoomId == msg.RoomId) {
                     msg.RoomSvrName = room.RoomServerName;
                     LobbyServer.Instance.ForwardToWorld(user.UserSvrName, msg);
                 }
@@ -578,7 +578,7 @@ namespace Lobby
                 room.AddUsers(campId, info.Guid);
                 Msg_LR_EnterScene enterSceneMsg = new Msg_LR_EnterScene();
                 enterSceneMsg.UserGuid = info.Guid;
-                enterSceneMsg.RoomID = roomId;
+                enterSceneMsg.RoomId = roomId;
 
                 Msg_LR_RoomUserInfo ruiBuilder = info.RoomUserInfo;
                 ruiBuilder.Key = info.Key;

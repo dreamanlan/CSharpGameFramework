@@ -84,7 +84,7 @@ public class CameraController
 
         if (followTargetId > 0)
         {
-            GameObject obj = ClientModule.Instance.GetGameObject(followTargetId);
+            GameObject obj = PluginFramework.Instance.GetGameObject(followTargetId);
             if (null != obj)
             {
                 followPose.pos = obj.transform.position + Vector3.up * cameraSetting.up - camera.transform.rotation * Vector3.forward * cameraSetting.distance;

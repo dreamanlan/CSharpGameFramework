@@ -1,0 +1,63 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "HandlerRegister";
+require "SkillTriggerRegister";
+require "StoryRegister";
+
+Startup = {
+	cctor = function()
+	end,
+
+	__new_object = function(...)
+		return newobject(Startup, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = Startup;
+		local static_fields = nil;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			Start = function(this, obj, behaviour)
+				HandlerRegister.Register();
+				SkillTriggerRegister.Register();
+				StoryRegister.Register();
+				behaviour:StartCoroutine(this:Tick());
+			end,
+			Call = function(this, name, ...)
+				local args = wraparray{...};
+				HandlerRegister.Call(name, unpack(args));
+			end,
+			Tick = wrapenumerable(function(this)
+				wrapyield(newexternobject(UnityEngine.WaitForSeconds, "UnityEngine.WaitForSeconds", "ctor", nil, {}, 10), false, true);
+				UnityEngine.Debug.Log(wrapstring("tick after start 10 seconds."));
+				wrapyield(nil, false, false);
+			end),
+			ctor = function(this)
+			end,
+		};
+
+		local instance_build = function()
+			local instance_fields = {
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"IStartupPlugin",
+		};
+
+		local interface_map = {
+			IStartupPlugin_Start = "Start",
+			IStartupPlugin_Call = "Call",
+		};
+
+
+		return defineclass(nil, "Startup", static, static_fields, static_props, static_events, instance_methods, instance_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+
+Startup.__define_class();
+

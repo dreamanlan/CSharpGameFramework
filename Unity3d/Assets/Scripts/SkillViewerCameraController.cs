@@ -94,7 +94,7 @@ public class SkillViewerCameraController
         
         if (followTargetId > 0)
         {
-            GameObject obj = ClientModule.Instance.GetGameObject(followTargetId);
+            GameObject obj = PluginFramework.Instance.GetGameObject(followTargetId);
             if (null != obj)
             {
                 if (cameraSetting.yaw > 180.0f) 

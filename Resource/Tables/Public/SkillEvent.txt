@@ -1,0 +1,4 @@
+int32	int32	int32	int32	int32	string	string	int32	string	int32	string	int32	string	int32	string	int32	string	int32	string	int32	string	int32	string
+actorId	skillId	eventId	triggerBuffId	triggerSkillId	proc	desc	param1	desc1	param2	desc2	param3	desc3	param4	desc4	param5	desc5	param6	desc6	param7	desc7	param8	desc8
+//Actor表的ID	技能ID	事件ID	触发buff ID	触发技能ID	过程	过程说明	参数1	参数说明1	参数2	参数说明2	参数3	参数说明3	参数4	参数说明4	参数5	参数说明5	参数6	参数说明6	参数7	参数说明7	参数8	参数说明8
+//																						

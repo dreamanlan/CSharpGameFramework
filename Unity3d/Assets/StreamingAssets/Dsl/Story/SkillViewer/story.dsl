@@ -13,6 +13,7 @@ story(story_main)
   {    
     preload();
     wait(1000);
+    publishgfxevent("loading_complete", "ui");
     log("scene2");
     
     @myNpcPos = vector3(5,0,7);
@@ -33,9 +34,9 @@ story(story_main)
     destroynpc(1);
     wait(1000);
 
-    createnpc(1,vector3(0,0,0),0.785,4,@targetLinkId,0,stringlist(""));
+    createnpc(1,vector3(0,0,0),0.785,4,@targetLinkId);
     sethp(unitid2objid(1),99999999);
-    createnpc(1000,@myNpcPos,@myNpcDir,3,@leaderLinkId,1,stringlist("skill_viewer Ai/ailogic_skill_viewer.dsl"));
+    createnpc(1000,@myNpcPos,@myNpcDir,3,@leaderLinkId,"skill_viewer",stringlist("Ai/ailogic_skill_viewer.dsl"));
     @leaderObjId=unitid2objid(1000);
     setleaderid(@leaderObjId);
     npcsetformation(1000,12);

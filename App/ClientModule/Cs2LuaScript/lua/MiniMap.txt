@@ -1,0 +1,82 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+
+MiniMap = {
+	__new_object = function(...)
+		return newobject(MiniMap, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = MiniMap;
+
+		local static_methods = {
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+			};
+			return static_fields;
+		end;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			Init = function(this, obj, behaviour)
+				local rectTrans; rectTrans = typeas(obj.transform, UnityEngine.RectTransform, false);
+				this.m_RawImage = obj:GetComponent(UnityEngine.UI.RawImage);
+				this.m_MapPlayer = obj.transform:FindChild("Player");
+				this.m_MapWidth = typecast(rectTrans.rect.width, System.Int32, false);
+				this.m_MapHeight = typecast(rectTrans.rect.height, System.Int32, false);
+				this.m_TerrainWidth = typecast(UnityEngine.Terrain.activeTerrain.terrainData.size.x, System.Int32, false);
+				this.m_TerrainHeight = typecast(UnityEngine.Terrain.activeTerrain.terrainData.size.z, System.Int32, false);
+			end,
+			Update = function(this)
+				if invokeexternoperator(UnityEngine.Object, "op_Equality", nil, this.m_GamePlayer) then
+					this.m_GamePlayer = GameFramework.PluginFramework.Instance:GetGameObject(GameFramework.PluginFramework.Instance.LeaderID);
+				else
+					local pos; pos = this.m_GamePlayer.transform.position;
+					local x; x = (((pos.x * this.m_MapWidth) / this.m_TerrainWidth) - (this.m_MapWidth / 2));
+					local y; y = (((pos.z * this.m_MapHeight) / this.m_TerrainHeight) - (this.m_MapHeight / 2));
+					local rect; rect = typeas(this.m_MapPlayer.transform, UnityEngine.RectTransform, false);
+					rect.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, {}, x, y, 0);
+				end;
+			end,
+			Call = function(this, name, ...)
+				local args = wraparray{...};
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_fields_build = function()
+			local instance_fields = {
+				m_RawImage = __cs2lua_nil_field_value,
+				m_MapWidth = 100,
+				m_MapHeight = 100,
+				m_TerrainWidth = 512,
+				m_TerrainHeight = 512,
+				m_MapPlayer = __cs2lua_nil_field_value,
+				m_GamePlayer = __cs2lua_nil_field_value,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"ITickPlugin",
+		};
+
+		local interface_map = {
+			ITickPlugin_Init = "Init",
+			ITickPlugin_Update = "Update",
+			ITickPlugin_Call = "Call",
+		};
+
+
+		return defineclass(nil, "MiniMap", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+MiniMap.__define_class();

@@ -60,7 +60,7 @@ public class SkillViewer : MonoBehaviour
         GameControler.Init(tempPath, streamingAssetsPath);        
         GameControler.InitGame(false);
         SpriteManager.Init();
-        ClientModule.Instance.ChangeScene(2);
+        PluginFramework.Instance.ChangeScene(2);
     }
 
     void OnDestroy()
@@ -85,16 +85,16 @@ public class SkillViewer : MonoBehaviour
             GameObject storyDlg = GameObject.Find("StoryDlg");
             if (null == storyDlg || !storyDlg.activeSelf) {
                 Vector3 screenPos = Input.mousePosition;
-                if (!BattleTopMenuManager.Instance.IsOn(screenPos) && !SkillBarManager.Instance.IsOn(screenPos)) {
+                if (!SkillBarManager.Instance.IsOn(screenPos)) {
                     Ray ray = Camera.main.ScreenPointToRay(screenPos);
                     RaycastHit hit;
                     if (Physics.Raycast(ray, out hit, 100, (1 << LayerMask.NameToLayer("Terrain")) | (1 << LayerMask.NameToLayer("Default")))) {
-                        int objId = ClientModule.Instance.GetGameObjectId(hit.collider.gameObject);
+                        int objId = PluginFramework.Instance.GetGameObjectId(hit.collider.gameObject);
                         if (objId > 0) {
-                            ClientModule.Instance.ClickNpc(objId);
+                            PluginFramework.Instance.ClickNpc(objId);
                         } else {
                             Vector3 pos = hit.point;
-                            ClientModule.Instance.MoveTo(pos.x, pos.y, pos.z);
+                            PluginFramework.Instance.MoveTo(pos.x, pos.y, pos.z);
                         }
                     }
                 }
@@ -125,7 +125,7 @@ public class SkillViewer : MonoBehaviour
 
     private IEnumerator LoadLevel(TableConfig.Level lvl)
     {
-        ClientModule.Instance.OnSceneLoaded(lvl);
+        PluginFramework.Instance.OnSceneLoaded(lvl);
         yield return null;
     }
 
@@ -201,7 +201,7 @@ public class SkillViewer : MonoBehaviour
             int objId = (int)fargs[0];
             int skillId = (int)fargs[1];
             
-            bool bSuccess = ClientModule.Instance.CastSkill(objId, skillId);
+            bool bSuccess = PluginFramework.Instance.CastSkill(objId, skillId);
             if (bSuccess) {
                 if (s_IsStepPlay) {
                     s_NeedStep = true;
@@ -224,7 +224,7 @@ public class SkillViewer : MonoBehaviour
                 SaveEditedSkills(HomePath.GetAbsolutePath("../../../edit_skills_bak.txt"));
                 CopyTableAndDslFiles();
                 m_CameraController.OnLevelWasLoaded(null);
-                ClientModule.LoadTableConfig();       
+                PluginFramework.LoadTableConfig();       
                 PredefinedSkill.Instance.ReBuild();
                 GfxSkillSystem.Instance.Reset();
                 GfxSkillSystem.Instance.ClearSkillInstancePool();
@@ -281,7 +281,7 @@ public class SkillViewer : MonoBehaviour
         if (UnityEditor.EditorUtility.DisplayDialog("关键信息", "加载或创建英雄技能数据将覆盖正在编辑的数据，继续吗？（如果之前的数据没有保存到表格文件里，请利用剪贴板拷到表格文件！）", "我确定要继续", "不要继续，我还没保存呢")) {
             SaveEditedSkills(HomePath.GetAbsolutePath("../../../edit_skills_bak.txt"));
 
-            ClientModule.LoadTableConfig();
+            PluginFramework.LoadTableConfig();
             PredefinedSkill.Instance.ReBuild();
             GfxSkillSystem.Instance.Reset();
             GfxSkillSystem.Instance.ClearSkillInstancePool();
@@ -325,7 +325,7 @@ public class SkillViewer : MonoBehaviour
         SaveEditedSkills(HomePath.GetAbsolutePath("../../../edit_skills_bak.txt"));        
         CopyTableAndDslFiles();
 
-        ClientModule.LoadTableConfig();
+        PluginFramework.LoadTableConfig();
         PredefinedSkill.Instance.ReBuild();
         GfxSkillSystem.Instance.Reset();
         GfxSkillSystem.Instance.ClearSkillInstancePool();
@@ -448,10 +448,6 @@ public class SkillViewer : MonoBehaviour
                 foreach (SkillRecords.SkillRecord record in skillRecords.records) {
                     sb.AppendLine(record.GetSkillClipboardText());
                 }
-                sb.AppendLine("//========skillDsls========");
-                foreach (SkillRecords.SkillRecord record in skillRecords.records) {
-                    sb.AppendLine(record.GetSkillDslClipboardText());
-                }
                 sb.AppendLine("//========skillResources========");
                 foreach (SkillRecords.SkillRecord record in skillRecords.records) {
                     sb.AppendLine(record.GetSkillResourcesClipboardText());
@@ -477,7 +473,6 @@ public class SkillViewer : MonoBehaviour
 
         record.id = skillId;
         record.type = (int)SkillOrImpactType.Skill;
-        record.dslSkillId = record.id;
         record.dslFile = string.Empty;
 
         TableConfig.Skill skillInfo = TableConfig.SkillProvider.Instance.GetSkill(skillId);
@@ -526,7 +521,7 @@ public class SkillViewer : MonoBehaviour
         if (null != args && args.Length >= 4) {
             GfxSkillSenderInfo info = args[0] as GfxSkillSenderInfo;
             if (null != info) {
-                if (ClientModule.Instance.IsLocalSkillEffect(info)) {
+                if (PluginFramework.Instance.IsLocalSkillEffect(info)) {
                     m_CameraController.Shake(float.Parse(args[1] as string), float.Parse(args[2] as string), float.Parse(args[3] as string));
                 }
             }

@@ -1,9 +1,0 @@
-D:\work\Client\CsLibrary\ClientConfig\bin\x86\Debug\ClientConfig.dll
-D:\work\Client\CsLibrary\ClientConfig\bin\x86\Debug\ClientConfig.pdb
-D:\work\Client\CsLibrary\ClientConfig\bin\x86\Debug\Common.dll
-D:\work\Client\CsLibrary\ClientConfig\bin\x86\Debug\protobuf-net.dll
-D:\work\Client\CsLibrary\ClientConfig\bin\x86\Debug\ScriptFrameworkLibrary.dll
-D:\work\Client\CsLibrary\ClientConfig\bin\x86\Debug\Common.pdb
-D:\work\Client\CsLibrary\ClientConfig\obj\x86\Debug\ClientConfig.csprojResolveAssemblyReference.cache
-D:\work\Client\CsLibrary\ClientConfig\obj\x86\Debug\ClientConfig.dll
-D:\work\Client\CsLibrary\ClientConfig\obj\x86\Debug\ClientConfig.pdb

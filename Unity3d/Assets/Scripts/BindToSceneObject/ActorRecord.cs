@@ -29,14 +29,6 @@ public class ActorRecord : MonoBehaviour
     public float speed = 10;
     public float viewrange = 20;
     public float gohomerange = 20;
-    public int hp = 10000;
-    public int mp = 1000000;
-    public int attack = 100;
-    public int defence = 100;
-    public int addhp = 1000;
-    public int addmp = 1000;
-    public int addattack = 10;
-    public int adddefence = 10;
     [HideInInspector]
     public string avatarFilter = string.Empty;
 
@@ -64,14 +56,6 @@ public class ActorRecord : MonoBehaviour
         speed = 10;
         viewrange = 20;
         gohomerange = 20;
-        hp = 10000;
-        mp = 1000000;
-        attack = 100;
-        defence = 100;
-        addhp = 1000;
-        addmp = 1000;
-        addattack = 10;
-        adddefence = 10;
         avatarFilter = string.Empty;
     }
     public void CopyFrom(TableConfig.Actor actor)
@@ -98,14 +82,6 @@ public class ActorRecord : MonoBehaviour
         speed = actor.speed;
         viewrange = actor.viewrange;
         gohomerange = actor.gohomerange;
-        hp = actor.hp;
-        mp = actor.mp;
-        attack = actor.attack;
-        defence = actor.defence;
-        addhp = actor.addhp;
-        addmp = actor.addmp;
-        addattack = actor.addattack;
-        adddefence = actor.adddefence;
     }
     public void CopyTo(TableConfig.Actor actor)
     {
@@ -131,17 +107,9 @@ public class ActorRecord : MonoBehaviour
         actor.speed = speed;
         actor.viewrange = viewrange;
         actor.gohomerange = gohomerange;
-        actor.hp = hp;
-        actor.mp = mp;
-        actor.attack = attack;
-        actor.defence = defence;
-        actor.addhp = addhp;
-        actor.addmp = addmp;
-        actor.addattack = addattack;
-        actor.adddefence = adddefence;
     }
     public string GetClipboardText()
     {
-        return string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}\t{22}\t{23}\t{24}\t{25}\t{26}\t{27}\t{28}\t{29}", id, name, icon, bigIcon, type, avatar, skill0, skill1, skill2, skill3, skill4, skill5, skill6, skill7, skill8, bornskill, deadskill, size, logicsize, speed, viewrange, gohomerange, hp, mp, attack, defence, addhp, addmp, addattack, adddefence);
+        return string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}", id, name, icon, bigIcon, type, avatar, skill0, skill1, skill2, skill3, skill4, skill5, skill6, skill7, skill8, bornskill, deadskill, size, logicsize, speed, viewrange, gohomerange);
     }
 }

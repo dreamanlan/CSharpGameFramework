@@ -91,6 +91,44 @@ namespace GameFramework
         {
             return IsSameFloat(p1.X, p2.X) && IsSameFloat(p1.Z, p2.Z);
         }
+        public static Vector2 GetBezierPoint(Vector2 p0, Vector2 p1, Vector2 p2, float t)
+        {
+            t = MathHelper.Clamp(t, 0, 1);
+            float num = 1f - t;
+            return (Vector2)((((num * num) * p0) + (((2f * num) * t) * p1)) + ((t * t) * p2));
+        }
+        public static Vector2 GetBezierPoint(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t)
+        {
+            t = MathHelper.Clamp(t, 0, 1);
+            float num = 1f - t;
+            return (Vector2)(num * num * num * p0 + 3 * num * num * t * p1 + 3 * num * t * t * p2 + ((t * t * t) * p3));
+        }
+        public static Vector3 GetBezierPoint(Vector3 p0, Vector3 p1, Vector3 p2, float t)
+        {
+            t = MathHelper.Clamp(t, 0, 1);
+            float num = 1f - t;
+            return (Vector3)((((num * num) * p0) + (((2f * num) * t) * p1)) + ((t * t) * p2));
+        }
+        public static Vector3 GetBezierPoint(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t)
+        {
+            t = MathHelper.Clamp(t, 0, 1);
+            float num = 1f - t;
+            return (Vector3)(num * num * num * p0 + 3 * num * num * t * p1 + 3 * num * t * t * p2 + ((t * t * t) * p3));
+        }
+        public static Vector2 FrontOfTarget(Vector2 from, Vector2 to, float mHitDistance)
+        {
+            Vector2 dir = from - to;
+            dir.Normalize();
+            Vector2 value = to + dir * mHitDistance;
+            return value;
+        }
+        public static Vector3 FrontOfTarget(Vector3 from, Vector3 to, float mHitDistance)
+        {
+            Vector3 dir = from - to;
+            dir.Normalize();
+            Vector3 value = to + dir * mHitDistance;
+            return value;
+        }
     }
     public partial class Geometry
     {

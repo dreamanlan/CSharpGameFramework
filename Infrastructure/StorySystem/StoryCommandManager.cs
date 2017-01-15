@@ -129,12 +129,12 @@ namespace StorySystem
                         command = factory.Create();
                         command.Init(commandConfig);
                     } catch (Exception ex) {
-                        GameFramework.LogSystem.Error("command:{0} line:{1} failed.", commandConfig.ToScriptString(), commandConfig.GetLine());
+                        GameFramework.LogSystem.Error("command:{0} line:{1} failed.", commandConfig.ToScriptString(false), commandConfig.GetLine());
                         throw ex;
                     }
                 } else {
 #if DEBUG
-                    string err = string.Format("CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString());
+                    string err = string.Format("CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString(false));
                     throw new Exception(err);
 #else
                 GameFramework.LogSystem.Error("CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
@@ -144,7 +144,7 @@ namespace StorySystem
                     GameFramework.LogSystem.Debug("CreateCommand, type:{0} command:{1}", type, command.GetType().Name);
                 } else {
 #if DEBUG
-                    string err = string.Format("CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString());
+                    string err = string.Format("CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString(false));
                     throw new Exception(err);
 #else
                 GameFramework.LogSystem.Error("CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
@@ -186,13 +186,15 @@ namespace StorySystem
             RegisterCommandFactory("sleep", new StoryCommandFactoryHelper<CommonCommands.SleepCommand>());
             RegisterCommandFactory("terminate", new StoryCommandFactoryHelper<CommonCommands.TerminateCommand>());
             RegisterCommandFactory("pause", new StoryCommandFactoryHelper<CommonCommands.PauseCommand>());
-            RegisterCommandFactory("localmessage", new StoryCommandFactoryHelper<CommonCommands.LocalMessageCommand>());
+            RegisterCommandFactory("localmessage", new CommonCommands.LocalMessageCommandFactory());
+            RegisterCommandFactory("localconcurrentmessage", new CommonCommands.LocalConcurrentMessageCommandFactory());
             RegisterCommandFactory("clearmessage", new StoryCommandFactoryHelper<CommonCommands.ClearMessageCommand>());
             RegisterCommandFactory("waitlocalmessage", new StoryCommandFactoryHelper<CommonCommands.WaitLocalMessageCommand>());
             RegisterCommandFactory("waitlocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.WaitLocalMessageHandlerCommand>());
             RegisterCommandFactory("pauselocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.PauseLocalMessageHandlerCommand>());
             RegisterCommandFactory("resumelocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.ResumeLocalMessageHandlerCommand>());
-            RegisterCommandFactory("localnamespacedmessage", new StoryCommandFactoryHelper<CommonCommands.LocalNamespacedMessageCommand>());
+            RegisterCommandFactory("localnamespacedmessage", new CommonCommands.LocalNamespacedMessageCommandFactory());
+            RegisterCommandFactory("localconcurrentnamespacedmessage", new CommonCommands.LocalConcurrentNamespacedMessageCommandFactory());
             RegisterCommandFactory("clearnamespacedmessage", new StoryCommandFactoryHelper<CommonCommands.ClearNamespacedMessageCommand>());
             RegisterCommandFactory("waitlocalnamespacedmessage", new StoryCommandFactoryHelper<CommonCommands.WaitLocalNamespacedMessageCommand>());
             RegisterCommandFactory("waitlocalnamespacedmessagehandler", new StoryCommandFactoryHelper<CommonCommands.WaitLocalNamespacedMessageHandlerCommand>());

@@ -3,42 +3,46 @@ using System.Collections.Generic;
 using Lidgren.Network;
 using Messenger;
 using GameFrameworkMessage;
-using RoomServer;
+using GameFramework;
 
 namespace GameFramework
 {
     /// <remarks>
-    /// 注意这个类的internal方法，都应考虑跨线程调用是否安全！！！
+    /// 注意这个类的public方法，都应考虑跨线程调用是否安全！！！
     /// </remarks>
-    internal class RoomManager
+    public class RoomManager
     {
-        internal RoomManager(uint maxusernum, uint thread_amount, uint room_amount)
+        public RoomManager(uint maxusernum, uint thread_amount, uint room_amount)
         {
-            thread_amount_ = thread_amount;
-            room_amount_ = room_amount;
-            roomthread_list_ = new RoomThread[thread_amount];
-            user_pool_size_ = maxusernum;
-            user_pool_ = new UserPool();
-            thread_tick_interval_ = 50;
+            s_Instance = this;
+
+            m_ThreadAmount = thread_amount;
+            m_RoomAmount = room_amount;
+            m_RoomThreadList = new RoomThread[thread_amount];
+            m_UserPoolSize = maxusernum;
+            m_UserPool = new UserPool();
+            m_ThreadTickInterval = 50;
         }
 
-        internal RoomManager(uint maxusernum, uint thread_amount, uint room_amount, uint tick_interval, Connector conn)
+        public RoomManager(uint maxusernum, uint thread_amount, uint room_amount, uint tick_interval, Connector conn)
         {
-            thread_amount_ = thread_amount;
-            room_amount_ = room_amount;
-            roomthread_list_ = new RoomThread[thread_amount];
-            user_pool_size_ = maxusernum;
-            user_pool_ = new UserPool();
-            dispatcher_ = new Dispatcher();
-            thread_tick_interval_ = tick_interval;
-            connector_ = conn;
+            s_Instance = this;
+
+            m_ThreadAmount = thread_amount;
+            m_RoomAmount = room_amount;
+            m_RoomThreadList = new RoomThread[thread_amount];
+            m_UserPoolSize = maxusernum;
+            m_UserPool = new UserPool();
+            m_Dispatcher = new Dispatcher();
+            m_ThreadTickInterval = tick_interval;
+            m_Connector = conn;
         }
 
-        internal bool Init(string roomServerName)
+        public bool Init(string roomServerName)
         {
-            lock_obj_ = new object();
-            active_rooms_ = new Dictionary<int, int>();
-            user_pool_.Init(user_pool_size_);
+            m_Lock = new object();
+            m_ActiveRooms = new Dictionary<int, int>();
+            m_UserPool.Init(m_UserPoolSize);
             
             // 初始化场景房间
             int startId = 1;
@@ -50,14 +54,14 @@ namespace GameFramework
                         for (int ix = 0; ix < cfg.ThreadCountPerScene; ++ix) {
                             if (0 == roomServerName.CompareTo(roomSvrName)) {
                                 RoomThread fieldThread = new RoomThread(this);
-                                fieldThread.Init(thread_tick_interval_, (uint)cfg.RoomCountPerThread, user_pool_, connector_);
+                                fieldThread.Init(m_ThreadTickInterval, (uint)cfg.RoomCountPerThread, m_UserPool, m_Connector);
                                 for (int rix = 0; rix < cfg.RoomCountPerThread; ++rix) {
                                     fieldThread.ActiveFieldRoom(startId, cfg.id);
-                                    AddActiveRoom(startId, field_roomthread_list_.Count, true);
+                                    AddActiveRoom(startId, m_FieldRoomthreadList.Count, true);
                                     AddFieldSceneRoomId(cfg.id, startId);
                                     ++startId;
                                 }
-                                field_roomthread_list_.Add(fieldThread);
+                                m_FieldRoomthreadList.Add(fieldThread);
                             } else {
                                 for (int rix = 0; rix < cfg.RoomCountPerThread; ++rix) {
                                     ++startId;
@@ -68,59 +72,59 @@ namespace GameFramework
                 }
             }
             // 初始化房间线程
-            for (int i = 0; i < thread_amount_; ++i) {
-                roomthread_list_[i] = new RoomThread(this);
-                roomthread_list_[i].Init(thread_tick_interval_, room_amount_, user_pool_, connector_);
+            for (int i = 0; i < m_ThreadAmount; ++i) {
+                m_RoomThreadList[i] = new RoomThread(this);
+                m_RoomThreadList[i].Init(m_ThreadTickInterval, m_RoomAmount, m_UserPool, m_Connector);
             }
-            next_room_id_ = startId;
+            m_NextRoomId = startId;
             return true;
         }
 
-        internal void StartRoomThread()
+        public void StartRoomThread()
         {
             SceneLoadThread.Instance.Start();
-            for (int i = 0; i < field_roomthread_list_.Count; ++i) {
-                field_roomthread_list_[i].Start();
+            for (int i = 0; i < m_FieldRoomthreadList.Count; ++i) {
+                m_FieldRoomthreadList[i].Start();
             }
-            for (int i = 0; i < thread_amount_; ++i) {
-                roomthread_list_[i].Start();
+            for (int i = 0; i < m_ThreadAmount; ++i) {
+                m_RoomThreadList[i].Start();
             }
         }
 
-        internal void StopRoomThread()
+        public void StopRoomThread()
         {
-            for (int i = 0; i < thread_amount_; ++i) {
-                roomthread_list_[i].Stop();
+            for (int i = 0; i < m_ThreadAmount; ++i) {
+                m_RoomThreadList[i].Stop();
             }
-            for (int i = 0; i < field_roomthread_list_.Count; ++i) {
-                field_roomthread_list_[i].Stop();
+            for (int i = 0; i < m_FieldRoomthreadList.Count; ++i) {
+                m_FieldRoomthreadList[i].Stop();
             }
             SceneLoadThread.Instance.Stop();
         }
 
-        internal int GetIdleRoomCount()
+        public int GetIdleRoomCount()
         {
             int count = 0;
-            for (int i = 0; i < thread_amount_; ++i) {
-                count += roomthread_list_[i].IdleRoomCount();
+            for (int i = 0; i < m_ThreadAmount; ++i) {
+                count += m_RoomThreadList[i].IdleRoomCount();
             }
             return count;
         }
 
-        internal int GetUserCount()
+        public int GetUserCount()
         {
-            return user_pool_.GetUsedCount();
+            return m_UserPool.GetUsedCount();
         }
 
-        internal int GetActiveRoomThreadIndex(int roomid, out bool isFieldThread)
+        public int GetActiveRoomThreadIndex(int roomid, out bool isFieldThread)
         {
             isFieldThread = false;
             int ix = -1;
-            lock (lock_obj_) {
-                if (active_rooms_.TryGetValue(roomid, out ix)) {
-                    if ((ix & c_field_thread_index_mask) == c_field_thread_index_mask) {
+            lock (m_Lock) {
+                if (m_ActiveRooms.TryGetValue(roomid, out ix)) {
+                    if ((ix & c_FieldThreadIndexMask) == c_FieldThreadIndexMask) {
                         isFieldThread = true;
-                        ix = ix & (~c_field_thread_index_mask);
+                        ix = ix & (~c_FieldThreadIndexMask);
                     }
                 } else {
                     ix = -1;
@@ -129,57 +133,60 @@ namespace GameFramework
             return ix;
         }
 
-        internal void AddActiveRoom(int roomid, int roomthreadindex, bool isFieldScene)
+        public void AddActiveRoom(int roomid, int roomthreadindex, bool isFieldScene)
         {
             if (isFieldScene) {
-                roomthreadindex |= c_field_thread_index_mask;
+                roomthreadindex |= c_FieldThreadIndexMask;
             }
-            lock (lock_obj_) {
-                if (active_rooms_.ContainsKey(roomid)) {
-                    active_rooms_[roomid] = roomthreadindex;
+            lock (m_Lock) {
+                if (m_ActiveRooms.ContainsKey(roomid)) {
+                    m_ActiveRooms[roomid] = roomthreadindex;
                 } else {
-                    active_rooms_.Add(roomid, roomthreadindex);
+                    m_ActiveRooms.Add(roomid, roomthreadindex);
                 }
             }
         }
 
-        internal void RemoveActiveRoom(int roomid)
+        public void RemoveActiveRoom(int roomid)
         {
-            lock (lock_obj_) {
-                active_rooms_.Remove(roomid);
+            lock (m_Lock) {
+                m_ActiveRooms.Remove(roomid);
             }
         }
 
-        internal void ChangeRoomScene(int roomid, int sceneId)
+        public void ChangeRoomScene(int roomid, int sceneId)
         {
             bool isFieldThread;
             int ix = GetActiveRoomThreadIndex(roomid, out isFieldThread);
             if (ix >= 0 && !isFieldThread) {
-                RoomThread thread = roomthread_list_[ix];
+                RoomThread thread = m_RoomThreadList[ix];
                 thread.QueueAction(thread.ChangeRoomScene, roomid, sceneId, (MyAction<bool>)((bool success) => {
 
                 }));
             }
         }
-        
-        internal void PlayerRequestActiveRoom(int targetSceneId, params ulong[] guids)
-        {
-            Msg_RL_ActiveScene builder = new Msg_RL_ActiveScene();
-            builder.UserGuids.AddRange(guids);
-            builder.SceneID = targetSceneId;
-            connector_.SendMsgToLobby(builder);
-        }
 
-        internal void PlayerRequestChangeRoom(int targetSceneId, params ulong[] guids)
+        public Room GetRoomByRoomIdAndLocalId(int roomId, int localId)
         {
-            Msg_RL_ChangeScene builder = new Msg_RL_ChangeScene();
-            builder.UserGuids.AddRange(guids);
-            builder.SceneID = targetSceneId;
-            connector_.SendMsgToLobby(builder);
+            Room room = null;
+            bool isFieldThread;
+            int ix = GetActiveRoomThreadIndex(roomId, out isFieldThread);
+            if (ix >= 0) {
+                RoomThread roomThread;
+                if (isFieldThread) {
+                    roomThread = m_FieldRoomthreadList[ix];
+                } else {
+                    roomThread = m_RoomThreadList[ix];
+                }
+                if (null != roomThread) {
+                    room = roomThread.GetRoomByLocalId(localId);
+                }
+            }
+            return room;
         }
 
         //--------------------------------------
-        internal void RegisterMsgHandler(PBChannel channel)
+        public void RegisterMsgHandler(PBChannel channel)
         {
             channel.Register<Msg_LR_EnterScene>(HandleEnterScene);
             channel.Register<Msg_LR_ChangeScene>(HandleChangeScene);
@@ -194,35 +201,35 @@ namespace GameFramework
         private void HandleEnterScene(Msg_LR_EnterScene msg, PBChannel channel, int handle, uint seq)
         {
             ulong guid = msg.UserGuid;
-            int roomId = msg.RoomID;
+            int roomId = msg.RoomId;
             bool isFieldThread;
             int ix = GetActiveRoomThreadIndex(roomId, out isFieldThread);
             if (ix < 0) {
                 Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
                 replyBuilder.UserGuid = guid;
-                replyBuilder.RoomID = roomId;
+                replyBuilder.RoomId = roomId;
                 replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
                 channel.Send(replyBuilder);
             } else {
                 RoomThread roomThread;
                 if (isFieldThread) {
-                    roomThread = field_roomthread_list_[ix];
+                    roomThread = m_FieldRoomthreadList[ix];
                 } else {
-                    roomThread = roomthread_list_[ix];
+                    roomThread = m_RoomThreadList[ix];
                 }
                 Msg_LR_RoomUserInfo rui = msg.UserInfo;
 
-                User rsUser = user_pool_.NewUser();
+                User rsUser = m_UserPool.NewUser();
                 LogSys.Log(LOG_TYPE.INFO, "NewUser {0} for {1} {2}", rsUser.LocalID, rui.Guid, rui.Key);
                 rsUser.Init();
                 if (!rsUser.SetKey(rui.Key)) {
                     LogSys.Log(LOG_TYPE.WARN, "user who's key is {0} already in room!", rui.Key);
                     LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [RoomManager.HandleEnterScene]", rsUser.LocalID, rui.Guid, rui.Key);
-                    user_pool_.FreeUser(rsUser.LocalID);
+                    m_UserPool.FreeUser(rsUser.LocalID);
                                         
                     Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
                     replyBuilder.UserGuid = guid;
-                    replyBuilder.RoomID = roomId;
+                    replyBuilder.RoomId = roomId;
                     replyBuilder.Result = (int)SceneOperationResultEnum.User_Key_Exist;
                     channel.Send(replyBuilder);
                 } else {
@@ -243,13 +250,13 @@ namespace GameFramework
                         if (success) {
                             Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
                             replyBuilder.UserGuid = guid;
-                            replyBuilder.RoomID = roomId;
+                            replyBuilder.RoomId = roomId;
                             replyBuilder.Result = (int)SceneOperationResultEnum.Success;
                             channel.Send(replyBuilder);
                         } else {
                             Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
                             replyBuilder.UserGuid = guid;
-                            replyBuilder.RoomID = roomId;
+                            replyBuilder.RoomId = roomId;
                             replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
                             channel.Send(replyBuilder);
                         }
@@ -260,23 +267,23 @@ namespace GameFramework
         private void HandleChangeScene(Msg_LR_ChangeScene msg, PBChannel channel, int handle, uint seq)
         {
             ulong guid = msg.UserGuid;
-            int roomid = msg.RoomID;
-            int targetRoomId = msg.TargetRoomID;
+            int roomid = msg.RoomId;
+            int targetRoomId = msg.TargetRoomId;
             bool isFieldThread;
-            int ix = GetActiveRoomThreadIndex(msg.RoomID, out isFieldThread);
+            int ix = GetActiveRoomThreadIndex(msg.RoomId, out isFieldThread);
             if (ix < 0) {
                 Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
                 replyBuilder.UserGuid = msg.UserGuid;
-                replyBuilder.RoomID = msg.RoomID;
-                replyBuilder.TargetRoomID = msg.TargetRoomID;
+                replyBuilder.RoomId = msg.RoomId;
+                replyBuilder.TargetRoomId = msg.TargetRoomId;
                 replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
                 channel.Send(replyBuilder);
             } else {
                 RoomThread roomThread;
                 if (isFieldThread) {
-                    roomThread = field_roomthread_list_[ix];
+                    roomThread = m_FieldRoomthreadList[ix];
                 } else {
-                    roomThread = roomthread_list_[ix];
+                    roomThread = m_RoomThreadList[ix];
                 }
                 bool targetIsFieldThread;
                 int targetIx = GetActiveRoomThreadIndex(targetRoomId, out targetIsFieldThread);
@@ -289,8 +296,8 @@ namespace GameFramework
                             } else {
                                 Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
                                 replyBuilder.UserGuid = guid;
-                                replyBuilder.RoomID = roomid;
-                                replyBuilder.TargetRoomID = targetRoomId;
+                                replyBuilder.RoomId = roomid;
+                                replyBuilder.TargetRoomId = targetRoomId;
                                 replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
                                 channel.Send(replyBuilder);
                             }
@@ -306,15 +313,15 @@ namespace GameFramework
                                     replyBuilder.MP = info.Energy;
                                 }
                                 replyBuilder.UserGuid = guid;
-                                replyBuilder.RoomID = roomid;
-                                replyBuilder.TargetRoomID = targetRoomId;
+                                replyBuilder.RoomId = roomid;
+                                replyBuilder.TargetRoomId = targetRoomId;
                                 replyBuilder.Result = (int)SceneOperationResultEnum.Success;
                                 channel.Send(replyBuilder);
                             } else {
                                 Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
                                 replyBuilder.UserGuid = guid;
-                                replyBuilder.RoomID = roomid;
-                                replyBuilder.TargetRoomID = targetRoomId;
+                                replyBuilder.RoomId = roomid;
+                                replyBuilder.TargetRoomId = targetRoomId;
                                 replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
                                 channel.Send(replyBuilder);
                             }
@@ -325,45 +332,45 @@ namespace GameFramework
         }
         private void HandleActiveScene(Msg_LR_ActiveScene msg, PBChannel channel, int handle, uint seq)
         {
-            int roomid = msg.RoomID;
-            int sceneId = msg.SceneID;
+            int roomid = msg.RoomId;
+            int sceneId = msg.SceneId;
             List<ulong> users = msg.UserGuids;
             int thread_id = GetIdleThread();
             if (thread_id < 0) {
                 LogSys.Log(LOG_TYPE.ERROR, "all room are using, active room failed!");
                 Msg_RL_ActiveSceneResult retMsg = new Msg_RL_ActiveSceneResult();
                 retMsg.UserGuids.AddRange(users);
-                retMsg.RoomID = roomid;
+                retMsg.RoomId = roomid;
                 retMsg.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
                 return;
             }
-            RoomThread roomThread = roomthread_list_[thread_id];
+            RoomThread roomThread = m_RoomThreadList[thread_id];
             AddActiveRoom(roomid, thread_id, false);
             roomThread.PreActiveRoom();
             LogSys.Log(LOG_TYPE.INFO, "queue active room {0} scene {1} thread {2}", roomid, sceneId, thread_id);
             roomThread.QueueAction(roomThread.ActiveRoom, roomid, sceneId, (MyAction<bool>)((bool val) => {
                 Msg_RL_ActiveSceneResult retMsg = new Msg_RL_ActiveSceneResult();
                 retMsg.UserGuids.AddRange(users);
-                retMsg.RoomID = roomid;
+                retMsg.RoomId = roomid;
                 retMsg.Result = val ? (int)SceneOperationResultEnum.Success : (int)SceneOperationResultEnum.Cant_Find_Room;
             }));
         }
         private void HandleReconnectUser(Msg_LR_ReconnectUser urMsg, PBChannel channel, int handle, uint seq)
         {
             bool isFieldThread;
-            int ix = GetActiveRoomThreadIndex(urMsg.RoomID, out isFieldThread);
+            int ix = GetActiveRoomThreadIndex(urMsg.RoomId, out isFieldThread);
             if (ix < 0) {
                 Msg_RL_ReplyReconnectUser replyBuilder = new Msg_RL_ReplyReconnectUser();
                 replyBuilder.UserGuid = urMsg.UserGuid;
-                replyBuilder.RoomID = urMsg.RoomID;
+                replyBuilder.RoomId = urMsg.RoomId;
                 replyBuilder.Result = (int)Msg_RL_ReplyReconnectUser.ReconnectResultEnum.NotExist;
                 channel.Send(replyBuilder);
             } else {
                 if (isFieldThread) {
-                    RoomThread roomThread = field_roomthread_list_[ix];
+                    RoomThread roomThread = m_FieldRoomthreadList[ix];
                     roomThread.QueueAction(roomThread.HandleReconnectUser, urMsg, channel, handle, seq);
                 } else {
-                    RoomThread roomThread = roomthread_list_[ix];
+                    RoomThread roomThread = m_RoomThreadList[ix];
                     roomThread.QueueAction(roomThread.HandleReconnectUser, urMsg, channel, handle, seq);
                 }
             }
@@ -371,13 +378,13 @@ namespace GameFramework
         private void HandleUserRelive(Msg_LR_UserReLive msg, PBChannel channel, int handle, uint seq)
         {
             bool isFieldThread;
-            int ix = GetActiveRoomThreadIndex(msg.RoomID, out isFieldThread);
+            int ix = GetActiveRoomThreadIndex(msg.RoomId, out isFieldThread);
             if (ix >= 0) {
                 if (isFieldThread) {
-                    RoomThread roomThread = field_roomthread_list_[ix];
+                    RoomThread roomThread = m_FieldRoomthreadList[ix];
                     roomThread.QueueAction(roomThread.HandleUserRelive, msg);
                 } else {
-                    RoomThread roomThread = roomthread_list_[ix];
+                    RoomThread roomThread = m_RoomThreadList[ix];
                     roomThread.QueueAction(roomThread.HandleUserRelive, msg);
                 }
             }
@@ -385,32 +392,32 @@ namespace GameFramework
         private void HandleUserQuit(Msg_LR_UserQuit msg, PBChannel channel, int handle, uint seq)
         {
             bool isFieldThread;
-            int ix = GetActiveRoomThreadIndex(msg.RoomID, out isFieldThread);
+            int ix = GetActiveRoomThreadIndex(msg.RoomId, out isFieldThread);
             if (ix >= 0) {
                 if (isFieldThread) {
-                    RoomThread roomThread = field_roomthread_list_[ix];
+                    RoomThread roomThread = m_FieldRoomthreadList[ix];
                     roomThread.QueueAction(roomThread.HandleUserQuit, msg, channel);
                 } else {
-                    RoomThread roomThread = roomthread_list_[ix];
+                    RoomThread roomThread = m_RoomThreadList[ix];
                     roomThread.QueueAction(roomThread.HandleUserQuit, msg, channel);
                 }
             } else {
                 Msg_RL_UserQuit replyBuilder = new Msg_RL_UserQuit();
                 replyBuilder.UserGuid = msg.UserGuid;
-                replyBuilder.RoomID = msg.RoomID;
+                replyBuilder.RoomId = msg.RoomId;
                 channel.Send(replyBuilder);
             }
         }
         private void HandleReclaimItem(Msg_LR_ReclaimItem msg, PBChannel channel, int handle, uint seq)
         {
             bool isFieldThread;
-            int ix = GetActiveRoomThreadIndex(msg.RoomID, out isFieldThread);
+            int ix = GetActiveRoomThreadIndex(msg.RoomId, out isFieldThread);
             if (ix >= 0) {
                 if (isFieldThread) {
-                    RoomThread roomThread = field_roomthread_list_[ix];
+                    RoomThread roomThread = m_FieldRoomthreadList[ix];
                     roomThread.QueueAction(roomThread.HandleReclaimItem, msg, channel);
                 } else {
-                    RoomThread roomThread = roomthread_list_[ix];
+                    RoomThread roomThread = m_RoomThreadList[ix];
                     roomThread.QueueAction(roomThread.HandleReclaimItem, msg, channel);
                 }
             }
@@ -421,10 +428,10 @@ namespace GameFramework
             int ix = GetActiveRoomThreadIndex(msg.RoomId, out isFieldRoom);
             if (ix >= 0) {
                 if (isFieldRoom) {
-                    RoomThread roomThread = field_roomthread_list_[ix];
+                    RoomThread roomThread = m_FieldRoomthreadList[ix];
                     roomThread.QueueAction(roomThread.HandleRoomStoryMessage, msg, channel);
                 } else {
-                    RoomThread roomThread = roomthread_list_[ix];
+                    RoomThread roomThread = m_RoomThreadList[ix];
                     roomThread.QueueAction(roomThread.HandleRoomStoryMessage, msg, channel);
                 }
             }
@@ -433,13 +440,13 @@ namespace GameFramework
         private int GetIdleThread()
         {
             int most_idle_thread_id = 0;
-            for (int i = 1; i < thread_amount_; ++i) {
-                if (roomthread_list_[most_idle_thread_id].IdleRoomCount() <
-                    roomthread_list_[i].IdleRoomCount()) {
+            for (int i = 1; i < m_ThreadAmount; ++i) {
+                if (m_RoomThreadList[most_idle_thread_id].IdleRoomCount() <
+                    m_RoomThreadList[i].IdleRoomCount()) {
                     most_idle_thread_id = i;
                 }
             }
-            if (roomthread_list_[most_idle_thread_id].IdleRoomCount() < GlobalVariables.c_PreservedRoomCountPerThread) {
+            if (m_RoomThreadList[most_idle_thread_id].IdleRoomCount() < GlobalVariables.c_PreservedRoomCountPerThread) {
                 return -1;
             }
             return most_idle_thread_id;
@@ -447,12 +454,12 @@ namespace GameFramework
         private void AddFieldSceneRoomId(int sceneId, int roomId)
         {
             HashSet<int> roomIds;
-            if (field_scene_rooms_.TryGetValue(sceneId, out roomIds)) {
+            if (m_FieldSceneRooms.TryGetValue(sceneId, out roomIds)) {
                 roomIds.Add(roomId);
             } else {
                 roomIds = new HashSet<int>();
                 roomIds.Add(roomId);
-                field_scene_rooms_.Add(sceneId, roomIds);
+                m_FieldSceneRooms.Add(sceneId, roomIds);
             }
         }
         private void PlayerGotoRoom(User user, int roomId, int targetRoomId)
@@ -464,9 +471,9 @@ namespace GameFramework
 
             RoomThread roomThread;
             if (isFieldThread) {
-                roomThread = field_roomthread_list_[ix];
+                roomThread = m_FieldRoomthreadList[ix];
             } else {
-                roomThread = roomthread_list_[ix];
+                roomThread = m_RoomThreadList[ix];
             }
             roomThread.QueueAction(roomThread.AddUser, user, targetRoomId, (MyAction<bool, int, User>)((bool ret, int sceneId, User successUser) => {
                 if (ret) {
@@ -481,44 +488,46 @@ namespace GameFramework
                         replyBuilder.MP = info.Energy;
                     }
                     replyBuilder.UserGuid = user.Guid;
-                    replyBuilder.RoomID = roomId;
-                    replyBuilder.TargetRoomID = targetRoomId;
+                    replyBuilder.RoomId = roomId;
+                    replyBuilder.TargetRoomId = targetRoomId;
                     replyBuilder.Result = (int)SceneOperationResultEnum.Success;
-                    connector_.SendMsgToLobby(replyBuilder);
+                    m_Connector.SendMsgToLobby(replyBuilder);
                 } else {
                     Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
                     replyBuilder.UserGuid = user.Guid;
-                    replyBuilder.RoomID = roomId;
-                    replyBuilder.TargetRoomID = targetRoomId;
+                    replyBuilder.RoomId = roomId;
+                    replyBuilder.TargetRoomId = targetRoomId;
                     replyBuilder.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
-                    connector_.SendMsgToLobby(replyBuilder);
+                    m_Connector.SendMsgToLobby(replyBuilder);
                 }
             }));
         }
 
         // private attributes-------------------
-        private const int c_field_thread_index_mask = 0x10000000;
-        private List<RoomThread> field_roomthread_list_ = new List<RoomThread>();     // 野外房间线程列表
-        private Dictionary<int, HashSet<int>> field_scene_rooms_ = new Dictionary<int, HashSet<int>>();
+        private const int c_FieldThreadIndexMask = 0x10000000;
+        private List<RoomThread> m_FieldRoomthreadList = new List<RoomThread>();     // 野外房间线程列表
+        private Dictionary<int, HashSet<int>> m_FieldSceneRooms = new Dictionary<int, HashSet<int>>();
 
-        private uint thread_amount_;                                                  // 线程数
-        private uint room_amount_;                                                    // 每线程房间数
-        private RoomThread[] roomthread_list_;                                        // 线程列表
+        private uint m_ThreadAmount;                                                  // 线程数
+        private uint m_RoomAmount;                                                    // 每线程房间数
+        private RoomThread[] m_RoomThreadList;                                        // 线程列表
 
-        private uint thread_tick_interval_;                                           // 线程心跳间隔
-        private uint user_pool_size_;
-        private Dispatcher dispatcher_;
-        private UserPool user_pool_;
-        private Connector connector_;
+        private uint m_ThreadTickInterval;                                           // 线程心跳间隔
+        private uint m_UserPoolSize;
+        private Dispatcher m_Dispatcher;
+        private UserPool m_UserPool;
+        private Connector m_Connector;
 
-        private object lock_obj_;
-        private Dictionary<int, int> active_rooms_;
+        private object m_Lock;
+        private Dictionary<int, int> m_ActiveRooms;
 
-        private int next_room_id_ = 1;
+        private int m_NextRoomId = 1;
 
-        //demo使用
-        private static uint s_next_key_ = 1;
-        private static ulong s_next_guid_ = 1;
+        public static RoomManager Instance
+        {
+            get { return s_Instance; }
+        }
+        private static RoomManager s_Instance = null;
     }
 
 }

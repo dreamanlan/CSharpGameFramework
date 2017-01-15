@@ -1,0 +1,94 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+
+AiGetSkill = {
+	cctor = function()
+	end,
+
+	__new_object = function(...)
+		return newobject(AiGetSkill, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = AiGetSkill;
+		local static_fields = nil;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			SetProxy = function(this, result)
+				this.m_Proxy = result;
+			end,
+			Clone = function(this)
+				return newobject(AiGetSkill, "ctor", {});
+			end,
+			Evaluate = function(this, instance, _params)
+				local args; args = _params.Values;
+				local objId; objId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32);
+				local index; index = typecast(System.Convert.ChangeType(getexterninstanceindexer(args, nil, "get_Item", 1), System.Int32), System.Int32);
+				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
+				if (nil ~= npc) then
+					local skillId; skillId = 0;
+					local __compiler_switch_29 = index;
+					if __compiler_switch_29 == 0 then
+						skillId = npc.ConfigData.skill0;
+					elseif __compiler_switch_29 == 1 then
+						skillId = npc.ConfigData.skill1;
+					elseif __compiler_switch_29 == 2 then
+						skillId = npc.ConfigData.skill2;
+					elseif __compiler_switch_29 == 3 then
+						skillId = npc.ConfigData.skill3;
+					elseif __compiler_switch_29 == 4 then
+						skillId = npc.ConfigData.skill4;
+					elseif __compiler_switch_29 == 5 then
+						skillId = npc.ConfigData.skill5;
+					elseif __compiler_switch_29 == 6 then
+						skillId = npc.ConfigData.skill6;
+					elseif __compiler_switch_29 == 7 then
+						skillId = npc.ConfigData.skill7;
+					elseif __compiler_switch_29 == 8 then
+						skillId = npc.ConfigData.skill8;
+					else
+						skillId = 0;
+					end;
+					if (skillId > 0) then
+						local skillInfo; skillInfo = npc:GetSkillStateInfo():GetSkillInfoById(skillId);
+						if (nil == skillInfo) then
+							skillInfo = newexternobject(GameFramework.SkillInfo, "GameFramework.SkillInfo", "ctor", nil, {}, skillId);
+							npc:GetSkillStateInfo():AddSkill(skillInfo);
+						end;
+						this.m_Proxy.Value = skillInfo;
+					else
+						this.m_Proxy.Value = nil;
+					end;
+				end;
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_build = function()
+			local instance_fields = {
+				m_Proxy = nil,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"GameFramework.Plugin.ISimpleStoryValuePlugin",
+		};
+
+		local interface_map = {
+			GameFramework_Plugin_ISimpleStoryValuePlugin_SetProxy = "SetProxy",
+			GameFramework_Plugin_ISimpleStoryValuePlugin_Clone = "Clone",
+			GameFramework_Plugin_ISimpleStoryValuePlugin_Evaluate = "Evaluate",
+		};
+
+
+		return defineclass(nil, "AiGetSkill", static, static_fields, static_props, static_events, instance_methods, instance_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+
+AiGetSkill.__define_class();
+

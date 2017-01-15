@@ -16,8 +16,16 @@ public class OverHeadBar : MonoBehaviour
 	public Image mp;
 	
     public GameObject panelBloodNums;
-    private Canvas canvas;    
-	private float slowTime;
+
+    public Image bkg;
+    public Text content;
+
+    private Canvas canvas;
+    private float slowTime;
+    private TextGenerator generator = new TextGenerator();
+    private Vector2 bkgSize;
+    private float paopaoShowTime = 0;
+    private readonly float paopaoDurationTime = 4;//s
  
     //==============================================================================
     public void SetHealth(float hpRate) 
@@ -36,13 +44,25 @@ public class OverHeadBar : MonoBehaviour
 	public void SetMp(float fmp) 
 	{
 		mp.fillAmount = fmp;
-	}	
+	}
+    public void ShowPaoPao(string strContent)
+    {
+        content.text = strContent;
+        paopaoShowTime = Time.time;
+        bkg.gameObject.SetActive(true);
+    }
+    public void HidePaoPao()
+    {
+        bkg.gameObject.SetActive(false);
+    }
     public void Start() 
     {
 		health.fillAmount = 1f;
 		healthSlow.fillAmount = 1f;
 		slowTime = 0f;
         canvas = this.GetComponentInChildren<Canvas>();
+        RectTransform bkgRect = bkg.gameObject.GetComponent<RectTransform>();
+        bkgSize = bkgRect.sizeDelta;
 	}	
     public void SetHealthColor(bool isGreen) 
     {
@@ -86,7 +106,7 @@ public class OverHeadBar : MonoBehaviour
             panelBloodNums.transform.DetachChildren();
         }
     }
-    void Update() 
+    internal void Update() 
     {
         if (Camera.main != null) 
         {
@@ -119,7 +139,24 @@ public class OverHeadBar : MonoBehaviour
 			{
 				healthSlow.fillAmount = health.fillAmount;
 			}
-		}	
-        
+		}        
     }
+    internal void LateUpdate()
+    {
+        float curTime = Time.time;
+        if (curTime - paopaoShowTime > paopaoDurationTime && paopaoShowTime > 0) {
+            HidePaoPao();
+            paopaoShowTime = 0;
+        }
+
+        RectTransform bkgRect = bkg.gameObject.GetComponent<RectTransform>();
+        RectTransform textBox = content.GetComponent<RectTransform>();
+        TextGenerationSettings settings = content.GetGenerationSettings(bkgSize);
+        float fHeight = generator.GetPreferredHeight(content.text, settings);//content.preferredHeight + 50;
+        float fWidth = generator.GetPreferredWidth(content.text, settings);
+        if (fWidth > 400)
+            fWidth = 400;
+        bkgRect.sizeDelta = new Vector2(fWidth + 50.0f, fHeight + 50.0f);
+        textBox.sizeDelta = new Vector2(fWidth, fHeight);
+    }	
 }

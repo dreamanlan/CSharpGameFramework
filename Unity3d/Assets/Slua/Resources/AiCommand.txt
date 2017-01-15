@@ -1,0 +1,97 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+
+AiCommand = {
+	__define_class = function()
+		local static = AiCommand;
+
+		local static_methods = {
+			NotifyAiDeath = function(npc)
+				local view; view = GameFramework.EntityViewModelManager.Instance:GetEntityViewById(npc:GetId());
+				view:Death();
+			end,
+			AiTarget = function(npc, target)
+				if (nil ~= target) then
+					if (nil ~= GameFramework.PluginFramework.Instance.SelectedTarget) then
+						local curTarget; curTarget = GameFramework.PluginFramework.Instance:GetEntityById(GameFramework.PluginFramework.Instance.SelectedTarget.TargetId);
+						if isequal(curTarget, GameFramework.PluginFramework.Instance.SelectedTarget.Target) then
+							return ;
+						end;
+					end;
+					GameFramework.PluginFramework.Instance:SetLockTarget(target:GetId());
+				end;
+			end,
+			AiFace = function(npc)
+				if (nil ~= npc) then
+					local dir; dir = npc:GetMovementStateInfo():GetFaceDir();
+					local actor; actor = GameFramework.EntityViewModelManager.Instance:GetGameObject(npc:GetId());
+					actor.transform.localRotation = UnityEngine.Quaternion.Euler(0, GameFramework.Geometry.RadianToDegree(dir), 0);
+				end;
+			end,
+			AiGetValidPosition = function(npc, target, maxDistance)
+				local navMeshHit;
+				local __compiler_invoke_38; __compiler_invoke_38, navMeshHit = UnityEngine.NavMesh.SamplePosition(newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, {}, target.X, target.Y, target.Z), __cs2lua_out, maxDistance, -1);
+				if (((not System.Single.IsInfinity(navMeshHit.position.x)) and (not System.Single.IsInfinity(navMeshHit.position.y))) and (not System.Single.IsInfinity(navMeshHit.position.z))) then
+					return newexternobject(ScriptRuntime.Vector3, "ScriptRuntime.Vector3", "ctor", nil, {}, navMeshHit.position.x, navMeshHit.position.y, navMeshHit.position.z);
+				end;
+				return target;
+			end,
+			AiPursue = function(npc, target)
+				local npcView; npcView = GameFramework.EntityViewModelManager.Instance:GetEntityViewById(npc:GetId());
+				npcView:MoveTo(target.X, target.Y, target.Z);
+			end,
+			AiStopPursue = function(npc)
+				local npcView; npcView = GameFramework.EntityViewModelManager.Instance:GetEntityViewById(npc:GetId());
+				npcView:StopMove();
+			end,
+			AiSelectSkill = function(npc, skill)
+				if (skill == nil) then
+					npc:GetSkillStateInfo():SetCurSkillInfo(0);
+				else
+					npc:GetSkillStateInfo():SetCurSkillInfo(skill.SkillId);
+				end;
+				GameFramework.Utility.EventSystem:Publish("update_debug_state", "ui", System.String.Concat("try use skill:", tostring(skill.SkillId)));
+			end,
+			AiSkill = function(npc, skillId)
+				if (nil ~= npc) then
+--            if (npc.GetAiStateInfo().Target > 0) {
+--                PluginFramework.Instance.SetLockTarget(npc.GetAiStateInfo().Target);
+--            }
+--            
+					local skillInfo; skillInfo = npc:GetSkillStateInfo():GetSkillInfoById(skillId);
+					if (nil ~= skillInfo) then
+						GameFramework.Skill.GfxSkillSystem.Instance:StartSkill(npc:GetId(), skillInfo.ConfigData, 0);
+					end;
+				end;
+			end,
+			AiStopSkill = function(npc)
+				if (nil ~= npc) then
+					GameFramework.Skill.GfxSkillSystem.Instance:StopAllSkill(npc:GetId(), false);
+				end;
+			end,
+			AiAddImpact = function(npc, impactId)
+			end,
+			AiRemoveImpact = function(npc, impactId)
+			end,
+			AiSendStoryMessage = function(npc, msgId, ...)
+				local args = wraparray{...};
+				GameFramework.Story.GfxStorySystem.Instance:SendMessage(msgId, unpack(args));
+			end,
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+			};
+			return static_fields;
+		end;
+		local static_props = nil;
+		local static_events = nil;
+
+		return defineclass(nil, "AiCommand", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	end,
+};
+
+AiCommand.__define_class();

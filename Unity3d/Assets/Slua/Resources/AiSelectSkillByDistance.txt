@@ -1,0 +1,98 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+
+AiSelectSkillByDistance = {
+	__new_object = function(...)
+		return newobject(AiSelectSkillByDistance, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = AiSelectSkillByDistance;
+
+		local static_methods = {
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+			};
+			return static_fields;
+		end;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			SetProxy = function(this, result)
+				this.m_Proxy = result;
+			end,
+			Clone = function(this)
+				return newobject(AiSelectSkillByDistance, "ctor", {});
+			end,
+			Evaluate = function(this, instance, _params)
+				local args; args = _params.Values;
+				local objId; objId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32, false);
+				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
+				if (nil ~= npc) then
+					local targetId; targetId = npc:GetAiStateInfo().Target;
+					if (targetId > 0) then
+						local target; target = GameFramework.PluginFramework.Instance:GetEntityById(targetId);
+						if (nil ~= target) then
+							local distToTarget; distToTarget = GameFramework.Geometry.Distance(npc:GetMovementStateInfo():GetPosition3D(), target:GetMovementStateInfo():GetPosition3D());
+							local curDist; curDist = 0;
+							local maxSkillInfo; maxSkillInfo = nil;
+							local diffDist; diffDist = 3.402823E+38;
+							local targetSkillInfo; targetSkillInfo = nil;
+							local i; i = 0;
+							while (i < npc.AutoSkillIds.Count) do
+								local skillId; skillId = getexterninstanceindexer(npc.AutoSkillIds, nil, "get_Item", i);
+								local temp; temp = npc:GetSkillStateInfo():GetSkillInfoById(skillId);
+								if (nil ~= temp) then
+									local dist; dist = temp.Distance;
+									local absDist; absDist = UnityEngine.Mathf.Abs((distToTarget - dist));
+									if (diffDist > absDist) then
+										diffDist = absDist;
+										targetSkillInfo = temp;
+									end;
+								end;
+							i = i + 1;
+							end;
+							if (nil ~= targetSkillInfo) then
+								this.m_Proxy.Value = targetSkillInfo;
+							else
+								this.m_Proxy.Value = maxSkillInfo;
+							end;
+							return ;
+						end;
+					end;
+				end;
+				this.m_Proxy.Value = nil;
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_fields_build = function()
+			local instance_fields = {
+				m_Proxy = __cs2lua_nil_field_value,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"GameFramework.Plugin.ISimpleStoryValuePlugin",
+		};
+
+		local interface_map = {
+			ISimpleStoryValuePlugin_SetProxy = "SetProxy",
+			ISimpleStoryValuePlugin_Clone = "Clone",
+			ISimpleStoryValuePlugin_Evaluate = "Evaluate",
+		};
+
+
+		return defineclass(nil, "AiSelectSkillByDistance", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+AiSelectSkillByDistance.__define_class();

@@ -57,7 +57,7 @@ public sealed class SkillBarManager
                 }
                 if (null != skillCfg) {
                     SkillBar.SkillInfo skill = skillBar.AddSkill(objID, skillCfg.id, skillCfg.icon, 0);
-                    skill.SetMp(ClientModule.Instance.GetNpcMp(objID));
+                    skill.SetMp(PluginFramework.Instance.GetNpcMp(objID));
                 }
             }
         } catch (System.Exception ex) {
@@ -83,7 +83,7 @@ public sealed class SkillBarManager
         try {
             SkillBar.SkillInfo skill = skillBar.GetSkillByID(objID);
             if (skill != null) {
-                if (skill.objID != ClientModule.Instance.LeaderID) {
+                if (skill.objID != PluginFramework.Instance.LeaderID) {
                     if (!skill.isEmpty && skill.skillID == skillID) {
                         skill.StartCooldown(cooldownTime);
                     }

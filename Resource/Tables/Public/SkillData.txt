@@ -1,0 +1,9 @@
+int32		string	int32	int32	float	int32	int32	int32	bool	int32[]	int32	bool	int32[]	int32[]	int32[]	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32
+id		desc	type	icon	distance	cooldown	canmove	interruptPriority	isInterrupt	subsequentSkills	autoCast	needTarget	multiple	damage	vampire	addsc	beaddsc	adduc	beadduc	attr1	value1	attr2	value2	attr3	value3	attr4	value4	attr5	value5	attr6	value6	attr7	value7	attr8	value8
+//id	策划用	技能描述	技能类型(0--skill 1--impact 2--buff)	图标	攻击距离	冷却回合	能否移动	打断优先级	是否打断目标的技能	连续技后续技能	自动释放使用	是否指向性技能	技能倍数	直接伤害	是否吸血	加sc	受击加sc	加uc	受击加uc	属性ID1	属性值1	属性ID2	属性值2	属性ID3	属性值3	属性ID4	属性值4	属性ID5	属性值5	属性ID6	属性值6	属性ID7	属性值7	属性ID8	属性值8
+//说明:impact ID范围1~10000000					所有单位都是米																														
+1	出生		0	0	0	0	0	0	0		1	0	1000	100	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+2	死亡		0	0	0	0	0	0	0		1	0	1000	100	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+3	普通砍		0	0	2	0	0	0	0		1	0	1000	100	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+4	群体攻击		0	0	0	0	0	10	0		1	0	1000	100	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+5	魔法攻击	0	0	27	0	0	1	50	0		1	0	1000	100	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0

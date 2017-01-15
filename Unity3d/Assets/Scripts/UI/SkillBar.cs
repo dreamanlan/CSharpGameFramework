@@ -89,7 +89,7 @@ public class SkillBar : MonoBehaviour
 
             bool bCanFindSkillTarget = true;
             if (icon.disableMask) {
-                bCanFindSkillTarget = ClientModule.Instance.SkillCanFindTarget(objID, skillID);
+                bCanFindSkillTarget = PluginFramework.Instance.SkillCanFindTarget(objID, skillID);
             }
             bool bSkillIsReady = GetMp() > 0.999f && isCoolingDown == false && !isEmpty;
             bool bNeedPlayerEffect = (bSkillIsReady && bCanFindSkillTarget) || forcePlayParticle;

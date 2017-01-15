@@ -181,12 +181,7 @@ namespace SkillSystem
         public ISkillTriger Clone()
         {
             ISkillTriger newObj = OnClone();
-            newObj.StartTime = StartTime;
-            newObj.Name = Name;
-            newObj.OrderInSkill = OrderInSkill;
-            newObj.OrderInSection = OrderInSection;
-            newObj.IsFinal = IsFinal;
-            newObj.InitProperties();
+            CopyTo(newObj);
             return newObj;
         }
         public void InitProperties()
@@ -213,8 +208,18 @@ namespace SkillSystem
         {
         }
 
+        //
+        public void CopyTo(ISkillTriger newObj)
+        {
+            newObj.StartTime = StartTime;
+            newObj.Name = Name;
+            newObj.OrderInSkill = OrderInSkill;
+            newObj.OrderInSection = OrderInSection;
+            newObj.IsFinal = IsFinal;
+        }
+
         //下面方法必须在子类的构造或重载的OnInitProperties里调用！
-        protected void AddProperty(string key, PropertyAccessorHelper.GetDelegation onGet, PropertyAccessorHelper.SetDelegation onSet)
+        public void AddProperty(string key, PropertyAccessorHelper.GetDelegation onGet, PropertyAccessorHelper.SetDelegation onSet)
         {
             m_AccessorHelper.AddProperty(key, onGet, onSet);
         }
@@ -225,6 +230,41 @@ namespace SkillSystem
         private int m_OrderInSection = 0;
         private bool m_IsFinal = true;
         private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
+        
+        //用于同步修改回加载Dsl实例的工具方法
+        public static void SetParam(Dsl.CallData callData, int index, string val)
+        {
+            Dsl.ValueData valData = callData.GetParam(index) as Dsl.ValueData;
+            if (null != valData) {
+                int idType = valData.GetIdType();
+                valData.SetId(val);
+                valData.SetType(idType);
+            }
+        }
+        public static void SetParam(Dsl.FunctionData funcData, int index, string val)
+        {
+            Dsl.CallData callData = funcData.Call;
+            SetParam(callData, index, val);
+        }
+        public static void SetParam(Dsl.StatementData statementData, int funcIndex, int index, string val)
+        {
+            if (funcIndex >= 0 && funcIndex < statementData.Functions.Count) {
+                Dsl.FunctionData funcData = statementData.Functions[funcIndex];
+                SetParam(funcData, index, val);
+            }
+        }
+        public static void SetStatementParam(Dsl.FunctionData funcData, int stIndex, int paramIndex, string val)
+        {
+            Dsl.CallData callData = funcData.GetStatement(stIndex) as Dsl.CallData;
+            SetParam(callData, paramIndex, val);
+        }
+        public static void SetStatementParam(Dsl.StatementData statementData, int funcIndex, int stIndex, int paramIndex, string val)
+        {
+            if (funcIndex >= 0 && funcIndex < statementData.Functions.Count) {
+                Dsl.FunctionData funcData = statementData.Functions[funcIndex];
+                SetStatementParam(funcData, stIndex, paramIndex, val);
+            }
+        }
     }
     public class DummyTriger : AbstractSkillTriger
     {
@@ -233,6 +273,48 @@ namespace SkillSystem
             DummyTriger cmd = new DummyTriger();
             return cmd;
         }
+    }
+    public class SkillTriggerProxy
+    {
+        public SkillTriggerProxy(AbstractSkillTriger trigger)
+        {
+            m_RealTrigger = trigger;
+        }
+        public void DoClone(SkillTriggerProxy other)
+        {
+            other.m_RealTrigger.CopyTo(m_RealTrigger);
+        }
+        public string Name
+        {
+            get { return m_RealTrigger.Name; }
+            set { m_RealTrigger.Name = value; }
+        }
+        public long StartTime
+        {
+            get { return m_RealTrigger.StartTime; }
+            set { m_RealTrigger.StartTime = value; }
+        }
+        public int OrderInSkill
+        {
+            get { return m_RealTrigger.OrderInSkill; }
+            set { m_RealTrigger.OrderInSkill = value; }
+        }
+        public int OrderInSection
+        {
+            get { return m_RealTrigger.OrderInSection; }
+            set { m_RealTrigger.OrderInSection = value; }
+        }
+        public bool IsFinal
+        {
+            get { return m_RealTrigger.IsFinal; }
+            set { m_RealTrigger.IsFinal = value; }
+        }
+        public void AddProperty(string key, PropertyAccessorHelper.GetDelegation onGet, PropertyAccessorHelper.SetDelegation onSet)
+        {
+            m_RealTrigger.AddProperty(key, onGet, onSet);
+        }
+        
+        private AbstractSkillTriger m_RealTrigger = null;
     }
     public sealed class SkillParamUtility
     {
@@ -397,6 +479,14 @@ namespace SkillSystem
         private string m_Key = string.Empty;
         private T m_Value;
     }
+    public class SkillIntParam : SkillNonStringParam<int>
+    { }
+    public class SkillLongParam : SkillNonStringParam<long>
+    { }
+    public class SkillFloatParam : SkillNonStringParam<float>
+    { }
+    public class SkillDoubleParam : SkillNonStringParam<double>
+    { }
     public class SkillObjectParam
     {
         public void CopyFrom(SkillObjectParam other)

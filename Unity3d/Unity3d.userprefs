@@ -1,0 +1,19 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="..\App\ClientModule\PluginFramework\GameObjects\EntityViewModel_Npc.cs">
+    <Files>
+      <File FileName="..\App\ClientModule\PluginFramework\RoomNetWork\MsgHandler.cs" Line="137" Column="4" />
+      <File FileName="..\App\ClientModule\PluginFramework\GameObjects\EntityViewModel_Npc.cs" Line="201" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore>
+      <Breakpoint file="E:\work\OpenSource\CSharpGameFramework_local\App\ClientModule\ClientModule_Config.cs" line="17" column="1" />
+      <Breakpoint file="e:\work\OpenSource\CSharpGameFramework_local\EntitySystem\GameObjects\AttrCalc\AttrCalculator.cs" line="34" column="1" />
+      <Breakpoint file="F:\OpenSource\CSharpGameFramework_local\App\ClientModule\Cs2LuaScript\Story\AiCommand\AiDoMember.cs" line="85" column="1" />
+    </BreakpointStore>
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="d:\work\Client\CsLibrary\App\ClientModule\Common\Message.cs" line="12185" offsetX="396" offsetY="194944" expression="desc" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+</Properties>

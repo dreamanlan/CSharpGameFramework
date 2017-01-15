@@ -1586,4 +1586,66 @@ namespace StorySystem
         }
         private List<IStoryValue<P>> m_Args = new List<IStoryValue<P>>();
     }
+    public sealed class StoryValueParams : IStoryValueParam
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param, int startIndex)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+                for (int i = startIndex; i < callData.GetParamNum(); ++i) {
+                    StoryValue val = new StoryValue();
+                    val.InitFromDsl(callData.GetParam(i));
+                    m_Args.Add(val);
+                }
+            }
+        }
+        public IStoryValueParam Clone()
+        {
+            StoryValueParams val = new StoryValueParams();
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> arg = m_Args[i];
+                val.m_Args.Add(arg.Clone());
+            }
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                val.Evaluate(instance, iterator, args);
+            }
+
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+            }
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                bool ret = true;
+                for (int i = 0; i < m_Args.Count; ++i) {
+                    IStoryValue<object> val = m_Args[i];
+                    if (!val.HaveValue) {
+                        ret = false;
+                        break;
+                    }
+                }
+                return ret;
+            }
+        }
+        public ArrayList Values
+        {
+            get
+            {
+                ArrayList vals = new ArrayList();
+                for (int i = 0; i < m_Args.Count; ++i) {
+                    IStoryValue<object> val = m_Args[i];
+                    vals.Add(val.Value);
+                }
+                return vals;
+            }
+        }
+        private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
+    }
 }

@@ -8,12 +8,12 @@ using GameFrameworkMessage;
 namespace GameFramework
 {
     /// <remarks>
-    /// 注意这个类的internal方法，都应考虑跨线程调用是否安全！！！
+    /// 注意这个类的public方法，都应考虑跨线程调用是否安全！！！
     /// </remarks>
-    internal class RoomThread : MyServerThread
+    public class RoomThread : MyServerThread
     {
         // constructors------------------------------------------------------------
-        internal RoomThread(RoomManager roomMgr)
+        public RoomThread(RoomManager roomMgr)
         {
             room_mgr_ = roomMgr;
             cur_thread_id_ = thread_id_creator_++;
@@ -25,7 +25,7 @@ namespace GameFramework
             scene_pool_ = new ScenePool();
         }
 
-        internal bool Init(uint tick_interval, uint room_count,
+        public bool Init(uint tick_interval, uint room_count,
             UserPool userpool, Connector conn)
         {
             tick_interval_ = tick_interval;
@@ -38,17 +38,22 @@ namespace GameFramework
             return true;
         }
 
-        internal int IdleRoomCount()
+        public Room GetRoomByLocalId(int localId)
+        {
+            return room_pool_.GetRoomByLocalId(localId);
+        }
+
+        public int IdleRoomCount()
         {
             return (int)(max_room_count_ - active_room_.Count - preactive_room_count_);
         }
 
-        internal void PreActiveRoom()
+        public void PreActiveRoom()
         {
             Interlocked.Increment(ref preactive_room_count_);
         }
 
-        internal void ActiveFieldRoom(int roomid, int sceneId)
+        public void ActiveFieldRoom(int roomid, int sceneId)
         {
             LogSys.Log(LOG_TYPE.INFO, "[0] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             Room rm = room_pool_.NewRoom();
@@ -76,7 +81,7 @@ namespace GameFramework
                 roomid, cur_thread_id_, preactive_room_count_);
         }
 
-        internal void ActiveRoom(int roomid, int sceneId, MyAction<bool> callbackOnFinish)
+        public void ActiveRoom(int roomid, int sceneId, MyAction<bool> callbackOnFinish)
         {
             LogSys.Log(LOG_TYPE.INFO, "[0] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             Room rm = room_pool_.NewRoom();
@@ -118,7 +123,7 @@ namespace GameFramework
             LogSys.Log(LOG_TYPE.DEBUG, "active room {0} in thread {1}, preactive room count {2}",
                 roomid, cur_thread_id_, preactive_room_count_);
         }
-        internal void AddUser(User user, int roomId, MyAction<bool, int, User> callbackOnFinish)
+        public void AddUser(User user, int roomId, MyAction<bool, int, User> callbackOnFinish)
         {
             AddUser(new User[] { user }, roomId, (bool ret, int sceneId, IList<User> users) => {
                 if(users.Count>0)
@@ -127,7 +132,7 @@ namespace GameFramework
                     callbackOnFinish(ret, sceneId, null);
             });
         }
-        internal void AddUser(IList<User> users, int roomId, MyAction<bool, int, IList<User>> callbackOnFinish)
+        public void AddUser(IList<User> users, int roomId, MyAction<bool, int, IList<User>> callbackOnFinish)
         {
             Room room = GetRoomByID(roomId);
             if (null != room) {
@@ -151,7 +156,7 @@ namespace GameFramework
                 callbackOnFinish(false, -1, null);
             }
         }
-        internal void RemoveUser(ulong guid, int roomId, bool free, MyAction<bool, int, User> callbackOnFinish)
+        public void RemoveUser(ulong guid, int roomId, bool free, MyAction<bool, int, User> callbackOnFinish)
         {
             RemoveUser(new ulong[] { guid }, roomId, free, (bool ret, int sceneId, IList<User> users) => {
                 if(users.Count>0)
@@ -160,7 +165,7 @@ namespace GameFramework
                     callbackOnFinish(ret, sceneId, null);
             });
         }
-        internal void RemoveUser(IList<ulong> guids, int roomId, bool free, MyAction<bool, int, IList<User>> callbackOnFinish)
+        public void RemoveUser(IList<ulong> guids, int roomId, bool free, MyAction<bool, int, IList<User>> callbackOnFinish)
         {
             Room room = GetRoomByID(roomId);
             if (null != room) {
@@ -187,7 +192,7 @@ namespace GameFramework
             }
         }
 
-        internal void ChangeRoomScene(int roomid, int sceneId, MyAction<bool> callbackOnFinish)
+        public void ChangeRoomScene(int roomid, int sceneId, MyAction<bool> callbackOnFinish)
         {
             Room room = GetRoomByID(roomid);
             if (null != room) {
@@ -202,7 +207,7 @@ namespace GameFramework
             }
         }
         
-        internal void HandleReconnectUser(Msg_LR_ReconnectUser urMsg, PBChannel channel, int handle, uint seq)
+        public void HandleReconnectUser(Msg_LR_ReconnectUser urMsg, PBChannel channel, int handle, uint seq)
         {
             Msg_RL_ReplyReconnectUser.ReconnectResultEnum result;
             User us = GetUserByGuid(urMsg.UserGuid);
@@ -217,14 +222,14 @@ namespace GameFramework
             }
             Msg_RL_ReplyReconnectUser replyBuilder = new Msg_RL_ReplyReconnectUser();
             replyBuilder.UserGuid = urMsg.UserGuid;
-            replyBuilder.RoomID = urMsg.RoomID;
+            replyBuilder.RoomId = urMsg.RoomId;
             replyBuilder.Result = (int)result;
             channel.Send(replyBuilder);
         }
 
-        internal void HandleUserRelive(Msg_LR_UserReLive msg)
+        public void HandleUserRelive(Msg_LR_UserReLive msg)
         {
-            Room room = GetRoomByID(msg.RoomID);
+            Room room = GetRoomByID(msg.RoomId);
             if (null != room) {
                 Scene curScene = room.ActiveScene;
                 if (null != curScene) {
@@ -233,9 +238,9 @@ namespace GameFramework
             }
         }
 
-        internal void HandleUserQuit(Msg_LR_UserQuit msg, PBChannel channel)
+        public void HandleUserQuit(Msg_LR_UserQuit msg, PBChannel channel)
         {
-            Room room = GetRoomByID(msg.RoomID);
+            Room room = GetRoomByID(msg.RoomId);
             if (null != room) {
                 User user = room.GetUserByGuid(msg.UserGuid);
                 if (null != user) {
@@ -244,13 +249,13 @@ namespace GameFramework
             }
             Msg_RL_UserQuit replyBuilder = new Msg_RL_UserQuit();
             replyBuilder.UserGuid = msg.UserGuid;
-            replyBuilder.RoomID = msg.RoomID;
+            replyBuilder.RoomId = msg.RoomId;
             channel.Send(replyBuilder);
         }
 
-        internal void HandleReclaimItem(Msg_LR_ReclaimItem msg, PBChannel channel)
+        public void HandleReclaimItem(Msg_LR_ReclaimItem msg, PBChannel channel)
         {
-            Room room = GetRoomByID(msg.RoomID);
+            Room room = GetRoomByID(msg.RoomId);
             if (null != room) {
                 User user = room.GetUserByGuid(msg.UserGuid);
                 Scene curScene = room.ActiveScene;
@@ -259,7 +264,7 @@ namespace GameFramework
             }
         }
 
-        internal void HandleRoomStoryMessage(Msg_LRL_StoryMessage msg, PBChannel channel)
+        public void HandleRoomStoryMessage(Msg_LRL_StoryMessage msg, PBChannel channel)
         {
             Room room = GetRoomByID(msg.RoomId);
             if (null != room) {
@@ -307,8 +312,8 @@ namespace GameFramework
             room.RemoveUserFromRoomThread(user, true);
 
             replyBuilder.UserGuid = userGuid;
-            replyBuilder.RoomID = roomId;
-            replyBuilder.TargetRoomID = targetRoomId;
+            replyBuilder.RoomId = roomId;
+            replyBuilder.TargetRoomId = targetRoomId;
             replyBuilder.Result = (int)SceneOperationResultEnum.Success;
             channel.Send(replyBuilder);
         }
@@ -318,6 +323,8 @@ namespace GameFramework
             ActionNumPerTick = 1024;
             TickSleepTime = 10;
             LogSys.Log(LOG_TYPE.DEBUG, "thread {0} start.", cur_thread_id_);
+
+            AttrCalculator.LoadConfig();
         }
 
         protected override void OnTick()
@@ -380,7 +387,7 @@ namespace GameFramework
                 }
             }
             foreach (Room rm in unused_room_) {
-                room_mgr_.RemoveActiveRoom(rm.RoomID);
+                room_mgr_.RemoveActiveRoom(rm.RoomId);
                 active_room_.Remove(rm);
                 rm.Destroy();
                 room_pool_.FreeRoom(rm.LocalID);
@@ -410,7 +417,7 @@ namespace GameFramework
         private Room GetRoomByID(int roomid)
         {
             foreach (Room rm in active_room_) {
-                if (rm.RoomID == roomid) {
+                if (rm.RoomId == roomid) {
                     return rm;
                 }
             }

@@ -2,6 +2,8 @@ story(story_main)
 {
   onmessage("start")
   {
+    publishgfxevent("loading_complete", "ui");
+    //changescene(3);
   	publishgfxevent("ge_select_server", "lobby", "ws://127.0.0.1:9001");
     highlightprompt(0,"Tip_0");
     firemessage("show_login");

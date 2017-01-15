@@ -1,62 +1,71 @@
 namespace GameFramework
 {
 
-  internal class RoomPool
-  {
-    internal RoomPool()
+    public class RoomPool
     {
-      pool_size_ = 0;
-      cur_position_ = 0;
-      free_size_ = 0;
-    }
-
-    internal bool Init(uint pool_size)
-    {
-      pool_size_ = pool_size;
-      free_size_ = pool_size_;
-      room_pool_ = new Room[pool_size];
-      for (uint i = 0; i < pool_size; ++i) {
-        room_pool_[i] = new Room();
-        room_pool_[i].LocalID = i;
-        room_pool_[i].IsIdle = true;
-      }
-      return true;
-    }
-
-    internal Room NewRoom()
-    {
-      if (free_size_ == 0) {
-        return null;
-      }
-
-      uint ret_index = 0;
-      for (int i = 0; i < pool_size_; ++i) {
-        if (room_pool_[cur_position_].IsIdle) {
-          ret_index = cur_position_;
-          room_pool_[cur_position_].IsIdle = false;
-          cur_position_ = ++cur_position_ % pool_size_;
-          free_size_--;
-          return room_pool_[ret_index];
+        public RoomPool()
+        {
+            m_PoolSize = 0;
+            m_CurPosition = 0;
+            m_FreeSize = 0;
         }
-        cur_position_ = ++cur_position_ % pool_size_;
-      }
-      return null;
-    }
 
-    internal bool FreeRoom(uint localid)
-    {
-      if (localid >= pool_size_) {
-        return false;
-      }      
-      room_pool_[localid].IsIdle = true;
-      ++free_size_;
-      return true;
-    }
+        public bool Init(uint pool_size)
+        {
+            m_PoolSize = pool_size;
+            m_FreeSize = m_PoolSize;
+            m_RoomPool = new Room[pool_size];
+            for (uint i = 0; i < pool_size; ++i) {
+                m_RoomPool[i] = new Room();
+                m_RoomPool[i].LocalID = i;
+                m_RoomPool[i].IsIdle = true;
+            }
+            return true;
+        }
 
-    private uint pool_size_;
-    private uint cur_position_;
-    private uint free_size_;
-    private Room[] room_pool_;
-  }
+        public Room NewRoom()
+        {
+            if (m_FreeSize == 0) {
+                return null;
+            }
+
+            uint ret_index = 0;
+            for (int i = 0; i < m_PoolSize; ++i) {
+                if (m_RoomPool[m_CurPosition].IsIdle) {
+                    ret_index = m_CurPosition;
+                    m_RoomPool[m_CurPosition].IsIdle = false;
+                    m_CurPosition = ++m_CurPosition % m_PoolSize;
+                    m_FreeSize--;
+                    return m_RoomPool[ret_index];
+                }
+                m_CurPosition = ++m_CurPosition % m_PoolSize;
+            }
+            return null;
+        }
+
+        public bool FreeRoom(uint localid)
+        {
+            if (localid >= m_PoolSize) {
+                return false;
+            }
+            m_RoomPool[localid].IsIdle = true;
+            ++m_FreeSize;
+            return true;
+        }
+
+        public Room GetRoomByLocalId(int localId)
+        {
+            Room room = null;
+            if (localId >= 0 && localId < m_PoolSize) {
+                room = m_RoomPool[localId];
+            }
+            return room;
+        }
+
+        private uint m_PoolSize;
+        private uint m_CurPosition;
+        private uint m_FreeSize;
+        private Room[] m_RoomPool;
+    }
 
 }

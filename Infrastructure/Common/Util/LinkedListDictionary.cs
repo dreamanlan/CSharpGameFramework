@@ -134,15 +134,13 @@ namespace GameFramework
     {
       m_Objects.CopyTo(array, index);
     }
-    /*
-    [Obsolete("请不要使用这个特性，目前提供仅为了兼容现有代码。请使用FirstValue/LastValue特性来遍历值链表，或用VisitValues或FindValue方法遍历或查找值。")]
     public IEnumerable<TValue> Values
     {
       get
       {
         return m_Objects;
       }
-    }*/
+    }
 
     private MyDictionary<TKey, LinkedListNode<TValue>> m_LinkNodeDictionary = new MyDictionary<TKey, LinkedListNode<TValue>>();
     private LinkedList<TValue> m_Objects = new LinkedList<TValue>();

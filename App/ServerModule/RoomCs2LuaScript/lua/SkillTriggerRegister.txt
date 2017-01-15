@@ -1,0 +1,25 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "Cs2LuaScript__Plugin";
+
+SkillTriggerRegister = {
+	Register = function()
+		Cs2LuaScript.Plugin.Proxy:RegisterSkillTrigger(wrapstring("trackbullet"), wrapstring("TrackBulletTrigger"));
+		Cs2LuaScript.Plugin.Proxy:RegisterSkillTrigger(wrapstring("track2"), wrapstring("Track2Trigger"));
+	end,
+	cctor = function()
+	end,
+
+	__define_class = function()
+		local static = SkillTriggerRegister;
+		local static_fields = nil;
+		local static_props = nil;
+		local static_events = nil;
+
+		return defineclass(nil, "SkillTriggerRegister", static, static_fields, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	end,
+};
+
+
+SkillTriggerRegister.__define_class();
+

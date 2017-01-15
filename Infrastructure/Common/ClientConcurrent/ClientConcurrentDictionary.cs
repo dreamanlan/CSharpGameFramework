@@ -274,7 +274,8 @@ namespace System.Collections.Concurrent
       size = 2;
       head = new Node().Init(0);
       tail = new Node().Init(ulong.MaxValue);
-      SetBucket(0, (Node)head);
+      buckets[0] = head;
+      //SetBucket(0, (Node)head);
       ((Node)head).Next = tail;
     }
 

@@ -19,9 +19,13 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class LocalMessageCommand : AbstractStoryCommand
     {
+        public LocalMessageCommand(bool isConcurrent)
+        {
+            m_IsConcurrent = isConcurrent;
+        }
         public override IStoryCommand Clone()
         {
-            LocalMessageCommand cmd = new LocalMessageCommand();
+            LocalMessageCommand cmd = new LocalMessageCommand(m_IsConcurrent);
             cmd.m_MsgId = m_MsgId.Clone();
             for (int i = 0; i < m_MsgArgs.Count; i++) {
                 cmd.m_MsgArgs.Add(m_MsgArgs[i].Clone());
@@ -43,7 +47,10 @@ namespace StorySystem.CommonCommands
                 arglist.Add(m_MsgArgs[i].Value);
             }
             object[] args = arglist.ToArray();
-            instance.SendMessage(msgId, args);
+            if (m_IsConcurrent)
+                instance.SendConcurrentMessage(msgId, args);
+            else
+                instance.SendMessage(msgId, args);
             return false;
         }
         protected override void Load(Dsl.CallData callData)
@@ -60,6 +67,21 @@ namespace StorySystem.CommonCommands
         }
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
         private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
+        private bool m_IsConcurrent = false;
+    }
+    internal sealed class LocalMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new LocalMessageCommand(false);
+        }
+    }
+    internal sealed class LocalConcurrentMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new LocalMessageCommand(true);
+        }
     }
     /// <summary>
     /// clearmessage(msgid1,msgid2,...);
@@ -414,9 +436,13 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class LocalNamespacedMessageCommand : AbstractStoryCommand
     {
+        public LocalNamespacedMessageCommand(bool isConcurrent)
+        {
+            m_IsConcurrent = isConcurrent;
+        }
         public override IStoryCommand Clone()
         {
-            LocalNamespacedMessageCommand cmd = new LocalNamespacedMessageCommand();
+            LocalNamespacedMessageCommand cmd = new LocalNamespacedMessageCommand(m_IsConcurrent);
             cmd.m_MsgId = m_MsgId.Clone();
             for (int i = 0; i < m_MsgArgs.Count; i++) {
                 cmd.m_MsgArgs.Add(m_MsgArgs[i].Clone());
@@ -442,7 +468,10 @@ namespace StorySystem.CommonCommands
                 arglist.Add(m_MsgArgs[i].Value);
             }
             object[] args = arglist.ToArray();
-            instance.SendMessage(msgId, args);
+            if (m_IsConcurrent)
+                instance.SendConcurrentMessage(msgId, args);
+            else
+                instance.SendMessage(msgId, args);
             return false;
         }
         protected override void Load(Dsl.CallData callData)
@@ -459,6 +488,21 @@ namespace StorySystem.CommonCommands
         }
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
         private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
+        private bool m_IsConcurrent = false;
+    }
+    internal sealed class LocalNamespacedMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new LocalNamespacedMessageCommand(false);
+        }
+    }
+    internal sealed class LocalConcurrentNamespacedMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new LocalNamespacedMessageCommand(true);
+        }
     }
     /// <summary>
     /// clearnamespacedmessage(msgid1,msgid2,...);

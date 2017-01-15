@@ -166,14 +166,26 @@ namespace StorySystem.CommonValues
                     if (varName.StartsWith("$$")) {
                         m_Value = iterator;
                     } else if (null != args) {
+                        string realName = varName.Substring(1);
                         try {
-                            int index = int.Parse(varName.Substring(1));
-                            if (index >= 0 && index < args.Length) {
-                                m_Value = args[index];
-                            } else if (m_ParamNum > 1) {
-                                m_Value = m_DefaultValue.Value;
+                            if (char.IsDigit(realName, 0)) {
+                                int index = int.Parse(realName);
+                                if (index >= 0 && index < args.Length) {
+                                    m_Value = args[index];
+                                } else if (m_ParamNum > 1) {
+                                    m_Value = m_DefaultValue.Value;
+                                } else {
+                                    m_Value = null;
+                                }
                             } else {
-                                m_Value = null;
+                                object val;
+                                if (instance.StackVariables.TryGetValue(varName, out val)) {
+                                    m_Value = val;
+                                } else if (m_ParamNum > 1) {
+                                    m_Value = m_DefaultValue.Value;
+                                } else {
+                                    m_Value = null;
+                                }
                             }
                         } catch {
                             if (m_ParamNum > 1) {

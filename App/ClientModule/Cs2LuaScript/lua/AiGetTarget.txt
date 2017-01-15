@@ -1,0 +1,77 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+
+AiGetTarget = {
+	__new_object = function(...)
+		return newobject(AiGetTarget, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = AiGetTarget;
+
+		local static_methods = {
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+			};
+			return static_fields;
+		end;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			SetProxy = function(this, result)
+				this.m_Proxy = result;
+			end,
+			Clone = function(this)
+				return newobject(AiGetTarget, "ctor", {});
+			end,
+			Evaluate = function(this, instance, _params)
+				local args; args = _params.Values;
+				local objId; objId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32, false);
+				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
+				if (nil ~= npc) then
+					local targetId; targetId = npc:GetAiStateInfo().Target;
+					if (targetId > 0) then
+						local entity; entity = GameFramework.PluginFramework.Instance:GetEntityById(targetId);
+						if ((nil ~= entity) and (not entity:IsDead())) then
+							this.m_Proxy.Value = entity;
+						else
+							this.m_Proxy.Value = nil;
+						end;
+					else
+						this.m_Proxy.Value = nil;
+					end;
+				end;
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_fields_build = function()
+			local instance_fields = {
+				m_Proxy = __cs2lua_nil_field_value,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"GameFramework.Plugin.ISimpleStoryValuePlugin",
+		};
+
+		local interface_map = {
+			ISimpleStoryValuePlugin_SetProxy = "SetProxy",
+			ISimpleStoryValuePlugin_Clone = "Clone",
+			ISimpleStoryValuePlugin_Evaluate = "Evaluate",
+		};
+
+
+		return defineclass(nil, "AiGetTarget", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+AiGetTarget.__define_class();

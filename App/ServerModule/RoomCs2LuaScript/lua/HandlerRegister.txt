@@ -1,0 +1,39 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+
+HandlerRegister = {
+	Register = function()
+--在这里注册所有基于名字的消息处理
+	end,
+	Call = function(name, ...)
+		local args = wraparray{...};
+		local handler;
+		if (function() local __compiler_invoke_15; __compiler_invoke_15, handler = HandlerRegister.s_Handlers:TryGetValue(name, Slua.out) return __compiler_invoke_15; end)() then
+			handler(unpack(args));
+		end;
+	end,
+	Register__System_String__HandlerDelegation = function(name, handler)
+		if HandlerRegister.s_Handlers:ContainsKey(name) then
+			HandlerRegister.s_Handlers:Add(name, handler);
+		else
+			setexterninstanceindexer(HandlerRegister.s_Handlers, nil, "set_Item", name, handler);
+		end;
+	end,
+	cctor = function()
+	end,
+
+	__define_class = function()
+		local static = HandlerRegister;
+		local static_fields = {
+			s_Handlers = newexterndictionary(System.Collections.Generic.Dictionary_TKey_TValue, "System.Collections.Generic.Dictionary_TKey_TValue", "ctor", nil, {}),
+		};
+		local static_props = nil;
+		local static_events = nil;
+
+		return defineclass(nil, "HandlerRegister", static, static_fields, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	end,
+};
+
+
+HandlerRegister.__define_class();
+

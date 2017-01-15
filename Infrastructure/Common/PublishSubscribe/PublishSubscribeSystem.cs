@@ -71,6 +71,9 @@ namespace GameFramework
                     }
                 }
             } catch (Exception ex) {
+                if (null != ex.InnerException) {
+                    ex = ex.InnerException;
+                }
                 LogSystem.Error("PublishSubscribe.Publish({0},{1}) exception:{2}\n{3}", ev_name, group, ex.Message, ex.StackTrace);
             }
         }

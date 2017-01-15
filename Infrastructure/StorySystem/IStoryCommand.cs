@@ -83,7 +83,7 @@ namespace StorySystem
         protected virtual void Load(Dsl.FunctionData funcData) { }
         protected virtual void Load(Dsl.StatementData statementData) { }
 
-        private bool m_LastExecResult = false;
-        private bool m_IsCompositeCommand = false;
+        protected bool m_LastExecResult = false;
+        protected bool m_IsCompositeCommand = false;
     }
 }

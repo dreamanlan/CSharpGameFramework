@@ -10,31 +10,11 @@ using GameFrameworkMessage;
 
 namespace RoomServer
 {
-    internal enum RoomSrvStatus
-    {
-        STATUS_INIT = 0,
-        STATUS_RUNNING = 1,
-        STATUS_STOP = 2,
-    }
-
     /// <remarks>
     /// 注意这个类的消息处理的逻辑里调用的其它方法，都要检查跨线程调用是否安全！！！
     /// </remarks>
     internal sealed partial class RoomServer
     {
-        internal void ChangeRoomScene(int roomid, int sceneId)
-        {
-            room_mgr_.ChangeRoomScene(roomid, sceneId);
-        }
-        internal void PlayerRequestActiveRoom(int targetSceneId, params ulong[] guids)
-        {
-            room_mgr_.PlayerRequestActiveRoom(targetSceneId, guids);
-        }
-        internal void PlayerRequestChangeRoom(int targetSceneId, params ulong[] guids)
-        {
-            room_mgr_.PlayerRequestChangeRoom(targetSceneId, guids);
-        }
-
         private void Init(string[] args)
         {
             m_NameHandleCallback = this.OnNameHandleChanged;
@@ -51,15 +31,15 @@ namespace RoomServer
             bool ret = LogSys.Init("./config/logconfig.xml");
             System.Diagnostics.Debug.Assert(ret);
 
-            last_tick_time_ = TimeUtility.GetLocalMilliseconds();
-            last_send_roominfo_time_ = last_tick_time_;
-            is_continue_register_ = true;
-            channel_ = new PBChannel(BigworldAndRoomServerMessageEnum2Type.Query, BigworldAndRoomServerMessageEnum2Type.Query);
-            channel_.DefaultServiceName = "Lobby";
-            lobby_connector_ = new Connector(channel_);
+            m_LastTickTimeForSend = TimeUtility.GetLocalMilliseconds();
+            m_LastSendRoomInfoTime = m_LastTickTimeForSend;
+            m_IsContinueRegister = true;
+            m_Channel = new PBChannel(BigworldAndRoomServerMessageEnum2Type.Query, BigworldAndRoomServerMessageEnum2Type.Query);
+            m_Channel.DefaultServiceName = "Lobby";
+            m_LobbyConnector = new Connector(m_Channel);
 
-            server_ip_ = "127.0.0.1";
-            server_port_ = 9528;
+            m_ServerIp = "127.0.0.1";
+            m_ServerPort = 9528;
 
             InitConfig();
 
@@ -97,22 +77,23 @@ namespace RoomServer
             };
 
             LoadData();
+            Cs2LuaPluginProxy.Instance.Init();
+            Cs2LuaAssembly.Instance.Init();
 
-            LogSys.Log(LOG_TYPE.DEBUG, "room server init ip: {0}  port: {1}", server_ip_, server_port_);
+            LogSys.Log(LOG_TYPE.DEBUG, "room server init ip: {0}  port: {1}", m_ServerIp, m_ServerPort);
 
             uint tick_interval = 33;
-            room_mgr_ = new RoomManager(1280, c_thread_count, c_per_thread_room_count, tick_interval, lobby_connector_);
-            room_mgr_.Init(room_server_name_);
-            IOManager.Instance.Init((int)server_port_);
-            room_mgr_.StartRoomThread();
-            AiViewManager.Instance.Init();
+            m_RoomMgr = new RoomManager(1280, c_ThreadCount, c_PerThreadRoomCount, tick_interval, m_LobbyConnector);
+            m_RoomMgr.Init(m_RoomServerName);
+            IOManager.Instance.Init((int)m_ServerPort);
+            m_RoomMgr.StartRoomThread();
             SceneLogicViewManager.Instance.Init();
 
             ServerStorySystem.StaticInit();
             GameFramework.GmCommands.GmStorySystem.StaticInit();
 
-            channel_.Register<Msg_LR_ReplyRegisterRoomServer>(HandleReplyRegisterRoomServer);
-            room_mgr_.RegisterMsgHandler(channel_);
+            m_Channel.Register<Msg_LR_ReplyRegisterRoomServer>(HandleReplyRegisterRoomServer);
+            m_RoomMgr.RegisterMsgHandler(m_Channel);
 
             LogSys.Log(LOG_TYPE.DEBUG, "room server init ok.");
         }
@@ -122,18 +103,18 @@ namespace RoomServer
                 StringBuilder sb = new StringBuilder(256);
                 if (CenterClientApi.GetConfig("name", sb, 256)) {
                     string str = sb.ToString();
-                    if (null == room_server_name_ || 0 != room_server_name_.CompareTo(str))
-                        room_server_name_ = str;
+                    if (null == m_RoomServerName || 0 != m_RoomServerName.CompareTo(str))
+                        m_RoomServerName = str;
                 }
                 if (CenterClientApi.GetConfig("ServerIp", sb, 256)) {
                     string str = sb.ToString();
-                    if (null == server_ip_ || 0 != server_ip_.CompareTo(str))
-                        server_ip_ = str;
+                    if (null == m_ServerIp || 0 != m_ServerIp.CompareTo(str))
+                        m_ServerIp = str;
                 }
                 if (CenterClientApi.GetConfig("ServerPort", sb, 256)) {
                     uint port = uint.Parse(sb.ToString());
-                    if (server_port_ != port)
-                        server_port_ = port;
+                    if (m_ServerPort != port)
+                        m_ServerPort = port;
                 }
                 if (CenterClientApi.GetConfig("Debug", sb, 256)) {
                     int debug = int.Parse(sb.ToString());
@@ -168,7 +149,7 @@ namespace RoomServer
         }
         private void Release()
         {
-            room_mgr_.StopRoomThread();
+            m_RoomMgr.StopRoomThread();
             CenterClientApi.Release();
             IOManager.Instance.Release();
             LogSys.Release();
@@ -176,14 +157,14 @@ namespace RoomServer
         private void Tick()
         {
             long curTime = TimeUtility.GetLocalMilliseconds();
-            if (last_tick_time_ + c_tick_interval_ms < curTime) {
-                last_tick_time_ = curTime;
+            if (m_LastTickTimeForSend + c_TickIntervalMs < curTime) {
+                m_LastTickTimeForSend = curTime;
 
-                if (is_continue_register_) {
+                if (m_IsContinueRegister) {
                     SendRegisterRoomServer();
                 }
             }
-            if (!is_continue_register_)
+            if (!m_IsContinueRegister)
                 SendRoomServerUpdateInfo();
         }
 
@@ -195,9 +176,9 @@ namespace RoomServer
         {
             try {
                 if (name.CompareTo("Lobby") == 0 && !addOrUpdate) {
-                    is_continue_register_ = true;
+                    m_IsContinueRegister = true;
                 }
-                channel_.OnUpdateNameHandle(addOrUpdate, name, handle);
+                m_Channel.OnUpdateNameHandle(addOrUpdate, name, handle);
             } catch (Exception ex) {
                 LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
@@ -226,7 +207,7 @@ namespace RoomServer
             try {
                 byte[] bytes = new byte[len];
                 Marshal.Copy(data, bytes, 0, len);
-                channel_.Dispatch(source_handle, seq, bytes);
+                m_Channel.Dispatch(source_handle, seq, bytes);
             } catch (Exception ex) {
                 LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
@@ -240,25 +221,25 @@ namespace RoomServer
         private void SendRegisterRoomServer()
         {
             Msg_RL_RegisterRoomServer rrsBuilder = new Msg_RL_RegisterRoomServer();
-            rrsBuilder.ServerName = room_server_name_;
+            rrsBuilder.ServerName = m_RoomServerName;
             rrsBuilder.MaxRoomNum = 1024;
-            rrsBuilder.ServerIp = server_ip_;
-            rrsBuilder.ServerPort = server_port_;
-            channel_.Send(rrsBuilder);
+            rrsBuilder.ServerIp = m_ServerIp;
+            rrsBuilder.ServerPort = m_ServerPort;
+            m_Channel.Send(rrsBuilder);
             LogSys.Log(LOG_TYPE.DEBUG, "register room server to Lobby.");
         }
 
         private void SendRoomServerUpdateInfo()
         {
             long curTime = TimeUtility.GetLocalMilliseconds();
-            int ts = (int)(curTime - last_send_roominfo_time_);
-            if (ts >= c_send_interval_ms) {
-                last_send_roominfo_time_ = curTime;
+            int ts = (int)(curTime - m_LastSendRoomInfoTime);
+            if (ts >= c_SendIntervalMs) {
+                m_LastSendRoomInfoTime = curTime;
                 Msg_RL_RoomServerUpdateInfo msgBuilder = new Msg_RL_RoomServerUpdateInfo();
-                msgBuilder.ServerName = room_server_name_;
-                msgBuilder.IdleRoomNum = room_mgr_.GetIdleRoomCount();
-                msgBuilder.UserNum = room_mgr_.GetUserCount();
-                channel_.Send(msgBuilder);
+                msgBuilder.ServerName = m_RoomServerName;
+                msgBuilder.IdleRoomNum = m_RoomMgr.GetIdleRoomCount();
+                msgBuilder.UserNum = m_RoomMgr.GetUserCount();
+                m_Channel.Send(msgBuilder);
                 //LogSys.Log(LOG_TYPE.DEBUGI, "send room info to Lobby, Name:{0} IdleRoomNum:{1} UserNum:{2}.", room_server_name_, room_mgr_.GetIdleRoomCount(), room_mgr_.GetUserCount());
             }
         }
@@ -266,27 +247,25 @@ namespace RoomServer
         private void HandleReplyRegisterRoomServer(Msg_LR_ReplyRegisterRoomServer msg, PBChannel channel, int handle, uint seq)
         {
             if (msg.IsOk == true) {
-                is_continue_register_ = false;
+                m_IsContinueRegister = false;
             }
         }
 
-        private const int c_tick_interval_ms = 5000;           // tick间隔
-        private const int c_send_interval_ms = 1000;           // 发送间隔
+        private const int c_TickIntervalMs = 5000;           // tick间隔
+        private const int c_SendIntervalMs = 1000;           // 发送间隔
         private const long c_WarningTickTime = 1000;
-        private long m_LastTickTime = 0;
+        private long m_LastTickTimeForSend = 0;
 
-        private RoomManager room_mgr_;
-        private long last_tick_time_;
-        private long last_send_roominfo_time_;// 上一次发送房间信息的时间
-        private uint thread_count_;
-        private uint per_thread_room_count_;
-        private bool is_continue_register_;
-        private string server_ip_;
-        private uint server_port_;
-        private Connector lobby_connector_;
-        private PBChannel channel_;
+        private RoomManager m_RoomMgr;
+        private long m_LastTickTime;
+        private long m_LastSendRoomInfoTime;// 上一次发送房间信息的时间
+        private bool m_IsContinueRegister;
+        private string m_ServerIp;
+        private uint m_ServerPort;
+        private Connector m_LobbyConnector;
+        private PBChannel m_Channel;
 
-        private string room_server_name_;
+        private string m_RoomServerName;
 
         private CenterClientApi.HandleNameHandleChangedCallback m_NameHandleCallback = null;
         private CenterClientApi.HandleMessageCallback m_MsgCallback = null;
@@ -294,8 +273,8 @@ namespace RoomServer
         private CenterClientApi.HandleCommandCallback m_CmdCallback = null;
         private CenterClientApi.CenterLogHandler m_LogHandler = null;
 
-        private const int c_thread_count = 8;
-        private const int c_per_thread_room_count = 32;
+        private const int c_ThreadCount = 8;
+        private const int c_PerThreadRoomCount = 32;
 
         internal static RoomServer Instance
         {

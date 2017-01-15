@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace GameFramework
 {
-  internal class SceneLoadThread : MyServerThread
+  public class SceneLoadThread : MyServerThread
   {
     protected override void OnStart()
     {      
@@ -46,7 +46,7 @@ namespace GameFramework
     private const long c_WarningTickTime = 1000;
     private long m_LastTickTime = 0;
 
-    internal static SceneLoadThread Instance
+    public static SceneLoadThread Instance
     {
       get
       {

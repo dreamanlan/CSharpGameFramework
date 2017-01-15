@@ -76,8 +76,12 @@ namespace StorySystem.CommonCommands
         {
             if (m_Stack.Count > 0) {
                 StackElementInfo stackInfo = m_Stack.Peek();
-                for (int i = 0; i < m_ArgNames.Count && i < stackInfo.m_Args.Count; ++i) {
-                    instance.SetVariable(m_ArgNames[i], stackInfo.m_Args[i].Value);
+                for (int i = 0; i < m_ArgNames.Count; ++i) {
+                    if (i < stackInfo.m_Args.Count) {
+                        instance.SetVariable(m_ArgNames[i], stackInfo.m_Args[i].Value);
+                    } else {
+                        instance.SetVariable(m_ArgNames[i], null);
+                    }
                 }
             }
         }
@@ -86,6 +90,7 @@ namespace StorySystem.CommonCommands
             bool ret = false;
             if (m_Stack.Count > 0) {
                 StackElementInfo stackInfo = m_Stack.Peek();
+                instance.StackVariables = stackInfo.m_StackVariables;
                 if (stackInfo.m_CommandQueue.Count == 0 && !stackInfo.m_AlreadyExecute) {
                     Evaluate(instance, iterator, args);
                     Prepare(stackInfo);

@@ -1,0 +1,46 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+require "Cs2LuaScript__Plugin";
+
+StoryRegister = {
+	__define_class = function()
+		local static = StoryRegister;
+
+		local static_methods = {
+			Register = function()
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_do_normal", "AiDoNormal");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_do_member", "AiDoMember");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_cast_skill", "AiCastSkill");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_chase", "AiChase");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_keep_away", "AiKeepAway");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_go_home", "AiGohome");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_rand_move", "AiRandMove");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_select_skill_by_distance", "AiSelectSkillByDistance");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_need_chase", "AiNeedChase");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_need_keep_away", "AiNeedKeepAway");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_select_skill", "AiSelectSkill");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_select_target", "AiSelectTarget");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_get_skill", "AiGetSkill");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_get_target", "AiGetTarget");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_get_skills", "AiGetSkills");
+				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_get_entities", "AiGetEntities");
+				Cs2LuaScript.Plugin.Proxy:RegisterStoryValue("select", "AiQuery");
+			end,
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+			};
+			return static_fields;
+		end;
+		local static_props = nil;
+		local static_events = nil;
+
+		return defineclass(nil, "StoryRegister", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	end,
+};
+
+StoryRegister.__define_class();

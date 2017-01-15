@@ -1,0 +1,164 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+
+AiQuery = {
+	cctor = function()
+	end,
+
+	__new_object = function(...)
+		return newobject(AiQuery, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = AiQuery;
+		local static_fields = nil;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			SetProxy = function(this, result)
+				this.m_Proxy = result;
+			end,
+			Clone = function(this)
+				local newObj; newObj = newobject(AiQuery, "ctor", {});
+				if (nil ~= this.m_Select) then
+					newObj.m_Select = typecast(this.m_Select:Clone(), StorySystem.IStoryValue);
+				end;
+				if (nil ~= this.m_From) then
+					newObj.m_From = typecast(this.m_From:Clone(), StorySystem.IStoryValue);
+				end;
+				if (nil ~= this.m_Where) then
+					newObj.m_Where = typecast(this.m_Where:Clone(), StorySystem.IStoryValue);
+				end;
+				local i; i = 0;
+				while (i < this.m_OrderBy.Count) do
+					newObj.m_OrderBy:Add(typecast(getexterninstanceindexer(this.m_OrderBy, nil, "get_Item", i):Clone(), StorySystem.IStoryValue));
+				i = i + 1;
+				end;
+				newObj.m_Desc = this.m_Desc;
+				return newObj;
+			end,
+			Evaluate = function(this, instance, iterator, args)
+				if ((nil ~= this.m_Select) and (nil ~= this.m_From)) then
+					this.m_From:Evaluate(instance, iterator, args);
+					local coll; coll = newexternlist(System.Collections.ArrayList, "System.Collections.ArrayList", "ctor", nil, {});
+--筛选
+					local enumer; enumer = typecast(this.m_From.Value, System.Collections.IEnumerable);
+					if (nil ~= enumer) then
+						local enumerator; enumerator = enumer:GetEnumerator();
+						while enumerator:MoveNext() do
+							local v; v = enumerator.Current;
+							if (nil ~= this.m_Where) then
+								this.m_Where:Evaluate(instance, v, args);
+								local wvObj; wvObj = this.m_Where.Value;
+								local wv; wv = typecast(System.Convert.ChangeType(wvObj, System.Int32), System.Int32);
+								if (wv ~= 0) then
+									this:AddRow(coll, v, instance, args);
+								end;
+							else
+								this:AddRow(coll, v, instance, args);
+							end;
+						end;
+					end;
+--排序
+					local ct; ct = this.m_OrderBy.Count;
+					if (ct > 0) then
+						coll:Sort(newexternobject(AiQueryComparer, "AiQueryComparer", "ctor", nil, {}, this.m_Desc, ct));
+					end;
+--收集结果
+					local result; result = newexternlist(System.Collections.ArrayList, "System.Collections.ArrayList", "ctor", nil, {});
+					local i; i = 0;
+					while (i < coll.Count) do
+						local ao; ao = typecast(getexterninstanceindexer(coll, nil, "get_Item", i), System.Collections.ArrayList);
+						result:Add(getexterninstanceindexer(ao, nil, "get_Item", 0));
+					i = i + 1;
+					end;
+					this.m_Proxy.Value = result;
+				end;
+			end,
+			LoadCallData = function(this, callData)
+				local id; id = callData:GetId();
+				if (id == wrapstring("select")) then
+					this.m_Select = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", nil, {});
+					this.m_Select:InitFromDsl(callData:GetParam(0));
+				elseif (id == wrapstring("from")) then
+					this.m_From = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", nil, {});
+					this.m_From:InitFromDsl(callData:GetParam(0));
+				elseif (id == wrapstring("where")) then
+					this.m_Where = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", nil, {});
+					this.m_Where:InitFromDsl(callData:GetParam(0));
+				elseif (id == wrapstring("orderby")) then
+					local i; i = 0;
+					while (i < callData:GetParamNum()) do
+						local v; v = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", nil, {});
+						v:InitFromDsl(callData:GetParam(i));
+						this.m_OrderBy:Add(v);
+					i = i + 1;
+					end;
+				elseif (id == wrapstring("asc")) then
+					this.m_Desc = false;
+				elseif (id == wrapstring("desc")) then
+					this.m_Desc = true;
+				end;
+			end,
+			LoadFuncData = function(this, funcData)
+				this:LoadCallData(funcData.Call);
+			end,
+			LoadStatementData = function(this, statementData)
+				local i; i = 0;
+				while (i < statementData.Functions.Count) do
+					local funcData; funcData = getexterninstanceindexer(statementData.Functions, nil, "get_Item", i);
+					this:LoadFuncData(funcData);
+				i = i + 1;
+				end;
+			end,
+			AddRow = function(this, coll, v, instance, args)
+				local row; row = newexternlist(System.Collections.ArrayList, "System.Collections.ArrayList", "ctor", nil, {});
+				coll:Add(row);
+				this.m_Select:Evaluate(instance, v, args);
+				row:Add(this.m_Select.Value);
+				local i; i = 0;
+				while (i < this.m_OrderBy.Count) do
+					local val; val = getexterninstanceindexer(this.m_OrderBy, nil, "get_Item", i);
+					val:Evaluate(instance, v, args);
+					row:Add(val.Value);
+				i = i + 1;
+				end;
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_build = function()
+			local instance_fields = {
+				m_Proxy = nil,
+				m_Select = nil,
+				m_From = nil,
+				m_Where = nil,
+				m_OrderBy = newexternlist(System.Collections.Generic.List_T, "System.Collections.Generic.List_T", "ctor", nil, {}),
+				m_Desc = false,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"GameFramework.Plugin.IStoryValuePlugin",
+		};
+
+		local interface_map = {
+			GameFramework_Plugin_IStoryValuePlugin_SetProxy = "SetProxy",
+			GameFramework_Plugin_IStoryValuePlugin_Clone = "Clone",
+			GameFramework_Plugin_IStoryValuePlugin_Evaluate = "Evaluate",
+			GameFramework_Plugin_IStoryValuePlugin_LoadCallData = "LoadCallData",
+			GameFramework_Plugin_IStoryValuePlugin_LoadFuncData = "LoadFuncData",
+			GameFramework_Plugin_IStoryValuePlugin_LoadStatementData = "LoadStatementData",
+		};
+
+
+		return defineclass(nil, "AiQuery", static, static_fields, static_props, static_events, instance_methods, instance_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+
+AiQuery.__define_class();
+

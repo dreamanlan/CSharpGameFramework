@@ -333,19 +333,19 @@ namespace GameFrameworkMessage
       get { return _UserGuids; }
     }
   
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
-    private int _SceneID;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"SceneID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int SceneID
+    private int _SceneId;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"SceneId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int SceneId
     {
-      get { return _SceneID; }
-      set { _SceneID = value; }
+      get { return _SceneId; }
+      set { _SceneId = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -364,19 +364,19 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
-    private int _TargetRoomID;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"TargetRoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int TargetRoomID
+    private int _TargetRoomId;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"TargetRoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int TargetRoomId
     {
-      get { return _TargetRoomID; }
-      set { _TargetRoomID = value; }
+      get { return _TargetRoomId; }
+      set { _TargetRoomId = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -395,12 +395,12 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private GameFrameworkMessage.Msg_LR_RoomUserInfo _UserInfo;
     [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"UserInfo", DataFormat = global::ProtoBuf.DataFormat.Default)]
@@ -442,12 +442,12 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private int _ItemId;
     [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"ItemId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
@@ -494,12 +494,12 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -648,12 +648,12 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -672,12 +672,12 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -776,12 +776,12 @@ namespace GameFrameworkMessage
       get { return _UserGuids; }
     }
   
-    private int _SceneID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"SceneID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int SceneID
+    private int _SceneId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"SceneId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int SceneId
     {
-      get { return _SceneID; }
-      set { _SceneID = value; }
+      get { return _SceneId; }
+      set { _SceneId = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -800,12 +800,12 @@ namespace GameFrameworkMessage
       get { return _UserGuids; }
     }
   
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private int _Result;
     [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"Result", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
@@ -831,12 +831,12 @@ namespace GameFrameworkMessage
       get { return _UserGuids; }
     }
   
-    private int _SceneID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"SceneID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int SceneID
+    private int _SceneId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"SceneId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int SceneId
     {
-      get { return _SceneID; }
-      set { _SceneID = value; }
+      get { return _SceneId; }
+      set { _SceneId = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -855,19 +855,19 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
-    private int _TargetRoomID;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"TargetRoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int TargetRoomID
+    private int _TargetRoomId;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"TargetRoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int TargetRoomId
     {
-      get { return _TargetRoomID; }
-      set { _TargetRoomID = value; }
+      get { return _TargetRoomId; }
+      set { _TargetRoomId = value; }
     }
     private int _Result;
     [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"Result", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
@@ -909,12 +909,12 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private int _Result;
     [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"Result", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
@@ -940,12 +940,12 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private int _ItemId;
     [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"ItemId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
@@ -1055,12 +1055,12 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private int _Result;
     [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"Result", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
@@ -1131,12 +1131,12 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private bool _IsBattleEnd;
     [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"IsBattleEnd", DataFormat = global::ProtoBuf.DataFormat.Default)]
@@ -1186,12 +1186,12 @@ namespace GameFrameworkMessage
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
-    private int _RoomID;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomID", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int RoomID
+    private int _RoomId;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"RoomId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    public int RoomId
     {
-      get { return _RoomID; }
-      set { _RoomID = value; }
+      get { return _RoomId; }
+      set { _RoomId = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)

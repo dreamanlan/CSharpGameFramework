@@ -15,6 +15,8 @@ public sealed class OverHeadBarManager
         subscribes.Add(Utility.EventSystem.Subscribe<int>("ui_remove_actor", "ui", RemoveActor));
         subscribes.Add(Utility.EventSystem.Subscribe<int, bool>("ui_actor_color", "ui", ChangeColor));
         subscribes.Add(Utility.EventSystem.Subscribe<int>("ui_drop", "ui", Drop));
+        subscribes.Add(Utility.EventSystem.Subscribe<int, string>("ui_show_paopao", "ui", ShowPaoPao));
+        subscribes.Add(Utility.EventSystem.Subscribe<int>("ui_hide_paopao", "ui", HidePaoPao));
     }
     public void Release()
     {
@@ -37,7 +39,7 @@ public sealed class OverHeadBarManager
     }
     private void AddActor(int actorID, bool isGreen, TableConfig.Actor cfg)
     {
-        GameObject obj = ClientModule.Instance.GetGameObject(actorID);
+        GameObject obj = PluginFramework.Instance.GetGameObject(actorID);
         GameObject headObj = Utility.FindChildObject(obj, "bloodbar");
         if (obj != null && headObj != null) {
 
@@ -59,7 +61,7 @@ public sealed class OverHeadBarManager
             view.SetHealthColor(isGreen);
             views[actorID] = view;
             view.SetHealth(1);
-            float mp = ClientModule.Instance.GetNpcMp(actorID);
+            float mp = PluginFramework.Instance.GetNpcMp(actorID);
             view.SetMp(mp);
         }
     }
@@ -94,7 +96,7 @@ public sealed class OverHeadBarManager
             if (num > 0) {
                 view.ShowFloatNum(num, Color.green, 1.0f);
             } else {
-                if (ClientModule.Instance.GetCampId(actorID) == ClientModule.Instance.CampId) {
+                if (PluginFramework.Instance.GetCampId(actorID) == PluginFramework.Instance.CampId) {
                     view.ShowFloatNum(num, Color.red, 1.0f);
                 } else {
                     view.ShowFloatNum(num, Color.white, 1.0f);
@@ -115,7 +117,20 @@ public sealed class OverHeadBarManager
             //GameObject.Destroy(views[actorID].gameObject);
             views.Remove(actorID);
         }
-
+    }
+    private void ShowPaoPao(int actorID, string text)
+    {
+        OverHeadBar view;
+        if (views.TryGetValue(actorID, out view)) {
+            view.ShowPaoPao(text);
+        }
+    }
+    private void HidePaoPao(int actorID)
+    {
+        OverHeadBar view;
+        if (views.TryGetValue(actorID, out view)) {
+            view.HidePaoPao();
+        }
     }
 
     private List<object> subscribes = new List<object>();

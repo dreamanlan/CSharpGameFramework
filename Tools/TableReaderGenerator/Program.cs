@@ -103,7 +103,7 @@ namespace TableReaderGenerator
                                 codes.Add(funcData.GetExternScript());
                             }
                         } else {
-                            LogSystem.Error("tool {0} must end with ';' ! line {1}", info.ToScriptString(), info.GetLine());
+                            LogSystem.Error("tool {0} must end with ';' ! line {1}", info.ToScriptString(false), info.GetLine());
                             haveError = true;
                         }
                     } else if (info.GetId() == "global") {
@@ -125,7 +125,7 @@ namespace TableReaderGenerator
                                 codes.Add(funcData.GetExternScript());
                             }
                         } else {
-                            LogSystem.Error("global {0} must end with ';' ! line {1}", info.ToScriptString(), info.GetLine());
+                            LogSystem.Error("global {0} must end with ';' ! line {1}", info.ToScriptString(false), info.GetLine());
                             haveError = true;
                         }
                     } else if (info.GetId() == "typedef") {
@@ -154,7 +154,7 @@ namespace TableReaderGenerator
                                                     typeDef.m_RecordCode = item.GetExternScript();
                                                 }
                                             } else {
-                                                LogSystem.Error("typedef {0} must contains code ! line {1}", comp.ToScriptString(), comp.GetLine());
+                                                LogSystem.Error("typedef {0} must contains code ! line {1}", comp.ToScriptString(false), comp.GetLine());
                                                 haveError = true;
                                             }
                                         } else {
@@ -164,18 +164,18 @@ namespace TableReaderGenerator
                                                     typeDef.m_TypeCode = call.GetParamId(0);
                                                 }
                                             } else {
-                                                LogSystem.Error("typedef {0} must have params or end with ';' ! line {1}", comp.ToScriptString(), comp.GetLine());
+                                                LogSystem.Error("typedef {0} must have params or end with ';' ! line {1}", comp.ToScriptString(false), comp.GetLine());
                                                 haveError = true;
                                             }
                                         }
                                     }
                                 } else {
-                                    LogSystem.Error("typedef {0} must have 1 params ! line {1}", info.ToScriptString(), info.GetLine());
+                                    LogSystem.Error("typedef {0} must have 1 params ! line {1}", info.ToScriptString(false), info.GetLine());
                                     haveError = true;
                                 }
                             }
                         } else {
-                            LogSystem.Error("typedef {0} must end with ';' ! line {1}", info.ToScriptString(), info.GetLine());
+                            LogSystem.Error("typedef {0} must end with ';' ! line {1}", info.ToScriptString(false), info.GetLine());
                             haveError = true;
                         }
                     } else if (info.GetId() == "tabledef") {
@@ -262,21 +262,21 @@ namespace TableReaderGenerator
                                                 }
                                                 tableDef.m_Fields.Add(fieldDef);
                                             } else {
-                                                LogSystem.Error("field {0} must have name (member and field) and type ! line {1}", comp.ToScriptString(), comp.GetLine());
+                                                LogSystem.Error("field {0} must have name (member and field) and type ! line {1}", comp.ToScriptString(false), comp.GetLine());
                                                 haveError = true;
                                             }
                                         } else {
-                                            LogSystem.Error("field {0} must have name (member and field) and type and end with ';' ! line {1}", comp.ToScriptString(), comp.GetLine());
+                                            LogSystem.Error("field {0} must have name (member and field) and type and end with ';' ! line {1}", comp.ToScriptString(false), comp.GetLine());
                                             haveError = true;
                                         }
                                     }
                                 } else {
-                                    LogSystem.Error("tabledef {0} must have 3 params ! line {1}", info.ToScriptString(), info.GetLine());
+                                    LogSystem.Error("tabledef {0} must have 3 params ! line {1}", info.ToScriptString(false), info.GetLine());
                                     haveError = true;
                                 }
                             }
                         } else {
-                            LogSystem.Error("tabledef {0} must end with ';' ! line {1}", info.ToScriptString(), info.GetLine());
+                            LogSystem.Error("tabledef {0} must end with ';' ! line {1}", info.ToScriptString(false), info.GetLine());
                             haveError = true;
                         }
                     } else {
@@ -804,6 +804,6 @@ namespace TableReaderGenerator
         }
                 
         private const string c_filters = "*.dat";
-        private static readonly HashSet<string> s_ListTables = new HashSet<string> { "SkillResources.txt", "LevelMonster.txt" };
+        private static readonly HashSet<string> s_ListTables = new HashSet<string> { "SkillResources.txt", "LevelMonster.txt", "SkillEvent.txt" };
     }
 }

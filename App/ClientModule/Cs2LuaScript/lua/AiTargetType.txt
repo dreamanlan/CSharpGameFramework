@@ -1,0 +1,17 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+
+AiTargetType = {
+	NPC = 0,
+	HERO = 1,
+	BOSS = 2,
+	ALL = 3,
+};
+
+rawset(AiTargetType, "Value2String", {
+		[0] = "NPC",
+		[1] = "HERO",
+		[2] = "BOSS",
+		[3] = "ALL",
+});

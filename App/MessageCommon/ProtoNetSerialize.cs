@@ -5,9 +5,9 @@ using GameFrameworkMessage;
 
 namespace GameFramework.Network
 {
-    internal static class Serialize
+    public static class Serialize
     {
-        internal static byte[] Encode(object msg, int id)
+        public static byte[] Encode(object msg, int id)
         {
 #if DEBUG
             int rightId = RoomMessageDefine2Type.Query(msg.GetType());
@@ -31,7 +31,7 @@ namespace GameFramework.Network
             Serializer.Serialize(DataStream, msg);
             return DataStream.ToArray();
         }
-        internal static object Decode(byte[] msgbuf, out int id)
+        public static object Decode(byte[] msgbuf, out int id)
         {
             int idLen = 1;
             byte first = msgbuf[0];

@@ -11,11 +11,9 @@ story(main)
   onmessage("start")
   {
     bindui(@window){
-      var("@left","Left");
-      var("@right","Right");
-      var("@text","Panel/Text");
-      onevent("button","click","Panel/Text");
+      onevent("button","btn","Panel/Button");
     };
+    installplugin("StoryDlg/Panel/ScrollView/Viewport/Content", "UiScrollInfo", 1, 0);
     @window.SetActive(changetype(0,"bool"));
   };
   onmessage("show_dlg")
@@ -57,7 +55,8 @@ story(main)
       log("Finish,show_dlg_item:{0} {1}",@dlgId,@index);
       @isFinish=1;
     }else{
-      if(@dlgItem.leftOrRight>0){
+      /*
+      if(@dlgItem.leftOrRight>0){        
         @left.SetActive(changetype(0,"bool"));
         @right.SetActive(changetype(1,"bool"));
         @right_Image.sprite=getactoricon(@dlgItem.speaker);
@@ -65,9 +64,12 @@ story(main)
         @left.SetActive(changetype(1,"bool"));
         @right.SetActive(changetype(0,"bool"));
         @left_Image.sprite=getactoricon(@dlgItem.speaker);
-      };        
-      @text_Text.text = @dlgItem.dialog;
+      };
+      */        
+      $txt = @dlgItem.dialog;
       @window.SetActive(changetype(1,"bool"));
+      sendgfxmessage("StoryDlg/Panel/ScrollView/Viewport/Content", "CallScript", "PushInfo", $txt);
+      log("show_dlg:{0} {1} {2}",@dlgId,@index,$txt);
     };
   };
 };

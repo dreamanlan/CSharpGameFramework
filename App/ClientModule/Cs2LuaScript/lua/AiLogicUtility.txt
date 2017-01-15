@@ -1,0 +1,134 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+
+AiLogicUtility = {
+	__new_object = function(...)
+		return newobject(AiLogicUtility, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = AiLogicUtility;
+
+		local static_methods = {
+			GetNearstTargetHelper__GameFramework_EntityInfo__GameFramework_CharacterRelation = function(srcObj, relation)
+				return AiLogicUtility.GetNearstTargetHelper__GameFramework_EntityInfo__GameFramework_CharacterRelation__AiTargetType(srcObj, relation, 3);
+			end,
+			GetNearstTargetHelper__GameFramework_EntityInfo__System_Single__GameFramework_CharacterRelation = function(srcObj, range, relation)
+				return AiLogicUtility.GetNearstTargetHelper__GameFramework_EntityInfo__System_Single__GameFramework_CharacterRelation__AiTargetType(srcObj, range, relation, 3);
+			end,
+			GetNearstTargetHelper__GameFramework_EntityInfo__GameFramework_CharacterRelation__AiTargetType = function(srcObj, relation, type)
+				return AiLogicUtility.GetNearstTargetHelper__GameFramework_EntityInfo__System_Single__GameFramework_CharacterRelation__AiTargetType(srcObj, srcObj.ViewRange, relation, type);
+			end,
+			GetNearstTargetHelper__GameFramework_EntityInfo__System_Single__GameFramework_CharacterRelation__AiTargetType = function(srcObj, range, relation, type)
+				local nearstTarget; nearstTarget = nil;
+				local minDistSqr; minDistSqr = 999999;
+				srcObj.SceneContext.KdTree:QueryWithAction(srcObj, range, (function(distSqr, kdTreeObj)
+					minDistSqr, nearstTarget = AiLogicUtility.StepCalcNearstTarget(srcObj, relation, type, distSqr, kdTreeObj.Object, minDistSqr, nearstTarget);
+				end));
+				return nearstTarget;
+			end,
+			GetLivingCharacterInfoHelper = function(srcObj, id)
+				local target; target = srcObj.EntityManager:GetEntityInfo(id);
+				if (nil ~= target) then
+					if target:IsDead() then
+						target = nil;
+					end;
+				end;
+				return target;
+			end,
+			GetSeeingLivingCharacterInfoHelper = function(srcObj, id)
+				local target; target = srcObj.EntityManager:GetEntityInfo(id);
+				if (nil ~= target) then
+					if target:IsDead() then
+						target = nil;
+					end;
+				end;
+				return target;
+			end,
+			StepCalcNearstTarget = function(srcObj, relation, type, distSqr, obj, minDistSqr, nearstTarget)
+				local target; target = AiLogicUtility.GetSeeingLivingCharacterInfoHelper(srcObj, obj:GetId());
+				if ((nil ~= target) and (not target:IsDead())) then
+					if (not target:IsTargetNpc()) then
+						return minDistSqr, nearstTarget;
+					end;
+					if ((type == 1) and (target.EntityType ~= 2)) then
+						return minDistSqr, nearstTarget;
+					end;
+					if ((type == 2) and (target.EntityType ~= 3)) then
+						return minDistSqr, nearstTarget;
+					end;
+					if ((type == 0) and (target.EntityType ~= 0)) then
+						return minDistSqr, nearstTarget;
+					end;
+					if (relation == GameFramework.EntityInfo.GetRelation(srcObj, target)) then
+						if (((srcObj.EntityType == 2) or (not srcObj.IsPassive)) or srcObj.AttackerInfos:ContainsKey(target:GetId())) then
+							if (distSqr < minDistSqr) then
+								nearstTarget = target;
+								minDistSqr = distSqr;
+							end;
+						end;
+					end;
+				end;
+				return minDistSqr, nearstTarget;
+			end,
+			NpcFindCanUseSkill = function(npc)
+				local skStateInfo; skStateInfo = npc:GetSkillStateInfo();
+				local priority; priority = -1;
+				local skInfo; skInfo = nil;
+				local curTime; curTime = GameFramework.TimeUtility.GetLocalMilliseconds();
+				if (npc.AutoSkillIds.Count <= 0) then
+					return nil;
+				end;
+				local randIndex; randIndex = GameFramework.Helper.Random.Next(0, npc.AutoSkillIds.Count);
+				skInfo = skStateInfo:GetSkillInfoById(getexterninstanceindexer(npc.AutoSkillIds, nil, "get_Item", randIndex));
+				local selectSkill; selectSkill = nil;
+				if ((nil ~= skInfo) and (not skInfo:IsInCd(curTime))) then
+					selectSkill = skInfo;
+				else
+					local i; i = 0;
+					while (i < npc.AutoSkillIds.Count) do
+						skInfo = skStateInfo:GetSkillInfoById(getexterninstanceindexer(npc.AutoSkillIds, nil, "get_Item", i));
+						if (((nil ~= skInfo) and (not skInfo:IsInCd(curTime))) and (skInfo.ConfigData.skillData.autoCast > priority)) then
+							selectSkill = skInfo;
+							priority = skInfo.ConfigData.skillData.autoCast;
+						end;
+					i = i + 1;
+					end;
+				end;
+				return selectSkill;
+			end,
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+				c_MaxComboInterval = 6000,
+				c_MaxViewRange = 30,
+				c_MaxViewRangeSqr = 900,
+			};
+			return static_fields;
+		end;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			ctor = function(this)
+			end,
+		};
+
+		local instance_fields_build = function()
+			local instance_fields = {
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = nil;
+		local interface_map = nil;
+
+		return defineclass(nil, "AiLogicUtility", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+AiLogicUtility.__define_class();

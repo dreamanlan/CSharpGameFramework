@@ -1,0 +1,68 @@
+30AnimatedHeroes include:
+
+Prefabs: 
+- 21 tools 
+- 42 hats 
+- 80 hair 
+- 70 beards 
+- 12 resources 
+
+Character presets: 
+- 3 Blacksmiths 
+- 4 Builders 
+- 5 Lumberjacks 
+- 3 Miners
+- 4 NPCs 
+- 3 Porters 
+
+21 Animations:
+2 types: Legacy and Humanoid(ready to use with mecanim)
+
+-WalkFront -WalkBack -WalkRight -WalkLeft
+-Run
+-Idle
+-Idle2
+-Mine1/Attack1
+-Mine2/Attack2
+-Use
+-Talk
+-Jump
+-Gather
+-Hit1 
+-Hit2 
+-Death 
+-Lumbering
+-Sawing
+-Build1
+-Build2
+-Digging
+
+Main body have 2 material IDs. Using same texture. 
+1. Body
+2. Face 
+
+For all items were created prefabs. 
+
+
+There is 3 ways to equip character.
+If you want to equip item you have to:
+
+Method 1. Place NPC_MainPrefab on the scene and delete unwanted parts like hat or tool and change material.
+
+Method 2. Place NPC_Empty add prefab(items) on the slots (you can filter model (by "slot") to find slots in character hierarchy) :
+Hair, Beards, Hats - Head_slot
+Tools - WeaponSlot OR WeaponSlotPelvis
+Bags - In main gameobject you have 6 NPC_Backet, unhide and change material if you want. 
+
+If you have 11k Animated Fantasy Heroes you can use these slots to eguip weapons and items. 
+Bracers - Bracers_slot (left and right)
+Shoulders - Shoulders_slot (left and right)
+Helmets - Head_slot
+Shields, Bows - ShieldBow_Slot 
+Swords - WeaponSlot
+
+Method 3. Place any character prefab and only change item mesh and material.
+You can easily create a scripts to equip items on events (pick up item, equipment interface...) just changing parent to 'Item'_Slot. For character you only need to change material. 
+
+With any problem :
+design@honeti.com

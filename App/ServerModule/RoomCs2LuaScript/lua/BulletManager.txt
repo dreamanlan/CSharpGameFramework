@@ -1,0 +1,155 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+
+BulletManager = {
+	get_Instance = function()
+		return BulletManager.s_Instance;
+	end,
+	cctor = function()
+		BulletManager.__cctor();
+	end,
+	__cctor = function()
+		if BulletManager.__cctor_called then
+			return;
+		else
+			BulletManager.__cctor_called = true;
+		end
+		BulletManager.s_Instance = newobject(BulletManager, "ctor", {})
+	end,
+
+	__new_object = function(...)
+		return newobject(BulletManager, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = BulletManager;
+		local static_fields = {
+			s_Instance = true,
+			__cctor_called = false,
+		};
+
+		local static_props = {
+			Instance = {
+				get = static.get_Instance,
+			},
+		};
+
+		local static_events = nil;
+
+		local instance_methods = {
+			GetCollideObject = function(this, bullet)
+				local pos1; pos1 = bullet.transform.position;
+				local __compiler_foreach_15 = (this.m_Bullets):GetEnumerator();
+				while __compiler_foreach_15:MoveNext() do
+					pair = __compiler_foreach_15.Current;
+					local other; other = pair.Value;
+					local otherObj; otherObj = other.Obj;
+					if (bullet ~= otherObj) then
+						local pos2; pos2 = otherObj.transform.position;
+						local lastPos2; lastPos2 = other:GetLastPos();
+						local distSqr; distSqr = ( (pos1 - pos2) ).sqrMagnitude;
+						if (distSqr < 0.01) then
+							UnityEngine.Debug.Log(wrapstring("distSqr<0.01f, collide."));
+							return otherObj;
+						else
+							UnityEngine.Debug.Log(System.String.Format(wrapstring("Dist:{0}"), distSqr));
+						end;
+						local dot; dot = UnityEngine.Vector3.Dot((lastPos2 - pos2), (pos1 - pos2));
+						if ((lastPos2.sqrMagnitude > 0.0001) and (dot > 0)) then
+							UnityEngine.Debug.Log(wrapstring("cross, collide."));
+							return otherObj;
+						else
+							UnityEngine.Debug.Log(System.String.Format(wrapstring("lastPos2Sqr:{0} dot:{1}"), lastPos2.sqrMagnitude, dot));
+						end;
+					end;
+				end;
+				return nil;
+			end,
+			UpdatePos = function(this, bullet)
+				local info;
+				if (function() local __compiler_invoke_42; __compiler_invoke_42, info = this.m_Bullets:TryGetValue(bullet:GetInstanceID(), Slua.out) return __compiler_invoke_42; end)() then
+					info:SetLastPos(bullet.transform.position);
+				end;
+			end,
+			AddBullet = function(this, bullet)
+				this.m_Bullets:Add(bullet:GetInstanceID(), newobject(BulletManager.CollideInfo, "ctor", {Obj = bullet}));
+			end,
+			RemoveBullet = function(this, bullet)
+				this.m_Bullets:Remove(bullet:GetInstanceID());
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_build = function()
+			local instance_fields = {
+				m_Bullets = newexterndictionary(System.Collections.Generic.Dictionary_TKey_TValue, "System.Collections.Generic.Dictionary_TKey_TValue", "ctor", nil, {}),
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = nil;
+		local interface_map = nil;
+
+		return defineclass(nil, "BulletManager", static, static_fields, static_props, static_events, instance_methods, instance_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+
+BulletManager.__define_class();
+
+
+BulletManager.CollideInfo = {
+	cctor = function()
+	end,
+
+	__new_object = function(...)
+		return newobject(BulletManager.CollideInfo, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = BulletManager.CollideInfo;
+		local static_fields = nil;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			GetLastPos = function(this)
+				if (this.LastSetIndex == 0) then
+					return this.LastPos2;
+				else
+					return this.LastPos1;
+				end;
+			end,
+			SetLastPos = function(this, pos)
+				this.LastSetIndex = (( (this.LastSetIndex + 1) ) % 2);
+				if (this.LastSetIndex == 0) then
+					this.LastPos1 = pos;
+				else
+					this.LastPos2 = pos;
+				end;
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_build = function()
+			local instance_fields = {
+				LastPos1 = UnityEngine.Vector3.zero,
+				LastPos2 = UnityEngine.Vector3.zero,
+				Obj = nil,
+				LastSetIndex = 0,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = nil;
+		local interface_map = nil;
+
+		return defineclass(nil, "BulletManager.CollideInfo", static, static_fields, static_props, static_events, instance_methods, instance_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+
+BulletManager.CollideInfo.__define_class();
+

@@ -54,7 +54,7 @@ namespace StorySystem
         private StoryValueResult m_Result = new StoryValueResult();
     }
     /// <summary>
-  /// 简单的命令基类，简化实现IStoryCommand需要写的代码行数（通常这样的命令是一个CallData样式的命令）
+    /// 简单的命令基类，简化实现IStoryCommand需要写的代码行数（通常这样的命令是一个CallData样式的命令）
     /// </summary>
     public abstract class SimpleStoryCommandBase<SubClassType, ValueParamType> : IStoryCommand
         where SubClassType : SimpleStoryCommandBase<SubClassType, ValueParamType>, new()

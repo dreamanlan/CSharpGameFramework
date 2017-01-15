@@ -1,0 +1,9 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+
+AiTargetType = {
+	NPC = 0,
+	HERO = 1,
+	BOSS = 2,
+	ALL = 3,
+};

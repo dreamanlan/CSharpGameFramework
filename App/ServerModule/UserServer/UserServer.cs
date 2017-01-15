@@ -383,6 +383,8 @@ namespace GameFramework
         {
             try {
                 TableConfig.LevelProvider.Instance.LoadForServer();
+                TableConfig.ConstProvider.Instance.LoadForServer();
+                TableConfig.AttrDefineProvider.Instance.LoadForServer();
                 TableConfig.ActorProvider.Instance.LoadForServer();
                 TableConfig.UserScriptProvider.Instance.LoadForServer();
             } catch (Exception ex) {

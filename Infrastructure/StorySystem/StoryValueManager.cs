@@ -103,7 +103,7 @@ namespace StorySystem
                                             ret = factory.Build();
                                             ret.InitFromDsl(param);
                                         } catch (Exception ex) {
-                                            GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(), param.GetLine());
+                                            GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
                                             throw ex;
                                         }
                                     }
@@ -124,7 +124,7 @@ namespace StorySystem
                                         ret = factory.Build();
                                         ret.InitFromDsl(param);
                                     } catch (Exception ex) {
-                                        GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(), param.GetLine());
+                                        GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
                                         throw ex;
                                     }
                                 }
@@ -196,7 +196,7 @@ namespace StorySystem
                             ret = factory.Build();
                             ret.InitFromDsl(param);
                         } catch (Exception ex) {
-                            GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(), param.GetLine());
+                            GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
                             throw ex;
                         }
                     }

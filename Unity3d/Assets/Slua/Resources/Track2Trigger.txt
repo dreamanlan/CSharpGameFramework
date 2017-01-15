@@ -1,0 +1,273 @@
+require "cs2lua__utility";
+require "cs2lua__attributes";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+
+Track2Trigger = {
+	__new_object = function(...)
+		return newobject(Track2Trigger, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = Track2Trigger;
+
+		local static_methods = {
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+				__attributes = Track2Trigger__Attrs,
+			};
+			return static_fields;
+		end;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			SetProxy = function(this, triggerProxy)
+				this.m_TriggerProxy = triggerProxy;
+			end,
+			Clone = function(this)
+				local triger; triger = newobject(Track2Trigger, "ctor", {});
+				triger.m_TrackBone:CopyFrom(this.m_TrackBone);
+				triger.m_Duration:CopyFrom(this.m_Duration);
+				triger.m_DamageInterval:CopyFrom(this.m_DamageInterval);
+				triger.m_BulletRadius = this.m_BulletRadius;
+				triger.m_BulletRadiusSquare = this.m_BulletRadiusSquare;
+				return triger;
+			end,
+			Reset = function(this)
+				this.m_IsStarted = false;
+				this.m_Effect = nil;
+				this.m_BoneTransform = nil;
+				this.m_Lifetime = 0;
+				this.m_IsHit = false;
+				this.m_LastPos = UnityEngine.Vector3.zero;
+				this.m_LastTime = 0;
+			end,
+			Execute = function(this, sender, instance, delta, curSectionTime)
+				local senderObj; senderObj = typeas(sender, GameFramework.Skill.GfxSkillSenderInfo, false);
+				if (nil == senderObj) then
+					return false;
+				end;
+				if (senderObj.ConfigData.type == 0) then
+					return false;
+--track只能在impact或buff里使用
+				end;
+				local obj; obj = senderObj.GfxObj;
+				if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, obj) then
+					if (curSectionTime >= this.m_TriggerProxy.StartTime) then
+						if (not this.m_IsStarted) then
+							this.m_IsStarted = true;
+							local dest;
+							local trackBone; trackBone = this.m_TrackBone:Get(instance);
+							this.m_BoneTransform = GameFramework.Utility.FindChildRecursive(obj.transform, trackBone);
+							if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, this.m_BoneTransform) then
+								dest = this.m_BoneTransform.position;
+							else
+								dest = obj.transform.position;
+								dest.y = (dest.y + 1.5);
+								GameFramework.LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet bone {2} can\'t find.", senderObj.SkillId, instance.DslSkillId, trackBone);
+							end;
+							this.m_StartPos = GameFramework.EntityController.Instance:GetImpactSenderPosition(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+							local speedObj;
+							if (function() local __compiler_invoke_64; __compiler_invoke_64, speedObj = instance.Variables:TryGetValue("emitSpeed", __cs2lua_out) return __compiler_invoke_64; end)() then
+								this.m_Speed = typecast(speedObj, System.Single, false);
+							else
+								return false;
+							end;
+							local duration; duration = this.m_Duration:Get(instance);
+							this.m_Lifetime = (duration / 1000);
+							if (GameFramework.Geometry.DistanceSquare(this.m_StartPos.x, this.m_StartPos.z, dest.x, dest.z) > 0.01) then
+								this.m_TargetPos = GameFramework.Utility.FrontOfTarget(dest, this.m_StartPos, (this.m_Speed * this.m_Lifetime));
+							else
+								this.m_TargetPos = obj.transform:TransformPoint(0, 0, (this.m_Speed * this.m_Lifetime));
+							end;
+							local newSectionDuration; newSectionDuration = (this.m_TriggerProxy.StartTime + typecast(( (this.m_Lifetime * 1000) ), System.Int64, false));
+							if (instance.CurSectionDuration < newSectionDuration) then
+								instance:SetCurSectionDuration(newSectionDuration);
+							end;
+							local dir;
+							local dirObj;
+							if (function() local __compiler_invoke_83; __compiler_invoke_83, dirObj = instance.Variables:TryGetValue("emitDir", __cs2lua_out) return __compiler_invoke_83; end)() then
+								dir = typecast(dirObj, UnityEngine.Quaternion, false);
+							else
+								dir = UnityEngine.Quaternion.identity;
+							end;
+							local scale;
+							local scaleObj;
+							if (function() local __compiler_invoke_90; __compiler_invoke_90, scaleObj = instance.Variables:TryGetValue("emitScale", __cs2lua_out) return __compiler_invoke_90; end)() then
+								scale = typecast(scaleObj, UnityEngine.Vector3, false);
+							else
+								scale = UnityEngine.Vector3.one;
+							end;
+							local lookDir; lookDir = (dest - this.m_StartPos);
+							local q; q = UnityEngine.Quaternion.LookRotation(lookDir);
+							this.m_ControlPos = (this.m_StartPos + UnityEngine.Vector3.Scale(((q * dir) * UnityEngine.Vector3.forward), ((scale * lookDir.magnitude) * 0.5)));
+							local effectPath; effectPath = SkillSystem.SkillParamUtility.RefixResourceVariable("emitEffect", instance, senderObj.ConfigData.resources);
+							this.m_Effect = typeas(GameFramework.ResourceSystem.Instance:NewObject(effectPath, this.m_Lifetime), UnityEngine.GameObject, false);
+							if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, this.m_Effect) then
+								senderObj.TrackEffectObj = this.m_Effect;
+								GameFramework.Skill.Trigers.TriggerUtil.SetObjVisible(this.m_Effect, true);
+								this.m_Effect:SetActive(false);
+								this.m_Effect.transform.position = this.m_StartPos;
+								this.m_Effect.transform.localRotation = q;
+								this.m_Effect:SetActive(true);
+								local em; em = instance.CustomDatas:GetData(GameFramework.Skill.Trigers.EffectManager);
+								if (em == nil) then
+									em = newexternobject(GameFramework.Skill.Trigers.EffectManager, "GameFramework.Skill.Trigers.EffectManager", "ctor", nil, {});
+									instance.CustomDatas:AddData(GameFramework.Skill.Trigers.EffectManager, em);
+								end;
+								em:AddEffect(this.m_Effect);
+								em:SetParticleSpeed(instance.EffectScale);
+							else
+								if System.String.IsNullOrEmpty(effectPath) then
+									GameFramework.LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet effect is empty.", senderObj.SkillId, instance.DslSkillId);
+								else
+									GameFramework.LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet effect {2} can\'t find.", senderObj.SkillId, instance.DslSkillId, effectPath);
+								end;
+							end;
+						elseif invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, this.m_Effect) then
+							local dest;
+							if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, this.m_BoneTransform) then
+								dest = this.m_BoneTransform.position;
+							else
+								dest = obj.transform.position;
+								dest.y = (dest.y + 1.5);
+							end;
+							dest = GameFramework.Utility.FrontOfTarget(this.m_StartPos, dest, 0.1);
+--m_Effect.transform.position = Vector3.MoveTowards(m_Effect.transform.position, m_TargetPos, m_RealSpeed * Time.deltaTime);
+							this.m_Effect.transform.position = GameFramework.Utility.GetBezierPoint(this.m_StartPos, this.m_ControlPos, this.m_TargetPos, ((( (curSectionTime - this.m_TriggerProxy.StartTime) ) / 1000) / this.m_Lifetime));
+							local pos; pos = this.m_Effect.transform.position;
+							if (not this.m_IsHit) then
+								local distSqr; distSqr = 3.402823E+38;
+								if (this.m_LastPos.sqrMagnitude > 0.0001) then
+									local np;
+									local targetPos; targetPos = newexternobject(ScriptRuntime.Vector2, "ScriptRuntime.Vector2", "ctor", nil, {}, dest.x, dest.z);
+									local lastPos; lastPos = newexternobject(ScriptRuntime.Vector2, "ScriptRuntime.Vector2", "ctor", nil, {}, this.m_LastPos.x, this.m_LastPos.z);
+									distSqr, np = GameFramework.Geometry.PointToLineSegmentDistanceSquare(targetPos, lastPos, newexternobject(ScriptRuntime.Vector2, "ScriptRuntime.Vector2", "ctor", nil, {}, pos.x, pos.z), __cs2lua_out);
+								else
+									distSqr = ( (dest - pos) ).sqrMagnitude;
+								end;
+								this.m_LastPos = pos;
+								if (distSqr <= this.m_BulletRadiusSquare) then
+									local curTime; curTime = UnityEngine.Time.time;
+									local interval; interval = (this.m_DamageInterval:Get(instance) / 1000);
+									if ((this.m_LastTime + interval) <= curTime) then
+										this.m_LastTime = curTime;
+										this.m_HitEffectRotation = UnityEngine.Quaternion.LookRotation((this.m_StartPos - dest));
+										local impactId; impactId = GameFramework.Skill.Trigers.TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
+										local args;
+										args = GameFramework.Skill.Trigers.TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, __cs2lua_out);
+										if args:ContainsKey("hitEffectRotation") then
+											setexterninstanceindexer(args, nil, "set_Item", "hitEffectRotation", this.m_HitEffectRotation);
+										else
+											args:Add("hitEffectRotation", this.m_HitEffectRotation);
+										end;
+										GameFramework.EntityController.Instance:TrackSendImpact(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, impactId, args);
+--m_IsHit = true;
+									end;
+								end;
+							end;
+							if (curSectionTime > (this.m_TriggerProxy.StartTime + (this.m_Lifetime * 1000))) then
+								this.m_Effect:SetActive(false);
+								GameFramework.ResourceSystem.Instance:RecycleObject(this.m_Effect);
+								this.m_Effect = nil;
+								instance:StopCurSection();
+								return false;
+							end;
+						else
+							return false;
+						end;
+						return true;
+					else
+						return true;
+					end;
+				else
+					instance:StopCurSection();
+					return false;
+				end;
+			end,
+			OnInitProperties = function(this)
+				this.m_TriggerProxy:AddProperty("TrackBone", (function()
+					return this.m_TrackBone.EditableValue;
+				end), (function(val)
+					this.m_TrackBone.EditableValue = val;
+				end));
+				this.m_TriggerProxy:AddProperty("Duration", (function()
+					return this.m_Duration.EditableValue;
+				end), (function(val)
+					this.m_Duration.EditableValue = val;
+				end));
+			end,
+			LoadCallData = function(this, callData, instance)
+				local num; num = callData:GetParamNum();
+				if (num > 0) then
+					this.m_TrackBone:Set(callData:GetParam(0));
+				end;
+				if (num > 1) then
+					this.m_Duration:Set(callData:GetParam(1));
+				end;
+				if (num > 2) then
+					this.m_DamageInterval:Set(callData:GetParam(2));
+				end;
+				if (num > 3) then
+					this.m_BulletRadius = System.Single.Parse(callData:GetParamId(3));
+					this.m_BulletRadiusSquare = (this.m_BulletRadius * this.m_BulletRadius);
+				end;
+				if (num > 4) then
+					this.m_TriggerProxy.StartTime = System.Int64.Parse(callData:GetParamId(4));
+				end;
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_fields_build = function()
+			local instance_fields = {
+				m_TrackBone = newexternobject(SkillSystem.SkillStringParam, "SkillSystem.SkillStringParam", "ctor", nil, {}),
+				m_Duration = newexternobject(SkillSystem.SkillLongParam, "SkillSystem.SkillLongParam", "ctor", nil, {}),
+				m_DamageInterval = newexternobject(SkillSystem.SkillLongParam, "SkillSystem.SkillLongParam", "ctor", nil, {}),
+				m_BulletRadius = 0.1,
+				m_BulletRadiusSquare = 0.01,
+				m_StartPos = UnityEngine.Vector3.zero,
+				m_ControlPos = UnityEngine.Vector3.zero,
+				m_TargetPos = UnityEngine.Vector3.zero,
+				m_LastPos = UnityEngine.Vector3.zero,
+				m_LastTime = 0,
+				m_Speed = 10,
+				m_Lifetime = 1,
+				m_IsStarted = false,
+				m_HitEffectRotation = 0,
+				m_Effect = __cs2lua_nil_field_value,
+				m_BoneTransform = __cs2lua_nil_field_value,
+				m_IsHit = false,
+				m_TriggerProxy = __cs2lua_nil_field_value,
+				__attributes = Track2Trigger__Attrs,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"GameFramework.Plugin.ISkillTriggerPlugin",
+		};
+
+		local interface_map = {
+			ISkillTriggerPlugin_SetProxy = "SetProxy",
+			ISkillTriggerPlugin_Clone = "Clone",
+			ISkillTriggerPlugin_Reset = "Reset",
+			ISkillTriggerPlugin_Execute = "Execute",
+			ISkillTriggerPlugin_LoadCallData = "LoadCallData",
+			ISkillTriggerPlugin_LoadFuncData = "LoadFuncData",
+			ISkillTriggerPlugin_LoadStatementData = "LoadStatementData",
+			ISkillTriggerPlugin_OnInitProperties = "OnInitProperties",
+		};
+
+
+		return defineclass(nil, "Track2Trigger", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+Track2Trigger.__define_class();

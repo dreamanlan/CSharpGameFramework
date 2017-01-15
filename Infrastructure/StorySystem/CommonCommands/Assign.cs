@@ -7,6 +7,8 @@ namespace StorySystem.CommonCommands
     /// assign(@local,value);
     /// or
     /// assign(@@global,value);
+    /// or
+    /// assign($var,value);
     /// </summary>
     internal sealed class AssignCommand : AbstractStoryCommand
     {
@@ -43,6 +45,8 @@ namespace StorySystem.CommonCommands
     /// inc(@local,value);
     /// or
     /// inc(@@global,value);
+    /// or
+    /// inc($var,value);
     /// </summary>
     internal sealed class IncCommand : AbstractStoryCommand
     {
@@ -112,6 +116,31 @@ namespace StorySystem.CommonCommands
                         }
                     }
                 }
+            } else if (m_VarName.StartsWith("$")) {
+                if (instance.StackVariables.ContainsKey(m_VarName)) {
+                    object oval = instance.StackVariables[m_VarName];
+                    if (oval is int) {
+                        int ov = StoryValueHelper.CastTo<int>(oval);
+                        if (m_ParamNum > 1 && m_Value.HaveValue) {
+                            int v = StoryValueHelper.CastTo<int>(m_Value.Value);
+                            ov += v;
+                            instance.StackVariables[m_VarName] = ov;
+                        } else {
+                            ++ov;
+                            instance.StackVariables[m_VarName] = ov;
+                        }
+                    } else {
+                        float ov = StoryValueHelper.CastTo<float>(oval);
+                        if (m_ParamNum > 1 && m_Value.HaveValue) {
+                            float v = StoryValueHelper.CastTo<float>(m_Value.Value);
+                            ov += v;
+                            instance.StackVariables[m_VarName] = ov;
+                        } else {
+                            ++ov;
+                            instance.StackVariables[m_VarName] = ov;
+                        }
+                    }
+                }
             }
             return false;
         }
@@ -134,6 +163,8 @@ namespace StorySystem.CommonCommands
     /// dec(@local,value);
     /// or
     /// dec(@@global,value);
+    /// or
+    /// dec($var,value);
     /// </summary>
     internal sealed class DecCommand : AbstractStoryCommand
     {
@@ -200,6 +231,31 @@ namespace StorySystem.CommonCommands
                         } else {
                             --ov;
                             instance.LocalVariables[m_VarName] = ov;
+                        }
+                    }
+                }
+            } else if (m_VarName.StartsWith("$")) {
+                if (instance.StackVariables.ContainsKey(m_VarName)) {
+                    object oval = instance.StackVariables[m_VarName];
+                    if (oval is int) {
+                        int ov = StoryValueHelper.CastTo<int>(oval);
+                        if (m_ParamNum > 1 && m_Value.HaveValue) {
+                            int v = StoryValueHelper.CastTo<int>(m_Value.Value);
+                            ov -= v;
+                            instance.StackVariables[m_VarName] = ov;
+                        } else {
+                            --ov;
+                            instance.StackVariables[m_VarName] = ov;
+                        }
+                    } else {
+                        float ov = StoryValueHelper.CastTo<float>(oval);
+                        if (m_ParamNum > 1 && m_Value.HaveValue) {
+                            float v = StoryValueHelper.CastTo<float>(m_Value.Value);
+                            ov -= v;
+                            instance.StackVariables[m_VarName] = ov;
+                        } else {
+                            --ov;
+                            instance.StackVariables[m_VarName] = ov;
                         }
                     }
                 }

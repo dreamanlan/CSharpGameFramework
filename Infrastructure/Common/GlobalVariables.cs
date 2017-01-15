@@ -110,6 +110,9 @@ namespace GameFramework
     private Dictionary<string, string> m_EncodeTable = new Dictionary<string, string>();
     private Dictionary<string, string> m_DecodeTable = new Dictionary<string, string>();
 
+    public static bool s_EnableCalculatorLog = false;
+    public static bool s_EnableCalculatorDetailLog = false;
+    public static bool s_EnableCalculatorOperatorLog = false;
     public static GlobalVariables Instance
     {
       get { return s_Instance; }

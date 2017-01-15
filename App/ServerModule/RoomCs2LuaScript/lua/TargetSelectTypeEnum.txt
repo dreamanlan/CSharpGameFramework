@@ -1,0 +1,7 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+
+TargetSelectTypeEnum = {
+	RANDOM = 0,
+	NEAREST = 1,
+};

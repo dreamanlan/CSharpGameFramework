@@ -57,7 +57,7 @@ public class InplaceSkillInfo : MonoBehaviour
                 if (!m_Properties.ContainsKey(skillId)) {
                     GfxSkillSystem.Instance.PreloadSkillInstance(skillId);                    
                     InplaceSkillPropertyInfoGroup group = new InplaceSkillPropertyInfoGroup();
-                    group.PropertyList = ClientModule.Instance.GetInplaceSkillPropertyInfos(skillId);
+                    group.PropertyList = PluginFramework.Instance.GetInplaceSkillPropertyInfos(skillId);
                     m_Properties.Add(skillId, group);
                 }
             }
@@ -78,17 +78,13 @@ public class InplaceSkillInfo : MonoBehaviour
     {
         TableConfig.Skill cfg = TableConfig.SkillProvider.Instance.GetSkill(skillId);
         if (null != cfg) {
+            if (cfg.impacttoself > 0 && !outList.Contains(cfg.impacttoself)) {
+                outList.Add(cfg.impacttoself);
+                AddDepSkillsRecursively(cfg.impacttoself, outList);
+            }
             if (cfg.impact > 0 && !outList.Contains(cfg.impact)) {
                 outList.Add(cfg.impact);
                 AddDepSkillsRecursively(cfg.impact, outList);
-            }
-            if (cfg.startupSkillId > 0 && !outList.Contains(cfg.startupSkillId)) {
-                outList.Add(cfg.startupSkillId);
-                AddDepSkillsRecursively(cfg.startupSkillId, outList);
-            }
-            if (cfg.flybackSkillId > 0 && !outList.Contains(cfg.flybackSkillId)) {
-                outList.Add(cfg.flybackSkillId);
-                AddDepSkillsRecursively(cfg.flybackSkillId, outList);
             }
         }
     }

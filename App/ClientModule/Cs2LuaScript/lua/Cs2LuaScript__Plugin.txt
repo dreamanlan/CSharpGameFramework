@@ -1,0 +1,35 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+
+Cs2LuaScript.Plugin = {
+	__define_class = function()
+		local static = Cs2LuaScript.Plugin;
+
+		local static_methods = {
+			get_Proxy = function()
+				return GameFramework.Plugin.PluginProxy.LuaProxy;
+			end,
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+			};
+			return static_fields;
+		end;
+
+		local static_props = {
+			Proxy = {
+				get = static_methods.get_Proxy,
+			},
+		};
+
+		local static_events = nil;
+
+		return defineclass(nil, "Cs2LuaScript.Plugin", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	end,
+};
+
+Cs2LuaScript.Plugin.__define_class();

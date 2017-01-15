@@ -2,7 +2,7 @@
 
 ./TableReaderGenerator.exe
 
-mv FilePathDefine.cs ../../../../EntitySystem/GameObjects/TableReader/
-mv DataReader.cs ../../../../EntitySystem/GameObjects/TableReader/
+mv FilePathDefine.cs ../../../../InformationService/GameObjects/TableReader/
+mv DataReader.cs ../../../../InformationService/GameObjects/TableReader/
 
 exit 0

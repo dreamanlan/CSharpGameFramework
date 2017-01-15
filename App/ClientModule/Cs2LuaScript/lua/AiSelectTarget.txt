@@ -1,0 +1,81 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+require "AiLogicUtility";
+
+AiSelectTarget = {
+	__new_object = function(...)
+		return newobject(AiSelectTarget, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = AiSelectTarget;
+
+		local static_methods = {
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+			};
+			return static_fields;
+		end;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			SetProxy = function(this, result)
+				this.m_Proxy = result;
+			end,
+			Clone = function(this)
+				return newobject(AiSelectTarget, "ctor", {});
+			end,
+			Evaluate = function(this, instance, _params)
+				local args; args = _params.Values;
+				local objId; objId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32, false);
+				local dist; dist = typecast(System.Convert.ChangeType(getexterninstanceindexer(args, nil, "get_Item", 1), System.Single), System.Single, false);
+				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
+				if (nil ~= npc) then
+					local entity;
+					if (dist < 0.0001) then
+						entity = AiLogicUtility.GetNearstTargetHelper__GameFramework_EntityInfo__GameFramework_CharacterRelation(npc, 0);
+						if (nil ~= entity) then
+							npc:GetAiStateInfo().Target = entity:GetId();
+						end;
+					else
+						entity = AiLogicUtility.GetNearstTargetHelper__GameFramework_EntityInfo__System_Single__GameFramework_CharacterRelation(npc, dist, 0);
+						if (nil ~= entity) then
+							npc:GetAiStateInfo().Target = entity:GetId();
+						end;
+					end;
+					this.m_Proxy.Value = entity;
+				end;
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_fields_build = function()
+			local instance_fields = {
+				m_Proxy = __cs2lua_nil_field_value,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"GameFramework.Plugin.ISimpleStoryValuePlugin",
+		};
+
+		local interface_map = {
+			ISimpleStoryValuePlugin_SetProxy = "SetProxy",
+			ISimpleStoryValuePlugin_Clone = "Clone",
+			ISimpleStoryValuePlugin_Evaluate = "Evaluate",
+		};
+
+
+		return defineclass(nil, "AiSelectTarget", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+AiSelectTarget.__define_class();

@@ -9,21 +9,21 @@ namespace SkillSystem
         public void LoadSkillIfNotExist(int id, string file)
         {
             if (!ExistSkill(id)) {
-                LoadSkill(file);
+                LoadSkill(id, file);
             }
         }
         public bool ExistSkill(int id)
         {
             return null != GetSkillInstanceResource(id);
         }
-        public void LoadSkill(string file)
+        public void LoadSkill(int id, string file)
         {
             if (!string.IsNullOrEmpty(file)) {
                 Dsl.DslFile dataFile = new Dsl.DslFile();
 #if DEBUG
                 try {
                     if (dataFile.Load(file, LogSystem.Log)) {
-                        Load(dataFile);
+                        Load(id, dataFile);
                     } else {
                         LogSystem.Error("LoadSkill file:{0} failed", file);
                     }
@@ -39,13 +39,13 @@ namespace SkillSystem
 #endif
             }
         }
-        public void LoadSkillText(string text)
+        public void LoadSkillText(int id, string text)
         {
             Dsl.DslFile dataFile = new Dsl.DslFile();
 #if DEBUG
             try {
                 if (dataFile.LoadFromString(text, "skill", LogSystem.Log)) {
-                    Load(dataFile);
+                    Load(id, dataFile);
                 } else {
                     LogSystem.Error("LoadSkillText text:{0} failed", text);
                 }
@@ -76,7 +76,7 @@ namespace SkillSystem
             }
         }
 
-        private void Load(Dsl.DslFile dataFile)
+        private void Load(int id, Dsl.DslFile dataFile)
         {
             lock (m_Lock) {
                 for (int i = 0; i < dataFile.DslInfos.Count; i++) {
@@ -84,19 +84,19 @@ namespace SkillSystem
                         Dsl.FunctionData funcData = dataFile.DslInfos[i].First;
                         if (null != funcData) {
                             Dsl.CallData callData = funcData.Call;
-                            if (null != callData && callData.HaveParam()) {
-                                int id = int.Parse(callData.GetParamId(0));
-                                if (!m_SkillInstances.ContainsKey(id)) {
+                            if (null != callData) {
+                                int dslId = id;
+                                if (callData.HaveParam()) {
+                                    dslId = int.Parse(callData.GetParamId(0));
+                                }
+                                if (!m_SkillInstances.ContainsKey(dslId)) {
                                     SkillInstance instance = new SkillInstance();
                                     instance.Init(dataFile.DslInfos[i]);
-                                    m_SkillInstances.Add(id, instance);
+                                    instance.OuterDslSkillId = dslId;
+                                    m_SkillInstances.Add(dslId, instance);
 
-                                    LogSystem.Debug("ParseSkill {0}", id);
+                                    LogSystem.Debug("ParseSkill {0}", dslId);
                                 }
-                                //else
-                                //{
-                                //repeated skill config.
-                                //}
                             }
                         }
                     }

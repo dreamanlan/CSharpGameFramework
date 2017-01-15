@@ -32,6 +32,24 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CSharpCenterClient">
       <HintPath>..\..\..\ExternalLibrary\CSharpCenterClient.dll</HintPath>
@@ -57,87 +75,40 @@
     <Reference Include="ServerProtobufSerializer">
       <HintPath>..\ServerProtoBuf\bin\ServerProtobufSerializer.dll</HintPath>
     </Reference>
+    <Reference Include="SluaManaged">
+      <HintPath>..\..\..\ExternalLibrary\SluaManaged.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\MessageCommon\ProtoHelper.cs">
-      <Link>RoomServer\ProtoHelper.cs</Link>
-    </Compile>
-    <Compile Include="..\..\MessageCommon\ProtoNetSerialize.cs">
-      <Link>RoomServer\ProtoNetSerialize.cs</Link>
-    </Compile>
-    <Compile Include="AI\AiViewManager.cs" />
-    <Compile Include="AI\AiView\AiView_NpcGeneral.cs" />
-    <Compile Include="Connector.cs" />
-    <Compile Include="GameObjects\EntityController.cs" />
-    <Compile Include="GmCommands\GmStorySystem.cs" />
-    <Compile Include="GmCommands\RoleCommands.cs" />
-    <Compile Include="Movement\MovementSystem.cs" />
+    <Compile Include="Cs2Lua\Cs2LuaAssembly.cs" />
+    <Compile Include="Cs2Lua\Cs2LuaEnvironment.cs" />
+    <Compile Include="Cs2Lua\Cs2LuaPluginProxy.cs" />
+    <Compile Include="Cs2Lua\Cs2LuaScene.cs" />
+    <Compile Include="Cs2Lua\Skill\SkillTriggerFactory.cs" />
+    <Compile Include="Cs2Lua\Story\SimpleStoryCommandFactory.cs" />
+    <Compile Include="Cs2Lua\Story\SimpleStoryValueFactory.cs" />
+    <Compile Include="Cs2Lua\Story\StoryCommandFactory.cs" />
+    <Compile Include="Cs2Lua\Story\StoryValueFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoomServer\IoManager.cs" />
-    <Compile Include="RoomServer\IoMsgHandler.cs" />
-    <Compile Include="RoomServer\LogicMsgHandler.cs" />
-    <Compile Include="RoomServer\MessageDispatch.cs" />
-    <Compile Include="RoomServer\RoomPeer.cs" />
-    <Compile Include="RoomServer\RoomPeerMgr.cs" />
     <Compile Include="RoomServer\RoomServer.cs" />
     <Compile Include="RoomServer\RoomServer_Config.cs" />
-    <Compile Include="Room\Observer.cs" />
     <Compile Include="Room\Room.cs" />
     <Compile Include="Room\RoomManager.cs" />
     <Compile Include="Room\RoomPool.cs" />
     <Compile Include="Room\RoomThread.cs" />
     <Compile Include="Room\SceneLoadThread.cs" />
-    <Compile Include="Room\User.cs" />
-    <Compile Include="Room\UserPool.cs" />
-    <Compile Include="SceneLogic\SceneLogicViewManager.cs" />
-    <Compile Include="SceneLogic\SceneLogicView\SceneLogicView_General.cs" />
-    <Compile Include="Scene\DataSyncUtility.cs" />
-    <Compile Include="Scene\Scene.cs" />
-    <Compile Include="Scene\ScenePool.cs" />
-    <Compile Include="Scene\SceneProfiler.cs" />
-    <Compile Include="Scene\Scene_EventHandler.cs" />
-    <Compile Include="Scene\Scene_Npc.cs" />
-    <Compile Include="Scene\Scene_Tick.cs" />
-    <Compile Include="Scene\Scene_Utility.cs" />
-    <Compile Include="Skill\ServerSkillSystem.cs" />
-    <Compile Include="Skill\Trigers\DamageTrigger.cs" />
-    <Compile Include="Skill\Trigers\EffectTrigger.cs" />
-    <Compile Include="Skill\Trigers\FaceToTargetTrigger.cs" />
-    <Compile Include="Skill\Trigers\GeneralTrigers.cs" />
-    <Compile Include="Skill\Trigers\ImpactTrigger.cs" />
-    <Compile Include="Skill\Trigers\MovementTrigger.cs" />
-    <Compile Include="Skill\Trigers\RestorePosTrigger.cs" />
-    <Compile Include="Skill\Trigers\RotateTrigger.cs" />
-    <Compile Include="Skill\Trigers\DslUtility.cs" />
-    <Compile Include="Skill\Trigers\SectionTrigger.cs" />
-    <Compile Include="Skill\Trigers\TransformTrigger.cs" />
-    <Compile Include="Skill\Trigers\TriggerUtil.cs" />
-    <Compile Include="Story\Commands\GameLogicCommands.cs" />
-    <Compile Include="Story\Commands\GeneralCommands.cs" />
-    <Compile Include="Story\Commands\NpcCommands.cs" />
-    <Compile Include="Story\Commands\ObjectCommands.cs" />
-    <Compile Include="Story\ServerStorySystem.cs" />
-    <Compile Include="Story\Values\GameLogicValues.cs" />
-    <Compile Include="Story\Values\GeneralValues.cs" />
-    <Compile Include="Story\Values\NpcValues.cs" />
-    <Compile Include="Story\Values\ObjectValues.cs" />
-    <Compile Include="utils\Dispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\EntitySystem\AiSystem\AiSystem.csproj">
-      <Project>{8dc8ad58-3569-4b5c-8ba4-cd8b529183e7}</Project>
-      <Name>AiSystem</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\EntitySystem\GameObjects\GameObjects.csproj">
+    <ProjectReference Include="..\..\..\InformationService\GameObjects\GameObjects.csproj">
       <Project>{e280220b-7eda-4274-b3d5-4e922d98caad}</Project>
       <Name>GameObjects</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\EntitySystem\SceneLogic\SceneLogic.csproj">
+    <ProjectReference Include="..\..\..\InformationService\SceneLogic\SceneLogic.csproj">
       <Project>{3452c105-45dd-4821-bcda-e495b7748519}</Project>
       <Name>SceneLogic</Name>
     </ProjectReference>
@@ -168,6 +139,14 @@
     <ProjectReference Include="..\Messenger\Messenger\Messenger.csproj">
       <Project>{98ba0167-2beb-4845-9926-50cb465c4fa6}</Project>
       <Name>Messenger</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RoomCs2LuaScript\RoomCs2LuaScript.csproj">
+      <Project>{c34bc999-8179-46eb-83ff-816ca5a5a1a7}</Project>
+      <Name>RoomCs2LuaScript</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\RoomPluginFramework\RoomPluginFramework.csproj">
+      <Project>{6ae175c8-1304-410a-8e56-d1ddd84fcf81}</Project>
+      <Name>RoomPluginFramework</Name>
     </ProjectReference>
     <ProjectReference Include="..\ServerProtoBuf\ServerProtoBuf.csproj">
       <Project>{3a1dea99-d58b-4ce0-bb57-8c09e97af5e4}</Project>

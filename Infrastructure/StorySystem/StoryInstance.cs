@@ -219,10 +219,6 @@ namespace StorySystem
             get { return m_StackVariables; }
             set { m_StackVariables = value; }
         }
-        public TypedDataCollection CustomDatas
-        {
-            get { return m_CustomDatas; }
-        }
         public void SetVariable(string varName, object varValue)
         {
             if (varName.StartsWith("$")) {
@@ -269,14 +265,23 @@ namespace StorySystem
         public StoryInstance Clone()
         {
             StoryInstance instance = new StoryInstance();
-            foreach (KeyValuePair<string, object> pair in m_PreInitedLocalVariables) {
+            foreach (var pair in m_PreInitedLocalVariables) {
                 instance.m_PreInitedLocalVariables.Add(pair.Key, pair.Value);
+            }
+            foreach (var pair in m_LoadedMessageHandlers) {
+                instance.m_LoadedMessageHandlers.Add(pair.Key, pair.Value);
             }
             for (int i = 0; i < m_MessageHandlers.Count; i++) {
                 instance.m_MessageHandlers.Add(m_MessageHandlers[i].Clone());
                 string msgId = m_MessageHandlers[i].MessageId;
                 if (!instance.m_MessageQueues.ContainsKey(msgId)) {
                     instance.m_MessageQueues.Add(msgId, new Queue<MessageInfo>());
+                }
+                if (!instance.m_ConcurrentMessageQueues.ContainsKey(msgId)) {
+                    instance.m_ConcurrentMessageQueues.Add(msgId, new Queue<MessageInfo>());
+                }
+                if (!instance.m_ConcurrentMessageHandlerPool.ContainsKey(msgId)) {
+                    instance.m_ConcurrentMessageHandlerPool.Add(msgId, new Queue<StoryMessageHandler>());
                 }
             }
             instance.m_StoryId = m_StoryId;
@@ -314,7 +319,7 @@ namespace StorySystem
                             }
                         } else {
 #if DEBUG
-                            string err = string.Format("Story {0} DSL, local must be a function ! line:{1} local:{2}", m_StoryId, story.Statements[i].GetLine(), story.Statements[i].ToScriptString());
+                            string err = string.Format("Story {0} DSL, local must be a function ! line:{1} local:{2}", m_StoryId, story.Statements[i].GetLine(), story.Statements[i].ToScriptString(false));
                             throw new Exception(err);
 #else
                             LogSystem.Error("Story {0} DSL, local must be a function !", m_StoryId);
@@ -341,9 +346,12 @@ namespace StorySystem
                             } else {
                                 msgId = handler.MessageId;
                             }
-                            if (!m_MessageQueues.ContainsKey(msgId)) {
-                                m_MessageHandlers.Add(handler);
+                            if (!m_LoadedMessageHandlers.ContainsKey(msgId)) {
+                                m_LoadedMessageHandlers.Add(msgId, handler);
+                                m_MessageHandlers.Add(handler.Clone());
                                 m_MessageQueues.Add(msgId, new Queue<MessageInfo>());
+                                m_ConcurrentMessageQueues.Add(msgId, new Queue<MessageInfo>());
+                                m_ConcurrentMessageHandlerPool.Add(msgId, new Queue<StoryMessageHandler>());
                             } else {
 #if DEBUG
                                 string err = string.Format("Story {0} DSL, onmessage or onnamespacedmessage {1} duplicate, discard it ! line:{2}", m_StoryId, msgId, story.Statements[i].GetLine());
@@ -354,7 +362,7 @@ namespace StorySystem
                             }
                         } else {
 #if DEBUG
-                            string err = string.Format("Story {0} DSL, onmessage must be a function or statement ! line:{1} onmessage:{2}", m_StoryId, story.Statements[i].GetLine(), story.Statements[i].ToScriptString());
+                            string err = string.Format("Story {0} DSL, onmessage must be a function or statement ! line:{1} onmessage:{2}", m_StoryId, story.Statements[i].GetLine(), story.Statements[i].ToScriptString(false));
                             throw new Exception(err);
 #else
                             LogSystem.Error("Story {0} DSL, onmessage must be a function !", m_StoryId);
@@ -362,7 +370,7 @@ namespace StorySystem
                         }
                     } else {
 #if DEBUG
-                        string err = string.Format("StoryInstance::Init, Story {0} unknown part {1}, line:{2} section:{3}", m_StoryId, story.Statements[i].GetId(), story.Statements[i].GetLine(), story.Statements[i].ToScriptString());
+                        string err = string.Format("StoryInstance::Init, Story {0} unknown part {1}, line:{2} section:{3}", m_StoryId, story.Statements[i].GetId(), story.Statements[i].GetLine(), story.Statements[i].ToScriptString(false));
                         throw new Exception(err);
 #else
                         LogSystem.Error("StoryInstance::Init, Story {0} unknown part {1}", m_StoryId, story.Statements[i].GetId());
@@ -371,7 +379,7 @@ namespace StorySystem
                 }
             } else {
 #if DEBUG
-                string err = string.Format("StoryInstance::Init, isn't story DSL, line:{0} story:{1}", story.GetLine(), story.ToScriptString());
+                string err = string.Format("StoryInstance::Init, isn't story DSL, line:{0} story:{1}", story.GetLine(), story.ToScriptString(false));
                 throw new Exception(err);
 #else
                 LogSystem.Error("StoryInstance::Init, isn't story DSL");
@@ -392,9 +400,17 @@ namespace StorySystem
                 if (m_MessageQueues.TryGetValue(handler.MessageId, out queue)) {
                     queue.Clear();
                 }
+                if (m_ConcurrentMessageQueues.TryGetValue(handler.MessageId, out queue)) {
+                    queue.Clear();
+                }
             }
+            ct = m_ConcurrentMessageHandlers.Count;
+            for (int i = ct - 1; i >= 0; --i) {
+                StoryMessageHandler handler = m_ConcurrentMessageHandlers[i];
+                RecycleConcurrentMessageHandler(handler);
+            }
+            m_ConcurrentMessageHandlers.Clear();
             m_LocalVariables.Clear();
-            m_CustomDatas.Clear();
             m_Message2TriggerTimes.Clear();
         }
         public void Start()
@@ -420,6 +436,20 @@ namespace StorySystem
                 LogSystem.Info("StoryInstance ignore message {0}", msgId);
             }
         }
+        public void SendConcurrentMessage(string msgId, params object[] args)
+        {
+            MessageInfo msgInfo = new MessageInfo();
+            msgInfo.m_MsgId = msgId;
+            msgInfo.m_Args = args;
+            Queue<MessageInfo> queue;
+            if (m_ConcurrentMessageQueues.TryGetValue(msgId, out queue)) {
+                LogSystem.Info("StoryInstance queue message {0}", msgId);
+                queue.Enqueue(msgInfo);
+            } else {
+                //忽略没有处理的消息
+                LogSystem.Info("StoryInstance ignore message {0}", msgId);
+            }
+        }
         public int CountMessage(string msgId)
         {
             int ct = 0;
@@ -434,6 +464,15 @@ namespace StorySystem
                     }
                 }
             }
+            if (m_ConcurrentMessageQueues.TryGetValue(msgId, out queue)) {
+                ct += queue.Count;
+                for (int i = 0; i < m_ConcurrentMessageHandlers.Count; ++i) {
+                    StoryMessageHandler handler = m_ConcurrentMessageHandlers[i];
+                    if (handler.IsTriggered && !handler.IsInTick && handler.MessageId == msgId) {
+                        ++ct;
+                    }
+                }
+            }
             return ct;
         }
         public void ClearMessage(params string[] msgIds)
@@ -445,11 +484,19 @@ namespace StorySystem
                     if (null != queue)
                         queue.Clear();
                 }
+                foreach (KeyValuePair<string, Queue<MessageInfo>> pair in m_ConcurrentMessageQueues) {
+                    Queue<MessageInfo> queue = pair.Value;
+                    if (null != queue)
+                        queue.Clear();
+                }
             } else {
                 for (int i = 0; i < len; ++i) {
                     string msgId = msgIds[i];
                     Queue<MessageInfo> queue;
                     if (m_MessageQueues.TryGetValue(msgId, out queue)) {
+                        queue.Clear();
+                    }
+                    if (m_ConcurrentMessageQueues.TryGetValue(msgId, out queue)) {
                         queue.Clear();
                     }
                 }
@@ -459,6 +506,13 @@ namespace StorySystem
         {
             for (int i = 0; i < m_MessageHandlers.Count; ++i) {
                 StoryMessageHandler handler = m_MessageHandlers[i];
+                if (handler.IsTriggered && !handler.IsInTick && handler.MessageId == msgId) {
+                    handler.IsPaused = pause;
+                    break;
+                }
+            }
+            for (int i = 0; i < m_ConcurrentMessageHandlers.Count; ++i) {
+                StoryMessageHandler handler = m_ConcurrentMessageHandlers[i];
                 if (handler.IsTriggered && !handler.IsInTick && handler.MessageId == msgId) {
                     handler.IsPaused = pause;
                     break;
@@ -474,6 +528,7 @@ namespace StorySystem
             try {
                 m_IsInTick = true;
                 const int c_MaxMsgCountPerTick = 256;
+                const int c_MaxConcurrentMsgCountPerTick = 256;
                 long delta = 0;
                 if (m_LastTickTime == 0) {
                     m_LastTickTime = curTime;
@@ -504,6 +559,38 @@ namespace StorySystem
                         }
                     }
                 }
+                ct = m_ConcurrentMessageHandlers.Count;
+                int concurrentMsgCt = 0;
+                foreach (var pair in m_ConcurrentMessageQueues) {
+                    Queue<MessageInfo> queue = pair.Value;
+                    if (concurrentMsgCt < c_MaxConcurrentMsgCountPerTick && queue.Count > 0) {
+                        MessageInfo info = queue.Dequeue();
+                        StoryMessageHandler handler = NewConcurrentMessageHandler(info.m_MsgId);
+                        if (null != handler) {
+                            UpdateMessageTriggerTime(info.m_MsgId, curTime);
+                            handler.Trigger(this, info.m_Args);
+                            handler.Tick(this, 0);
+                            if (handler.IsTriggered) {
+                                m_ConcurrentMessageHandlers.Add(handler);
+                            } else {
+                                RecycleConcurrentMessageHandler(handler);
+                            }
+                        }
+                    }
+
+                }
+                for (int ix = ct - 1; ix >= 0; --ix) {
+                    long dt = delta;
+                    StoryMessageHandler handler = m_ConcurrentMessageHandlers[ix];
+                    if (handler.IsTriggered) {
+                        handler.Tick(this, dt);
+                        dt = 0;
+                    }
+                    if (!handler.IsTriggered) {
+                        m_ConcurrentMessageHandlers.RemoveAt(ix);
+                        RecycleConcurrentMessageHandler(handler);
+                    }
+                }
             } finally {
                 m_IsInTick = false;
             }
@@ -522,6 +609,36 @@ namespace StorySystem
                 m_Message2TriggerTimes.Add(msgId, time);
             }
         }
+
+        private StoryMessageHandler NewConcurrentMessageHandler(string msgId)
+        {
+            Queue<StoryMessageHandler> queue;
+            if (m_ConcurrentMessageHandlerPool.TryGetValue(msgId, out queue)) {
+                if (queue.Count > 0) {
+                    StoryMessageHandler handler = queue.Dequeue();
+                     return handler;
+                }
+            }
+            return NewMessageHandler(msgId);
+        }
+        private void RecycleConcurrentMessageHandler(StoryMessageHandler handler)
+        {
+            string msgId = handler.MessageId;
+            Queue<StoryMessageHandler> queue;
+            if (m_ConcurrentMessageHandlerPool.TryGetValue(msgId, out queue)) {
+                handler.Reset();
+                queue.Enqueue(handler);
+            }
+        }
+        private StoryMessageHandler NewMessageHandler(string msgId)
+        {
+            StoryMessageHandler handler;
+            if (m_LoadedMessageHandlers.TryGetValue(msgId, out handler)) {
+                handler = handler.Clone();
+            }
+            return handler;
+        }
+
         private class MessageInfo
         {
             public string m_MsgId = null;
@@ -540,8 +657,12 @@ namespace StorySystem
         private object m_Context = null;
         private Dictionary<string, Queue<MessageInfo>> m_MessageQueues = new Dictionary<string, Queue<MessageInfo>>();
         private List<StoryMessageHandler> m_MessageHandlers = new List<StoryMessageHandler>();
-        private Dictionary<string, object> m_PreInitedLocalVariables = new Dictionary<string, object>();
+        private Dictionary<string, Queue<MessageInfo>> m_ConcurrentMessageQueues = new Dictionary<string, Queue<MessageInfo>>();
+        private List<StoryMessageHandler> m_ConcurrentMessageHandlers = new List<StoryMessageHandler>();
         private Dictionary<string, long> m_Message2TriggerTimes = new Dictionary<string, long>();
-        private TypedDataCollection m_CustomDatas = new TypedDataCollection();
+
+        private Dictionary<string, Queue<StoryMessageHandler>> m_ConcurrentMessageHandlerPool = new Dictionary<string, Queue<StoryMessageHandler>>();
+        private Dictionary<string, object> m_PreInitedLocalVariables = new Dictionary<string, object>();
+        private Dictionary<string, StoryMessageHandler> m_LoadedMessageHandlers = new Dictionary<string, StoryMessageHandler>();
     }
 }

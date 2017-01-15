@@ -1,0 +1,85 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "AiCommand";
+
+AiChase = {
+	cctor = function()
+	end,
+
+	__new_object = function(...)
+		return newobject(AiChase, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = AiChase;
+		local static_fields = nil;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			Clone = function(this)
+				return newobject(AiChase, "ctor", {});
+			end,
+			ResetState = function(this)
+				this.m_ChaseStarted = false;
+			end,
+			ExecCommand = function(this, instance, _params, delta)
+				local args; args = _params.Values;
+				if (not this.m_ChaseStarted) then
+					this.m_ChaseStarted = true;
+					this.m_ObjId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32);
+					this.m_SkillInfo = typecast(getexterninstanceindexer(args, nil, "get_Item", 1), GameFramework.SkillInfo);
+				end;
+				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
+				if ((nil ~= npc) and (not npc:IsUnderControl())) then
+					local info; info = npc:GetAiStateInfo();
+					local target; target = GameFramework.PluginFramework.Instance:GetEntityById(info.Target);
+					if ((nil ~= target) and (nil ~= this.m_SkillInfo)) then
+						info.Time = (info.Time + delta);
+						if (info.Time > 100) then
+							info.Time = 0;
+						else
+							return true;
+						end;
+						local srcPos; srcPos = npc:GetMovementStateInfo():GetPosition3D();
+						local targetPos; targetPos = target:GetMovementStateInfo():GetPosition3D();
+						local distSqr; distSqr = GameFramework.Geometry.DistanceSquare(srcPos, targetPos);
+						if (distSqr > (this.m_SkillInfo.Distance * this.m_SkillInfo.Distance)) then
+							AiCommand.AiPursue(npc, targetPos);
+							return true;
+						end;
+					end;
+				end;
+				return false;
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_build = function()
+			local instance_fields = {
+				m_ObjId = 0,
+				m_SkillInfo = nil,
+				m_ChaseStarted = false,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"GameFramework.Plugin.ISimpleStoryCommandPlugin",
+		};
+
+		local interface_map = {
+			GameFramework_Plugin_ISimpleStoryCommandPlugin_Clone = "Clone",
+			GameFramework_Plugin_ISimpleStoryCommandPlugin_ResetState = "ResetState",
+			GameFramework_Plugin_ISimpleStoryCommandPlugin_ExecCommand = "ExecCommand",
+		};
+
+
+		return defineclass(nil, "AiChase", static, static_fields, static_props, static_events, instance_methods, instance_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+
+AiChase.__define_class();
+

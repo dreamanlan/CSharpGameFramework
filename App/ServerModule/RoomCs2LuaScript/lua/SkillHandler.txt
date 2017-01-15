@@ -1,0 +1,20 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+
+SkillHandler = {
+	cctor = function()
+	end,
+
+	__define_class = function()
+		local static = SkillHandler;
+		local static_fields = nil;
+		local static_props = nil;
+		local static_events = nil;
+
+		return defineclass(nil, "SkillHandler", static, static_fields, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	end,
+};
+
+
+SkillHandler.__define_class();
+

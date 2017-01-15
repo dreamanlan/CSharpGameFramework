@@ -1,58 +1,58 @@
-int32	int32	int32	int32	float	float	float	int32	bool
-group	scene	camp	actorID	x	y	dir	level	passive
-//id=scene*10+camp		阵营	要出的敌人	出生坐标	出生坐标	方向	等级	非主动攻击怪
-//		1--全友好 2--全敌对 3--blue 4--red						
-42	4	2	6	113.3	147.59	0	1	0
-42	4	2	6	136	155.49	0	1	0
-42	4	2	6	131.5	140.19	0	1	0
-42	4	2	6	102	255.39	0	1	0
-42	4	2	6	106	270.39	0	1	0
-42	4	2	6	83	262.39	0	1	0
-42	4	2	6	124	394.39	0	1	0
-42	4	2	6	147	402.39	0	1	0
-42	4	2	6	143	387.39	0	1	0
-42	4	2	6	325	349.39	0	1	0
-42	4	2	6	329	364.39	0	1	0
-42	4	2	6	306	356.39	0	1	0
-42	4	2	6	427	170.39	0	1	0
-42	4	2	6	450	178.39	0	1	0
-42	4	2	6	446	163.39	0	1	0
-42	4	2	6	317	93.39	0	1	0
-42	4	2	6	321	108.39	0	1	0
-42	4	2	6	298	100.39	0	1	0
-52	5	2	6	113.3	147.59	0	1	0
-52	5	2	6	136	155.49	0	1	0
-52	5	2	6	131.5	140.19	0	1	0
-52	5	2	6	102	255.39	0	1	0
-52	5	2	6	106	270.39	0	1	0
-52	5	2	6	83	262.39	0	1	0
-52	5	2	6	124	394.39	0	1	0
-52	5	2	6	147	402.39	0	1	0
-52	5	2	6	143	387.39	0	1	0
-52	5	2	6	325	349.39	0	1	0
-52	5	2	6	329	364.39	0	1	0
-52	5	2	6	306	356.39	0	1	0
-52	5	2	6	427	170.39	0	1	0
-52	5	2	6	450	178.39	0	1	0
-52	5	2	6	446	163.39	0	1	0
-52	5	2	6	317	93.39	0	1	0
-52	5	2	6	321	108.39	0	1	0
-52	5	2	6	298	100.39	0	1	0
-62	6	2	6	113.3	147.59	0	1	0
-62	6	2	6	136	155.49	0	1	0
-62	6	2	6	131.5	140.19	0	1	0
-62	6	2	6	102	255.39	0	1	0
-62	6	2	6	106	270.39	0	1	0
-62	6	2	6	83	262.39	0	1	0
-62	6	2	6	124	394.39	0	1	0
-62	6	2	6	147	402.39	0	1	0
-62	6	2	6	143	387.39	0	1	0
-62	6	2	6	325	349.39	0	1	0
-62	6	2	6	329	364.39	0	1	0
-62	6	2	6	306	356.39	0	1	0
-62	6	2	6	427	170.39	0	1	0
-62	6	2	6	450	178.39	0	1	0
-62	6	2	6	446	163.39	0	1	0
-62	6	2	6	317	93.39	0	1	0
-62	6	2	6	321	108.39	0	1	0
-62	6	2	6	298	100.39	0	1	0
+int32	int32	int32	int32	float	float	float	int32	bool	string	string[]
+group	scene	camp	actorID	x	y	dir	level	passive	aiLogic	aiParams
+//id=scene*10+camp		阵营	要出的敌人	出生坐标	出生坐标	方向	等级	非主动攻击怪	ai逻辑	ai参数
+//		1--全友好 2--全敌对 3--blue 4--red								
+42	4	2	6	113.3	147.59	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	136	155.49	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	131.5	140.19	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	102	255.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	106	270.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	83	262.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	124	394.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	147	402.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	143	387.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	325	349.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	329	364.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	306	356.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	427	170.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	450	178.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	446	163.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	317	93.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	321	108.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+42	4	2	6	298	100.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	113.3	147.59	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	136	155.49	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	131.5	140.19	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	102	255.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	106	270.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	83	262.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	124	394.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	147	402.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	143	387.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	325	349.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	329	364.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	306	356.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	427	170.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	450	178.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	446	163.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	317	93.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	321	108.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+52	5	2	6	298	100.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	113.3	147.59	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	136	155.49	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	131.5	140.19	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	102	255.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	106	270.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	83	262.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	124	394.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	147	402.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	143	387.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	325	349.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	329	364.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	306	356.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	427	170.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	450	178.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	446	163.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	317	93.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	321	108.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+62	6	2	6	298	100.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl

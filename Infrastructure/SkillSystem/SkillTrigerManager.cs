@@ -12,8 +12,15 @@ namespace SkillSystem
     {
         public void RegisterTrigerFactory(string type, ISkillTrigerFactory factory)
         {
+            RegisterTrigerFactory(type, factory, false);
+        }
+        public void RegisterTrigerFactory(string type, ISkillTrigerFactory factory, bool replace)
+        {
             if (!m_TrigerFactories.ContainsKey(type)) {
                 m_TrigerFactories.Add(type, factory);
+            } else if(replace) {
+                //允许重载触发器
+                m_TrigerFactories[type] = factory;
             } else {
                 //error
             }
@@ -28,7 +35,7 @@ namespace SkillSystem
                     triger = factory.Create();
                     triger.Init(trigerConfig, instance);
                 } catch (Exception ex) {
-                    GameFramework.LogSystem.Error("triger:{0} line:{1} failed.", trigerConfig.ToScriptString(), trigerConfig.GetLine());
+                    GameFramework.LogSystem.Error("triger:{0} line:{1} failed.", trigerConfig.ToScriptString(false), trigerConfig.GetLine());
                     throw ex;
                 }
             } else {
@@ -49,12 +56,15 @@ namespace SkillSystem
         private ISkillTrigerFactory GetFactory(string type)
         {
             ISkillTrigerFactory factory;
-            m_TrigerFactories.TryGetValue(type, out factory);
+            lock (m_Lock) {
+                m_TrigerFactories.TryGetValue(type, out factory);
+            }
             return factory;
         }
 
         private SkillTrigerManager() { }
 
+        private object m_Lock = new object();
         private Dictionary<string, ISkillTrigerFactory> m_TrigerFactories = new Dictionary<string, ISkillTrigerFactory>();
 
         public static SkillTrigerManager Instance

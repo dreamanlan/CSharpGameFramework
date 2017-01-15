@@ -1,0 +1,29 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+
+Cs2LuaScript.Plugin = {
+	get_Proxy = function()
+		return GameFramework.Plugin.PluginProxy.LuaProxy;
+	end,
+	cctor = function()
+	end,
+
+	__define_class = function()
+		local static = Cs2LuaScript.Plugin;
+		local static_fields = nil;
+
+		local static_props = {
+			Proxy = {
+				get = static.get_Proxy,
+			},
+		};
+
+		local static_events = nil;
+
+		return defineclass(nil, "Cs2LuaScript.Plugin", static, static_fields, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	end,
+};
+
+
+Cs2LuaScript.Plugin.__define_class();
+

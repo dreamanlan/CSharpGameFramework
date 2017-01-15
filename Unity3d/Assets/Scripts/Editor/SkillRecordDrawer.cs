@@ -19,38 +19,14 @@ public class SkillRecordDrawer : PropertyDrawer
             SerializedProperty desc = property.FindPropertyRelative("desc");
             SerializedProperty type = property.FindPropertyRelative("type");
             SerializedProperty icon = property.FindPropertyRelative("icon");
-            SerializedProperty distance = property.FindPropertyRelative("distance");
-            SerializedProperty duration = property.FindPropertyRelative("duration");
-            SerializedProperty interval = property.FindPropertyRelative("interval");
-            SerializedProperty canmove = property.FindPropertyRelative("canmove");
             SerializedProperty impacttoself = property.FindPropertyRelative("impacttoself");
             SerializedProperty impact = property.FindPropertyRelative("impact");
-            SerializedProperty interruptPriority = property.FindPropertyRelative("interruptPriority");
-            SerializedProperty isInterrupt = property.FindPropertyRelative("isInterrupt");
             SerializedProperty targetType = property.FindPropertyRelative("targetType");
             SerializedProperty aoeType = property.FindPropertyRelative("aoeType");
             SerializedProperty aoeSize = property.FindPropertyRelative("aoeSize");
             SerializedProperty aoeAngleOrLength = property.FindPropertyRelative("aoeAngleOrLength");
             SerializedProperty maxAoeTargetCount = property.FindPropertyRelative("maxAoeTargetCount");
-            SerializedProperty dslSkillId = property.FindPropertyRelative("dslSkillId");
             SerializedProperty dslFile = property.FindPropertyRelative("dslFile");
-            SerializedProperty startupSkillId = property.FindPropertyRelative("startupSkillId");
-            SerializedProperty flybackSkillId = property.FindPropertyRelative("flybackSkillId");
-            SerializedProperty startupPositionType = property.FindPropertyRelative("startupPositionType");
-            SerializedProperty subsequentSkills = property.FindPropertyRelative("subsequentSkills");
-            SerializedProperty autoCast = property.FindPropertyRelative("autoCast");
-            SerializedProperty needTarget = property.FindPropertyRelative("needTarget");
-            SerializedProperty cooldown = property.FindPropertyRelative("cooldown");
-            SerializedProperty damage = property.FindPropertyRelative("damage");
-            SerializedProperty addhp = property.FindPropertyRelative("addhp");
-            SerializedProperty addmp = property.FindPropertyRelative("addmp");
-            SerializedProperty addattack = property.FindPropertyRelative("addattack");
-            SerializedProperty adddefence = property.FindPropertyRelative("adddefence");
-            SerializedProperty addshield = property.FindPropertyRelative("addshield");
-            SerializedProperty addspeed = property.FindPropertyRelative("addspeed");
-            SerializedProperty addcritical = property.FindPropertyRelative("addcritical");
-            SerializedProperty addcriticalpow = property.FindPropertyRelative("addcriticalpow");
-            SerializedProperty addrps = property.FindPropertyRelative("addrps");
             SerializedProperty skillres = property.FindPropertyRelative("resources");
                      
             int v = 0;
@@ -122,11 +98,10 @@ public class SkillRecordDrawer : PropertyDrawer
             v = EditorGUI.IntField(position, idVal);
             if (EditorGUI.EndChangeCheck()) {
                 id.intValue = v;
-                dslSkillId.intValue = v;
             }
 
-            SerializedProperty[] p = new SerializedProperty[] { desc, type, icon, distance, duration, interval, canmove, impacttoself, impact, interruptPriority, isInterrupt, targetType, aoeType, aoeSize, aoeAngleOrLength, maxAoeTargetCount, startupPositionType, autoCast, needTarget, cooldown, dslSkillId, startupSkillId, flybackSkillId, damage, addhp, addmp, addattack, adddefence, addshield, addspeed, addcritical, addcriticalpow, addrps };
-            string[] titles = new string[] { "描述", "类型", "技能图标", "技能有效距离", "持续时间", "作用周期", "能否移动", "给自己加的效果", "效果", "打断优先级", "自己能否打断", "目标类型", "AOE类型", "AOE半径", "AOE角度或矩形长度", "最大AOE目标数", "启动位置类型", "autoCast", "是否指向性技能", "冷却时间", "dslSkillId", "启动技能ID", "归位技能ID", "伤害", "加血", "加蓝", "加攻击", "加防御", "加盾", "加速", "加暴击概率", "加暴击率", "加攻速" };
+            SerializedProperty[] p = new SerializedProperty[] { desc, type, icon, impacttoself, impact, targetType, aoeType, aoeSize, aoeAngleOrLength, maxAoeTargetCount };
+            string[] titles = new string[] { "描述", "类型", "技能图标", "给自己加的效果", "效果", "目标类型", "AOE类型", "AOE半径", "AOE角度或矩形长度", "最大AOE目标数" };
             for (int i = 0; i < p.Length; ++i) {
                 position.x = x;
                 position.y += c_FieldHeight;
@@ -151,36 +126,12 @@ public class SkillRecordDrawer : PropertyDrawer
             position.x += position.width;
             position.width = 40;
             if (GUI.Button(position, "创建")) {
-                int dslId = dslSkillId.intValue;
                 string filePath = dslFile.stringValue;
-                ShowSkillDslTemplateMenu(dslId, filePath, position.x, position.y - c_FieldHeight * 3);
+                ShowSkillDslTemplateMenu(filePath, position.x, position.y - c_FieldHeight * 3);
             }
 
             position.width = standardFieldWidth;
-
-            int ctSkills = subsequentSkills.arraySize;
-            position.x = x;
-            position.y += c_FieldHeight;
-            EditorGUI.LabelField(position, "连续技所有后续技能");
-            position.x += c_LabelWidth;
-            EditorGUI.BeginChangeCheck();
-            v = EditorGUI.IntField(position, ctSkills);
-            if (EditorGUI.EndChangeCheck()) {
-                for (int i = v; i < ctSkills; ++i) {
-                    subsequentSkills.DeleteArrayElementAtIndex(v);
-                }
-                for (int i = ctSkills; i < v; ++i) {
-                    subsequentSkills.InsertArrayElementAtIndex(ctSkills);
-                }
-            }
-            
-            for (int i = 0; i < v; ++i) {
-                position.x = x + c_LabelWidth;
-                position.y += c_FieldHeight;
-                SerializedProperty skillId = subsequentSkills.GetArrayElementAtIndex(i);
-                EditorGUI.PropertyField(position, skillId, GUIContent.none);
-            }
-                        
+                                    
             int ct = skillres.arraySize;
             position.x = x; 
             position.y += c_FieldHeight;
@@ -208,10 +159,9 @@ public class SkillRecordDrawer : PropertyDrawer
     }
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        SerializedProperty skillIds = property.FindPropertyRelative("subsequentSkills");
         SerializedProperty skillres = property.FindPropertyRelative("resources");
         if (property.isExpanded) {
-            return (property.CountInProperty() + 1 + skillIds.arraySize + 1 + skillres.arraySize + 1) * c_FieldHeight + 100;
+            return (property.CountInProperty() + 1 + skillres.arraySize + 1) * c_FieldHeight + 100;
         } else {
             return c_FieldHeight;
         }
@@ -243,9 +193,9 @@ public class SkillRecordDrawer : PropertyDrawer
         System.Diagnostics.Process p = System.Diagnostics.Process.Start(s_DslEditorPath, string.Format("\"{0}\"", path));
         p.Close();
     }
-    private static void ShowSkillDslTemplateMenu(int dslSkillId, string filePath, float x, float y)
+    private static void ShowSkillDslTemplateMenu(string filePath, float x, float y)
     {
-        KeyValuePair<int, string> userData = new KeyValuePair<int, string>(dslSkillId, filePath);
+        string userData = filePath;
         string path = GameFramework.HomePath.GetAbsolutePath("../../../Resource/DslTemplate/SkillTemplates.dsl");
         string txt = File.ReadAllText(path, Encoding.GetEncoding(936));
         Dsl.DslFile file = new Dsl.DslFile();
@@ -271,15 +221,15 @@ public class SkillRecordDrawer : PropertyDrawer
     }
     private static void OnCustomMenu(object userData, string[] options, int selected)
     {
-        KeyValuePair<int, string> data = (KeyValuePair<int, string>)userData;
+        string data = userData as string;
         if (selected > 0) {
             string content;
             if (s_SkillDslTemplates.TryGetValue(options[selected], out content)) {
-                CreateSkillDslFile(data.Key, data.Value, content);
+                CreateSkillDslFile(data, content);
             }
         }
     }
-    private static void CreateSkillDslFile(int dslSkillId, string filePath, string content)
+    private static void CreateSkillDslFile(string filePath, string content)
     {
         string path = GameFramework.HomePath.GetAbsolutePath("../../../Resource/DslFile/" + filePath);
         if (File.Exists(path)) {
@@ -288,7 +238,7 @@ public class SkillRecordDrawer : PropertyDrawer
             }
         }
         using (StreamWriter sw = new StreamWriter(path, false)) {
-            sw.WriteLine("skill({0})", dslSkillId);
+            sw.WriteLine("skill");
             sw.Write("{{{0}",content);
             sw.WriteLine("};");
             sw.Close();

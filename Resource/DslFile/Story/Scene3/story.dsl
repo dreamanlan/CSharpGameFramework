@@ -22,21 +22,18 @@ story(story_main)
     objsetformation(@userId,0);
     loop(4){
       @unitId = @userId*100+$$;
-      createnpc(@unitId,vector3(25+rndint(0,10),0,25+rndint(0,10)),0,@campId,$$+2,4,stringlist(""),@userId);
+      createnpc(@unitId,vector3(25+rndint(0,10),0,25+rndint(0,10)),0,@campId,$$+2,"ai_member",stringlist("Ai/ailogic_member.dsl"),@userId);
       npcsetformation(@unitId,$$+1);
     };
     wait(1000);
     objaddskill(@userId,22);
     objaddskill(@userId,23);
-    publishgfxevent("ui_add_skill_button", "ui", 1, @userId, 22)touser(@userId);
-    publishgfxevent("ui_add_skill_button", "ui", 1, @userId, 23)touser(@userId);
-    publishgfxevent("ui_add_skill_button", "ui", 1, @userId, 0)touser(@userId);
+    publishgfxevent("loading_complete", "ui")touser(@userId);
     camerafollow(@userUnitId)touser(@userId);
     loop(4){
       @unitId = @userId*100+$$;
-      publishgfxevent("ui_add_skill_button","ui",$$+2,unitid2objid(@unitId),0)touser(@userId);
     };
-		sendserverstorymessage("msg_from_room")touser(@userId);
+		//sendserverstorymessage("msg_from_room")touser(@userId);
     showdlg(2)touser(@userId);
   };
   onmessage("user_leave_scene")
@@ -44,11 +41,12 @@ story(story_main)
   };
   onmessage("server:msg_from_userserver")
   {
-		log("msg_from_userserver:{0} {1}",$0,getentityinfo($0).CustomData.Guid);
-		sendserverstorymessage("msg_from_room")touser($0);
+		//log("msg_from_userserver:{0} {1}",$0,getentityinfo($0).CustomData.Guid);
+		//sendserverstorymessage("msg_from_room")touser($0);
   };
   onmessage("dialog_over",2)
   {
+    sendgfxmessage("Main Camera", "LightScreen", 3000)touser(@userId);
   };
   onmessage("refreshmonsters")
   {
@@ -64,7 +62,7 @@ story(story_main)
       loop(64){      	
 	      @monsterInfo = getmonsterinfo(2,$$);
 	      if(!isnull(@monsterInfo)){
-	      	createnpc(1006+$$,vector3(@monsterInfo.x,0,@monsterInfo.y),@monsterInfo.dir*3.1415926/180,2,@monsterInfo.actorID,2,stringlist(""));
+	      	createnpc(1006+$$,vector3(@monsterInfo.x,0,@monsterInfo.y),@monsterInfo.dir*3.1415926/180,2,@monsterInfo.actorID,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));
 	      };
 	    };
       

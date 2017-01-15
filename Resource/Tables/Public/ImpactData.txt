@@ -1,0 +1,4 @@
+int32		string	int32	int32	int32	int32	int32[]	int32[]	int32[]	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32	int32
+id		desc	type	icon	duration	cooldown	multiple	damage	vampire	attr1	value1	attr2	value2	attr3	value3	attr4	value4	attr5	value5	attr6	value6	attr7	value7	attr8	value8
+//id	策划用	技能描述	技能类型(0--skill 1--impact 2--buff)	图标	持续时间	冷却回合	技能倍数	直接伤害	是否吸血	属性ID1	属性值1	属性ID2	属性值2	属性ID3	属性值3	属性ID4	属性值4	属性ID5	属性值5	属性ID6	属性值6	属性ID7	属性值7	属性ID8	属性值8
+//说明:impact ID范围1~10000000																									

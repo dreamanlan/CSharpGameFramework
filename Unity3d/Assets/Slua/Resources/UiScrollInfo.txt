@@ -1,0 +1,146 @@
+require "cs2lua__utility";
+require "cs2lua__namespaces";
+require "cs2lua__externenums";
+
+UiScrollInfo = {
+	__new_object = function(...)
+		return newobject(UiScrollInfo, nil, {}, ...);
+	end,
+	__define_class = function()
+		local static = UiScrollInfo;
+
+		local static_methods = {
+			cctor = function()
+			end,
+		};
+
+		local static_fields_build = function()
+			local static_fields = {
+			};
+			return static_fields;
+		end;
+		local static_props = nil;
+		local static_events = nil;
+
+		local instance_methods = {
+			Init = function(this, obj, behaviour)
+				this.m_GameObject = obj;
+				this.m_Item = UnityEngine.Resources.Load("UI/Image");
+				this.m_RectTransform = typeas(this.m_GameObject.transform, UnityEngine.RectTransform, false);
+				local viewObj; viewObj = this.m_RectTransform.parent.parent.gameObject;
+				this.m_ScrollRect = viewObj:GetComponent(UnityEngine.UI.ScrollRect);
+				local rectTrans; rectTrans = typeas(this.m_RectTransform.parent.parent, UnityEngine.RectTransform, false);
+				this.m_Top = 0;
+				this.m_Width = rectTrans.rect.width;
+				this.m_Height = this.m_RectTransform.rect.height;
+			end,
+			Update = function(this)
+				local time; time = UnityEngine.Time.time;
+				if ((this.m_ScrollToEndTime + 1) >= time) then
+					this.m_ScrollRect.verticalScrollbar.value = 0;
+				end;
+			end,
+			Call = function(this, name, ...)
+				local args = wraparray{...};
+				if (name == "PushInfo") then
+					local info; info = typeas(args[1], System.String, false);
+					if (nil ~= info) then
+						this:PushInfo(info);
+					end;
+				end;
+			end,
+			PushInfo = function(this, text)
+				if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, this.m_Item) then
+					local item; item = typeas(UnityEngine.Object.Instantiate(this.m_Item), UnityEngine.GameObject, false);
+					local t; t = item.transform:Find("Text");
+					if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, t) then
+						item.transform:SetParent(this.m_GameObject.transform, false);
+						local bkg; bkg = item:GetComponent(UnityEngine.UI.Image);
+						local rectTrans; rectTrans = typeas(bkg.transform, UnityEngine.RectTransform, false);
+						local content; content = t.gameObject:GetComponent(UnityEngine.UI.Text);
+						local rectTrans2; rectTrans2 = typeas(t.gameObject.transform, UnityEngine.RectTransform, false);
+						local dw; dw = 16;
+						local dh; dh = 6;
+						if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, content) then
+							local w;
+							local h;
+							local __compiler_invoke_52; __compiler_invoke_52, w, h = this:CalcBounds(text, content, newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, {}, rectTrans.rect.width, rectTrans.rect.height), (this.m_Width - dw), __cs2lua_out, __cs2lua_out);
+							content.text = text;
+							rectTrans.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, {}, 0, this.m_Top, 0);
+							rectTrans.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, {}, (this.m_Width - dw), (h + dh));
+							this.m_Top = this.m_Top - (h + dh);
+							this.m_RectTransform.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, {}, 0, 0, 0);
+							this.m_RectTransform.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, {}, this.m_RectTransform.sizeDelta.x, (dh - this.m_Top));
+						end;
+					end;
+				end;
+				this.m_ScrollRect.verticalScrollbar.value = 0;
+				this.m_ScrollToEndTime = UnityEngine.Time.time;
+			end,
+			CalcBounds = function(this, text, content, size, maxWidth, width, height)
+				local ret; ret = false;
+				size.x = maxWidth;
+				width = 0;
+				height = 0;
+				local lines; lines = invokeforbasicvalue(text, false, System.String, "Split", wrapchar('\n', 0x0A));
+				local lineCt; lineCt = lines.Length;
+				local i; i = 0;
+				while (i < lineCt) do
+					local txt; txt = invokeforbasicvalue(lines[i + 1], false, System.String, "Trim", wrapchar('\r', 0x0D));
+					local textSetting; textSetting = content:GetGenerationSettings(size);
+					textSetting.verticalOverflow = 1;
+					textSetting.horizontalOverflow = 0;
+					textSetting.updateBounds = true;
+					local generator; generator = newexternobject(UnityEngine.TextGenerator, "UnityEngine.TextGenerator", "ctor", nil, {});
+					local pw; pw = generator:GetPreferredWidth(txt, textSetting);
+					if generator:Populate(txt, textSetting) then
+						local w; w = generator.rectExtents.width;
+						local h; h = generator.rectExtents.height;
+						if (w > pw) then
+							w = pw;
+						end;
+						if (width < w) then
+							width = w;
+						end;
+						height = (height + h);
+						ret = true;
+					end;
+				i = i + 1;
+				end;
+				return ret, width, height;
+			end,
+			ctor = function(this)
+			end,
+		};
+
+		local instance_fields_build = function()
+			local instance_fields = {
+				m_Item = __cs2lua_nil_field_value,
+				m_GameObject = __cs2lua_nil_field_value,
+				m_RectTransform = __cs2lua_nil_field_value,
+				m_ScrollRect = __cs2lua_nil_field_value,
+				m_Top = 0,
+				m_Width = 0,
+				m_Height = 2048,
+				m_ScrollToEndTime = 0,
+			};
+			return instance_fields;
+		end;
+		local instance_props = nil;
+		local instance_events = nil;
+		local interfaces = {
+			"ITickPlugin",
+		};
+
+		local interface_map = {
+			ITickPlugin_Init = "Init",
+			ITickPlugin_Update = "Update",
+			ITickPlugin_Call = "Call",
+		};
+
+
+		return defineclass(nil, "UiScrollInfo", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+	end,
+};
+
+UiScrollInfo.__define_class();
