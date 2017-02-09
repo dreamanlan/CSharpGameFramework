@@ -78,7 +78,7 @@ namespace GameFramework
     {      
       ulong serial = (ulong)Interlocked.Increment(ref m_NextUserGuid) - 1;
       if (UserServer.Instance.DataCacheThread.DataStoreAvailable) {
-        UserServer.Instance.DataCacheThread.DSSaveGuid(GuidSystem.s_UserGuidType, serial);
+        UserServer.Instance.DataCacheThread.SaveGuid(GuidSystem.s_UserGuidType, serial);
       }
       return serial * 10000 + s_WorldId;
     }
@@ -86,7 +86,7 @@ namespace GameFramework
     {     
       ulong serial = (ulong)Interlocked.Increment(ref m_NextMailGuid) - 1;     
       if (UserServer.Instance.DataCacheThread.DataStoreAvailable) {
-        UserServer.Instance.DataCacheThread.DSSaveGuid(GuidSystem.s_MailGuidType, serial);
+        UserServer.Instance.DataCacheThread.SaveGuid(GuidSystem.s_MailGuidType, serial);
       }
       return serial * 10000 + s_WorldId;
     }
@@ -94,7 +94,7 @@ namespace GameFramework
     {      
       ulong serial = (ulong)Interlocked.Increment(ref m_NextItemGuid) - 1;
       if (UserServer.Instance.DataCacheThread.DataStoreAvailable) {
-        UserServer.Instance.DataCacheThread.DSSaveGuid(GuidSystem.s_ItemGuidType, serial);
+        UserServer.Instance.DataCacheThread.SaveGuid(GuidSystem.s_ItemGuidType, serial);
       }
       return serial * 10000 + s_WorldId;
     }
@@ -102,7 +102,7 @@ namespace GameFramework
     {     
       ulong serial = (ulong)Interlocked.Increment(ref m_NextMemberGuid) - 1;
       if (UserServer.Instance.DataCacheThread.DataStoreAvailable) {
-        UserServer.Instance.DataCacheThread.DSSaveGuid(GuidSystem.s_MemberGuidType, serial);
+        UserServer.Instance.DataCacheThread.SaveGuid(GuidSystem.s_MemberGuidType, serial);
       }
       return serial * 10000 + s_WorldId;
     }
@@ -110,7 +110,7 @@ namespace GameFramework
     {
         ulong serial = (ulong)Interlocked.Increment(ref m_NextFriendGuid) - 1;
         if (UserServer.Instance.DataCacheThread.DataStoreAvailable) {
-            UserServer.Instance.DataCacheThread.DSSaveGuid(GuidSystem.s_FriendGuidType, serial);
+            UserServer.Instance.DataCacheThread.SaveGuid(GuidSystem.s_FriendGuidType, serial);
         }
         return serial * 10000 + s_WorldId;
     }
@@ -118,7 +118,7 @@ namespace GameFramework
     {
       ulong serial = (ulong)Interlocked.Increment(ref m_NextAuctionGuid) - 1;
       if (UserServer.Instance.DataCacheThread.DataStoreAvailable) {
-        UserServer.Instance.DataCacheThread.DSSaveGuid(GuidSystem.s_AuctionGuidType, serial);
+        UserServer.Instance.DataCacheThread.SaveGuid(GuidSystem.s_AuctionGuidType, serial);
       }
       return serial * 10000 + s_WorldId;
     }

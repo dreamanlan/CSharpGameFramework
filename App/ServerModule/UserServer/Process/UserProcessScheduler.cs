@@ -186,7 +186,7 @@ namespace GameFramework
                     UserInfo user = GetUserInfo(guidPair.Key);
                     if (user != null) {
                         user.NextUserSaveCount = DataCacheThread.UltimateSaveCount;
-                        this.GetUserThread(user).QueueAction(ds_thread.DSPSaveUser, user, user.NextUserSaveCount);
+                        this.GetUserThread(user).QueueAction(ds_thread.SaveUser, user, user.NextUserSaveCount);
                     }
                 }
                 LogSys.Log(LOG_TYPE.MONITOR, "DoLastSaveUserData Step_4: Start to save UserData for last. UserCount:{0}", m_ActiveUserGuids.Count);
@@ -255,7 +255,7 @@ namespace GameFramework
                 if (dsThread.DataStoreAvailable == true) {
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
                     LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_4: Load account from DataStore . AccountId:{0}", accountId);
-                    dsThread.DispatchAction(dsThread.DSPLoadAccount, accountId);
+                    dsThread.DispatchAction(dsThread.LoadAccount, accountId);
                 } else {
                     accountInfo.CurrentState = AccountState.Online;
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
@@ -300,7 +300,7 @@ namespace GameFramework
                 }
             }
         }
-        internal void DSPLoadAccountCallback(string accountId, Msg_DL_LoadResult ret)
+        internal void LoadAccountCallback(string accountId, Msg_DL_LoadResult ret)
         {
             AccountInfo accountInfo = m_AccountSystem.FindAccountById(accountId);
             if (accountInfo == null) {
@@ -342,6 +342,8 @@ namespace GameFramework
                     LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_4b: Load account NotFound . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
                     accountInfo.CurrentState = AccountState.Online;
                     accountInfo.TableAccount.AccountId = accountId;
+                    accountInfo.TableAccount.Password = accountInfo.Password;
+                    accountInfo.TableAccount.UserGuid = 0;
                     accountInfo.TableAccount.IsBanned = false;
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
                     protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.FirstLogin;
@@ -444,14 +446,14 @@ namespace GameFramework
                     var ds_thread = UserServer.Instance.DataCacheThread;
                     if (ds_thread.DataStoreAvailable == true) {
                         LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_8b: Load UserInfo. AccountId:{0}, UserGuid:{1}", accountId, userGuid);
-                        ds_thread.DispatchAction(ds_thread.DSPLoadUser, userGuid, accountId, nickname);
+                        ds_thread.DispatchAction(ds_thread.LoadUser, userGuid, accountId, nickname);
                     } else {
                         CreateRole(accountId, nickname, 1);
                     }
                 }
             }
         }
-        internal void DSPLoadUserCallback(Msg_DL_LoadResult ret, string accountId, string nickname)
+        internal void LoadUserCallback(Msg_DL_LoadResult ret, string accountId, string nickname)
         {
             AccountInfo accountInfo = m_AccountSystem.FindAccountById(accountId);
             if (accountInfo == null) {
@@ -459,14 +461,40 @@ namespace GameFramework
             }
             ulong userGuid = 0;// accountInfo.UserGuid;
             if (Msg_DL_LoadResult.ErrorNoEnum.Success == ret.ErrorNo) {
-                TableUserInfo dataUser = null;
+                #region 由数据库数据构建UserInfo
+                UserInfo ui = NewUserInfo();
                 foreach (var result in ret.Results) {
                     object _msg;
                     if (DbDataSerializer.Decode(result.Data, DataEnum2Type.Query(result.MsgId), out _msg)) {
                         DataEnum msgEnum = (DataEnum)result.MsgId;
                         switch (msgEnum) {
-                            case DataEnum.TableUserInfo:
-                                dataUser = _msg as TableUserInfo;
+                            case DataEnum.TableUserInfo: {
+                                    var dataUser = _msg as TableUserInfo;
+                                    ui.FromProto(dataUser);
+                                    ui.SetMoneyForDB(dataUser.Money);
+                                    ui.SetGoldForDB(dataUser.Gold);
+                                }
+                                break;
+                            case DataEnum.TableMemberInfo: {
+                                    var dataMember = _msg as TableMemberInfo;
+                                    var mi = new MemberInfo();
+                                    mi.FromProto(dataMember);
+                                    ui.MemberInfos.Add(mi);
+                                }
+                                break;
+                            case DataEnum.TableItemInfo: {
+                                    var dataItem = _msg as TableItemInfo;
+                                    var ii = new ItemInfo();
+                                    ii.FromProto(dataItem);
+                                    ui.ItemBag.ItemInfos.Add(ii);
+                                }
+                                break;
+                            case DataEnum.TableFriendInfo: {
+                                    var dataFriend = _msg as TableFriendInfo;
+                                    var fi = new FriendInfo();
+                                    fi.FromProto(dataFriend);
+                                    ui.FriendInfos.Add(fi);
+                                }
                                 break;
                             default:
                                 LogSys.Log(LOG_TYPE.ERROR, ConsoleColor.Red, "Decode user data ERROR. Wrong message id. UserGuid:{0}, WrongId:{1}", userGuid, msgEnum);
@@ -474,12 +502,7 @@ namespace GameFramework
                         }
                     }
                 }
-                #region 由数据库数据构建UserInfo
-                UserInfo ui = NewUserInfo();
                 //基础数据
-                ui.FromProto(dataUser);
-                ui.SetMoneyForDB(dataUser.Money);
-                ui.SetGoldForDB(dataUser.Gold);
                 #endregion
                 ui.NodeName = accountInfo.NodeName;
                 this.DoUserLogin(ui);
@@ -591,7 +614,7 @@ namespace GameFramework
                     var ds_thread = UserServer.Instance.DataCacheThread;
                     if (ds_thread.DataStoreAvailable == true) {
                         user.NextUserSaveCount = DataCacheThread.UltimateSaveCount;
-                        this.GetUserThread(user.Guid).QueueAction(ds_thread.DSPSaveUser, user, user.NextUserSaveCount);
+                        this.GetUserThread(user.Guid).QueueAction(ds_thread.SaveUser, user, user.NextUserSaveCount);
                         LogSys.Log(LOG_TYPE.INFO, "UserProcessScheduler-DoUserLogoff-StartSaveUser. UserGuid:{0}", guid);
                     }
                     m_Thread.QueueAction(this.AddWaitRecycleUser, guid);
@@ -750,8 +773,8 @@ namespace GameFramework
                     LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_7a: Create new role SUCCESS. AccountId:{0}, UserGuid:{1}, Nickname:{2}, HeroId:{3}",
                       accountId, accountInfo.AccountId, ui.Guid, ui.Nickname, ui.HeroId);
                     if (ds_thread.DataStoreAvailable) {
-                        ds_thread.DSPSaveCreateUser(accountInfo, nickname, ui.Guid);
-                        ds_thread.DSPSaveUser(ui, ui.NextUserSaveCount);
+                        ds_thread.SaveCreateUser(accountInfo, nickname, ui.Guid);
+                        ds_thread.SaveUser(ui, ui.NextUserSaveCount);
                     }
                     //游戏角色创建成功，直接进入游戏
                     ui.NodeName = accountInfo.NodeName;
@@ -836,7 +859,7 @@ namespace GameFramework
                     //定期存储UserInfo
                     if (ds_thread.DataStoreAvailable) {
                         if (user.CurrentState != UserState.DropOrOffline && curTime - user.LastSaveTime > UserServerConfig.UserDSSaveInterval && user.NextUserSaveCount > 0) {
-                            this.GetUserThread(user.Guid).QueueAction(ds_thread.DSPSaveUser, user, user.NextUserSaveCount);
+                            this.GetUserThread(user.Guid).QueueAction(ds_thread.SaveUser, user, user.NextUserSaveCount);
                             user.NextUserSaveCount++;
                             //随机扰动
                             int random = m_Random.Next(c_UserSaveRandom * 2);

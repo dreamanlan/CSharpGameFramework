@@ -17,28 +17,40 @@ namespace GameFramework
     internal sealed class MailSystem
     {
         //全部邮件列表，包含全局邮件、模块邮件和个人邮件
-        internal List<MailInfo> TotalMailList
+        internal List<TableMailInfoWrap> TotalMailList
         {
             get
             {
-                List<MailInfo> totalMailList = new List<MailInfo>(m_WholeMails);
-                foreach (KeyValuePair<ulong, List<MailInfo>> pair in m_UserMails) {
+                List<TableMailInfoWrap> totalMailList = new List<TableMailInfoWrap>(m_WholeMails);
+                foreach (KeyValuePair<long, List<TableMailInfoWrap>> pair in m_UserMails) {
                     var userMailList = pair.Value;
                     totalMailList.AddRange(userMailList);
                 }
                 return totalMailList;
             }
         }
-        internal void InitMailData(List<MailInfo> mailList)
+        internal List<TableMailInfoWrap> TotalDeletedMailList
+        {
+            get
+            {
+                List<TableMailInfoWrap> totalMailList = new List<TableMailInfoWrap>(m_DeletedWholeMails);
+                foreach (KeyValuePair<long, List<TableMailInfoWrap>> pair in m_DeletedUserMails) {
+                    var userMailList = pair.Value;
+                    totalMailList.AddRange(userMailList);
+                }
+                return totalMailList;
+            }
+        }
+        internal void InitMailData(List<TableMailInfoWrap> mailList)
         {
             foreach (var mail in mailList) {
-                if (mail.m_Receiver == 0) {
+                if (mail.Receiver == 0) {
                     m_WholeMails.Add(mail);
                 } else {
-                    List<MailInfo> userMailList = null;
-                    if (!m_UserMails.TryGetValue(mail.m_Receiver, out userMailList)) {
-                        userMailList = new List<MailInfo>();
-                        m_UserMails.Add(mail.m_Receiver, userMailList);
+                    List<TableMailInfoWrap> userMailList = null;
+                    if (!m_UserMails.TryGetValue(mail.Receiver, out userMailList)) {
+                        userMailList = new List<TableMailInfoWrap>();
+                        m_UserMails.Add(mail.Receiver, userMailList);
                     }
                     userMailList.Add(mail);
                 }
@@ -52,21 +64,21 @@ namespace GameFramework
             UserInfo user = dataProcess.GetUserInfo(userGuid);
             if (null != user) {
                 List<MailInfoForMessage> mailList = new List<MailInfoForMessage>();
-                List<MailInfo> mails;
-                if (m_UserMails.TryGetValue(userGuid, out mails)) {
+                List<TableMailInfoWrap> mails;
+                if (m_UserMails.TryGetValue((long)userGuid, out mails)) {
                     int ct = mails.Count;
                     for (int ix = 0; ix < ct; ++ix) {
-                        MailInfo mailInfo = mails[ix];
-                        if (mailInfo.m_ExpiryDate >= DateTime.Now) {
+                        TableMailInfoWrap mailInfo = mails[ix];
+                        if (mailInfo.ExpiryDate >= DateTime.Now) {
                             MailInfoForMessage mailInfoForMsg = new MailInfoForMessage();
-                            mailInfoForMsg.m_AlreadyRead = mailInfo.m_AlreadyRead;
-                            mailInfoForMsg.m_MailGuid = mailInfo.m_MailGuid;
-                            mailInfoForMsg.m_Title = mailInfo.m_Title;
-                            mailInfoForMsg.m_Sender = mailInfo.m_Sender;
-                            mailInfoForMsg.m_SendTime = mailInfo.m_SendTime.ToString("yyyyMMddHHmmss");
-                            mailInfoForMsg.m_Text = mailInfo.m_Text;
-                            mailInfoForMsg.m_Money = mailInfo.m_Money;
-                            mailInfoForMsg.m_Gold = mailInfo.m_Gold;
+                            mailInfoForMsg.m_AlreadyRead = mailInfo.IsRead;
+                            mailInfoForMsg.m_MailGuid = mailInfo.Guid;
+                            mailInfoForMsg.m_Title = mailInfo.Title;
+                            mailInfoForMsg.m_Sender = mailInfo.Sender;
+                            mailInfoForMsg.m_SendTime = mailInfo.SendDate.ToString("yyyyMMddHHmmss");
+                            mailInfoForMsg.m_Text = mailInfo.Text;
+                            mailInfoForMsg.m_Money = mailInfo.Money;
+                            mailInfoForMsg.m_Gold = mailInfo.Gold;
                             int itemCt = mailInfo.m_Items.Count;
                             if (itemCt > 0) {
                                 for (int index = 0; index < itemCt; ++index) {
@@ -84,23 +96,23 @@ namespace GameFramework
                 //这里不对用户数据加锁，因为用户的邮件状态的改变都在这个线程完成（除上线时的数据加载）
                 int wholeMailCt = m_WholeMails.Count;
                 for (int ix = 0; ix < wholeMailCt; ++ix) {
-                    MailInfo mailInfo = m_WholeMails[ix];
-                    if (mailInfo.m_LevelDemand <= user.Level
-                      && mailInfo.m_SendTime >= user.CreateTime
-                      && mailInfo.m_ExpiryDate >= DateTime.Now
-                      && !mailStateInfo.IsAlreadyReceived(mailInfo.m_MailGuid)) {
-                        if (!mailStateInfo.HaveMail(mailInfo.m_MailGuid)) {
-                            mailStateInfo.AddMail(mailInfo.m_MailGuid, mailInfo.m_ExpiryDate);
+                    TableMailInfoWrap mailInfo = m_WholeMails[ix];
+                    if (mailInfo.LevelDemand <= user.Level
+                      && mailInfo.SendDate >= user.CreateTime
+                      && mailInfo.ExpiryDate >= DateTime.Now
+                      && !mailStateInfo.IsAlreadyReceived(mailInfo.Guid)) {
+                        if (!mailStateInfo.HaveMail(mailInfo.Guid)) {
+                            mailStateInfo.AddMail(mailInfo.Guid, mailInfo.ExpiryDate);
                         }
                         MailInfoForMessage mailInfoForMsg = new MailInfoForMessage();
-                        mailInfoForMsg.m_AlreadyRead = mailStateInfo.IsAlreadyRead(mailInfo.m_MailGuid);
-                        mailInfoForMsg.m_MailGuid = mailInfo.m_MailGuid;
-                        mailInfoForMsg.m_Title = mailInfo.m_Title;
-                        mailInfoForMsg.m_Sender = mailInfo.m_Sender;
-                        mailInfoForMsg.m_SendTime = mailInfo.m_SendTime.ToString("yyyyMMddHHmmss");
-                        mailInfoForMsg.m_Text = mailInfo.m_Text;
-                        mailInfoForMsg.m_Money = mailInfo.m_Money;
-                        mailInfoForMsg.m_Gold = mailInfo.m_Gold;
+                        mailInfoForMsg.m_AlreadyRead = mailStateInfo.IsAlreadyRead(mailInfo.Guid);
+                        mailInfoForMsg.m_MailGuid = mailInfo.Guid;
+                        mailInfoForMsg.m_Title = mailInfo.Title;
+                        mailInfoForMsg.m_Sender = mailInfo.Sender;
+                        mailInfoForMsg.m_SendTime = mailInfo.SendDate.ToString("yyyyMMddHHmmss");
+                        mailInfoForMsg.m_Text = mailInfo.Text;
+                        mailInfoForMsg.m_Money = mailInfo.Money;
+                        mailInfoForMsg.m_Gold = mailInfo.Gold;
                         int itemCt = mailInfo.m_Items.Count;
                         if (itemCt > 0) {
                             for (int index = 0; index < itemCt; ++index) {
@@ -120,29 +132,29 @@ namespace GameFramework
                 NodeMessageDispatcher.SendNodeMessage(user.NodeName, syncMailListMsg);
             }
         }
-        internal void SendUserMail(MailInfo userMail, int validityPeriod)
+        internal void SendUserMail(TableMailInfoWrap userMail, int validityPeriod)
         {
-            userMail.m_MailGuid = GenMailGuid();
-            userMail.m_SendTime = DateTime.Now;
-            userMail.m_ExpiryDate = userMail.m_SendTime.AddDays(validityPeriod);
-            List<MailInfo> mails = null;
-            if (!m_UserMails.TryGetValue(userMail.m_Receiver, out mails)) {
-                mails = new List<MailInfo>();
-                m_UserMails.Add(userMail.m_Receiver, mails);
+            userMail.Guid = GenMailGuid();
+            userMail.SendDate = DateTime.Now;
+            userMail.ExpiryDate = userMail.SendDate.AddDays(validityPeriod);
+            List<TableMailInfoWrap> mails = null;
+            if (!m_UserMails.TryGetValue(userMail.Receiver, out mails)) {
+                mails = new List<TableMailInfoWrap>();
+                m_UserMails.Add(userMail.Receiver, mails);
             }
             mails.Add(userMail);
             UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
-            UserInfo user = dataProcess.GetUserInfo(userMail.m_Receiver);
+            UserInfo user = dataProcess.GetUserInfo((ulong)userMail.Receiver);
             if (null != user && user.CurrentState != UserState.DropOrOffline) {
-                NodeMessage newMailMsg = new NodeMessage(LobbyMessageDefine.Msg_LC_NotifyNewMail, userMail.m_Receiver);
+                NodeMessage newMailMsg = new NodeMessage(LobbyMessageDefine.Msg_LC_NotifyNewMail, (ulong)userMail.Receiver);
                 NodeMessageDispatcher.SendNodeMessage(user.NodeName, newMailMsg);
             }
         }
-        internal void SendWholeMail(MailInfo wholeMail, int validityPeriod)
+        internal void SendWholeMail(TableMailInfoWrap wholeMail, int validityPeriod)
         {
-            wholeMail.m_MailGuid = GenMailGuid();
-            wholeMail.m_SendTime = DateTime.Now;
-            wholeMail.m_ExpiryDate = wholeMail.m_SendTime.AddDays(validityPeriod);
+            wholeMail.Guid = GenMailGuid();
+            wholeMail.SendDate = DateTime.Now;
+            wholeMail.ExpiryDate = wholeMail.SendDate.AddDays(validityPeriod);
             m_WholeMails.Add(wholeMail);
             NodeMessage newMailMsg = new NodeMessage(LobbyMessageDefine.Msg_LC_NotifyNewMail);
             NodeMessageWithGuid headerData = new NodeMessageWithGuid();
@@ -158,15 +170,15 @@ namespace GameFramework
             UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
             UserInfo user = dataProcess.GetUserInfo(userGuid);
             if (null != user) {
-                List<MailInfo> mails;
-                if (m_UserMails.TryGetValue(userGuid, out mails)) {
+                List<TableMailInfoWrap> mails;
+                if (m_UserMails.TryGetValue((long)userGuid, out mails)) {
                     if (null != mails) {
                         int ct = mails.Count;
                         int index = 0;
                         for (; index < ct; ++index) {
-                            if (mails[index].m_MailGuid == mailGuid) {
-                                MailInfo info = mails[index];
-                                info.m_AlreadyRead = true;
+                            if (mails[index].Guid == mailGuid) {
+                                TableMailInfoWrap info = mails[index];
+                                info.IsRead = true;
                                 break;
                             }
                         }
@@ -175,15 +187,15 @@ namespace GameFramework
                 MailStateInfo mailStateInfo = user.MailStateInfo;
                 int wholeCt = m_WholeMails.Count;
                 for (int index = 0; index < wholeCt; ++index) {
-                    MailInfo info = m_WholeMails[index];
-                    if (info.m_MailGuid == mailGuid) {
+                    TableMailInfoWrap info = m_WholeMails[index];
+                    if (info.Guid == mailGuid) {
                         mailStateInfo.ReadMail(mailGuid);
                         break;
                     }
                 }
             }
         }
-        private bool CheckBagCapacity(UserInfo user, MailInfo info)
+        private bool CheckBagCapacity(UserInfo user, TableMailInfoWrap info)
         {
             bool result = true;
             if (null == user || null == user.ItemBag
@@ -200,7 +212,7 @@ namespace GameFramework
             protoData.m_Succeed = result;
             protoData.m_ReceiveNum = ct;
             protoData.m_FreeNum = free;
-            protoData.m_MailGuid = info.m_MailGuid;
+            protoData.m_MailGuid = info.Guid;
             opMsg.m_ProtoData = protoData;
             NodeMessageDispatcher.SendNodeMessage(user.NodeName, opMsg);
             return result;
@@ -210,14 +222,14 @@ namespace GameFramework
             UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
             UserInfo user = dataProcess.GetUserInfo(userGuid);
             if (null != user) {
-                List<MailInfo> mails;
-                if (m_UserMails.TryGetValue(userGuid, out mails)) {
+                List<TableMailInfoWrap> mails;
+                if (m_UserMails.TryGetValue((long)userGuid, out mails)) {
                     if (null != mails) {
-                        MailInfo info = null;
+                        TableMailInfoWrap info = null;
                         int ct = mails.Count;
                         int index = 0;
                         for (; index < ct; ++index) {
-                            if (mails[index].m_MailGuid == mailGuid) {
+                            if (mails[index].Guid == mailGuid) {
                                 info = mails[index];
                                 break;
                             }
@@ -232,11 +244,11 @@ namespace GameFramework
                 if (!mailStateInfo.IsAlreadyReceived(mailGuid)) {
                     int wholeCt = m_WholeMails.Count;
                     for (int index = 0; index < wholeCt; ++index) {
-                        MailInfo info = m_WholeMails[index];
-                        if (info.m_MailGuid == mailGuid) {
+                        TableMailInfoWrap info = m_WholeMails[index];
+                        if (info.Guid == mailGuid) {
                             if (CheckBagCapacity(user, info)) {
                                 mailStateInfo.ReceiveMail(mailGuid);
-                                if (info.m_LevelDemand <= user.Level && info.m_SendTime >= user.CreateTime && info.m_ExpiryDate >= DateTime.Now) {
+                                if (info.LevelDemand <= user.Level && info.SendDate >= user.CreateTime && info.ExpiryDate >= DateTime.Now) {
                                     ExtractMailAttachment(info, userGuid);
                                 }
                             }
@@ -250,19 +262,20 @@ namespace GameFramework
             UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
             UserInfo user = dataProcess.GetUserInfo(userGuid);
             if (null != user) {
-                List<MailInfo> mails;
-                if (m_UserMails.TryGetValue(userGuid, out mails)) {
+                List<TableMailInfoWrap> mails;
+                if (m_UserMails.TryGetValue((long)userGuid, out mails)) {
                     if (null != mails) {
-                        MailInfo info = null;
+                        TableMailInfoWrap info = null;
                         int ct = mails.Count;
                         int index = 0;
                         for (; index < ct; ++index) {
-                            if (mails[index].m_MailGuid == mailGuid) {
+                            if (mails[index].Guid == mailGuid) {
                                 info = mails[index];
                                 break;
                             }
                         }
                         if (null != info) {
+                            AddDeletedUserMail((long)userGuid, info);
                             mails.RemoveAt(index);
                         }
                     }
@@ -271,8 +284,8 @@ namespace GameFramework
                 if (!mailStateInfo.IsAlreadyReceived(mailGuid)) {
                     int wholeCt = m_WholeMails.Count;
                     for (int index = 0; index < wholeCt; ++index) {
-                        MailInfo info = m_WholeMails[index];
-                        if (info.m_MailGuid == mailGuid) {
+                        TableMailInfoWrap info = m_WholeMails[index];
+                        if (info.Guid == mailGuid) {
                             mailStateInfo.DeleteMail(mailGuid);
                         }
                     }
@@ -293,20 +306,22 @@ namespace GameFramework
                 //清理过期邮件
                 int ct = m_WholeMails.Count;
                 for (int index = ct - 1; index >= 0; --index) {
-                    MailInfo mailInfo = m_WholeMails[index];
+                    TableMailInfoWrap mailInfo = m_WholeMails[index];
                     if (null != mailInfo) {
-                        if (mailInfo.m_ExpiryDate < DateTime.Now) {
+                        if (mailInfo.ExpiryDate < DateTime.Now) {
+                            AddDeletedWholeMail(mailInfo);
                             m_WholeMails.RemoveAt(index);
                         }
                     }
                 }
-                foreach (KeyValuePair<ulong, List<MailInfo>> pair in m_UserMails) {
+                foreach (KeyValuePair<long, List<TableMailInfoWrap>> pair in m_UserMails) {
                     var mails = pair.Value;
                     int mailCt = mails.Count;
                     for (int index = mailCt - 1; index >= 0; --index) {
-                        MailInfo mailInfo = mails[index];
+                        TableMailInfoWrap mailInfo = mails[index];
                         if (null != mailInfo) {
-                            if (mailInfo.m_ExpiryDate < DateTime.Now) {
+                            if (mailInfo.ExpiryDate < DateTime.Now) {
+                                AddDeletedUserMail(pair.Key, mailInfo);
                                 mails.RemoveAt(index);
                             }
                         }
@@ -315,11 +330,34 @@ namespace GameFramework
             }
         }
 
-        private void ExtractMailAttachment(MailInfo info, ulong userGuid)
+        internal void ResetDeletedMailList()
+        {
+            m_DeletedWholeMails.Clear();
+            m_DeletedUserMails.Clear();
+        }
+        
+        private void AddDeletedWholeMail(TableMailInfoWrap info)
+        {
+            info.Deleted = true;
+            m_DeletedWholeMails.Add(info);
+        }
+
+        private void AddDeletedUserMail(long userGuid, TableMailInfoWrap info)
+        {
+            List<TableMailInfoWrap> list;
+            if (!m_DeletedUserMails.TryGetValue(userGuid, out list)) {
+                list = new List<TableMailInfoWrap>();
+                m_DeletedUserMails.Add(userGuid, list);
+            }
+            info.Deleted = true;
+            list.Add(info);
+        }
+
+        private void ExtractMailAttachment(TableMailInfoWrap info, ulong userGuid)
         {
             UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
             UserThread userThread = dataProcess.GetUserThread(userGuid);
-            userThread.QueueAction(userThread.AddAssets, userGuid, info.m_Money, info.m_Gold);
+            userThread.QueueAction(userThread.AddAssets, userGuid, info.Money, info.Gold);
 
             int itemCt = info.m_Items.Count;
             for (int itemIx = 0; itemIx < itemCt; ++itemIx) {
@@ -332,8 +370,10 @@ namespace GameFramework
             return UserServer.Instance.GlobalProcessThread.GenerateMailGuid();
         }
 
-        private Dictionary<ulong, List<MailInfo>> m_UserMails = new Dictionary<ulong, List<MailInfo>>();
-        private List<MailInfo> m_WholeMails = new List<MailInfo>();
+        private Dictionary<long, List<TableMailInfoWrap>> m_UserMails = new Dictionary<long, List<TableMailInfoWrap>>();
+        private List<TableMailInfoWrap> m_WholeMails = new List<TableMailInfoWrap>();
+        private Dictionary<long, List<TableMailInfoWrap>> m_DeletedUserMails = new Dictionary<long, List<TableMailInfoWrap>>();
+        private List<TableMailInfoWrap> m_DeletedWholeMails = new List<TableMailInfoWrap>();
 
         private long m_LastTickTime = 0;
         private const long c_TickInterval = 60000;

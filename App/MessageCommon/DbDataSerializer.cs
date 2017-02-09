@@ -9,6 +9,8 @@ namespace GameFrameworkData
     {
         internal static byte[] Encode(object msg)
         {
+            if (null == msg)
+                return null;
             DataStream.SetLength(0);
             Serializer.Serialize(DataStream, msg);
             return DataStream.ToArray();

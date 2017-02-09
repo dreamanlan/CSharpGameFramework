@@ -77,8 +77,7 @@ namespace RoomServer
             };
 
             LoadData();
-            Cs2LuaPluginProxy.Instance.Init();
-            Cs2LuaAssembly.Instance.Init();
+            PluginAssembly.Instance.Init();
 
             LogSys.Log(LOG_TYPE.DEBUG, "room server init ip: {0}  port: {1}", m_ServerIp, m_ServerPort);
 

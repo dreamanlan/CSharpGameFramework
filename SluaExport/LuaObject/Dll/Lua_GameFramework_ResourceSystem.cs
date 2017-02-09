@@ -22,6 +22,18 @@ public class Lua_GameFramework_ResourceSystem : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int Init(IntPtr l) {
+		try {
+			GameFramework.ResourceSystem self=(GameFramework.ResourceSystem)checkSelf(l);
+			self.Init();
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int PreloadObject(IntPtr l) {
 		try {
 			int argc = LuaDLL.lua_gettop(l);
@@ -224,6 +236,7 @@ public class Lua_GameFramework_ResourceSystem : LuaObject {
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.ResourceSystem");
 		addMember(l,SetVisible);
+		addMember(l,Init);
 		addMember(l,PreloadObject);
 		addMember(l,PreloadSharedResource);
 		addMember(l,NewObject);

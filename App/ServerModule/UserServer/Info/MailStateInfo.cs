@@ -24,6 +24,10 @@ namespace GameFramework
                 return m_WholeMailStates.Count;
             }
         }
+        public List<MailState> DeletedWholeMailStates
+        {
+            get { return m_DeletedWholeMailStates; }
+        }
         public bool HaveMail(ulong mailGuid)
         {
             bool ret = false;
@@ -56,11 +60,13 @@ namespace GameFramework
                 foreach (KeyValuePair<ulong, MailState> pair in m_WholeMailStates) {
                     MailState state = pair.Value;
                     if (state.ExpiryDate < nowDate) {
+                        state.Deleted = true;
                         m_ExpiredMails.Add(state.MailGuid);
+                        m_DeletedWholeMailStates.Add(state);
                     }
                 }
                 foreach (ulong guid in m_ExpiredMails) {
-                    m_WholeMailStates.Remove(guid);
+                    m_WholeMailStates.Remove(guid);                    
                 }
                 m_ExpiredMails.Clear();
             }
@@ -134,6 +140,7 @@ namespace GameFramework
 
         private object m_Lock = new object();
         private Dictionary<ulong, MailState> m_WholeMailStates = new Dictionary<ulong, MailState>();
+        private List<MailState> m_DeletedWholeMailStates = new List<MailState>();
         private List<ulong> m_ExpiredMails = new List<ulong>();
     }
 }

@@ -24,6 +24,9 @@ namespace SLua {
 				Lua_System_Type.reg,
 				Lua_System_IO_File.reg,
 				Lua_System_IO_Path.reg,
+				Lua_System_DateTime.reg,
+				Lua_System_TimeSpan.reg,
+				Lua_System_Math.reg,
 			};
 			return list;
 		}

@@ -16,6 +16,7 @@ UiScrollInfo = {
 
 		local static_fields_build = function()
 			local static_fields = {
+				c_MinTextHeight = 24,
 			};
 			return static_fields;
 		end;
@@ -65,6 +66,9 @@ UiScrollInfo = {
 							local w;
 							local h;
 							local __compiler_invoke_52; __compiler_invoke_52, w, h = this:CalcBounds(text, content, newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, {}, rectTrans.rect.width, rectTrans.rect.height), (this.m_Width - dw), __cs2lua_out, __cs2lua_out);
+							if (h < 24) then
+								h = 24;
+							end;
 							content.text = text;
 							rectTrans.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, {}, 0, this.m_Top, 0);
 							rectTrans.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, {}, (this.m_Width - dw), (h + dh));
@@ -105,7 +109,7 @@ UiScrollInfo = {
 						height = (height + h);
 						ret = true;
 					end;
-				i = i + 1;
+				i = i+ 1;
 				end;
 				return ret, width, height;
 			end,

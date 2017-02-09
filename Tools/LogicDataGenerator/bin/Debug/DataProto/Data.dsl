@@ -46,13 +46,13 @@ public void Del{0}(int ix)
   m_{0}.RemoveAt(ix);
   {1};
 }}
-public void Visit(MyAction<int> visit)
+public void Visit{0}(MyAction<int> visit)
 {{
   foreach(int v in m_{0}){{
     visit(v);
   }}
 }}
-public int[] ToArray()
+public int[] {0}ToArray()
 {{
   return m_{0}.ToArray();
 }}:};
@@ -90,13 +90,13 @@ public void Del{0}(int ix)
   m_{0}.RemoveAt(ix);
   {1};
 }}
-public void Visit(MyAction<DateTime> visit)
+public void Visit{0}(MyAction<DateTime> visit)
 {{
   foreach(DateTime v in m_{0}){{
     visit(v);
   }}
 }}
-public DateTime[] ToArray()
+public DateTime[] {0}ToArray()
 {{
   return m_{0}.ToArray();
 }}:};
@@ -175,17 +175,6 @@ message(GeneralRecordData)
   member(Data, bytes, optional);
 };
 
-message(TableGlobalParam)
-{
-	member(ParamType, string, required){
-		maxsize(32);
-		primarykey;
-	};
-	member(ParamValue, string, required){
-		maxsize(64);
-	};
-};
-
 message(TableGuid) 
 {
 	member(GuidType, string, required){
@@ -228,12 +217,8 @@ message(TableMailInfo)
 	};
 	member(Money, int, required);  
 	member(Gold, int, required);
-	member(ItemIds, string, required){
-		maxsize(128);
-	};  
-	member(ItemNumbers, string, required){
-		maxsize(64);
-	};  
+	member(ItemIds, "List<int>", required);  
+	member(ItemNumbers, "List<int>", required);  
 	member(LevelDemand, int, required);
 	member(IsRead, bool, required);
 };
@@ -270,9 +255,11 @@ message(TableAccount)
 		maxsize(64);
 		primarykey;
 	};	
+	member(Password, string, required){
+	  maxsize(256);
+	};
 	member(IsBanned, bool, required); 
 	member(UserGuid, ulong, required);
-	member(IsValid, bool, required);
 };
 
 message(TableUserInfo) 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using GameFrameworkData;
 
 namespace GameFramework
 {
@@ -11,6 +12,22 @@ namespace GameFramework
             lock (m_Lock) {
                 foreach (var pair in m_Datas) {
                     pair.Value.Deleted = true;
+                }
+            }
+        }
+        public void Init(List<TableGlobalData> datas)
+        {
+            lock (m_Lock) {
+                foreach (var data in datas) {
+                    if (data.IntValue != 0) {
+                        AddInt(data.Key, data.IntValue);
+                    }
+                    if (Geometry.IsSameFloat(data.FloatValue, 0.0f)) {
+                        AddFloat(data.Key, data.FloatValue);
+                    }
+                    if (!string.IsNullOrEmpty(data.StrValue)) {
+                        AddStr(data.Key, data.StrValue);
+                    }
                 }
             }
         }
@@ -122,9 +139,36 @@ namespace GameFramework
             }
             return ret;
         }
+        internal void Tick()
+        {
+            long curTime = TimeUtility.GetLocalMilliseconds();
+            if (m_LastTickTime + c_TickInterval <= curTime || UserServer.Instance.WaitQuit) {
+                m_LastTickTime = curTime;
+
+                foreach (var pair in m_Datas) {
+                    if (pair.Value.Modified) {
+                        TableGlobalData record = pair.Value.ToProto();
+                        UserServer.Instance.DataCacheThread.SaveGlobalData(record);
+                        pair.Value.Modified = false;
+                    }
+                    if (pair.Value.Deleted) {
+                        UserServer.Instance.DataCacheThread.DeleteGlobalData(pair.Key);
+                        m_WaitDeletedDatas.Add(pair.Key);
+                    }
+                }
+                foreach (var key in m_WaitDeletedDatas) {
+                    m_Datas.Remove(key);
+                }
+                m_WaitDeletedDatas.Clear();
+            }
+        }
+
+        private const long c_TickInterval = 10000;
+        private long m_LastTickTime = 0;
 
         private object m_Lock = new object();
         private Dictionary<string, TableGlobalDataWrap> m_Datas = new Dictionary<string, TableGlobalDataWrap>();
+        private List<string> m_WaitDeletedDatas = new List<string>();
 
         public static GlobalData Instance
         {

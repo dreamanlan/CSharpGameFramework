@@ -133,10 +133,14 @@ internal sealed class Cs2LuaMethodInfo
 
 public static class Cs2LuaCodeGen
 {
-    [MenuItem("工具/Build/GenCs2LuaProxy", false, 600)]
-    public static void GenCode()
+    [MenuItem("工具/Build/GenCs2LuaInterface", false, 600)]
+    public static void GenInterfaces()
     {
-        //GenCode(typeof(ILogicModuleProxy), "Cs2LuaLogicModuleProxy");
+    }
+
+    [MenuItem("工具/Build/GenCs2LuaProxy", false, 600)]
+    public static void GenProxies()
+    {
     }
 
     private static void GenInterfaceCode(System.Type type, string name)
@@ -151,6 +155,8 @@ public static class Cs2LuaCodeGen
         sb.AppendLine();
         sb.AppendFormat("{0}using GameFramework;", GetIndentString());
         sb.AppendLine();
+        sb.AppendFormat("{0}using GameFramework.Plugin;", GetIndentString());
+        sb.AppendLine();
         sb.AppendLine();
         sb.AppendFormat("{0}namespace CsLibrary", GetIndentString());
         sb.AppendLine();
@@ -162,7 +168,7 @@ public static class Cs2LuaCodeGen
         sb.AppendFormat("{0}", GetIndentString());
         sb.AppendLine("{");
         ++s_Indent;
-        foreach (var prop in type.GetProperties()) {
+        foreach (var prop in type.GetProperties(c_BindingFlags)) {
             string typeName = SimpleName(prop.PropertyType);
             var ps = prop.GetIndexParameters();
             if (ps.Length > 0) {
@@ -206,7 +212,7 @@ public static class Cs2LuaCodeGen
                 sb.AppendLine("}");
             }
         }
-        foreach (var method in type.GetMethods()) {
+        foreach (var method in type.GetMethods(c_BindingFlags)) {
             if (method.IsSpecialName)
                 continue;
             string retType = SimpleName(method.ReturnType);
@@ -245,13 +251,15 @@ public static class Cs2LuaCodeGen
         sb.AppendLine();
         sb.AppendFormat("{0}using GameFramework;", GetIndentString());
         sb.AppendLine();
+        sb.AppendFormat("{0}using GameFramework.Plugin;", GetIndentString());
+        sb.AppendLine();
         sb.AppendLine();
         sb.AppendFormat("{0}public class {1} : LuaClassProxyBase, {2}", GetIndentString(), name, type.Name);
         sb.AppendLine();
         sb.AppendFormat("{0}", GetIndentString());
         sb.AppendLine("{");
         ++s_Indent;
-        foreach (var prop in type.GetProperties()) {
+        foreach (var prop in type.GetProperties(c_BindingFlags)) {
             string typeName = SimpleName(prop.PropertyType);
             var ps = prop.GetIndexParameters();
             if (ps.Length > 0) {
@@ -339,7 +347,7 @@ public static class Cs2LuaCodeGen
                 sb.AppendLine("}");
             }
         }
-        foreach (var method in type.GetMethods()) {
+        foreach (var method in type.GetMethods(c_BindingFlags)) {
             if (method.IsSpecialName)
                 continue;
             string retType = SimpleName(method.ReturnType);
@@ -395,7 +403,7 @@ public static class Cs2LuaCodeGen
         sb.AppendFormat("{0}", GetIndentString());
         sb.AppendLine("{");
         ++s_Indent;
-        foreach (var prop in type.GetProperties()) {
+        foreach (var prop in type.GetProperties(c_BindingFlags)) {
             var get = prop.GetGetMethod();
             var set = prop.GetSetMethod();
             if (null != get) {
@@ -407,7 +415,7 @@ public static class Cs2LuaCodeGen
                 sb.AppendLine();
             }
         }
-        foreach (var method in type.GetMethods()) {
+        foreach (var method in type.GetMethods(c_BindingFlags)) {
             if (method.IsSpecialName)
                 continue;
             Cs2LuaMethodInfo mi = new Cs2LuaMethodInfo();
@@ -419,7 +427,7 @@ public static class Cs2LuaCodeGen
         sb.AppendFormat("{0}", GetIndentString());
         sb.AppendLine("}");
         sb.AppendLine();
-        foreach (var prop in type.GetProperties()) {
+        foreach (var prop in type.GetProperties(c_BindingFlags)) {
             var get=prop.GetGetMethod();
             var set=prop.GetSetMethod();
             if (null != get) {
@@ -431,7 +439,7 @@ public static class Cs2LuaCodeGen
                 sb.AppendLine();
             }
         }
-        foreach (var method in type.GetMethods()) {
+        foreach (var method in type.GetMethods(c_BindingFlags)) {
             if (method.IsSpecialName)
                 continue;
             Cs2LuaMethodInfo mi = new Cs2LuaMethodInfo();
@@ -617,6 +625,7 @@ public static class Cs2LuaCodeGen
     private static int s_Indent = 0;
     private static string[] s_Prefixs = new string[] { "System.Collections.Generic" };
 
+    private const BindingFlags c_BindingFlags = BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance;
     private const string c_InterfaceOutputDir = "..\\App\\ClientModule\\PluginFramework";
     private const string c_LuaProxyOutputDir = "Assets\\Scripts\\Cs2Lua\\GeneratedCode";
 }

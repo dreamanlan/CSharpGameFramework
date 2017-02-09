@@ -31,10 +31,6 @@ namespace GameFramework
             get { return m_RoomUserMgr.IsFieldRoom; }
             set { m_RoomUserMgr.IsFieldRoom = value; }
         }
-        public Cs2LuaEnvironment ScriptEnvironment
-        {
-            get { return m_ScriptEnvironment; }
-        }
         public Scene ActiveScene
         {
             get { return m_RoomUserMgr.ActiveScene; }
@@ -140,7 +136,6 @@ namespace GameFramework
             m_UserPool = userpool;
             m_Connector = conn;
             m_CanCloseTime = 0;
-            m_ScriptEnvironment = new Cs2LuaEnvironment();
             m_RoomUserMgr.Connector = conn;
             m_RoomUserMgr.RoomId = room_id;
             m_RoomUserMgr.LocalRoomId = (int)m_LocalID;
@@ -375,9 +370,9 @@ namespace GameFramework
             if (null != scene) {
                 foreach (string plugin in scene.SceneConfig.ScenePlugins) {
                     Cs2LuaScene scriptScene = new Cs2LuaScene();
-                    scriptScene.LuaClassFileName = plugin;
+                    scriptScene.ClassName = plugin;
                     m_ScriptScenes.Add(scriptScene);
-                    scriptScene.Init(scene, ScriptEnvironment);
+                    scriptScene.Init(scene);
                 }
             }
         }
@@ -433,7 +428,6 @@ namespace GameFramework
         private uint m_LocalID = 0;
         private bool m_IsIdle = false;
 
-        private Cs2LuaEnvironment m_ScriptEnvironment = null;
         private List<Cs2LuaScene> m_ScriptScenes = null;
     }
 }

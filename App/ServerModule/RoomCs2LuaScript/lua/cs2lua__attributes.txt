@@ -1,5 +1,0 @@
-Cs2LuaScript__Program__Attrs = {
-	Class = {
-		{"Cs2Lua.EntryAttribute", {}, {}},
-	},
-};

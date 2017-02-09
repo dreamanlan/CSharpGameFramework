@@ -61,26 +61,26 @@ namespace GameFrameworkData
       get { return _AccountId; }
       set { _AccountId = value; }
     }
+    private string _Password;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"Password", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Password
+    {
+      get { return _Password; }
+      set { _Password = value; }
+    }
     private bool _IsBanned;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"IsBanned", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"IsBanned", DataFormat = global::ProtoBuf.DataFormat.Default)]
     public bool IsBanned
     {
       get { return _IsBanned; }
       set { _IsBanned = value; }
     }
     private ulong _UserGuid;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"UserGuid", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
+    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"UserGuid", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
     public ulong UserGuid
     {
       get { return _UserGuid; }
       set { _UserGuid = value; }
-    }
-    private bool _IsValid;
-    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"IsValid", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public bool IsValid
-    {
-      get { return _IsValid; }
-      set { _IsValid = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -209,30 +209,6 @@ namespace GameFrameworkData
     {
       get { return _StrValue; }
       set { _StrValue = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"TableGlobalParam")]
-  public partial class TableGlobalParam : global::ProtoBuf.IExtensible
-  {
-    public TableGlobalParam() {}
-    
-    private string _ParamType;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"ParamType", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string ParamType
-    {
-      get { return _ParamType; }
-      set { _ParamType = value; }
-    }
-    private string _ParamValue;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"ParamValue", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public string ParamValue
-    {
-      get { return _ParamValue; }
-      set { _ParamValue = value; }
     }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)

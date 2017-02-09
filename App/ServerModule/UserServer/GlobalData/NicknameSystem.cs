@@ -202,14 +202,14 @@ namespace GameFramework
         foreach (var pair in m_UnusedNicknames) {
           if (pair.Value.Modified) {
             TableNicknameInfo record = pair.Value.ToProto();
-            UserServer.Instance.DataCacheThread.DSGSaveNickname(record);
+            UserServer.Instance.DataCacheThread.SaveNickname(record);
             pair.Value.Modified = false;
           }
         }
         foreach (var pair in m_UsedNicknames) {
           if (pair.Value.Modified) {
             TableNicknameInfo record = pair.Value.ToProto();
-            UserServer.Instance.DataCacheThread.DSGSaveNickname(record);
+            UserServer.Instance.DataCacheThread.SaveNickname(record);
             pair.Value.Modified = false;
           }
         }

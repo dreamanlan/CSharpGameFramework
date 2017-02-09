@@ -19,6 +19,10 @@ namespace GameFramework
                 return m_ItemData.Count;
             }
         }
+        public List<ItemInfo> DeletedItemInfos
+        {
+            get { return m_DeletedItemData; }
+        }
         public bool AddItemData(int itemId, int num)
         {
             if (null != m_ItemData) {
@@ -45,6 +49,8 @@ namespace GameFramework
             if (null != m_ItemData) {
                 for (int i = m_ItemData.Count - 1; i >= 0; i--) {
                     if (m_ItemData[i].ItemId == itemId) {
+                        m_ItemData[i].Deleted = true;
+                        m_DeletedItemData.Add(m_ItemData[i]);
                         m_ItemData.RemoveAt(i);
                         break;
                     }
@@ -56,6 +62,8 @@ namespace GameFramework
             if (null != m_ItemData) {
                 for (int i = m_ItemData.Count - 1; i >= 0; i--) {
                     if (m_ItemData[i].ItemGuid == itemGuid) {
+                        m_ItemData[i].Deleted = true;
+                        m_DeletedItemData.Add(m_ItemData[i]);
                         m_ItemData.RemoveAt(i);
                         break;
                     }
@@ -72,6 +80,7 @@ namespace GameFramework
                             break;
                         } else {
                             num -= m_ItemData[i].ItemNum;
+                            m_DeletedItemData.Add(m_ItemData[i]);
                             m_ItemData.RemoveAt(i);
                         }
                     }
@@ -124,5 +133,6 @@ namespace GameFramework
         public const int c_MaxItemNum = 128;
 
         private List<ItemInfo> m_ItemData = new List<ItemInfo>();
+        private List<ItemInfo> m_DeletedItemData = new List<ItemInfo>();
     }
 }

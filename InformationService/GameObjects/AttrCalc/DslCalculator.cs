@@ -5,6 +5,11 @@ using GameFramework;
 
 namespace GameFramework.AttrCalc
 {
+    public class AttrExpressionList : List<IAttrExpression>
+    {        
+        public AttrExpressionList() { }
+        public AttrExpressionList(IEnumerable<IAttrExpression> coll) : base(coll) { }
+    }
     public interface IAttrExpression
     {
         long Calc(SceneContextInfo context, CharacterProperty source, CharacterProperty target, long[] args);
@@ -21,12 +26,13 @@ namespace GameFramework.AttrCalc
             return new T();
         }
     }
-    internal abstract class AbstractAttrExpression : IAttrExpression
+    public abstract class AbstractAttrExpression : IAttrExpression
     {
         public abstract long Calc(SceneContextInfo context, CharacterProperty source, CharacterProperty target, long[] args);
         public bool Load(Dsl.ISyntaxComponent dsl, DslCalculator calculator)
         {
             m_Calculator = calculator;
+            SetCalculator(calculator);
             Dsl.ValueData valueData = dsl as Dsl.ValueData;
             if (null != valueData) {
                 return Load(valueData);
@@ -37,7 +43,7 @@ namespace GameFramework.AttrCalc
                         return true;
                     } else {
                         int num = callData.GetParamNum();
-                        List<IAttrExpression> args = new List<IAttrExpression>();
+                        AttrExpressionList args = new AttrExpressionList();
                         for (int ix = 0; ix < num; ++ix) {
                             Dsl.ISyntaxComponent param = callData.GetParam(ix);
                             args.Add(calculator.Load(param));
@@ -58,9 +64,10 @@ namespace GameFramework.AttrCalc
             }
             return false;
         }
+        protected virtual void SetCalculator(DslCalculator calculator) { }
         protected virtual bool Load(Dsl.ValueData valData) { return false; }
         protected virtual bool Load(Dsl.CallData callData) { return false; }
-        protected virtual bool Load(IList<IAttrExpression> exps) { return false; }
+        protected virtual bool Load(AttrExpressionList exps) { return false; }
         protected virtual bool Load(Dsl.FunctionData funcData) { return false; }
         protected virtual bool Load(Dsl.StatementData statementData) { return false; }
         
@@ -228,7 +235,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Arg = exps[0];
             return true;
@@ -271,7 +278,7 @@ namespace GameFramework.AttrCalc
                 return false;
             }
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             return true;
@@ -362,7 +369,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op = exps[0];
             return true;
@@ -410,7 +417,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             return true;
@@ -437,7 +444,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             return true;
@@ -578,7 +585,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -601,7 +608,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -624,7 +631,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -647,7 +654,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -670,7 +677,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -695,7 +702,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -720,7 +727,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -743,7 +750,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op = exps[0];
             return true;
@@ -774,7 +781,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -799,7 +806,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -822,7 +829,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -845,7 +852,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -868,7 +875,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -891,7 +898,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -914,7 +921,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -943,7 +950,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -972,7 +979,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op1 = exps[0];
             m_Op2 = exps[1];
@@ -994,7 +1001,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(IList<IAttrExpression> exps)
+        protected override bool Load(AttrExpressionList exps)
         {
             m_Op = exps[0];
             return true;
@@ -1175,7 +1182,7 @@ namespace GameFramework.AttrCalc
         private sealed class Clause
         {
             internal IAttrExpression Condition;
-            internal List<IAttrExpression> Expressions = new List<IAttrExpression>();
+            internal AttrExpressionList Expressions = new AttrExpressionList();
         }
 
         private List<Clause> m_Clauses = new List<Clause>();
@@ -1206,7 +1213,7 @@ namespace GameFramework.AttrCalc
             return true;
         }
 
-        private List<IAttrExpression> m_Expressions = new List<IAttrExpression>();
+        private AttrExpressionList m_Expressions = new AttrExpressionList();
     }
     internal sealed class CommandExp : AbstractAttrExpression
     {
@@ -1249,63 +1256,10 @@ namespace GameFramework.AttrCalc
         }
 
         private List<string> m_Strings = new List<string>();
-        private List<IAttrExpression> m_Expressions = new List<IAttrExpression>();
+        private AttrExpressionList m_Expressions = new AttrExpressionList();
     }
     public sealed class DslCalculator
     {
-        public void Init()
-        {
-            Register("attr", new AttrExpressionFactoryHelper<AttrGet>());
-            Register("attr2", new AttrExpressionFactoryHelper<Attr2Get>());
-            Register("value", new AttrExpressionFactoryHelper<ValueGet>());
-            Register("arg", new AttrExpressionFactoryHelper<ArgGet>());
-            Register("var", new AttrExpressionFactoryHelper<VarGet>());
-            Register("const", new AttrExpressionFactoryHelper<ConstGet>());
-            Register("skill", new AttrExpressionFactoryHelper<SkillGet>());
-            Register("skill2", new AttrExpressionFactoryHelper<Skill2Get>());
-            Register("actor", new AttrExpressionFactoryHelper<ActorGet>());
-            Register("actor2", new AttrExpressionFactoryHelper<Actor2Get>());
-            Register("unit", new AttrExpressionFactoryHelper<UnitGet>());
-            Register("unit2", new AttrExpressionFactoryHelper<Unit2Get>());
-            Register("teampos", new AttrExpressionFactoryHelper<TeamPosGet>());
-            Register("teampos2", new AttrExpressionFactoryHelper<TeamPos2Get>());
-            Register("actor", new AttrExpressionFactoryHelper<ActorGet>());
-            Register("unit", new AttrExpressionFactoryHelper<UnitGet>());
-            Register("camp", new AttrExpressionFactoryHelper<CampGet>());
-            Register("find", new AttrExpressionFactoryHelper<FindExp>());
-            Register("+", new AttrExpressionFactoryHelper<AddExp>());
-            Register("-", new AttrExpressionFactoryHelper<SubExp>());
-            Register("*", new AttrExpressionFactoryHelper<MulExp>());
-            Register("/", new AttrExpressionFactoryHelper<DivExp>());
-            Register("%", new AttrExpressionFactoryHelper<ModExp>());
-            Register("max", new AttrExpressionFactoryHelper<MaxExp>());
-            Register("min", new AttrExpressionFactoryHelper<MinExp>());
-            Register("abs", new AttrExpressionFactoryHelper<AbsExp>());
-            Register("clamp", new AttrExpressionFactoryHelper<ClampExp>());
-            Register("self", new AttrExpressionFactoryHelper<SelfExp>());
-            Register("target", new AttrExpressionFactoryHelper<TargetExp>());
-            Register("damage", new AttrExpressionFactoryHelper<DamageExp>());
-            Register(">", new AttrExpressionFactoryHelper<GreatExp>());
-            Register(">=", new AttrExpressionFactoryHelper<GreatEqualExp>());
-            Register("<", new AttrExpressionFactoryHelper<LessExp>());
-            Register("<=", new AttrExpressionFactoryHelper<LessEqualExp>());
-            Register("==", new AttrExpressionFactoryHelper<EqualExp>());
-            Register("!=", new AttrExpressionFactoryHelper<NotEqualExp>());
-            Register("&&", new AttrExpressionFactoryHelper<AndExp>());
-            Register("||", new AttrExpressionFactoryHelper<OrExp>());
-            Register("!", new AttrExpressionFactoryHelper<NotExp>());
-            Register("?", new AttrExpressionFactoryHelper<CondExp>());
-            Register("if", new AttrExpressionFactoryHelper<IfExp>());
-            Register("command", new AttrExpressionFactoryHelper<CommandExp>());
-        }
-        public void Register(string name, IAttrExpressionFactory factory)
-        {
-            if (!m_ExpressionFactories.ContainsKey(name)) {
-                m_ExpressionFactories.Add(name, factory);
-            } else {
-                m_ExpressionFactories[name] = factory;
-            }
-        }
         public void Load(string dslFile)
         {
             Dsl.DslFile file = new Dsl.DslFile();
@@ -1333,7 +1287,7 @@ namespace GameFramework.AttrCalc
             }
             long ret = 0;
             m_Variables.Clear();
-            List<IAttrExpression> exps;
+            AttrExpressionList exps;
             if (m_Procs.TryGetValue(proc, out exps)) {
                 for (int i = 0; i < exps.Count; ++i) {
                     LogLine();
@@ -1499,7 +1453,7 @@ namespace GameFramework.AttrCalc
         {
             IAttrExpression ret = null;
             IAttrExpressionFactory factory;
-            if (m_ExpressionFactories.TryGetValue(name, out factory)) {
+            if (s_ExpressionFactories.TryGetValue(name, out factory)) {
                 ret = factory.Create();
             }
             return ret;
@@ -1508,9 +1462,9 @@ namespace GameFramework.AttrCalc
         {
             Dsl.FunctionData func = info.First;
             string id = func.Call.GetParamId(0);
-            List<IAttrExpression> list;
+            AttrExpressionList list;
             if (!m_Procs.TryGetValue(id, out list)) {
-                list = new List<IAttrExpression>();
+                list = new AttrExpressionList();
                 m_Procs.Add(id, list);
             }
             foreach (Dsl.ISyntaxComponent comp in func.Statements) {
@@ -1521,12 +1475,71 @@ namespace GameFramework.AttrCalc
             }
         }
 
-        private Dictionary<string, List<IAttrExpression>> m_Procs = new Dictionary<string, List<IAttrExpression>>();
+        private Dictionary<string, AttrExpressionList> m_Procs = new Dictionary<string, AttrExpressionList>();
         private Dictionary<int, long> m_Variables = new Dictionary<int, long>();
-        private Dictionary<string, IAttrExpressionFactory> m_ExpressionFactories = new Dictionary<string, IAttrExpressionFactory>();
         private StringBuilder m_LogBuilder = new StringBuilder();
         private int m_Indent = 0;
+        
+        public static void Register()
+        {
+            if (s_Inited)
+                return;
+            s_Inited = true;
 
+            Register("attr", new AttrExpressionFactoryHelper<AttrGet>());
+            Register("attr2", new AttrExpressionFactoryHelper<Attr2Get>());
+            Register("value", new AttrExpressionFactoryHelper<ValueGet>());
+            Register("arg", new AttrExpressionFactoryHelper<ArgGet>());
+            Register("var", new AttrExpressionFactoryHelper<VarGet>());
+            Register("const", new AttrExpressionFactoryHelper<ConstGet>());
+            Register("skill", new AttrExpressionFactoryHelper<SkillGet>());
+            Register("skill2", new AttrExpressionFactoryHelper<Skill2Get>());
+            Register("actor", new AttrExpressionFactoryHelper<ActorGet>());
+            Register("actor2", new AttrExpressionFactoryHelper<Actor2Get>());
+            Register("unit", new AttrExpressionFactoryHelper<UnitGet>());
+            Register("unit2", new AttrExpressionFactoryHelper<Unit2Get>());
+            Register("teampos", new AttrExpressionFactoryHelper<TeamPosGet>());
+            Register("teampos2", new AttrExpressionFactoryHelper<TeamPos2Get>());
+            Register("actor", new AttrExpressionFactoryHelper<ActorGet>());
+            Register("unit", new AttrExpressionFactoryHelper<UnitGet>());
+            Register("camp", new AttrExpressionFactoryHelper<CampGet>());
+            Register("find", new AttrExpressionFactoryHelper<FindExp>());
+            Register("+", new AttrExpressionFactoryHelper<AddExp>());
+            Register("-", new AttrExpressionFactoryHelper<SubExp>());
+            Register("*", new AttrExpressionFactoryHelper<MulExp>());
+            Register("/", new AttrExpressionFactoryHelper<DivExp>());
+            Register("%", new AttrExpressionFactoryHelper<ModExp>());
+            Register("max", new AttrExpressionFactoryHelper<MaxExp>());
+            Register("min", new AttrExpressionFactoryHelper<MinExp>());
+            Register("abs", new AttrExpressionFactoryHelper<AbsExp>());
+            Register("clamp", new AttrExpressionFactoryHelper<ClampExp>());
+            Register("self", new AttrExpressionFactoryHelper<SelfExp>());
+            Register("target", new AttrExpressionFactoryHelper<TargetExp>());
+            Register("damage", new AttrExpressionFactoryHelper<DamageExp>());
+            Register(">", new AttrExpressionFactoryHelper<GreatExp>());
+            Register(">=", new AttrExpressionFactoryHelper<GreatEqualExp>());
+            Register("<", new AttrExpressionFactoryHelper<LessExp>());
+            Register("<=", new AttrExpressionFactoryHelper<LessEqualExp>());
+            Register("==", new AttrExpressionFactoryHelper<EqualExp>());
+            Register("!=", new AttrExpressionFactoryHelper<NotEqualExp>());
+            Register("&&", new AttrExpressionFactoryHelper<AndExp>());
+            Register("||", new AttrExpressionFactoryHelper<OrExp>());
+            Register("!", new AttrExpressionFactoryHelper<NotExp>());
+            Register("?", new AttrExpressionFactoryHelper<CondExp>());
+            Register("if", new AttrExpressionFactoryHelper<IfExp>());
+            Register("command", new AttrExpressionFactoryHelper<CommandExp>());
+        }
+        public static void Register(string name, IAttrExpressionFactory factory)
+        {
+            if (!s_ExpressionFactories.ContainsKey(name)) {
+                s_ExpressionFactories.Add(name, factory);
+            } else {
+                s_ExpressionFactories[name] = factory;
+            }
+        }
+
+        private static bool s_Inited = false;
+        private static Dictionary<string, IAttrExpressionFactory> s_ExpressionFactories = new Dictionary<string, IAttrExpressionFactory>();
         private const string c_IndentString = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
     }
 }

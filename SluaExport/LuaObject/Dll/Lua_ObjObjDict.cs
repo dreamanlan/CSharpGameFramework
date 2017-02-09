@@ -6,11 +6,23 @@ public class Lua_ObjObjDict : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int constructor(IntPtr l) {
 		try {
+			int argc = LuaDLL.lua_gettop(l);
 			ObjObjDict o;
-			o=new ObjObjDict();
-			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
+			if(argc==1){
+				o=new ObjObjDict();
+				pushValue(l,true);
+				pushValue(l,o);
+				return 2;
+			}
+			else if(argc==2){
+				System.Collections.Generic.IDictionary<System.Object,System.Object> a1;
+				checkType(l,2,out a1);
+				o=new ObjObjDict(a1);
+				pushValue(l,true);
+				pushValue(l,o);
+				return 2;
+			}
+			return error(l,"New object failed.");
 		}
 		catch(Exception e) {
 			return error(l,e);

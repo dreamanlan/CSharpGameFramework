@@ -25,55 +25,53 @@ using System.Runtime.CompilerServices;
 
 namespace SLua
 {
-	using System;
-	using System.Runtime.InteropServices;
-	using System.Collections.Generic;
-	using LuaInterface;
-	using System.Runtime.CompilerServices;
+    using System;
+    using System.Runtime.InteropServices;
+    using System.Collections.Generic;
+    using LuaInterface;
+    using System.Runtime.CompilerServices;
 
-	public class ObjectCache
-	{
-		static Dictionary<IntPtr, ObjectCache> multiState = new Dictionary<IntPtr, ObjectCache>();
+    public class ObjectCache
+    {
+        static Dictionary<IntPtr, ObjectCache> multiState = new Dictionary<IntPtr, ObjectCache>();
 
-		static IntPtr oldl = IntPtr.Zero;
-		static internal ObjectCache oldoc = null;
+        static IntPtr oldl = IntPtr.Zero;
+        static internal ObjectCache oldoc = null;
 
-		public static ObjectCache get(IntPtr l)
-		{
-			if (oldl == l)
-				return oldoc;
-			ObjectCache oc;
-			if (multiState.TryGetValue(l, out oc))
-			{
-				oldl = l;
-				oldoc = oc;
-				return oc;
-			}
+        public static ObjectCache get(IntPtr l)
+        {
+            if (oldl == l)
+                return oldoc;
+            ObjectCache oc;
+            if (multiState.TryGetValue(l, out oc)) {
+                oldl = l;
+                oldoc = oc;
+                return oc;
+            }
 
-			LuaDLL.lua_getglobal(l, "__main_state");
-			if (LuaDLL.lua_isnil(l, -1))
-			{
-				LuaDLL.lua_pop(l, 1);
-				return null;
-			}
+            LuaDLL.lua_getglobal(l, "__main_state");
+            if (LuaDLL.lua_isnil(l, -1)) {
+                LuaDLL.lua_pop(l, 1);
+                return null;
+            }
 
-			IntPtr nl = LuaDLL.lua_touserdata(l, -1);
-			LuaDLL.lua_pop(l, 1);
-			if (nl != l)
-				return get(nl);
-			return null;
-		}
+            IntPtr nl = LuaDLL.lua_touserdata(l, -1);
+            LuaDLL.lua_pop(l, 1);
+            if (nl != l)
+                return get(nl);
+            return null;
+        }
 
-		class ObjSlot
-		{
-			public int freeslot;
-			public object v;
-			public ObjSlot(int slot, object o)
-			{
-				freeslot = slot;
-				v = o;
-			}
-		}
+        class ObjSlot
+        {
+            public int freeslot;
+            public object v;
+            public ObjSlot(int slot, object o)
+            {
+                freeslot = slot;
+                v = o;
+            }
+        }
 
 #if SPEED_FREELIST
 		class FreeList : List<ObjSlot>
@@ -136,42 +134,42 @@ namespace SLua
 		}
 #else
 
-		class FreeList : Dictionary<int, object>
-		{
-			private int id = 1;
-			public int add(object o)
-			{
-				Add(id, o);
-				return id++;
-			}
+        class FreeList : Dictionary<int, object>
+        {
+            private int id = 1;
+            public int add(object o)
+            {
+                Add(id, o);
+                return id++;
+            }
 
-			public void del(int i)
-			{
-				this.Remove(i);
-			}
+            public void del(int i)
+            {
+                this.Remove(i);
+            }
 
-			public bool get(int i, out object o)
-			{
-				return TryGetValue(i, out o);
-			}
+            public bool get(int i, out object o)
+            {
+                return TryGetValue(i, out o);
+            }
 
-			public object get(int i)
-			{
-				object o;
-				if (TryGetValue(i, out o))
-					return o;
-				return null;
-			}
+            public object get(int i)
+            {
+                object o;
+                if (TryGetValue(i, out o))
+                    return o;
+                return null;
+            }
 
-			public void set(int i, object o)
-			{
-				this[i] = o;
-			}
-		}
+            public void set(int i, object o)
+            {
+                this[i] = o;
+            }
+        }
 
 #endif
 
-		FreeList cache = new FreeList();
+        FreeList cache = new FreeList();
         public class ObjEqualityComparer : IEqualityComparer<object>
         {
             public new bool Equals(object x, object y)
@@ -186,165 +184,190 @@ namespace SLua
             }
         }
 
-		Dictionary<object, int> objMap = new Dictionary<object, int>(new ObjEqualityComparer());
-		int udCacheRef = 0;
+        Dictionary<object, int> objMap = new Dictionary<object, int>(new ObjEqualityComparer());
+        int udCacheRef = 0;
 
 
-		public ObjectCache(IntPtr l)
-		{
-			LuaDLL.lua_newtable(l);
-			LuaDLL.lua_newtable(l);
-			LuaDLL.lua_pushstring(l, "v");
-			LuaDLL.lua_setfield(l, -2, "__mode");
-			LuaDLL.lua_setmetatable(l, -2);
-			udCacheRef = LuaDLL.luaL_ref(l, LuaIndexes.LUA_REGISTRYINDEX);
-		}
+        public ObjectCache(IntPtr l)
+        {
+            LuaDLL.lua_newtable(l);
+            LuaDLL.lua_newtable(l);
+            LuaDLL.lua_pushstring(l, "v");
+            LuaDLL.lua_setfield(l, -2, "__mode");
+            LuaDLL.lua_setmetatable(l, -2);
+            udCacheRef = LuaDLL.luaL_ref(l, LuaIndexes.LUA_REGISTRYINDEX);
+        }
 
 
-		static public void clear()
-		{
+        static public void clear()
+        {
 
-			oldl = IntPtr.Zero;
-			oldoc = null;
+            oldl = IntPtr.Zero;
+            oldoc = null;
 
-		}
-		internal static void del(IntPtr l)
-		{
-			multiState.Remove(l);
-		}
+        }
+        internal static void del(IntPtr l)
+        {
+            multiState.Remove(l);
+        }
 
-		internal static void make(IntPtr l)
-		{
-			ObjectCache oc = new ObjectCache(l);
-			multiState[l] = oc;
-			oldl = l;
-			oldoc = oc;
-		}
+        internal static void make(IntPtr l)
+        {
+            ObjectCache oc = new ObjectCache(l);
+            multiState[l] = oc;
+            oldl = l;
+            oldoc = oc;
+        }
 
-		internal void gc(int index)
-		{
-			object o;
-			if (cache.get(index, out o))
-			{
-				int oldindex;
-				if (isGcObject(o) && objMap.TryGetValue(o,out oldindex) && oldindex==index)
-				{
-					objMap.Remove(o);
-				}
-				cache.del(index);
-			}
-		}
+        internal void gc(int index)
+        {
+            object o;
+            if (cache.get(index, out o)) {
+                int oldindex;
+                if (isGcObject(o) && objMap.TryGetValue(o, out oldindex) && oldindex == index) {
+                    objMap.Remove(o);
+                }
+                cache.del(index);
+            }
+        }
 #if !SLUA_STANDALONE
         internal void gc(UnityEngine.Object o)
         {
             int index;
-            if(objMap.TryGetValue(o, out index))
-            {
+            if (objMap.TryGetValue(o, out index)) {
                 objMap.Remove(o);
                 cache.del(index);
             }
         }
 #endif
 
-		internal int add(object o)
-		{
-			int objIndex = cache.add(o);
-			if (isGcObject(o))
-			{
-				objMap[o] = objIndex;
-			}
-			return objIndex;
-		}
+        internal int add(object o)
+        {
+            int objIndex = cache.add(o);
+            if (isGcObject(o)) {
+                objMap[o] = objIndex;
+            }
+            return objIndex;
+        }
 
-		internal object get(IntPtr l, int p)
-		{
+        internal object get(IntPtr l, int p)
+        {
 
-			int index = LuaDLL.luaS_rawnetobj(l, p);
-			object o;
-			if (index != -1 && cache.get(index, out o))
-			{
-				return o;
-			}
-			return null;
+            int index = LuaDLL.luaS_rawnetobj(l, p);
+            object o;
+            if (index != -1 && cache.get(index, out o)) {
+                return o;
+            }
+            return null;
 
-		}
+        }
 
-		internal void setBack(IntPtr l, int p, object o)
-		{
+        internal void setBack(IntPtr l, int p, object o)
+        {
 
-			int index = LuaDLL.luaS_rawnetobj(l, p);
-			if (index != -1)
-			{
-				cache.set(index, o);
-			}
+            int index = LuaDLL.luaS_rawnetobj(l, p);
+            if (index != -1) {
+                cache.set(index, o);
+            }
 
-		}
+        }
 
-		internal void push(IntPtr l, object o)
-		{
-			push(l, o, true);
-		}
+        internal void push(IntPtr l, object o)
+        {
+            push(l, o, true);
+        }
 
-		internal void push(IntPtr l, Array o)
-		{
-			push(l, o, true, true);
-		}
+        internal void push(IntPtr l, Array o)
+        {
+            push(l, o, true, true);
+        }
 
-		internal void push(IntPtr l, object o, bool checkReflect, bool isArray=false)
-		{
-			if (o == null)
-			{
-				LuaDLL.lua_pushnil(l);
-				return;
-			}
+        internal void push(IntPtr l, object o, bool checkReflect, bool isArray = false)
+        {
+            if (o == null) {
+                LuaDLL.lua_pushnil(l);
+                return;
+            }
 
-			int index = -1;
+            int index = -1;
 
-			bool gco = isGcObject(o);
-			bool found = gco && objMap.TryGetValue(o, out index);
-			if (found)
-			{
-				if (LuaDLL.luaS_getcacheud(l, index, udCacheRef) == 1)
-					return;
-			}
+            bool gco = isGcObject(o);
+            bool found = gco && objMap.TryGetValue(o, out index);
+            if (found) {
+                if (LuaDLL.luaS_getcacheud(l, index, udCacheRef) == 1)
+                    return;
+            }
 
-			index = add(o);
+            index = add(o);
 #if SLUA_CHECK_REFLECTION
-			int isReflect = LuaDLL.luaS_pushobject(l, index, isArray ? "LuaArray" : getAQName(o), gco, udCacheRef);
+			int isReflect = LuaDLL.luaS_pushobject(l, index, isArray ? "LuaArray" : getAQName(o, l), gco, udCacheRef);
 			if (isReflect != 0 && checkReflect && !isArray)
 			{
 				Logger.LogWarning(string.Format("{0} not exported, using reflection instead", o.ToString()));
 			}
 #else
-			LuaDLL.luaS_pushobject(l, index, isArray?"LuaArray":getAQName(o), gco, udCacheRef);
+            LuaDLL.luaS_pushobject(l, index, isArray ? "LuaArray" : getAQName(o, l), gco, udCacheRef);
 #endif
 
-		}
+        }
 
-		static Dictionary<Type, string> aqnameMap = new Dictionary<Type, string>();
-		static string getAQName(object o)
-		{
-			Type t = o.GetType();
-			return getAQName(t);
-		}
+        static Dictionary<Type, string> aqnameMap = new Dictionary<Type, string>();
+        internal static string getAQName(object o)
+        {
+            return getAQName(o, IntPtr.Zero);
+        }
+        internal static string getAQName(object o, IntPtr l)
+        {
+            Type t = o.GetType();
+            return getAQName(t, l);
+        }
+        internal static string getAQName(Type t)
+        {
+            return getAQName(t, IntPtr.Zero);
+        }
+        internal static string getAQName(Type t, IntPtr l)
+        {
+            string name;
+            if (aqnameMap.TryGetValue(t, out name)) {
+                return name;
+            }
+            name = t.AssemblyQualifiedName;
+#if ENABLE_USE_INHERIT_INTERFACE
+            if (l != IntPtr.Zero) {
+                Type rt = t;
+                while (null != rt) {
+                    string tn = rt.AssemblyQualifiedName;
+                    LuaDLL.luaL_getmetatable(l, tn);
+                    bool r = LuaDLL.lua_isnil(l, -1);
+                    LuaDLL.lua_pop(l, 1);
+                    if (r) {
+                        if (null != rt.BaseType && (null == rt.BaseType.Namespace || !rt.BaseType.Namespace.StartsWith("System"))) {
+                            rt = rt.BaseType;
+                        } else {
+                            Type[] ts = rt.GetInterfaces();
+                            rt = null;
+                            foreach (Type tt in ts) {
+                                if (null == tt.Namespace || !tt.Namespace.StartsWith("System") && !tt.Namespace.StartsWith("UnityEngine")) {
+                                    rt = tt;
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        name = tn;
+                        break;
+                    }
+                }
+            }
+#endif
+            aqnameMap[t] = name;
+            return name;
+        }
 
-		internal static string getAQName(Type t)
-		{
-			string name;
-			if (aqnameMap.TryGetValue(t, out name))
-			{
-				return name;
-			}
-			name = t.AssemblyQualifiedName;
-			aqnameMap[t] = name;
-			return name;
-		}
-
-
-		bool isGcObject(object obj)
-		{
-			return obj.GetType().IsValueType == false;
-		}
-	}
+        bool isGcObject(object obj)
+        {
+            return obj.GetType().IsValueType == false;
+        }
+    }
 }
 

@@ -43,6 +43,15 @@ namespace GameFramework
 				OnPrimaryKeyUpdated();
 			}
 		}
+		public string Password
+		{
+			get{return m_TableAccount.Password;}
+			set
+			{
+				m_TableAccount.Password = value;
+				OnFieldUpdated();
+			}
+		}
 		public bool IsBanned
 		{
 			get{return m_TableAccount.IsBanned;}
@@ -58,15 +67,6 @@ namespace GameFramework
 			set
 			{
 				m_TableAccount.UserGuid = value;
-				OnFieldUpdated();
-			}
-		}
-		public bool IsValid
-		{
-			get{return m_TableAccount.IsValid;}
-			set
-			{
-				m_TableAccount.IsValid = value;
 				OnFieldUpdated();
 			}
 		}
@@ -473,99 +473,6 @@ namespace GameFramework
 
 namespace GameFramework
 {
-	public sealed partial class TableGlobalParamWrap
-	{
-
-		public bool Modified
-		{
-			get{ return m_Modified;}
-			set{ m_Modified = value;}
-		}
-		public bool Deleted
-		{
-			get{ return m_Deleted;}
-			set{ m_Deleted = value;}
-		}
-
-		public List<string> PrimaryKeys
-		{
-			get{ return m_PrimaryKeys;}
-		}
-		public List<string> ForeignKeys
-		{
-			get{ return m_ForeignKeys;}
-		}
-
-		public string ParamType
-		{
-			get{return m_TableGlobalParam.ParamType;}
-			set
-			{
-				m_TableGlobalParam.ParamType = value;
-				OnPrimaryKeyUpdated();
-			}
-		}
-		public string ParamValue
-		{
-			get{return m_TableGlobalParam.ParamValue;}
-			set
-			{
-				m_TableGlobalParam.ParamValue = value;
-				OnFieldUpdated();
-			}
-		}
-
-		public TableGlobalParam ToProto()
-		{
-			return m_TableGlobalParam;
-		}
-		public void FromProto(TableGlobalParam proto)
-		{
-			m_TableGlobalParam = proto;
-			UpdatePrimaryKeys();
-			UpdateForeignKeys();
-		}
-
-		private void OnFieldUpdated()
-		{
-			m_Modified = true;
-		}
-
-		private void OnPrimaryKeyUpdated()
-		{
-			m_Modified = true;
-			UpdatePrimaryKeys();
-		}
-
-		private void OnForeignKeyUpdated()
-		{
-			m_Modified = true;
-			UpdateForeignKeys();
-		}
-
-		private void UpdatePrimaryKeys()
-		{
-			m_PrimaryKeys.Clear();
-			if (m_TableGlobalParam.ParamType != null) {
-				m_PrimaryKeys.Add(m_TableGlobalParam.ParamType.ToString());
-			}
-		}
-
-		private void UpdateForeignKeys()
-		{
-		}
-
-		private bool m_Modified = false;
-		private bool m_Deleted = false;
-		private List<string> m_PrimaryKeys = new List<string>();
-		private List<string> m_ForeignKeys = new List<string>();
-		private TableGlobalParam m_TableGlobalParam = new TableGlobalParam();
-
-	}
-}
-
-namespace GameFramework
-{
 	public sealed partial class TableGuidWrap
 	{
 
@@ -874,23 +781,71 @@ namespace GameFramework
 				OnFieldUpdated();
 			}
 		}
-		public string ItemIds
+		public int GetItemIdsCount()
 		{
-			get{return m_TableMailInfo.ItemIds;}
-			set
-			{
-				m_TableMailInfo.ItemIds = value;
-				OnFieldUpdated();
-			}
+		  return m_ItemIds.Count;
 		}
-		public string ItemNumbers
+		public void SetItemIds(int ix, int val)
 		{
-			get{return m_TableMailInfo.ItemNumbers;}
-			set
-			{
-				m_TableMailInfo.ItemNumbers = value;
-				OnFieldUpdated();
-			}
+		  m_ItemIds[ix]=val;
+		  OnFieldUpdated();
+		}
+		public int GetItemIds(int ix)
+		{
+		  return m_ItemIds[ix];
+		}
+		public void AddItemIds(int val)
+		{
+		  m_ItemIds.Add(val);
+		  OnFieldUpdated();
+		}
+		public void DelItemIds(int ix)
+		{
+		  m_ItemIds.RemoveAt(ix);
+		  OnFieldUpdated();
+		}
+		public void VisitItemIds(MyAction<int> visit)
+		{
+		  foreach(int v in m_ItemIds){
+		    visit(v);
+		  }
+		}
+		public int[] ItemIdsToArray()
+		{
+		  return m_ItemIds.ToArray();
+		}
+		public int GetItemNumbersCount()
+		{
+		  return m_ItemNumbers.Count;
+		}
+		public void SetItemNumbers(int ix, int val)
+		{
+		  m_ItemNumbers[ix]=val;
+		  OnFieldUpdated();
+		}
+		public int GetItemNumbers(int ix)
+		{
+		  return m_ItemNumbers[ix];
+		}
+		public void AddItemNumbers(int val)
+		{
+		  m_ItemNumbers.Add(val);
+		  OnFieldUpdated();
+		}
+		public void DelItemNumbers(int ix)
+		{
+		  m_ItemNumbers.RemoveAt(ix);
+		  OnFieldUpdated();
+		}
+		public void VisitItemNumbers(MyAction<int> visit)
+		{
+		  foreach(int v in m_ItemNumbers){
+		    visit(v);
+		  }
+		}
+		public int[] ItemNumbersToArray()
+		{
+		  return m_ItemNumbers.ToArray();
 		}
 		public int LevelDemand
 		{
@@ -915,6 +870,8 @@ namespace GameFramework
 		{
 			m_TableMailInfo.SendDate = m_SendDate.ToString("yyyyMMddHHmmss");
 			m_TableMailInfo.ExpiryDate = m_ExpiryDate.ToString("yyyyMMddHHmmss");
+			m_TableMailInfo.ItemIds = DataProtoUtility.JoinGeneralList(",",m_ItemIds);
+			m_TableMailInfo.ItemNumbers = DataProtoUtility.JoinGeneralList(",",m_ItemNumbers);
 			return m_TableMailInfo;
 		}
 		public void FromProto(TableMailInfo proto)
@@ -924,6 +881,8 @@ namespace GameFramework
 			UpdateForeignKeys();
 			m_SendDate = DateTime.ParseExact(m_TableMailInfo.SendDate,"yyyyMMddHHmmss",null);
 			m_ExpiryDate = DateTime.ParseExact(m_TableMailInfo.ExpiryDate,"yyyyMMddHHmmss",null);
+			m_ItemIds = DataProtoUtility.SplitGeneralList<int>(new char[]{','}, m_TableMailInfo.ItemIds);
+			m_ItemNumbers = DataProtoUtility.SplitGeneralList<int>(new char[]{','}, m_TableMailInfo.ItemNumbers);
 		}
 
 		private void OnFieldUpdated()
@@ -960,6 +919,8 @@ namespace GameFramework
 		private TableMailInfo m_TableMailInfo = new TableMailInfo();
 		private DateTime m_SendDate = new DateTime();
 		private DateTime m_ExpiryDate = new DateTime();
+		private List<int> m_ItemIds = new List<int>();
+		private List<int> m_ItemNumbers = new List<int>();
 
 	}
 }

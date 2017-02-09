@@ -4,32 +4,56 @@ using System.Collections.Generic;
 using System.Text;
 
 //导出给lua使用的常用集合类型
-public class IntList : List<int> { }
-public class StrList : List<string> { }
-public class IntIntDict : Dictionary<int, int> { }
-public class IntStrDict : Dictionary<int, string> { }
-public class IntObjDict : Dictionary<int, object> { }
-public class IntUobjDict : Dictionary<int, UnityEngine.Object> { }
-public class StrIntDict : Dictionary<string, int> { }
-public class StrStrDict : Dictionary<string, string> { }
-public class StrObjDict : Dictionary<int, object> { }
-public class StrUobjDict : Dictionary<int, UnityEngine.Object> { }
-public class ObjIntDict : Dictionary<object, int> { }
-public class ObjStrDict : Dictionary<object, string> { }
-public class ObjObjDict : Dictionary<object, object> { }
-public class ObjUobjDict : Dictionary<object, UnityEngine.Object> { }
-public class UobjIntDict : Dictionary<UnityEngine.Object, int> {}
-public class UobjStrDict : Dictionary<UnityEngine.Object, string> { }
-public class UobjObjDict : Dictionary<UnityEngine.Object, object> { }
-public class UobjUobjDict : Dictionary<UnityEngine.Object, int> { }
-public class IntHashSet : HashSet<int> { }
-public class StrHashSet : HashSet<int> { }
-public class ObjHashSet : HashSet<object> { }
-public class UobjHashSet : HashSet<UnityEngine.Object> { }
-public class ObjQueue : Queue<object> { }
-public class UobjQueue : Queue<UnityEngine.Object> { }
-public class ObjStack : Stack<object> { }
-public class UobjStack : Stack<UnityEngine.Object> { }
+public class IntUobjDict : Dictionary<int, UnityEngine.Object>
+{
+    public IntUobjDict() { }
+    public IntUobjDict(IDictionary<int, UnityEngine.Object> dict) : base(dict) { }
+}
+public class StrUobjDict : Dictionary<string, UnityEngine.Object>
+{
+    public StrUobjDict() { }
+    public StrUobjDict(IDictionary<string, UnityEngine.Object> dict) : base(dict) { }
+}
+public class ObjUobjDict : Dictionary<object, UnityEngine.Object>
+{
+    public ObjUobjDict() { }
+    public ObjUobjDict(IDictionary<object, UnityEngine.Object> dict) : base(dict) { }
+}
+public class UobjIntDict : Dictionary<UnityEngine.Object, int>
+{
+    public UobjIntDict() { }
+    public UobjIntDict(IDictionary<UnityEngine.Object, int> dict) : base(dict) { }
+}
+public class UobjStrDict : Dictionary<UnityEngine.Object, string>
+{
+    public UobjStrDict() { }
+    public UobjStrDict(IDictionary<UnityEngine.Object, string> dict) : base(dict) { }
+}
+public class UobjObjDict : Dictionary<UnityEngine.Object, object>
+{
+    public UobjObjDict() { }
+    public UobjObjDict(IDictionary<UnityEngine.Object, object> dict) : base(dict) { }
+}
+public class UobjUobjDict : Dictionary<UnityEngine.Object, int>
+{
+    public UobjUobjDict() { }
+    public UobjUobjDict(IDictionary<UnityEngine.Object, int> dict) : base(dict) { }
+}
+public class UobjHashSet : HashSet<UnityEngine.Object>
+{
+    public UobjHashSet() { }
+    public UobjHashSet(IEnumerable<UnityEngine.Object> coll) : base(coll) { }
+}
+public class UobjQueue : Queue<UnityEngine.Object>
+{
+    public UobjQueue() { }
+    public UobjQueue(IEnumerable<UnityEngine.Object> coll) : base(coll) { }
+}
+public class UobjStack : Stack<UnityEngine.Object>
+{
+    public UobjStack() { }
+    public UobjStack(IEnumerable<UnityEngine.Object> coll) : base(coll) { }
+}
 
 //AiQuery的排序需要实现接口，但lua实现接口无法提供给C#类，需要在这里定义并导出
 public class AiQueryComparer : IComparer

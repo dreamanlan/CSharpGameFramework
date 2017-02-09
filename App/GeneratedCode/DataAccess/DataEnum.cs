@@ -8,8 +8,7 @@ namespace GameFrameworkData
 {
 	public enum DataEnum
 	{
-		TableGlobalParam = 1,
-		TableGuid,
+		TableGuid = 1,
 		TableNicknameInfo,
 		TableMailInfo,
 		TableActivationCode,
@@ -49,8 +48,6 @@ namespace GameFrameworkData
 			s_Type2DataEnum.Add(typeof(TableFriendInfo), (int)DataEnum.TableFriendInfo);
 			s_DataEnum2Type.Add((int)DataEnum.TableGlobalData, typeof(TableGlobalData));
 			s_Type2DataEnum.Add(typeof(TableGlobalData), (int)DataEnum.TableGlobalData);
-			s_DataEnum2Type.Add((int)DataEnum.TableGlobalParam, typeof(TableGlobalParam));
-			s_Type2DataEnum.Add(typeof(TableGlobalParam), (int)DataEnum.TableGlobalParam);
 			s_DataEnum2Type.Add((int)DataEnum.TableGuid, typeof(TableGuid));
 			s_Type2DataEnum.Add(typeof(TableGuid), (int)DataEnum.TableGuid);
 			s_DataEnum2Type.Add((int)DataEnum.TableItemInfo, typeof(TableItemInfo));

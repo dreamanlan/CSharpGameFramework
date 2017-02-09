@@ -51,6 +51,8 @@ class UiScrollInfo : ITickPlugin
                 if (null != content) {
                     float w, h;
                     CalcBounds(text, content, new Vector2(rectTrans.rect.width, rectTrans.rect.height), m_Width - dw, out w, out h);
+                    if (h < c_MinTextHeight)
+                        h = c_MinTextHeight;
                     content.text = text;
                     rectTrans.localPosition = new Vector3(0, m_Top, 0);
                     rectTrans.sizeDelta = new Vector2(m_Width - dw, h + dh);
@@ -107,4 +109,5 @@ class UiScrollInfo : ITickPlugin
     private float m_Width = 0;
     private float m_Height = 2048;
     private float m_ScrollToEndTime = 0;
+    private const float c_MinTextHeight = 24.0f;
 }

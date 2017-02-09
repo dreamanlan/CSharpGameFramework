@@ -89,6 +89,7 @@
     <Compile Include="Story\StoryDefine.cs" />
     <Compile Include="StrDictionary.cs" />
     <Compile Include="Util\Converter.cs" />
+    <Compile Include="Util\GenericUtility.cs" />
     <Compile Include="Util\Heap.cs" />
     <Compile Include="Util\Helper.cs" />
     <Compile Include="Util\HomePath.cs" />

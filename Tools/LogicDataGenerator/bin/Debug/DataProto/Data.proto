@@ -14,9 +14,9 @@ message GeneralRecordData
 message TableAccount
 {
 	required string AccountId = 1;
-	required bool IsBanned = 2;
-	required uint64 UserGuid = 3;
-	required bool IsValid = 4;
+	required string Password = 2;
+	required bool IsBanned = 3;
+	required uint64 UserGuid = 4;
 }
 
 message TableActivationCode
@@ -43,12 +43,6 @@ message TableGlobalData
 	required int32 IntValue = 2;
 	required float FloatValue = 3;
 	required string StrValue = 4;
-}
-
-message TableGlobalParam
-{
-	required string ParamType = 1;
-	required string ParamValue = 2;
 }
 
 message TableGuid

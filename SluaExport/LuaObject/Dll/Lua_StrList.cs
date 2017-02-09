@@ -6,11 +6,23 @@ public class Lua_StrList : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int constructor(IntPtr l) {
 		try {
+			int argc = LuaDLL.lua_gettop(l);
 			StrList o;
-			o=new StrList();
-			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
+			if(argc==1){
+				o=new StrList();
+				pushValue(l,true);
+				pushValue(l,o);
+				return 2;
+			}
+			else if(argc==2){
+				System.Collections.Generic.IEnumerable<System.String> a1;
+				checkType(l,2,out a1);
+				o=new StrList(a1);
+				pushValue(l,true);
+				pushValue(l,o);
+				return 2;
+			}
+			return error(l,"New object failed.");
 		}
 		catch(Exception e) {
 			return error(l,e);

@@ -63,14 +63,14 @@ namespace GameFramework.Story.Commands
                 int money = m_Money.Value;
                 int gold = m_Gold.Value;
 
-                MailInfo mailInfo = new MailInfo();
-                mailInfo.m_Receiver = receiver;
-                mailInfo.m_Title = title;
-                mailInfo.m_Text = content;
-                mailInfo.m_Sender = sender;
-                mailInfo.m_Money = money;
-                mailInfo.m_Gold = gold;
-                mailInfo.m_LevelDemand = levelDemand;
+                TableMailInfoWrap mailInfo = new TableMailInfoWrap();
+                mailInfo.Receiver = (long)receiver;
+                mailInfo.Title = title;
+                mailInfo.Text = content;
+                mailInfo.Sender = sender;
+                mailInfo.Money = money;
+                mailInfo.Gold = gold;
+                mailInfo.LevelDemand = levelDemand;
 
                 for (int i = 0; i < m_MailItems.Count - 1; i += 2) {
                     int itemId = m_MailItems[i].Value;
@@ -255,6 +255,8 @@ namespace GameFramework.Story.Commands
                         ulong memberGuid = (ulong)id;
                         MemberInfo mi = ui.MemberInfos.Find(info => info.MemberGuid == memberGuid);
                         if (null != mi) {
+                            mi.Deleted = true;
+                            ui.DeletedMemberInfos.Add(mi);
                             ui.MemberInfos.Remove(mi);
                         }
                     } else {
@@ -262,6 +264,8 @@ namespace GameFramework.Story.Commands
                             int heroId = (int)id;
                             MemberInfo mi = ui.MemberInfos.Find(info => info.HeroId == heroId);
                             if (null != mi) {
+                                mi.Deleted = true;
+                                ui.DeletedMemberInfos.Add(mi);
                                 ui.MemberInfos.Remove(mi);
                             }
                         } catch {

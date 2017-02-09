@@ -8,8 +8,7 @@ namespace GameFramework
     {
         public static void LoadConfig()
         {
-            Calculator.Init();
-            SkillCalculator.Init();
+            AttrCalc.DslCalculator.Register();
             Calculator.Load("Dsl/Calc/AttrCalc.dsl");
             SkillCalculator.Load("Dsl/Calc/SkillCalc.dsl");
         }

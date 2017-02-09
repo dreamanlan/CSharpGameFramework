@@ -80,6 +80,11 @@ internal static class CommonPluginProxy
 
 internal class NativePluginProxy : IPluginProxy
 {
+    public void RegisterAttrExpression(string name, string implClass)
+    {
+        GameFramework.AttrCalc.DslCalculator.Register(name, new NativeAttrPluginFactory(implClass));
+    }
+
     public void RegisterSkillTrigger(string name, string implClass)
     {
         SkillTrigerManager.Instance.RegisterTrigerFactory(name, new NativeSkillTriggerFactory(implClass), true);
@@ -128,6 +133,11 @@ internal class NativePluginProxy : IPluginProxy
 
 internal class LuaPluginProxy : IPluginProxy
 {
+    public void RegisterAttrExpression(string name, string implClass)
+    {
+        GameFramework.AttrCalc.DslCalculator.Register(name, new LuaAttrPluginFactory(implClass));
+    }
+
     public void RegisterSkillTrigger(string name, string implClass)
     {
         SkillTrigerManager.Instance.RegisterTrigerFactory(name, new LuaSkillTriggerFactory(implClass), true);

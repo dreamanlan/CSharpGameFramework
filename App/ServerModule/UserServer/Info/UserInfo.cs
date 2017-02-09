@@ -210,6 +210,14 @@ namespace GameFramework
         {
             get { return m_FriendInfos; }
         }
+        internal List<MemberInfo> DeletedMemberInfos
+        {
+            get { return m_DeletedMemberInfos; }
+        }
+        public List<FriendInfo> DeletedFriendInfos
+        {
+            get { return m_DeletedFriendInfos; }
+        }
         public ItemBag ItemBag
         {
             get { return m_ItemBag; }
@@ -223,6 +231,8 @@ namespace GameFramework
 
         private List<MemberInfo> m_MemberInfos = new List<MemberInfo>();
         private List<FriendInfo> m_FriendInfos = new List<FriendInfo>();
+        private List<MemberInfo> m_DeletedMemberInfos = new List<MemberInfo>();
+        private List<FriendInfo> m_DeletedFriendInfos = new List<FriendInfo>();
         private ItemBag m_ItemBag = new ItemBag();
         private MailStateInfo m_MailStateInfo = new MailStateInfo();
         

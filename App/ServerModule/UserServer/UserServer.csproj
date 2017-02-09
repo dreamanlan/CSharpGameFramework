@@ -116,6 +116,8 @@
     <Compile Include="NodeMessageManager\NodeMessageManager.cs" />
     <Compile Include="NodeMessageManager\NodeMessageInfo.cs" />
     <Compile Include="NodeMessageManager\NodeMessageThread.cs" />
+    <Compile Include="Process\DataCacheThread_Load.cs" />
+    <Compile Include="Process\DataCacheThread_Save.cs" />
     <Compile Include="Process\UserThread.cs" />
     <Compile Include="Story\Commands\GameLogicCommands.cs" />
     <Compile Include="Story\Commands\GeneralCommands.cs" />

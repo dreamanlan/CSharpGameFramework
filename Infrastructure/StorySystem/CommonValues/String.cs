@@ -92,9 +92,8 @@ namespace StorySystem.CommonValues
         {
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData && callData.GetId() == "substring" && callData.GetParamNum() > 0) {
-
                 m_ParamNum = callData.GetParamNum();
-                m_Start.InitFromDsl(callData.GetParam(0));
+                m_String.InitFromDsl(callData.GetParam(0));
                 if (m_ParamNum > 1) {
                     m_Start.InitFromDsl(callData.GetParam(1));
                 }

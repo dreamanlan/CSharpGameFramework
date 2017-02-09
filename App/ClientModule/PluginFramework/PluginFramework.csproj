@@ -105,6 +105,7 @@
     <Compile Include="GameObjects\SpaceInfoView.cs" />
     <Compile Include="GmCommands\ClientGmStorySystem.cs" />
     <Compile Include="GmCommands\GmCommands.cs" />
+    <Compile Include="Plugin\IAttrExpressionPlugin.cs" />
     <Compile Include="Plugin\ISkillTriggerPlugin.cs" />
     <Compile Include="Plugin\IStartupPlugin.cs" />
     <Compile Include="Plugin\IStoryCommandPlugin.cs" />

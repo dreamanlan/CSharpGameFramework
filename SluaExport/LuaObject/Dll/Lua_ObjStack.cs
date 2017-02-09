@@ -6,11 +6,23 @@ public class Lua_ObjStack : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int constructor(IntPtr l) {
 		try {
+			int argc = LuaDLL.lua_gettop(l);
 			ObjStack o;
-			o=new ObjStack();
-			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
+			if(argc==1){
+				o=new ObjStack();
+				pushValue(l,true);
+				pushValue(l,o);
+				return 2;
+			}
+			else if(argc==2){
+				System.Collections.Generic.IEnumerable<System.Object> a1;
+				checkType(l,2,out a1);
+				o=new ObjStack(a1);
+				pushValue(l,true);
+				pushValue(l,o);
+				return 2;
+			}
+			return error(l,"New object failed.");
 		}
 		catch(Exception e) {
 			return error(l,e);

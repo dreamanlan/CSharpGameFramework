@@ -92,7 +92,7 @@ namespace LuaInterface
 
         // Thread Funcs
         [DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int lua_tothread(IntPtr L, int index);
+        public static extern IntPtr lua_tothread(IntPtr L, int index);
         [DllImport(LUADLL, CallingConvention = CallingConvention.Cdecl)]
         public static extern void lua_xmove(IntPtr from, IntPtr to, int n);
 

@@ -14,7 +14,7 @@ namespace GameFramework
         ConsumeResetTime = 4
     }
     /// <summary>
-    /// 全局数据（非玩家拥有的数据）处理线程，在这里处理邮件、远征、帮会等数据。
+    /// 全局数据（非玩家拥有的数据）处理线程，在这里处理邮件等数据。
     /// </summary>
     /// <remarks>
     /// 其它线程不应直接调用此类方法，应通过QueueAction发起调用。
@@ -52,7 +52,7 @@ namespace GameFramework
         {
             m_GuidSystem.InitGuidData(guidList);
         }
-        internal void InitMailData(List<MailInfo> mailList)
+        internal void InitMailData(List<TableMailInfoWrap> mailList)
         {
             m_MailSystem.InitMailData(mailList);
         }
@@ -67,11 +67,11 @@ namespace GameFramework
         {
             m_MailSystem.GetMailList(user);
         }
-        internal void SendUserMail(MailInfo userMail, int validityPeriod)
+        internal void SendUserMail(TableMailInfoWrap userMail, int validityPeriod)
         {
             m_MailSystem.SendUserMail(userMail, validityPeriod);
         }
-        internal void SendWholeMail(MailInfo wholeMail, int validityPeriod)
+        internal void SendWholeMail(TableMailInfoWrap wholeMail, int validityPeriod)
         {
             m_MailSystem.SendWholeMail(wholeMail, validityPeriod);
         }
@@ -114,6 +114,7 @@ namespace GameFramework
                 LogSys.Log(LOG_TYPE.MONITOR, "GlobalProcessThread.ActionQueue Current Action {0}", this.CurActionNum);
             }
             //逻辑Tick
+            GlobalData.Instance.Tick();
             UserServer.Instance.UserProcessScheduler.NicknameSystem.Tick();
             m_MailSystem.Tick();
             //全局数据存储
@@ -122,13 +123,21 @@ namespace GameFramework
             if (dsThread.DataStoreAvailable) {
                 if (m_GuidCounter.IsTimeToSave(curTime)) {
                     saveStartTime = TimeUtility.GetLocalMilliseconds();
-                    dsThread.DSGSaveGuid(m_GuidSystem.GuidList, m_GuidCounter.NextSaveCount);
+                    dsThread.SaveGuid(m_GuidSystem.GuidList, m_GuidCounter.NextSaveCount);
                     LogSys.Log(LOG_TYPE.DEBUG, "GlobalDataSave Guid SaveCount:{0}, Time:{1}", m_GuidCounter.NextSaveCount, TimeUtility.GetLocalMilliseconds() - saveStartTime);
                     m_GuidCounter.IncreaseNextSaveCount();
                 }
+                if (m_MailCounter.IsTimeToSave(curTime)) {
+                    saveStartTime = TimeUtility.GetLocalMilliseconds();
+                    dsThread.SaveMail(m_MailSystem.TotalMailList, m_MailCounter.NextSaveCount);
+                    dsThread.SaveDeletedMail(m_MailSystem.TotalDeletedMailList, m_MailCounter.NextSaveCount);
+                    m_MailSystem.ResetDeletedMailList();
+                    LogSys.Log(LOG_TYPE.DEBUG, "GlobalDataSave Mail SaveCount:{0}, Time:{1}", m_MailCounter.NextSaveCount, TimeUtility.GetLocalMilliseconds() - saveStartTime);
+                    m_MailCounter.IncreaseNextSaveCount();
+                }
                 if (m_IsLastSave && IsLastSaveAllDone()) {
                     if (m_LastSaveFinished == false) {
-                        //全局数据（Guid、战神赛排行榜，邮件，竞技场排行榜,军团,战力排行榜,抢矿玩家池）存储完成 
+                        //全局数据（Guid、邮件）存储完成 
                         LogSys.Log(LOG_TYPE.MONITOR, "DoLastSaveGlobalData Step_2: GlobalData last save done");
                         m_IsLastSave = false;
                         m_LastSaveFinished = true;
@@ -141,7 +150,7 @@ namespace GameFramework
         }
         private bool IsLastSaveAllDone()
         {
-            bool isDone = m_GuidCounter.CurrentSaveCount == DataCacheThread.UltimateSaveCount;
+            bool isDone = m_GuidCounter.CurrentSaveCount == DataCacheThread.UltimateSaveCount && m_MailCounter.CurrentSaveCount == DataCacheThread.UltimateSaveCount;
             return isDone;
         }
         private bool CheckLastSaveDone(List<int> saveCountList)
@@ -161,21 +170,24 @@ namespace GameFramework
 
             var dsThread = UserServer.Instance.DataCacheThread;
             if (dsThread.DataStoreAvailable) {
-                dsThread.DSGSaveGuid(m_GuidSystem.GuidList, m_GuidCounter.NextSaveCount);
+                dsThread.SaveGuid(m_GuidSystem.GuidList, m_GuidCounter.NextSaveCount);
+                dsThread.SaveMail(m_MailSystem.TotalMailList, m_MailCounter.NextSaveCount);
             }
             m_GuidCounter.CurrentSaveCount = DataCacheThread.UltimateSaveCount;
+            m_MailCounter.CurrentSaveCount = DataCacheThread.UltimateSaveCount;
             m_IsLastSave = true;
         }
 
         private GuidSystem m_GuidSystem = new GuidSystem();
         private MailSystem m_MailSystem = new MailSystem();
-        GlobalSaveCounter m_GuidCounter = new GlobalSaveCounter();            //Guid数据存储参数
+        GlobalSaveCounter m_GuidCounter = new GlobalSaveCounter();              //Guid数据存储计数
+        GlobalSaveCounter m_MailCounter = new GlobalSaveCounter();              //Mail数据存储计数
 
         private const long c_WarningTickTime = 1000;
         private long m_LastTickTime = 0;
         private long m_LastLogTime = 0;
-        private bool m_LastSaveFinished = false;      //最后一次数据存储完成状态
-        private bool m_IsLastSave = false;            //是否在执行最后一次存储操作
+        private bool m_LastSaveFinished = false;                                //最后一次数据存储完成状态
+        private bool m_IsLastSave = false;                                      //是否在执行最后一次存储操作
 
         private const long c_TickInterval = 10000;
     }

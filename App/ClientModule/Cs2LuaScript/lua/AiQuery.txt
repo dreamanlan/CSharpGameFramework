@@ -40,7 +40,7 @@ AiQuery = {
 				local i; i = 0;
 				while (i < this.m_OrderBy.Count) do
 					newObj.m_OrderBy:Add(typeas(getexterninstanceindexer(this.m_OrderBy, nil, "get_Item", i):Clone(), StorySystem.IStoryValue, false));
-				i = i + 1;
+				i = i+ 1;
 				end;
 				newObj.m_Desc = this.m_Desc;
 				return newObj;
@@ -78,7 +78,7 @@ AiQuery = {
 					while (i < coll.Count) do
 						local ao; ao = typeas(getexterninstanceindexer(coll, nil, "get_Item", i), System.Collections.ArrayList, false);
 						result:Add(getexterninstanceindexer(ao, nil, "get_Item", 0));
-					i = i + 1;
+					i = i+ 1;
 					end;
 					this.m_Proxy.Value = result;
 				end;
@@ -100,7 +100,7 @@ AiQuery = {
 						local v; v = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", nil, {});
 						v:InitFromDsl(callData:GetParam(i));
 						this.m_OrderBy:Add(v);
-					i = i + 1;
+					i = i+ 1;
 					end;
 				elseif (id == "asc") then
 					this.m_Desc = false;
@@ -116,7 +116,7 @@ AiQuery = {
 				while (i < statementData.Functions.Count) do
 					local funcData; funcData = getexterninstanceindexer(statementData.Functions, nil, "get_Item", i);
 					this:LoadFuncData(funcData);
-				i = i + 1;
+				i = i+ 1;
 				end;
 			end,
 			AddRow = function(this, coll, v, instance, args)
@@ -129,7 +129,7 @@ AiQuery = {
 					local val; val = getexterninstanceindexer(this.m_OrderBy, nil, "get_Item", i);
 					val:Evaluate(instance, v, args);
 					row:Add(val.Value);
-				i = i + 1;
+				i = i+ 1;
 				end;
 			end,
 			ctor = function(this)

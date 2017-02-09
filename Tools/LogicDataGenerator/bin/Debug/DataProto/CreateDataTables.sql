@@ -10,9 +10,9 @@ create table TableAccount
 	IsValid boolean not null,
 	DataVersion int not null,
 	AccountId varchar(64) binary not null,
+	Password varchar(256) not null,
 	IsBanned boolean not null,
 	UserGuid bigint unsigned not null,
-	IsValid boolean not null,
 	primary key (AutoKey)
 ) ENGINE=InnoDB;
 create unique index TableAccountPrimaryIndex on TableAccount (AccountId);
@@ -59,17 +59,6 @@ create table TableGlobalData
 ) ENGINE=InnoDB;
 create unique index TableGlobalDataPrimaryIndex on TableGlobalData (Key);
 
-create table TableGlobalParam
-(
-	AutoKey int not null auto_increment,
-	IsValid boolean not null,
-	DataVersion int not null,
-	ParamType varchar(32) binary not null,
-	ParamValue varchar(64) not null,
-	primary key (AutoKey)
-) ENGINE=InnoDB;
-create unique index TableGlobalParamPrimaryIndex on TableGlobalParam (ParamType);
-
 create table TableGuid
 (
 	AutoKey int not null auto_increment,
@@ -109,8 +98,8 @@ create table TableMailInfo
 	Text varchar(1024) not null,
 	Money int not null,
 	Gold int not null,
-	ItemIds varchar(128) not null,
-	ItemNumbers varchar(64) not null,
+	ItemIds varchar(32) not null,
+	ItemNumbers varchar(32) not null,
 	LevelDemand int not null,
 	IsRead boolean not null,
 	primary key (AutoKey)
@@ -195,25 +184,25 @@ create procedure SaveTableAccount(
 	in _IsValid boolean
 	,in _DataVersion int
 	,in _AccountId varchar(64)
+	,in _Password varchar(256)
 	,in _IsBanned boolean
 	,in _UserGuid bigint unsigned
-	,in _IsValid boolean
 )
 begin
-	insert into TableAccount (AutoKey,IsValid,DataVersion,AccountId,IsBanned,UserGuid,IsValid)
+	insert into TableAccount (AutoKey,IsValid,DataVersion,AccountId,Password,IsBanned,UserGuid)
 		values 
 			(null,_IsValid,_DataVersion
 			,_AccountId
+			,_Password
 			,_IsBanned
 			,_UserGuid
-			,_IsValid
 			)
 		on duplicate key update 
 			IsValid =  if(DataVersion < _DataVersion, _IsValid, IsValid),
 			AccountId =  if(DataVersion < _DataVersion, _AccountId, AccountId),
+			Password =  if(DataVersion < _DataVersion, _Password, Password),
 			IsBanned =  if(DataVersion < _DataVersion, _IsBanned, IsBanned),
 			UserGuid =  if(DataVersion < _DataVersion, _UserGuid, UserGuid),
-			IsValid =  if(DataVersion < _DataVersion, _IsValid, IsValid),
 			DataVersion =  if(DataVersion < _DataVersion, _DataVersion, DataVersion);
 end $$
 delimiter ;
@@ -311,29 +300,6 @@ begin
 end $$
 delimiter ;
 
-drop procedure if exists SaveTableGlobalParam;
-delimiter $$
-create procedure SaveTableGlobalParam(
-	in _IsValid boolean
-	,in _DataVersion int
-	,in _ParamType varchar(32)
-	,in _ParamValue varchar(64)
-)
-begin
-	insert into TableGlobalParam (AutoKey,IsValid,DataVersion,ParamType,ParamValue)
-		values 
-			(null,_IsValid,_DataVersion
-			,_ParamType
-			,_ParamValue
-			)
-		on duplicate key update 
-			IsValid =  if(DataVersion < _DataVersion, _IsValid, IsValid),
-			ParamType =  if(DataVersion < _DataVersion, _ParamType, ParamType),
-			ParamValue =  if(DataVersion < _DataVersion, _ParamValue, ParamValue),
-			DataVersion =  if(DataVersion < _DataVersion, _DataVersion, DataVersion);
-end $$
-delimiter ;
-
 drop procedure if exists SaveTableGuid;
 delimiter $$
 create procedure SaveTableGuid(
@@ -400,8 +366,8 @@ create procedure SaveTableMailInfo(
 	,in _Text varchar(1024)
 	,in _Money int
 	,in _Gold int
-	,in _ItemIds varchar(128)
-	,in _ItemNumbers varchar(64)
+	,in _ItemIds varchar(32)
+	,in _ItemNumbers varchar(32)
 	,in _LevelDemand int
 	,in _IsRead boolean
 )
@@ -691,26 +657,6 @@ create procedure LoadSingleTableGlobalData(
 begin
 	select * from TableGlobalData where IsValid = 1 
 		and Key = _Key 
-		;
-end $$
-delimiter ;
-
-drop procedure if exists LoadAllTableGlobalParam;
-delimiter $$
-create procedure LoadAllTableGlobalParam(in _Start int, in _Count int)
-begin
-	select * from TableGlobalParam where IsValid = 1 limit _Start, _Count;
-end $$
-delimiter ;
-
-drop procedure if exists LoadSingleTableGlobalParam;
-delimiter $$
-create procedure LoadSingleTableGlobalParam(
-	in _ParamType varchar(32)
-)
-begin
-	select * from TableGlobalParam where IsValid = 1 
-		and ParamType = _ParamType 
 		;
 end $$
 delimiter ;

@@ -36,7 +36,7 @@ public class BuildTool
         p.WaitForExit();
     }
 
-    [MenuItem("工具/Build/定义CS2LUA_DEBUG宏", false, 400)]
+    [MenuItem("工具/Build/定义CS2LUA_DEBUG宏", false, 300)]
     static void DefineCs2luaDebug()
     {
         string macro = "CS2LUA_DEBUG";
@@ -46,7 +46,7 @@ public class BuildTool
         }
     }
 
-    [MenuItem("工具/Build/取消CS2LUA_DEBUG宏", false, 400)]
+    [MenuItem("工具/Build/取消CS2LUA_DEBUG宏", false, 300)]
     static void UndefineCs2luaDebug()
     {
         string macro = "CS2LUA_DEBUG";
@@ -56,27 +56,7 @@ public class BuildTool
         }
     }
 
-    [MenuItem("工具/Build/定义CS2LUA_SERVER宏", false, 400)]
-    static void DefineCs2luaServer()
-    {
-        string macro = "CS2LUA_SERVER";
-        string macros = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
-        if (macros.IndexOf(macro) < 0) {
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, macros + ";" + macro);
-        }
-    }
-
-    [MenuItem("工具/Build/取消CS2LUA_SERVER宏", false, 400)]
-    static void UndefineCs2luaServer()
-    {
-        string macro = "CS2LUA_SERVER";
-        string macros = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
-        if (macros.IndexOf(macro) >= 0) {
-            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, macros.Replace(macro, string.Empty).Replace(";;", ";"));
-        }
-    }
-
-    [MenuItem("工具/Build/Cs2LuaNative", false, 500)]
+    [MenuItem("工具/Build/Cs2LuaNative", false, 400)]
     static void CallCs2LuaNative()
     {
         PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "CS2LUA_DEBUG");
@@ -85,7 +65,7 @@ public class BuildTool
         p.WaitForExit();
     }
 
-    [MenuItem("工具/Build/Cs2Lua", false, 500)]
+    [MenuItem("工具/Build/Cs2Lua", false, 400)]
     static void CallCs2Lua()
     {
         PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "");
@@ -94,7 +74,7 @@ public class BuildTool
         p.WaitForExit();
     }
 
-    [MenuItem("工具/Server/启动服务器", false, 600)]
+    [MenuItem("工具/Server/启动服务器", false, 500)]
     static void RunServer()
     {
         string path = Path.Combine(Application.streamingAssetsPath, "..\\..\\..\\RunServer.cmd");
@@ -102,7 +82,7 @@ public class BuildTool
         p.WaitForExit();
     }
 
-    [MenuItem("工具/Server/关闭服务器", false, 600)]
+    [MenuItem("工具/Server/关闭服务器", false, 500)]
     static void StopServer()
     {
         string path = Path.Combine(Application.streamingAssetsPath, "..\\..\\..\\StopServer.cmd");

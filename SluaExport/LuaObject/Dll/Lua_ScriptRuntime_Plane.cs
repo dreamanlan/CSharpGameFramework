@@ -54,7 +54,7 @@ public class Lua_ScriptRuntime_Plane : LuaObject {
 				pushValue(l,o);
 				return 2;
 			}
-			else if(argc==0){
+			else if(argc<=1){
 				o=new ScriptRuntime.Plane();
 				pushValue(l,true);
 				pushObject(l,o);

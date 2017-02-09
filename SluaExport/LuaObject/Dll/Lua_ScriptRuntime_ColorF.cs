@@ -34,7 +34,7 @@ public class Lua_ScriptRuntime_ColorF : LuaObject {
 				pushValue(l,o);
 				return 2;
 			}
-			else if(argc==0){
+			else if(argc<=1){
 				o=new ScriptRuntime.ColorF();
 				pushValue(l,true);
 				pushObject(l,o);

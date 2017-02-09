@@ -32,7 +32,7 @@ public class Lua_UnityEngine_Keyframe : LuaObject {
 				pushValue(l,o);
 				return 2;
 			}
-			else if(argc==0){
+			else if(argc<=1){
 				o=new UnityEngine.Keyframe();
 				pushValue(l,true);
 				pushObject(l,o);

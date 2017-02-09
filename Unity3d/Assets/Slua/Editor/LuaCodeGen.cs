@@ -19,6 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+#define ENABLE_USE_INHERIT_INTERFACE
 
 namespace SLua
 {
@@ -38,11 +39,7 @@ namespace SLua
 
     public class LuaCodeGen : MonoBehaviour
 	{
-#if CS2LUA_SERVER
-        static public string GenPath = SLuaSetting.Instance.ServerGeneratePath;
-#else
         static public string GenPath = SLuaSetting.Instance.UnityEngineGeneratePath;
-#endif
         public delegate void ExportGenericDelegate(Type t, string ns);
 		
         static bool autoRefresh = true;
@@ -111,15 +108,13 @@ namespace SLua
 			}
 
 		}
-	
+        	
 		[MenuItem("SLua/All/Make")]
 		static public void GenerateAll()
 		{
             autoRefresh = false;
-#if !CS2LUA_SERVER
             Generate();
 			GenerateUI();
-#endif
 			Custom();
 			Generate3rdDll();
             autoRefresh = true;
@@ -129,7 +124,6 @@ namespace SLua
         [MenuItem("SLua/Unity/Make UnityEngine")]
         static public void Generate()
 		{
-#if !CS2LUA_SERVER
 			if (IsCompiling) {
 				return;
 			}
@@ -184,7 +178,6 @@ namespace SLua
 			if(autoRefresh)
 			    AssetDatabase.Refresh();
 			Debug.Log("Generate engine interface finished");
-#endif //CS2LUA_SERVER
 		}
 
 		static bool filterType(Type t, List<string> noUseList, List<string> uselist)
@@ -212,7 +205,6 @@ namespace SLua
 		[MenuItem("SLua/Unity/Make UI (for Unity4.6+)")]
 		static public void GenerateUI()
 		{
-#if !CS2LUA_SERVER
 			if (IsCompiling) {
 				return;
 			}
@@ -269,7 +261,6 @@ namespace SLua
 			if(autoRefresh)
 			    AssetDatabase.Refresh();
 			Debug.Log("Generate UI interface finished");
-#endif
 		}
 
 		static String FixPathName(string path) {
@@ -497,8 +488,15 @@ namespace SLua
 		
 		static bool Generate(Type t, string ns, string path)
 		{
-			if (t.IsInterface)
-				return false;
+#if ENABLE_USE_INHERIT_INTERFACE
+            if (t.IsInterface && null != t.Namespace && (t.Namespace.StartsWith("System") || t.Namespace.StartsWith("UnityEngine"))) {
+                return false;
+            }
+#else
+            if (t.IsInterface) {
+                return false;
+            }
+#endif
 			
 			CodeGenerator cg = new CodeGenerator();
 			cg.givenNamespace = ns;

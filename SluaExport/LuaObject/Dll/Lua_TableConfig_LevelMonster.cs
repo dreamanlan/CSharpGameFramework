@@ -281,6 +281,58 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_aiLogic(IntPtr l) {
+		try {
+			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.aiLogic);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_aiLogic(IntPtr l) {
+		try {
+			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
+			System.String v;
+			checkType(l,2,out v);
+			self.aiLogic=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_aiParams(IntPtr l) {
+		try {
+			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.aiParams);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_aiParams(IntPtr l) {
+		try {
+			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
+			System.Collections.Generic.List<System.String> v;
+			checkType(l,2,out v);
+			self.aiParams=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.LevelMonster");
 		addMember(l,ReadFromBinary);
@@ -294,6 +346,8 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		addMember(l,"dir",get_dir,set_dir,true);
 		addMember(l,"level",get_level,set_level,true);
 		addMember(l,"passive",get_passive,set_passive,true);
+		addMember(l,"aiLogic",get_aiLogic,set_aiLogic,true);
+		addMember(l,"aiParams",get_aiParams,set_aiParams,true);
 		createTypeMetatable(l,constructor, typeof(TableConfig.LevelMonster));
 	}
 }

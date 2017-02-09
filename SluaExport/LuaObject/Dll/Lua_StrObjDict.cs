@@ -6,11 +6,23 @@ public class Lua_StrObjDict : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int constructor(IntPtr l) {
 		try {
+			int argc = LuaDLL.lua_gettop(l);
 			StrObjDict o;
-			o=new StrObjDict();
-			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
+			if(argc==1){
+				o=new StrObjDict();
+				pushValue(l,true);
+				pushValue(l,o);
+				return 2;
+			}
+			else if(argc==2){
+				System.Collections.Generic.IDictionary<System.String,System.Object> a1;
+				checkType(l,2,out a1);
+				o=new StrObjDict(a1);
+				pushValue(l,true);
+				pushValue(l,o);
+				return 2;
+			}
+			return error(l,"New object failed.");
 		}
 		catch(Exception e) {
 			return error(l,e);
@@ -20,7 +32,7 @@ public class Lua_StrObjDict : LuaObject {
 	static public int Add(IntPtr l) {
 		try {
 			StrObjDict self=(StrObjDict)checkSelf(l);
-			System.Int32 a1;
+			System.String a1;
 			checkType(l,2,out a1);
 			System.Object a2;
 			checkType(l,3,out a2);
@@ -48,7 +60,7 @@ public class Lua_StrObjDict : LuaObject {
 	static public int ContainsKey(IntPtr l) {
 		try {
 			StrObjDict self=(StrObjDict)checkSelf(l);
-			System.Int32 a1;
+			System.String a1;
 			checkType(l,2,out a1);
 			var ret=self.ContainsKey(a1);
 			pushValue(l,true);
@@ -108,7 +120,7 @@ public class Lua_StrObjDict : LuaObject {
 	static public int Remove(IntPtr l) {
 		try {
 			StrObjDict self=(StrObjDict)checkSelf(l);
-			System.Int32 a1;
+			System.String a1;
 			checkType(l,2,out a1);
 			var ret=self.Remove(a1);
 			pushValue(l,true);
@@ -123,7 +135,7 @@ public class Lua_StrObjDict : LuaObject {
 	static public int TryGetValue(IntPtr l) {
 		try {
 			StrObjDict self=(StrObjDict)checkSelf(l);
-			System.Int32 a1;
+			System.String a1;
 			checkType(l,2,out a1);
 			System.Object a2;
 			var ret=self.TryGetValue(a1,out a2);
@@ -188,7 +200,7 @@ public class Lua_StrObjDict : LuaObject {
 	static public int getItem(IntPtr l) {
 		try {
 			StrObjDict self=(StrObjDict)checkSelf(l);
-			int v;
+			string v;
 			checkType(l,2,out v);
 			var ret = self[v];
 			pushValue(l,true);
@@ -203,7 +215,7 @@ public class Lua_StrObjDict : LuaObject {
 	static public int setItem(IntPtr l) {
 		try {
 			StrObjDict self=(StrObjDict)checkSelf(l);
-			int v;
+			string v;
 			checkType(l,2,out v);
 			System.Object c;
 			checkType(l,3,out c);
@@ -231,6 +243,6 @@ public class Lua_StrObjDict : LuaObject {
 		addMember(l,"Comparer",get_Comparer,null,true);
 		addMember(l,"Keys",get_Keys,null,true);
 		addMember(l,"Values",get_Values,null,true);
-		createTypeMetatable(l,constructor, typeof(StrObjDict),typeof(System.Collections.Generic.Dictionary<System.Int32,System.Object>));
+		createTypeMetatable(l,constructor, typeof(StrObjDict),typeof(System.Collections.Generic.Dictionary<System.String,System.Object>));
 	}
 }

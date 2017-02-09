@@ -7,6 +7,7 @@ namespace GameFramework.Plugin
 {
     public interface IPluginProxy
     {
+        void RegisterAttrExpression(string name, string implClass);
         void RegisterSkillTrigger(string name, string implClass);
         void RegisterStoryCommand(string name, string implClass);
         void RegisterStoryValue(string name, string implClass);

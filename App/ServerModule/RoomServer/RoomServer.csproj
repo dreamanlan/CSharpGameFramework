@@ -75,22 +75,18 @@
     <Reference Include="ServerProtobufSerializer">
       <HintPath>..\ServerProtoBuf\bin\ServerProtobufSerializer.dll</HintPath>
     </Reference>
-    <Reference Include="SluaManaged">
-      <HintPath>..\..\..\ExternalLibrary\SluaManaged.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cs2Lua\Cs2LuaAssembly.cs" />
-    <Compile Include="Cs2Lua\Cs2LuaEnvironment.cs" />
-    <Compile Include="Cs2Lua\Cs2LuaPluginProxy.cs" />
-    <Compile Include="Cs2Lua\Cs2LuaScene.cs" />
-    <Compile Include="Cs2Lua\Skill\SkillTriggerFactory.cs" />
-    <Compile Include="Cs2Lua\Story\SimpleStoryCommandFactory.cs" />
-    <Compile Include="Cs2Lua\Story\SimpleStoryValueFactory.cs" />
-    <Compile Include="Cs2Lua\Story\StoryCommandFactory.cs" />
-    <Compile Include="Cs2Lua\Story\StoryValueFactory.cs" />
+    <Compile Include="Plugin\PluginAssembly.cs" />
+    <Compile Include="Plugin\PluginProxy.cs" />
+    <Compile Include="Plugin\PluginScene.cs" />
+    <Compile Include="Plugin\Skill\SkillTriggerFactory.cs" />
+    <Compile Include="Plugin\Story\SimpleStoryCommandFactory.cs" />
+    <Compile Include="Plugin\Story\SimpleStoryValueFactory.cs" />
+    <Compile Include="Plugin\Story\StoryCommandFactory.cs" />
+    <Compile Include="Plugin\Story\StoryValueFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoomServer\RoomServer.cs" />
     <Compile Include="RoomServer\RoomServer_Config.cs" />
@@ -139,10 +135,6 @@
     <ProjectReference Include="..\Messenger\Messenger\Messenger.csproj">
       <Project>{98ba0167-2beb-4845-9926-50cb465c4fa6}</Project>
       <Name>Messenger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RoomCs2LuaScript\RoomCs2LuaScript.csproj">
-      <Project>{c34bc999-8179-46eb-83ff-816ca5a5a1a7}</Project>
-      <Name>RoomCs2LuaScript</Name>
     </ProjectReference>
     <ProjectReference Include="..\RoomPluginFramework\RoomPluginFramework.csproj">
       <Project>{6ae175c8-1304-410a-8e56-d1ddd84fcf81}</Project>

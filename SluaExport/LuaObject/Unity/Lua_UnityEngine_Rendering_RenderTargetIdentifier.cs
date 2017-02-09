@@ -40,7 +40,7 @@ public class Lua_UnityEngine_Rendering_RenderTargetIdentifier : LuaObject {
 				pushValue(l,o);
 				return 2;
 			}
-			else if(argc==0){
+			else if(argc<=1){
 				o=new UnityEngine.Rendering.RenderTargetIdentifier();
 				pushValue(l,true);
 				pushObject(l,o);

@@ -46,6 +46,11 @@ using GameFramework;
 /// </summary>
 namespace SkillSystem
 {
+    public sealed class IntSkillInstanceDict : Dictionary<int, SkillInstance>
+    {
+        public IntSkillInstanceDict() { }
+        public IntSkillInstanceDict(IDictionary<int, SkillInstance> dict) : base(dict) { }
+    }
     public sealed class SkillSection : IPropertyVisitor
     {
         public long Duration
@@ -423,7 +428,7 @@ namespace SkillSystem
             get { return m_GoToSectionId; }
             set { m_GoToSectionId = value; }
         }
-        public Dictionary<string, object> Variables
+        public StrObjDict Variables
         {
             get { return m_Variables; }
         }
@@ -432,11 +437,11 @@ namespace SkillSystem
             get { return m_CustomDatas; }
         }
         //----------------------------------------------
-        public Dictionary<int, SkillInstance> EmitSkillInstances
+        public IntSkillInstanceDict EmitSkillInstances
         {
             get { return m_EmitSkillInstances; }
         }
-        public Dictionary<int, SkillInstance> HitSkillInstances
+        public IntSkillInstanceDict HitSkillInstances
         {
             get { return m_HitSkillInstances; }
         }
@@ -937,13 +942,13 @@ namespace SkillSystem
         private void PrepareInnerEmitSkillInstances()
         {
             if (null == m_EmitSkillInstances) {
-                m_EmitSkillInstances = new Dictionary<int, SkillInstance>();
+                m_EmitSkillInstances = new IntSkillInstanceDict();
             }
         }
         private void PrepareInnerHitSkillInstances()
         {
             if (null == m_HitSkillInstances) {
-                m_HitSkillInstances = new Dictionary<int, SkillInstance>();
+                m_HitSkillInstances = new IntSkillInstanceDict();
             }
         }
 
@@ -1195,13 +1200,13 @@ namespace SkillSystem
         private SkillMessageHandler m_StopSection = null;
         private SkillMessageHandler m_InterruptSection = null;
 
-        private Dictionary<string, object> m_Variables = new Dictionary<string, object>();
+        private StrObjDict m_Variables = new StrObjDict();
         private CustomDataCollection m_CustomDatas = new CustomDataCollection();
 
         private int m_InnerDslSkillId = 0;
         private int m_OuterDslSkillId = 0;
-        private Dictionary<int, SkillInstance> m_EmitSkillInstances = null;
-        private Dictionary<int, SkillInstance> m_HitSkillInstances = null;
+        private IntSkillInstanceDict m_EmitSkillInstances = null;
+        private IntSkillInstanceDict m_HitSkillInstances = null;
 
         private List<SkillSectionOrMessageTriggers> m_UseImpactsForInit = null;
         private List<SkillSectionOrMessageTriggers> m_ImpactsForInit = null;

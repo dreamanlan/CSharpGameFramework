@@ -334,7 +334,7 @@ return Class
 					}
 					else
 #endif
-						pushValue(l, o.Equals(null));
+						pushValue(l, object.Equals(o, null));
 				}
 				else
 					pushValue(l, false);

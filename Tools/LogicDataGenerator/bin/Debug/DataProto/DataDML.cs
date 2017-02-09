@@ -32,9 +32,6 @@ namespace GameFramework
 				case (int)DataEnum.TableGlobalData:
 					SaveTableGlobalData(isValid, dataVersion, data);
 					break;
-				case (int)DataEnum.TableGlobalParam:
-					SaveTableGlobalParam(isValid, dataVersion, data);
-					break;
 				case (int)DataEnum.TableGuid:
 					SaveTableGuid(isValid, dataVersion, data);
 					break;
@@ -73,9 +70,6 @@ namespace GameFramework
 					break;
 				case (int)DataEnum.TableGlobalData:
 					count = BatchSaveTableGlobalData(validList, dataList, dataVersion);
-					break;
-				case (int)DataEnum.TableGlobalParam:
-					count = BatchSaveTableGlobalParam(validList, dataList, dataVersion);
 					break;
 				case (int)DataEnum.TableGuid:
 					count = BatchSaveTableGuid(validList, dataList, dataVersion);
@@ -116,8 +110,6 @@ namespace GameFramework
 					return LoadAllTableFriendInfo(start, count);
 				case (int)DataEnum.TableGlobalData:
 					return LoadAllTableGlobalData(start, count);
-				case (int)DataEnum.TableGlobalParam:
-					return LoadAllTableGlobalParam(start, count);
 				case (int)DataEnum.TableGuid:
 					return LoadAllTableGuid(start, count);
 				case (int)DataEnum.TableItemInfo:
@@ -146,8 +138,6 @@ namespace GameFramework
 					return LoadSingleTableFriendInfo(primaryKeys);
 				case (int)DataEnum.TableGlobalData:
 					return LoadSingleTableGlobalData(primaryKeys);
-				case (int)DataEnum.TableGlobalParam:
-					return LoadSingleTableGlobalParam(primaryKeys);
 				case (int)DataEnum.TableGuid:
 					return LoadSingleTableGuid(primaryKeys);
 				case (int)DataEnum.TableItemInfo:
@@ -176,8 +166,6 @@ namespace GameFramework
 					return LoadMultiTableFriendInfo(foreignKeys);
 				case (int)DataEnum.TableGlobalData:
 					return LoadMultiTableGlobalData(foreignKeys);
-				case (int)DataEnum.TableGlobalParam:
-					return LoadMultiTableGlobalParam(foreignKeys);
 				case (int)DataEnum.TableGuid:
 					return LoadMultiTableGuid(foreignKeys);
 				case (int)DataEnum.TableItemInfo:
@@ -221,12 +209,12 @@ namespace GameFramework
 			        val = reader["AccountId"];
 			        msg.AccountId = (string)val;
 			        record.PrimaryKeys.Add(val.ToString());
+			        val = reader["Password"];
+			        msg.Password = (string)val;
 			        val = reader["IsBanned"];
 			        msg.IsBanned = (bool)val;
 			        val = reader["UserGuid"];
 			        msg.UserGuid = (ulong)val;
-			        val = reader["IsValid"];
-			        msg.IsValid = (bool)val;
 			        record.DataVersion = (int)reader["DataVersion"];
 			        record.Data = DbDataSerializer.Encode(msg);
 			        ret.Add(record);
@@ -265,12 +253,12 @@ namespace GameFramework
 			        val = reader["AccountId"];
 			        msg.AccountId = (string)val;
 			        ret.PrimaryKeys.Add(val.ToString());
+			        val = reader["Password"];
+			        msg.Password = (string)val;
 			        val = reader["IsBanned"];
 			        msg.IsBanned = (bool)val;
 			        val = reader["UserGuid"];
 			        msg.UserGuid = (ulong)val;
-			        val = reader["IsValid"];
-			        msg.IsValid = (bool)val;
 			        ret.DataVersion = (int)reader["DataVersion"];
 			        ret.Data = DbDataSerializer.Encode(msg);
 			      }
@@ -315,6 +303,11 @@ namespace GameFramework
 				    inputParam.Value = msg.AccountId;
 				    inputParam.Size = 64;
 				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_Password", MySqlDbType.VarChar);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.Password;
+				    inputParam.Size = 256;
+				    cmd.Parameters.Add(inputParam);
 				    inputParam = new MySqlParameter("@_IsBanned", MySqlDbType.Bit);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.IsBanned;
@@ -322,10 +315,6 @@ namespace GameFramework
 				    inputParam = new MySqlParameter("@_UserGuid", MySqlDbType.UInt64);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.UserGuid;
-				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_IsValid", MySqlDbType.Bit);
-				    inputParam.Direction = ParameterDirection.Input;
-				    inputParam.Value = msg.IsValid;
 				    cmd.Parameters.Add(inputParam);
 				    cmd.ExecuteNonQuery();
 				  }
@@ -343,7 +332,7 @@ namespace GameFramework
 			  return 0;
 			}
 			StringBuilder sbSql = new StringBuilder("insert into TableAccount ", 4096); 
-			sbSql.Append("(IsValid,DataVersion,AccountId,IsBanned,UserGuid,IsValid)");
+			sbSql.Append("(IsValid,DataVersion,AccountId,Password,IsBanned,UserGuid)");
 			sbSql.Append(" values ");
 			for (int i = 0; i < validList.Count; ++i) {
 			  Byte valid = 1;
@@ -358,11 +347,11 @@ namespace GameFramework
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.AccountId);
 			    sbValue.Append(',');
+			    sbValue.AppendFormat("'{0}'", msg.Password);
+			    sbValue.Append(',');
 			    sbValue.Append(msg.IsBanned);
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.UserGuid);
-			    sbValue.Append(',');
-			    sbValue.Append(msg.IsValid);
 			    sbValue.Append(')');
 			    sbSql.Append(sbValue.ToString());
 			    sbSql.Append(',');
@@ -372,9 +361,9 @@ namespace GameFramework
 			sbSql.Append(" on duplicate key update ");
 			sbSql.AppendFormat(" IsValid = if(DataVersion < {0}, values(IsValid), IsValid),", dataVersion);
 			sbSql.AppendFormat(" AccountId = if(DataVersion < {0}, values(AccountId), AccountId),", dataVersion);
+			sbSql.AppendFormat(" Password = if(DataVersion < {0}, values(Password), Password),", dataVersion);
 			sbSql.AppendFormat(" IsBanned = if(DataVersion < {0}, values(IsBanned), IsBanned),", dataVersion);
 			sbSql.AppendFormat(" UserGuid = if(DataVersion < {0}, values(UserGuid), UserGuid),", dataVersion);
-			sbSql.AppendFormat(" IsValid = if(DataVersion < {0}, values(IsValid), IsValid),", dataVersion);
 			sbSql.AppendFormat(" DataVersion = if(DataVersion < {0}, {0}, DataVersion),", dataVersion);
 			sbSql.Remove(sbSql.Length - 1, 1);
 			string statement = sbSql.ToString();
@@ -1068,186 +1057,6 @@ namespace GameFramework
 		}
 
 
-		private static List<GeneralRecordData> LoadAllTableGlobalParam(int start, int count)
-		{
-			List<GeneralRecordData> ret = new List<GeneralRecordData>();
-			try {
-			  using (MySqlCommand cmd = new MySqlCommand()) {
-			    cmd.Connection = DBConn.MySqlConn;
-			    cmd.CommandType = CommandType.StoredProcedure;
-			    cmd.CommandText = "LoadAllTableGlobalParam";
-			    MySqlParameter inputParam;
-			    inputParam = new MySqlParameter("@_Start", MySqlDbType.Int32);
-			    inputParam.Direction = ParameterDirection.Input;
-			    inputParam.Value = start;
-			    cmd.Parameters.Add(inputParam);
-			    inputParam = new MySqlParameter("@_Count", MySqlDbType.Int32);
-			    inputParam.Direction = ParameterDirection.Input;
-			    inputParam.Value = count;
-			    cmd.Parameters.Add(inputParam);
-			    using (DbDataReader reader = cmd.ExecuteReader()) {
-			      while (reader.Read()) {
-			        GeneralRecordData record = new GeneralRecordData();
-			        object val;
-			        TableGlobalParam msg = new TableGlobalParam();
-			        val = reader["ParamType"];
-			        msg.ParamType = (string)val;
-			        record.PrimaryKeys.Add(val.ToString());
-			        val = reader["ParamValue"];
-			        msg.ParamValue = (string)val;
-			        record.DataVersion = (int)reader["DataVersion"];
-			        record.Data = DbDataSerializer.Encode(msg);
-			        ret.Add(record);
-			      }
-			    }
-			  }
-			} catch (Exception ex) {
-			  DBConn.Close();
-			  throw ex;
-			}
-			return ret;
-		}
-
-
-		private static GeneralRecordData LoadSingleTableGlobalParam(List<string> primaryKeys)
-		{
-			GeneralRecordData ret = null;
-			try {
-			  using (MySqlCommand cmd = new MySqlCommand()) {
-			    cmd.Connection = DBConn.MySqlConn;
-			    cmd.CommandType = CommandType.StoredProcedure;
-			    cmd.CommandText = "LoadSingleTableGlobalParam";
-			    if(primaryKeys.Count != 1)
-				    throw new Exception("primary key number don't match !!!");
-			    MySqlParameter inputParam;
-			    inputParam = new MySqlParameter("@_ParamType", MySqlDbType.VarChar);
-			    inputParam.Direction = ParameterDirection.Input;
-			    inputParam.Value = primaryKeys[0];
-			    inputParam.Size = 32;
-			    cmd.Parameters.Add(inputParam);
-			    using (DbDataReader reader = cmd.ExecuteReader()) {
-			      if (reader.Read()) {
-			        ret = new GeneralRecordData();
-			        object val;
-			        TableGlobalParam msg = new TableGlobalParam();
-			        val = reader["ParamType"];
-			        msg.ParamType = (string)val;
-			        ret.PrimaryKeys.Add(val.ToString());
-			        val = reader["ParamValue"];
-			        msg.ParamValue = (string)val;
-			        ret.DataVersion = (int)reader["DataVersion"];
-			        ret.Data = DbDataSerializer.Encode(msg);
-			      }
-			    }
-			  }
-			} catch (Exception ex) {
-			  DBConn.Close();
-			  throw ex;
-			}
-			return ret;
-		}
-
-
-		private static List<GeneralRecordData> LoadMultiTableGlobalParam(List<string> foreignKeys)
-		{
-			List<GeneralRecordData> ret = new List<GeneralRecordData>();
-			return ret;
-		}
-
-
-		private static void SaveTableGlobalParam(bool isValid, int dataVersion, byte[] data)
-		{
-			object _msg;
-			if(DbDataSerializer.Decode(data, typeof(TableGlobalParam), out _msg)){
-				TableGlobalParam msg = _msg as TableGlobalParam;
-				try {
-				  using (MySqlCommand cmd = new MySqlCommand()) {
-				    cmd.Connection = DBConn.MySqlConn;
-				    cmd.CommandType = CommandType.StoredProcedure;
-				    cmd.CommandText = "SaveTableGlobalParam";
-				    MySqlParameter inputParam;
-				    inputParam = new MySqlParameter("@_IsValid", MySqlDbType.Bit);
-				    inputParam.Direction = ParameterDirection.Input;
-				    inputParam.Value = isValid;
-				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_DataVersion", MySqlDbType.Int32);
-				    inputParam.Direction = ParameterDirection.Input;
-				    inputParam.Value = dataVersion;
-				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_ParamType", MySqlDbType.VarChar);
-				    inputParam.Direction = ParameterDirection.Input;
-				    inputParam.Value = msg.ParamType;
-				    inputParam.Size = 32;
-				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_ParamValue", MySqlDbType.VarChar);
-				    inputParam.Direction = ParameterDirection.Input;
-				    inputParam.Value = msg.ParamValue;
-				    inputParam.Size = 64;
-				    cmd.Parameters.Add(inputParam);
-				    cmd.ExecuteNonQuery();
-				  }
-				} catch (Exception ex) {
-				  DBConn.Close();
-				  throw ex;
-				}
-			}
-		}
-
-
-		private static int BatchSaveTableGlobalParam(List<bool> validList, List<byte[]> dataList, int dataVersion)
-		{
-			if (dataList.Count <= 0) {
-			  return 0;
-			}
-			StringBuilder sbSql = new StringBuilder("insert into TableGlobalParam ", 4096); 
-			sbSql.Append("(IsValid,DataVersion,ParamType,ParamValue)");
-			sbSql.Append(" values ");
-			for (int i = 0; i < validList.Count; ++i) {
-			  Byte valid = 1;
-			  if (validList[i] == false) {
-			    valid = 0;
-			  }
-			  StringBuilder sbValue = new StringBuilder();
-			  sbValue.AppendFormat("({0},{1}", valid, dataVersion);
-			  object _msg;
-			  if (DbDataSerializer.Decode(dataList[i], typeof(TableGlobalParam), out _msg)) {
-			    TableGlobalParam msg = _msg as TableGlobalParam;
-			    sbValue.Append(',');
-			    sbValue.AppendFormat("'{0}'", msg.ParamType);
-			    sbValue.Append(',');
-			    sbValue.AppendFormat("'{0}'", msg.ParamValue);
-			    sbValue.Append(')');
-			    sbSql.Append(sbValue.ToString());
-			    sbSql.Append(',');
-			  }
-			}
-			sbSql.Remove(sbSql.Length - 1, 1);
-			sbSql.Append(" on duplicate key update ");
-			sbSql.AppendFormat(" IsValid = if(DataVersion < {0}, values(IsValid), IsValid),", dataVersion);
-			sbSql.AppendFormat(" ParamType = if(DataVersion < {0}, values(ParamType), ParamType),", dataVersion);
-			sbSql.AppendFormat(" ParamValue = if(DataVersion < {0}, values(ParamValue), ParamValue),", dataVersion);
-			sbSql.AppendFormat(" DataVersion = if(DataVersion < {0}, {0}, DataVersion),", dataVersion);
-			sbSql.Remove(sbSql.Length - 1, 1);
-			string statement = sbSql.ToString();
-			int count = 0;
-			try {
-			  using (MySqlCommand cmd = new MySqlCommand()) {
-			    cmd.Connection = DBConn.MySqlConn;
-			    cmd.CommandType = CommandType.Text;
-			    cmd.CommandText = statement;
-			    count = cmd.ExecuteNonQuery();
-			  }
-			} catch (Exception ex) {
-			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
-			  }
-			  DBConn.Close();
-			  throw ex;
-			}
-			return count;
-		}
-
-
 		private static List<GeneralRecordData> LoadAllTableGuid(int start, int count)
 		{
 			List<GeneralRecordData> ret = new List<GeneralRecordData>();
@@ -1858,12 +1667,12 @@ namespace GameFramework
 				    inputParam = new MySqlParameter("@_ItemIds", MySqlDbType.VarChar);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.ItemIds;
-				    inputParam.Size = 128;
+				    inputParam.Size = 32;
 				    cmd.Parameters.Add(inputParam);
 				    inputParam = new MySqlParameter("@_ItemNumbers", MySqlDbType.VarChar);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.ItemNumbers;
-				    inputParam.Size = 64;
+				    inputParam.Size = 32;
 				    cmd.Parameters.Add(inputParam);
 				    inputParam = new MySqlParameter("@_LevelDemand", MySqlDbType.Int32);
 				    inputParam.Direction = ParameterDirection.Input;

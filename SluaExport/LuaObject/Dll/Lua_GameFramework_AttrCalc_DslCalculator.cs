@@ -17,34 +17,6 @@ public class Lua_GameFramework_AttrCalc_DslCalculator : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Init(IntPtr l) {
-		try {
-			GameFramework.AttrCalc.DslCalculator self=(GameFramework.AttrCalc.DslCalculator)checkSelf(l);
-			self.Init();
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Register(IntPtr l) {
-		try {
-			GameFramework.AttrCalc.DslCalculator self=(GameFramework.AttrCalc.DslCalculator)checkSelf(l);
-			System.String a1;
-			checkType(l,2,out a1);
-			GameFramework.AttrCalc.IAttrExpressionFactory a2;
-			checkType(l,3,out a2);
-			self.Register(a1,a2);
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int Load(IntPtr l) {
 		try {
 			GameFramework.AttrCalc.DslCalculator self=(GameFramework.AttrCalc.DslCalculator)checkSelf(l);
@@ -81,12 +53,37 @@ public class Lua_GameFramework_AttrCalc_DslCalculator : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int Register_s(IntPtr l) {
+		try {
+			int argc = LuaDLL.lua_gettop(l);
+			if(argc==0){
+				GameFramework.AttrCalc.DslCalculator.Register();
+				pushValue(l,true);
+				return 1;
+			}
+			else if(argc==2){
+				System.String a1;
+				checkType(l,1,out a1);
+				GameFramework.AttrCalc.IAttrExpressionFactory a2;
+				checkType(l,2,out a2);
+				GameFramework.AttrCalc.DslCalculator.Register(a1,a2);
+				pushValue(l,true);
+				return 1;
+			}
+			pushValue(l,false);
+			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.AttrCalc.DslCalculator");
-		addMember(l,Init);
-		addMember(l,Register);
 		addMember(l,Load);
 		addMember(l,Calc);
+		addMember(l,Register_s);
 		createTypeMetatable(l,constructor, typeof(GameFramework.AttrCalc.DslCalculator));
 	}
 }

@@ -6,11 +6,23 @@ public class Lua_StrHashSet : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int constructor(IntPtr l) {
 		try {
+			int argc = LuaDLL.lua_gettop(l);
 			StrHashSet o;
-			o=new StrHashSet();
-			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
+			if(argc==1){
+				o=new StrHashSet();
+				pushValue(l,true);
+				pushValue(l,o);
+				return 2;
+			}
+			else if(argc==2){
+				System.Collections.Generic.IEnumerable<System.String> a1;
+				checkType(l,2,out a1);
+				o=new StrHashSet(a1);
+				pushValue(l,true);
+				pushValue(l,o);
+				return 2;
+			}
+			return error(l,"New object failed.");
 		}
 		catch(Exception e) {
 			return error(l,e);
@@ -20,7 +32,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int Add(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Int32 a1;
+			System.String a1;
 			checkType(l,2,out a1);
 			var ret=self.Add(a1);
 			pushValue(l,true);
@@ -47,7 +59,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int Contains(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Int32 a1;
+			System.String a1;
 			checkType(l,2,out a1);
 			var ret=self.Contains(a1);
 			pushValue(l,true);
@@ -62,7 +74,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int Remove(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Int32 a1;
+			System.String a1;
 			checkType(l,2,out a1);
 			var ret=self.Remove(a1);
 			pushValue(l,true);
@@ -77,7 +89,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int RemoveWhere(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Predicate<System.Int32> a1;
+			System.Predicate<System.String> a1;
 			LuaDelegation.checkDelegate(l,2,out a1);
 			var ret=self.RemoveWhere(a1);
 			pushValue(l,true);
@@ -104,7 +116,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int IntersectWith(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Collections.Generic.IEnumerable<System.Int32> a1;
+			System.Collections.Generic.IEnumerable<System.String> a1;
 			checkType(l,2,out a1);
 			self.IntersectWith(a1);
 			pushValue(l,true);
@@ -118,7 +130,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int ExceptWith(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Collections.Generic.IEnumerable<System.Int32> a1;
+			System.Collections.Generic.IEnumerable<System.String> a1;
 			checkType(l,2,out a1);
 			self.ExceptWith(a1);
 			pushValue(l,true);
@@ -132,7 +144,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int Overlaps(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Collections.Generic.IEnumerable<System.Int32> a1;
+			System.Collections.Generic.IEnumerable<System.String> a1;
 			checkType(l,2,out a1);
 			var ret=self.Overlaps(a1);
 			pushValue(l,true);
@@ -147,7 +159,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int SetEquals(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Collections.Generic.IEnumerable<System.Int32> a1;
+			System.Collections.Generic.IEnumerable<System.String> a1;
 			checkType(l,2,out a1);
 			var ret=self.SetEquals(a1);
 			pushValue(l,true);
@@ -162,7 +174,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int SymmetricExceptWith(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Collections.Generic.IEnumerable<System.Int32> a1;
+			System.Collections.Generic.IEnumerable<System.String> a1;
 			checkType(l,2,out a1);
 			self.SymmetricExceptWith(a1);
 			pushValue(l,true);
@@ -176,7 +188,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int UnionWith(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Collections.Generic.IEnumerable<System.Int32> a1;
+			System.Collections.Generic.IEnumerable<System.String> a1;
 			checkType(l,2,out a1);
 			self.UnionWith(a1);
 			pushValue(l,true);
@@ -190,7 +202,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int IsSubsetOf(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Collections.Generic.IEnumerable<System.Int32> a1;
+			System.Collections.Generic.IEnumerable<System.String> a1;
 			checkType(l,2,out a1);
 			var ret=self.IsSubsetOf(a1);
 			pushValue(l,true);
@@ -205,7 +217,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int IsProperSubsetOf(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Collections.Generic.IEnumerable<System.Int32> a1;
+			System.Collections.Generic.IEnumerable<System.String> a1;
 			checkType(l,2,out a1);
 			var ret=self.IsProperSubsetOf(a1);
 			pushValue(l,true);
@@ -220,7 +232,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int IsSupersetOf(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Collections.Generic.IEnumerable<System.Int32> a1;
+			System.Collections.Generic.IEnumerable<System.String> a1;
 			checkType(l,2,out a1);
 			var ret=self.IsSupersetOf(a1);
 			pushValue(l,true);
@@ -235,7 +247,7 @@ public class Lua_StrHashSet : LuaObject {
 	static public int IsProperSupersetOf(IntPtr l) {
 		try {
 			StrHashSet self=(StrHashSet)checkSelf(l);
-			System.Collections.Generic.IEnumerable<System.Int32> a1;
+			System.Collections.Generic.IEnumerable<System.String> a1;
 			checkType(l,2,out a1);
 			var ret=self.IsProperSupersetOf(a1);
 			pushValue(l,true);
@@ -322,6 +334,6 @@ public class Lua_StrHashSet : LuaObject {
 		addMember(l,OnDeserialization);
 		addMember(l,"Count",get_Count,null,true);
 		addMember(l,"Comparer",get_Comparer,null,true);
-		createTypeMetatable(l,constructor, typeof(StrHashSet),typeof(System.Collections.Generic.HashSet<System.Int32>));
+		createTypeMetatable(l,constructor, typeof(StrHashSet),typeof(System.Collections.Generic.HashSet<System.String>));
 	}
 }

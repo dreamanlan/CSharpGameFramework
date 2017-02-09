@@ -44,7 +44,7 @@ public class Lua_UnityEngine_Vector4 : LuaObject {
 				pushValue(l,o);
 				return 2;
 			}
-			else if(argc==0){
+			else if(argc<=1){
 				o=new UnityEngine.Vector4();
 				pushValue(l,true);
 				pushObject(l,o);

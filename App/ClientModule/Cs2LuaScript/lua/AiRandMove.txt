@@ -89,8 +89,8 @@ AiRandMove = {
 			end,
 			SelectTargetPos = function(this, npc)
 				local pos; pos = npc:GetMovementStateInfo():GetPosition3D();
-				local dx; dx = (GameFramework.Helper.Random.Next(this.m_Radius) - (this.m_Radius / 2));
-				local dz; dz = (GameFramework.Helper.Random.Next(this.m_Radius) - (this.m_Radius / 2));
+				local dx; dx = (GameFramework.Helper.Random.Next(this.m_Radius) - invokespecialintegeroperator("/", this.m_Radius, 2, System.Int32, System.Int32));
+				local dz; dz = (GameFramework.Helper.Random.Next(this.m_Radius) - invokespecialintegeroperator("/", this.m_Radius, 2, System.Int32, System.Int32));
 				pos.X = (pos.X + dx);
 				pos.Z = (pos.Z + dz);
 				npc:GetMovementStateInfo().TargetPosition = AiCommand.AiGetValidPosition(npc, pos, this.m_Radius);
