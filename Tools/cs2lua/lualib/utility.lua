@@ -26,17 +26,30 @@ System.Double = System.Double or __basic_type_func;
 System.String = System.String or __basic_type_func;
 System.Collections = System.Collections or {};
 System.Collections.Generic = System.Collections.Generic or {};
-System.Collections.Generic.List_T = {};
-System.Collections.Generic.Queue_T = {};
-System.Collections.Generic.Stack_T = {};
-System.Collections.Generic.Dictionary_TKey_TValue = {};
-System.Collections.Generic.HashSet_T = {};
+System.Collections.Generic.List_T = {__cs2lua_defined = true, __class_name = "System.Collections.Generic.List_T", __exist = function(k) return false; end};
+System.Collections.Generic.Queue_T = {__cs2lua_defined = true, __class_name = "System.Collections.Generic.Queue_T", __exist = function(k) return false; end};
+System.Collections.Generic.Stack_T = {__cs2lua_defined = true, __class_name = "System.Collections.Generic.Stack_T", __exist = function(k) return false; end};
+System.Collections.Generic.Dictionary_TKey_TValue = {__cs2lua_defined = true, __class_name = "System.Collections.Generic.Dictionary_TKey_TValue", __exist = function(k) return false; end};
+System.Collections.Generic.HashSet_T = {__cs2lua_defined = true, __class_name = "System.Collections.Generic.HashSet_T", __exist = function(k) return false; end};
 System.Array = System.Array or {};
 
 System.Collections.Generic.MyDictionary_TKey_TValue = System.Collections.Generic.Dictionary_TKey_TValue;
 
-__cs2lua_out = (Slua and Slua.out) or {};
+__cs2lua_out = nil;
 __cs2lua_nil_field_value = {};
+
+__cs2lua_special_integer_operators = { "/", "%", "+", "-", "*", "<<", ">>", "&", "|", "^", "~" };
+__cs2lua_div = 0;
+__cs2lua_mod = 1;
+__cs2lua_add = 2;
+__cs2lua_sub = 3;
+__cs2lua_mul = 4;
+__cs2lua_lshift = 5;
+__cs2lua_rshift = 6;
+__cs2lua_bitand = 7;
+__cs2lua_bitor = 8;
+__cs2lua_bitxor = 9;
+__cs2lua_bitnot = 10;
 
 function lshift(v,n)
   if bit then
@@ -136,18 +149,32 @@ function typecast(obj, t, isEnum)
 	elseif t == System.Int32 or t == System.UInt32 then
 	  local v = tonumber(obj);
 	  v = math.floor(v);
-	  return v % 0x100000000;
+	  if v > 0 then
+	    v = v % 0x100000000;
+	  elseif v < 0 then
+	    v = -((-v) % 0x100000000);
+	  end;
+	  return v;
 	elseif t == System.Int16 or t == System.UInt16 or t == System.Char then
 	  local v = tonumber(obj);
 	  v = math.floor(v);
-	  return v % 0x10000;
+	  if v > 0 then
+	    v = v % 0x10000;
+	  elseif v < 0 then
+	    v = -((-v) % 0x10000);
+	  end;
+	  return v;
 	elseif t == System.SByte or t == System.Byte then
 	  local v = tonumber(obj);
 	  v = math.floor(v);
-	  return v % 0x100;
+	  if v > 0 then
+	    v = v % 0x100;
+	  elseif v < 0 then
+	    v = -((-v) % 0x100);
+	  end;
+	  return v;
 	elseif t == System.Boolean then
-		local v = tonumber(obj);
-		return v ~= 0;
+		return obj;
 	elseif isEnum then
 	  return obj;
 	elseif typeis(obj, t, isEnum) then
@@ -162,15 +189,15 @@ function typeas(obj, t, isEnum)
 		return tostring(obj);
 	elseif t == System.Single or t ==	System.Double then
 	  return tonumber(obj);
-	elseif t == System.Int64 or t == System.UInt64 then
+	elseif t == System.Int64 then
 	  local v = tonumber(obj);
 	  v = math.floor(v);
 	  return v;
-	elseif t == System.Int32 or t == System.UInt32 then
+	elseif t == System.Int32 then
 	  local v = tonumber(obj);
 	  v = math.floor(v);
 	  return v % 0x100000000;
-	elseif t == System.Int16 or t == System.UInt16 or t == System.Char then
+	elseif t == System.Int16 or t == System.Char then
 	  local v = tonumber(obj);
 	  v = math.floor(v);
 	  return v % 0x10000;
@@ -179,8 +206,7 @@ function typeas(obj, t, isEnum)
 	  v = math.floor(v);
 	  return v % 0x100;
 	elseif t == System.Boolean then
-		local v = tonumber(obj);
-		return v ~= 0;
+		return obj;
 	elseif isEnum then
 	  return obj;
 	elseif typeis(obj, t, isEnum) then
@@ -196,10 +222,10 @@ function typeis(obj, t, isEnum)
   local tn1 = nil;
   local tn2 = nil;
   if meta then
-  	tn1 = rawget(meta, "__typename");
+  	tn1 = rawget(meta, "__fullname");
   end;
   if meta2 then
-  	tn2 = rawget(meta2, "__typename");
+  	tn2 = rawget(meta2, "__fullname");
   end;
   if meta then
     if type(obj)=="userdata" then
@@ -209,7 +235,7 @@ function typeis(obj, t, isEnum)
       --check slua parent metatable chain
       local parent = rawget(meta, "__parent");
       while parent ~= nil do
-      	tn1 = rawget(parent, "__typename");
+      	tn1 = rawget(parent, "__fullname");
       	if tn1 and tn1==tn2 then
       		return true;
       	end;
@@ -219,6 +245,14 @@ function typeis(obj, t, isEnum)
   	  if rawget(meta, "__class") == t then
   		  return true;
   	  end;
+      local intfs = rawget(meta, "__interfaces");
+      if intfs then
+        for i,v in ipairs(intfs) do
+          if v == tn2 then
+            return true;
+          end;
+        end;
+      end;
   	  --check cs2lua base class chain
   	  local baseClass = rawget(meta, "__base_class");
   	  local lastCheckedClass = meta;
@@ -226,6 +260,14 @@ function typeis(obj, t, isEnum)
     		if baseClass == t then
     			return true;
     		end;
+    		intfs = rawget(meta, "__interfaces");
+        if intfs then
+          for i,v in ipairs(intfs) do
+            if v == tn2 then
+              return true;
+            end;
+          end;
+        end;
     		if rawget(baseClass, "__cs2lua_defined") then
     			baseClass = rawget(baseClass, "__base_class");
     		else
@@ -239,7 +281,7 @@ function typeis(obj, t, isEnum)
     		if meta3 then
 		      parent = rawget(meta3, "__parent");
 		      while parent ~= nil do
-		      	tn1 = rawget(parent, "__typename");
+		      	tn1 = rawget(parent, "__fullname");
 		      	if tn1 and tn1 == tn2 then
 		      		return true;
 		      	end;
@@ -263,6 +305,16 @@ function isequal(v1,v2)
 	else
 		return rawequal(v1,v2);
 	end;
+end;
+
+function __get_last_name(ns)  
+  local rns = string.reverse(ns);
+  local ix = string.find(rns, ".", 1, true);
+  if ix~=nil then
+    return string.sub(ns, 1-ix);
+  else
+    return ns;
+  end;
 end;
 
 function __wrap_if_string(val)
@@ -357,7 +409,9 @@ function __unwrap_table_field(v)
 end;
 
 __mt_index_of_array = function(t, k)
-	if k=="Length" or k=="Count" then
+  if k=="__exist" then --禁用继承
+    return function(tb,fk) return false; end;
+	elseif k=="Length" or k=="Count" then
 		return table.maxn(t);
 	elseif k=="GetLength" then
 		return function(obj, ix)
@@ -498,14 +552,21 @@ __mt_index_of_array = function(t, k)
       return GetArrayEnumerator(obj);
     end
   elseif k=="Sort" then
-	return function(obj, predicate)
-	  table.sort(obj, function(a, b) return predicate(a, b) < 0 end);
-	end
+		return function(obj, predicate)
+		  table.sort(obj, function(a, b) return predicate(a, b) < 0 end);
+		end
+  elseif k=="GetType" then
+   	return function(obj)
+   		local meta = getmetatable(obj);   		
+   		return meta.__class;
+   	end;
   end
 end;
 
 __mt_index_of_dictionary = function(t, k)
-	if k=="Count" then
+	if k=="__exist" then --禁用继承
+    return function(tb,fk) return false; end;
+	elseif k=="Count" then
 		return __get_table_count(t);
 	elseif k=="Add" then
 	  return function(obj, p1, p2)
@@ -575,11 +636,18 @@ __mt_index_of_dictionary = function(t, k)
     return function(obj)
       return GetDictEnumerator(obj);
     end;
+  elseif k=="GetType" then
+   	return function(obj)
+   		local meta = getmetatable(obj);   		
+   		return meta.__class;
+   	end;
 	end;
 end;
 
 __mt_index_of_hashset = function(t, k)
-	if k=="Count" then
+	if k=="__exist" then --禁用继承
+    return function(tb,fk) return false; end;
+	elseif k=="Count" then
 		return __get_table_count(t);
 	elseif k=="Add" then
 	  return function(obj, p)
@@ -621,6 +689,11 @@ __mt_index_of_hashset = function(t, k)
     return function(obj)
       return GetHashsetEnumerator(obj);
     end;
+  elseif k=="GetType" then
+   	return function(obj)
+   		local meta = getmetatable(obj);   		
+   		return meta.__class;
+   	end;
 	end;
 end;
 
@@ -796,8 +869,7 @@ function wrapexternvaluetypearray(arr)
 end;
 
 function defineclass(base, className, static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, is_value_type)
-    
-    local base_class = base or {};
+    local base_class = base;
     local mt = getmetatable(base_class);
 
     local class = static or {};
@@ -818,6 +890,43 @@ function defineclass(base, className, static, static_methods, static_fields_buil
     class["__interfaces"] = interfaces;
     class["__interface_map"] = interface_map;
     class["__base_class"] = base_class;
+        
+    local function __find_base_class_key(k)
+      if base_class then
+      	if rawget(base_class, "__cs2lua_defined") then
+      		local r,v = pcall(function() return base_class.__exist(k); end);
+      		if r then
+      		  return v;
+      		end;
+      	else
+        	local r,ret = pcall(function() return base_class[k]; end);
+        	if r then
+        		return true;
+        	end;
+      	end;
+      end;
+      return false;
+    end;        
+    local function __find_class_key(k)
+      local ret;
+      ret = rawget(class, k);
+      if nil~=ret then
+        return true;
+      end;
+      ret = class_fields[k];
+      if nil~=ret then
+      	return true;
+      end;
+      ret = class_props[k];
+      if nil~=ret then
+        return true;
+      end;
+      ret = class_events[k];
+      if nil~=ret then
+        return true;
+      end;
+      return __find_base_class_key(k);
+    end;
     
     setmetatable(class, {
         __call = function()
@@ -842,6 +951,59 @@ function defineclass(base, className, static, static_methods, static_fields_buil
             local obj_intf_map = interface_map or {};
             obj["base"] = baseObj;
             
+            local function __find_base_obj_key(k)
+              if baseObj then
+              	local meta = getmetatable(baseObj);
+              	if meta and rawget(meta, "__cs2lua_defined") then
+              		local r,v = pcall(function() return baseObj:__exist(k); end);
+              		if r then
+              		  return v;
+              		end;
+              	else
+                	local r, ret = pcall(function() return baseObj[k]; end);
+                	if r then
+                		return true;
+                	end;
+              	end;
+              end;
+              return false;
+            end;
+            local function __find_obj_key(k)
+              local ret;
+              ret = rawget(obj, k);
+              if nil~=ret then
+                return true;
+              end;
+	            ret = obj_fields[k];
+	            if nil~=ret then
+	            	return true;
+	            end;
+              ret = obj_props[k];
+              if nil~=ret then
+                return true;
+              end;
+              ret = obj_events[k];
+              if nil~=ret then
+                return true;
+              end;
+              local nk = obj_intf_map[k];
+              if nil~=nk then
+                ret = obj_fields[nk];
+                if nil~=ret then
+                  return true;
+                end;
+                ret = obj_props[nk];
+                if nil~=ret then
+                  return true;
+                end;
+                ret = obj_events[nk];
+                if nil~=ret then
+                  return true;
+                end;
+              end;
+              return __find_base_obj_key(k);
+            end;
+            
             setmetatable(obj, {
             		__class = class,
             		__cs2lua_defined = true,
@@ -851,6 +1013,9 @@ function defineclass(base, className, static, static_methods, static_fields_buil
 				    		__interface_map = interface_map,
 				    		__base_class = base_class,
                 __index = function(t, k)
+                    if k=="__exist" then
+                      return function(tb, fk) return __find_obj_key(fk); end;
+                    end;
                     local ret;
 				            ret = obj_fields[k];
 				            if nil~=ret then
@@ -867,7 +1032,7 @@ function defineclass(base, className, static, static_methods, static_fields_buil
                     end;
                     ret = obj_intf_map[k];
                     if nil~=ret then
-                      ret = t[ret];
+                      ret = obj_fields[ret];
                       if nil~=ret then
                         return ret;
                       end;
@@ -881,9 +1046,14 @@ function defineclass(base, className, static, static_methods, static_fields_buil
                         return ret;
                       end;
                     end;
-                    if baseObj then
-                    	ret = baseObj[k];
+                    if __find_base_obj_key(k) then
+                      ret = baseObj[k];
+                      return ret;
                     end;
+				            --简单支持反射方法:GetType()
+				            if k=="GetType" then
+				             	return function(tb)	return class;	end;
+				            end;
                     return ret;
                 end,
 
@@ -911,10 +1081,9 @@ function defineclass(base, className, static, static_methods, static_fields_buil
                         return;
                       end;
                     end;
-          					if nil~=baseObj and nil~=baseObj[k] then
-          					  if pcall(function() baseObj[k] = v end) then
-          					    return;
-          					  end;
+          					if __find_base_obj_key(k) then
+          					  baseObj[k] = v;
+          					  return;
           					end;
           					rawset(t, k, v);
                 end,
@@ -928,6 +1097,9 @@ function defineclass(base, className, static, static_methods, static_fields_buil
         end,
         
         __index = function(t, k)
+            if k=="__exist" then
+              return function(fk) return __find_class_key(fk); end;
+            end;
             local ret;
             ret = class_fields[k];
             if nil~=ret then
@@ -940,8 +1112,17 @@ function defineclass(base, className, static, static_methods, static_fields_buil
               else
                 ret = nil;
               end;
-            elseif base_class then
-            	ret = base_class[k];                         
+              return ret;
+            end;
+            if __find_base_class_key(k) then
+          		ret = base_class[k];
+          		return ret;
+            end;
+            --简单支持反射的属性:Type.Name与Type.FullName            
+            if k=="Name" then
+              ret = __get_last_name(className);
+            elseif k=="FullName" then
+              ret = className;
             end;
             return ret;
         end,
@@ -960,6 +1141,10 @@ function defineclass(base, className, static, static_methods, static_fields_buil
               end;
               return;
             end;
+  					if __find_base_class_key(k) then
+  					  base_class[k] = v;
+  					  return;
+  					end;
             rawset(t, k, v);
         end,
     });
@@ -981,7 +1166,7 @@ function newobject(class, ctor, initializer, ...)
   return obj;
 end;
 
-function newexternobject(class, className, ctor, doextension, initializer, ...)
+function newexternobject(class, className, ctor, initializer, ...)
   local obj = nil;
   if class ~= nil then
     obj = class(...);
@@ -989,9 +1174,6 @@ function newexternobject(class, className, ctor, doextension, initializer, ...)
     obj = Slua.CreateClass(className, ...);
   end;
   if obj then
-    if doextension ~= nil then
-      doextension();
-    end;
 		if initializer ~= nil then
 			for k,v in pairs(initializer) do
 				local sk = __unwrap_if_string(k);
@@ -1034,7 +1216,7 @@ function newcollection(t, ctor, coll, ...)
   end;
 end;
 
-function newexterndictionary(t, className, ctor, doextension, dict, ...)
+function newexterndictionary(t, className, ctor, dict, ...)
   if dict and t==System.Collections.Generic.Dictionary_TKey_TValue then
 	  return setmetatable(dict, { __index = __mt_index_of_dictionary, __cs2lua_defined = true, __class = t });
 	else	  
@@ -1045,9 +1227,6 @@ function newexterndictionary(t, className, ctor, doextension, dict, ...)
 	    obj = Slua.CreateClass(className, ...);
 	  end;
 	  if obj then
-	    if doextension ~= nil then
-	      doextension();
-	    end;
 			if dict ~= nil then
 				for k,v in pairs(dict) do
 				  obj:Add(k, v);
@@ -1060,7 +1239,7 @@ function newexterndictionary(t, className, ctor, doextension, dict, ...)
 	end;
 end;
 
-function newexternlist(t, className, ctor, doextension, list, ...)
+function newexternlist(t, className, ctor, list, ...)
   if list and t==System.Collections.Generic.List_T then    
 	  return setmetatable(list, { __index = __mt_index_of_array, __cs2lua_defined = true, __class = t });
 	else 
@@ -1071,9 +1250,6 @@ function newexternlist(t, className, ctor, doextension, list, ...)
 	    obj = Slua.CreateClass(className, ...);
 	  end;
 	  if obj then
-	    if doextension ~= nil then
-	      doextension();
-	    end;
 			if list ~= nil then
 				for i,v in ipairs(list) do
 				  obj:Add(v);
@@ -1086,7 +1262,7 @@ function newexternlist(t, className, ctor, doextension, list, ...)
   end;
 end;
 
-function newexterncollection(t, className, ctor, doextension, coll, ...)
+function newexterncollection(t, className, ctor, coll, ...)
   if coll and (t==System.Collections.Generic.Queue_T or t==System.Collections.Generic.Stack_T) then
     return setmetatable(coll, { __index = __mt_index_of_array, __cs2lua_defined = true, __class = t });
   elseif coll and t==System.Collections.Generic.HashSet_T then
@@ -1099,9 +1275,6 @@ function newexterncollection(t, className, ctor, doextension, coll, ...)
 	    obj = Slua.CreateClass(className, ...);
 	  end;
 	  if obj then
-	    if doextension ~= nil then
-	      doextension();
-	    end;
 			if coll ~= nil then
 				for i,v in ipairs(coll) do
 				  obj:Add(v);
@@ -1123,7 +1296,7 @@ function delegationwrap(handler)
   end;
 end;
 
-function delegationcomparewithnil(t, inf, k, isequal)
+function delegationcomparewithnil(isEvent, t, inf, k, isequal)
   if not t then
     if isequal then 
       return true;
@@ -1144,7 +1317,7 @@ function delegationcomparewithnil(t, inf, k, isequal)
     return false;
   end;
 end;
-function delegationset(t, intf, k, handler)
+function delegationset(isevent, t, intf, k, handler)
   local v = t;
   if k then
     v = t[k];
@@ -1155,14 +1328,14 @@ function delegationset(t, intf, k, handler)
   end;
   table.insert(v,handler);
 end;
-function delegationadd(t, intf, k, handler)
+function delegationadd(isevent, t, intf, k, handler)
   local v = t;
   if k then
     v = t[k];  
   end;
   table.insert(v, handler);
 end;
-function delegationremove(t, intf, k, handler)
+function delegationremove(isevent, t, intf, k, handler)
   local v = t;
   if k then
     v = t[k];  
@@ -1194,21 +1367,21 @@ function externdelegationcomparewithnil(t, inf, k, isequal)
     return false;
   end;
 end;
-function externdelegationset(t, intf, k, handler)
+function externdelegationset(isevent, t, intf, k, handler)
   if k then
     t[k] = handler;
   else
     t = handler;
   end;
 end;
-function externdelegationadd(t, intf, k, handler)
+function externdelegationadd(isevent, t, intf, k, handler)
   if k then
     t[k] = {"+=", handler};
   else
     t = {"+=", handler};
   end;
 end;
-function externdelegationremove(t, intf, k, handler)
+function externdelegationremove(isevent, t, intf, k, handler)
   if k then
     t[k] = {"-=", handler};
   else
@@ -1460,13 +1633,20 @@ function invokearraystaticmethod(firstArray, secondArray, method, ...)
   end;
 end;
 
---暂时只对整数除法进行特殊处理，运算溢出先不在这里处理
-function invokespecialintegerprefixoperator(op, opd, type)
-end;
-function invokespecialintegerpostfixoperator(op, opd, type)
-end;
-function invokespecialintegeroperator(op, opd1, opd2, type1, typ2)
-  if op=='/' then
+--暂时只对整数除法进行特殊处理，运算溢出暂不处理
+--__cs2lua_div = 0;
+--__cs2lua_mod = 1;
+--__cs2lua_add = 2;
+--__cs2lua_sub = 3;
+--__cs2lua_mul = 4;
+--__cs2lua_lshift = 5;
+--__cs2lua_rshift = 6;
+--__cs2lua_bitand = 7;
+--__cs2lua_bitor = 8;
+--__cs2lua_bitxor = 9;
+--__cs2lua_bitnot = 10;
+function invokeintegeroperator(op, luaop, opd1, opd2, type1, type2)
+  if op==__cs2lua_div then
     local r;
     if opd1*opd2>0 then
       r = math.floor(opd1/opd2);
@@ -1474,5 +1654,49 @@ function invokespecialintegeroperator(op, opd1, opd2, type1, typ2)
       r = -math.floor(-opd1/opd2);
     end;
     return r;
+  elseif op==__cs2lua_mod then
+    return opd1 % opd2;
+  elseif op==__cs2lua_add then
+    if type1 then
+      return opd1 + opd2;
+    else
+      return opd2;
+    end;
+  elseif op==__cs2lua_sub then
+    if type1 then
+      return opd1 - opd2;
+    else
+      return -opd2;
+    end;
+  elseif op==__cs2lua_mul then
+    return opd1 * opd2;
+  elseif op==__cs2lua_lshift then
+    return lshift(opd1, opd2);
+  elseif op==__cs2lua_rshift then
+    return rshift(opd1, opd2);
+  elseif op==__cs2lua_bitand then
+    return bitand(opd1, opd2);
+  elseif op==__cs2lua_bitor then
+    return bitor(opd1, opd2);
+  elseif op==__cs2lua_bitxor then
+    return bitxor(opd1, opd2);
+  elseif op==__cs2lua_bitnot then
+    return bitnot(opd1);
   end;
+end;
+
+function getiterator(exp, isExtern)
+	local meta = getmetatable(exp);
+	if meta and rawget(meta, "__cs2lua_defined") then
+		local enumer = exp:GetEnumerator();
+		return function()
+			if enumer:MoveNext() then
+				return enumer.Current;
+			else
+				return nil;
+			end;
+		end;
+	else
+		return Slua.iter(exp);
+	end;
 end;

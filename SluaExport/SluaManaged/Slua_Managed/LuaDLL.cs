@@ -68,7 +68,7 @@ namespace LuaInterface
         public bool finished;
     }
 
-#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || SLUA_STANDALONE_WIN
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate int LuaCSFunction(IntPtr luaState);
 #else

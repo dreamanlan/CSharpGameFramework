@@ -18,7 +18,7 @@ namespace GameFramework
         Unclassified = 0,
         MainUi,
         Story,
-        Room,
-        Pvp,
+        Activity,
+        Battle,
     }
 }

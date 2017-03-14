@@ -242,7 +242,7 @@ namespace GameFramework
                     entity.GetSkillStateInfo().SetCurSkillInfo(skillId);
                     skillInfo.IsSkillActivated = true;
                     skillInfo.CdEndTime = TimeUtility.GetLocalMilliseconds() + (long)skillInfo.ConfigData.skillData.cooldown;
-                    if (skillInfo.ConfigData.skillData.addsc > 0 && !PluginFramework.Instance.IsRoomScene) {
+                    if (skillInfo.ConfigData.skillData.addsc > 0 && PluginFramework.Instance.IsBattleScene) {
                         //回蓝
                         entity.Energy += skillInfo.ConfigData.skillData.addsc;
                         entity.EntityManager.FireDamageEvent(actorId, 0, false, false, 0, -skillInfo.ConfigData.skillData.addsc);
@@ -744,7 +744,7 @@ namespace GameFramework
         }
         public void ImpactDamage(int srcObjId, int targetId, int impactId, int seq, bool isFinal)
         {
-            if (PluginFramework.Instance.IsRoomScene)
+            if (!PluginFramework.Instance.IsBattleScene)
                 return;
             EntityViewModel view = GetEntityViewById(targetId);
             EntityViewModel srcView = GetEntityViewById(srcObjId);

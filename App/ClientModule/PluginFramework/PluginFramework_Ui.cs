@@ -162,7 +162,7 @@ namespace GameFramework
         }
         public void MoveTo(float x, float y, float z)
         {
-            if (IsRoomScene) {
+            if (IsStoryScene || IsActivityScene) {
                 Network.NetworkSystem.Instance.SyncPlayerMoveToPos(new ScriptRuntime.Vector3(x, y, z));
             } else {
                 GfxStorySystem.Instance.SendMessage("move_to", x, y, z);
@@ -201,7 +201,7 @@ namespace GameFramework
                         if (null != SelectedTarget) {
                             targetId = SelectedTarget.TargetId;
                         }
-                        if (IsRoomScene) {
+                        if (IsStoryScene || IsActivityScene) {
                             Network.NetworkSystem.Instance.SyncPlayerSkill(obj, skillId, targetId, obj.GetMovementStateInfo().GetFaceDir());
                         } else {
                             AiStateInfo aiInfo = obj.GetAiStateInfo();

@@ -100,7 +100,7 @@ namespace Lobby
             MyDictionary<int, object> scenes = TableConfig.LevelProvider.Instance.LevelMgr.GetData();
             foreach (KeyValuePair<int, object> pair in scenes) {
                 TableConfig.Level cfg = pair.Value as TableConfig.Level;
-                if (null != cfg && cfg.type == (int)SceneTypeEnum.Room) {
+                if (null != cfg && cfg.type == (int)SceneTypeEnum.Story) {
                     SceneRoomsInfo fieldInfo;
                     if (!m_SceneInfos.TryGetValue(cfg.id, out fieldInfo)) {
                         fieldInfo = new SceneRoomsInfo();
@@ -147,18 +147,7 @@ namespace Lobby
             room.SceneType = type;
             room.RoomServerName = GetIdlestRoomServer();
             room.TotalCount = users.Length;
-            if (!room.IsPvp) {
-                room.AddUsers((int)CampIdEnum.Blue, users);
-            } else {
-                int ct = users.Length / 2;
-                ulong[] blues = new ulong[users.Length - ct];
-                ulong[] reds = new ulong[ct];
-                Array.Copy(users, 0, blues, 0, users.Length - ct);
-                Array.Copy(users, ct, reds, 0, ct);
-                room.AddUsers((int)CampIdEnum.Blue, blues);
-                room.AddUsers((int)CampIdEnum.Red, reds);
-            }
-
+            room.AddUsers((int)CampIdEnum.Blue, users);
             if (!m_Rooms.ContainsKey(room.RoomId)) {
                 m_Rooms.Add(room.RoomId, room);
             } else {

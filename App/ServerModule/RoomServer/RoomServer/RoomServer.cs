@@ -77,8 +77,6 @@ namespace RoomServer
             };
 
             LoadData();
-            PluginAssembly.Instance.Init();
-
             LogSys.Log(LOG_TYPE.DEBUG, "room server init ip: {0}  port: {1}", m_ServerIp, m_ServerPort);
 
             uint tick_interval = 33;

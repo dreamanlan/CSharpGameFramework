@@ -79,22 +79,56 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Plugin\PluginAssembly.cs" />
-    <Compile Include="Plugin\PluginProxy.cs" />
-    <Compile Include="Plugin\PluginScene.cs" />
-    <Compile Include="Plugin\Skill\SkillTriggerFactory.cs" />
-    <Compile Include="Plugin\Story\SimpleStoryCommandFactory.cs" />
-    <Compile Include="Plugin\Story\SimpleStoryValueFactory.cs" />
-    <Compile Include="Plugin\Story\StoryCommandFactory.cs" />
-    <Compile Include="Plugin\Story\StoryValueFactory.cs" />
+    <Compile Include="..\..\messagecommon\ProtoHelper.cs">
+      <Link>RoomServer\ProtoHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\messagecommon\ProtoNetSerialize.cs">
+      <Link>RoomServer\ProtoNetSerialize.cs</Link>
+    </Compile>
+    <Compile Include="AiUtility\AiCommand.cs" />
+    <Compile Include="Connector.cs" />
+    <Compile Include="GameObjects\EntityController.cs" />
+    <Compile Include="GmCommands\GmStorySystem.cs" />
+    <Compile Include="GmCommands\RoleCommands.cs" />
+    <Compile Include="Movement\MovementSystem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoomServer\IoManager.cs" />
+    <Compile Include="RoomServer\IoMsgHandler.cs" />
+    <Compile Include="RoomServer\LogicMsgHandler.cs" />
+    <Compile Include="RoomServer\MessageDispatch.cs" />
+    <Compile Include="RoomServer\RoomPeer.cs" />
+    <Compile Include="RoomServer\RoomPeerMgr.cs" />
     <Compile Include="RoomServer\RoomServer.cs" />
     <Compile Include="RoomServer\RoomServer_Config.cs" />
+    <Compile Include="Room\Observer.cs" />
     <Compile Include="Room\Room.cs" />
     <Compile Include="Room\RoomManager.cs" />
     <Compile Include="Room\RoomPool.cs" />
     <Compile Include="Room\RoomThread.cs" />
+    <Compile Include="Room\RoomUserManager.cs" />
     <Compile Include="Room\SceneLoadThread.cs" />
+    <Compile Include="Room\User.cs" />
+    <Compile Include="Room\UserPool.cs" />
+    <Compile Include="SceneLogic\SceneLogicViewManager.cs" />
+    <Compile Include="SceneLogic\SceneLogicView\SceneLogicView_General.cs" />
+    <Compile Include="Scene\DataSyncUtility.cs" />
+    <Compile Include="Scene\Scene.cs" />
+    <Compile Include="Scene\ScenePool.cs" />
+    <Compile Include="Scene\SceneProfiler.cs" />
+    <Compile Include="Scene\Scene_EventHandler.cs" />
+    <Compile Include="Scene\Scene_Npc.cs" />
+    <Compile Include="Scene\Scene_Tick.cs" />
+    <Compile Include="Scene\Scene_Utility.cs" />
+    <Compile Include="Story\Commands\GameLogicCommands.cs" />
+    <Compile Include="Story\Commands\GeneralCommands.cs" />
+    <Compile Include="Story\Commands\NpcCommands.cs" />
+    <Compile Include="Story\Commands\ObjectCommands.cs" />
+    <Compile Include="Story\ServerStorySystem.cs" />
+    <Compile Include="Story\Values\GameLogicValues.cs" />
+    <Compile Include="Story\Values\GeneralValues.cs" />
+    <Compile Include="Story\Values\NpcValues.cs" />
+    <Compile Include="Story\Values\ObjectValues.cs" />
+    <Compile Include="utils\Dispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -135,10 +169,6 @@
     <ProjectReference Include="..\Messenger\Messenger\Messenger.csproj">
       <Project>{98ba0167-2beb-4845-9926-50cb465c4fa6}</Project>
       <Name>Messenger</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\RoomPluginFramework\RoomPluginFramework.csproj">
-      <Project>{6ae175c8-1304-410a-8e56-d1ddd84fcf81}</Project>
-      <Name>RoomPluginFramework</Name>
     </ProjectReference>
     <ProjectReference Include="..\ServerProtoBuf\ServerProtoBuf.csproj">
       <Project>{3a1dea99-d58b-4ce0-bb57-8c09e97af5e4}</Project>

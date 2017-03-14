@@ -349,7 +349,6 @@ namespace GameFramework
             m_CanCloseTime = 0;
 
             m_RoomUserMgr = new RoomUserManager();
-            m_ScriptScenes = new List<Cs2LuaScene>();
         }
 
         private void Deactive()
@@ -368,37 +367,22 @@ namespace GameFramework
         {
             var scene = ActiveScene;
             if (null != scene) {
-                foreach (string plugin in scene.SceneConfig.ScenePlugins) {
-                    Cs2LuaScene scriptScene = new Cs2LuaScene();
-                    scriptScene.ClassName = plugin;
-                    m_ScriptScenes.Add(scriptScene);
-                    scriptScene.Init(scene);
-                }
             }
         }
         private void OnChangeScene()
         {
             var scene = ActiveScene;
             if (null != scene) {
-                for (int i = 0; i < m_ScriptScenes.Count; ++i) {
-                    var scriptScene = m_ScriptScenes[i];
-                    scriptScene.ChangeScene(scene);
-                }
             }
         }
         private void OnTick()
         {
             var scene = ActiveScene;
             if (null != scene) {
-                for (int i = 0; i < m_ScriptScenes.Count; ++i) {
-                    var scriptScene = m_ScriptScenes[i];
-                    scriptScene.Tick(scene);
-                }
             }
         }
         private void OnDestroy()
         {
-            m_ScriptScenes.Clear();
         }
         
         //-------------------------------------------------------------------------
@@ -427,7 +411,5 @@ namespace GameFramework
         private RoomState m_RoomState = RoomState.Unuse;
         private uint m_LocalID = 0;
         private bool m_IsIdle = false;
-
-        private List<Cs2LuaScene> m_ScriptScenes = null;
     }
 }

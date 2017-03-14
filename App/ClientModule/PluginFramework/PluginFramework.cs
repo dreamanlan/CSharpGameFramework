@@ -43,9 +43,9 @@ namespace GameFramework
                 GfxStorySystem.Instance.SceneId = m_SceneId;
                 GfxStorySystem.Instance.PreloadSceneStories();
                 GfxStorySystem.Instance.StartStory("local_main");
-            if (!IsRoomScene) {
-                GfxStorySystem.Instance.StartStory("story_main");
-            }
+                if (IsMainUiScene || IsBattleScene) {
+                    GfxStorySystem.Instance.StartStory("story_main");
+                }
                 LogSystem.Warn("ResetDsl finish.");
             } catch (Exception ex) {
                 LogSystem.Error("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
@@ -203,7 +203,7 @@ namespace GameFramework
         {
             GfxStorySystem.Instance.PreloadSceneStories();
             GfxStorySystem.Instance.StartStory("local_main");
-            if (!IsRoomScene) {
+            if (IsMainUiScene || IsBattleScene) {
                 GfxStorySystem.Instance.StartStory("story_main");
             }
 
@@ -268,7 +268,7 @@ namespace GameFramework
         public void DelayChangeScene(int levelId)
         {
             TableConfig.Level cfg = TableConfig.LevelProvider.Instance.GetLevel(levelId);
-            if (null != cfg && cfg.type == (int)SceneTypeEnum.Room) {
+            if (null != cfg && (cfg.type == (int)SceneTypeEnum.Story || cfg.type == (int)SceneTypeEnum.Activity)) {
                 UserNetworkSystem.Instance.EnterScene(levelId, 0);
             } else {
                 QueueAction(ChangeScene, levelId);
@@ -296,14 +296,14 @@ namespace GameFramework
             if (lvl.type == (int)SceneTypeEnum.MainUi) {
                 m_LastMainUiSceneId = m_SceneId;
                 Utility.SendMessage("GameRoot", "OnLoadMainUiComplete", lvl.id);
-            } else if (lvl.type == (int)SceneTypeEnum.Story) {
-                Utility.SendMessage("GameRoot", "OnLoadBattleComplete", lvl.id);
-            } else if (lvl.type == (int)SceneTypeEnum.Room) {
+            } else if (lvl.type == (int)SceneTypeEnum.Story || lvl.type == (int)SceneTypeEnum.Activity) {
                 Utility.SendMessage("GameRoot", "OnLoadBattleComplete", lvl.id);
 
                 GameFrameworkMessage.Msg_CR_Enter build = new GameFrameworkMessage.Msg_CR_Enter();
                 NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_Enter, build);
                 LogSystem.Warn("send Msg_CR_Enter to roomserver");
+            } else if (lvl.type == (int)SceneTypeEnum.Battle) {
+                Utility.SendMessage("GameRoot", "OnLoadBattleComplete", lvl.id);
             }
             m_IsSceneLoaded = true;            
         }
@@ -892,24 +892,24 @@ namespace GameFramework
                 return ret;
             }
         }
-        public bool IsRoomScene
+        public bool IsActivityScene
         {
             get
             {
                 bool ret = false;
                 if (null != m_SceneInfo) {
-                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Room;
+                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Activity;
                 }
                 return ret;
             }
         }
-        public bool IsPvpScene
+        public bool IsBattleScene
         {
             get
             {
                 bool ret = false;
                 if (null != m_SceneInfo) {
-                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Pvp;
+                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Battle;
                 }
                 return ret;
             }

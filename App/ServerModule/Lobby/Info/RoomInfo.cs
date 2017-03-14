@@ -93,10 +93,6 @@ namespace Lobby
             get { return m_LifeTime; }
             set { m_LifeTime = value; }
         }
-        internal bool IsPvp
-        {
-            get { return m_SceneType==(int)SceneTypeEnum.Room; }
-        }
         internal Dictionary<ulong, WeakReference> Users
         {
             get { return m_Users; }

@@ -7,6 +7,58 @@ tabledef(UserScript, dictionary, server)
 	fielddef(Namespace, Namespace, string);
 	fielddef(DslFile, DslFile, string);
 };
+tabledef(Actor, dictionary, public)
+{
+	recordmodifier(partial);
+	providermodifier(partial);
+	fielddef(id, id, int32);
+	fielddef(name, name, string);
+	fielddef(icon, icon, int32);
+	fielddef(bigIcon, bigIcon, int32);
+	fielddef(type, type, int32);
+	fielddef(avatar, avatar, string);
+	fielddef(skill0, skill0, int32);
+	fielddef(skill1, skill1, int32);
+	fielddef(skill2, skill2, int32);
+	fielddef(skill3, skill3, int32);
+	fielddef(skill4, skill4, int32);
+	fielddef(skill5, skill5, int32);
+	fielddef(skill6, skill6, int32);
+	fielddef(skill7, skill7, int32);
+	fielddef(skill8, skill8, int32);
+	fielddef(bornskill, bornskill, int32);
+	fielddef(deadskill, deadskill, int32);
+	fielddef(size, size, float);
+	fielddef(logicsize, logicsize, float);
+	fielddef(speed, speed, float);
+	fielddef(viewrange, viewrange, float);
+	fielddef(gohomerange, gohomerange, float);
+	fielddef(x4001, x4001, int32);
+	fielddef(x4002, x4002, int32);
+	fielddef(x4003, x4003, int32);
+	fielddef(x4004, x4004, int32);
+	fielddef(x1001, x1001, int32);
+	fielddef(x1002, x1002, int32);
+	fielddef(x1006, x1006, int32);
+	fielddef(x1007, x1007, int32);
+	fielddef(x1011, x1011, int32);
+	fielddef(x1012, x1012, int32);
+	fielddef(x1016, x1016, int32);
+	fielddef(x1017, x1017, int32);
+	fielddef(x1021, x1021, int32);
+	fielddef(x1022, x1022, int32);
+	fielddef(x1024, x1024, int32);
+	fielddef(x1026, x1026, int32);
+	fielddef(x1028, x1028, int32);
+	fielddef(x1030, x1030, int32);
+	fielddef(x1032, x1032, int32);
+	fielddef(x1033, x1033, int32);
+	fielddef(x1034, x1034, int32);
+	fielddef(x2001, x2001, int32);
+	fielddef(x2002, x2002, int32);
+	fielddef(x2007, x2007, int32);
+	fielddef(x2008, x2008, int32);
+};
 tabledef(AttrDefine, dictionary, public)
 {
 	recordmodifier(partial);
@@ -61,26 +113,51 @@ tabledef(Formation, dictionary, public)
 	fielddef(pos15, pos15, float_list);
 	fielddef(dir15, dir15, float);
 };
-tabledef(Level, dictionary, public)
+tabledef(ImpactData, dictionary, public)
 {
 	recordmodifier(partial);
 	providermodifier(partial);
 	fielddef(id, id, int32);
-	fielddef(prefab, prefab, string);
+	fielddef(desc, desc, string);
 	fielddef(type, type, int32);
-	fielddef(SceneDslFile, SceneDslFile, string_list);
-	fielddef(ClientDslFile, ClientDslFile, string_list);
-	fielddef(RoomDslFile, RoomDslFile, string_list);
-	fielddef(ScenePlugins, ScenePlugins, string_list);
-	fielddef(SceneUi, SceneUi, int32_list);
-	fielddef(EnterX, EnterX, float);
-	fielddef(EnterY, EnterY, float);
-	fielddef(EnterRadius, EnterRadius, float);
-	fielddef(RoomServer, RoomServer, string_list);
-	fielddef(ThreadCountPerScene, ThreadCountPerScene, int32);
-	fielddef(RoomCountPerThread, RoomCountPerThread, int32);
-	fielddef(MaxUserCount, MaxUserCount, int32);
-	fielddef(CanPK, CanPK, bool);
+	fielddef(icon, icon, int32);
+	fielddef(duration, duration, int32);
+	fielddef(cooldown, cooldown, int32);
+	fielddef(multiple, multiple, int32_list);
+	fielddef(damage, damage, int32_list);
+	fielddef(vampire, vampire, int32_list);
+	fielddef(attr1, attr1, int32);
+	fielddef(value1, value1, int32);
+	fielddef(attr2, attr2, int32);
+	fielddef(value2, value2, int32);
+	fielddef(attr3, attr3, int32);
+	fielddef(value3, value3, int32);
+	fielddef(attr4, attr4, int32);
+	fielddef(value4, value4, int32);
+	fielddef(attr5, attr5, int32);
+	fielddef(value5, value5, int32);
+	fielddef(attr6, attr6, int32);
+	fielddef(value6, value6, int32);
+	fielddef(attr7, attr7, int32);
+	fielddef(value7, value7, int32);
+	fielddef(attr8, attr8, int32);
+	fielddef(value8, value8, int32);
+};
+tabledef(LevelMonster, list, public)
+{
+	recordmodifier(partial);
+	providermodifier(partial);
+	fielddef(group, group, int32);
+	fielddef(scene, scene, int32);
+	fielddef(camp, camp, int32);
+	fielddef(actorID, actorID, int32);
+	fielddef(x, x, float);
+	fielddef(y, y, float);
+	fielddef(dir, dir, float);
+	fielddef(level, level, int32);
+	fielddef(passive, passive, bool);
+	fielddef(aiLogic, aiLogic, string);
+	fielddef(aiParams, aiParams, string_list);
 };
 tabledef(Skill, dictionary, public)
 {
@@ -139,36 +216,6 @@ tabledef(SkillData, dictionary, public)
 	fielddef(attr8, attr8, int32);
 	fielddef(value8, value8, int32);
 };
-tabledef(ImpactData, dictionary, public)
-{
-	recordmodifier(partial);
-	providermodifier(partial);
-	fielddef(id, id, int32);
-	fielddef(desc, desc, string);
-	fielddef(type, type, int32);
-	fielddef(icon, icon, int32);
-	fielddef(duration, duration, int32);
-	fielddef(cooldown, cooldown, int32);
-	fielddef(multiple, multiple, int32_list);
-	fielddef(damage, damage, int32_list);
-	fielddef(vampire, vampire, int32_list);
-	fielddef(attr1, attr1, int32);
-	fielddef(value1, value1, int32);
-	fielddef(attr2, attr2, int32);
-	fielddef(value2, value2, int32);
-	fielddef(attr3, attr3, int32);
-	fielddef(value3, value3, int32);
-	fielddef(attr4, attr4, int32);
-	fielddef(value4, value4, int32);
-	fielddef(attr5, attr5, int32);
-	fielddef(value5, value5, int32);
-	fielddef(attr6, attr6, int32);
-	fielddef(value6, value6, int32);
-	fielddef(attr7, attr7, int32);
-	fielddef(value7, value7, int32);
-	fielddef(attr8, attr8, int32);
-	fielddef(value8, value8, int32);
-};
 tabledef(SkillEvent, list, public)
 {
 	recordmodifier(partial);
@@ -205,73 +252,25 @@ tabledef(SkillResources, list, public)
 	fielddef(key, key, string);
 	fielddef(resource, resource, string);
 };
-tabledef(Actor, dictionary, public)
+tabledef(Level, dictionary, public)
 {
 	recordmodifier(partial);
 	providermodifier(partial);
 	fielddef(id, id, int32);
-	fielddef(name, name, string);
-	fielddef(icon, icon, int32);
-	fielddef(bigIcon, bigIcon, int32);
+	fielddef(prefab, prefab, string);
 	fielddef(type, type, int32);
-	fielddef(avatar, avatar, string);
-	fielddef(skill0, skill0, int32);
-	fielddef(skill1, skill1, int32);
-	fielddef(skill2, skill2, int32);
-	fielddef(skill3, skill3, int32);
-	fielddef(skill4, skill4, int32);
-	fielddef(skill5, skill5, int32);
-	fielddef(skill6, skill6, int32);
-	fielddef(skill7, skill7, int32);
-	fielddef(skill8, skill8, int32);
-	fielddef(bornskill, bornskill, int32);
-	fielddef(deadskill, deadskill, int32);
-	fielddef(size, size, float);
-	fielddef(logicsize, logicsize, float);
-	fielddef(speed, speed, float);
-	fielddef(viewrange, viewrange, float);
-	fielddef(gohomerange, gohomerange, float);
-	fielddef(x4001, x4001, int32);
-	fielddef(x4002, x4002, int32);
-	fielddef(x4003, x4003, int32);
-	fielddef(x4004, x4004, int32);
-	fielddef(x1001, x1001, int32);
-	fielddef(x1002, x1002, int32);
-	fielddef(x1006, x1006, int32);
-	fielddef(x1007, x1007, int32);
-	fielddef(x1011, x1011, int32);
-	fielddef(x1012, x1012, int32);
-	fielddef(x1016, x1016, int32);
-	fielddef(x1017, x1017, int32);
-	fielddef(x1021, x1021, int32);
-	fielddef(x1022, x1022, int32);
-	fielddef(x1024, x1024, int32);
-	fielddef(x1026, x1026, int32);
-	fielddef(x1028, x1028, int32);
-	fielddef(x1030, x1030, int32);
-	fielddef(x1032, x1032, int32);
-	fielddef(x1033, x1033, int32);
-	fielddef(x1034, x1034, int32);
-	fielddef(x2001, x2001, int32);
-	fielddef(x2002, x2002, int32);
-	fielddef(x2007, x2007, int32);
-	fielddef(x2008, x2008, int32);
-};
-tabledef(LevelMonster, list, public)
-{
-	recordmodifier(partial);
-	providermodifier(partial);
-	fielddef(group, group, int32);
-	fielddef(scene, scene, int32);
-	fielddef(camp, camp, int32);
-	fielddef(actorID, actorID, int32);
-	fielddef(x, x, float);
-	fielddef(y, y, float);
-	fielddef(dir, dir, float);
-	fielddef(level, level, int32);
-	fielddef(passive, passive, bool);
-	fielddef(aiLogic, aiLogic, string);
-	fielddef(aiParams, aiParams, string_list);
+	fielddef(SceneDslFile, SceneDslFile, string_list);
+	fielddef(ClientDslFile, ClientDslFile, string_list);
+	fielddef(RoomDslFile, RoomDslFile, string_list);
+	fielddef(SceneUi, SceneUi, int32_list);
+	fielddef(EnterX, EnterX, float);
+	fielddef(EnterY, EnterY, float);
+	fielddef(EnterRadius, EnterRadius, float);
+	fielddef(RoomServer, RoomServer, string_list);
+	fielddef(ThreadCountPerScene, ThreadCountPerScene, int32);
+	fielddef(RoomCountPerThread, RoomCountPerThread, int32);
+	fielddef(MaxUserCount, MaxUserCount, int32);
+	fielddef(CanPK, CanPK, bool);
 };
 tabledef(StoryDlg, dictionary, client)
 {

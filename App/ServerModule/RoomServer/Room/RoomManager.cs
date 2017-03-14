@@ -49,7 +49,7 @@ namespace GameFramework
             MyDictionary<int, object> scenes = TableConfig.LevelProvider.Instance.LevelMgr.GetData();
             foreach (KeyValuePair<int, object> pair in scenes) {
                 TableConfig.Level cfg = pair.Value as TableConfig.Level;
-                if (null != cfg && cfg.type == (int)SceneTypeEnum.Room) {
+                if (null != cfg && cfg.type == (int)SceneTypeEnum.Story) {
                     foreach (string roomSvrName in cfg.RoomServer) {
                         for (int ix = 0; ix < cfg.ThreadCountPerScene; ++ix) {
                             if (0 == roomServerName.CompareTo(roomSvrName)) {

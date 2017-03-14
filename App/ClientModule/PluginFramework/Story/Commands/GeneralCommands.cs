@@ -403,7 +403,7 @@ namespace GameFramework.Story.Commands
             const string c_DialogOverPrefix = "dialog_over:";
             if (msgId.StartsWith(c_DialogOverPrefix)) {
                 TableConfig.Level level = PluginFramework.Instance.SceneInfo;
-                if (null != level && level.type == (int)SceneTypeEnum.Room) {
+                if (null != level && (level.type == (int)SceneTypeEnum.Story || level.type == (int)SceneTypeEnum.Activity)) {
                     GameFrameworkMessage.Msg_CR_DlgClosed msg = new GameFrameworkMessage.Msg_CR_DlgClosed();
                     msg.dialog_id = int.Parse(msgId.Substring(c_DialogOverPrefix.Length).Trim());
                     Network.NetworkSystem.Instance.SendMessage(GameFrameworkMessage.RoomMessageDefine.Msg_CR_DlgClosed, msg);

@@ -1,772 +1,1029 @@
-00-54-45-726:======GameLog Start (Friday, February 10, 2017, 12:54:45 AM)======
-00-54-45-773:[Debug]:table config root = F:/OpenSource/CSharpGameFramework_local/Unity3d/Assets/StreamingAssets/Tables/
-00-54-45-782:[Info]:binary load 4470 parse 1870, file Tables/Public/Level.dat
-00-54-45-786:[Info]:binary load 326 parse 654, file Tables/Public/LevelMonster.dat
-00-54-45-788:[Info]:binary load 296 parse 699, file Tables/Public/Const.dat
-00-54-45-791:[Info]:binary load 349 parse 580, file Tables/Public/AttrDefine.dat
-00-54-45-793:[Info]:binary load 354 parse 860, file Tables/Public/Actor.dat
-00-54-45-796:[Info]:binary load 307 parse 907, file Tables/Public/Skill.dat
-00-54-45-798:[Info]:binary load 297 parse 349, file Tables/Public/SkillResources.dat
-00-54-45-800:[Info]:binary load 309 parse 655, file Tables/Public/SkillData.dat
-00-54-45-802:[Info]:binary load 294 parse 493, file Tables/Public/ImpactData.dat
-00-54-45-804:[Info]:binary load 256 parse 762, file Tables/Public/SkillEvent.dat
-00-54-45-812:[Info]:binary load 361 parse 521, file Tables/Client/StoryDlg.dat
-00-54-45-817:[Info]:binary load 376 parse 1733, file Tables/Client/StrDictionary.dat
-00-54-45-819:[Info]:binary load 286 parse 558, file Tables/Client/UI.dat
-00-54-45-821:[Info]:binary load 662 parse 1025, file Tables/Public/Formation.dat
-00-54-45-846:[Debug]:CreateCommand, type:TestCmd command:CompositeCommand
-00-54-45-846:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-45-847:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-45-849:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-45-849:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-45-849:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-45-919:[Debug]:CreateCommand, type:TestCmd command:CompositeCommand
-00-54-45-919:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-45-919:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-45-919:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-45-919:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-45-919:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-45-927:[Info]:SendMessage GameRoot LoadLevel TableConfig.Level False
-00-54-46-148:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
-00-54-46-148:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
-00-54-46-149:[Debug]:CreateCommand, type:highlightprompt command:HighlightPromptCommand
-00-54-46-149:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
-00-54-46-150:[Debug]:CreateCommand, type:highlightprompt command:HighlightPromptCommand
-00-54-46-150:[Debug]:CreateCommand, type:wait command:SleepCommand
-00-54-46-150:[Debug]:CreateCommand, type:quit command:QuitCommand
-00-54-46-150:[Debug]:CreateCommand, type:changescene command:ChangeSceneCommand
-00-54-46-151:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
-00-54-46-151:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
-00-54-46-151:[Debug]:CreateCommand, type:showdlg command:ShowDlgCommand
-00-54-46-151:[Debug]:StoryInstance.Init message handler num:6 True
-00-54-46-151:[Info]:ParseStory story_main 0
-00-54-46-153:[Debug]:CreateCommand, type:startstory command:StartStoryCommand
-00-54-46-153:[Debug]:CreateCommand, type:changescene command:ChangeSceneCommand
-00-54-46-153:[Debug]:StoryInstance.Init message handler num:2 True
-00-54-46-153:[Info]:ParseStory local_main 0
-00-54-46-157:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-157:[Debug]:CreateCommand, type:destroynpcwithobjid command:DestroyNpcWithObjIdCommand
-00-54-46-157:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-158:[Debug]:CreateCommand, type:sethp command:SetHpCommand
-00-54-46-158:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-158:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-159:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-162:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-162:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-162:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-162:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-162:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-46-162:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-165:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
-00-54-46-165:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
-00-54-46-165:[Debug]:CreateCommand, type:objsetformation command:ObjSetFormationCommand
-00-54-46-165:[Debug]:CreateCommand, type:objsetaitarget command:ObjSetAiTargetCommand
-00-54-46-165:[Debug]:CreateCommand, type:objaddimpact command:ObjAddImpactCommand
-00-54-46-167:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-167:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-167:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-167:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-167:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
-00-54-46-167:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
-00-54-46-167:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-167:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-167:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-167:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-167:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
-00-54-46-168:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
-00-54-46-168:[Debug]:CreateCommand, type:objcastskill command:ObjCastSkillCommand
-00-54-46-168:[Debug]:StoryInstance.Init message handler num:5 True
-00-54-46-168:[Info]:ParseStory skill_main 0
-00-54-46-169:[Info]:StoryInstance queue message start
-00-54-46-170:[Info]:StartStory local_main
-00-54-46-170:[Info]:StoryInstance queue message start
-00-54-46-170:[Info]:StartStory story_main
-00-54-46-173:[Debug]:CreateCommand, type:bindui command:BindUiCommand
-00-54-46-173:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-174:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-46-174:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
-00-54-46-174:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-46-174:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-175:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-175:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-175:[Debug]:CreateCommand, type:highlightprompt command:HighlightPromptCommand
-00-54-46-175:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
-00-54-46-176:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-46-176:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-46-176:[Debug]:StoryInstance.Init message handler num:3 True
-00-54-46-176:[Info]:ParseStory LoginDlg:main 0
-00-54-46-178:[Debug]:CreateCommand, type:bindui command:BindUiCommand
-00-54-46-178:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-178:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-46-178:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-46-178:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-179:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-179:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
-00-54-46-179:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-179:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-179:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
-00-54-46-179:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
-00-54-46-179:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-46-179:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-46-179:[Debug]:StoryInstance.Init message handler num:3 True
-00-54-46-179:[Info]:ParseStory NicknameDlg:main 0
-00-54-46-182:[Debug]:CreateCommand, type:bindui command:BindUiCommand
-00-54-46-182:[Debug]:CreateCommand, type:installplugin command:InstallPluginCommand
-00-54-46-182:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-46-182:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
-00-54-46-182:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-182:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-182:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-182:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
-00-54-46-182:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-183:[Debug]:CreateCommand, type:waitlocalnamespacedmessage command:WaitLocalNamespacedMessageCommand
-00-54-46-184:[Debug]:CreateCommand, type:inc command:IncCommand
-00-54-46-184:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
-00-54-46-184:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-184:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-46-184:[Debug]:CreateCommand, type:while command:WhileCommand
-00-54-46-184:[Debug]:CreateCommand, type:clearmessage command:ClearMessageCommand
-00-54-46-184:[Debug]:CreateCommand, type:inc command:IncCommand
-00-54-46-184:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
-00-54-46-184:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-184:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-185:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-185:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-185:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-46-185:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
-00-54-46-185:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
-00-54-46-185:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-46-185:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-185:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-185:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-46-185:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-46-186:[Debug]:CreateCommand, type:sendgfxmessage command:SendGfxMessageCommand
-00-54-46-186:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-46-186:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-46-186:[Debug]:StoryInstance.Init message handler num:4 True
-00-54-46-186:[Info]:ParseStory StoryDlg:main 0
-00-54-46-194:[Debug]:CreateTriger, type:track triger:TrackTriger
-00-54-46-196:[Debug]:SkillInstance.Init section num:1 True skill 2110000000
-00-54-46-197:[Debug]:ParseSkill 2110000000
-00-54-46-197:[Debug]:CreateTriger, type:animation triger:AnimationTriger
-00-54-46-199:[Debug]:CreateTriger, type:selfeffect triger:SelfEffectTriger
-00-54-46-199:[Debug]:CreateTriger, type:damage triger:DamageTriger
-00-54-46-199:[Debug]:SkillInstance.Init section num:1 True skill 2120000000
-00-54-46-199:[Debug]:ParseSkill 2120000000
-00-54-46-212:[Info]:StoryInstance queue message start
-00-54-46-212:[Info]:StartStory main
-00-54-46-215:[Info]:StoryInstance queue message start
-00-54-46-215:[Info]:StartStory main
-00-54-46-222:[Info]:StoryInstance queue message start
-00-54-46-222:[Info]:StartStory main
-00-54-46-222:[Info]:SendMessage GameRoot OnLoadMainUiComplete 1 False
-00-54-46-241:[Warn]:NicknameDlg start
-00-54-46-249:[Warn]:LoginDlg start
-00-54-46-250:[Info]:Publish loading_complete ui
-00-54-46-250:[Info]:Publish ge_select_server lobby
-00-54-46-263:[Info]:Publish ui_highlight_prompt ui
-00-54-46-264:[Info]:StoryInstance ignore message show_login
-00-54-46-264:[Info]:StoryInstance ignore message show_login
-00-54-46-264:[Info]:StoryInstance queue message show_login
-00-54-46-264:[Info]:StoryInstance ignore message show_login
-00-54-46-264:[Info]:StoryInstance ignore message show_login
-00-54-46-269:[Debug]:QueueActionWithDelegation, Void StartStory(System.String) GameFramework.Story.GfxStorySystem, action count 1
-00-54-46-284:[Info]:StoryInstance ignore message start
-00-54-46-284:[Info]:StartStory skill_main
-00-54-46-284:[Info]:Publish ui_hide ui
-00-54-52-024:[Info]:StoryInstance ignore message LoginDlg:on_click
-00-54-52-024:[Info]:StoryInstance ignore message LoginDlg:on_click
-00-54-52-024:[Info]:StoryInstance ignore message LoginDlg:on_click
-00-54-52-024:[Info]:StoryInstance queue message LoginDlg:on_click
-00-54-52-024:[Info]:StoryInstance ignore message LoginDlg:on_click
-00-54-52-024:[Info]:StoryInstance ignore message LoginDlg:on_click
-00-54-52-036:[Warn]:LoginDlg on click
-00-54-52-038:[Info]:StoryInstance ignore message do_login
-00-54-52-038:[Info]:StoryInstance ignore message do_login
-00-54-52-038:[Info]:StoryInstance ignore message do_login
-00-54-52-038:[Info]:StoryInstance ignore message do_login
-00-54-52-038:[Info]:StoryInstance queue message do_login
-00-54-52-038:[Info]:StoryInstance ignore message do_login
-00-54-52-039:[Info]:Publish ge_account_login lobby
-00-54-52-039:[Info]:ConnectIfNotOpen at time:6263 ServerAddress:ws://127.0.0.1:9001
-00-54-52-079:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-00-54-52-080:[Debug]:QueueActionWithDelegation, Void OnOpened() GameFramework.Network.UserNetworkSystem, action count 2
-00-54-52-081:[Info]:LobbyNetworkSystem.OnLog:VerifyHandshake handshake:HTTP/1.1 101 Switching Protocols
+01-53-42-874:======GameLog Start (Wednesday, March 15, 2017, 1:53:42 AM)======
+01-53-42-925:[Debug]:table config root = F:/OpenSource/CSharpGameFramework_local/Unity3d/Assets/StreamingAssets/Tables/
+01-53-42-932:[Info]:binary load 3336 parse 1321, file Tables/Public/Level.dat
+01-53-42-935:[Info]:binary load 518 parse 749, file Tables/Public/LevelMonster.dat
+01-53-42-938:[Info]:binary load 288 parse 550, file Tables/Public/Const.dat
+01-53-42-940:[Info]:binary load 324 parse 504, file Tables/Public/AttrDefine.dat
+01-53-42-942:[Info]:binary load 373 parse 629, file Tables/Public/Actor.dat
+01-53-42-943:[Info]:binary load 329 parse 636, file Tables/Public/Skill.dat
+01-53-42-945:[Info]:binary load 289 parse 337, file Tables/Public/SkillResources.dat
+01-53-42-947:[Info]:binary load 288 parse 466, file Tables/Public/SkillData.dat
+01-53-42-949:[Info]:binary load 322 parse 550, file Tables/Public/ImpactData.dat
+01-53-42-951:[Info]:binary load 433 parse 442, file Tables/Public/SkillEvent.dat
+01-53-42-957:[Info]:binary load 364 parse 348, file Tables/Client/StoryDlg.dat
+01-53-42-961:[Info]:binary load 436 parse 1184, file Tables/Client/StrDictionary.dat
+01-53-42-963:[Info]:binary load 292 parse 340, file Tables/Client/UI.dat
+01-53-42-965:[Info]:binary load 582 parse 824, file Tables/Public/Formation.dat
+01-53-42-987:[Debug]:CreateCommand, type:TestCmd command:CompositeCommand
+01-53-42-987:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-42-988:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-42-989:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-42-989:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-42-989:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-43-058:[Debug]:CreateCommand, type:TestCmd command:CompositeCommand
+01-53-43-058:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-43-058:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-058:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-058:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-058:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-43-067:[Info]:SendMessage GameRoot LoadLevel TableConfig.Level False
+01-53-43-345:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
+01-53-43-345:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
+01-53-43-345:[Debug]:CreateCommand, type:highlightprompt command:HighlightPromptCommand
+01-53-43-346:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
+01-53-43-347:[Debug]:CreateCommand, type:highlightprompt command:HighlightPromptCommand
+01-53-43-347:[Debug]:CreateCommand, type:wait command:SleepCommand
+01-53-43-347:[Debug]:CreateCommand, type:quit command:QuitCommand
+01-53-43-348:[Debug]:CreateCommand, type:changescene command:ChangeSceneCommand
+01-53-43-348:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
+01-53-43-348:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
+01-53-43-348:[Debug]:CreateCommand, type:showdlg command:ShowDlgCommand
+01-53-43-348:[Debug]:StoryInstance.Init message handler num:6 True
+01-53-43-348:[Info]:ParseStory story_main 0
+01-53-43-350:[Debug]:CreateCommand, type:startstory command:StartStoryCommand
+01-53-43-350:[Debug]:CreateCommand, type:changescene command:ChangeSceneCommand
+01-53-43-350:[Debug]:StoryInstance.Init message handler num:2 True
+01-53-43-350:[Info]:ParseStory local_main 0
+01-53-43-354:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-354:[Debug]:CreateCommand, type:destroynpcwithobjid command:DestroyNpcWithObjIdCommand
+01-53-43-354:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-355:[Debug]:CreateCommand, type:sethp command:SetHpCommand
+01-53-43-355:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-355:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-355:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-358:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-358:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-358:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-359:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-359:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-43-359:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-361:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
+01-53-43-361:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
+01-53-43-361:[Debug]:CreateCommand, type:objsetformation command:ObjSetFormationCommand
+01-53-43-361:[Debug]:CreateCommand, type:objsetaitarget command:ObjSetAiTargetCommand
+01-53-43-361:[Debug]:CreateCommand, type:objaddimpact command:ObjAddImpactCommand
+01-53-43-363:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-363:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-363:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-363:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-363:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
+01-53-43-363:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
+01-53-43-363:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-363:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-363:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-363:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-363:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
+01-53-43-363:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
+01-53-43-364:[Debug]:CreateCommand, type:objcastskill command:ObjCastSkillCommand
+01-53-43-364:[Debug]:StoryInstance.Init message handler num:5 True
+01-53-43-364:[Info]:ParseStory skill_main 0
+01-53-43-365:[Info]:StoryInstance queue message start
+01-53-43-365:[Info]:StartStory local_main
+01-53-43-366:[Info]:StoryInstance queue message start
+01-53-43-366:[Info]:StartStory story_main
+01-53-43-369:[Debug]:CreateCommand, type:bindui command:BindUiCommand
+01-53-43-369:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-370:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-43-370:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
+01-53-43-371:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-43-371:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-371:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-371:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-372:[Debug]:CreateCommand, type:highlightprompt command:HighlightPromptCommand
+01-53-43-372:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
+01-53-43-372:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-43-372:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-43-372:[Debug]:StoryInstance.Init message handler num:3 True
+01-53-43-372:[Info]:ParseStory LoginDlg:main 0
+01-53-43-374:[Debug]:CreateCommand, type:bindui command:BindUiCommand
+01-53-43-374:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-374:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-43-374:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-43-374:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-374:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-375:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
+01-53-43-375:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-375:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-375:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
+01-53-43-375:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
+01-53-43-375:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-43-375:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-43-375:[Debug]:StoryInstance.Init message handler num:3 True
+01-53-43-375:[Info]:ParseStory NicknameDlg:main 0
+01-53-43-377:[Debug]:CreateCommand, type:bindui command:BindUiCommand
+01-53-43-378:[Debug]:CreateCommand, type:installplugin command:InstallPluginCommand
+01-53-43-378:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-43-378:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
+01-53-43-378:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-378:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-378:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-378:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
+01-53-43-378:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-379:[Debug]:CreateCommand, type:waitlocalnamespacedmessage command:WaitLocalNamespacedMessageCommand
+01-53-43-380:[Debug]:CreateCommand, type:inc command:IncCommand
+01-53-43-380:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
+01-53-43-380:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-380:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-43-380:[Debug]:CreateCommand, type:while command:WhileCommand
+01-53-43-380:[Debug]:CreateCommand, type:clearmessage command:ClearMessageCommand
+01-53-43-381:[Debug]:CreateCommand, type:inc command:IncCommand
+01-53-43-381:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
+01-53-43-381:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-381:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-381:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-381:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-381:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-43-381:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
+01-53-43-381:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
+01-53-43-381:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-43-381:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-381:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-381:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-43-381:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-43-382:[Debug]:CreateCommand, type:sendgfxmessage command:SendGfxMessageCommand
+01-53-43-382:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-43-382:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-43-382:[Debug]:StoryInstance.Init message handler num:4 True
+01-53-43-382:[Info]:ParseStory StoryDlg:main 0
+01-53-43-390:[Debug]:CreateTriger, type:track triger:TrackTriger
+01-53-43-391:[Debug]:SkillInstance.Init section num:1 True skill 2110000000
+01-53-43-392:[Debug]:ParseSkill 2110000000
+01-53-43-392:[Debug]:CreateTriger, type:animation triger:AnimationTriger
+01-53-43-394:[Debug]:CreateTriger, type:selfeffect triger:SelfEffectTriger
+01-53-43-394:[Debug]:CreateTriger, type:damage triger:DamageTriger
+01-53-43-394:[Debug]:SkillInstance.Init section num:1 True skill 2120000000
+01-53-43-394:[Debug]:ParseSkill 2120000000
+01-53-43-409:[Info]:StoryInstance queue message start
+01-53-43-409:[Info]:StartStory main
+01-53-43-412:[Info]:StoryInstance queue message start
+01-53-43-412:[Info]:StartStory main
+01-53-43-420:[Info]:StoryInstance queue message start
+01-53-43-420:[Info]:StartStory main
+01-53-43-420:[Info]:SendMessage GameRoot OnLoadMainUiComplete 1 False
+01-53-43-447:[Warn]:NicknameDlg start
+01-53-43-463:[Warn]:LoginDlg start
+01-53-43-464:[Info]:Publish loading_complete ui
+01-53-43-464:[Info]:Publish ge_select_server lobby
+01-53-43-476:[Info]:Publish ui_highlight_prompt ui
+01-53-43-477:[Info]:StoryInstance ignore message show_login
+01-53-43-477:[Info]:StoryInstance ignore message show_login
+01-53-43-477:[Info]:StoryInstance queue message show_login
+01-53-43-477:[Info]:StoryInstance ignore message show_login
+01-53-43-477:[Info]:StoryInstance ignore message show_login
+01-53-43-481:[Debug]:QueueActionWithDelegation, Void StartStory(System.String) GameFramework.Story.GfxStorySystem, action count 1
+01-53-43-503:[Info]:StoryInstance ignore message start
+01-53-43-503:[Info]:StartStory skill_main
+01-53-43-504:[Info]:Publish ui_hide ui
+01-53-46-449:[Info]:StoryInstance ignore message LoginDlg:on_click
+01-53-46-449:[Info]:StoryInstance ignore message LoginDlg:on_click
+01-53-46-449:[Info]:StoryInstance ignore message LoginDlg:on_click
+01-53-46-449:[Info]:StoryInstance queue message LoginDlg:on_click
+01-53-46-449:[Info]:StoryInstance ignore message LoginDlg:on_click
+01-53-46-449:[Info]:StoryInstance ignore message LoginDlg:on_click
+01-53-46-463:[Warn]:LoginDlg on click
+01-53-46-464:[Info]:StoryInstance ignore message do_login
+01-53-46-464:[Info]:StoryInstance ignore message do_login
+01-53-46-464:[Info]:StoryInstance ignore message do_login
+01-53-46-464:[Info]:StoryInstance ignore message do_login
+01-53-46-464:[Info]:StoryInstance queue message do_login
+01-53-46-464:[Info]:StoryInstance ignore message do_login
+01-53-46-465:[Info]:Publish ge_account_login lobby
+01-53-46-465:[Info]:ConnectIfNotOpen at time:3538 ServerAddress:ws://127.0.0.1:9001
+01-53-46-493:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-53-46-494:[Debug]:QueueActionWithDelegation, Void OnOpened() GameFramework.Network.UserNetworkSystem, action count 2
+01-53-46-499:[Info]:LobbyNetworkSystem.OnLog:VerifyHandshake handshake:HTTP/1.1 101 Switching Protocols
 Upgrade: websocket
 Connection: Upgrade
-Sec-WebSocket-Accept: sSQSM9RzQ91W4hxjd3u/BlU2s6E=, items count:1
-00-54-52-090:[Info]:SendToLobby:3 AwAFAAiBgoQI
-00-54-52-097:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-00-54-52-099:[Info]:DecodeNodeMessage:4 BAAAAAgBEAEYACIA
-00-54-52-108:[Info]:SendToLobby:19 EwAGAAoEdGVzdAoEdGVzdBIEdGVzdBoA
-00-54-52-142:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-00-54-52-148:[Info]:DecodeNodeMessage:20 FAAGAAoEdGVzdAoEdGVzdBAAGJFO
-00-54-52-150:[Info]:SendToLobby:25 GQAGAAoEdGVzdA==
-00-54-52-182:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-00-54-52-186:[Info]:DecodeNodeMessage:29 HQAJAAoEdGVzdBCRTggCEg/nuq/nuq/nmoTlsJHniLcYASAAKAAwATgEQAFgFg==
-00-54-52-188:[Info]:Publish ui_highlight_prompt ui
-00-54-52-302:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-00-54-52-303:[Info]:DecodeNodeMessage:32 IAADAAiRTggAEgkxMjcuMC4wLjEYuEog3sGcXygGMAQ4Bg==
-00-54-52-304:[Debug]:QueueActionWithDelegation, Void TryEnterScene(UInt32, System.String, Int32, Int32, Int32) GameFramework.PluginFramework, action count 1
-00-54-52-361:[Info]:NetworkSystem.Start key 199696606 ip 127.0.0.1 port 9528 camp 6 scene 4
-00-54-52-863:[Info]:Connect ip:127.0.0.1 port:9528 key:199696606
+Sec-WebSocket-Accept: SlaEEb/d9qT1KU8LdX9DEyFBktI=, items count:1
+01-53-46-509:[Info]:SendToLobby:3 AwAFAAiBgoQI
+01-53-46-515:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-53-46-517:[Info]:DecodeNodeMessage:4 BAAAAAgBEAEYACIA
+01-53-46-527:[Info]:SendToLobby:19 EwAHAAoFdGVzdDIKBXRlc3QyEgV0ZXN0MhoA
+01-53-46-651:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-53-46-651:[Info]:DecodeNodeMessage:20 FAAHAAoFdGVzdDIKBXRlc3QyEAEYoZwB
+01-53-46-653:[Info]:SendToLobby:12 DAAHAAoFdGVzdDI=
+01-53-46-691:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-53-46-695:[Info]:DecodeNodeMessage:22 FgAHAAoFdGVzdDIKEueIseaWl+WYtOeahOi0teWmhwoR54ix552h6KeJ55qETU3osYYKD+ato+S5ieeahOS8meiuoQoP5pCe56yR55qE576O55yJChLlkKzor53nmoTlnKPmlpflo6sKD+W8gOW/g+eahOaksOWltgoP552A5oCl55qE6I+g6I+cChLkuI3liqDns5bnmoTlpKfpm4EKD+Wwiui0teeahOWkp+ixoQoS5Y+v5rCU55qE6J665Lid6ZKJCg/lj6/niLHnmoToj6Doj5wKD+WPr+aAnOeahOWcn+ixqgoS5aSn55y8552b55qE6Iqx55SfCg/muKnmn5TnmoTmpLDmnqMKD+S4jeatu+eahOahg+WtkAoS6auY5aSn5LiK55qE6JqC6JqBChLngavmmJ/mnaXnmoTmpLDmnqMKD+Wwiui0teeahOePjeePoAoP6L276JSR55qE5YWr5ZOlCg/mgrLkvKTnmoTlo4HomY4=
+01-53-46-696:[Info]:StoryInstance ignore message show_nickname
+01-53-46-696:[Info]:StoryInstance ignore message show_nickname
+01-53-46-696:[Info]:StoryInstance queue message show_nickname
+01-53-46-696:[Info]:StoryInstance ignore message show_nickname
+01-53-46-696:[Info]:StoryInstance ignore message show_nickname
+01-53-46-696:[Info]:StoryInstance ignore message show_nickname
+01-53-47-674:[Info]:StoryInstance ignore message NicknameDlg:on_click
+01-53-47-674:[Info]:StoryInstance ignore message NicknameDlg:on_click
+01-53-47-674:[Info]:StoryInstance queue message NicknameDlg:on_click
+01-53-47-674:[Info]:StoryInstance ignore message NicknameDlg:on_click
+01-53-47-674:[Info]:StoryInstance ignore message NicknameDlg:on_click
+01-53-47-674:[Info]:StoryInstance ignore message NicknameDlg:on_click
+01-53-47-689:[Warn]:NicknameDlg on click ok System.String[]
+01-53-47-689:[Info]:StoryInstance ignore message do_nickname
+01-53-47-689:[Info]:StoryInstance ignore message do_nickname
+01-53-47-689:[Info]:StoryInstance ignore message do_nickname
+01-53-47-689:[Info]:StoryInstance ignore message do_nickname
+01-53-47-689:[Info]:StoryInstance queue message do_nickname
+01-53-47-689:[Info]:StoryInstance ignore message do_nickname
+01-53-47-689:[Info]:Publish ge_change_name lobby
+01-53-47-690:[Info]:SendToLobby:25 GQAHAAoFdGVzdDIKEuWQrOivneeahOWco+aWl+Wjqw==
+01-53-47-822:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-53-47-824:[Info]:DecodeNodeMessage:29 HQALAAoFdGVzdDIQoZwBCAASEuWQrOivneeahOWco+aWl+WjqxgBIAAoADABOABAAWAW
+01-53-47-827:[Info]:StoryInstance ignore message start_game
+01-53-47-827:[Info]:StoryInstance ignore message start_game
+01-53-47-827:[Info]:StoryInstance ignore message start_game
+01-53-47-827:[Info]:StoryInstance ignore message start_game
+01-53-47-827:[Info]:StoryInstance queue message start_game
+01-53-47-827:[Info]:StoryInstance ignore message start_game
+01-53-47-827:[Info]:StoryInstance ignore message show_dlg
+01-53-47-827:[Info]:StoryInstance queue message show_dlg
+01-53-47-827:[Info]:StoryInstance ignore message show_dlg
+01-53-47-827:[Info]:StoryInstance ignore message show_dlg
+01-53-47-827:[Info]:StoryInstance ignore message show_dlg
+01-53-47-827:[Info]:StoryInstance ignore message show_dlg
+01-53-47-827:[Info]:showdlg 1
+01-53-47-828:[Info]:Publish ui_hide ui
+01-53-47-829:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-47-843:[Warn]:First,show_dlg_item:1 0
+01-53-47-859:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+01-53-47-877:[Warn]:show_dlg:1 0 太阳系有几大行星？是我们自小就知道的九颗么？还是10颗？它就是尼比鲁吧
+01-53-47-932:[Info]:SendToLobby:9 CQAEAAihnAE=
+01-53-47-972:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-53-47-974:[Info]:DecodeNodeMessage:9 CQAEAAihnAE=
+01-53-49-191:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-191:[Info]:StoryInstance queue message StoryDlg:on_click
+01-53-49-191:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-191:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-191:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-191:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-192:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-49-207:[Warn]:on_click,show_dlg_item:1 1
+01-53-49-210:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+01-53-49-228:[Warn]:show_dlg:1 1 尼比鲁几千年靠近地球一次。上面住的生物，对我们来说，就是神，它们可以活数千年之久。
+01-53-49-410:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-410:[Info]:StoryInstance queue message StoryDlg:on_click
+01-53-49-410:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-410:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-410:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-410:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-410:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-49-424:[Warn]:on_click,show_dlg_item:1 2
+01-53-49-427:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+01-53-49-444:[Warn]:show_dlg:1 2 传说是神造了早期地球人类，并且。。。
+01-53-49-604:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-604:[Info]:StoryInstance queue message StoryDlg:on_click
+01-53-49-604:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-604:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-604:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-604:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-604:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-49-619:[Warn]:on_click,show_dlg_item:1 3
+01-53-49-621:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+01-53-49-639:[Warn]:show_dlg:1 3 之后用大洪水毁灭了人类。。。
+01-53-49-797:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-797:[Info]:StoryInstance queue message StoryDlg:on_click
+01-53-49-797:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-797:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-797:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-797:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-797:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-49-811:[Warn]:on_click,show_dlg_item:1 4
+01-53-49-814:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+01-53-49-831:[Warn]:show_dlg:1 4 只有诺亚方舟上的人类与动物幸存了下来。。。
+01-53-49-986:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-986:[Info]:StoryInstance queue message StoryDlg:on_click
+01-53-49-986:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-986:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-986:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-986:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-49-986:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-50-001:[Warn]:on_click,show_dlg_item:1 5
+01-53-50-003:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+01-53-50-020:[Warn]:show_dlg:1 5 又经历数千年。。。
+01-53-50-178:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-178:[Info]:StoryInstance queue message StoryDlg:on_click
+01-53-50-178:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-178:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-178:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-178:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-178:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-50-192:[Warn]:on_click,show_dlg_item:1 6
+01-53-50-194:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+01-53-50-213:[Warn]:show_dlg:1 6 才有了我们。。。
+01-53-50-599:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-599:[Info]:StoryInstance queue message StoryDlg:on_click
+01-53-50-599:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-599:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-599:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-599:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-599:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-50-618:[Warn]:on_click,show_dlg_item:1 7
+01-53-50-620:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+01-53-50-643:[Warn]:show_dlg:1 7 这些是真的么？
+01-53-50-998:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-998:[Info]:StoryInstance queue message StoryDlg:on_click
+01-53-50-998:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-998:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-998:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-998:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-50-998:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-51-018:[Warn]:on_click,show_dlg_item:1 8
+01-53-51-021:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+01-53-51-043:[Warn]:show_dlg:1 8 我们的进化真的被加速了么？
+01-53-51-400:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-51-400:[Info]:StoryInstance queue message StoryDlg:on_click
+01-53-51-400:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-51-400:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-51-400:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-51-400:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-51-400:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-51-415:[Warn]:on_click,show_dlg_item:1 9
+01-53-51-417:[Info]:Publish ui_show ui
+01-53-51-418:[Info]:StoryInstance ignore message dialog_over:1
+01-53-51-418:[Info]:StoryInstance ignore message dialog_over:1
+01-53-51-418:[Info]:StoryInstance ignore message dialog_over:1
+01-53-51-418:[Info]:StoryInstance ignore message dialog_over:1
+01-53-51-418:[Info]:StoryInstance queue message dialog_over:1
+01-53-51-418:[Info]:StoryInstance ignore message dialog_over:1
+01-53-51-435:[Warn]:Finish,show_dlg_item:1 9
+01-53-51-436:[Info]:SendToLobby:30 HgAEAAihnAEIBA==
+01-53-51-612:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-53-51-616:[Info]:DecodeNodeMessage:32 IAAEAAihnAEIABIJMTI3LjAuMC4xGLhKILePiXooBjAEOAw=
+01-53-51-617:[Debug]:QueueActionWithDelegation, Void TryEnterScene(UInt32, System.String, Int32, Int32, Int32) GameFramework.PluginFramework, action count 1
+01-53-51-674:[Info]:NetworkSystem.Start key 256001975 ip 127.0.0.1 port 9528 camp 6 scene 4
+01-53-52-002:[Info]:Connect ip:127.0.0.1 port:9528 key:256001975
 NetPeer Statistic:0 connections
 Sent 0 bytes in 0 messages in 0 packets
 Received 0 bytes in 0 messages in 0 packets
 Storage allocated 0 bytes
 Recycled pool 0 bytes
 
-00-54-52-886:[Info]:Network Status Changed:Connected Reason:Connected to 839205A0DA0AEA28
+01-53-52-016:[Info]:Network Status Changed:Connected Reason:Connected to 15165CE073D374E4
 Statistic:Sent 16 bytes in 2 messages in 2 packets
 Received 6 bytes in 1 messages in 1 packets
 Unsent messages: 0
 Stored messages: 0
 Withheld messages: 0
 
-00-54-52-887:[Info]:[Message Count]:
+01-53-52-017:[Info]:[Message Count]:
 [Send]:
 [Receive]:
 
-00-54-52-894:[Info]:Warning Message: resend delay 0.03167818 127.0.0.1:9528
-00-54-52-894:[Info]:Warning Message: Timeout deadline pushed to  16.57815 127.0.0.1:9528
-00-54-52-894:[Info]:Warning Message: resend delay 0.03167818 127.0.0.1:9528
-00-54-52-894:[Info]:Wait NetConnectionStatus.Connected ...
-00-54-52-907:[Info]:auth ok !!!
-00-54-52-907:[Debug]:QueueActionWithDelegation, Void ChangeScene(Int32) GameFramework.PluginFramework, action count 1
-00-54-52-910:[Debug]:CreateCommand, type:TestCmd command:CompositeCommand
-00-54-52-910:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-52-910:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-52-910:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-52-910:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-52-910:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-52-911:[Info]:SendMessage GameRoot LoadLevel TableConfig.Level False
-00-54-53-073:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-073:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-073:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-073:[Debug]:CreateCommand, type:objsetformation command:ObjSetFormationCommand
-00-54-53-074:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-074:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
-00-54-53-074:[Debug]:CreateCommand, type:npcsetformation command:NpcSetFormationCommand
-00-54-53-074:[Debug]:CreateCommand, type:loop command:LoopCommand
-00-54-53-074:[Debug]:CreateCommand, type:wait command:SleepCommand
-00-54-53-074:[Debug]:CreateCommand, type:objaddskill command:ObjAddSkillCommand
-00-54-53-075:[Debug]:CreateCommand, type:objaddskill command:ObjAddSkillCommand
-00-54-53-075:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
-00-54-53-075:[Debug]:CreateCommand, type:camerafollow command:CameraFollowCommand
-00-54-53-075:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-075:[Debug]:CreateCommand, type:loop command:LoopCommand
-00-54-53-075:[Debug]:CreateCommand, type:showdlg command:ShowDlgCommand
-00-54-53-075:[Debug]:CreateCommand, type:sendgfxmessage command:SendGfxMessageCommand
-00-54-53-075:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-075:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-075:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-076:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
-00-54-53-076:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-53-076:[Debug]:CreateCommand, type:loop command:LoopCommand
-00-54-53-076:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-53-076:[Debug]:CreateCommand, type:highlightprompt command:HighlightPromptCommand
-00-54-53-076:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
-00-54-53-076:[Debug]:CreateCommand, type:clearmessage command:ClearMessageCommand
-00-54-53-077:[Debug]:CreateCommand, type:terminate command:TerminateCommand
-00-54-53-077:[Debug]:CreateCommand, type:changescene command:ChangeSceneCommand
-00-54-53-077:[Debug]:StoryInstance.Init message handler num:8 True
-00-54-53-077:[Info]:ParseStory story_main 0
-00-54-53-077:[Debug]:CreateCommand, type:startstory command:StartStoryCommand
-00-54-53-077:[Debug]:CreateCommand, type:changescene command:ChangeSceneCommand
-00-54-53-077:[Debug]:StoryInstance.Init message handler num:2 True
-00-54-53-077:[Info]:ParseStory local_main 0
-00-54-53-080:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-080:[Debug]:CreateCommand, type:destroynpcwithobjid command:DestroyNpcWithObjIdCommand
-00-54-53-080:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-080:[Debug]:CreateCommand, type:sethp command:SetHpCommand
-00-54-53-080:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-080:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-080:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-080:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-080:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-080:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-080:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-080:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-53-080:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-080:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
-00-54-53-080:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
-00-54-53-080:[Debug]:CreateCommand, type:objsetformation command:ObjSetFormationCommand
-00-54-53-080:[Debug]:CreateCommand, type:objsetaitarget command:ObjSetAiTargetCommand
-00-54-53-080:[Debug]:CreateCommand, type:objaddimpact command:ObjAddImpactCommand
-00-54-53-081:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-081:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-081:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-081:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-081:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
-00-54-53-081:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
-00-54-53-081:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-081:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-081:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-081:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-081:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
-00-54-53-081:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
-00-54-53-081:[Debug]:CreateCommand, type:objcastskill command:ObjCastSkillCommand
-00-54-53-081:[Debug]:StoryInstance.Init message handler num:5 True
-00-54-53-081:[Info]:ParseStory skill_main 0
-00-54-53-081:[Info]:StoryInstance queue message start
-00-54-53-081:[Info]:StartStory local_main
-00-54-53-082:[Debug]:CreateCommand, type:bindui command:BindUiCommand
-00-54-53-082:[Debug]:CreateCommand, type:installplugin command:InstallPluginCommand
-00-54-53-082:[Debug]:CreateCommand, type:installplugin command:InstallPluginCommand
-00-54-53-082:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-53-082:[Debug]:CreateCommand, type:sendgfxmessage command:SendGfxMessageCommand
-00-54-53-082:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
-00-54-53-083:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
-00-54-53-083:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
-00-54-53-083:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
-00-54-53-083:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-083:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
-00-54-53-083:[Debug]:StoryInstance.Init message handler num:4 True
-00-54-53-083:[Info]:ParseStory MainUI:main 0
-00-54-53-085:[Debug]:CreateCommand, type:bindui command:BindUiCommand
-00-54-53-085:[Debug]:CreateCommand, type:installplugin command:InstallPluginCommand
-00-54-53-085:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-53-085:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
-00-54-53-085:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-085:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-085:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-085:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
-00-54-53-085:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-085:[Debug]:CreateCommand, type:waitlocalnamespacedmessage command:WaitLocalNamespacedMessageCommand
-00-54-53-085:[Debug]:CreateCommand, type:inc command:IncCommand
-00-54-53-085:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
-00-54-53-085:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-085:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-53-085:[Debug]:CreateCommand, type:while command:WhileCommand
-00-54-53-085:[Debug]:CreateCommand, type:clearmessage command:ClearMessageCommand
-00-54-53-085:[Debug]:CreateCommand, type:inc command:IncCommand
-00-54-53-085:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
-00-54-53-085:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-085:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-085:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-085:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-085:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-53-085:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
-00-54-53-085:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
-00-54-53-085:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-53-085:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-085:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-085:[Debug]:CreateCommand, type:= command:AssignCommand
-00-54-53-086:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
-00-54-53-086:[Debug]:CreateCommand, type:sendgfxmessage command:SendGfxMessageCommand
-00-54-53-086:[Debug]:CreateCommand, type:log command:LogCommand
-00-54-53-086:[Debug]:CreateCommand, type:if command:IfElseCommand
-00-54-53-086:[Debug]:StoryInstance.Init message handler num:4 True
-00-54-53-086:[Info]:ParseStory StoryDlg:main 0
-00-54-53-096:[Info]:StoryInstance queue message start
-00-54-53-096:[Info]:StartStory main
-00-54-53-097:[Info]:StoryInstance queue message start
-00-54-53-097:[Info]:StartStory main
-00-54-53-097:[Info]:SendMessage GameRoot OnLoadBattleComplete 4 False
-00-54-53-101:[Warn]:send Msg_CR_Enter to roomserver
-00-54-53-103:[Debug]:QueueActionWithDelegation, Void StartStory(System.String) GameFramework.Story.GfxStorySystem, action count 1
-00-54-53-129:[Info]:NpcCreate:100 unit:20000 ownerid=0
-00-54-53-175:[Info]:StoryInstance ignore message obj_created
-00-54-53-175:[Info]:StoryInstance ignore message obj_created
-00-54-53-175:[Info]:StoryInstance ignore message obj_created
-00-54-53-175:[Info]:StoryInstance ignore message npc_created:20000
-00-54-53-175:[Info]:StoryInstance ignore message npc_created:20000
-00-54-53-175:[Info]:StoryInstance ignore message npc_created:20000
-00-54-53-175:[Info]:Publish ui_add_actor ui
-00-54-53-182:[Info]:---set 100 hp to 1100/1100
-00-54-53-182:[Info]:NpcCreate:101 unit:20001 ownerid=0
-00-54-53-183:[Info]:StoryInstance ignore message obj_created
-00-54-53-183:[Info]:StoryInstance ignore message obj_created
-00-54-53-183:[Info]:StoryInstance ignore message obj_created
-00-54-53-183:[Info]:StoryInstance ignore message npc_created:20001
-00-54-53-183:[Info]:StoryInstance ignore message npc_created:20001
-00-54-53-183:[Info]:StoryInstance ignore message npc_created:20001
-00-54-53-183:[Info]:Publish ui_add_actor ui
-00-54-53-183:[Info]:---set 101 hp to 1100/1100
-00-54-53-184:[Info]:NpcCreate:102 unit:20002 ownerid=0
-00-54-53-184:[Info]:StoryInstance ignore message obj_created
-00-54-53-184:[Info]:StoryInstance ignore message obj_created
-00-54-53-184:[Info]:StoryInstance ignore message obj_created
-00-54-53-184:[Info]:StoryInstance ignore message npc_created:20002
-00-54-53-184:[Info]:StoryInstance ignore message npc_created:20002
-00-54-53-184:[Info]:StoryInstance ignore message npc_created:20002
-00-54-53-184:[Info]:Publish ui_add_actor ui
-00-54-53-185:[Info]:---set 102 hp to 1100/1100
-00-54-53-185:[Info]:NpcCreate:103 unit:20003 ownerid=0
-00-54-53-185:[Info]:StoryInstance ignore message obj_created
-00-54-53-185:[Info]:StoryInstance ignore message obj_created
-00-54-53-185:[Info]:StoryInstance ignore message obj_created
-00-54-53-185:[Info]:StoryInstance ignore message npc_created:20003
-00-54-53-185:[Info]:StoryInstance ignore message npc_created:20003
-00-54-53-185:[Info]:StoryInstance ignore message npc_created:20003
-00-54-53-185:[Info]:Publish ui_add_actor ui
-00-54-53-186:[Info]:---set 103 hp to 1100/1100
-00-54-53-186:[Info]:NpcCreate:104 unit:20004 ownerid=0
-00-54-53-186:[Info]:StoryInstance ignore message obj_created
-00-54-53-186:[Info]:StoryInstance ignore message obj_created
-00-54-53-186:[Info]:StoryInstance ignore message obj_created
-00-54-53-186:[Info]:StoryInstance ignore message npc_created:20004
-00-54-53-186:[Info]:StoryInstance ignore message npc_created:20004
-00-54-53-186:[Info]:StoryInstance ignore message npc_created:20004
-00-54-53-186:[Info]:Publish ui_add_actor ui
-00-54-53-187:[Info]:---set 104 hp to 1100/1100
-00-54-53-187:[Info]:NpcCreate:105 unit:20005 ownerid=0
-00-54-53-187:[Info]:StoryInstance ignore message obj_created
-00-54-53-187:[Info]:StoryInstance ignore message obj_created
-00-54-53-187:[Info]:StoryInstance ignore message obj_created
-00-54-53-187:[Info]:StoryInstance ignore message npc_created:20005
-00-54-53-187:[Info]:StoryInstance ignore message npc_created:20005
-00-54-53-187:[Info]:StoryInstance ignore message npc_created:20005
-00-54-53-187:[Info]:Publish ui_add_actor ui
-00-54-53-188:[Info]:---set 105 hp to 1100/1100
-00-54-53-188:[Info]:NpcCreate:106 unit:20006 ownerid=0
-00-54-53-188:[Info]:StoryInstance ignore message obj_created
-00-54-53-188:[Info]:StoryInstance ignore message obj_created
-00-54-53-188:[Info]:StoryInstance ignore message obj_created
-00-54-53-188:[Info]:StoryInstance ignore message npc_created:20006
-00-54-53-188:[Info]:StoryInstance ignore message npc_created:20006
-00-54-53-188:[Info]:StoryInstance ignore message npc_created:20006
-00-54-53-188:[Info]:Publish ui_add_actor ui
-00-54-53-189:[Info]:---set 106 hp to 1100/1100
-00-54-53-189:[Info]:NpcCreate:107 unit:20007 ownerid=0
-00-54-53-189:[Info]:StoryInstance ignore message obj_created
-00-54-53-189:[Info]:StoryInstance ignore message obj_created
-00-54-53-189:[Info]:StoryInstance ignore message obj_created
-00-54-53-189:[Info]:StoryInstance ignore message npc_created:20007
-00-54-53-189:[Info]:StoryInstance ignore message npc_created:20007
-00-54-53-189:[Info]:StoryInstance ignore message npc_created:20007
-00-54-53-189:[Info]:Publish ui_add_actor ui
-00-54-53-190:[Info]:---set 107 hp to 1100/1100
-00-54-53-190:[Info]:NpcCreate:108 unit:20008 ownerid=0
-00-54-53-190:[Info]:StoryInstance ignore message obj_created
-00-54-53-190:[Info]:StoryInstance ignore message obj_created
-00-54-53-190:[Info]:StoryInstance ignore message obj_created
-00-54-53-190:[Info]:StoryInstance ignore message npc_created:20008
-00-54-53-190:[Info]:StoryInstance ignore message npc_created:20008
-00-54-53-190:[Info]:StoryInstance ignore message npc_created:20008
-00-54-53-190:[Info]:Publish ui_add_actor ui
-00-54-53-191:[Info]:---set 108 hp to 1100/1100
-00-54-53-191:[Info]:NpcCreate:109 unit:20009 ownerid=0
-00-54-53-191:[Info]:StoryInstance ignore message obj_created
-00-54-53-191:[Info]:StoryInstance ignore message obj_created
-00-54-53-191:[Info]:StoryInstance ignore message obj_created
-00-54-53-191:[Info]:StoryInstance ignore message npc_created:20009
-00-54-53-191:[Info]:StoryInstance ignore message npc_created:20009
-00-54-53-191:[Info]:StoryInstance ignore message npc_created:20009
-00-54-53-191:[Info]:Publish ui_add_actor ui
-00-54-53-192:[Info]:---set 109 hp to 1100/1100
-00-54-53-192:[Info]:NpcCreate:110 unit:20010 ownerid=0
-00-54-53-193:[Info]:StoryInstance ignore message obj_created
-00-54-53-193:[Info]:StoryInstance ignore message obj_created
-00-54-53-193:[Info]:StoryInstance ignore message obj_created
-00-54-53-193:[Info]:StoryInstance ignore message npc_created:20010
-00-54-53-193:[Info]:StoryInstance ignore message npc_created:20010
-00-54-53-193:[Info]:StoryInstance ignore message npc_created:20010
-00-54-53-193:[Info]:Publish ui_add_actor ui
-00-54-53-194:[Info]:---set 110 hp to 1100/1100
-00-54-53-194:[Info]:NpcCreate:111 unit:20011 ownerid=0
-00-54-53-194:[Info]:StoryInstance ignore message obj_created
-00-54-53-194:[Info]:StoryInstance ignore message obj_created
-00-54-53-194:[Info]:StoryInstance ignore message obj_created
-00-54-53-194:[Info]:StoryInstance ignore message npc_created:20011
-00-54-53-194:[Info]:StoryInstance ignore message npc_created:20011
-00-54-53-194:[Info]:StoryInstance ignore message npc_created:20011
-00-54-53-194:[Info]:Publish ui_add_actor ui
-00-54-53-195:[Info]:---set 111 hp to 1100/1100
-00-54-53-195:[Info]:NpcCreate:112 unit:20012 ownerid=0
-00-54-53-195:[Info]:StoryInstance ignore message obj_created
-00-54-53-195:[Info]:StoryInstance ignore message obj_created
-00-54-53-195:[Info]:StoryInstance ignore message obj_created
-00-54-53-195:[Info]:StoryInstance ignore message npc_created:20012
-00-54-53-195:[Info]:StoryInstance ignore message npc_created:20012
-00-54-53-195:[Info]:StoryInstance ignore message npc_created:20012
-00-54-53-195:[Info]:Publish ui_add_actor ui
-00-54-53-196:[Info]:---set 112 hp to 1100/1100
-00-54-53-196:[Info]:NpcCreate:113 unit:20013 ownerid=0
-00-54-53-196:[Info]:StoryInstance ignore message obj_created
-00-54-53-196:[Info]:StoryInstance ignore message obj_created
-00-54-53-196:[Info]:StoryInstance ignore message obj_created
-00-54-53-196:[Info]:StoryInstance ignore message npc_created:20013
-00-54-53-196:[Info]:StoryInstance ignore message npc_created:20013
-00-54-53-196:[Info]:StoryInstance ignore message npc_created:20013
-00-54-53-196:[Info]:Publish ui_add_actor ui
-00-54-53-197:[Info]:---set 113 hp to 1100/1100
-00-54-53-197:[Info]:NpcCreate:114 unit:20014 ownerid=0
-00-54-53-197:[Info]:StoryInstance ignore message obj_created
-00-54-53-197:[Info]:StoryInstance ignore message obj_created
-00-54-53-197:[Info]:StoryInstance ignore message obj_created
-00-54-53-197:[Info]:StoryInstance ignore message npc_created:20014
-00-54-53-197:[Info]:StoryInstance ignore message npc_created:20014
-00-54-53-197:[Info]:StoryInstance ignore message npc_created:20014
-00-54-53-197:[Info]:Publish ui_add_actor ui
-00-54-53-198:[Info]:---set 114 hp to 1100/1100
-00-54-53-198:[Info]:NpcCreate:115 unit:20015 ownerid=0
-00-54-53-198:[Info]:StoryInstance ignore message obj_created
-00-54-53-198:[Info]:StoryInstance ignore message obj_created
-00-54-53-198:[Info]:StoryInstance ignore message obj_created
-00-54-53-198:[Info]:StoryInstance ignore message npc_created:20015
-00-54-53-198:[Info]:StoryInstance ignore message npc_created:20015
-00-54-53-198:[Info]:StoryInstance ignore message npc_created:20015
-00-54-53-198:[Info]:Publish ui_add_actor ui
-00-54-53-198:[Info]:---set 115 hp to 1100/1100
-00-54-53-198:[Info]:NpcCreate:116 unit:20016 ownerid=0
-00-54-53-199:[Info]:StoryInstance ignore message obj_created
-00-54-53-199:[Info]:StoryInstance ignore message obj_created
-00-54-53-199:[Info]:StoryInstance ignore message obj_created
-00-54-53-199:[Info]:StoryInstance ignore message npc_created:20016
-00-54-53-199:[Info]:StoryInstance ignore message npc_created:20016
-00-54-53-199:[Info]:StoryInstance ignore message npc_created:20016
-00-54-53-199:[Info]:Publish ui_add_actor ui
-00-54-53-199:[Info]:---set 116 hp to 1100/1100
-00-54-53-199:[Info]:NpcCreate:117 unit:20017 ownerid=0
-00-54-53-200:[Info]:StoryInstance ignore message obj_created
-00-54-53-200:[Info]:StoryInstance ignore message obj_created
-00-54-53-200:[Info]:StoryInstance ignore message obj_created
-00-54-53-200:[Info]:StoryInstance ignore message npc_created:20017
-00-54-53-200:[Info]:StoryInstance ignore message npc_created:20017
-00-54-53-200:[Info]:StoryInstance ignore message npc_created:20017
-00-54-53-200:[Info]:Publish ui_add_actor ui
-00-54-53-201:[Info]:---set 117 hp to 1100/1100
-00-54-53-201:[Info]:NpcCreate:118 unit:100000118 ownerid=0
-00-54-53-201:[Info]:StoryInstance ignore message obj_created
-00-54-53-201:[Info]:StoryInstance ignore message obj_created
-00-54-53-201:[Info]:StoryInstance ignore message obj_created
-00-54-53-201:[Info]:StoryInstance ignore message npc_created:100000118
-00-54-53-201:[Info]:StoryInstance ignore message npc_created:100000118
-00-54-53-201:[Info]:StoryInstance ignore message npc_created:100000118
-00-54-53-201:[Info]:Publish ui_add_actor ui
-00-54-53-202:[Info]:---set 118 hp to 780/1100
-00-54-53-202:[Info]:NpcCreate:119 unit:11800 ownerid=0
-00-54-53-202:[Info]:StoryInstance ignore message obj_created
-00-54-53-202:[Info]:StoryInstance ignore message obj_created
-00-54-53-202:[Info]:StoryInstance ignore message obj_created
-00-54-53-202:[Info]:StoryInstance ignore message npc_created:11800
-00-54-53-202:[Info]:StoryInstance ignore message npc_created:11800
-00-54-53-202:[Info]:StoryInstance ignore message npc_created:11800
-00-54-53-202:[Info]:Publish ui_add_actor ui
-00-54-53-203:[Info]:---set 119 hp to 1100/1100
-00-54-53-203:[Info]:NpcCreate:120 unit:11801 ownerid=0
-00-54-53-203:[Info]:StoryInstance ignore message obj_created
-00-54-53-203:[Info]:StoryInstance ignore message obj_created
-00-54-53-203:[Info]:StoryInstance ignore message obj_created
-00-54-53-203:[Info]:StoryInstance ignore message npc_created:11801
-00-54-53-203:[Info]:StoryInstance ignore message npc_created:11801
-00-54-53-203:[Info]:StoryInstance ignore message npc_created:11801
-00-54-53-203:[Info]:Publish ui_add_actor ui
-00-54-53-204:[Info]:---set 120 hp to 1100/1100
-00-54-53-204:[Info]:NpcCreate:121 unit:11802 ownerid=0
-00-54-53-205:[Info]:StoryInstance ignore message obj_created
-00-54-53-205:[Info]:StoryInstance ignore message obj_created
-00-54-53-205:[Info]:StoryInstance ignore message obj_created
-00-54-53-205:[Info]:StoryInstance ignore message npc_created:11802
-00-54-53-205:[Info]:StoryInstance ignore message npc_created:11802
-00-54-53-205:[Info]:StoryInstance ignore message npc_created:11802
-00-54-53-205:[Info]:Publish ui_add_actor ui
-00-54-53-205:[Info]:---set 121 hp to 1100/1100
-00-54-53-205:[Info]:NpcCreate:122 unit:11803 ownerid=0
-00-54-53-206:[Info]:StoryInstance ignore message obj_created
-00-54-53-206:[Info]:StoryInstance ignore message obj_created
-00-54-53-206:[Info]:StoryInstance ignore message obj_created
-00-54-53-206:[Info]:StoryInstance ignore message npc_created:11803
-00-54-53-206:[Info]:StoryInstance ignore message npc_created:11803
-00-54-53-206:[Info]:StoryInstance ignore message npc_created:11803
-00-54-53-206:[Info]:Publish ui_add_actor ui
-00-54-53-206:[Info]:---set 122 hp to 1100/1100
-00-54-53-208:[Info]:StoryInstance ignore message start
-00-54-53-208:[Info]:StartStory skill_main
-00-54-53-211:[Debug]:CreateTriger, type:animation triger:AnimationTriger
-00-54-53-211:[Debug]:CreateTriger, type:bornfinish triger:BornFinishTriger
-00-54-53-212:[Debug]:SkillInstance.Init section num:1 True skill 1
-00-54-53-212:[Debug]:ParseSkill 1
-00-54-53-227:[Info]:NpcCreate:123 unit:11800 ownerid=0
-00-54-53-228:[Info]:StoryInstance ignore message obj_created
-00-54-53-228:[Info]:StoryInstance ignore message obj_created
-00-54-53-228:[Info]:StoryInstance ignore message obj_created
-00-54-53-228:[Info]:StoryInstance ignore message obj_created
-00-54-53-228:[Info]:StoryInstance ignore message npc_created:11800
-00-54-53-228:[Info]:StoryInstance ignore message npc_created:11800
-00-54-53-228:[Info]:StoryInstance ignore message npc_created:11800
-00-54-53-228:[Info]:StoryInstance ignore message npc_created:11800
-00-54-53-228:[Info]:Publish ui_add_actor ui
-00-54-53-228:[Info]:NpcCreate:124 unit:11801 ownerid=0
-00-54-53-229:[Info]:StoryInstance ignore message obj_created
-00-54-53-229:[Info]:StoryInstance ignore message obj_created
-00-54-53-229:[Info]:StoryInstance ignore message obj_created
-00-54-53-229:[Info]:StoryInstance ignore message obj_created
-00-54-53-229:[Info]:StoryInstance ignore message npc_created:11801
-00-54-53-229:[Info]:StoryInstance ignore message npc_created:11801
-00-54-53-229:[Info]:StoryInstance ignore message npc_created:11801
-00-54-53-229:[Info]:StoryInstance ignore message npc_created:11801
-00-54-53-229:[Info]:Publish ui_add_actor ui
-00-54-53-229:[Info]:NpcCreate:125 unit:11802 ownerid=0
-00-54-53-230:[Info]:StoryInstance ignore message obj_created
-00-54-53-230:[Info]:StoryInstance ignore message obj_created
-00-54-53-230:[Info]:StoryInstance ignore message obj_created
-00-54-53-230:[Info]:StoryInstance ignore message obj_created
-00-54-53-230:[Info]:StoryInstance ignore message npc_created:11802
-00-54-53-230:[Info]:StoryInstance ignore message npc_created:11802
-00-54-53-230:[Info]:StoryInstance ignore message npc_created:11802
-00-54-53-230:[Info]:StoryInstance ignore message npc_created:11802
-00-54-53-230:[Info]:Publish ui_add_actor ui
-00-54-53-230:[Info]:NpcCreate:126 unit:11803 ownerid=0
-00-54-53-230:[Info]:StoryInstance ignore message obj_created
-00-54-53-230:[Info]:StoryInstance ignore message obj_created
-00-54-53-230:[Info]:StoryInstance ignore message obj_created
-00-54-53-230:[Info]:StoryInstance ignore message obj_created
-00-54-53-230:[Info]:StoryInstance ignore message npc_created:11803
-00-54-53-230:[Info]:StoryInstance ignore message npc_created:11803
-00-54-53-230:[Info]:StoryInstance ignore message npc_created:11803
-00-54-53-230:[Info]:StoryInstance ignore message npc_created:11803
-00-54-53-230:[Info]:Publish ui_add_actor ui
-00-54-53-232:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-233:[Debug]:ChangeToSection:0 duration:100
-00-54-53-242:[Debug]:ChangeToSection:0 duration:100
-00-54-53-242:[Debug]:ChangeToSection:0 duration:100
-00-54-53-242:[Debug]:ChangeToSection:0 duration:100
-00-54-53-242:[Debug]:ChangeToSection:0 duration:100
-00-54-54-195:[Info]:Publish loading_complete ui
-00-54-54-196:[Info]:SendMessage GameRoot CameraFollow 118 False
-00-54-54-196:[Info]:StoryInstance ignore message show_dlg
-00-54-54-196:[Info]:StoryInstance queue message show_dlg
-00-54-54-196:[Info]:StoryInstance ignore message show_dlg
-00-54-54-196:[Info]:StoryInstance ignore message show_dlg
-00-54-54-196:[Info]:Publish ui_hide ui
-00-54-54-196:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
-00-54-54-203:[Warn]:First,show_dlg_item:2 0
-00-54-54-213:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
-00-54-54-221:[Warn]:show_dlg:2 0 开始战斗！
-00-54-55-649:[Info]:StoryInstance ignore message StoryDlg:on_click
-00-54-55-649:[Info]:StoryInstance queue message StoryDlg:on_click
-00-54-55-649:[Info]:StoryInstance ignore message StoryDlg:on_click
-00-54-55-649:[Info]:StoryInstance ignore message StoryDlg:on_click
-00-54-55-650:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
-00-54-55-656:[Warn]:on_click,show_dlg_item:2 1
-00-54-55-662:[Info]:Publish ui_show ui
-00-54-55-662:[Info]:StoryInstance ignore message dialog_over:2
-00-54-55-662:[Info]:StoryInstance ignore message dialog_over:2
-00-54-55-662:[Info]:StoryInstance ignore message dialog_over:2
-00-54-55-662:[Info]:StoryInstance ignore message dialog_over:2
-00-54-55-670:[Warn]:Finish,show_dlg_item:2 1
-00-54-55-740:[Info]:SendMessage Main Camera LightScreen 3000 False
-00-54-55-777:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
-00-54-55-890:[Info]:Warning Message: resend delay 0.02973556 127.0.0.1:9528
-00-54-55-890:[Info]:Warning Message: Timeout deadline pushed to  19.58284 127.0.0.1:9528
-00-54-58-892:[Info]:Warning Message: resend delay 0.02843686 127.0.0.1:9528
-00-54-58-892:[Info]:Warning Message: Timeout deadline pushed to  22.58492 127.0.0.1:9528
-00-55-01-900:[Info]:Warning Message: resend delay 0.02752416 127.0.0.1:9528
-00-55-01-900:[Info]:Warning Message: Timeout deadline pushed to  25.59289 127.0.0.1:9528
-00-55-04-908:[Info]:Warning Message: resend delay 0.02688527 127.0.0.1:9528
-00-55-04-908:[Info]:Warning Message: Timeout deadline pushed to  28.60084 127.0.0.1:9528
-00-55-05-779:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
-00-55-07-418:[Info]:SendToLobby:7 BwADAAiRTg==
-00-55-07-418:[Info]:SendToLobby:6 BgAGAAoEdGVzdA==
-00-55-07-418:[Info]:Disconnect(False). CurTime 21642 LastConnectTime 6263
-00-55-07-418:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-00-55-07-422:[Info]:Network Status Changed:Disconnecting Reason:bye for quit passive
-Statistic:Sent 8551 bytes in 357 messages in 357 packets
-Received 51426 bytes in 2243 messages in 359 packets
+01-53-52-022:[Info]:Warning Message: resend delay 0.02939421 127.0.0.1:9528
+01-53-52-022:[Info]:Warning Message: Timeout deadline pushed to  16.39578 127.0.0.1:9528
+01-53-52-022:[Info]:Warning Message: resend delay 0.02939421 127.0.0.1:9528
+01-53-52-022:[Info]:Wait NetConnectionStatus.Connected ...
+01-53-52-036:[Info]:auth ok !!!
+01-53-52-037:[Debug]:QueueActionWithDelegation, Void ChangeScene(Int32) GameFramework.PluginFramework, action count 1
+01-53-52-038:[Debug]:CreateCommand, type:TestCmd command:CompositeCommand
+01-53-52-038:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-52-038:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-038:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-038:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-038:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-52-040:[Info]:SendMessage GameRoot LoadLevel TableConfig.Level False
+01-53-52-203:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-203:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-203:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-204:[Debug]:CreateCommand, type:objsetformation command:ObjSetFormationCommand
+01-53-52-205:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-205:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
+01-53-52-205:[Debug]:CreateCommand, type:npcsetformation command:NpcSetFormationCommand
+01-53-52-205:[Debug]:CreateCommand, type:loop command:LoopCommand
+01-53-52-205:[Debug]:CreateCommand, type:wait command:SleepCommand
+01-53-52-205:[Debug]:CreateCommand, type:objaddskill command:ObjAddSkillCommand
+01-53-52-205:[Debug]:CreateCommand, type:objaddskill command:ObjAddSkillCommand
+01-53-52-205:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
+01-53-52-205:[Debug]:CreateCommand, type:camerafollow command:CameraFollowCommand
+01-53-52-206:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-206:[Debug]:CreateCommand, type:loop command:LoopCommand
+01-53-52-206:[Debug]:CreateCommand, type:showdlg command:ShowDlgCommand
+01-53-52-206:[Debug]:CreateCommand, type:sendgfxmessage command:SendGfxMessageCommand
+01-53-52-206:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-206:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-207:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-207:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
+01-53-52-207:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-52-207:[Debug]:CreateCommand, type:loop command:LoopCommand
+01-53-52-207:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-52-207:[Debug]:CreateCommand, type:highlightprompt command:HighlightPromptCommand
+01-53-52-208:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
+01-53-52-208:[Debug]:CreateCommand, type:clearmessage command:ClearMessageCommand
+01-53-52-208:[Debug]:CreateCommand, type:terminate command:TerminateCommand
+01-53-52-208:[Debug]:CreateCommand, type:changescene command:ChangeSceneCommand
+01-53-52-208:[Debug]:StoryInstance.Init message handler num:8 True
+01-53-52-208:[Info]:ParseStory story_main 0
+01-53-52-208:[Debug]:CreateCommand, type:startstory command:StartStoryCommand
+01-53-52-208:[Debug]:CreateCommand, type:changescene command:ChangeSceneCommand
+01-53-52-208:[Debug]:StoryInstance.Init message handler num:2 True
+01-53-52-208:[Info]:ParseStory local_main 0
+01-53-52-211:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-211:[Debug]:CreateCommand, type:destroynpcwithobjid command:DestroyNpcWithObjIdCommand
+01-53-52-211:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-211:[Debug]:CreateCommand, type:sethp command:SetHpCommand
+01-53-52-211:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-211:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-211:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-211:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-211:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-211:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-211:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-211:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-52-211:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-211:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
+01-53-52-211:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
+01-53-52-211:[Debug]:CreateCommand, type:objsetformation command:ObjSetFormationCommand
+01-53-52-211:[Debug]:CreateCommand, type:objsetaitarget command:ObjSetAiTargetCommand
+01-53-52-211:[Debug]:CreateCommand, type:objaddimpact command:ObjAddImpactCommand
+01-53-52-212:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-212:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-212:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-212:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-212:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
+01-53-52-212:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
+01-53-52-212:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-212:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-212:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-212:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-212:[Debug]:CreateCommand, type:createnpc command:CreateNpcCommand
+01-53-52-212:[Debug]:CreateCommand, type:objsetsummonerid command:ObjSetSummonerIdCommand
+01-53-52-212:[Debug]:CreateCommand, type:objcastskill command:ObjCastSkillCommand
+01-53-52-212:[Debug]:StoryInstance.Init message handler num:5 True
+01-53-52-212:[Info]:ParseStory skill_main 0
+01-53-52-212:[Info]:StoryInstance queue message start
+01-53-52-212:[Info]:StartStory local_main
+01-53-52-213:[Debug]:CreateCommand, type:bindui command:BindUiCommand
+01-53-52-213:[Debug]:CreateCommand, type:installplugin command:InstallPluginCommand
+01-53-52-213:[Debug]:CreateCommand, type:installplugin command:InstallPluginCommand
+01-53-52-213:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-52-213:[Debug]:CreateCommand, type:sendgfxmessage command:SendGfxMessageCommand
+01-53-52-213:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
+01-53-52-213:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
+01-53-52-214:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
+01-53-52-214:[Debug]:CreateCommand, type:dotnetset command:DotnetSetCommand
+01-53-52-214:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-214:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
+01-53-52-214:[Debug]:StoryInstance.Init message handler num:4 True
+01-53-52-214:[Info]:ParseStory MainUI:main 0
+01-53-52-216:[Debug]:CreateCommand, type:bindui command:BindUiCommand
+01-53-52-216:[Debug]:CreateCommand, type:installplugin command:InstallPluginCommand
+01-53-52-216:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-52-216:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
+01-53-52-216:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-216:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-216:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-216:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
+01-53-52-216:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-216:[Debug]:CreateCommand, type:waitlocalnamespacedmessage command:WaitLocalNamespacedMessageCommand
+01-53-52-216:[Debug]:CreateCommand, type:inc command:IncCommand
+01-53-52-216:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
+01-53-52-216:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-216:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-52-216:[Debug]:CreateCommand, type:while command:WhileCommand
+01-53-52-216:[Debug]:CreateCommand, type:clearmessage command:ClearMessageCommand
+01-53-52-216:[Debug]:CreateCommand, type:inc command:IncCommand
+01-53-52-216:[Debug]:CreateCommand, type:localnamespacedmessage command:LocalNamespacedMessageCommand
+01-53-52-216:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-216:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-216:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-216:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-216:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-52-216:[Debug]:CreateCommand, type:publishgfxevent command:PublishGfxEventCommand
+01-53-52-216:[Debug]:CreateCommand, type:firemessage command:FireMessageCommand
+01-53-52-216:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-52-216:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-216:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-216:[Debug]:CreateCommand, type:= command:AssignCommand
+01-53-52-216:[Debug]:CreateCommand, type:dotnetexec command:DotnetExecCommand
+01-53-52-216:[Debug]:CreateCommand, type:sendgfxmessage command:SendGfxMessageCommand
+01-53-52-216:[Debug]:CreateCommand, type:log command:LogCommand
+01-53-52-216:[Debug]:CreateCommand, type:if command:IfElseCommand
+01-53-52-216:[Debug]:StoryInstance.Init message handler num:4 True
+01-53-52-216:[Info]:ParseStory StoryDlg:main 0
+01-53-52-229:[Info]:StoryInstance queue message start
+01-53-52-229:[Info]:StartStory main
+01-53-52-230:[Info]:StoryInstance queue message start
+01-53-52-230:[Info]:StartStory main
+01-53-52-230:[Info]:SendMessage GameRoot OnLoadBattleComplete 4 False
+01-53-52-240:[Warn]:send Msg_CR_Enter to roomserver
+01-53-52-242:[Debug]:QueueActionWithDelegation, Void StartStory(System.String) GameFramework.Story.GfxStorySystem, action count 1
+01-53-52-257:[Info]:StoryInstance ignore message start
+01-53-52-257:[Info]:StartStory skill_main
+01-53-52-265:[Info]:NpcCreate:100 unit:20000 ownerid=0
+01-53-52-314:[Info]:StoryInstance ignore message obj_created
+01-53-52-314:[Info]:StoryInstance ignore message obj_created
+01-53-52-314:[Info]:StoryInstance ignore message obj_created
+01-53-52-314:[Info]:StoryInstance ignore message obj_created
+01-53-52-314:[Info]:StoryInstance ignore message npc_created:20000
+01-53-52-314:[Info]:StoryInstance ignore message npc_created:20000
+01-53-52-314:[Info]:StoryInstance ignore message npc_created:20000
+01-53-52-314:[Info]:StoryInstance ignore message npc_created:20000
+01-53-52-315:[Info]:Publish ui_add_actor ui
+01-53-52-322:[Info]:---set 100 hp to 1100/1100
+01-53-52-322:[Info]:NpcCreate:101 unit:20001 ownerid=0
+01-53-52-323:[Info]:StoryInstance ignore message obj_created
+01-53-52-323:[Info]:StoryInstance ignore message obj_created
+01-53-52-323:[Info]:StoryInstance ignore message obj_created
+01-53-52-323:[Info]:StoryInstance ignore message obj_created
+01-53-52-323:[Info]:StoryInstance ignore message npc_created:20001
+01-53-52-323:[Info]:StoryInstance ignore message npc_created:20001
+01-53-52-323:[Info]:StoryInstance ignore message npc_created:20001
+01-53-52-323:[Info]:StoryInstance ignore message npc_created:20001
+01-53-52-323:[Info]:Publish ui_add_actor ui
+01-53-52-323:[Info]:---set 101 hp to 1100/1100
+01-53-52-323:[Info]:NpcCreate:102 unit:20002 ownerid=0
+01-53-52-324:[Info]:StoryInstance ignore message obj_created
+01-53-52-324:[Info]:StoryInstance ignore message obj_created
+01-53-52-324:[Info]:StoryInstance ignore message obj_created
+01-53-52-324:[Info]:StoryInstance ignore message obj_created
+01-53-52-324:[Info]:StoryInstance ignore message npc_created:20002
+01-53-52-324:[Info]:StoryInstance ignore message npc_created:20002
+01-53-52-324:[Info]:StoryInstance ignore message npc_created:20002
+01-53-52-324:[Info]:StoryInstance ignore message npc_created:20002
+01-53-52-324:[Info]:Publish ui_add_actor ui
+01-53-52-325:[Info]:---set 102 hp to 1100/1100
+01-53-52-325:[Info]:NpcCreate:103 unit:20003 ownerid=0
+01-53-52-325:[Info]:StoryInstance ignore message obj_created
+01-53-52-325:[Info]:StoryInstance ignore message obj_created
+01-53-52-325:[Info]:StoryInstance ignore message obj_created
+01-53-52-325:[Info]:StoryInstance ignore message obj_created
+01-53-52-325:[Info]:StoryInstance ignore message npc_created:20003
+01-53-52-325:[Info]:StoryInstance ignore message npc_created:20003
+01-53-52-325:[Info]:StoryInstance ignore message npc_created:20003
+01-53-52-325:[Info]:StoryInstance ignore message npc_created:20003
+01-53-52-325:[Info]:Publish ui_add_actor ui
+01-53-52-326:[Info]:---set 103 hp to 1100/1100
+01-53-52-326:[Info]:NpcCreate:104 unit:20004 ownerid=0
+01-53-52-326:[Info]:StoryInstance ignore message obj_created
+01-53-52-326:[Info]:StoryInstance ignore message obj_created
+01-53-52-326:[Info]:StoryInstance ignore message obj_created
+01-53-52-326:[Info]:StoryInstance ignore message obj_created
+01-53-52-326:[Info]:StoryInstance ignore message npc_created:20004
+01-53-52-326:[Info]:StoryInstance ignore message npc_created:20004
+01-53-52-326:[Info]:StoryInstance ignore message npc_created:20004
+01-53-52-326:[Info]:StoryInstance ignore message npc_created:20004
+01-53-52-326:[Info]:Publish ui_add_actor ui
+01-53-52-327:[Info]:---set 104 hp to 1100/1100
+01-53-52-327:[Info]:NpcCreate:105 unit:20005 ownerid=0
+01-53-52-327:[Info]:StoryInstance ignore message obj_created
+01-53-52-327:[Info]:StoryInstance ignore message obj_created
+01-53-52-327:[Info]:StoryInstance ignore message obj_created
+01-53-52-327:[Info]:StoryInstance ignore message obj_created
+01-53-52-327:[Info]:StoryInstance ignore message npc_created:20005
+01-53-52-327:[Info]:StoryInstance ignore message npc_created:20005
+01-53-52-327:[Info]:StoryInstance ignore message npc_created:20005
+01-53-52-327:[Info]:StoryInstance ignore message npc_created:20005
+01-53-52-327:[Info]:Publish ui_add_actor ui
+01-53-52-328:[Info]:---set 105 hp to 1100/1100
+01-53-52-328:[Info]:NpcCreate:106 unit:20006 ownerid=0
+01-53-52-328:[Info]:StoryInstance ignore message obj_created
+01-53-52-328:[Info]:StoryInstance ignore message obj_created
+01-53-52-328:[Info]:StoryInstance ignore message obj_created
+01-53-52-328:[Info]:StoryInstance ignore message obj_created
+01-53-52-328:[Info]:StoryInstance ignore message npc_created:20006
+01-53-52-328:[Info]:StoryInstance ignore message npc_created:20006
+01-53-52-328:[Info]:StoryInstance ignore message npc_created:20006
+01-53-52-328:[Info]:StoryInstance ignore message npc_created:20006
+01-53-52-328:[Info]:Publish ui_add_actor ui
+01-53-52-329:[Info]:---set 106 hp to 1100/1100
+01-53-52-329:[Info]:NpcCreate:107 unit:20007 ownerid=0
+01-53-52-329:[Info]:StoryInstance ignore message obj_created
+01-53-52-329:[Info]:StoryInstance ignore message obj_created
+01-53-52-329:[Info]:StoryInstance ignore message obj_created
+01-53-52-329:[Info]:StoryInstance ignore message obj_created
+01-53-52-329:[Info]:StoryInstance ignore message npc_created:20007
+01-53-52-329:[Info]:StoryInstance ignore message npc_created:20007
+01-53-52-329:[Info]:StoryInstance ignore message npc_created:20007
+01-53-52-329:[Info]:StoryInstance ignore message npc_created:20007
+01-53-52-329:[Info]:Publish ui_add_actor ui
+01-53-52-330:[Info]:---set 107 hp to 1100/1100
+01-53-52-330:[Info]:NpcCreate:108 unit:20008 ownerid=0
+01-53-52-330:[Info]:StoryInstance ignore message obj_created
+01-53-52-330:[Info]:StoryInstance ignore message obj_created
+01-53-52-330:[Info]:StoryInstance ignore message obj_created
+01-53-52-330:[Info]:StoryInstance ignore message obj_created
+01-53-52-330:[Info]:StoryInstance ignore message npc_created:20008
+01-53-52-330:[Info]:StoryInstance ignore message npc_created:20008
+01-53-52-330:[Info]:StoryInstance ignore message npc_created:20008
+01-53-52-330:[Info]:StoryInstance ignore message npc_created:20008
+01-53-52-330:[Info]:Publish ui_add_actor ui
+01-53-52-331:[Info]:---set 108 hp to 1100/1100
+01-53-52-331:[Info]:NpcCreate:109 unit:20009 ownerid=0
+01-53-52-331:[Info]:StoryInstance ignore message obj_created
+01-53-52-331:[Info]:StoryInstance ignore message obj_created
+01-53-52-331:[Info]:StoryInstance ignore message obj_created
+01-53-52-331:[Info]:StoryInstance ignore message obj_created
+01-53-52-331:[Info]:StoryInstance ignore message npc_created:20009
+01-53-52-331:[Info]:StoryInstance ignore message npc_created:20009
+01-53-52-331:[Info]:StoryInstance ignore message npc_created:20009
+01-53-52-331:[Info]:StoryInstance ignore message npc_created:20009
+01-53-52-331:[Info]:Publish ui_add_actor ui
+01-53-52-331:[Info]:---set 109 hp to 1100/1100
+01-53-52-331:[Info]:NpcCreate:110 unit:20010 ownerid=0
+01-53-52-332:[Info]:StoryInstance ignore message obj_created
+01-53-52-332:[Info]:StoryInstance ignore message obj_created
+01-53-52-332:[Info]:StoryInstance ignore message obj_created
+01-53-52-332:[Info]:StoryInstance ignore message obj_created
+01-53-52-332:[Info]:StoryInstance ignore message npc_created:20010
+01-53-52-332:[Info]:StoryInstance ignore message npc_created:20010
+01-53-52-332:[Info]:StoryInstance ignore message npc_created:20010
+01-53-52-332:[Info]:StoryInstance ignore message npc_created:20010
+01-53-52-333:[Info]:Publish ui_add_actor ui
+01-53-52-333:[Info]:---set 110 hp to 1100/1100
+01-53-52-333:[Info]:NpcCreate:111 unit:20011 ownerid=0
+01-53-52-334:[Info]:StoryInstance ignore message obj_created
+01-53-52-334:[Info]:StoryInstance ignore message obj_created
+01-53-52-334:[Info]:StoryInstance ignore message obj_created
+01-53-52-334:[Info]:StoryInstance ignore message obj_created
+01-53-52-334:[Info]:StoryInstance ignore message npc_created:20011
+01-53-52-334:[Info]:StoryInstance ignore message npc_created:20011
+01-53-52-334:[Info]:StoryInstance ignore message npc_created:20011
+01-53-52-334:[Info]:StoryInstance ignore message npc_created:20011
+01-53-52-334:[Info]:Publish ui_add_actor ui
+01-53-52-334:[Info]:---set 111 hp to 1100/1100
+01-53-52-334:[Info]:NpcCreate:112 unit:20012 ownerid=0
+01-53-52-335:[Info]:StoryInstance ignore message obj_created
+01-53-52-335:[Info]:StoryInstance ignore message obj_created
+01-53-52-335:[Info]:StoryInstance ignore message obj_created
+01-53-52-335:[Info]:StoryInstance ignore message obj_created
+01-53-52-335:[Info]:StoryInstance ignore message npc_created:20012
+01-53-52-335:[Info]:StoryInstance ignore message npc_created:20012
+01-53-52-335:[Info]:StoryInstance ignore message npc_created:20012
+01-53-52-335:[Info]:StoryInstance ignore message npc_created:20012
+01-53-52-335:[Info]:Publish ui_add_actor ui
+01-53-52-336:[Info]:---set 112 hp to 1100/1100
+01-53-52-336:[Info]:NpcCreate:113 unit:20013 ownerid=0
+01-53-52-336:[Info]:StoryInstance ignore message obj_created
+01-53-52-336:[Info]:StoryInstance ignore message obj_created
+01-53-52-336:[Info]:StoryInstance ignore message obj_created
+01-53-52-336:[Info]:StoryInstance ignore message obj_created
+01-53-52-336:[Info]:StoryInstance ignore message npc_created:20013
+01-53-52-336:[Info]:StoryInstance ignore message npc_created:20013
+01-53-52-336:[Info]:StoryInstance ignore message npc_created:20013
+01-53-52-336:[Info]:StoryInstance ignore message npc_created:20013
+01-53-52-336:[Info]:Publish ui_add_actor ui
+01-53-52-337:[Info]:---set 113 hp to 1100/1100
+01-53-52-337:[Info]:NpcCreate:114 unit:20014 ownerid=0
+01-53-52-337:[Info]:StoryInstance ignore message obj_created
+01-53-52-337:[Info]:StoryInstance ignore message obj_created
+01-53-52-337:[Info]:StoryInstance ignore message obj_created
+01-53-52-337:[Info]:StoryInstance ignore message obj_created
+01-53-52-337:[Info]:StoryInstance ignore message npc_created:20014
+01-53-52-337:[Info]:StoryInstance ignore message npc_created:20014
+01-53-52-337:[Info]:StoryInstance ignore message npc_created:20014
+01-53-52-337:[Info]:StoryInstance ignore message npc_created:20014
+01-53-52-337:[Info]:Publish ui_add_actor ui
+01-53-52-338:[Info]:---set 114 hp to 1100/1100
+01-53-52-338:[Info]:NpcCreate:115 unit:20015 ownerid=0
+01-53-52-338:[Info]:StoryInstance ignore message obj_created
+01-53-52-338:[Info]:StoryInstance ignore message obj_created
+01-53-52-338:[Info]:StoryInstance ignore message obj_created
+01-53-52-338:[Info]:StoryInstance ignore message obj_created
+01-53-52-338:[Info]:StoryInstance ignore message npc_created:20015
+01-53-52-338:[Info]:StoryInstance ignore message npc_created:20015
+01-53-52-338:[Info]:StoryInstance ignore message npc_created:20015
+01-53-52-338:[Info]:StoryInstance ignore message npc_created:20015
+01-53-52-338:[Info]:Publish ui_add_actor ui
+01-53-52-339:[Info]:---set 115 hp to 1100/1100
+01-53-52-339:[Info]:NpcCreate:116 unit:20016 ownerid=0
+01-53-52-339:[Info]:StoryInstance ignore message obj_created
+01-53-52-339:[Info]:StoryInstance ignore message obj_created
+01-53-52-339:[Info]:StoryInstance ignore message obj_created
+01-53-52-339:[Info]:StoryInstance ignore message obj_created
+01-53-52-339:[Info]:StoryInstance ignore message npc_created:20016
+01-53-52-339:[Info]:StoryInstance ignore message npc_created:20016
+01-53-52-339:[Info]:StoryInstance ignore message npc_created:20016
+01-53-52-339:[Info]:StoryInstance ignore message npc_created:20016
+01-53-52-339:[Info]:Publish ui_add_actor ui
+01-53-52-340:[Info]:---set 116 hp to 1100/1100
+01-53-52-340:[Info]:NpcCreate:117 unit:20017 ownerid=0
+01-53-52-340:[Info]:StoryInstance ignore message obj_created
+01-53-52-340:[Info]:StoryInstance ignore message obj_created
+01-53-52-340:[Info]:StoryInstance ignore message obj_created
+01-53-52-340:[Info]:StoryInstance ignore message obj_created
+01-53-52-340:[Info]:StoryInstance ignore message npc_created:20017
+01-53-52-340:[Info]:StoryInstance ignore message npc_created:20017
+01-53-52-340:[Info]:StoryInstance ignore message npc_created:20017
+01-53-52-340:[Info]:StoryInstance ignore message npc_created:20017
+01-53-52-340:[Info]:Publish ui_add_actor ui
+01-53-52-341:[Info]:---set 117 hp to 1100/1100
+01-53-52-341:[Info]:NpcCreate:119 unit:11800 ownerid=0
+01-53-52-341:[Info]:StoryInstance ignore message obj_created
+01-53-52-341:[Info]:StoryInstance ignore message obj_created
+01-53-52-341:[Info]:StoryInstance ignore message obj_created
+01-53-52-341:[Info]:StoryInstance ignore message obj_created
+01-53-52-341:[Info]:StoryInstance ignore message npc_created:11800
+01-53-52-341:[Info]:StoryInstance ignore message npc_created:11800
+01-53-52-341:[Info]:StoryInstance ignore message npc_created:11800
+01-53-52-341:[Info]:StoryInstance ignore message npc_created:11800
+01-53-52-341:[Info]:Publish ui_add_actor ui
+01-53-52-342:[Info]:---set 119 hp to 1100/1100
+01-53-52-342:[Info]:NpcCreate:120 unit:11801 ownerid=0
+01-53-52-342:[Info]:StoryInstance ignore message obj_created
+01-53-52-342:[Info]:StoryInstance ignore message obj_created
+01-53-52-342:[Info]:StoryInstance ignore message obj_created
+01-53-52-342:[Info]:StoryInstance ignore message obj_created
+01-53-52-342:[Info]:StoryInstance ignore message npc_created:11801
+01-53-52-342:[Info]:StoryInstance ignore message npc_created:11801
+01-53-52-342:[Info]:StoryInstance ignore message npc_created:11801
+01-53-52-342:[Info]:StoryInstance ignore message npc_created:11801
+01-53-52-342:[Info]:Publish ui_add_actor ui
+01-53-52-343:[Info]:---set 120 hp to 1100/1100
+01-53-52-343:[Info]:NpcCreate:121 unit:11802 ownerid=0
+01-53-52-343:[Info]:StoryInstance ignore message obj_created
+01-53-52-343:[Info]:StoryInstance ignore message obj_created
+01-53-52-343:[Info]:StoryInstance ignore message obj_created
+01-53-52-343:[Info]:StoryInstance ignore message obj_created
+01-53-52-343:[Info]:StoryInstance ignore message npc_created:11802
+01-53-52-343:[Info]:StoryInstance ignore message npc_created:11802
+01-53-52-343:[Info]:StoryInstance ignore message npc_created:11802
+01-53-52-343:[Info]:StoryInstance ignore message npc_created:11802
+01-53-52-343:[Info]:Publish ui_add_actor ui
+01-53-52-344:[Info]:---set 121 hp to 1100/1100
+01-53-52-344:[Info]:NpcCreate:122 unit:11803 ownerid=0
+01-53-52-344:[Info]:StoryInstance ignore message obj_created
+01-53-52-344:[Info]:StoryInstance ignore message obj_created
+01-53-52-344:[Info]:StoryInstance ignore message obj_created
+01-53-52-344:[Info]:StoryInstance ignore message obj_created
+01-53-52-344:[Info]:StoryInstance ignore message npc_created:11803
+01-53-52-344:[Info]:StoryInstance ignore message npc_created:11803
+01-53-52-344:[Info]:StoryInstance ignore message npc_created:11803
+01-53-52-344:[Info]:StoryInstance ignore message npc_created:11803
+01-53-52-344:[Info]:Publish ui_add_actor ui
+01-53-52-344:[Info]:---set 122 hp to 1100/1100
+01-53-52-344:[Info]:NpcCreate:123 unit:100000123 ownerid=0
+01-53-52-345:[Info]:StoryInstance ignore message obj_created
+01-53-52-345:[Info]:StoryInstance ignore message obj_created
+01-53-52-345:[Info]:StoryInstance ignore message obj_created
+01-53-52-345:[Info]:StoryInstance ignore message obj_created
+01-53-52-345:[Info]:StoryInstance ignore message npc_created:100000123
+01-53-52-345:[Info]:StoryInstance ignore message npc_created:100000123
+01-53-52-345:[Info]:StoryInstance ignore message npc_created:100000123
+01-53-52-345:[Info]:StoryInstance ignore message npc_created:100000123
+01-53-52-345:[Info]:Publish ui_add_actor ui
+01-53-52-346:[Info]:---set 123 hp to 1100/1100
+01-53-52-349:[Debug]:CreateTriger, type:animation triger:AnimationTriger
+01-53-52-350:[Debug]:CreateTriger, type:bornfinish triger:BornFinishTriger
+01-53-52-350:[Debug]:SkillInstance.Init section num:1 True skill 1
+01-53-52-350:[Debug]:ParseSkill 1
+01-53-52-362:[Info]:NpcCreate:124 unit:12300 ownerid=0
+01-53-52-363:[Info]:StoryInstance ignore message obj_created
+01-53-52-363:[Info]:StoryInstance ignore message obj_created
+01-53-52-363:[Info]:StoryInstance ignore message obj_created
+01-53-52-363:[Info]:StoryInstance ignore message obj_created
+01-53-52-363:[Info]:StoryInstance ignore message npc_created:12300
+01-53-52-363:[Info]:StoryInstance ignore message npc_created:12300
+01-53-52-363:[Info]:StoryInstance ignore message npc_created:12300
+01-53-52-363:[Info]:StoryInstance ignore message npc_created:12300
+01-53-52-363:[Info]:Publish ui_add_actor ui
+01-53-52-364:[Info]:NpcCreate:125 unit:12301 ownerid=0
+01-53-52-364:[Info]:StoryInstance ignore message obj_created
+01-53-52-364:[Info]:StoryInstance ignore message obj_created
+01-53-52-364:[Info]:StoryInstance ignore message obj_created
+01-53-52-364:[Info]:StoryInstance ignore message obj_created
+01-53-52-364:[Info]:StoryInstance ignore message npc_created:12301
+01-53-52-364:[Info]:StoryInstance ignore message npc_created:12301
+01-53-52-364:[Info]:StoryInstance ignore message npc_created:12301
+01-53-52-364:[Info]:StoryInstance ignore message npc_created:12301
+01-53-52-364:[Info]:Publish ui_add_actor ui
+01-53-52-365:[Info]:NpcCreate:126 unit:12302 ownerid=0
+01-53-52-365:[Info]:StoryInstance ignore message obj_created
+01-53-52-365:[Info]:StoryInstance ignore message obj_created
+01-53-52-365:[Info]:StoryInstance ignore message obj_created
+01-53-52-365:[Info]:StoryInstance ignore message obj_created
+01-53-52-365:[Info]:StoryInstance ignore message npc_created:12302
+01-53-52-365:[Info]:StoryInstance ignore message npc_created:12302
+01-53-52-365:[Info]:StoryInstance ignore message npc_created:12302
+01-53-52-365:[Info]:StoryInstance ignore message npc_created:12302
+01-53-52-365:[Info]:Publish ui_add_actor ui
+01-53-52-366:[Info]:NpcCreate:127 unit:12303 ownerid=0
+01-53-52-366:[Info]:StoryInstance ignore message obj_created
+01-53-52-366:[Info]:StoryInstance ignore message obj_created
+01-53-52-366:[Info]:StoryInstance ignore message obj_created
+01-53-52-366:[Info]:StoryInstance ignore message obj_created
+01-53-52-366:[Info]:StoryInstance ignore message npc_created:12303
+01-53-52-366:[Info]:StoryInstance ignore message npc_created:12303
+01-53-52-366:[Info]:StoryInstance ignore message npc_created:12303
+01-53-52-366:[Info]:StoryInstance ignore message npc_created:12303
+01-53-52-366:[Info]:Publish ui_add_actor ui
+01-53-52-368:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-369:[Debug]:ChangeToSection:0 duration:100
+01-53-52-378:[Debug]:ChangeToSection:0 duration:100
+01-53-52-378:[Debug]:ChangeToSection:0 duration:100
+01-53-52-378:[Debug]:ChangeToSection:0 duration:100
+01-53-52-378:[Debug]:ChangeToSection:0 duration:100
+01-53-52-929:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+01-53-52-939:[Info]:SendToLobby:9 CQAEAAihnAE=
+01-53-52-972:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-53-52-975:[Info]:DecodeNodeMessage:9 CQAEAAihnAE=
+01-53-53-330:[Info]:Publish loading_complete ui
+01-53-53-331:[Info]:SendMessage GameRoot CameraFollow 123 False
+01-53-53-331:[Info]:StoryInstance ignore message show_dlg
+01-53-53-331:[Info]:StoryInstance queue message show_dlg
+01-53-53-331:[Info]:StoryInstance ignore message show_dlg
+01-53-53-331:[Info]:StoryInstance ignore message show_dlg
+01-53-53-331:[Info]:Publish ui_hide ui
+01-53-53-331:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-53-345:[Warn]:First,show_dlg_item:2 0
+01-53-53-351:[Info]:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+01-53-53-368:[Warn]:show_dlg:2 0 开始战斗！
+01-53-55-014:[Info]:Warning Message: resend delay 0.02818394 127.0.0.1:9528
+01-53-55-014:[Info]:Warning Message: Timeout deadline pushed to  19.39429 127.0.0.1:9528
+01-53-55-118:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-55-118:[Info]:StoryInstance queue message StoryDlg:on_click
+01-53-55-118:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-55-118:[Info]:StoryInstance ignore message StoryDlg:on_click
+01-53-55-118:[Info]:StoryInstance queue message StoryDlg:show_dlg_item
+01-53-55-133:[Warn]:on_click,show_dlg_item:2 1
+01-53-55-138:[Info]:Publish ui_show ui
+01-53-55-138:[Info]:StoryInstance ignore message dialog_over:2
+01-53-55-138:[Info]:StoryInstance ignore message dialog_over:2
+01-53-55-138:[Info]:StoryInstance ignore message dialog_over:2
+01-53-55-138:[Info]:StoryInstance ignore message dialog_over:2
+01-53-55-155:[Warn]:Finish,show_dlg_item:2 1
+01-53-55-220:[Info]:SendMessage Main Camera LightScreen 3000 False
+01-53-57-941:[Info]:SendToLobby:9 CQAEAAihnAE=
+01-53-57-982:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-53-57-986:[Info]:DecodeNodeMessage:9 CQAEAAihnAE=
+01-53-58-018:[Info]:Warning Message: resend delay 0.02733541 127.0.0.1:9528
+01-53-58-018:[Info]:Warning Message: Timeout deadline pushed to  22.39818 127.0.0.1:9528
+01-54-01-024:[Info]:Warning Message: resend delay 0.02671229 127.0.0.1:9528
+01-54-01-024:[Info]:Warning Message: Timeout deadline pushed to  25.40411 127.0.0.1:9528
+01-54-02-931:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+01-54-02-942:[Info]:SendToLobby:9 CQAEAAihnAE=
+01-54-02-974:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-54-02-978:[Info]:DecodeNodeMessage:9 CQAEAAihnAE=
+01-54-04-030:[Info]:Warning Message: resend delay 0.02646116 127.0.0.1:9528
+01-54-04-030:[Info]:Warning Message: Timeout deadline pushed to  28.41032 127.0.0.1:9528
+01-54-07-038:[Info]:Warning Message: resend delay 0.02612555 127.0.0.1:9528
+01-54-07-038:[Info]:Warning Message: Timeout deadline pushed to  31.41804 127.0.0.1:9528
+01-54-07-943:[Info]:SendToLobby:9 CQAEAAihnAE=
+01-54-07-979:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-54-07-980:[Info]:DecodeNodeMessage:9 CQAEAAihnAE=
+01-54-10-039:[Info]:Warning Message: resend delay 0.02596332 127.0.0.1:9528
+01-54-10-039:[Info]:Warning Message: Timeout deadline pushed to  34.41908 127.0.0.1:9528
+01-54-12-933:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+01-54-12-945:[Info]:SendToLobby:9 CQAEAAihnAE=
+01-54-12-979:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-54-12-984:[Info]:DecodeNodeMessage:9 CQAEAAihnAE=
+01-54-13-041:[Info]:Warning Message: resend delay 0.02574162 127.0.0.1:9528
+01-54-13-041:[Info]:Warning Message: Timeout deadline pushed to  37.42086 127.0.0.1:9528
+01-54-16-044:[Info]:Warning Message: resend delay 0.02560565 127.0.0.1:9528
+01-54-16-044:[Info]:Warning Message: Timeout deadline pushed to  40.42396 127.0.0.1:9528
+01-54-17-946:[Info]:SendToLobby:9 CQAEAAihnAE=
+01-54-17-979:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-54-17-981:[Info]:DecodeNodeMessage:9 CQAEAAihnAE=
+01-54-19-049:[Info]:Warning Message: resend delay 0.02550927 127.0.0.1:9528
+01-54-19-049:[Info]:Warning Message: Timeout deadline pushed to  43.42883 127.0.0.1:9528
+01-54-22-051:[Info]:Warning Message: resend delay 0.02546464 127.0.0.1:9528
+01-54-22-051:[Info]:Warning Message: Timeout deadline pushed to  46.43078 127.0.0.1:9528
+01-54-22-939:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+01-54-22-950:[Info]:SendToLobby:9 CQAEAAihnAE=
+01-54-22-979:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-54-22-980:[Info]:DecodeNodeMessage:9 CQAEAAihnAE=
+01-54-25-052:[Info]:Warning Message: resend delay 0.02543099 127.0.0.1:9528
+01-54-25-052:[Info]:Warning Message: Timeout deadline pushed to  49.43173 127.0.0.1:9528
+01-54-27-952:[Info]:SendToLobby:9 CQAEAAihnAE=
+01-54-27-990:[Debug]:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-54-27-992:[Info]:DecodeNodeMessage:9 CQAEAAihnAE=
+01-54-28-054:[Info]:Warning Message: resend delay 0.02543868 127.0.0.1:9528
+01-54-28-054:[Info]:Warning Message: Timeout deadline pushed to  52.43374 127.0.0.1:9528
+01-54-29-195:[Info]:SendToLobby:7 BwAEAAihnAE=
+01-54-29-195:[Info]:SendToLobby:6 BgAHAAoFdGVzdDI=
+01-54-29-196:[Info]:Disconnect(False). CurTime 46268 LastConnectTime 3538
+01-54-29-196:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+01-54-29-199:[Info]:Network Status Changed:Disconnecting Reason:bye for quit passive
+Statistic:Sent 1572 bytes in 149 messages in 149 packets
+Received 3376 bytes in 200 messages in 150 packets
 Unsent messages: 0
 Stored messages: 0
 Withheld messages: 0
 
-00-55-07-423:[Info]:[Message Count]:
+01-54-29-200:[Info]:[Message Count]:
 [Send]:
 =>6:1 6 GameFrameworkMessage.Msg_CR_ShakeHands
-=>1:3 13 GameFrameworkMessage.Msg_Ping
+=>1:8 38 GameFrameworkMessage.Msg_Ping
 =>9:1 1 GameFrameworkMessage.Msg_CR_Enter
 =>41:1 3 GameFrameworkMessage.Msg_CR_DlgClosed
-=>11:8 56 GameFrameworkMessage.Msg_CR_UserMoveToPos
+=>11:53 371 GameFrameworkMessage.Msg_CR_UserMoveToPos
 [Receive]:
 =>7:1 3 GameFrameworkMessage.Msg_RC_ShakeHands_Ret
-=>2:3 25 GameFrameworkMessage.Msg_Pong
+=>2:8 70 GameFrameworkMessage.Msg_Pong
 =>34:1 5 GameFrameworkMessage.Msg_RC_CampChanged
 =>18:27 824 GameFrameworkMessage.Msg_RC_CreateNpc
 =>30:23 299 GameFrameworkMessage.Msg_RC_SyncProperty
-=>21:2160 38880 GameFrameworkMessage.Msg_RC_NpcMove
+=>27:2 10 GameFrameworkMessage.Msg_RC_AddSkill
 =>37:1 25 GameFrameworkMessage.Msg_RC_PublishEvent
 =>38:2 75 GameFrameworkMessage.Msg_RC_SendGfxMessage
 =>40:1 3 GameFrameworkMessage.Msg_RC_ShowDlg
+=>21:44 792 GameFrameworkMessage.Msg_RC_NpcMove
 
-00-55-07-423:[Info]:Network Status Changed:Disconnected Reason:bye for quit passive
-Statistic:Sent 8551 bytes in 357 messages in 357 packets
-Received 51426 bytes in 2243 messages in 359 packets
+01-54-29-200:[Info]:Network Status Changed:Disconnected Reason:bye for quit passive
+Statistic:Sent 1572 bytes in 149 messages in 149 packets
+Received 3376 bytes in 200 messages in 150 packets
 Unsent messages: 0
 Stored messages: 0
 Withheld messages: 0
 
-00-55-07-423:[Info]:[Message Count]:
+01-54-29-200:[Info]:[Message Count]:
 [Send]:
 =>6:1 6 GameFrameworkMessage.Msg_CR_ShakeHands
-=>1:3 13 GameFrameworkMessage.Msg_Ping
+=>1:8 38 GameFrameworkMessage.Msg_Ping
 =>9:1 1 GameFrameworkMessage.Msg_CR_Enter
 =>41:1 3 GameFrameworkMessage.Msg_CR_DlgClosed
-=>11:8 56 GameFrameworkMessage.Msg_CR_UserMoveToPos
+=>11:53 371 GameFrameworkMessage.Msg_CR_UserMoveToPos
 [Receive]:
 =>7:1 3 GameFrameworkMessage.Msg_RC_ShakeHands_Ret
-=>2:3 25 GameFrameworkMessage.Msg_Pong
+=>2:8 70 GameFrameworkMessage.Msg_Pong
 =>34:1 5 GameFrameworkMessage.Msg_RC_CampChanged
 =>18:27 824 GameFrameworkMessage.Msg_RC_CreateNpc
 =>30:23 299 GameFrameworkMessage.Msg_RC_SyncProperty
-=>21:2160 38880 GameFrameworkMessage.Msg_RC_NpcMove
+=>27:2 10 GameFrameworkMessage.Msg_RC_AddSkill
 =>37:1 25 GameFrameworkMessage.Msg_RC_PublishEvent
 =>38:2 75 GameFrameworkMessage.Msg_RC_SendGfxMessage
 =>40:1 3 GameFrameworkMessage.Msg_RC_ShowDlg
+=>21:44 792 GameFrameworkMessage.Msg_RC_NpcMove
 
-00-55-07-423:[Info]:Connect ip:127.0.0.1 port:9528 key:199696606
+01-54-29-200:[Info]:Connect ip:127.0.0.1 port:9528 key:256001975
 NetPeer Statistic:0 connections
-Sent 8614 bytes in 360 messages in 360 packets
-Received 51454 bytes in 2244 messages in 360 packets
-Storage allocated 1217 bytes
-Recycled pool 1156 bytes
+Sent 1635 bytes in 152 messages in 152 packets
+Received 3404 bytes in 201 messages in 151 packets
+Storage allocated 1165 bytes
+Recycled pool 1086 bytes
 
-00-55-07-423:[Info]:Wait NetConnectionStatus.Connected ...
-00-55-07-425:[Info]:Network Status Changed:Connected Reason:Connected to 839205A0DA0AEA28
-Statistic:Sent 6 bytes in 1 messages in 1 packets
-Received 0 bytes in 0 messages in 0 packets
+01-54-29-201:[Info]:Network Status Changed:Connected Reason:Connected to 15165CE073D374E4
+Statistic:Sent 16 bytes in 2 messages in 2 packets
+Received 16 bytes in 2 messages in 2 packets
 Unsent messages: 0
 Stored messages: 0
 Withheld messages: 0
 
-00-55-07-425:[Info]:[Message Count]:
+01-54-29-201:[Info]:[Message Count]:
 [Send]:
 =>6:1 6 GameFrameworkMessage.Msg_CR_ShakeHands
-=>1:3 13 GameFrameworkMessage.Msg_Ping
+=>1:8 38 GameFrameworkMessage.Msg_Ping
 =>9:1 1 GameFrameworkMessage.Msg_CR_Enter
 =>41:1 3 GameFrameworkMessage.Msg_CR_DlgClosed
-=>11:8 56 GameFrameworkMessage.Msg_CR_UserMoveToPos
+=>11:53 371 GameFrameworkMessage.Msg_CR_UserMoveToPos
 [Receive]:
 =>7:1 3 GameFrameworkMessage.Msg_RC_ShakeHands_Ret
-=>2:3 25 GameFrameworkMessage.Msg_Pong
+=>2:8 70 GameFrameworkMessage.Msg_Pong
 =>34:1 5 GameFrameworkMessage.Msg_RC_CampChanged
 =>18:27 824 GameFrameworkMessage.Msg_RC_CreateNpc
 =>30:23 299 GameFrameworkMessage.Msg_RC_SyncProperty
-=>21:2160 38880 GameFrameworkMessage.Msg_RC_NpcMove
+=>27:2 10 GameFrameworkMessage.Msg_RC_AddSkill
 =>37:1 25 GameFrameworkMessage.Msg_RC_PublishEvent
 =>38:2 75 GameFrameworkMessage.Msg_RC_SendGfxMessage
 =>40:1 3 GameFrameworkMessage.Msg_RC_ShowDlg
+=>21:44 792 GameFrameworkMessage.Msg_RC_NpcMove
 
-00-55-07-425:[Info]:Warning Message: resend delay 0.02526035 127.0.0.1:9528
-00-55-07-425:[Info]:Warning Message: Timeout deadline pushed to  31.1181 127.0.0.1:9528
-00-55-07-425:[Info]:Warning Message: resend delay 0.02526035 127.0.0.1:9528
-00-55-07-425:[Info]:Wait NetConnectionStatus.Connected ...
+01-54-29-201:[Info]:Warning Message: resend delay 0.02505608 127.0.0.1:9528
+01-54-29-201:[Info]:Warning Message: Timeout deadline pushed to  53.5807 127.0.0.1:9528
+01-54-29-201:[Info]:Warning Message: resend delay 0.02505608 127.0.0.1:9528
+01-54-29-201:[Info]:Wait NetConnectionStatus.Connected ...
+01-54-30-202:[Info]:Network Status Changed:Disconnected Reason:bye
+Statistic:Sent 35 bytes in 4 messages in 4 packets
+Received 32 bytes in 4 messages in 4 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
+
+01-54-30-202:[Info]:[Message Count]:
+[Send]:
+=>6:2 12 GameFrameworkMessage.Msg_CR_ShakeHands
+=>1:8 38 GameFrameworkMessage.Msg_Ping
+=>9:1 1 GameFrameworkMessage.Msg_CR_Enter
+=>41:1 3 GameFrameworkMessage.Msg_CR_DlgClosed
+=>11:53 371 GameFrameworkMessage.Msg_CR_UserMoveToPos
+[Receive]:
+=>7:1 3 GameFrameworkMessage.Msg_RC_ShakeHands_Ret
+=>2:8 70 GameFrameworkMessage.Msg_Pong
+=>34:1 5 GameFrameworkMessage.Msg_RC_CampChanged
+=>18:27 824 GameFrameworkMessage.Msg_RC_CreateNpc
+=>30:23 299 GameFrameworkMessage.Msg_RC_SyncProperty
+=>27:2 10 GameFrameworkMessage.Msg_RC_AddSkill
+=>37:1 25 GameFrameworkMessage.Msg_RC_PublishEvent
+=>38:2 75 GameFrameworkMessage.Msg_RC_SendGfxMessage
+=>40:1 3 GameFrameworkMessage.Msg_RC_ShowDlg
+=>21:44 792 GameFrameworkMessage.Msg_RC_NpcMove
+
+01-54-30-205:[Debug]:QueueActionWithDelegation, Void OnClosed() GameFramework.Network.UserNetworkSystem, action count 2

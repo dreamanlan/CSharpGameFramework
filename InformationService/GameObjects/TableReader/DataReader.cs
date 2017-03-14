@@ -966,7 +966,7 @@ namespace TableConfig
 {
 	public sealed partial class Level : IDataRecord<int>
 	{
-		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 64)]
+		[StructLayout(LayoutKind.Auto, Pack = 1, Size = 60)]
 		private struct LevelRecord
 		{
 			internal int id;
@@ -975,7 +975,6 @@ namespace TableConfig
 			internal int SceneDslFile;
 			internal int ClientDslFile;
 			internal int RoomDslFile;
-			internal int ScenePlugins;
 			internal int SceneUi;
 			internal float EnterX;
 			internal float EnterY;
@@ -993,7 +992,6 @@ namespace TableConfig
 		public List<string> SceneDslFile;
 		public List<string> ClientDslFile;
 		public List<string> RoomDslFile;
-		public List<string> ScenePlugins;
 		public List<int> SceneUi;
 		public float EnterX;
 		public float EnterY;
@@ -1013,7 +1011,6 @@ namespace TableConfig
 			SceneDslFile = DataRecordUtility.ExtractStringList(table, record.SceneDslFile, null);
 			ClientDslFile = DataRecordUtility.ExtractStringList(table, record.ClientDslFile, null);
 			RoomDslFile = DataRecordUtility.ExtractStringList(table, record.RoomDslFile, null);
-			ScenePlugins = DataRecordUtility.ExtractStringList(table, record.ScenePlugins, null);
 			SceneUi = DataRecordUtility.ExtractIntList(table, record.SceneUi, null);
 			EnterX = DataRecordUtility.ExtractFloat(table, record.EnterX, 0);
 			EnterY = DataRecordUtility.ExtractFloat(table, record.EnterY, 0);
@@ -1035,7 +1032,6 @@ namespace TableConfig
 			record.SceneDslFile = DataRecordUtility.SetValue(table, SceneDslFile, null);
 			record.ClientDslFile = DataRecordUtility.SetValue(table, ClientDslFile, null);
 			record.RoomDslFile = DataRecordUtility.SetValue(table, RoomDslFile, null);
-			record.ScenePlugins = DataRecordUtility.SetValue(table, ScenePlugins, null);
 			record.SceneUi = DataRecordUtility.SetValue(table, SceneUi, null);
 			record.EnterX = DataRecordUtility.SetValue(table, EnterX, 0);
 			record.EnterY = DataRecordUtility.SetValue(table, EnterY, 0);

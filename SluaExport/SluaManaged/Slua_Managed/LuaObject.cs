@@ -816,7 +816,7 @@ return index
 			{
 				return true;
 			}
-			else if (t == typeof(char[]) || t==typeof(byte[]))
+			else if (t == typeof(char[])/* || t==typeof(byte[])*/)
 			{
 				return lt == LuaTypes.LUA_TSTRING;
 			}
