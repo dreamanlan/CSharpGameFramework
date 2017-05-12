@@ -1,0 +1,97 @@
+fileFormatVersion: 2
+guid: 26a7e52b53d848d44864827904af45b0
+timeCreated: 1433298281
+licenseType: Store
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: RockBridge
+    100002: //RootNode
+    100004: RockPeak
+    100006: RockPlateau
+    100008: RockPlateau2
+    100010: RockSpikes
+    400000: RockBridge
+    400002: //RootNode
+    400004: RockPeak
+    400006: RockPlateau
+    400008: RockPlateau2
+    400010: RockSpikes
+    2300000: RockBridge
+    2300002: RockPeak
+    2300004: RockPlateau
+    2300006: RockPlateau2
+    2300008: RockSpikes
+    3300000: RockBridge
+    3300002: RockPeak
+    3300004: RockPlateau
+    3300006: RockPlateau2
+    3300008: RockSpikes
+    4300000: RockPlateau2
+    4300002: RockPeak
+    4300004: RockPlateau
+    4300006: RockSpikes
+    4300008: RockBridge
+    6400000: RockBridge
+    6400002: RockPeak
+    6400004: RockPlateau
+    6400006: RockPlateau2
+    6400008: RockSpikes
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 1
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

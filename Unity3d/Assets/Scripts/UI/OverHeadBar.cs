@@ -22,7 +22,7 @@ public class OverHeadBar : MonoBehaviour
 
     private Canvas canvas;
     private float slowTime;
-    private TextGenerator generator = new TextGenerator();
+    private TextGenerator generator;
     private Vector2 bkgSize;
     private float paopaoShowTime = 0;
     private readonly float paopaoDurationTime = 4;//s
@@ -57,7 +57,8 @@ public class OverHeadBar : MonoBehaviour
     }
     public void Start() 
     {
-		health.fillAmount = 1f;
+        generator = new TextGenerator();
+        health.fillAmount = 1f;
 		healthSlow.fillAmount = 1f;
 		slowTime = 0f;
         canvas = this.GetComponentInChildren<Canvas>();

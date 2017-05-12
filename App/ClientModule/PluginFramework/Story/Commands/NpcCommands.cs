@@ -9,7 +9,7 @@ using GameFramework.Skill;
 namespace GameFramework.Story.Commands
 {
     /// <summary>
-    /// createnpc(npc_unit_id,vector3(x,y,z),dir,camp,linkId[,ai,stringlist("param1 param2 param3 ..."),leaderId])[objid("@objid")];
+    /// createnpc(npc_unit_id,vector3(x,y,z),dir,camp,tableId[,ai,stringlist("param1 param2 param3 ..."),leaderId])[objid("@objid")];
     /// </summary>
     internal class CreateNpcCommand : AbstractStoryCommand
     {
@@ -20,7 +20,7 @@ namespace GameFramework.Story.Commands
             cmd.m_Pos = m_Pos.Clone();
             cmd.m_Dir = m_Dir.Clone();
             cmd.m_Camp = m_Camp.Clone();
-            cmd.m_LinkId = m_LinkId.Clone();
+            cmd.m_TableId = m_TableId.Clone();
             cmd.m_AiLogic = m_AiLogic.Clone();
             cmd.m_AiParams = m_AiParams.Clone();
             cmd.m_LeaderId = m_LeaderId.Clone();
@@ -41,7 +41,7 @@ namespace GameFramework.Story.Commands
                 m_Pos.Evaluate(instance, iterator, args);
                 m_Dir.Evaluate(instance, iterator, args);
                 m_Camp.Evaluate(instance, iterator, args);
-                m_LinkId.Evaluate(instance, iterator, args);
+                m_TableId.Evaluate(instance, iterator, args);
 
                 if (m_ParamNum > 6) {
                     m_AiLogic.Evaluate(instance, iterator, args);
@@ -63,7 +63,7 @@ namespace GameFramework.Story.Commands
                 Vector3 pos = m_Pos.Value;
                 float dir = m_Dir.Value;
                 int camp = m_Camp.Value;
-                int linkId = m_LinkId.Value;
+                int tableId = m_TableId.Value;
                 if (m_ParamNum > 6) {
                     string aiLogic = m_AiLogic.Value;
                     List<string> aiParams = new List<string>();
@@ -71,18 +71,18 @@ namespace GameFramework.Story.Commands
                     foreach (string aiParam in aiParamEnumer) {
                         aiParams.Add(aiParam);
                     }
-                    objId = PluginFramework.Instance.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, linkId, aiLogic, aiParams.ToArray());
+                    objId = PluginFramework.Instance.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, tableId, aiLogic, aiParams.ToArray());
                 } else {
-                    objId = PluginFramework.Instance.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, linkId);
+                    objId = PluginFramework.Instance.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, tableId);
                 }
                 if (m_ParamNum > 6) {
                     EntityInfo charObj = PluginFramework.Instance.GetEntityById(objId);
                     if (null != charObj) {
                         if (m_ParamNum > 7) {
                             int leaderId = m_LeaderId.Value;
-                            charObj.GetAiStateInfo().LeaderID = leaderId;
+                            charObj.GetAiStateInfo().LeaderId = leaderId;
                         } else {
-                            charObj.GetAiStateInfo().LeaderID = 0;
+                            charObj.GetAiStateInfo().LeaderId = 0;
                         }
                     }
                 }
@@ -102,7 +102,7 @@ namespace GameFramework.Story.Commands
                 m_Pos.InitFromDsl(callData.GetParam(1));
                 m_Dir.InitFromDsl(callData.GetParam(2));
                 m_Camp.InitFromDsl(callData.GetParam(3));
-                m_LinkId.InitFromDsl(callData.GetParam(4));
+                m_TableId.InitFromDsl(callData.GetParam(4));
 
                 if (m_ParamNum > 6) {
                     m_AiLogic.InitFromDsl(callData.GetParam(5));
@@ -139,7 +139,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<Vector3> m_Pos = new StoryValue<Vector3>();
         private IStoryValue<float> m_Dir = new StoryValue<float>();
         private IStoryValue<int> m_Camp = new StoryValue<int>();
-        private IStoryValue<int> m_LinkId = new StoryValue<int>();
+        private IStoryValue<int> m_TableId = new StoryValue<int>();
         private IStoryValue<string> m_AiLogic = new StoryValue<string>();
         private IStoryValue<IEnumerable> m_AiParams = new StoryValue<IEnumerable>();
         private IStoryValue<int> m_LeaderId = new StoryValue<int>();
@@ -229,7 +229,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
     }
     /// <summary>
-    /// npcface(npc_unit_id,dir);
+    /// npcface(npc_unit_id, dir[, immediately]);
     /// </summary>
     internal class NpcFaceCommand : AbstractStoryCommand
     {
@@ -238,45 +238,61 @@ namespace GameFramework.Story.Commands
             NpcFaceCommand cmd = new NpcFaceCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_Dir = m_Dir.Clone();
+            cmd.m_Immediately = m_Immediately.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_UnitId.Evaluate(instance, iterator, args);
             m_Dir.Evaluate(instance, iterator, args);
+            m_Immediately.Evaluate(instance, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             int unitId = m_UnitId.Value;
             float dir = m_Dir.Value;
-            EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
-            if (null != entity) {
-                MovementStateInfo msi = entity.GetMovementStateInfo();
-                msi.SetFaceDir(dir);
+            int im = 0;
+            if (m_Immediately.HaveValue)
+                im = m_Immediately.Value;
+            EntityInfo npc = PluginFramework.Instance.GetEntityByUnitId(unitId);
+            if (null != npc)
+            {
+                MovementStateInfo msi = npc.GetMovementStateInfo();
+                if (im != 0) {
+                    msi.SetFaceDir(dir);
+
+                    var uobj = PluginFramework.Instance.GetGameObject(npc.GetId());
+                    if (null != uobj) {
+                        var e = uobj.transform.eulerAngles;
+                        uobj.transform.eulerAngles = new UnityEngine.Vector3(e.x, Geometry.RadianToDegree(dir), e.z);
+                    }
+                } else {
+                    msi.SetWantedFaceDir(dir);
+                }
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num > 1) {
+            if (num > 1)
+            {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
                 m_Dir.InitFromDsl(callData.GetParam(1));
+                if (num > 2)
+                    m_Immediately.InitFromDsl(callData.GetParam(2));
             }
         }
 
         private IStoryValue<int> m_UnitId = new StoryValue<int>();
         private IStoryValue<float> m_Dir = new StoryValue<float>();
+        private IStoryValue<int> m_Immediately = new StoryValue<int>();
     }
     /// <summary>
-    /// npcmove(npc_unit_id,vector3(x,y,z));
+    /// npcmove(npc_unit_id,vector3(x,y,z)[,event]);
     /// </summary>
     internal class NpcMoveCommand : AbstractStoryCommand
     {
@@ -285,23 +301,23 @@ namespace GameFramework.Story.Commands
             NpcMoveCommand cmd = new NpcMoveCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_Pos = m_Pos.Clone();
+            cmd.m_Event = m_Event.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_UnitId.Evaluate(instance, iterator, args);
             m_Pos.Evaluate(instance, iterator, args);
+            m_Event.Evaluate(instance, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             int unitId = m_UnitId.Value;
             Vector3 pos = m_Pos.Value;
+            string eventName = m_Event.Value;
             EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
             if (null != entity) {
                 List<Vector3> waypoints = new List<Vector3>();
@@ -315,27 +331,30 @@ namespace GameFramework.Story.Commands
                 data.WayPoints = waypoints;
                 data.Index = 0;
                 data.IsFinish = false;
+                data.Event = eventName;
                 entity.GetMovementStateInfo().TargetPosition = pos;
                 aiInfo.Time = 1000;//下一帧即触发移动
                 aiInfo.ChangeToState((int)PredefinedAiStateId.MoveCommand);
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
                 m_Pos.InitFromDsl(callData.GetParam(1));
+                if (num > 2)
+                    m_Event.InitFromDsl(callData.GetParam(2));
             }
         }
 
         private IStoryValue<int> m_UnitId = new StoryValue<int>();
         private IStoryValue<Vector3> m_Pos = new StoryValue<Vector3>();
+        private IStoryValue<string> m_Event = new StoryValue<string>();
     }
     /// <summary>
-    /// npcmovewithwaypoints(npc_unit_id,vector3list("1 2 3 4 5 6"));
+    /// npcmovewithwaypoints(npc_unit_id,vector3list("1 2 3 4 5 6")[,event]);
     /// </summary>
     internal class NpcMoveWithWaypointsCommand : AbstractStoryCommand
     {
@@ -344,23 +363,23 @@ namespace GameFramework.Story.Commands
             NpcMoveWithWaypointsCommand cmd = new NpcMoveWithWaypointsCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_WayPoints = m_WayPoints.Clone();
+            cmd.m_Event = m_Event.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_UnitId.Evaluate(instance, iterator, args);
             m_WayPoints.Evaluate(instance, iterator, args);
+            m_Event.Evaluate(instance, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             int unitId = m_UnitId.Value;
             List<object> poses = m_WayPoints.Value;
+            string eventName = m_Event.Value;
             EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
             if (null != entity && null != poses && poses.Count > 0) {
                 List<Vector3> waypoints = new List<Vector3>();
@@ -378,24 +397,27 @@ namespace GameFramework.Story.Commands
                 data.WayPoints = waypoints;
                 data.Index = 0;
                 data.IsFinish = false;
+                data.Event = eventName;
                 entity.GetMovementStateInfo().TargetPosition = waypoints[0];
                 aiInfo.Time = 1000;//下一帧即触发移动
                 aiInfo.ChangeToState((int)PredefinedAiStateId.MoveCommand);
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
                 m_WayPoints.InitFromDsl(callData.GetParam(1));
+                if (num > 2)
+                    m_Event.InitFromDsl(callData.GetParam(2));
             }
         }
 
         private IStoryValue<int> m_UnitId = new StoryValue<int>();
         private IStoryValue<List<object>> m_WayPoints = new StoryValue<List<object>>();
+        private IStoryValue<string> m_Event = new StoryValue<string>();
     }
     /// <summary>
     /// npcstop(npc_unit_id);

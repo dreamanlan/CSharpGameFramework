@@ -315,11 +315,11 @@ public class Lua_UnityEngine_UI_Image : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_eventAlphaThreshold(IntPtr l) {
+	static public int get_alphaHitTestMinimumThreshold(IntPtr l) {
 		try {
 			UnityEngine.UI.Image self=(UnityEngine.UI.Image)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.eventAlphaThreshold);
+			pushValue(l,self.alphaHitTestMinimumThreshold);
 			return 2;
 		}
 		catch(Exception e) {
@@ -327,14 +327,25 @@ public class Lua_UnityEngine_UI_Image : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_eventAlphaThreshold(IntPtr l) {
+	static public int set_alphaHitTestMinimumThreshold(IntPtr l) {
 		try {
 			UnityEngine.UI.Image self=(UnityEngine.UI.Image)checkSelf(l);
 			float v;
 			checkType(l,2,out v);
-			self.eventAlphaThreshold=v;
+			self.alphaHitTestMinimumThreshold=v;
 			pushValue(l,true);
 			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_defaultETC1GraphicMaterial(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.UI.Image.defaultETC1GraphicMaterial);
+			return 2;
 		}
 		catch(Exception e) {
 			return error(l,e);
@@ -371,6 +382,32 @@ public class Lua_UnityEngine_UI_Image : LuaObject {
 			pushValue(l,true);
 			pushValue(l,self.pixelsPerUnit);
 			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_material(IntPtr l) {
+		try {
+			UnityEngine.UI.Image self=(UnityEngine.UI.Image)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.material);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_material(IntPtr l) {
+		try {
+			UnityEngine.UI.Image self=(UnityEngine.UI.Image)checkSelf(l);
+			UnityEngine.Material v;
+			checkType(l,2,out v);
+			self.material=v;
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
@@ -477,10 +514,12 @@ public class Lua_UnityEngine_UI_Image : LuaObject {
 		addMember(l,"fillAmount",get_fillAmount,set_fillAmount,true);
 		addMember(l,"fillClockwise",get_fillClockwise,set_fillClockwise,true);
 		addMember(l,"fillOrigin",get_fillOrigin,set_fillOrigin,true);
-		addMember(l,"eventAlphaThreshold",get_eventAlphaThreshold,set_eventAlphaThreshold,true);
+		addMember(l,"alphaHitTestMinimumThreshold",get_alphaHitTestMinimumThreshold,set_alphaHitTestMinimumThreshold,true);
+		addMember(l,"defaultETC1GraphicMaterial",get_defaultETC1GraphicMaterial,null,false);
 		addMember(l,"mainTexture",get_mainTexture,null,true);
 		addMember(l,"hasBorder",get_hasBorder,null,true);
 		addMember(l,"pixelsPerUnit",get_pixelsPerUnit,null,true);
+		addMember(l,"material",get_material,set_material,true);
 		addMember(l,"minWidth",get_minWidth,null,true);
 		addMember(l,"preferredWidth",get_preferredWidth,null,true);
 		addMember(l,"flexibleWidth",get_flexibleWidth,null,true);

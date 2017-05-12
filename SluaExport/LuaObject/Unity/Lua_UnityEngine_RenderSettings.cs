@@ -329,6 +329,30 @@ public class Lua_UnityEngine_RenderSettings : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_subtractiveShadowColor(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.RenderSettings.subtractiveShadowColor);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_subtractiveShadowColor(IntPtr l) {
+		try {
+			UnityEngine.Color v;
+			checkType(l,2,out v);
+			UnityEngine.RenderSettings.subtractiveShadowColor=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_reflectionIntensity(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -473,6 +497,30 @@ public class Lua_UnityEngine_RenderSettings : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_sun(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.RenderSettings.sun);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_sun(IntPtr l) {
+		try {
+			UnityEngine.Light v;
+			checkType(l,2,out v);
+			UnityEngine.RenderSettings.sun=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_defaultReflectionMode(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -559,12 +607,14 @@ public class Lua_UnityEngine_RenderSettings : LuaObject {
 		addMember(l,"ambientLight",get_ambientLight,set_ambientLight,false);
 		addMember(l,"ambientIntensity",get_ambientIntensity,set_ambientIntensity,false);
 		addMember(l,"ambientProbe",get_ambientProbe,set_ambientProbe,false);
+		addMember(l,"subtractiveShadowColor",get_subtractiveShadowColor,set_subtractiveShadowColor,false);
 		addMember(l,"reflectionIntensity",get_reflectionIntensity,set_reflectionIntensity,false);
 		addMember(l,"reflectionBounces",get_reflectionBounces,set_reflectionBounces,false);
 		addMember(l,"haloStrength",get_haloStrength,set_haloStrength,false);
 		addMember(l,"flareStrength",get_flareStrength,set_flareStrength,false);
 		addMember(l,"flareFadeSpeed",get_flareFadeSpeed,set_flareFadeSpeed,false);
 		addMember(l,"skybox",get_skybox,set_skybox,false);
+		addMember(l,"sun",get_sun,set_sun,false);
 		addMember(l,"defaultReflectionMode",get_defaultReflectionMode,set_defaultReflectionMode,false);
 		addMember(l,"defaultReflectionResolution",get_defaultReflectionResolution,set_defaultReflectionResolution,false);
 		addMember(l,"customReflection",get_customReflection,set_customReflection,false);

@@ -84,7 +84,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 	static public int set_stand_pos(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
-			System.UInt64 v;
+			GameFrameworkMessage.Position v;
 			checkType(l,2,out v);
 			self.stand_pos=v;
 			pushValue(l,true);
@@ -110,7 +110,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 	static public int set_face_direction(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
-			int v;
+			float v;
 			checkType(l,2,out v);
 			self.face_direction=v;
 			pushValue(l,true);

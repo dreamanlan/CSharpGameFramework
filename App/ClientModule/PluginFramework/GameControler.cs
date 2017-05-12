@@ -166,13 +166,13 @@ namespace GameFramework
         public static void TickGame()
         {
             try {
-                UnityEngine.Profiler.BeginSample("GameController.TickGame");
+                UnityEngine.Profiling.Profiler.BeginSample("GameController.TickGame");
                 TimeUtility.GfxTime = UnityEngine.Time.time;
                 TimeUtility.GfxTimeScale = UnityEngine.Time.timeScale;
                 PluginFramework.Instance.Tick();
                 s_Logger.Tick();
             } finally {
-                UnityEngine.Profiler.EndSample();
+                UnityEngine.Profiling.Profiler.EndSample();
             }
         }
 

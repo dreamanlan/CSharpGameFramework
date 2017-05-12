@@ -308,9 +308,13 @@ namespace GameFramework.Story.Commands
     /// </summary>
     public class FireMessageCommand : AbstractStoryCommand
     {
+        public FireMessageCommand(bool isConcurrent)
+        {
+            m_IsConcurrent = isConcurrent;
+        }
         public override IStoryCommand Clone()
         {
-            FireMessageCommand cmd = new FireMessageCommand();
+            FireMessageCommand cmd = new FireMessageCommand(m_IsConcurrent);
             cmd.m_MsgId = m_MsgId.Clone();
             for (int i = 0; i < m_MsgArgs.Count; ++i) {
                 IStoryValue<object> val = m_MsgArgs[i];
@@ -342,7 +346,10 @@ namespace GameFramework.Story.Commands
                     arglist.Add(val.Value);
                 }
                 object[] args = arglist.ToArray();
-                scene.StorySystem.SendMessage(msgId, args);
+                if (m_IsConcurrent)
+                    scene.StorySystem.SendConcurrentMessage(msgId, args);
+                else
+                    scene.StorySystem.SendMessage(msgId, args);
             }
             return false;
         }
@@ -362,6 +369,21 @@ namespace GameFramework.Story.Commands
 
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
         private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
+        private bool m_IsConcurrent = false;
+    }
+    internal sealed class FireMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new FireMessageCommand(false);
+        }
+    }
+    internal sealed class FireConcurrentMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new FireMessageCommand(true);
+        }
     }
     /// <summary>
     /// waitallmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
@@ -1321,81 +1343,6 @@ namespace GameFramework.Story.Commands
         private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
     }
     /// <summary>
-    /// gfxclear();
-    /// </summary>
-    public class GfxClearCommand : AbstractStoryCommand
-    {
-        public override IStoryCommand Clone()
-        {
-            GfxClearCommand cmd = new GfxClearCommand();
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
-        {
-        
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, long delta)
-        {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                scene.StorySystem.GfxDatas.Clear();
-            }
-            return false;
-        }
-
-        protected override void Load(Dsl.CallData callData)
-        {
-        }
-    }
-    /// <summary>
-    /// gfxset(name,value);
-    /// </summary>
-    public class GfxSetCommand : AbstractStoryCommand
-    {
-        public override IStoryCommand Clone()
-        {
-            GfxSetCommand cmd = new GfxSetCommand();
-            cmd.m_AttrName = m_AttrName.Clone();
-            cmd.m_Value = m_Value.Clone();
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
-        {
-            m_AttrName.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, long delta)
-        {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                string name = m_AttrName.Value;
-                object value = m_Value.Value;
-                if (scene.StorySystem.GfxDatas.ContainsKey(name)) {
-                    scene.StorySystem.GfxDatas[name] = value;
-                } else {
-                    scene.StorySystem.GfxDatas.Add(name, value);
-                }
-            }
-            return false;
-        }
-
-        protected override void Load(Dsl.CallData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_AttrName.InitFromDsl(callData.GetParam(0));
-                m_Value.InitFromDsl(callData.GetParam(1));
-            }
-        }
-
-        private IStoryValue<string> m_AttrName = new StoryValue<string>();
-        private IStoryValue<object> m_Value = new StoryValue();
-    }
-    /// <summary>
     /// activescene(target_scene_id, obj_id);
     /// </summary>
     public class ActiveSceneCommand : AbstractStoryCommand
@@ -1563,48 +1510,6 @@ namespace GameFramework.Story.Commands
             if (null != scene) {
                 int targetSceneId = m_TargetSceneId.Value;
                 //RoomManager.Instance.ChangeRoomScene(scene.GetRoomSceneInfo().RoomId, targetSceneId);
-            }
-            return false;
-        }
-
-        protected override void Load(Dsl.CallData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_TargetSceneId.InitFromDsl(callData.GetParam(0));
-            }
-        }
-
-        private IStoryValue<int> m_TargetSceneId = new StoryValue<int>();
-    }
-    /// <summary>
-    /// notifychangescene(target_scene_id);
-    /// </summary>
-    public class NotifyChangeSceneCommand : AbstractStoryCommand
-    {
-        public override IStoryCommand Clone()
-        {
-            NotifyChangeSceneCommand cmd = new NotifyChangeSceneCommand();
-            cmd.m_TargetSceneId = m_TargetSceneId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        { }
-
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
-        {
-            m_TargetSceneId.Evaluate(instance, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, long delta)
-        {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                int targetSceneId = m_TargetSceneId.Value;
-                Msg_RC_ChangeScene msg = new Msg_RC_ChangeScene();
-                msg.target_scene_id = targetSceneId;
-                scene.NotifyAllUser(RoomMessageDefine.Msg_RC_ChangeScene, msg);
             }
             return false;
         }

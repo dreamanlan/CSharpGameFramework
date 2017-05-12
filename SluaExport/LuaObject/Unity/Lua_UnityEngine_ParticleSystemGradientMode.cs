@@ -9,6 +9,7 @@ public class Lua_UnityEngine_ParticleSystemGradientMode : LuaObject {
 		addMember(l,1,"Gradient");
 		addMember(l,2,"TwoColors");
 		addMember(l,3,"TwoGradients");
+		addMember(l,4,"RandomColor");
 		LuaDLL.lua_pop(l, 1);
 	}
 }

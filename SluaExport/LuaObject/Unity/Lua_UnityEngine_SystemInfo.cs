@@ -45,10 +45,54 @@ public class Lua_UnityEngine_SystemInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_unsupportedIdentifier(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.SystemInfo.unsupportedIdentifier);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_batteryLevel(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.SystemInfo.batteryLevel);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_batteryStatus(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushEnum(l,(int)UnityEngine.SystemInfo.batteryStatus);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_operatingSystem(IntPtr l) {
 		try {
 			pushValue(l,true);
 			pushValue(l,UnityEngine.SystemInfo.operatingSystem);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_operatingSystemFamily(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushEnum(l,(int)UnityEngine.SystemInfo.operatingSystemFamily);
 			return 2;
 		}
 		catch(Exception e) {
@@ -166,6 +210,17 @@ public class Lua_UnityEngine_SystemInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_graphicsUVStartsAtTop(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.SystemInfo.graphicsUVStartsAtTop);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_graphicsDeviceVersion(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -221,10 +276,10 @@ public class Lua_UnityEngine_SystemInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_supportsRenderTextures(IntPtr l) {
+	static public int get_supportsMotionVectors(IntPtr l) {
 		try {
 			pushValue(l,true);
-			pushValue(l,UnityEngine.SystemInfo.supportsRenderTextures);
+			pushValue(l,UnityEngine.SystemInfo.supportsMotionVectors);
 			return 2;
 		}
 		catch(Exception e) {
@@ -258,6 +313,50 @@ public class Lua_UnityEngine_SystemInfo : LuaObject {
 		try {
 			pushValue(l,true);
 			pushValue(l,UnityEngine.SystemInfo.supports3DTextures);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_supports2DArrayTextures(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.SystemInfo.supports2DArrayTextures);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_supports3DRenderTextures(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.SystemInfo.supports3DRenderTextures);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_supportsCubemapArrayTextures(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.SystemInfo.supportsCubemapArrayTextures);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_copyTextureSupport(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushEnum(l,(int)UnityEngine.SystemInfo.copyTextureSupport);
 			return 2;
 		}
 		catch(Exception e) {
@@ -309,10 +408,10 @@ public class Lua_UnityEngine_SystemInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_supportsStencil(IntPtr l) {
+	static public int get_usesReversedZBuffer(IntPtr l) {
 		try {
 			pushValue(l,true);
-			pushValue(l,UnityEngine.SystemInfo.supportsStencil);
+			pushValue(l,UnityEngine.SystemInfo.usesReversedZBuffer);
 			return 2;
 		}
 		catch(Exception e) {
@@ -440,11 +539,26 @@ public class Lua_UnityEngine_SystemInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_maxCubemapSize(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.SystemInfo.maxCubemapSize);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.SystemInfo");
 		addMember(l,SupportsRenderTextureFormat_s);
 		addMember(l,SupportsTextureFormat_s);
+		addMember(l,"unsupportedIdentifier",get_unsupportedIdentifier,null,false);
+		addMember(l,"batteryLevel",get_batteryLevel,null,false);
+		addMember(l,"batteryStatus",get_batteryStatus,null,false);
 		addMember(l,"operatingSystem",get_operatingSystem,null,false);
+		addMember(l,"operatingSystemFamily",get_operatingSystemFamily,null,false);
 		addMember(l,"processorType",get_processorType,null,false);
 		addMember(l,"processorFrequency",get_processorFrequency,null,false);
 		addMember(l,"processorCount",get_processorCount,null,false);
@@ -455,20 +569,25 @@ public class Lua_UnityEngine_SystemInfo : LuaObject {
 		addMember(l,"graphicsDeviceID",get_graphicsDeviceID,null,false);
 		addMember(l,"graphicsDeviceVendorID",get_graphicsDeviceVendorID,null,false);
 		addMember(l,"graphicsDeviceType",get_graphicsDeviceType,null,false);
+		addMember(l,"graphicsUVStartsAtTop",get_graphicsUVStartsAtTop,null,false);
 		addMember(l,"graphicsDeviceVersion",get_graphicsDeviceVersion,null,false);
 		addMember(l,"graphicsShaderLevel",get_graphicsShaderLevel,null,false);
 		addMember(l,"graphicsMultiThreaded",get_graphicsMultiThreaded,null,false);
 		addMember(l,"supportsShadows",get_supportsShadows,null,false);
 		addMember(l,"supportsRawShadowDepthSampling",get_supportsRawShadowDepthSampling,null,false);
-		addMember(l,"supportsRenderTextures",get_supportsRenderTextures,null,false);
+		addMember(l,"supportsMotionVectors",get_supportsMotionVectors,null,false);
 		addMember(l,"supportsRenderToCubemap",get_supportsRenderToCubemap,null,false);
 		addMember(l,"supportsImageEffects",get_supportsImageEffects,null,false);
 		addMember(l,"supports3DTextures",get_supports3DTextures,null,false);
+		addMember(l,"supports2DArrayTextures",get_supports2DArrayTextures,null,false);
+		addMember(l,"supports3DRenderTextures",get_supports3DRenderTextures,null,false);
+		addMember(l,"supportsCubemapArrayTextures",get_supportsCubemapArrayTextures,null,false);
+		addMember(l,"copyTextureSupport",get_copyTextureSupport,null,false);
 		addMember(l,"supportsComputeShaders",get_supportsComputeShaders,null,false);
 		addMember(l,"supportsInstancing",get_supportsInstancing,null,false);
 		addMember(l,"supportsSparseTextures",get_supportsSparseTextures,null,false);
 		addMember(l,"supportedRenderTargetCount",get_supportedRenderTargetCount,null,false);
-		addMember(l,"supportsStencil",get_supportsStencil,null,false);
+		addMember(l,"usesReversedZBuffer",get_usesReversedZBuffer,null,false);
 		addMember(l,"npotSupport",get_npotSupport,null,false);
 		addMember(l,"deviceUniqueIdentifier",get_deviceUniqueIdentifier,null,false);
 		addMember(l,"deviceName",get_deviceName,null,false);
@@ -480,6 +599,7 @@ public class Lua_UnityEngine_SystemInfo : LuaObject {
 		addMember(l,"supportsAudio",get_supportsAudio,null,false);
 		addMember(l,"deviceType",get_deviceType,null,false);
 		addMember(l,"maxTextureSize",get_maxTextureSize,null,false);
+		addMember(l,"maxCubemapSize",get_maxCubemapSize,null,false);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.SystemInfo));
 	}
 }

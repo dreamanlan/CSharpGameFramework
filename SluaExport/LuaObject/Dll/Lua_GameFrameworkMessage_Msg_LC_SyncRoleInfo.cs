@@ -120,39 +120,12 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_SummonerSkillId(IntPtr l) {
-		try {
-			GameFrameworkMessage.Msg_LC_SyncRoleInfo self=(GameFrameworkMessage.Msg_LC_SyncRoleInfo)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.SummonerSkillId);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_SummonerSkillId(IntPtr l) {
-		try {
-			GameFrameworkMessage.Msg_LC_SyncRoleInfo self=(GameFrameworkMessage.Msg_LC_SyncRoleInfo)checkSelf(l);
-			int v;
-			checkType(l,2,out v);
-			self.SummonerSkillId=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_LC_SyncRoleInfo");
 		addMember(l,"HeroId",get_HeroId,set_HeroId,true);
 		addMember(l,"Money",get_Money,set_Money,true);
 		addMember(l,"Gold",get_Gold,set_Gold,true);
 		addMember(l,"Level",get_Level,set_Level,true);
-		addMember(l,"SummonerSkillId",get_SummonerSkillId,set_SummonerSkillId,true);
 		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_LC_SyncRoleInfo));
 	}
 }

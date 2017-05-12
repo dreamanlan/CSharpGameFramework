@@ -250,20 +250,20 @@ namespace GameFramework.AttrCalc
             Calculator.Log("find(");
             long v = 0;
             if (null != m_Op1) {
-                m_LinkId = (int)m_Op1.Calc(context, source, target, args);
+                m_TableId = (int)m_Op1.Calc(context, source, target, args);
             } else {
-                Calculator.Log(m_LinkId);
+                Calculator.Log(m_TableId);
             }
             for (var node = context.EntityManager.Entities.FirstValue; null != node; node = node.Next) {
                 EntityInfo info = node.Value;
-                if (null != info && info.GetLinkId() == m_LinkId) {
+                if (null != info && info.GetTableId() == m_TableId) {
                     v = info.GetId();
                     break;
                 }
             }
             Calculator.Log(")");
             if (GlobalVariables.s_EnableCalculatorDetailLog) {
-                LogSystem.Info("[calculator] find({0})={1}", m_LinkId, v);
+                LogSystem.Info("[calculator] find({0})={1}", m_TableId, v);
             }
             return v;
         }
@@ -272,7 +272,7 @@ namespace GameFramework.AttrCalc
             var syntaxComp = callData.GetParam(0);
             var valData = syntaxComp as Dsl.ValueData;
             if (null != valData) {
-                m_LinkId = int.Parse(valData.GetId());
+                m_TableId = int.Parse(valData.GetId());
                 return true;
             } else {
                 return false;
@@ -284,7 +284,7 @@ namespace GameFramework.AttrCalc
             return true;
         }
 
-        private int m_LinkId;
+        private int m_TableId;
         private IAttrExpression m_Op1;
     }
     internal sealed class ValueGet : AbstractAttrExpression
@@ -459,7 +459,7 @@ namespace GameFramework.AttrCalc
             long v = 0;
             Calculator.Log("actor(");
             if (null != source && null != source.Owner) {
-                v = source.Owner.GetLinkId();
+                v = source.Owner.GetTableId();
             }
             Calculator.Log(")");
             if (GlobalVariables.s_EnableCalculatorDetailLog) {
@@ -479,7 +479,7 @@ namespace GameFramework.AttrCalc
             long v = 0;
             Calculator.Log("actor2(");
             if (null != target && null != target.Owner) {
-                v = target.Owner.GetLinkId();
+                v = target.Owner.GetTableId();
             }
             Calculator.Log(")");
             if (GlobalVariables.s_EnableCalculatorDetailLog) {

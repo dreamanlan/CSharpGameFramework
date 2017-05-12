@@ -61,7 +61,7 @@ AiGetSkill = {
 					if (skillId > 0) then
 						local skillInfo; skillInfo = npc:GetSkillStateInfo():GetSkillInfoById(skillId);
 						if (nil == skillInfo) then
-							skillInfo = newexternobject(GameFramework.SkillInfo, "GameFramework.SkillInfo", "ctor", nil, {}, skillId);
+							skillInfo = newexternobject(GameFramework.SkillInfo, "GameFramework.SkillInfo", "ctor", {}, skillId);
 							npc:GetSkillStateInfo():AddSkill(skillInfo);
 						end;
 						this.m_Proxy.Value = skillInfo;

@@ -43,7 +43,7 @@ namespace GameFramework
                 GfxStorySystem.Instance.SceneId = m_SceneId;
                 GfxStorySystem.Instance.PreloadSceneStories();
                 GfxStorySystem.Instance.StartStory("local_main");
-                if (IsMainUiScene || IsBattleScene) {
+                if (IsMainUiScene) {
                     GfxStorySystem.Instance.StartStory("story_main");
                 }
                 LogSystem.Warn("ResetDsl finish.");
@@ -190,20 +190,19 @@ namespace GameFramework
             }
             m_EntityManager.Reset();
             m_SceneLogicInfoManager.Reset();
-            m_BlackBoard.Reset();
             m_KdTree.Clear();
 
             m_SceneLogicSystem.Reset();
             m_SceneInfo = null;
 
-            m_leaderID = 0;
+            m_LeaderId = 0;
             m_CampId = (int)CampIdEnum.Blue;
         }
         public void Preload()
         {
             GfxStorySystem.Instance.PreloadSceneStories();
             GfxStorySystem.Instance.StartStory("local_main");
-            if (IsMainUiScene || IsBattleScene) {
+            if (IsMainUiScene) {
                 GfxStorySystem.Instance.StartStory("story_main");
             }
 
@@ -283,8 +282,8 @@ namespace GameFramework
             ResourceSystem.Instance.CleanupResourcePool();
 
             m_SceneInfo = TableConfig.LevelProvider.Instance.GetLevel(levelId);
-            if(null != m_SceneInfo) {
-                Utility.SendMessage("GameRoot", "LoadLevel", m_SceneInfo);
+            if (null != m_SceneInfo && m_SceneInfo.type != (int)SceneTypeEnum.Battle) {
+                Utility.SendMessage("GameRoot", "LoadScene", m_SceneInfo);
             }
         }
         public void OnSceneLoaded(TableConfig.Level lvl)
@@ -293,19 +292,56 @@ namespace GameFramework
             GfxStorySystem.Instance.SceneId = m_SceneId;
             Preload();
 
-            if (lvl.type == (int)SceneTypeEnum.MainUi) {
-                m_LastMainUiSceneId = m_SceneId;
+            if (IsMainUiScene) {
                 Utility.SendMessage("GameRoot", "OnLoadMainUiComplete", lvl.id);
-            } else if (lvl.type == (int)SceneTypeEnum.Story || lvl.type == (int)SceneTypeEnum.Activity) {
-                Utility.SendMessage("GameRoot", "OnLoadBattleComplete", lvl.id);
+            } else {
+                Utility.SendMessage("GameRoot", "OnLoadSceneComplete", lvl.id);
 
                 GameFrameworkMessage.Msg_CR_Enter build = new GameFrameworkMessage.Msg_CR_Enter();
                 NetworkSystem.Instance.SendMessage(RoomMessageDefine.Msg_CR_Enter, build);
                 LogSystem.Warn("send Msg_CR_Enter to roomserver");
-            } else if (lvl.type == (int)SceneTypeEnum.Battle) {
+            }
+            m_IsSceneLoaded = true;
+        }
+        public void LoadBattle(int levelId)
+        {
+            m_BattleSceneInfo = TableConfig.LevelProvider.Instance.GetLevel(levelId);
+            if (null != m_BattleSceneInfo && m_BattleSceneInfo.type == (int)SceneTypeEnum.Battle) {
+                Utility.SendMessage("GameRoot", "LoadBattle", m_BattleSceneInfo);
+            }
+        }
+        public void OnBattleLoaded(TableConfig.Level lvl)
+        {
+            m_IsBattleState = true;
+
+            m_BattleSceneId = lvl.id;
+            GfxStorySystem.Instance.PreloadBattleStories(lvl.id);
+            GfxStorySystem.Instance.StartStory("battle_main");
+
+            if (lvl.type == (int)SceneTypeEnum.Battle) {
                 Utility.SendMessage("GameRoot", "OnLoadBattleComplete", lvl.id);
             }
-            m_IsSceneLoaded = true;            
+        }
+        public void UnloadBattle(int levelId)
+        {
+            m_IsBattleState = false;
+            
+            //干掉全部客户端npc
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+                EntityInfo info = linkNode.Value;
+                if (!info.IsServerEntity) {
+                    info.Hp = 0;
+                }
+            }
+
+            var lvl = TableConfig.LevelProvider.Instance.GetLevel(levelId);
+            if (null != lvl) {
+                Utility.SendMessage("GameRoot", "UnloadBattle", lvl);
+            }
+        }
+        public void OnBattleUnloaded(TableConfig.Level lvl)
+        {
+            GfxStorySystem.Instance.SendMessage("on_battle_closed", m_RoomObjId, m_RoomUnitId);
         }
                 
         public void OnRoomServerDisconnected()
@@ -313,7 +349,7 @@ namespace GameFramework
             if (m_IsSceneLoaded) {
                 if (NetworkSystem.Instance.ReconnectCount <= 18) {
                 } else {
-                    //连接了3分钟以上还连不上，尝试结算
+                    //连接了3分钟以上还连不上，失败
                     NetworkSystem.Instance.QuitBattlePassive();
                 }
             }
@@ -459,13 +495,14 @@ namespace GameFramework
                 m_EntityManager.RemoveEntity(id);
             }
         }
-        public int CreateEntity(int unitId, float x, float y, float z, float dir, int camp, int linkId)
+        public int CreateEntity(int unitId, float x, float y, float z, float dir, int camp, int tableId)
         {
             int objId = 0;
-            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(linkId);
+            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(tableId);
             if (null != cfg) {
                 EntityInfo entity = m_EntityManager.AddEntity(unitId, camp, cfg, string.Empty);
                 if (null != entity) {
+                    entity.IsServerEntity = false;
                     entity.GetMovementStateInfo().SetPosition(x, y, z);
                     entity.GetMovementStateInfo().SetFaceDir(dir);
                     EntityViewModelManager.Instance.CreateEntityView(entity.GetId());
@@ -475,13 +512,14 @@ namespace GameFramework
             }
             return objId;
         }
-        public int CreateEntity(int unitId, float x, float y, float z, float dir, int camp, int linkId, string ai, params string[] aiParams)
+        public int CreateEntity(int unitId, float x, float y, float z, float dir, int camp, int tableId, string ai, params string[] aiParams)
         {
             int objId = 0;
-            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(linkId);
+            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(tableId);
             if (null != cfg) {
                 EntityInfo entity = m_EntityManager.AddEntity(unitId, camp, cfg, ai, aiParams);
                 if (null != entity) {
+                    entity.IsServerEntity = false;
                     entity.GetMovementStateInfo().SetPosition(x, y, z);
                     entity.GetMovementStateInfo().SetFaceDir(dir);
                     EntityViewModelManager.Instance.CreateEntityView(entity.GetId());
@@ -491,12 +529,13 @@ namespace GameFramework
             }
             return objId;
         }
-        public EntityInfo CreateEntity(int objId, int unitId, float x, float y, float z, float dir, int camp, int linkId)
+        public EntityInfo CreateEntity(int objId, int unitId, float x, float y, float z, float dir, int camp, int tableId)
         {
-            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(linkId);
+            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(tableId);
             if (null != cfg) {
                 EntityInfo entity = m_EntityManager.AddEntity(objId, unitId, camp, cfg, string.Empty);
                 if (null != entity) {
+                    entity.IsServerEntity = true;
                     entity.GetMovementStateInfo().SetPosition(x, y, z);
                     entity.GetMovementStateInfo().SetFaceDir(dir);
                     EntityViewModelManager.Instance.CreateEntityView(entity.GetId());
@@ -506,12 +545,13 @@ namespace GameFramework
             }
             return null;
         }
-        public EntityInfo CreateEntity(int objId, int unitId, float x, float y, float z, float dir, int camp, int linkId, string ai, params string[] aiParams)
+        public EntityInfo CreateEntity(int objId, int unitId, float x, float y, float z, float dir, int camp, int tableId, string ai, params string[] aiParams)
         {
-            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(linkId);
+            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(tableId);
             if (null != cfg) {
                 EntityInfo entity = m_EntityManager.AddEntity(objId, unitId, camp, cfg, ai, aiParams);
                 if (null != entity) {
+                    entity.IsServerEntity = true;
                     entity.GetMovementStateInfo().SetPosition(x, y, z);
                     entity.GetMovementStateInfo().SetFaceDir(dir);
                     EntityViewModelManager.Instance.CreateEntityView(entity.GetId());
@@ -571,7 +611,7 @@ namespace GameFramework
         }
         public EntityInfo GetLeaderEntityInfo()
         {
-            return m_EntityManager.GetEntityInfo(m_leaderID);
+            return m_EntityManager.GetEntityInfo(m_LeaderId);
         }
 
         private void TickEntities(long curTime, long deltaTime)
@@ -763,7 +803,7 @@ namespace GameFramework
 
         private void OnDamage(int receiver, int caster, bool isNormalDamage, bool isCritical, int hpDamage, int npDamage)
         {
-            if (receiver == LeaderID && caster > 0) {
+            if (receiver == LeaderId && caster > 0) {
                 bool newSelect = true;
                 if (null != SelectedTarget) {
                     EntityInfo curTarget = GetEntityById(PluginFramework.Instance.SelectedTarget.TargetId);
@@ -787,10 +827,10 @@ namespace GameFramework
                 if (hpDamage != 0) {
                     float hp = (float)entity.Hp / entity.HpMax;
                     Utility.EventSystem.Publish("ui_actor_hp", "ui", entity.GetId(), hp);
-                    //if (receiver == LeaderID || caster == LeaderID) {
+                    //if (receiver == LeaderId || caster == LeaderId) {
                         Utility.EventSystem.Publish("ui_show_hp_num", "ui", entity.GetId(), -hpDamage);
                     //}
-                    if (caster == LeaderID) {
+                    if (caster == LeaderId) {
                         EntityViewModel view = EntityController.Instance.GetEntityViewById(receiver);
                         if (view != null) {
                             view.SetRedEdge(1.0f);
@@ -819,19 +859,6 @@ namespace GameFramework
                     }
                 }
             }
-        }
-        private void OnStoryStateChanged()
-        {
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
-                EntityInfo info = linkNode.Value;
-                if (null != info && info.IsServerEntity && info.GetId() != LeaderID) {
-                    EntityViewModel view = EntityController.Instance.GetEntityViewById(info.GetId());
-                    if (IsStoryState)
-                        view.Visible = false;
-                    else
-                        view.Visible = true;
-                }
-            };
         }
         private void OnSelectedTargetChange(int oldSelect, int newSelect)
         {
@@ -862,13 +889,17 @@ namespace GameFramework
         {
             get { return m_SceneId; }
         }
-        public int LastMainUiSceneId
-        {
-            get { return m_LastMainUiSceneId; }
-        }
         public TableConfig.Level SceneInfo
         {
             get { return m_SceneInfo; }
+        }
+        public int BattleSceneId
+        {
+            get { return m_BattleSceneId; }
+        }
+        public TableConfig.Level BattleSceneInfo
+        {
+            get { return m_BattleSceneInfo; }
         }
         public bool IsMainUiScene
         {
@@ -881,63 +912,28 @@ namespace GameFramework
                 return ret;
             }
         }
-        public bool IsStoryScene
+        public bool IsBattleState
         {
-            get
-            {
-                bool ret = false;
-                if (null != m_SceneInfo) {
-                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Story;
-                }
-                return ret;
-            }
-        }
-        public bool IsActivityScene
-        {
-            get
-            {
-                bool ret = false;
-                if (null != m_SceneInfo) {
-                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Activity;
-                }
-                return ret;
-            }
-        }
-        public bool IsBattleScene
-        {
-            get
-            {
-                bool ret = false;
-                if (null != m_SceneInfo) {
-                    ret = m_SceneInfo.type == (int)SceneTypeEnum.Battle;
-                }
-                return ret;
-            }
-        }
-        public bool IsStoryState
-        {
-            get { return m_IsStoryState; }
-            set 
-            { 
-                m_IsStoryState = value;
-                OnStoryStateChanged();
-            }
+            get { return m_IsBattleState; }
         }
         public LockTargetInfo SelectedTarget
         {
             get { return m_SelectedTarget; }
         }
-        public int SummonerSkillId
+        public int RoomObjId
         {
-            get
-            {
-                return ClientInfo.Instance.RoleData.SummonerSkillId;
-            }
+            get { return m_RoomObjId; }
+            internal set { m_RoomObjId = value; }
         }
-        public int LeaderID
+        public int RoomUnitId
         {
-            get { return m_leaderID; }
-            set { m_leaderID = value; }
+            get { return m_RoomUnitId; }
+            internal set { m_RoomUnitId = value; }
+        }
+        public int LeaderId
+        {
+            get { return m_LeaderId; }
+            set { m_LeaderId = value; }
         }
         public int CampId
         {
@@ -1112,9 +1108,10 @@ namespace GameFramework
         #endregion
 
         private long m_LastTickTime = 0;
-        private int m_LastMainUiSceneId;
         private int m_SceneId;
         private TableConfig.Level m_SceneInfo;
+        private int m_BattleSceneId;
+        private TableConfig.Level m_BattleSceneInfo;
 
         private KdObjectTree m_KdTree = new KdObjectTree();
         private BlackBoard m_BlackBoard = new BlackBoard();
@@ -1127,13 +1124,15 @@ namespace GameFramework
         private ClientAsyncActionProcessor m_AsyncActionProcessor = new ClientAsyncActionProcessor();
         private bool m_IsSceneLoaded = true;
 
-        private bool m_IsStoryState = false;
-        private int m_leaderID;
-        private bool m_UseNetwork = true;
-        private LockTargetInfo m_SelectedTarget = null;
-        private UnityEngine.GameObject m_SelectedEffect = null;
+        private int m_RoomObjId;
+        private int m_RoomUnitId;
+        private int m_LeaderId;
         private int m_CampId = (int)CampIdEnum.Blue;
         private string m_Nick = string.Empty;
+        private bool m_UseNetwork = true;
+        private bool m_IsBattleState = false;
+        private LockTargetInfo m_SelectedTarget = null;
+        private UnityEngine.GameObject m_SelectedEffect = null;
         private Queue<int> m_NpcOnAttackedToDeadQueue = new Queue<int>();
 
         private List<EntityInfo> m_EntitiesForAi = new List<EntityInfo>();

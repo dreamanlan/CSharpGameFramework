@@ -62,6 +62,7 @@ public class Game : MonoBehaviour
             GlobalVariables.Instance.IsIphone4S = false;
         }
 #else
+            GlobalVariables.Instance.IsClient = true;
             GlobalVariables.Instance.IsDevice = false;
             if (Application.isEditor && !GlobalVariables.Instance.IsPublish)
                 GameControler.Init(".", streamingAssetsPath);
@@ -167,7 +168,7 @@ public class Game : MonoBehaviour
         m_CameraController = new CameraController(Camera.main);
     }
     
-    private IEnumerator LoadLevel(TableConfig.Level lvl)
+    private IEnumerator LoadScene(TableConfig.Level lvl)
     {
         LoadingManager.Instance.Show();
         TopMenuManager.Instance.Release();
@@ -186,15 +187,39 @@ public class Game : MonoBehaviour
         PluginFramework.Instance.OnSceneLoaded(lvl);
     }
 
+    private IEnumerator LoadBattle(TableConfig.Level lvl)
+    {
+        LoadingManager.Instance.Show();
+        yield return null;
+        LoadingManager.Instance.SetProgress(0.1f);
+        yield return Resources.UnloadUnusedAssets();
+        LoadingManager.Instance.SetProgress(0.2f);
+        var asyncOper = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(lvl.prefab, UnityEngine.SceneManagement.LoadSceneMode.Additive);
+        LoadingManager.Instance.SetAsync(asyncOper, 0.3f, 0.7f);
+        yield return asyncOper;
+        PluginFramework.Instance.OnBattleLoaded(lvl);
+    }
+
+    private IEnumerator UnloadBattle(TableConfig.Level lvl)
+    {
+        LoadingManager.Instance.Show();
+        yield return null;
+        LoadingManager.Instance.SetProgress(0.1f);
+        UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(lvl.prefab);
+        LoadingManager.Instance.SetProgress(0.9f);
+        yield return Resources.UnloadUnusedAssets();
+        LoadingManager.Instance.SetProgress(1.0f);
+        PluginFramework.Instance.OnBattleUnloaded(lvl);
+    }
+
     private void OnLoadMainUiComplete(int levelId)
     {
         this.m_LevelId = levelId;
 
         LoadUi(levelId);
     }
-
-    //装载结束后加入BattleManager脚本
-    private void OnLoadBattleComplete(int levelId)
+    
+    private void OnLoadSceneComplete(int levelId)
     {
         this.m_LevelId = levelId;
 
@@ -206,6 +231,10 @@ public class Game : MonoBehaviour
         }
 
         LoadUi(levelId);
+    }
+
+    private void OnLoadBattleComplete(int levelId)
+    {
     }
 
     private void LoadUi(int levelId)

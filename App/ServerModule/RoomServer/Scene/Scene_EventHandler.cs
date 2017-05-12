@@ -192,7 +192,6 @@ namespace GameFramework
         msi.TargetPosition = target;
         float dir = Geometry.GetYRadian(msi.GetPosition3D(), target);
         msi.SetFaceDir(dir);
-        msi.SetMoveDir(dir);
     }
     private static void AiStopPursue(EntityInfo npc)
     {

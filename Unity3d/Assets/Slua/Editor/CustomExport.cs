@@ -234,6 +234,13 @@ namespace SLua
 			    "EventProvider",
 			    "Apple",
 			    "ClusterInput",
+                "CullingParameters",
+                "ShadowSplitData",
+                "RaycastAllCallback",
+                "GetRayIntersectionAllCallback",
+                "Raycast2DCallback",
+                "Raycast3DCallback",
+                "DeallocateDelegate",
             };
         }
     }

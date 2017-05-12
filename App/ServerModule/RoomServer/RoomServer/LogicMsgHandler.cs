@@ -73,8 +73,8 @@ namespace GameFramework
             }
             ///
             if (charactor.GetAIEnable()) {
-                float tx, tz;
-                ProtoHelper.DecodePosition2D(move_msg.target_pos, out tx, out tz);
+                float tx = move_msg.target_pos.x;
+                float tz = move_msg.target_pos.z;
                 ScriptRuntime.Vector3 pos = new ScriptRuntime.Vector3(tx, 0, tz);
 
                 MovementStateInfo msi = charactor.GetMovementStateInfo();
@@ -82,7 +82,6 @@ namespace GameFramework
                 msi.TargetPosition = pos;
                 float dir = Geometry.GetYRadian(msi.GetPosition3D(), pos);
                 msi.SetFaceDir(dir);
-                msi.SetMoveDir(dir);
 
                 Msg_RC_NpcMove npcMoveBuilder = DataSyncUtility.BuildNpcMoveMessage(charactor);
                 if (null != npcMoveBuilder) {
@@ -115,7 +114,7 @@ namespace GameFramework
                     if (use_skill.target_id > 0) {
                         aiInfo.Target = use_skill.target_id;
                     } else if (use_skill.target_dir > 0) {
-                        float dir = ProtoHelper.DecodeFloat(use_skill.target_dir);
+                        float dir = use_skill.target_dir;
                         obj.GetMovementStateInfo().SetFaceDir(dir);
                         aiInfo.Target = 0;
                     }
@@ -142,32 +141,6 @@ namespace GameFramework
         }
     }
 
-    public class Msg_CR_OperateModeHandler
-    {
-        public static void Execute(object msg, User user)
-        {
-            Msg_CR_OperateMode modeMsg = msg as Msg_CR_OperateMode;
-            if (null == modeMsg) return;
-            EntityInfo userInfo = user.Info;
-            if (null == userInfo) return;
-
-            AiStateInfo aiInfo = userInfo.GetAiStateInfo();
-        }
-    }
-
-    public class Msg_CR_GiveUpBattleHandler
-    {
-        public static void Execute(object msg, User user)
-        {
-            Msg_CR_GiveUpBattle gub_msg = msg as Msg_CR_GiveUpBattle;
-            if (null == gub_msg) return;
-            Scene scene = user.OwnRoomUserManager.ActiveScene;
-            if (null != scene) {
-                scene.StorySystem.SendMessage("mission_failed");
-            }
-        }
-    }
-
     public class SwitchDebugHandler
     {
         public static void Execute(object msg, User user)
@@ -188,7 +161,7 @@ namespace GameFramework
                 return;
             Scene scene = user.OwnRoomUserManager.ActiveScene;
             if (null != scene) {
-                scene.StorySystem.SendMessage("dialog_over:" + dialog_msg.dialog_id);
+                scene.StorySystem.SendMessage("dialog_over:" + dialog_msg.dialog_id, user.RoleId);
             }
         }
     }

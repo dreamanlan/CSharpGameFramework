@@ -16,6 +16,7 @@ public class Lua_UnityEngine_Rendering_PassType : LuaObject {
 		addMember(l,8,"ShadowCaster");
 		addMember(l,10,"Deferred");
 		addMember(l,11,"Meta");
+		addMember(l,12,"MotionVectors");
 		LuaDLL.lua_pop(l, 1);
 	}
 }

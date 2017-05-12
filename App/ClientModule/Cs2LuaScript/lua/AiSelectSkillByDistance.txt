@@ -55,7 +55,7 @@ AiSelectSkillByDistance = {
 										targetSkillInfo = temp;
 									end;
 								end;
-							i = i+ 1;
+							i = invokeintegeroperator(2, "+", i, 1, System.Int32, System.Int32);
 							end;
 							if (nil ~= targetSkillInfo) then
 								this.m_Proxy.Value = targetSkillInfo;

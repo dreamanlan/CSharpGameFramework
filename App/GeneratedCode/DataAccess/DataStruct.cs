@@ -82,6 +82,13 @@ namespace GameFrameworkData
       get { return _UserGuid; }
       set { _UserGuid = value; }
     }
+    private string _Nickname;
+    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"Nickname", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public string Nickname
+    {
+      get { return _Nickname; }
+      set { _Nickname = value; }
+    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -595,29 +602,22 @@ namespace GameFrameworkData
       get { return _Gold; }
       set { _Gold = value; }
     }
-    private int _SummonerSkillId;
-    [global::ProtoBuf.ProtoMember(15, IsRequired = true, Name=@"SummonerSkillId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int SummonerSkillId
-    {
-      get { return _SummonerSkillId; }
-      set { _SummonerSkillId = value; }
-    }
     private string _IntDatas;
-    [global::ProtoBuf.ProtoMember(16, IsRequired = true, Name=@"IntDatas", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(15, IsRequired = true, Name=@"IntDatas", DataFormat = global::ProtoBuf.DataFormat.Default)]
     public string IntDatas
     {
       get { return _IntDatas; }
       set { _IntDatas = value; }
     }
     private string _FloatDatas;
-    [global::ProtoBuf.ProtoMember(17, IsRequired = true, Name=@"FloatDatas", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(16, IsRequired = true, Name=@"FloatDatas", DataFormat = global::ProtoBuf.DataFormat.Default)]
     public string FloatDatas
     {
       get { return _FloatDatas; }
       set { _FloatDatas = value; }
     }
     private string _StringDatas;
-    [global::ProtoBuf.ProtoMember(18, IsRequired = true, Name=@"StringDatas", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::ProtoBuf.ProtoMember(17, IsRequired = true, Name=@"StringDatas", DataFormat = global::ProtoBuf.DataFormat.Default)]
     public string StringDatas
     {
       get { return _StringDatas; }

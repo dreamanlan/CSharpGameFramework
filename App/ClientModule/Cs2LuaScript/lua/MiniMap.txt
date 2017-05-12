@@ -34,13 +34,13 @@ MiniMap = {
 			end,
 			Update = function(this)
 				if invokeexternoperator(UnityEngine.Object, "op_Equality", nil, this.m_GamePlayer) then
-					this.m_GamePlayer = GameFramework.PluginFramework.Instance:GetGameObject(GameFramework.PluginFramework.Instance.LeaderID);
+					this.m_GamePlayer = GameFramework.PluginFramework.Instance:GetGameObject(GameFramework.PluginFramework.Instance.LeaderId);
 				else
 					local pos; pos = this.m_GamePlayer.transform.position;
-					local x; x = (((pos.x * this.m_MapWidth) / this.m_TerrainWidth) - invokespecialintegeroperator("/", this.m_MapWidth, 2, System.Int32, System.Int32));
-					local y; y = (((pos.z * this.m_MapHeight) / this.m_TerrainHeight) - invokespecialintegeroperator("/", this.m_MapHeight, 2, System.Int32, System.Int32));
+					local x; x = (((pos.x * this.m_MapWidth) / this.m_TerrainWidth) - invokeintegeroperator(0, "/", this.m_MapWidth, 2, System.Int32, System.Int32));
+					local y; y = (((pos.z * this.m_MapHeight) / this.m_TerrainHeight) - invokeintegeroperator(0, "/", this.m_MapHeight, 2, System.Int32, System.Int32));
 					local rect; rect = typeas(this.m_MapPlayer.transform, UnityEngine.RectTransform, false);
-					rect.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, {}, x, y, 0);
+					rect.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", {}, x, y, 0);
 				end;
 			end,
 			Call = function(this, name, ...)

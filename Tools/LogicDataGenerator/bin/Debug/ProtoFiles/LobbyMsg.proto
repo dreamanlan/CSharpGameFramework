@@ -291,7 +291,6 @@ message Msg_LC_SyncRoleInfo
 	required int32 Money = 2;
 	required int32 Gold = 3;
 	required int32 Level = 4;
-	required int32 SummonerSkillId = 5;
 }
 
 message NodeMessageWithAccount
@@ -373,7 +372,6 @@ message RoleEnterResult
 	repeated MemberInfoForMessage Members = 9;
 	repeated ItemInfoForMessage Items = 10;
 	repeated FriendInfoForMessage Friends = 11;
-	required int32 SummonerSkillId = 12;
 }
 
 message ServerShutdown

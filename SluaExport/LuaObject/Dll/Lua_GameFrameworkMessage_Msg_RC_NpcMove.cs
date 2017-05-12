@@ -58,7 +58,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 	static public int set_velocity(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
-			int v;
+			float v;
 			checkType(l,2,out v);
 			self.velocity=v;
 			pushValue(l,true);
@@ -84,7 +84,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 	static public int set_cur_pos(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
-			System.UInt64 v;
+			GameFrameworkMessage.Position v;
 			checkType(l,2,out v);
 			self.cur_pos=v;
 			pushValue(l,true);
@@ -110,7 +110,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 	static public int set_target_pos(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
-			System.UInt64 v;
+			GameFrameworkMessage.Position v;
 			checkType(l,2,out v);
 			self.target_pos=v;
 			pushValue(l,true);

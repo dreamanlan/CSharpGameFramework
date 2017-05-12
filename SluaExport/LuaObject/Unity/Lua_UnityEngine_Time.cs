@@ -72,10 +72,32 @@ public class Lua_UnityEngine_Time : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_fixedUnscaledTime(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.Time.fixedUnscaledTime);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_unscaledDeltaTime(IntPtr l) {
 		try {
 			pushValue(l,true);
 			pushValue(l,UnityEngine.Time.unscaledDeltaTime);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_fixedUnscaledDeltaTime(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.Time.fixedUnscaledDeltaTime);
 			return 2;
 		}
 		catch(Exception e) {
@@ -136,6 +158,30 @@ public class Lua_UnityEngine_Time : LuaObject {
 			pushValue(l,true);
 			pushValue(l,UnityEngine.Time.smoothDeltaTime);
 			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_maximumParticleDeltaTime(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.Time.maximumParticleDeltaTime);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_maximumParticleDeltaTime(IntPtr l) {
+		try {
+			float v;
+			checkType(l,2,out v);
+			UnityEngine.Time.maximumParticleDeltaTime=v;
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
@@ -222,6 +268,17 @@ public class Lua_UnityEngine_Time : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_inFixedTimeStep(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.Time.inFixedTimeStep);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Time");
 		addMember(l,"time",get_time,null,false);
@@ -229,15 +286,19 @@ public class Lua_UnityEngine_Time : LuaObject {
 		addMember(l,"deltaTime",get_deltaTime,null,false);
 		addMember(l,"fixedTime",get_fixedTime,null,false);
 		addMember(l,"unscaledTime",get_unscaledTime,null,false);
+		addMember(l,"fixedUnscaledTime",get_fixedUnscaledTime,null,false);
 		addMember(l,"unscaledDeltaTime",get_unscaledDeltaTime,null,false);
+		addMember(l,"fixedUnscaledDeltaTime",get_fixedUnscaledDeltaTime,null,false);
 		addMember(l,"fixedDeltaTime",get_fixedDeltaTime,set_fixedDeltaTime,false);
 		addMember(l,"maximumDeltaTime",get_maximumDeltaTime,set_maximumDeltaTime,false);
 		addMember(l,"smoothDeltaTime",get_smoothDeltaTime,null,false);
+		addMember(l,"maximumParticleDeltaTime",get_maximumParticleDeltaTime,set_maximumParticleDeltaTime,false);
 		addMember(l,"timeScale",get_timeScale,set_timeScale,false);
 		addMember(l,"frameCount",get_frameCount,null,false);
 		addMember(l,"renderedFrameCount",get_renderedFrameCount,null,false);
 		addMember(l,"realtimeSinceStartup",get_realtimeSinceStartup,null,false);
 		addMember(l,"captureFramerate",get_captureFramerate,set_captureFramerate,false);
+		addMember(l,"inFixedTimeStep",get_inFixedTimeStep,null,false);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.Time));
 	}
 }

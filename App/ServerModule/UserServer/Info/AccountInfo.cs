@@ -16,18 +16,8 @@ namespace GameFramework
     /// <summary>
     /// 玩家账号数据
     /// </summary>
-    internal class AccountInfo
+    public partial class AccountInfo
     {
-        internal string AccountId
-        {
-            get { return m_AccountId; }
-            set { m_AccountId = value; }
-        }
-        internal string Password
-        {
-            get { return m_Password; }
-            set { m_Password = value; }
-        }
         internal string ClientInfo
         {
             get { return m_ClientInfo; }
@@ -48,26 +38,12 @@ namespace GameFramework
             get { return m_CurrentState; }
             set { m_CurrentState = value; }
         }
-        internal ulong UserGuid
-        {
-            get { return m_UserGuid; }
-            set { m_UserGuid = value; }
-        }
-        internal TableAccountWrap TableAccount
-        {
-            get { return m_TableAccount; }
-        }
         //玩家账号数据    
-        private string m_AccountKey = string.Empty;       //玩家账号标识，玩家当前设备标识
-        private string m_AccountId = string.Empty;        //玩家账号ID，由畅游账号平台返回
-        private string m_Password = string.Empty;              //玩家账号在第三方平台的ID
+        private string m_AccountKey = string.Empty;
         private string m_ClientInfo = string.Empty;
         private AccountState m_CurrentState = AccountState.Offline;
-        private ulong m_UserGuid = 0;
         private double m_LastLoginTime = 0;
         private string m_NodeName;
-
-        private TableAccountWrap m_TableAccount = new TableAccountWrap();   //账号信息
     }
 
     internal class AccountSystem

@@ -267,24 +267,24 @@ namespace GameFramework.Network
         
         internal void SyncPlayerMoveToPos(ScriptRuntime.Vector3 target_pos)
         {
-            EntityInfo userInfo = PluginFramework.Instance.GetEntityById(PluginFramework.Instance.LeaderID);
+            EntityInfo userInfo = PluginFramework.Instance.GetEntityById(PluginFramework.Instance.RoomObjId);
             if (null != userInfo) {
                 MovementStateInfo msi = userInfo.GetMovementStateInfo();
 
                 Msg_CR_UserMoveToPos builder = new Msg_CR_UserMoveToPos();
-                builder.target_pos = ProtoHelper.EncodePosition2D(target_pos.X, target_pos.Z);
+                builder.target_pos = ToPosition(target_pos.X, target_pos.Z);
                 SendMessage(RoomMessageDefine.Msg_CR_UserMoveToPos, builder);
             }
         }
 
         internal void SyncPlayerStopMove()
         {
-            EntityInfo userInfo = PluginFramework.Instance.GetEntityById(PluginFramework.Instance.LeaderID);
+            EntityInfo userInfo = PluginFramework.Instance.GetEntityById(PluginFramework.Instance.RoomObjId);
             if (null != userInfo) {
                 MovementStateInfo msi = userInfo.GetMovementStateInfo();
 
                 Msg_CR_UserMoveToPos builder = new Msg_CR_UserMoveToPos();
-                builder.target_pos = ProtoHelper.EncodePosition2D(msi.PositionX, msi.PositionZ);
+                builder.target_pos = ToPosition(msi.PositionX, msi.PositionZ);
                 builder.is_stop = true;
                 SendMessage(RoomMessageDefine.Msg_CR_UserMoveToPos, builder);
             }
@@ -301,7 +301,7 @@ namespace GameFramework.Network
             if (targetId > 0) {
                 bd.target_id = targetId;
             } else {
-                bd.target_dir = ProtoHelper.EncodeFloat(faceDir);
+                bd.target_dir = faceDir;
             }
             SendMessage(RoomMessageDefine.Msg_CR_Skill, bd);
 
@@ -317,17 +317,9 @@ namespace GameFramework.Network
 
         }
 
-        internal void SyncOperateMode(bool bAuto)
+        private Position ToPosition(float x, float z)
         {
-            Msg_CR_OperateMode bd = new Msg_CR_OperateMode();
-            bd.isauto = bAuto;
-            SendMessage(RoomMessageDefine.Msg_CR_OperateMode, bd);
-        }
-
-        internal void SyncGiveUpCombat()
-        {
-            Msg_CR_GiveUpBattle msg = new Msg_CR_GiveUpBattle();
-            SendMessage(RoomMessageDefine.Msg_CR_GiveUpBattle, msg);
+            return new Position { x = x, z = z };
         }
 
         private void ClearArgs()

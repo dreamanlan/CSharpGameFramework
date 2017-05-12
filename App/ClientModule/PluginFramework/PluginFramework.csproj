@@ -50,7 +50,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dsl">
-      <HintPath>..\..\ExternalLibrary\Dsl.dll</HintPath>
+      <HintPath>..\..\..\ExternalLibrary\Dsl.dll</HintPath>
     </Reference>
     <Reference Include="Lidgren.Network">
       <HintPath>..\..\ExternalLibrary\Lidgren.Network.dll</HintPath>
@@ -64,25 +64,25 @@
     <Reference Include="protobuf-net">
       <HintPath>..\..\ExternalLibrary\protobuf-net.dll</HintPath>
     </Reference>
-    <Reference Include="ProtobufSerializer">
-      <HintPath>..\ClientProtoBuf\bin\ProtobufSerializer.dll</HintPath>
+    <Reference Include="ProtobufSerializer, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\ClientProtoBuf\bin\ProtobufSerializer.dll</HintPath>
     </Reference>
     <Reference Include="ScriptFrameworkLibrary">
       <HintPath>..\..\ExternalLibrary\ScriptFrameworkLibrary.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="UnityEngine">
-      <HintPath>..\..\ExternalLibrary\UnityEngine.dll</HintPath>
+    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ExternalLibrary\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\ExternalLibrary\UnityEngine.UI.dll</HintPath>
+    <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\ExternalLibrary\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\MessageCommon\ProtoHelper.cs">
-      <Link>RoomNetWork\ProtoHelper.cs</Link>
-    </Compile>
     <Compile Include="..\..\MessageCommon\ProtoNetEncoding.cs">
       <Link>UserNetwork\ProtoNetEncoding.cs</Link>
     </Compile>

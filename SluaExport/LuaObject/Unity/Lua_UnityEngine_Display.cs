@@ -180,6 +180,18 @@ public class Lua_UnityEngine_Display : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_active(IntPtr l) {
+		try {
+			UnityEngine.Display self=(UnityEngine.Display)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.active);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_main(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -203,6 +215,7 @@ public class Lua_UnityEngine_Display : LuaObject {
 		addMember(l,"systemHeight",get_systemHeight,null,true);
 		addMember(l,"colorBuffer",get_colorBuffer,null,true);
 		addMember(l,"depthBuffer",get_depthBuffer,null,true);
+		addMember(l,"active",get_active,null,true);
 		addMember(l,"main",get_main,null,false);
 		createTypeMetatable(l,null, typeof(UnityEngine.Display));
 	}

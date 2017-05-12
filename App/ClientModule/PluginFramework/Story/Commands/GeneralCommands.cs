@@ -402,8 +402,7 @@ namespace GameFramework.Story.Commands
 
             const string c_DialogOverPrefix = "dialog_over:";
             if (msgId.StartsWith(c_DialogOverPrefix)) {
-                TableConfig.Level level = PluginFramework.Instance.SceneInfo;
-                if (null != level && (level.type == (int)SceneTypeEnum.Story || level.type == (int)SceneTypeEnum.Activity)) {
+                if (!PluginFramework.Instance.IsBattleState) {
                     GameFrameworkMessage.Msg_CR_DlgClosed msg = new GameFrameworkMessage.Msg_CR_DlgClosed();
                     msg.dialog_id = int.Parse(msgId.Substring(c_DialogOverPrefix.Length).Trim());
                     Network.NetworkSystem.Instance.SendMessage(GameFrameworkMessage.RoomMessageDefine.Msg_CR_DlgClosed, msg);
@@ -1201,76 +1200,332 @@ namespace GameFramework.Story.Commands
         private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
     }
     /// <summary>
-    /// gfxclear();
+    /// creategameobject(name, prefab[, parent])[obj("varname")]{
+    ///     position(vector3(x,y,z));
+    ///     rotation(vector3(x,y,z));
+    ///     scale(vector3(x,y,z));
+    /// };
     /// </summary>
-    internal class GfxClearCommand : AbstractStoryCommand
+    internal class CreateGameObjectCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
-            GfxClearCommand cmd = new GfxClearCommand();
+            CreateGameObjectCommand cmd = new CreateGameObjectCommand();
+            cmd.m_Name = m_Name.Clone();
+            cmd.m_Prefab = m_Prefab.Clone();
+            cmd.m_Parent = m_Parent.Clone();
+            cmd.m_HaveObj = m_HaveObj;
+            cmd.m_ObjVarName = m_ObjVarName.Clone();
+            cmd.m_Position = m_Position.Clone();
+            cmd.m_Rotation = m_Rotation.Clone();
+            cmd.m_Scale = m_Scale.Clone();
             return cmd;
         }
-
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-
+            m_Name.Evaluate(instance, iterator, args);
+            m_Prefab.Evaluate(instance, iterator, args);
+            if (m_HaveParent) {
+                m_Parent.Evaluate(instance, iterator, args);
+            }
+            if (m_HaveObj) {
+                m_ObjVarName.Evaluate(instance, iterator, args);
+            }
+            m_Position.Evaluate(instance, iterator, args);
+            m_Rotation.Evaluate(instance, iterator, args);
+            m_Scale.Evaluate(instance, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
-            GfxStorySystem.Instance.GfxDatas.Clear();
-            return false;
-        }
-
-        protected override void Load(Dsl.CallData callData)
-        {
-        }
-    }
-    /// <summary>
-    /// gfxset(name,value);
-    /// </summary>
-    internal class GfxSetCommand : AbstractStoryCommand
-    {
-        public override IStoryCommand Clone()
-        {
-            GfxSetCommand cmd = new GfxSetCommand();
-            cmd.m_AttrName = m_AttrName.Clone();
-            cmd.m_Value = m_Value.Clone();
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
-        {
-            m_AttrName.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, long delta)
-        {
-            string name = m_AttrName.Value;
-            object value = m_Value.Value;
-            if (GfxStorySystem.Instance.GfxDatas.ContainsKey(name)) {
-                GfxStorySystem.Instance.GfxDatas[name] = value;
-            } else {
-                GfxStorySystem.Instance.GfxDatas.Add(name, value);
+            string name = m_Name.Value;
+            string prefab = m_Prefab.Value;
+            UnityEngine.GameObject obj = ResourceSystem.Instance.NewObject(prefab) as UnityEngine.GameObject;
+            if(null!=obj){
+                obj.name = name;
+                if (m_HaveParent) {
+                    object parent = m_Parent.Value;
+                    string path = parent as string;
+                    if (null != path) {
+                        var pobj = UnityEngine.GameObject.Find(path);
+                        if (null != pobj) {
+                            obj.transform.SetParent(pobj.transform, false);
+                        }
+                    } else {
+                        var pobj = parent as UnityEngine.GameObject;
+                        if (null != pobj) {
+                            obj.transform.SetParent(pobj.transform, false);
+                        }
+                    }
+                }
+                if (m_Position.HaveValue) {
+                    var v = m_Position.Value;
+                    obj.transform.localPosition = new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                }
+                if (m_Rotation.HaveValue) {
+                    var v = m_Rotation.Value;
+                    obj.transform.localEulerAngles = new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                }
+                if (m_Scale.HaveValue) {
+                    var v = m_Scale.Value;
+                    obj.transform.localScale = new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                }
+                if (m_HaveObj) {
+                    string varName = m_ObjVarName.Value;
+                    instance.SetVariable(varName, obj);
+                }
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
-                m_AttrName.InitFromDsl(callData.GetParam(0));
-                m_Value.InitFromDsl(callData.GetParam(1));
+                m_Name.InitFromDsl(callData.GetParam(0));
+                m_Prefab.InitFromDsl(callData.GetParam(1));
+                if (num > 2) {
+                    m_HaveParent = true;
+                    m_Parent.InitFromDsl(callData.GetParam(2));
+                }
+            }
+        }
+        protected override void Load(Dsl.FunctionData funcData)
+        {
+            var callData = funcData.Call;
+            Load(callData);
+            foreach (var comp in funcData.Statements) {
+                var cd = comp as Dsl.CallData;
+                if (null != cd) {
+                    LoadOptional(cd);
+                }
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            if (statementData.Functions.Count == 2) {
+                Dsl.FunctionData first = statementData.First;
+                Dsl.FunctionData second = statementData.Second;
+                if (null != first && null != first.Call && null != second && null != second.Call) {
+                    Load(first.Call);
+                    LoadVarName(second.Call);
+                }
+                if (null != second) {
+                    foreach (var comp in second.Statements) {
+                        var cd = comp as Dsl.CallData;
+                        if (null != cd) {
+                            LoadOptional(cd);
+                        }
+                    }
+                }
+            }
+        }
+        private void LoadVarName(Dsl.CallData callData)
+        {
+            if (callData.GetId() == "obj" && callData.GetParamNum() == 1) {
+                m_ObjVarName.InitFromDsl(callData.GetParam(0));
+                m_HaveObj = true;
+            }
+        }
+        private void LoadOptional(Dsl.CallData callData)
+        {
+            string id = callData.GetId();
+            if (id == "position") {
+                m_Position.InitFromDsl(callData.GetParam(0));
+            } else if (id == "rotation") {
+                m_Rotation.InitFromDsl(callData.GetParam(0));
+            } else if (id == "scale") {
+                m_Scale.InitFromDsl(callData.GetParam(0));
             }
         }
 
-        private IStoryValue<string> m_AttrName = new StoryValue<string>();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue<string> m_Name = new StoryValue<string>();
+        private IStoryValue<string> m_Prefab = new StoryValue<string>();
+        private IStoryValue<object> m_Parent = new StoryValue();
+        private bool m_HaveParent = false;
+        private bool m_HaveObj = false;
+        private IStoryValue<string> m_ObjVarName = new StoryValue<string>();
+        private IStoryValue<ScriptRuntime.Vector3> m_Position = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryValue<ScriptRuntime.Vector3> m_Rotation = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryValue<ScriptRuntime.Vector3> m_Scale = new StoryValue<ScriptRuntime.Vector3>();
     }
     /// <summary>
-    /// addcomponent(obj_path,component)[obj("varname")];
+    /// destroygameobject(path);
+    /// </summary>
+    internal class DestroyGameObjectCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            DestroyGameObjectCommand cmd = new DestroyGameObjectCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object objPath = m_ObjPath.Value;
+            string path = objPath as string;
+            if (null != path) {
+                var obj = UnityEngine.GameObject.Find(path);
+                if (null != obj) {
+                    obj.transform.SetParent(null);
+                    if (!ResourceSystem.Instance.RecycleObject(obj)) {
+                        UnityEngine.GameObject.Destroy(obj);
+                    }
+                }
+            } else {
+                var obj = objPath as UnityEngine.GameObject;
+                if (null != obj) {
+                    obj.transform.SetParent(null);
+                    if (!ResourceSystem.Instance.RecycleObject(obj)) {
+                        UnityEngine.GameObject.Destroy(obj);
+                    }
+                }
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+    }
+    /// <summary>
+    /// setparent(objpath,parent,stay_world_pos);
+    /// </summary>
+    internal class SetParentCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SetParentCommand cmd = new SetParentCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            cmd.m_Parent = m_Parent.Clone();
+            cmd.m_StayWorldPos = m_StayWorldPos.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+            m_Parent.Evaluate(instance, iterator, args);
+            m_StayWorldPos.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object o = m_ObjPath.Value;
+            object parentVal = m_Parent.Value;
+            int stayWorldPos = m_StayWorldPos.Value;
+            var objPath = o as string;
+            var obj = o as UnityEngine.GameObject;
+            if (null == obj) {
+                if (null != objPath) {
+                    obj = UnityEngine.GameObject.Find(objPath);
+                } else {
+                    try {
+                        int objId = (int)o;
+                        obj = PluginFramework.Instance.GetGameObject(objId);
+                    } catch {
+                        obj = null;
+                    }
+                }
+            }
+            if (null != obj) {
+                string parentPath = parentVal as string;
+                if (null != parentPath) {
+                    var pobj = UnityEngine.GameObject.Find(parentPath);
+                    if (null != pobj) {
+                        obj.transform.SetParent(pobj.transform, stayWorldPos != 0);
+                    }
+                } else {
+                    var pobj = parentVal as UnityEngine.GameObject;
+                    if (null != pobj) {
+                        obj.transform.SetParent(pobj.transform, stayWorldPos != 0);
+                    } else {
+                        try {
+                            int id = (int)parentVal;
+                            pobj = PluginFramework.Instance.GetGameObject(id);
+                            if (null != pobj) {
+                                obj.transform.SetParent(pobj.transform, stayWorldPos != 0);
+                            }
+                        } catch {
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 2) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+                m_Parent.InitFromDsl(callData.GetParam(1));
+                m_StayWorldPos.InitFromDsl(callData.GetParam(2));
+            }
+        }
+
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private IStoryValue<object> m_Parent = new StoryValue();
+        private IStoryValue<int> m_StayWorldPos = new StoryValue<int>();
+    }
+    /// <summary>
+    /// setactive(objpath,1_or_0);
+    /// </summary>
+    internal class SetActiveCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SetActiveCommand cmd = new SetActiveCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            cmd.m_Active = m_Active.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+            m_Active.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object o = m_ObjPath.Value;
+            int active = m_Active.Value;
+            var objPath = o as string;
+            var obj = o as UnityEngine.GameObject;
+            if (null == obj) {
+                if (null != objPath) {
+                    obj = UnityEngine.GameObject.Find(objPath);
+                } else {
+                    try {
+                        int objId = (int)o;
+                        obj = PluginFramework.Instance.GetGameObject(objId);
+                    } catch {
+                        obj = null;
+                    }
+                }
+            }
+            if (null != obj) {
+                obj.SetActive(active != 0);
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+                m_Active.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private IStoryValue<int> m_Active = new StoryValue<int>();
+    }
+    /// <summary>
+    /// addcomponent(objpath,type)[obj("varname")];
     /// </summary>
     internal class AddComponentCommand : AbstractStoryCommand
     {
@@ -1295,9 +1550,22 @@ namespace GameFramework.Story.Commands
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
-            string objPath = m_ObjPath.Value;
+            var o = m_ObjPath.Value;
             object componentType = m_ComponentType.Value;
-            UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
+            var objPath = o as string;
+            var obj = o as UnityEngine.GameObject;
+            if (null == obj) {
+                if (null != objPath) {
+                    obj = UnityEngine.GameObject.Find(objPath);
+                } else {
+                    try {
+                        int objId = (int)o;
+                        obj = PluginFramework.Instance.GetGameObject(objId);
+                    } catch {
+                        obj = null;
+                    }
+                }
+            }
             if (null != obj) {
                 UnityEngine.Component component = null;
                 Type t = componentType as Type;
@@ -1346,11 +1614,74 @@ namespace GameFramework.Story.Commands
                 m_HaveObj = true;
             }
         }
-
-        private IStoryValue<string> m_ObjPath = new StoryValue<string>();
+        private IStoryValue<object> m_ObjPath = new StoryValue();
         private IStoryValue<object> m_ComponentType = new StoryValue();
         private bool m_HaveObj = false;
         private IStoryValue<string> m_ObjVarName = new StoryValue<string>();
+    }
+    /// <summary>
+    /// removecomponent(objpath,type);
+    /// </summary>
+    internal class RemoveComponentCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            RemoveComponentCommand cmd = new RemoveComponentCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            cmd.m_ComponentType = m_ComponentType.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+            m_ComponentType.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            var o = m_ObjPath.Value;
+            object componentType = m_ComponentType.Value;
+            var objPath = o as string;
+            var obj = o as UnityEngine.GameObject;
+            if (null == obj) {
+                if (null != objPath) {
+                    obj = UnityEngine.GameObject.Find(objPath);
+                } else {
+                    try {
+                        int objId = (int)o;
+                        obj = PluginFramework.Instance.GetGameObject(objId);
+                    } catch {
+                        obj = null;
+                    }
+                }
+            }
+            if (null != obj) {
+                UnityEngine.Component component = null;
+                Type t = componentType as Type;
+                if (null != t) {
+                    var comp = obj.GetComponent(t);
+                    UnityEngine.GameObject.Destroy(comp);
+                } else {
+                    string name = componentType as string;
+                    if (null != name) {
+                        t = Type.GetType(name);
+                        var comp = obj.GetComponent(t);
+                        UnityEngine.GameObject.Destroy(comp);
+                    }
+                }
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+                m_ComponentType.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private IStoryValue<object> m_ComponentType = new StoryValue();
     }
     /// <summary>
     /// installplugin(obj_path, plugin_class, is_tick_plugin, use_lua_plugin);
@@ -1555,10 +1886,81 @@ namespace GameFramework.Story.Commands
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             int targetSceneId = m_TargetSceneId.Value;
-            if (targetSceneId <= 0) {
-                targetSceneId = PluginFramework.Instance.LastMainUiSceneId;
-            }
             PluginFramework.Instance.DelayChangeScene(targetSceneId);
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_TargetSceneId.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private IStoryValue<int> m_TargetSceneId = new StoryValue<int>();
+    }
+    /// <summary>
+    /// openbattle(target_scene_id);
+    /// </summary>
+    internal class OpenBattleCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            OpenBattleCommand cmd = new OpenBattleCommand();
+            cmd.m_TargetSceneId = m_TargetSceneId.Clone();
+            return cmd;
+        }
+
+        protected override void ResetState()
+        { }
+
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_TargetSceneId.Evaluate(instance, iterator, args);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            int targetSceneId = m_TargetSceneId.Value;
+            PluginFramework.Instance.LoadBattle(targetSceneId);
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_TargetSceneId.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private IStoryValue<int> m_TargetSceneId = new StoryValue<int>();
+    }
+    /// <summary>
+    /// closebattle(target_scene_id);
+    /// </summary>
+    internal class CloseBattleCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CloseBattleCommand cmd = new CloseBattleCommand();
+            cmd.m_TargetSceneId = m_TargetSceneId.Clone();
+            return cmd;
+        }
+
+        protected override void ResetState()
+        { }
+
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_TargetSceneId.Evaluate(instance, iterator, args);
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            int targetSceneId = m_TargetSceneId.Value;
+            PluginFramework.Instance.UnloadBattle(targetSceneId);
             return false;
         }
 

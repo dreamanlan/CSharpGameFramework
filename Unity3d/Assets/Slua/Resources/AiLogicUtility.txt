@@ -92,7 +92,7 @@ AiLogicUtility = {
 							selectSkill = skInfo;
 							priority = skInfo.ConfigData.skillData.autoCast;
 						end;
-					i = i+ 1;
+					i = invokeintegeroperator(2, "+", i, 1, System.Int32, System.Int32);
 					end;
 				end;
 				return selectSkill;

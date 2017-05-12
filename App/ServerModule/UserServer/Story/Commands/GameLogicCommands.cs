@@ -165,7 +165,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
     }
     /// <summary>
-    /// addmember(guid, linkid, level);
+    /// addmember(guid, tableid, level);
     /// </summary>
     internal class AddMemberCommand : AbstractStoryCommand
     {
@@ -173,7 +173,7 @@ namespace GameFramework.Story.Commands
         {
             AddMemberCommand cmd = new AddMemberCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
-            cmd.m_LinkId = m_LinkId.Clone();
+            cmd.m_TableId = m_TableId.Clone();
             cmd.m_Level = m_Level.Clone();
             return cmd;
         }
@@ -184,7 +184,7 @@ namespace GameFramework.Story.Commands
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_UserGuid.Evaluate(instance, iterator, args);
-            m_LinkId.Evaluate(instance, iterator, args);
+            m_TableId.Evaluate(instance, iterator, args);
             m_Level.Evaluate(instance, iterator, args);
         }
 
@@ -193,13 +193,13 @@ namespace GameFramework.Story.Commands
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = m_UserGuid.Value;
-                int linkId = m_LinkId.Value;
+                int tableId = m_TableId.Value;
                 int level = m_Level.Value;
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     MemberInfo mi = new MemberInfo();
                     mi.MemberGuid = UserServer.Instance.GlobalProcessThread.GenerateMemberGuid();
-                    mi.HeroId = linkId;
+                    mi.HeroId = tableId;
                     mi.Level = level;
                     ui.MemberInfos.Add(mi);
                 }
@@ -212,13 +212,13 @@ namespace GameFramework.Story.Commands
             int num = callData.GetParamNum();
             if (num > 2) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
-                m_LinkId.InitFromDsl(callData.GetParam(1));
+                m_TableId.InitFromDsl(callData.GetParam(1));
                 m_Level.InitFromDsl(callData.GetParam(2));
             }
         }
 
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryValue<int> m_LinkId = new StoryValue<int>();
+        private IStoryValue<int> m_TableId = new StoryValue<int>();
         private IStoryValue<int> m_Level = new StoryValue<int>();
     }
     /// <summary>

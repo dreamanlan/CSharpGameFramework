@@ -81,6 +81,13 @@ namespace GameFramework
         }
         private void HandleUserQuit(Msg_RL_UserQuit msg_, PBChannel channel, int src, uint session)
         {
+            UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
+            UserThread userThread = dataProcess.GetUserThread(msg_.UserGuid);
+            if (null != userThread) {
+                userThread.QueueAction(userThread.HandleUserQuit, msg_);
+            } else {
+                dataProcess.DefaultUserThread.QueueAction(dataProcess.DefaultUserThread.HandleUserQuit, msg_);
+            }
         }
         private void HandlePickMoney(Msg_RL_PickMoney msg_, PBChannel channel, int src, uint session)
         {

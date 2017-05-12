@@ -30,7 +30,7 @@ HandlerRegister = {
 
 		local static_fields_build = function()
 			local static_fields = {
-				s_Handlers = newexterndictionary(System.Collections.Generic.Dictionary_TKey_TValue, "System.Collections.Generic.Dictionary_TKey_TValue", "ctor", nil, {}),
+				s_Handlers = newexterndictionary(System.Collections.Generic.Dictionary_TKey_TValue, "System.Collections.Generic.Dictionary_TKey_TValue", "ctor", {}),
 			};
 			return static_fields;
 		end;

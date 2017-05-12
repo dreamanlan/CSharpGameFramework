@@ -135,12 +135,10 @@ public class Lua_UnityEngine_RenderTexture : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int SetGlobalShaderProperty(IntPtr l) {
+	static public int GenerateMips(IntPtr l) {
 		try {
 			UnityEngine.RenderTexture self=(UnityEngine.RenderTexture)checkSelf(l);
-			System.String a1;
-			checkType(l,2,out a1);
-			self.SetGlobalShaderProperty(a1);
+			self.GenerateMips();
 			pushValue(l,true);
 			return 1;
 		}
@@ -149,13 +147,27 @@ public class Lua_UnityEngine_RenderTexture : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetTexelOffset(IntPtr l) {
+	static public int GetNativeDepthBufferPtr(IntPtr l) {
 		try {
 			UnityEngine.RenderTexture self=(UnityEngine.RenderTexture)checkSelf(l);
-			var ret=self.GetTexelOffset();
+			var ret=self.GetNativeDepthBufferPtr();
 			pushValue(l,true);
 			pushValue(l,ret);
 			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int SetGlobalShaderProperty(IntPtr l) {
+		try {
+			UnityEngine.RenderTexture self=(UnityEngine.RenderTexture)checkSelf(l);
+			System.String a1;
+			checkType(l,2,out a1);
+			self.SetGlobalShaderProperty(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
@@ -439,11 +451,11 @@ public class Lua_UnityEngine_RenderTexture : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_generateMips(IntPtr l) {
+	static public int get_autoGenerateMips(IntPtr l) {
 		try {
 			UnityEngine.RenderTexture self=(UnityEngine.RenderTexture)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.generateMips);
+			pushValue(l,self.autoGenerateMips);
 			return 2;
 		}
 		catch(Exception e) {
@@ -451,12 +463,12 @@ public class Lua_UnityEngine_RenderTexture : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_generateMips(IntPtr l) {
+	static public int set_autoGenerateMips(IntPtr l) {
 		try {
 			UnityEngine.RenderTexture self=(UnityEngine.RenderTexture)checkSelf(l);
 			bool v;
 			checkType(l,2,out v);
-			self.generateMips=v;
+			self.autoGenerateMips=v;
 			pushValue(l,true);
 			return 1;
 		}
@@ -465,11 +477,11 @@ public class Lua_UnityEngine_RenderTexture : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_isCubemap(IntPtr l) {
+	static public int get_dimension(IntPtr l) {
 		try {
 			UnityEngine.RenderTexture self=(UnityEngine.RenderTexture)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.isCubemap);
+			pushEnum(l,(int)self.dimension);
 			return 2;
 		}
 		catch(Exception e) {
@@ -477,38 +489,12 @@ public class Lua_UnityEngine_RenderTexture : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_isCubemap(IntPtr l) {
+	static public int set_dimension(IntPtr l) {
 		try {
 			UnityEngine.RenderTexture self=(UnityEngine.RenderTexture)checkSelf(l);
-			bool v;
-			checkType(l,2,out v);
-			self.isCubemap=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_isVolume(IntPtr l) {
-		try {
-			UnityEngine.RenderTexture self=(UnityEngine.RenderTexture)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.isVolume);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_isVolume(IntPtr l) {
-		try {
-			UnityEngine.RenderTexture self=(UnityEngine.RenderTexture)checkSelf(l);
-			bool v;
-			checkType(l,2,out v);
-			self.isVolume=v;
+			UnityEngine.Rendering.TextureDimension v;
+			checkEnum(l,2,out v);
+			self.dimension=v;
 			pushValue(l,true);
 			return 1;
 		}
@@ -649,8 +635,9 @@ public class Lua_UnityEngine_RenderTexture : LuaObject {
 		addMember(l,IsCreated);
 		addMember(l,DiscardContents);
 		addMember(l,MarkRestoreExpected);
+		addMember(l,GenerateMips);
+		addMember(l,GetNativeDepthBufferPtr);
 		addMember(l,SetGlobalShaderProperty);
-		addMember(l,GetTexelOffset);
 		addMember(l,GetTemporary_s);
 		addMember(l,ReleaseTemporary_s);
 		addMember(l,SupportsStencil_s);
@@ -661,9 +648,8 @@ public class Lua_UnityEngine_RenderTexture : LuaObject {
 		addMember(l,"sRGB",get_sRGB,null,true);
 		addMember(l,"format",get_format,set_format,true);
 		addMember(l,"useMipMap",get_useMipMap,set_useMipMap,true);
-		addMember(l,"generateMips",get_generateMips,set_generateMips,true);
-		addMember(l,"isCubemap",get_isCubemap,set_isCubemap,true);
-		addMember(l,"isVolume",get_isVolume,set_isVolume,true);
+		addMember(l,"autoGenerateMips",get_autoGenerateMips,set_autoGenerateMips,true);
+		addMember(l,"dimension",get_dimension,set_dimension,true);
 		addMember(l,"volumeDepth",get_volumeDepth,set_volumeDepth,true);
 		addMember(l,"antiAliasing",get_antiAliasing,set_antiAliasing,true);
 		addMember(l,"enableRandomWrite",get_enableRandomWrite,set_enableRandomWrite,true);

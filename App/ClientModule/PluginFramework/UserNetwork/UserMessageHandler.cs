@@ -383,7 +383,6 @@ namespace GameFramework.Network
                 ClientInfo.Instance.RoleData.Level = protoMsg.Level;
                 ClientInfo.Instance.RoleData.Money = protoMsg.Money;
                 ClientInfo.Instance.RoleData.Gold = protoMsg.Gold;
-                ClientInfo.Instance.RoleData.SummonerSkillId = protoMsg.SummonerSkillId;
             }
         }
         private void HandleSyncMemberList(NodeMessage lobbyMsg)

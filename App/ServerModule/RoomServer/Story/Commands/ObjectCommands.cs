@@ -775,8 +775,8 @@ namespace GameFramework.Story.Commands
                         skillBuilder.skill_id = skillId;
                         float x = obj.GetMovementStateInfo().GetPosition3D().X;
                         float z = obj.GetMovementStateInfo().GetPosition3D().Z;
-                        skillBuilder.stand_pos = ProtoHelper.EncodePosition2D(x, z);
-                        skillBuilder.face_direction = ProtoHelper.EncodeFloat(obj.GetMovementStateInfo().GetFaceDir());
+                        skillBuilder.stand_pos = DataSyncUtility.ToPosition(x, z);
+                        skillBuilder.face_direction = obj.GetMovementStateInfo().GetFaceDir();
 
                         scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcSkill, skillBuilder);
                     }

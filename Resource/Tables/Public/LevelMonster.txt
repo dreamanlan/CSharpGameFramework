@@ -2,57 +2,31 @@ int32	int32	int32	int32	float	float	float	int32	bool	string	string[]
 group	scene	camp	actorID	x	y	dir	level	passive	aiLogic	aiParams
 //id=scene*10+camp		阵营	要出的敌人	出生坐标	出生坐标	方向	等级	非主动攻击怪	ai逻辑	ai参数
 //		1--全友好 2--全敌对 3--blue 4--red								
-42	4	2	6	113.3	147.59	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	136	155.49	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	131.5	140.19	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	102	255.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	106	270.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	83	262.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	124	394.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	147	402.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	143	387.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	325	349.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	329	364.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	306	356.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	427	170.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	450	178.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	446	163.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	317	93.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	321	108.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-42	4	2	6	298	100.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	113.3	147.59	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	136	155.49	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	131.5	140.19	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	102	255.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	106	270.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	83	262.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	124	394.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	147	402.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	143	387.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	325	349.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	329	364.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	306	356.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	427	170.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	450	178.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	446	163.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	317	93.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	321	108.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-52	5	2	6	298	100.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	113.3	147.59	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	136	155.49	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	131.5	140.19	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	102	255.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	106	270.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	83	262.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	124	394.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	147	402.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	143	387.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	325	349.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	329	364.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	306	356.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	427	170.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	450	178.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	446	163.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	317	93.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	321	108.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
-62	6	2	6	298	100.39	0	1	0	ai_normal	Ai/ailogic_normal.dsl
+1011	101	1	6	112.1	101.9	0	1	0		
+1011	101	1	6	161.6	75.9	0	1	0		
+1011	101	1	6	220.3	68.3	0	1	0		
+1011	101	1	6	301.3	70.3	0	1	0		
+1011	101	1	6	393.8	91.4	0	1	0		
+1011	101	1	6	416.5	163.2	0	1	0		
+1011	101	1	6	420.9	245.6	0	1	0		
+1011	101	1	6	406.3	367.4	0	1	0		
+1011	101	1	6	135.1	383.9	0	1	0		
+1011	101	1	6	142.7	264.3	0	1	0		
+1011	101	1	6	172	156	0	1	0		
+1011	101	1	6	337.7	167.7	0	1	0		
+1011	101	1	6	343.6	299.1	0	1	0		
+1011	101	1	6	212.1	334.4	0	1	0		
+1011	101	1	6	246.2	199.6	0	1	0		
+1011	101	1	6	270.3	294.1	0	1	0		
+1021	102	1	7	43.6	56.4	0	1	0		
+1021	102	1	7	137.8	149	0	1	0		
+1021	102	1	7	373.5	354.7	0	1	0		
+1021	102	1	7	223.8	248.2	0	1	0		
+1021	102	1	7	366.3	147.1	0	1	0		
+1021	102	1	7	137.5	357.8	0	1	0		
+1021	102	1	7	468.4	223.4	0	1	0		
+1021	102	1	7	316.4	471.2	0	1	0		
+1021	102	1	7	41.4	261.3	0	1	0		
+1021	102	1	7	277.7	54.6	0	1	0		
+1021	102	1	7	455.4	90	0	1	0		
+1021	102	1	7	395.1	62.4	0	1	0		

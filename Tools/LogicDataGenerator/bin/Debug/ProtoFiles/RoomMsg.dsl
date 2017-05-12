@@ -16,17 +16,6 @@ message(Position) {
   member(x, float, required);
   member(z, float, required);
 };
-// 位置信息
-message(EncodePosition) {
-  member(x, int, required);
-  member(z, int, required);
-};
-// 位置信息
-message(EncodePosition3D) {
-  member(x, int, required);
-  member(y, int, required);
-  member(z, int, required);
-};
 
 // 玩家连接验证
 message(Msg_CR_ShakeHands) {
@@ -61,7 +50,7 @@ message(Msg_CR_Quit) {
 };
 
 message(Msg_CR_UserMoveToPos) {
-  member(target_pos, uint64, required);
+  member(target_pos, Position, required);
   member(is_stop, bool, optional);
 };
 
@@ -70,17 +59,10 @@ message(Msg_CR_Skill) {
   member(role_id, int, required);
   member(skill_id, int, required);
   member(target_id, int, optional);
-  member(target_dir, int, optional);
+  member(target_dir, float, optional);
 };
 
 message(Msg_CR_StopSkill) {
-};
-
-message(Msg_CR_OperateMode) {
-  member(isauto, bool, required);
-};
-
-message(Msg_CR_GiveUpBattle) {
 };
 
 message(Msg_CR_SwitchDebug) {
@@ -117,21 +99,21 @@ message(Msg_RC_DestroyNpc) {
 
 message(Msg_RC_NpcMove) {
   member(npc_id, int, required);
-  member(velocity, int, optional);
-  member(cur_pos, uint64, optional);
-  member(target_pos, uint64, optional);
+  member(velocity, float, optional);
+  member(cur_pos, Position, optional);
+  member(target_pos, Position, optional);
 };
 
 message(Msg_RC_NpcFace) {
   member(npc_id, int, optional);
-  member(face_direction, int, required);
+  member(face_direction, float, required);
 };
 
 message(Msg_RC_NpcSkill) {
   member(npc_id, int, required);
   member(skill_id, int, required);
-  member(stand_pos, ulong, required);
-  member(face_direction, int, required);
+  member(stand_pos, Position, required);
+  member(face_direction, float, required);
   member(target_id, int, required);
 };
 
@@ -164,9 +146,9 @@ message(Msg_RC_RemoveSkill) {
 
 message(Msg_RC_AdjustPosition) {
   member(role_id, int, required); 
-  member(x, int, required);
-  member(z, int, required);
-  member(face_dir, int, required);
+  member(x, float, required);
+  member(z, float, required);
+  member(face_dir, float, required);
 };
 
 message(Msg_RC_SyncProperty) {

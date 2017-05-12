@@ -80,32 +80,6 @@ public class Lua_UnityEngine_ReflectionProbe : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_type(IntPtr l) {
-		try {
-			UnityEngine.ReflectionProbe self=(UnityEngine.ReflectionProbe)checkSelf(l);
-			pushValue(l,true);
-			pushEnum(l,(int)self.type);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_type(IntPtr l) {
-		try {
-			UnityEngine.ReflectionProbe self=(UnityEngine.ReflectionProbe)checkSelf(l);
-			UnityEngine.Rendering.ReflectionProbeType v;
-			checkEnum(l,2,out v);
-			self.type=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_hdr(IntPtr l) {
 		try {
 			UnityEngine.ReflectionProbe self=(UnityEngine.ReflectionProbe)checkSelf(l);
@@ -623,12 +597,67 @@ public class Lua_UnityEngine_ReflectionProbe : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_textureHDRDecodeValues(IntPtr l) {
+		try {
+			UnityEngine.ReflectionProbe self=(UnityEngine.ReflectionProbe)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.textureHDRDecodeValues);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_minBakedCubemapResolution(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.ReflectionProbe.minBakedCubemapResolution);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_maxBakedCubemapResolution(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.ReflectionProbe.maxBakedCubemapResolution);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_defaultTextureHDRDecodeValues(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.ReflectionProbe.defaultTextureHDRDecodeValues);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_defaultTexture(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.ReflectionProbe.defaultTexture);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ReflectionProbe");
 		addMember(l,RenderProbe);
 		addMember(l,IsFinishedRendering);
 		addMember(l,BlendCubemap_s);
-		addMember(l,"type",get_type,set_type,true);
 		addMember(l,"hdr",get_hdr,set_hdr,true);
 		addMember(l,"size",get_size,set_size,true);
 		addMember(l,"center",get_center,set_center,true);
@@ -650,6 +679,11 @@ public class Lua_UnityEngine_ReflectionProbe : LuaObject {
 		addMember(l,"bakedTexture",get_bakedTexture,set_bakedTexture,true);
 		addMember(l,"customBakedTexture",get_customBakedTexture,set_customBakedTexture,true);
 		addMember(l,"texture",get_texture,null,true);
+		addMember(l,"textureHDRDecodeValues",get_textureHDRDecodeValues,null,true);
+		addMember(l,"minBakedCubemapResolution",get_minBakedCubemapResolution,null,false);
+		addMember(l,"maxBakedCubemapResolution",get_maxBakedCubemapResolution,null,false);
+		addMember(l,"defaultTextureHDRDecodeValues",get_defaultTextureHDRDecodeValues,null,false);
+		addMember(l,"defaultTexture",get_defaultTexture,null,false);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.ReflectionProbe),typeof(UnityEngine.Behaviour));
 	}
 }

@@ -48,12 +48,27 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int Init(IntPtr l) {
 		try {
-			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
-			Dsl.DslInfo a1;
-			checkType(l,2,out a1);
-			var ret=self.Init(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
+			int argc = LuaDLL.lua_gettop(l);
+			if(matchType(l,argc,2,typeof(Dsl.FunctionData))){
+				SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
+				Dsl.FunctionData a1;
+				checkType(l,2,out a1);
+				var ret=self.Init(a1);
+				pushValue(l,true);
+				pushValue(l,ret);
+				return 2;
+			}
+			else if(matchType(l,argc,2,typeof(Dsl.DslInfo))){
+				SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
+				Dsl.DslInfo a1;
+				checkType(l,2,out a1);
+				var ret=self.Init(a1);
+				pushValue(l,true);
+				pushValue(l,ret);
+				return 2;
+			}
+			pushValue(l,false);
+			LuaDLL.lua_pushstring(l,"No matched override function to call");
 			return 2;
 		}
 		catch(Exception e) {

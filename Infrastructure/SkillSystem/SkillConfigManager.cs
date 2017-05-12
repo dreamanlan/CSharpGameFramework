@@ -60,6 +60,12 @@ namespace SkillSystem
       }
 #endif
         }
+        public void LoadSkillDsl(int id, Dsl.FunctionData funcData)
+        {
+            lock (m_Lock) {
+                Load(id, funcData);
+            }
+        }
         public SkillInstance NewSkillInstance(int id)
         {
             SkillInstance instance = null;
@@ -80,24 +86,29 @@ namespace SkillSystem
         {
             lock (m_Lock) {
                 for (int i = 0; i < dataFile.DslInfos.Count; i++) {
-                    if (dataFile.DslInfos[i].GetId() == "skill") {
-                        Dsl.FunctionData funcData = dataFile.DslInfos[i].First;
-                        if (null != funcData) {
-                            Dsl.CallData callData = funcData.Call;
-                            if (null != callData) {
-                                int dslId = id;
-                                if (callData.HaveParam()) {
-                                    dslId = int.Parse(callData.GetParamId(0));
-                                }
-                                if (!m_SkillInstances.ContainsKey(dslId)) {
-                                    SkillInstance instance = new SkillInstance();
-                                    instance.Init(dataFile.DslInfos[i]);
-                                    instance.OuterDslSkillId = dslId;
-                                    m_SkillInstances.Add(dslId, instance);
+                    Dsl.FunctionData funcData = dataFile.DslInfos[i].First;
+                    Load(id, funcData);
+                }
+            }
+        }
+        private void Load(int id, Dsl.FunctionData funcData)
+        {
+            if (null != funcData) {
+                string key = funcData.GetId();
+                if (key == "skill" || key == "skilldsl") {
+                    Dsl.CallData callData = funcData.Call;
+                    if (null != callData) {
+                        int dslId = id;
+                        if (callData.HaveParam()) {
+                            dslId = int.Parse(callData.GetParamId(0));
+                        }
+                        if (!m_SkillInstances.ContainsKey(dslId)) {
+                            SkillInstance instance = new SkillInstance();
+                            instance.Init(funcData);
+                            instance.OuterDslSkillId = dslId;
+                            m_SkillInstances.Add(dslId, instance);
 
-                                    LogSystem.Debug("ParseSkill {0}", dslId);
-                                }
-                            }
+                            LogSystem.Debug("ParseSkill {0}", dslId);
                         }
                     }
                 }

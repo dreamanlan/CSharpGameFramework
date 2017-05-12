@@ -145,6 +145,32 @@ public class Lua_UnityEngine_Texture : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_dimension(IntPtr l) {
+		try {
+			UnityEngine.Texture self=(UnityEngine.Texture)checkSelf(l);
+			pushValue(l,true);
+			pushEnum(l,(int)self.dimension);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_dimension(IntPtr l) {
+		try {
+			UnityEngine.Texture self=(UnityEngine.Texture)checkSelf(l);
+			UnityEngine.Rendering.TextureDimension v;
+			checkEnum(l,2,out v);
+			self.dimension=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_filterMode(IntPtr l) {
 		try {
 			UnityEngine.Texture self=(UnityEngine.Texture)checkSelf(l);
@@ -268,6 +294,7 @@ public class Lua_UnityEngine_Texture : LuaObject {
 		addMember(l,"anisotropicFiltering",get_anisotropicFiltering,set_anisotropicFiltering,false);
 		addMember(l,"width",get_width,set_width,true);
 		addMember(l,"height",get_height,set_height,true);
+		addMember(l,"dimension",get_dimension,set_dimension,true);
 		addMember(l,"filterMode",get_filterMode,set_filterMode,true);
 		addMember(l,"anisoLevel",get_anisoLevel,set_anisoLevel,true);
 		addMember(l,"wrapMode",get_wrapMode,set_wrapMode,true);

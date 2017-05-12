@@ -146,21 +146,6 @@ public class Lua_UnityEngine_MonoBehaviour : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int StartCoroutine_Auto(IntPtr l) {
-		try {
-			UnityEngine.MonoBehaviour self=(UnityEngine.MonoBehaviour)checkSelf(l);
-			System.Collections.IEnumerator a1;
-			checkType(l,2,out a1);
-			var ret=self.StartCoroutine_Auto(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int StopCoroutine(IntPtr l) {
 		try {
 			int argc = LuaDLL.lua_gettop(l);
@@ -247,6 +232,32 @@ public class Lua_UnityEngine_MonoBehaviour : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_runInEditMode(IntPtr l) {
+		try {
+			UnityEngine.MonoBehaviour self=(UnityEngine.MonoBehaviour)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.runInEditMode);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_runInEditMode(IntPtr l) {
+		try {
+			UnityEngine.MonoBehaviour self=(UnityEngine.MonoBehaviour)checkSelf(l);
+			bool v;
+			checkType(l,2,out v);
+			self.runInEditMode=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.MonoBehaviour");
 		addMember(l,Invoke);
@@ -254,11 +265,11 @@ public class Lua_UnityEngine_MonoBehaviour : LuaObject {
 		addMember(l,CancelInvoke);
 		addMember(l,IsInvoking);
 		addMember(l,StartCoroutine);
-		addMember(l,StartCoroutine_Auto);
 		addMember(l,StopCoroutine);
 		addMember(l,StopAllCoroutines);
 		addMember(l,print_s);
 		addMember(l,"useGUILayout",get_useGUILayout,set_useGUILayout,true);
+		addMember(l,"runInEditMode",get_runInEditMode,set_runInEditMode,true);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.MonoBehaviour),typeof(UnityEngine.Behaviour));
 	}
 }

@@ -60,8 +60,6 @@ namespace GameFramework
             m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_UserMoveToPos, Msg_CR_UserMoveToPosHandler.Execute);
             m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_Skill, UseSkillHandler.Execute);
             m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_StopSkill, Msg_CR_StopSkillHandler.Execute);
-            m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_OperateMode, Msg_CR_OperateModeHandler.Execute);
-            m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_GiveUpBattle, Msg_CR_GiveUpBattleHandler.Execute);
             m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_SwitchDebug, SwitchDebugHandler.Execute);
             m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_DlgClosed, Msg_CR_DlgClosedHandler.Execute);
             m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_GmCommand, Msg_CR_GmCommandHandler.Execute);

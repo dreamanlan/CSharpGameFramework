@@ -4,12 +4,25 @@ using SLua;
 using System.Collections.Generic;
 public class Lua_UnityEngine_VR_VRDevice : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	static public int GetTrackingSpaceType_s(IntPtr l) {
 		try {
-			UnityEngine.VR.VRDevice o;
-			o=new UnityEngine.VR.VRDevice();
+			var ret=UnityEngine.VR.VRDevice.GetTrackingSpaceType();
 			pushValue(l,true);
-			pushValue(l,o);
+			pushEnum(l,(int)ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int SetTrackingSpaceType_s(IntPtr l) {
+		try {
+			UnityEngine.VR.TrackingSpaceType a1;
+			checkEnum(l,1,out a1);
+			var ret=UnityEngine.VR.VRDevice.SetTrackingSpaceType(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -40,17 +53,6 @@ public class Lua_UnityEngine_VR_VRDevice : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_family(IntPtr l) {
-		try {
-			pushValue(l,true);
-			pushValue(l,UnityEngine.VR.VRDevice.family);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_model(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -61,12 +63,25 @@ public class Lua_UnityEngine_VR_VRDevice : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_refreshRate(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.VR.VRDevice.refreshRate);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.VR.VRDevice");
+		addMember(l,GetTrackingSpaceType_s);
+		addMember(l,SetTrackingSpaceType_s);
 		addMember(l,GetNativePtr_s);
 		addMember(l,"isPresent",get_isPresent,null,false);
-		addMember(l,"family",get_family,null,false);
 		addMember(l,"model",get_model,null,false);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.VR.VRDevice));
+		addMember(l,"refreshRate",get_refreshRate,null,false);
+		createTypeMetatable(l,null, typeof(UnityEngine.VR.VRDevice));
 	}
 }

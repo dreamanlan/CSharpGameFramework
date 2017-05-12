@@ -15,11 +15,6 @@ message(Msg_LR_ReplyRegisterRoomServer)
 
 message(Msg_LR_RoomUserInfo)
 {
-  message(MemberInfo)
-  {
-    member(Hero, int32, required);
-    member(Level, int32, required);
-  };
 	member(Guid, uint64, required);
 	member(Nick, string, required);
 	member(Key, uint32, required);
@@ -29,8 +24,6 @@ message(Msg_LR_RoomUserInfo)
   member(Level, int32, required);
   member(EnterX, float, optional);
   member(EnterY, float, optional);
-  member(Members, MemberInfo, repeated);
-  member(SummonerSkillId, int32, required);
 };
 
 message(Msg_LR_ReconnectUser)

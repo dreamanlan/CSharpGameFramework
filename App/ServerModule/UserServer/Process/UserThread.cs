@@ -136,7 +136,6 @@ namespace GameFramework
                 protoData.Level = user.Level;
                 protoData.Money = user.Money;
                 protoData.Gold = user.Gold;
-                protoData.SummonerSkillId = user.SummonerSkillId;
 
                 NotifyUser(guid, LobbyMessageDefine.Msg_LC_SyncRoleInfo, protoData);
             }
@@ -201,6 +200,14 @@ namespace GameFramework
         }
 
         //---------------------------------------------------------------------------------------------
+        internal void HandleUserQuit(Msg_RL_UserQuit msg)
+        {
+            UserInfo user = GetUserInfo(msg.UserGuid);
+            if (null != user) {
+                user.CurrentState = UserState.Online;
+                user.LeftLife = UserInfo.LifeTimeOfNoHeartbeat;
+            }
+        }
         internal void HandleRoomStoryMessage(Msg_LRL_StoryMessage msg)
         {
             string msgId = string.Format("server:{0}", msg.MsgId);
@@ -254,17 +261,6 @@ namespace GameFramework
             ruiBuilder.Camp = info.CampId;
             ruiBuilder.IsMachine = false;
             ruiBuilder.Level = info.Level;
-            ruiBuilder.SummonerSkillId = info.SummonerSkillId;
-            ///
-            int memberCount = info.MemberInfos.Count;
-            if (memberCount > 0) {
-                Msg_LR_RoomUserInfo.MemberInfo[] memberList = new Msg_LR_RoomUserInfo.MemberInfo[memberCount];
-                for (int i = 0; i < memberCount; ++i) {
-                    memberList[i] = new Msg_LR_RoomUserInfo.MemberInfo();
-                    memberList[i].Hero = info.MemberInfos[i].HeroId;
-                    memberList[i].Level = info.MemberInfos[i].Level;
-                }
-            }
             if (x > 0 && y > 0) {
                 ruiBuilder.EnterX = x;
                 ruiBuilder.EnterY = y;

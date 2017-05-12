@@ -11,12 +11,14 @@ namespace GameFramework
         public List<Vector3> WayPoints { get; set; }
         public int Index { get; set; }
         public bool IsFinish { get; set; }
+        public string Event { get; set; }
 
         public AiData_ForMoveCommand(List<Vector3> way_points)
         {
             WayPoints = way_points;
             Index = 0;
             IsFinish = false;
+            Event = string.Empty;
         }
     }
 }

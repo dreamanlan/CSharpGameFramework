@@ -34,6 +34,22 @@ public class Lua_UnityEngine_Transform : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int SetPositionAndRotation(IntPtr l) {
+		try {
+			UnityEngine.Transform self=(UnityEngine.Transform)checkSelf(l);
+			UnityEngine.Vector3 a1;
+			checkType(l,2,out a1);
+			UnityEngine.Quaternion a2;
+			checkType(l,3,out a2);
+			self.SetPositionAndRotation(a1,a2);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int Translate(IntPtr l) {
 		try {
 			int argc = LuaDLL.lua_gettop(l);
@@ -956,9 +972,48 @@ public class Lua_UnityEngine_Transform : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_hierarchyCapacity(IntPtr l) {
+		try {
+			UnityEngine.Transform self=(UnityEngine.Transform)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.hierarchyCapacity);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_hierarchyCapacity(IntPtr l) {
+		try {
+			UnityEngine.Transform self=(UnityEngine.Transform)checkSelf(l);
+			int v;
+			checkType(l,2,out v);
+			self.hierarchyCapacity=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_hierarchyCount(IntPtr l) {
+		try {
+			UnityEngine.Transform self=(UnityEngine.Transform)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.hierarchyCount);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Transform");
 		addMember(l,SetParent);
+		addMember(l,SetPositionAndRotation);
 		addMember(l,Translate);
 		addMember(l,Rotate);
 		addMember(l,RotateAround);
@@ -995,6 +1050,8 @@ public class Lua_UnityEngine_Transform : LuaObject {
 		addMember(l,"childCount",get_childCount,null,true);
 		addMember(l,"lossyScale",get_lossyScale,null,true);
 		addMember(l,"hasChanged",get_hasChanged,set_hasChanged,true);
+		addMember(l,"hierarchyCapacity",get_hierarchyCapacity,set_hierarchyCapacity,true);
+		addMember(l,"hierarchyCount",get_hierarchyCount,null,true);
 		createTypeMetatable(l,null, typeof(UnityEngine.Transform),typeof(UnityEngine.Component));
 	}
 }

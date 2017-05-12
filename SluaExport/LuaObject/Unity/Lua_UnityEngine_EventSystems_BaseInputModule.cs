@@ -92,6 +92,18 @@ public class Lua_UnityEngine_EventSystems_BaseInputModule : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_input(IntPtr l) {
+		try {
+			UnityEngine.EventSystems.BaseInputModule self=(UnityEngine.EventSystems.BaseInputModule)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.input);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.EventSystems.BaseInputModule");
 		addMember(l,Process);
@@ -101,6 +113,7 @@ public class Lua_UnityEngine_EventSystems_BaseInputModule : LuaObject {
 		addMember(l,ActivateModule);
 		addMember(l,UpdateModule);
 		addMember(l,IsModuleSupported);
+		addMember(l,"input",get_input,null,true);
 		createTypeMetatable(l,null, typeof(UnityEngine.EventSystems.BaseInputModule),typeof(UnityEngine.EventSystems.UIBehaviour));
 	}
 }

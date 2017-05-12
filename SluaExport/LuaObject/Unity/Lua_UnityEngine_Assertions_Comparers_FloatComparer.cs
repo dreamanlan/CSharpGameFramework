@@ -83,17 +83,6 @@ public class Lua_UnityEngine_Assertions_Comparers_FloatComparer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_kEpsilon(IntPtr l) {
-		try {
-			pushValue(l,true);
-			pushValue(l,UnityEngine.Assertions.Comparers.FloatComparer.kEpsilon);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_s_ComparerWithDefaultTolerance(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -104,12 +93,23 @@ public class Lua_UnityEngine_Assertions_Comparers_FloatComparer : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_kEpsilon(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.Assertions.Comparers.FloatComparer.kEpsilon);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Assertions.Comparers.FloatComparer");
 		addMember(l,AreEqual_s);
 		addMember(l,AreEqualRelative_s);
-		addMember(l,"kEpsilon",get_kEpsilon,null,false);
 		addMember(l,"s_ComparerWithDefaultTolerance",get_s_ComparerWithDefaultTolerance,null,false);
+		addMember(l,"kEpsilon",get_kEpsilon,null,false);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.Assertions.Comparers.FloatComparer));
 	}
 }

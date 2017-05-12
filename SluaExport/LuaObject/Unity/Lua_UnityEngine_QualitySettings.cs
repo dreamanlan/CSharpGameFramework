@@ -140,6 +140,30 @@ public class Lua_UnityEngine_QualitySettings : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_shadows(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushEnum(l,(int)UnityEngine.QualitySettings.shadows);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_shadows(IntPtr l) {
+		try {
+			UnityEngine.ShadowQuality v;
+			checkEnum(l,2,out v);
+			UnityEngine.QualitySettings.shadows=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_shadowProjection(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -204,6 +228,30 @@ public class Lua_UnityEngine_QualitySettings : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			UnityEngine.QualitySettings.shadowDistance=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_shadowResolution(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushEnum(l,(int)UnityEngine.QualitySettings.shadowResolution);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_shadowResolution(IntPtr l) {
+		try {
+			UnityEngine.ShadowResolution v;
+			checkEnum(l,2,out v);
+			UnityEngine.QualitySettings.shadowResolution=v;
 			pushValue(l,true);
 			return 1;
 		}
@@ -396,6 +444,30 @@ public class Lua_UnityEngine_QualitySettings : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			UnityEngine.QualitySettings.particleRaycastBudget=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_softParticles(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.QualitySettings.softParticles);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_softParticles(IntPtr l) {
+		try {
+			bool v;
+			checkType(l,2,out v);
+			UnityEngine.QualitySettings.softParticles=v;
 			pushValue(l,true);
 			return 1;
 		}
@@ -649,9 +721,11 @@ public class Lua_UnityEngine_QualitySettings : LuaObject {
 		addMember(l,DecreaseLevel_s);
 		addMember(l,"names",get_names,null,false);
 		addMember(l,"pixelLightCount",get_pixelLightCount,set_pixelLightCount,false);
+		addMember(l,"shadows",get_shadows,set_shadows,false);
 		addMember(l,"shadowProjection",get_shadowProjection,set_shadowProjection,false);
 		addMember(l,"shadowCascades",get_shadowCascades,set_shadowCascades,false);
 		addMember(l,"shadowDistance",get_shadowDistance,set_shadowDistance,false);
+		addMember(l,"shadowResolution",get_shadowResolution,set_shadowResolution,false);
 		addMember(l,"shadowNearPlaneOffset",get_shadowNearPlaneOffset,set_shadowNearPlaneOffset,false);
 		addMember(l,"shadowCascade2Split",get_shadowCascade2Split,set_shadowCascade2Split,false);
 		addMember(l,"shadowCascade4Split",get_shadowCascade4Split,set_shadowCascade4Split,false);
@@ -660,6 +734,7 @@ public class Lua_UnityEngine_QualitySettings : LuaObject {
 		addMember(l,"lodBias",get_lodBias,set_lodBias,false);
 		addMember(l,"maximumLODLevel",get_maximumLODLevel,set_maximumLODLevel,false);
 		addMember(l,"particleRaycastBudget",get_particleRaycastBudget,set_particleRaycastBudget,false);
+		addMember(l,"softParticles",get_softParticles,set_softParticles,false);
 		addMember(l,"softVegetation",get_softVegetation,set_softVegetation,false);
 		addMember(l,"realtimeReflectionProbes",get_realtimeReflectionProbes,set_realtimeReflectionProbes,false);
 		addMember(l,"billboardsFaceCameraPosition",get_billboardsFaceCameraPosition,set_billboardsFaceCameraPosition,false);

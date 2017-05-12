@@ -30,7 +30,6 @@ public class AiSelectSkillByDistance : ISimpleStoryValuePlugin
                 EntityInfo target = PluginFramework.Instance.GetEntityById(targetId);
                 if (null != target) {
                     float distToTarget = Geometry.Distance(npc.GetMovementStateInfo().GetPosition3D(), target.GetMovementStateInfo().GetPosition3D());
-                    float curDist = 0;
                     SkillInfo maxSkillInfo = null;
                     float diffDist = float.MaxValue;
                     SkillInfo targetSkillInfo = null;

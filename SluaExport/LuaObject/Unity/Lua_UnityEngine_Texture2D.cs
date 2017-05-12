@@ -630,6 +630,34 @@ public class Lua_UnityEngine_Texture2D : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int EncodeToEXR(IntPtr l) {
+		try {
+			int argc = LuaDLL.lua_gettop(l);
+			if(argc==1){
+				UnityEngine.Texture2D self=(UnityEngine.Texture2D)checkSelf(l);
+				var ret=self.EncodeToEXR();
+				pushValue(l,true);
+				pushValue(l,ret);
+				return 2;
+			}
+			else if(argc==2){
+				UnityEngine.Texture2D self=(UnityEngine.Texture2D)checkSelf(l);
+				UnityEngine.Texture2D.EXRFlags a1;
+				checkEnum(l,2,out a1);
+				var ret=self.EncodeToEXR(a1);
+				pushValue(l,true);
+				pushValue(l,ret);
+				return 2;
+			}
+			pushValue(l,false);
+			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int CreateExternalTexture_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -645,6 +673,26 @@ public class Lua_UnityEngine_Texture2D : LuaObject {
 			System.IntPtr a6;
 			checkType(l,6,out a6);
 			var ret=UnityEngine.Texture2D.CreateExternalTexture(a1,a2,a3,a4,a5,a6);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int GenerateAtlas_s(IntPtr l) {
+		try {
+			UnityEngine.Vector2[] a1;
+			checkArray(l,1,out a1);
+			System.Int32 a2;
+			checkType(l,2,out a2);
+			System.Int32 a3;
+			checkType(l,3,out a3);
+			System.Collections.Generic.List<UnityEngine.Rect> a4;
+			checkType(l,4,out a4);
+			var ret=UnityEngine.Texture2D.GenerateAtlas(a1,a2,a3,a4);
 			pushValue(l,true);
 			pushValue(l,ret);
 			return 2;
@@ -719,7 +767,9 @@ public class Lua_UnityEngine_Texture2D : LuaObject {
 		addMember(l,ReadPixels);
 		addMember(l,EncodeToPNG);
 		addMember(l,EncodeToJPG);
+		addMember(l,EncodeToEXR);
 		addMember(l,CreateExternalTexture_s);
+		addMember(l,GenerateAtlas_s);
 		addMember(l,"mipmapCount",get_mipmapCount,null,true);
 		addMember(l,"format",get_format,null,true);
 		addMember(l,"whiteTexture",get_whiteTexture,null,false);

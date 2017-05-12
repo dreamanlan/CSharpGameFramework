@@ -27,10 +27,10 @@ namespace GameFramework
                 m_EntityMgr.RemoveEntity(id);
             }
         }
-        public int CreateEntity(int unitId, float x, float y, float z, float dir, int camp, int linkId)
+        public int CreateEntity(int unitId, float x, float y, float z, float dir, int camp, int tableId)
         {
             int objId = 0;
-            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(linkId);
+            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(tableId);
             if (null != cfg) {
                 EntityInfo entity = m_EntityMgr.AddEntity(unitId, camp, cfg, string.Empty);
                 if (null != entity) {
@@ -42,10 +42,10 @@ namespace GameFramework
             }
             return objId;
         }
-        public int CreateEntity(int unitId, float x, float y, float z, float dir, int camp, int linkId, string ai, params string[] aiParams)
+        public int CreateEntity(int unitId, float x, float y, float z, float dir, int camp, int tableId, string ai, params string[] aiParams)
         {
             int objId = 0;
-            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(linkId);
+            TableConfig.Actor cfg = TableConfig.ActorProvider.Instance.GetActor(tableId);
             if (null != cfg) {
                 EntityInfo entity = m_EntityMgr.AddEntity(unitId, camp, cfg, ai, aiParams);
                 if (null != entity) {

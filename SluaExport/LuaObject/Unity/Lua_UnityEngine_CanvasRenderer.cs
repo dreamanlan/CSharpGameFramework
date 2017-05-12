@@ -202,6 +202,20 @@ public class Lua_UnityEngine_CanvasRenderer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int SetAlphaTexture(IntPtr l) {
+		try {
+			UnityEngine.CanvasRenderer self=(UnityEngine.CanvasRenderer)checkSelf(l);
+			UnityEngine.Texture a1;
+			checkType(l,2,out a1);
+			self.SetAlphaTexture(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int SetMesh(IntPtr l) {
 		try {
 			UnityEngine.CanvasRenderer self=(UnityEngine.CanvasRenderer)checkSelf(l);
@@ -471,6 +485,7 @@ public class Lua_UnityEngine_CanvasRenderer : LuaObject {
 		addMember(l,SetPopMaterial);
 		addMember(l,GetPopMaterial);
 		addMember(l,SetTexture);
+		addMember(l,SetAlphaTexture);
 		addMember(l,SetMesh);
 		addMember(l,Clear);
 		addMember(l,SplitUIVertexStreams_s);

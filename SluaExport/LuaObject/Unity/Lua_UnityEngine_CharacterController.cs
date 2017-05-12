@@ -239,6 +239,32 @@ public class Lua_UnityEngine_CharacterController : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_minMoveDistance(IntPtr l) {
+		try {
+			UnityEngine.CharacterController self=(UnityEngine.CharacterController)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.minMoveDistance);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_minMoveDistance(IntPtr l) {
+		try {
+			UnityEngine.CharacterController self=(UnityEngine.CharacterController)checkSelf(l);
+			float v;
+			checkType(l,2,out v);
+			self.minMoveDistance=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_detectCollisions(IntPtr l) {
 		try {
 			UnityEngine.CharacterController self=(UnityEngine.CharacterController)checkSelf(l);
@@ -264,6 +290,32 @@ public class Lua_UnityEngine_CharacterController : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_enableOverlapRecovery(IntPtr l) {
+		try {
+			UnityEngine.CharacterController self=(UnityEngine.CharacterController)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.enableOverlapRecovery);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_enableOverlapRecovery(IntPtr l) {
+		try {
+			UnityEngine.CharacterController self=(UnityEngine.CharacterController)checkSelf(l);
+			bool v;
+			checkType(l,2,out v);
+			self.enableOverlapRecovery=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.CharacterController");
 		addMember(l,SimpleMove);
@@ -277,7 +329,9 @@ public class Lua_UnityEngine_CharacterController : LuaObject {
 		addMember(l,"slopeLimit",get_slopeLimit,set_slopeLimit,true);
 		addMember(l,"stepOffset",get_stepOffset,set_stepOffset,true);
 		addMember(l,"skinWidth",get_skinWidth,set_skinWidth,true);
+		addMember(l,"minMoveDistance",get_minMoveDistance,set_minMoveDistance,true);
 		addMember(l,"detectCollisions",get_detectCollisions,set_detectCollisions,true);
+		addMember(l,"enableOverlapRecovery",get_enableOverlapRecovery,set_enableOverlapRecovery,true);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.CharacterController),typeof(UnityEngine.Collider));
 	}
 }

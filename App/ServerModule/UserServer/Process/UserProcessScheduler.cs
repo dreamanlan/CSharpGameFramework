@@ -250,13 +250,13 @@ namespace GameFramework
                 accountInfo.ClientInfo = clientInfo;
                 accountInfo.NodeName = nodeName;
                 accountInfo.CurrentState = AccountState.Unloaded;
-                accountInfo.UserGuid = UserServer.Instance.GlobalProcessThread.GenerateUserGuid();
                 var dsThread = UserServer.Instance.DataCacheThread;
                 if (dsThread.DataStoreAvailable == true) {
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
                     LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_4: Load account from DataStore . AccountId:{0}", accountId);
                     dsThread.DispatchAction(dsThread.LoadAccount, accountId);
                 } else {
+                    accountInfo.UserGuid = UserServer.Instance.GlobalProcessThread.GenerateUserGuid();
                     accountInfo.CurrentState = AccountState.Online;
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
                     LogSys.Log(LOG_TYPE.INFO, "Account login success. Account:{0}", accountId);
@@ -281,7 +281,7 @@ namespace GameFramework
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
                     GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
                     protoMsg.m_AccountId = accountId;
-                    if (null != GetUserInfo(accountInfo.UserGuid))
+                    if (!string.IsNullOrEmpty(accountInfo.Nickname))
                         protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.Success;
                     else
                         protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.FirstLogin;
@@ -318,7 +318,7 @@ namespace GameFramework
                             DataEnum msgEnum = (DataEnum)result.MsgId;
                             switch (msgEnum) {
                                 case DataEnum.TableAccount:
-                                    accountInfo.TableAccount.FromProto(_msg as TableAccount);
+                                    accountInfo.FromProto(_msg as TableAccount);
                                     break;
                                 default:
                                     LogSys.Log(LOG_TYPE.ERROR, ConsoleColor.Red, "Decode account data ERROR. Wrong message id. Account:{0}, WrongId:{1}", result.PrimaryKeys[0], msgEnum);
@@ -326,7 +326,7 @@ namespace GameFramework
                             }
                         }
                     }
-                    if (accountInfo.TableAccount.IsBanned) {
+                    if (accountInfo.IsBanned) {
                         //账号被封停
                         protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.Banned;
                     } else {
@@ -339,12 +339,12 @@ namespace GameFramework
                     }
                 } else if (ret.ErrorNo == Msg_DL_LoadResult.ErrorNoEnum.NotFound) {
                     //账号首次进入游戏
+                    accountInfo.UserGuid = UserServer.Instance.GlobalProcessThread.GenerateUserGuid();
                     LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_4b: Load account NotFound . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
                     accountInfo.CurrentState = AccountState.Online;
-                    accountInfo.TableAccount.AccountId = accountId;
-                    accountInfo.TableAccount.Password = accountInfo.Password;
-                    accountInfo.TableAccount.UserGuid = 0;
-                    accountInfo.TableAccount.IsBanned = false;
+                    accountInfo.AccountId = accountId;
+                    accountInfo.Password = accountInfo.Password;
+                    accountInfo.IsBanned = false;
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
                     protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.FirstLogin;
                     protoMsg.m_UserGuid = accountInfo.UserGuid;
@@ -529,6 +529,10 @@ namespace GameFramework
             if (null != ui) {
                 NicknameSystem.CheckNicknameResult ret = m_NicknameSystem.CheckNickname(ui.AccountId, nickname);
                 if (ret == NicknameSystem.CheckNicknameResult.Success) {
+                    var accountInfo = GetAccountInfoById(ui.AccountId);
+                    if (null != accountInfo) {
+                        accountInfo.Nickname = nickname;
+                    }
                     ui.Nickname = nickname;
                     LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Yellow, "ChangeName SUCCESS. AccountId:{0}, Nickname:{1}",
                       ui.AccountId, nickname);
@@ -723,7 +727,6 @@ namespace GameFramework
             ui.Level = 1;
             ui.CreateTime = DateTime.Now;
             ui.SceneId = 200;
-            ui.SummonerSkillId = 22;
             //加4个队员
             for (int id = 2; id <= 5; ++id) {
                 MemberInfo member = new MemberInfo();
@@ -745,7 +748,6 @@ namespace GameFramework
             replyMsg.Gold = ui.Gold;
             replyMsg.Level = ui.Level;
             replyMsg.SceneId = ui.SceneId;
-            replyMsg.SummonerSkillId = ui.SummonerSkillId;
             replyMsg.WorldId = UserServerConfig.WorldId;
 
             for (int i = 0; i < ui.MemberInfos.Count; ++i) {
@@ -763,6 +765,7 @@ namespace GameFramework
                 //检查昵称是否可用
                 NicknameSystem.CheckNicknameResult ret = m_NicknameSystem.CheckNickname(accountId, nickname);
                 if (ret == NicknameSystem.CheckNicknameResult.Success) {
+                    accountInfo.Nickname = nickname;
                     UserInfo ui = NewUserInfo();
                     ui.Guid = accountInfo.UserGuid;
                     ui.AccountId = accountInfo.AccountId;

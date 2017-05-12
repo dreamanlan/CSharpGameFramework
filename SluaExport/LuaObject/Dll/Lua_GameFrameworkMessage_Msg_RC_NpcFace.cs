@@ -58,7 +58,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcFace : LuaObject {
 	static public int set_face_direction(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcFace self=(GameFrameworkMessage.Msg_RC_NpcFace)checkSelf(l);
-			int v;
+			float v;
 			checkType(l,2,out v);
 			self.face_direction=v;
 			pushValue(l,true);

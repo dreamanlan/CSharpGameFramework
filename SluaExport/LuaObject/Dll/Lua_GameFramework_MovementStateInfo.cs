@@ -188,59 +188,6 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int SetMoveDir(IntPtr l) {
-		try {
-			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-			System.Single a1;
-			checkType(l,2,out a1);
-			self.SetMoveDir(a1);
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetMoveDir(IntPtr l) {
-		try {
-			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-			var ret=self.GetMoveDir();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetMoveDir2D(IntPtr l) {
-		try {
-			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-			var ret=self.GetMoveDir2D();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetMoveDir3D(IntPtr l) {
-		try {
-			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-			var ret=self.GetMoveDir3D();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int GetFaceDir2D(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -297,32 +244,6 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.IsMoving=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_IsSkillMoving(IntPtr l) {
-		try {
-			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.IsSkillMoving);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_IsSkillMoving(IntPtr l) {
-		try {
-			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-			bool v;
-			checkType(l,2,out v);
-			self.IsSkillMoving=v;
 			pushValue(l,true);
 			return 1;
 		}
@@ -561,15 +482,10 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		addMember(l,GetFaceDir);
 		addMember(l,SetWantedFaceDir);
 		addMember(l,GetWantedFaceDir);
-		addMember(l,SetMoveDir);
-		addMember(l,GetMoveDir);
-		addMember(l,GetMoveDir2D);
-		addMember(l,GetMoveDir3D);
 		addMember(l,GetFaceDir2D);
 		addMember(l,GetFaceDir3D);
 		addMember(l,Reset);
 		addMember(l,"IsMoving",get_IsMoving,set_IsMoving,true);
-		addMember(l,"IsSkillMoving",get_IsSkillMoving,set_IsSkillMoving,true);
 		addMember(l,"FormationIndex",get_FormationIndex,set_FormationIndex,true);
 		addMember(l,"TargetPosition",get_TargetPosition,set_TargetPosition,true);
 		addMember(l,"PositionX",get_PositionX,set_PositionX,true);

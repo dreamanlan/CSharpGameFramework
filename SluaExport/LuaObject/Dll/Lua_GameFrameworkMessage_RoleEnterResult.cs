@@ -260,32 +260,6 @@ public class Lua_GameFrameworkMessage_RoleEnterResult : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_SummonerSkillId(IntPtr l) {
-		try {
-			GameFrameworkMessage.RoleEnterResult self=(GameFrameworkMessage.RoleEnterResult)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.SummonerSkillId);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_SummonerSkillId(IntPtr l) {
-		try {
-			GameFrameworkMessage.RoleEnterResult self=(GameFrameworkMessage.RoleEnterResult)checkSelf(l);
-			int v;
-			checkType(l,2,out v);
-			self.SummonerSkillId=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.RoleEnterResult");
 		addMember(l,"Result",get_Result,set_Result,true);
@@ -299,7 +273,6 @@ public class Lua_GameFrameworkMessage_RoleEnterResult : LuaObject {
 		addMember(l,"Members",get_Members,null,true);
 		addMember(l,"Items",get_Items,null,true);
 		addMember(l,"Friends",get_Friends,null,true);
-		addMember(l,"SummonerSkillId",get_SummonerSkillId,set_SummonerSkillId,true);
 		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.RoleEnterResult));
 	}
 }

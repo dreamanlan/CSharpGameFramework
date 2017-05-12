@@ -17,6 +17,7 @@ message TableAccount
 	required string Password = 2;
 	required bool IsBanned = 3;
 	required uint64 UserGuid = 4;
+	required string Nickname = 5;
 }
 
 message TableActivationCode
@@ -116,8 +117,7 @@ message TableUserInfo
 	required float FaceDir = 12;
 	required int32 Money = 13;
 	required int32 Gold = 14;
-	required int32 SummonerSkillId = 15;
-	required string IntDatas = 16;
-	required string FloatDatas = 17;
-	required string StringDatas = 18;
+	required string IntDatas = 15;
+	required string FloatDatas = 16;
+	required string StringDatas = 17;
 }

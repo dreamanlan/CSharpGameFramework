@@ -13,6 +13,8 @@ namespace GameFramework
         }
         public void Reset()
         {
+            LoadCustomCommandsAndValues();
+
             m_GlobalVariables.Clear();
             int count = m_StoryLogicInfos.Count;
             for (int index = count - 1; index >= 0; --index) {
@@ -98,10 +100,6 @@ namespace GameFramework
             {
                 return m_StoryLogicInfos.Count;
             }
-        }
-        public Dictionary<string, object> GfxDatas
-        {
-            get { return m_GfxDatas; }
         }
         public Dictionary<string, object> GlobalVariables
         {
@@ -233,6 +231,23 @@ namespace GameFramework
                 }
             }
         }
+        public void SendConcurrentMessage(string msgId, params object[] args)
+        {
+            int ct = m_StoryLogicInfos.Count;
+            for (int ix = ct - 1; ix >= 0; --ix) {
+                StoryInstance info = m_StoryLogicInfos[ix];
+                info.SendConcurrentMessage(msgId, args);
+            }
+            foreach (var pair in m_AiStoryInstancePool) {
+                var infos = pair.Value;
+                int aiCt = infos.Count;
+                for (int ix = aiCt - 1; ix >= 0; --ix) {
+                    if (infos[ix].m_IsUsed && null != infos[ix].m_StoryInstance) {
+                        infos[ix].m_StoryInstance.SendConcurrentMessage(msgId, args);
+                    }
+                }
+            }
+        }
         public int CountMessage(string msgId)
         {
             int sum = 0;
@@ -338,7 +353,6 @@ namespace GameFramework
             m_StoryInstancePool.TryGetValue(storyId, out info);
             return info;
         }
-
         private AiStoryInstanceInfo NewAiStoryInstance(string storyId, string _namespace, bool logIfNotFound, params string[] overloadFiles)
         {
             if (!string.IsNullOrEmpty(_namespace)) {
@@ -413,9 +427,7 @@ namespace GameFramework
 
         public ServerStorySystem() { }
 
-        private Dictionary<string, object> m_GfxDatas = new Dictionary<string, object>();
         private Dictionary<string, object> m_GlobalVariables = new Dictionary<string, object>();
-
         private List<StoryInstance> m_StoryLogicInfos = new List<StoryInstance>();
         private Dictionary<string, StoryInstance> m_StoryInstancePool = new Dictionary<string, StoryInstance>();
         private Dictionary<string, List<AiStoryInstanceInfo>> m_AiStoryInstancePool = new Dictionary<string, List<AiStoryInstanceInfo>>();
@@ -437,28 +449,21 @@ namespace GameFramework
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitstory", new StoryCommandFactoryHelper<Story.Commands.WaitStoryCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "pausestory", new StoryCommandFactoryHelper<Story.Commands.PauseStoryCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "resumestory", new StoryCommandFactoryHelper<Story.Commands.ResumeStoryCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "firemessage", new StoryCommandFactoryHelper<Story.Commands.FireMessageCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "firemessage", new Story.Commands.FireMessageCommandFactory());
+            	StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "fireconcurrentmessage", new Story.Commands.FireConcurrentMessageCommandFactory());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitallmessage", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "waitallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageHandlerCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "pauseallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.PauseAllMessageHandlerCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "resumeallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.ResumeAllMessageHandlerCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendroomstorymessage", new StoryCommandFactoryHelper<StorySystem.CommonCommands.DummyCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendserverstorymessage", new StoryCommandFactoryHelper<Story.Commands.SendServerStoryMessageCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendclientstorymessage", new StoryCommandFactoryHelper<Story.Commands.SendClientStoryMessageCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "publishgfxevent", new StoryCommandFactoryHelper<Story.Commands.PublishGfxEventCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendgfxmessage", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendgfxmessagewithtag", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageWithTagCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "gfxset", new StoryCommandFactoryHelper<Story.Commands.GfxSetCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "gfxclear", new StoryCommandFactoryHelper<Story.Commands.GfxClearCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "addcomponent", new StoryCommandFactoryHelper<StorySystem.CommonCommands.DummyCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "openurl", new StoryCommandFactoryHelper<StorySystem.CommonCommands.DummyCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "quit", new StoryCommandFactoryHelper<StorySystem.CommonCommands.DummyCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "bindui", new StoryCommandFactoryHelper<StorySystem.CommonCommands.DummyCommand>());
 
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "activescene", new StoryCommandFactoryHelper<Story.Commands.ActiveSceneCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "changescene", new StoryCommandFactoryHelper<Story.Commands.ChangeSceneCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "changeroomscene", new StoryCommandFactoryHelper<Story.Commands.ChangeRoomSceneCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "notifychangescene", new StoryCommandFactoryHelper<Story.Commands.NotifyChangeSceneCommand>());
 
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "createscenelogic", new StoryCommandFactoryHelper<Story.Commands.CreateSceneLogicCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "destroyscenelogic", new StoryCommandFactoryHelper<Story.Commands.DestroySceneLogicCommand>());
@@ -528,28 +533,18 @@ namespace GameFramework
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setunitid", new StoryCommandFactoryHelper<Story.Commands.SetUnitIdCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setleaderid", new StoryCommandFactoryHelper<Story.Commands.SetLeaderIdCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "markcontrolbystory", new StoryCommandFactoryHelper<Story.Commands.MarkControlByStoryCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setstorystate", new StoryCommandFactoryHelper<Story.Commands.SetStoryStateCommand>());
 
                 //注册值与函数处理
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "gfxget", new StoryValueFactoryHelper<Story.Values.GfxGetValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "gfxtime", new StoryValueFactoryHelper<Story.Values.GfxTimeValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "gfxtimescale", new StoryValueFactoryHelper<Story.Values.GfxTimeScaleValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isactive", new StoryValueFactoryHelper<Story.Values.IsActiveValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isreallyactive", new StoryValueFactoryHelper<Story.Values.IsReallyActiveValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getcomponent", new StoryValueFactoryHelper<Story.Values.GetComponentValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getgameobject", new StoryValueFactoryHelper<Story.Values.GetGameObjectValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getunitytype", new StoryValueFactoryHelper<Story.Values.GetUnityTypeValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getunityuitype", new StoryValueFactoryHelper<Story.Values.GetUnityUiTypeValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getactor", new StoryValueFactoryHelper<StorySystem.CommonValues.DummyValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "gettime", new StoryValueFactoryHelper<Story.Values.GetTimeValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "gettimescale", new StoryValueFactoryHelper<Story.Values.GetTimeScaleValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getentityinfo", new StoryValueFactoryHelper<Story.Values.GetEntityInfoValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getentityview", new StoryValueFactoryHelper<Story.Values.GetEntityViewValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getuserinfo", new StoryValueFactoryHelper<StorySystem.CommonValues.DummyValue>());
 
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isclient", new StoryValueFactoryHelper<Story.Values.IsClientValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getroomid", new StoryValueFactoryHelper<Story.Values.GetRoomIdValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsceneid", new StoryValueFactoryHelper<Story.Values.GetSceneIdValue>());
 
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "blackboardget", new StoryValueFactoryHelper<Story.Values.BlackboardGetValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getdialogitem", new StoryValueFactoryHelper<Story.Values.GetDialogItemValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getactoricon", new StoryValueFactoryHelper<Story.Values.GetActorIconValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmonsterinfo", new StoryValueFactoryHelper<Story.Values.GetMonsterInfoValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getaidata", new StoryValueFactoryHelper<Story.Values.GetAiDataValue>());
 
@@ -582,7 +577,6 @@ namespace GameFramework
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getcamp", new StoryValueFactoryHelper<Story.Values.GetCampValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "iscombatnpc", new StoryValueFactoryHelper<Story.Values.IsCombatNpcValue>());
 
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isvisible", new StoryValueFactoryHelper<StorySystem.CommonValues.DummyValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "gethp", new StoryValueFactoryHelper<Story.Values.GetHpValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getenergy", new StoryValueFactoryHelper<Story.Values.GetEnergyValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmaxhp", new StoryValueFactoryHelper<Story.Values.GetMaxHpValue>());
@@ -590,18 +584,14 @@ namespace GameFramework
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "calcoffset", new StoryValueFactoryHelper<Story.Values.CalcOffsetValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "calcdir", new StoryValueFactoryHelper<Story.Values.CalcDirValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "objget", new StoryValueFactoryHelper<Story.Values.ObjGetValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getlinkid", new StoryValueFactoryHelper<Story.Values.GetLinkIdValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "gettableid", new StoryValueFactoryHelper<Story.Values.GetTableIdValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getlevel", new StoryValueFactoryHelper<Story.Values.GetLevelValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getattr", new StoryValueFactoryHelper<Story.Values.GetAttrValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "iscontrolbystory", new StoryValueFactoryHelper<Story.Values.IsControlByStoryValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "cancastskill", new StoryValueFactoryHelper<Story.Values.CanCastSkillValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isundercontrol", new StoryValueFactoryHelper<Story.Values.IsUnderControlValue>());
                 StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleaderid", new StoryValueFactoryHelper<Story.Values.GetLeaderIdValue>());
-
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleaderlinkid", new StoryValueFactoryHelper<Story.Values.GetLeaderLinkIdValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmembercount", new StoryValueFactoryHelper<Story.Values.GetMemberCountValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlinkid", new StoryValueFactoryHelper<Story.Values.GetMemberLinkIdValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getmemberlevel", new StoryValueFactoryHelper<Story.Values.GetMemberLevelValue>());
+                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getleadertableid", new StoryValueFactoryHelper<Story.Values.GetLeaderTableIdValue>());
 
                 LoadCustomCommandsAndValues();
             }

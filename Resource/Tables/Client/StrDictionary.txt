@@ -13,5 +13,3 @@ Tip_WaitOffline	等待上次登录正在离线，稍后自动重登录
 Tip_Reconnecting	正在重连中。。。
 Tip_RoleEnterFailed	登录失败，请重试。
 Tip_SceneEnterFailed	正在游戏中，请重试。
-Tip_0	诸神和人类的战争
-Tip_1	战斗开始了

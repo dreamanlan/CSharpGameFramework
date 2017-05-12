@@ -121,32 +121,6 @@ public class Lua_UnityEngine_AudioReverbFilter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_roomRolloff(IntPtr l) {
-		try {
-			UnityEngine.AudioReverbFilter self=(UnityEngine.AudioReverbFilter)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.roomRolloff);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_roomRolloff(IntPtr l) {
-		try {
-			UnityEngine.AudioReverbFilter self=(UnityEngine.AudioReverbFilter)checkSelf(l);
-			float v;
-			checkType(l,2,out v);
-			self.roomRolloff=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_decayTime(IntPtr l) {
 		try {
 			UnityEngine.AudioReverbFilter self=(UnityEngine.AudioReverbFilter)checkSelf(l);
@@ -438,7 +412,6 @@ public class Lua_UnityEngine_AudioReverbFilter : LuaObject {
 		addMember(l,"dryLevel",get_dryLevel,set_dryLevel,true);
 		addMember(l,"room",get_room,set_room,true);
 		addMember(l,"roomHF",get_roomHF,set_roomHF,true);
-		addMember(l,"roomRolloff",get_roomRolloff,set_roomRolloff,true);
 		addMember(l,"decayTime",get_decayTime,set_decayTime,true);
 		addMember(l,"decayHFRatio",get_decayHFRatio,set_decayHFRatio,true);
 		addMember(l,"reflectionsLevel",get_reflectionsLevel,set_reflectionsLevel,true);

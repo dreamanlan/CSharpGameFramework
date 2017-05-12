@@ -367,6 +367,32 @@ public class Lua_UnityEngine_Renderer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_motionVectorGenerationMode(IntPtr l) {
+		try {
+			UnityEngine.Renderer self=(UnityEngine.Renderer)checkSelf(l);
+			pushValue(l,true);
+			pushEnum(l,(int)self.motionVectorGenerationMode);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_motionVectorGenerationMode(IntPtr l) {
+		try {
+			UnityEngine.Renderer self=(UnityEngine.Renderer)checkSelf(l);
+			UnityEngine.MotionVectorGenerationMode v;
+			checkEnum(l,2,out v);
+			self.motionVectorGenerationMode=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_realtimeLightmapScaleOffset(IntPtr l) {
 		try {
 			UnityEngine.Renderer self=(UnityEngine.Renderer)checkSelf(l);
@@ -405,11 +431,11 @@ public class Lua_UnityEngine_Renderer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_useLightProbes(IntPtr l) {
+	static public int get_lightProbeUsage(IntPtr l) {
 		try {
 			UnityEngine.Renderer self=(UnityEngine.Renderer)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.useLightProbes);
+			pushEnum(l,(int)self.lightProbeUsage);
 			return 2;
 		}
 		catch(Exception e) {
@@ -417,12 +443,38 @@ public class Lua_UnityEngine_Renderer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_useLightProbes(IntPtr l) {
+	static public int set_lightProbeUsage(IntPtr l) {
 		try {
 			UnityEngine.Renderer self=(UnityEngine.Renderer)checkSelf(l);
-			bool v;
+			UnityEngine.Rendering.LightProbeUsage v;
+			checkEnum(l,2,out v);
+			self.lightProbeUsage=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_lightProbeProxyVolumeOverride(IntPtr l) {
+		try {
+			UnityEngine.Renderer self=(UnityEngine.Renderer)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.lightProbeProxyVolumeOverride);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_lightProbeProxyVolumeOverride(IntPtr l) {
+		try {
+			UnityEngine.Renderer self=(UnityEngine.Renderer)checkSelf(l);
+			UnityEngine.GameObject v;
 			checkType(l,2,out v);
-			self.useLightProbes=v;
+			self.lightProbeProxyVolumeOverride=v;
 			pushValue(l,true);
 			return 1;
 		}
@@ -579,9 +631,11 @@ public class Lua_UnityEngine_Renderer : LuaObject {
 		addMember(l,"lightmapIndex",get_lightmapIndex,set_lightmapIndex,true);
 		addMember(l,"realtimeLightmapIndex",get_realtimeLightmapIndex,set_realtimeLightmapIndex,true);
 		addMember(l,"lightmapScaleOffset",get_lightmapScaleOffset,set_lightmapScaleOffset,true);
+		addMember(l,"motionVectorGenerationMode",get_motionVectorGenerationMode,set_motionVectorGenerationMode,true);
 		addMember(l,"realtimeLightmapScaleOffset",get_realtimeLightmapScaleOffset,set_realtimeLightmapScaleOffset,true);
 		addMember(l,"isVisible",get_isVisible,null,true);
-		addMember(l,"useLightProbes",get_useLightProbes,set_useLightProbes,true);
+		addMember(l,"lightProbeUsage",get_lightProbeUsage,set_lightProbeUsage,true);
+		addMember(l,"lightProbeProxyVolumeOverride",get_lightProbeProxyVolumeOverride,set_lightProbeProxyVolumeOverride,true);
 		addMember(l,"probeAnchor",get_probeAnchor,set_probeAnchor,true);
 		addMember(l,"reflectionProbeUsage",get_reflectionProbeUsage,set_reflectionProbeUsage,true);
 		addMember(l,"sortingLayerName",get_sortingLayerName,set_sortingLayerName,true);

@@ -164,7 +164,6 @@ message(RoleEnterResult)
   member(Members, MemberInfoForMessage, repeated);
   member(Items, ItemInfoForMessage, repeated);
   member(Friends, FriendInfoForMessage, repeated);
-  member(SummonerSkillId, int32, required);
 };
 
 message(EnterScene)
@@ -261,7 +260,6 @@ message(Msg_LC_SyncRoleInfo)
 	member(Money, int, required);
   member(Gold, int, required);
 	member(Level, int, required);
-  member(SummonerSkillId, int32, required);
 };
 
 message(Msg_LC_SyncMemberList)

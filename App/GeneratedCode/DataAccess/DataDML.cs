@@ -215,6 +215,8 @@ namespace GameFramework
 			        msg.IsBanned = (bool)val;
 			        val = reader["UserGuid"];
 			        msg.UserGuid = (ulong)val;
+			        val = reader["Nickname"];
+			        msg.Nickname = (string)val;
 			        record.DataVersion = (int)reader["DataVersion"];
 			        record.Data = DbDataSerializer.Encode(msg);
 			        ret.Add(record);
@@ -259,6 +261,8 @@ namespace GameFramework
 			        msg.IsBanned = (bool)val;
 			        val = reader["UserGuid"];
 			        msg.UserGuid = (ulong)val;
+			        val = reader["Nickname"];
+			        msg.Nickname = (string)val;
 			        ret.DataVersion = (int)reader["DataVersion"];
 			        ret.Data = DbDataSerializer.Encode(msg);
 			      }
@@ -316,6 +320,11 @@ namespace GameFramework
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.UserGuid;
 				    cmd.Parameters.Add(inputParam);
+				    inputParam = new MySqlParameter("@_Nickname", MySqlDbType.VarChar);
+				    inputParam.Direction = ParameterDirection.Input;
+				    inputParam.Value = msg.Nickname;
+				    inputParam.Size = 32;
+				    cmd.Parameters.Add(inputParam);
 				    cmd.ExecuteNonQuery();
 				  }
 				} catch (Exception ex) {
@@ -332,7 +341,7 @@ namespace GameFramework
 			  return 0;
 			}
 			StringBuilder sbSql = new StringBuilder("insert into TableAccount ", 4096); 
-			sbSql.Append("(IsValid,DataVersion,AccountId,Password,IsBanned,UserGuid)");
+			sbSql.Append("(IsValid,DataVersion,AccountId,Password,IsBanned,UserGuid,Nickname)");
 			sbSql.Append(" values ");
 			for (int i = 0; i < validList.Count; ++i) {
 			  Byte valid = 1;
@@ -352,6 +361,8 @@ namespace GameFramework
 			    sbValue.Append(msg.IsBanned);
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.UserGuid);
+			    sbValue.Append(',');
+			    sbValue.AppendFormat("'{0}'", msg.Nickname);
 			    sbValue.Append(')');
 			    sbSql.Append(sbValue.ToString());
 			    sbSql.Append(',');
@@ -364,6 +375,7 @@ namespace GameFramework
 			sbSql.AppendFormat(" Password = if(DataVersion < {0}, values(Password), Password),", dataVersion);
 			sbSql.AppendFormat(" IsBanned = if(DataVersion < {0}, values(IsBanned), IsBanned),", dataVersion);
 			sbSql.AppendFormat(" UserGuid = if(DataVersion < {0}, values(UserGuid), UserGuid),", dataVersion);
+			sbSql.AppendFormat(" Nickname = if(DataVersion < {0}, values(Nickname), Nickname),", dataVersion);
 			sbSql.AppendFormat(" DataVersion = if(DataVersion < {0}, {0}, DataVersion),", dataVersion);
 			sbSql.Remove(sbSql.Length - 1, 1);
 			string statement = sbSql.ToString();
@@ -2513,8 +2525,6 @@ namespace GameFramework
 			        msg.Money = (int)val;
 			        val = reader["Gold"];
 			        msg.Gold = (int)val;
-			        val = reader["SummonerSkillId"];
-			        msg.SummonerSkillId = (int)val;
 			        val = reader["IntDatas"];
 			        msg.IntDatas = (string)val;
 			        val = reader["FloatDatas"];
@@ -2585,8 +2595,6 @@ namespace GameFramework
 			        msg.Money = (int)val;
 			        val = reader["Gold"];
 			        msg.Gold = (int)val;
-			        val = reader["SummonerSkillId"];
-			        msg.SummonerSkillId = (int)val;
 			        val = reader["IntDatas"];
 			        msg.IntDatas = (string)val;
 			        val = reader["FloatDatas"];
@@ -2657,8 +2665,6 @@ namespace GameFramework
 			        msg.Money = (int)val;
 			        val = reader["Gold"];
 			        msg.Gold = (int)val;
-			        val = reader["SummonerSkillId"];
-			        msg.SummonerSkillId = (int)val;
 			        val = reader["IntDatas"];
 			        msg.IntDatas = (string)val;
 			        val = reader["FloatDatas"];
@@ -2758,10 +2764,6 @@ namespace GameFramework
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.Gold;
 				    cmd.Parameters.Add(inputParam);
-				    inputParam = new MySqlParameter("@_SummonerSkillId", MySqlDbType.Int32);
-				    inputParam.Direction = ParameterDirection.Input;
-				    inputParam.Value = msg.SummonerSkillId;
-				    cmd.Parameters.Add(inputParam);
 				    inputParam = new MySqlParameter("@_IntDatas", MySqlDbType.VarChar);
 				    inputParam.Direction = ParameterDirection.Input;
 				    inputParam.Value = msg.IntDatas;
@@ -2793,7 +2795,7 @@ namespace GameFramework
 			  return 0;
 			}
 			StringBuilder sbSql = new StringBuilder("insert into TableUserInfo ", 4096); 
-			sbSql.Append("(IsValid,DataVersion,Guid,AccountId,Nickname,HeroId,CreateTime,LastLogoutTime,Level,ExpPoints,SceneId,PositionX,PositionZ,FaceDir,Money,Gold,SummonerSkillId,IntDatas,FloatDatas,StringDatas)");
+			sbSql.Append("(IsValid,DataVersion,Guid,AccountId,Nickname,HeroId,CreateTime,LastLogoutTime,Level,ExpPoints,SceneId,PositionX,PositionZ,FaceDir,Money,Gold,IntDatas,FloatDatas,StringDatas)");
 			sbSql.Append(" values ");
 			for (int i = 0; i < validList.Count; ++i) {
 			  Byte valid = 1;
@@ -2834,8 +2836,6 @@ namespace GameFramework
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.Gold);
 			    sbValue.Append(',');
-			    sbValue.AppendFormat("'{0}'", msg.SummonerSkillId);
-			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.IntDatas);
 			    sbValue.Append(',');
 			    sbValue.AppendFormat("'{0}'", msg.FloatDatas);
@@ -2863,7 +2863,6 @@ namespace GameFramework
 			sbSql.AppendFormat(" FaceDir = if(DataVersion < {0}, values(FaceDir), FaceDir),", dataVersion);
 			sbSql.AppendFormat(" Money = if(DataVersion < {0}, values(Money), Money),", dataVersion);
 			sbSql.AppendFormat(" Gold = if(DataVersion < {0}, values(Gold), Gold),", dataVersion);
-			sbSql.AppendFormat(" SummonerSkillId = if(DataVersion < {0}, values(SummonerSkillId), SummonerSkillId),", dataVersion);
 			sbSql.AppendFormat(" IntDatas = if(DataVersion < {0}, values(IntDatas), IntDatas),", dataVersion);
 			sbSql.AppendFormat(" FloatDatas = if(DataVersion < {0}, values(FloatDatas), FloatDatas),", dataVersion);
 			sbSql.AppendFormat(" StringDatas = if(DataVersion < {0}, values(StringDatas), StringDatas),", dataVersion);

@@ -11,7 +11,7 @@ using GameFramework;
 
 namespace GameFramework
 {
-	public sealed partial class TableAccountWrap
+	public sealed partial class AccountInfo
 	{
 
 		public bool Modified
@@ -67,6 +67,15 @@ namespace GameFramework
 			set
 			{
 				m_TableAccount.UserGuid = value;
+				OnFieldUpdated();
+			}
+		}
+		public string Nickname
+		{
+			get{return m_TableAccount.Nickname;}
+			set
+			{
+				m_TableAccount.Nickname = value;
 				OnFieldUpdated();
 			}
 		}
@@ -1409,15 +1418,6 @@ namespace GameFramework
 			set
 			{
 				m_TableUserInfo.Gold = value;
-				OnFieldUpdated();
-			}
-		}
-		public int SummonerSkillId
-		{
-			get{return m_TableUserInfo.SummonerSkillId;}
-			set
-			{
-				m_TableUserInfo.SummonerSkillId = value;
 				OnFieldUpdated();
 			}
 		}

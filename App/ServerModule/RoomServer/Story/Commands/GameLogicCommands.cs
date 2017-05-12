@@ -600,7 +600,7 @@ namespace GameFramework.Story.Commands
                     int objId = m_ObjId.Value;
                     EntityInfo npc = scene.GetEntityById(objId);
                     if (null != npc) {
-                        npc.GetAiStateInfo().LeaderID = leaderId;
+                        npc.GetAiStateInfo().LeaderId = leaderId;
                     }
                 }
             }
@@ -820,46 +820,5 @@ namespace GameFramework.Story.Commands
         private IStoryValue<object> m_SetVal = new StoryValue();
         private IStoryValue<object> m_ElseSetVal = new StoryValue();
         private bool m_HaveSet = false;
-    }
-    /// <summary>
-    /// setstorystate(0_or_1);
-    /// </summary>
-    public class SetStoryStateCommand : AbstractStoryCommand
-    {
-        public override IStoryCommand Clone()
-        {
-            SetStoryStateCommand cmd = new SetStoryStateCommand();
-            cmd.m_StoryState = m_StoryState.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
-        {
-            m_StoryState.Evaluate(instance, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, long delta)
-        {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                int state = m_StoryState.Value;
-                scene.IsStoryState = state != 0;
-            }
-            return false;
-        }
-
-        protected override void Load(Dsl.CallData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_StoryState.InitFromDsl(callData.GetParam(0));
-            }
-        }
-
-        private IStoryValue<int> m_StoryState = new StoryValue<int>();
     }
 }

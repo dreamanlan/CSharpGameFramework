@@ -371,6 +371,10 @@ namespace SkillSystem
         {
             m_KeyOrValue = val;
         }
+        public string Get()
+        {
+            return m_KeyOrValue as string;
+        }
         public void Set(Dsl.ISyntaxComponent p)
         {
             m_KeyOrValue = p.GetId();

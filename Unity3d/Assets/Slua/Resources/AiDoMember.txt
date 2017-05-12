@@ -61,7 +61,7 @@ AiDoMember = {
 				if npc:GetSkillStateInfo():IsSkillActivated() then
 					return true;
 				end;
-				local leader; leader = AiLogicUtility.GetLivingCharacterInfoHelper(npc, info.LeaderID);
+				local leader; leader = AiLogicUtility.GetLivingCharacterInfoHelper(npc, info.LeaderId);
 				local srcPos; srcPos = npc:GetMovementStateInfo():GetPosition3D();
 				local homePos; homePos = ScriptRuntime.Vector3.Zero;
 				if (nil ~= leader) then
@@ -105,10 +105,10 @@ AiDoMember = {
 				return true;
 			end,
 			GohomeHandler = function(this, entity, info, deltaTime)
-				info.Time = (info.Time + deltaTime);
+				info.Time = invokeintegeroperator(2, "+", info.Time, deltaTime, System.Int64, System.Int64);
 				if (info.Time > 200) then
 					info.Time = 0;
-					local leader; leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderID);
+					local leader; leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderId);
 					if (nil ~= leader) then
 						local minDist; minDist = (entity:GetRadius() + leader:GetRadius());
 						local targetPos; targetPos = this:GetHomePos(entity:GetMovementStateInfo().FormationIndex, leader);
@@ -152,7 +152,7 @@ AiDoMember = {
 			IsLeaderDead = function(this, entity)
 				local ret; ret = true;
 				local info; info = entity:GetAiStateInfo();
-				local leader; leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderID);
+				local leader; leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderId);
 				if (nil ~= leader) then
 					ret = leader:IsDead();
 				end;

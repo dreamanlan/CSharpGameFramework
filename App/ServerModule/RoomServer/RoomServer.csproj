@@ -79,9 +79,6 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\messagecommon\ProtoHelper.cs">
-      <Link>RoomServer\ProtoHelper.cs</Link>
-    </Compile>
     <Compile Include="..\..\messagecommon\ProtoNetSerialize.cs">
       <Link>RoomServer\ProtoNetSerialize.cs</Link>
     </Compile>

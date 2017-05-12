@@ -217,32 +217,6 @@ public class Lua_TableConfig_Level : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_ScenePlugins(IntPtr l) {
-		try {
-			TableConfig.Level self=(TableConfig.Level)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.ScenePlugins);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_ScenePlugins(IntPtr l) {
-		try {
-			TableConfig.Level self=(TableConfig.Level)checkSelf(l);
-			System.Collections.Generic.List<System.String> v;
-			checkType(l,2,out v);
-			self.ScenePlugins=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_SceneUi(IntPtr l) {
 		try {
 			TableConfig.Level self=(TableConfig.Level)checkSelf(l);
@@ -487,7 +461,6 @@ public class Lua_TableConfig_Level : LuaObject {
 		addMember(l,"SceneDslFile",get_SceneDslFile,set_SceneDslFile,true);
 		addMember(l,"ClientDslFile",get_ClientDslFile,set_ClientDslFile,true);
 		addMember(l,"RoomDslFile",get_RoomDslFile,set_RoomDslFile,true);
-		addMember(l,"ScenePlugins",get_ScenePlugins,set_ScenePlugins,true);
 		addMember(l,"SceneUi",get_SceneUi,set_SceneUi,true);
 		addMember(l,"EnterX",get_EnterX,set_EnterX,true);
 		addMember(l,"EnterY",get_EnterY,set_EnterY,true);

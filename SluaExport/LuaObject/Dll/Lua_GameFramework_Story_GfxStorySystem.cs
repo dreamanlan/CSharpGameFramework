@@ -40,6 +40,20 @@ public class Lua_GameFramework_Story_GfxStorySystem : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int PreloadBattleStories(IntPtr l) {
+		try {
+			GameFramework.Story.GfxStorySystem self=(GameFramework.Story.GfxStorySystem)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			self.PreloadBattleStories(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int PreloadNamespacedStory(IntPtr l) {
 		try {
 			GameFramework.Story.GfxStorySystem self=(GameFramework.Story.GfxStorySystem)checkSelf(l);
@@ -485,6 +499,7 @@ public class Lua_GameFramework_Story_GfxStorySystem : LuaObject {
 		addMember(l,Init);
 		addMember(l,Reset);
 		addMember(l,PreloadSceneStories);
+		addMember(l,PreloadBattleStories);
 		addMember(l,PreloadNamespacedStory);
 		addMember(l,PreloadAiStory);
 		addMember(l,ClearStoryInstancePool);

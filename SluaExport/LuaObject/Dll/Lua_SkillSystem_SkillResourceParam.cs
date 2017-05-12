@@ -61,14 +61,27 @@ public class Lua_SkillSystem_SkillResourceParam : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int Get(IntPtr l) {
 		try {
-			SkillSystem.SkillResourceParam self=(SkillSystem.SkillResourceParam)checkSelf(l);
-			SkillSystem.SkillInstance a1;
-			checkType(l,2,out a1);
-			System.Collections.Generic.Dictionary<System.String,System.String> a2;
-			checkType(l,3,out a2);
-			var ret=self.Get(a1,a2);
-			pushValue(l,true);
-			pushValue(l,ret);
+			int argc = LuaDLL.lua_gettop(l);
+			if(argc==1){
+				SkillSystem.SkillResourceParam self=(SkillSystem.SkillResourceParam)checkSelf(l);
+				var ret=self.Get();
+				pushValue(l,true);
+				pushValue(l,ret);
+				return 2;
+			}
+			else if(argc==3){
+				SkillSystem.SkillResourceParam self=(SkillSystem.SkillResourceParam)checkSelf(l);
+				SkillSystem.SkillInstance a1;
+				checkType(l,2,out a1);
+				System.Collections.Generic.Dictionary<System.String,System.String> a2;
+				checkType(l,3,out a2);
+				var ret=self.Get(a1,a2);
+				pushValue(l,true);
+				pushValue(l,ret);
+				return 2;
+			}
+			pushValue(l,false);
+			LuaDLL.lua_pushstring(l,"No matched override function to call");
 			return 2;
 		}
 		catch(Exception e) {

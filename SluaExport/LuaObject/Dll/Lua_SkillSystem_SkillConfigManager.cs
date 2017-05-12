@@ -67,6 +67,22 @@ public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int LoadSkillDsl(IntPtr l) {
+		try {
+			SkillSystem.SkillConfigManager self=(SkillSystem.SkillConfigManager)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			Dsl.FunctionData a2;
+			checkType(l,3,out a2);
+			self.LoadSkillDsl(a1,a2);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int NewSkillInstance(IntPtr l) {
 		try {
 			SkillSystem.SkillConfigManager self=(SkillSystem.SkillConfigManager)checkSelf(l);
@@ -110,6 +126,7 @@ public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 		addMember(l,ExistSkill);
 		addMember(l,LoadSkill);
 		addMember(l,LoadSkillText);
+		addMember(l,LoadSkillDsl);
 		addMember(l,NewSkillInstance);
 		addMember(l,Clear);
 		addMember(l,"Instance",get_Instance,null,false);

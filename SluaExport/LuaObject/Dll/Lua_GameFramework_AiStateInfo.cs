@@ -288,11 +288,11 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_LeaderID(IntPtr l) {
+	static public int get_LeaderId(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.LeaderID);
+			pushValue(l,self.LeaderId);
 			return 2;
 		}
 		catch(Exception e) {
@@ -300,12 +300,12 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_LeaderID(IntPtr l) {
+	static public int set_LeaderId(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
 			int v;
 			checkType(l,2,out v);
-			self.LeaderID=v;
+			self.LeaderId=v;
 			pushValue(l,true);
 			return 1;
 		}
@@ -446,7 +446,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		addMember(l,"IsInited",get_IsInited,set_IsInited,true);
 		addMember(l,"Time",get_Time,set_Time,true);
 		addMember(l,"FormationId",get_FormationId,set_FormationId,true);
-		addMember(l,"LeaderID",get_LeaderID,set_LeaderID,true);
+		addMember(l,"LeaderId",get_LeaderId,set_LeaderId,true);
 		addMember(l,"HomePos",get_HomePos,set_HomePos,true);
 		addMember(l,"Target",get_Target,set_Target,true);
 		addMember(l,"HateTarget",get_HateTarget,set_HateTarget,true);

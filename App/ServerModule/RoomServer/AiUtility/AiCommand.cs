@@ -34,7 +34,6 @@ public static class AiCommand
         msi.TargetPosition = target;
         float dir = Geometry.GetYRadian(msi.GetPosition3D(), target);
         msi.SetFaceDir(dir);
-        msi.SetMoveDir(dir);
 
         Msg_RC_NpcMove npcMoveBuilder = DataSyncUtility.BuildNpcMoveMessage(npc);
         if (null != npcMoveBuilder) {

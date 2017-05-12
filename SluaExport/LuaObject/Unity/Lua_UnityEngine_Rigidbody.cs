@@ -975,32 +975,6 @@ public class Lua_UnityEngine_Rigidbody : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_useConeFriction(IntPtr l) {
-		try {
-			UnityEngine.Rigidbody self=(UnityEngine.Rigidbody)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.useConeFriction);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_useConeFriction(IntPtr l) {
-		try {
-			UnityEngine.Rigidbody self=(UnityEngine.Rigidbody)checkSelf(l);
-			bool v;
-			checkType(l,2,out v);
-			self.useConeFriction=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_position(IntPtr l) {
 		try {
 			UnityEngine.Rigidbody self=(UnityEngine.Rigidbody)checkSelf(l);
@@ -1079,11 +1053,11 @@ public class Lua_UnityEngine_Rigidbody : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_solverIterationCount(IntPtr l) {
+	static public int get_solverIterations(IntPtr l) {
 		try {
 			UnityEngine.Rigidbody self=(UnityEngine.Rigidbody)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.solverIterationCount);
+			pushValue(l,self.solverIterations);
 			return 2;
 		}
 		catch(Exception e) {
@@ -1091,12 +1065,38 @@ public class Lua_UnityEngine_Rigidbody : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_solverIterationCount(IntPtr l) {
+	static public int set_solverIterations(IntPtr l) {
 		try {
 			UnityEngine.Rigidbody self=(UnityEngine.Rigidbody)checkSelf(l);
 			int v;
 			checkType(l,2,out v);
-			self.solverIterationCount=v;
+			self.solverIterations=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_solverVelocityIterations(IntPtr l) {
+		try {
+			UnityEngine.Rigidbody self=(UnityEngine.Rigidbody)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.solverVelocityIterations);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_solverVelocityIterations(IntPtr l) {
+		try {
+			UnityEngine.Rigidbody self=(UnityEngine.Rigidbody)checkSelf(l);
+			int v;
+			checkType(l,2,out v);
+			self.solverVelocityIterations=v;
 			pushValue(l,true);
 			return 1;
 		}
@@ -1193,11 +1193,11 @@ public class Lua_UnityEngine_Rigidbody : LuaObject {
 		addMember(l,"inertiaTensorRotation",get_inertiaTensorRotation,set_inertiaTensorRotation,true);
 		addMember(l,"inertiaTensor",get_inertiaTensor,set_inertiaTensor,true);
 		addMember(l,"detectCollisions",get_detectCollisions,set_detectCollisions,true);
-		addMember(l,"useConeFriction",get_useConeFriction,set_useConeFriction,true);
 		addMember(l,"position",get_position,set_position,true);
 		addMember(l,"rotation",get_rotation,set_rotation,true);
 		addMember(l,"interpolation",get_interpolation,set_interpolation,true);
-		addMember(l,"solverIterationCount",get_solverIterationCount,set_solverIterationCount,true);
+		addMember(l,"solverIterations",get_solverIterations,set_solverIterations,true);
+		addMember(l,"solverVelocityIterations",get_solverVelocityIterations,set_solverVelocityIterations,true);
 		addMember(l,"sleepThreshold",get_sleepThreshold,set_sleepThreshold,true);
 		addMember(l,"maxAngularVelocity",get_maxAngularVelocity,set_maxAngularVelocity,true);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.Rigidbody),typeof(UnityEngine.Component));

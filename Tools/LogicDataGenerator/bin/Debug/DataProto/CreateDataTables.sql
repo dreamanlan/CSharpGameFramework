@@ -13,6 +13,7 @@ create table TableAccount
 	Password varchar(256) not null,
 	IsBanned boolean not null,
 	UserGuid bigint unsigned not null,
+	Nickname varchar(32) not null,
 	primary key (AutoKey)
 ) ENGINE=InnoDB;
 create unique index TableAccountPrimaryIndex on TableAccount (AccountId);
@@ -166,7 +167,6 @@ create table TableUserInfo
 	FaceDir float not null,
 	Money int not null,
 	Gold int not null,
-	SummonerSkillId int not null,
 	IntDatas varchar(32) not null,
 	FloatDatas varchar(32) not null,
 	StringDatas varchar(32) not null,
@@ -187,15 +187,17 @@ create procedure SaveTableAccount(
 	,in _Password varchar(256)
 	,in _IsBanned boolean
 	,in _UserGuid bigint unsigned
+	,in _Nickname varchar(32)
 )
 begin
-	insert into TableAccount (AutoKey,IsValid,DataVersion,AccountId,Password,IsBanned,UserGuid)
+	insert into TableAccount (AutoKey,IsValid,DataVersion,AccountId,Password,IsBanned,UserGuid,Nickname)
 		values 
 			(null,_IsValid,_DataVersion
 			,_AccountId
 			,_Password
 			,_IsBanned
 			,_UserGuid
+			,_Nickname
 			)
 		on duplicate key update 
 			IsValid =  if(DataVersion < _DataVersion, _IsValid, IsValid),
@@ -203,6 +205,7 @@ begin
 			Password =  if(DataVersion < _DataVersion, _Password, Password),
 			IsBanned =  if(DataVersion < _DataVersion, _IsBanned, IsBanned),
 			UserGuid =  if(DataVersion < _DataVersion, _UserGuid, UserGuid),
+			Nickname =  if(DataVersion < _DataVersion, _Nickname, Nickname),
 			DataVersion =  if(DataVersion < _DataVersion, _DataVersion, DataVersion);
 end $$
 delimiter ;
@@ -514,13 +517,12 @@ create procedure SaveTableUserInfo(
 	,in _FaceDir float
 	,in _Money int
 	,in _Gold int
-	,in _SummonerSkillId int
 	,in _IntDatas varchar(32)
 	,in _FloatDatas varchar(32)
 	,in _StringDatas varchar(32)
 )
 begin
-	insert into TableUserInfo (AutoKey,IsValid,DataVersion,Guid,AccountId,Nickname,HeroId,CreateTime,LastLogoutTime,Level,ExpPoints,SceneId,PositionX,PositionZ,FaceDir,Money,Gold,SummonerSkillId,IntDatas,FloatDatas,StringDatas)
+	insert into TableUserInfo (AutoKey,IsValid,DataVersion,Guid,AccountId,Nickname,HeroId,CreateTime,LastLogoutTime,Level,ExpPoints,SceneId,PositionX,PositionZ,FaceDir,Money,Gold,IntDatas,FloatDatas,StringDatas)
 		values 
 			(null,_IsValid,_DataVersion
 			,_Guid
@@ -537,7 +539,6 @@ begin
 			,_FaceDir
 			,_Money
 			,_Gold
-			,_SummonerSkillId
 			,_IntDatas
 			,_FloatDatas
 			,_StringDatas
@@ -558,7 +559,6 @@ begin
 			FaceDir =  if(DataVersion < _DataVersion, _FaceDir, FaceDir),
 			Money =  if(DataVersion < _DataVersion, _Money, Money),
 			Gold =  if(DataVersion < _DataVersion, _Gold, Gold),
-			SummonerSkillId =  if(DataVersion < _DataVersion, _SummonerSkillId, SummonerSkillId),
 			IntDatas =  if(DataVersion < _DataVersion, _IntDatas, IntDatas),
 			FloatDatas =  if(DataVersion < _DataVersion, _FloatDatas, FloatDatas),
 			StringDatas =  if(DataVersion < _DataVersion, _StringDatas, StringDatas),

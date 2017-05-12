@@ -4,9 +4,9 @@ story(story_main)
   {
     @myNpcPos(0);
     @myNpcDir(0);
-    @leaderLinkId(101);
+    @leaderTableId(101);
     @leaderObjId(0);
-    @targetLinkId(1);
+    @targetTableId(1);
     @skillIds(0);
   };
   onmessage("start")
@@ -25,8 +25,8 @@ story(story_main)
   };
   onmessage("reload")
   {
-    @leaderLinkId = $0;
-    @targetLinkId = $1;
+    @leaderTableId = $0;
+    @targetTableId = $1;
     @skillIds = $2;
     publishgfxevent("ui_remove_skill_buttons","ui");
     wait(1000);
@@ -34,14 +34,14 @@ story(story_main)
     destroynpc(1);
     wait(1000);
 
-    createnpc(1,vector3(0,0,0),0.785,4,@targetLinkId);
+    createnpc(1,vector3(0,0,0),0.785,4,@targetTableId);
     sethp(unitid2objid(1),99999999);
-    createnpc(1000,@myNpcPos,@myNpcDir,3,@leaderLinkId,"skill_viewer",stringlist("Ai/ailogic_skill_viewer.dsl"));
+    createnpc(1000,@myNpcPos,@myNpcDir,3,@leaderTableId,"skill_viewer",stringlist("Ai/ailogic_skill_viewer.dsl"));
     @leaderObjId=unitid2objid(1000);
     setleaderid(@leaderObjId);
     npcsetformation(1000,12);
     looplist(@skillIds){
-      publishgfxevent("ui_add_skill_button","ui",@leaderLinkId,@leaderObjId,$$);
+      publishgfxevent("ui_add_skill_button","ui",@leaderTableId,@leaderObjId,$$);
     };
     camerafollow(1000);
   };

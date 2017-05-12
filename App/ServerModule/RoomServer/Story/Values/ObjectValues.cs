@@ -1107,18 +1107,18 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class GetLinkIdValue : IStoryValue<object>
+    public sealed class GetTableIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getlinkid" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetId() == "gettableid" && callData.GetParamNum() == 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
             }
         }
         public IStoryValue<object> Clone()
         {
-            GetLinkIdValue val = new GetLinkIdValue();
+            GetTableIdValue val = new GetTableIdValue();
             val.m_ObjId = m_ObjId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -1154,7 +1154,7 @@ namespace GameFramework.Story.Values
                     m_HaveValue = true;
                     EntityInfo obj = scene.SceneContext.GetEntityById(objId);
                     if (null != obj) {
-                        m_Value = obj.GetLinkId();
+                        m_Value = obj.GetTableId();
                     } else {
                         m_Value = 0;
                     }

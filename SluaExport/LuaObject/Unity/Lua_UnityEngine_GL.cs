@@ -180,6 +180,39 @@ public class Lua_UnityEngine_GL : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int PushMatrix_s(IntPtr l) {
+		try {
+			UnityEngine.GL.PushMatrix();
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int PopMatrix_s(IntPtr l) {
+		try {
+			UnityEngine.GL.PopMatrix();
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int LoadIdentity_s(IntPtr l) {
+		try {
+			UnityEngine.GL.LoadIdentity();
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int LoadOrtho_s(IntPtr l) {
 		try {
 			UnityEngine.GL.LoadOrtho();
@@ -247,44 +280,11 @@ public class Lua_UnityEngine_GL : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int LoadIdentity_s(IntPtr l) {
-		try {
-			UnityEngine.GL.LoadIdentity();
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int MultMatrix_s(IntPtr l) {
 		try {
 			UnityEngine.Matrix4x4 a1;
 			checkValueType(l,1,out a1);
 			UnityEngine.GL.MultMatrix(a1);
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int PushMatrix_s(IntPtr l) {
-		try {
-			UnityEngine.GL.PushMatrix();
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int PopMatrix_s(IntPtr l) {
-		try {
-			UnityEngine.GL.PopMatrix();
 			pushValue(l,true);
 			return 1;
 		}
@@ -352,6 +352,17 @@ public class Lua_UnityEngine_GL : LuaObject {
 			UnityEngine.Camera a2;
 			checkType(l,2,out a2);
 			UnityEngine.GL.ClearWithSkybox(a1,a2);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int Flush_s(IntPtr l) {
+		try {
+			UnityEngine.GL.Flush();
 			pushValue(l,true);
 			return 1;
 		}
@@ -434,6 +445,17 @@ public class Lua_UnityEngine_GL : LuaObject {
 		try {
 			pushValue(l,true);
 			pushValue(l,UnityEngine.GL.LINES);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_LINE_STRIP(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.GL.LINE_STRIP);
 			return 2;
 		}
 		catch(Exception e) {
@@ -549,17 +571,18 @@ public class Lua_UnityEngine_GL : LuaObject {
 		addMember(l,MultiTexCoord_s);
 		addMember(l,Begin_s);
 		addMember(l,End_s);
+		addMember(l,PushMatrix_s);
+		addMember(l,PopMatrix_s);
+		addMember(l,LoadIdentity_s);
 		addMember(l,LoadOrtho_s);
 		addMember(l,LoadPixelMatrix_s);
 		addMember(l,Viewport_s);
 		addMember(l,LoadProjectionMatrix_s);
-		addMember(l,LoadIdentity_s);
 		addMember(l,MultMatrix_s);
-		addMember(l,PushMatrix_s);
-		addMember(l,PopMatrix_s);
 		addMember(l,GetGPUProjectionMatrix_s);
 		addMember(l,Clear_s);
 		addMember(l,ClearWithSkybox_s);
+		addMember(l,Flush_s);
 		addMember(l,InvalidateState_s);
 		addMember(l,IssuePluginEvent_s);
 		addMember(l,RenderTargetBarrier_s);
@@ -567,6 +590,7 @@ public class Lua_UnityEngine_GL : LuaObject {
 		addMember(l,"TRIANGLE_STRIP",get_TRIANGLE_STRIP,null,false);
 		addMember(l,"QUADS",get_QUADS,null,false);
 		addMember(l,"LINES",get_LINES,null,false);
+		addMember(l,"LINE_STRIP",get_LINE_STRIP,null,false);
 		addMember(l,"modelview",get_modelview,set_modelview,false);
 		addMember(l,"wireframe",get_wireframe,set_wireframe,false);
 		addMember(l,"sRGBWrite",get_sRGBWrite,set_sRGBWrite,false);

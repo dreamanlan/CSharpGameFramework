@@ -160,6 +160,16 @@ public class Lua_UnityEngine_Texture3D : LuaObject {
 				pushValue(l,true);
 				return 1;
 			}
+			else if(argc==3){
+				UnityEngine.Texture3D self=(UnityEngine.Texture3D)checkSelf(l);
+				System.Boolean a1;
+				checkType(l,2,out a1);
+				System.Boolean a2;
+				checkType(l,3,out a2);
+				self.Apply(a1,a2);
+				pushValue(l,true);
+				return 1;
+			}
 			pushValue(l,false);
 			LuaDLL.lua_pushstring(l,"No matched override function to call");
 			return 2;

@@ -6,6 +6,7 @@ public class ScreenFading : MonoBehaviour
 {
     //Color
     public Color TargetColor;
+    public Color AddColor;
     public Shader MatShader;
 
     private Material m_Material;
@@ -21,6 +22,8 @@ public class ScreenFading : MonoBehaviour
     private float m_ElapseTime = 0;
     private Color m_StartColor = Color.black;
     private Color m_EndColor = Color.black;
+    private Color m_StartAddColor = Color.black;
+    private Color m_EndAddColor = Color.black;
     //Properties
     protected Material material
     {
@@ -41,6 +44,7 @@ public class ScreenFading : MonoBehaviour
                 m_ElapseTime += Time.deltaTime / Time.timeScale;
                 if (m_ElapseTime < m_TotalTime) {
                     TargetColor = Color.Lerp(m_StartColor, m_EndColor, m_ElapseTime / m_TotalTime);
+                    AddColor = Color.Lerp(m_StartAddColor, m_EndAddColor, m_ElapseTime / m_TotalTime);
                 } else {
                     m_NeedDeactive = true;
                     TargetColor = m_EndColor;
@@ -93,7 +97,6 @@ public class ScreenFading : MonoBehaviour
             mesh.vertices = m_Vertices;
             //mesh.uv = uvs;
             mesh.triangles = triangles;
-            mesh.Optimize();
             mesh.name = obj.name;
 
             meshFilter.mesh = mesh;
@@ -120,6 +123,7 @@ public class ScreenFading : MonoBehaviour
         if (m_IsActive) {
             try {
                 material.SetColor("_Color", TargetColor);
+                material.SetColor("_AddColor", AddColor);
             } catch (System.Exception ex) {
                 LogSystem.Error("[Error]:Exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
@@ -164,8 +168,19 @@ public class ScreenFading : MonoBehaviour
             m_TotalTime = param[0] / 1000.0f;
             m_StartTime = Time.time;
             m_StartColor = TargetColor;
+            m_StartAddColor = AddColor;
             m_ElapseTime = 0.0f;
-            m_EndColor = new Color(param[1], param[2], param[3], param[4]);
+
+            float r = Mathf.Clamp01(param[1]);
+            float g = Mathf.Clamp01(param[2]);
+            float b = Mathf.Clamp01(param[3]);
+            float a = Mathf.Clamp01(param[4]);
+            float r2 = Mathf.Clamp01(param[1] - 1);
+            float g2 = Mathf.Clamp01(param[2] - 1);
+            float b2 = Mathf.Clamp01(param[3] - 1);
+            float a2 = Mathf.Clamp01(param[4] - 1);
+            m_EndColor = new Color(r, g, b, a);
+            m_EndAddColor = new Color(r2, g2, b2, a2);
         }
     }
 }

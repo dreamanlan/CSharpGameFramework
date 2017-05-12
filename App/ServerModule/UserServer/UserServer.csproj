@@ -67,8 +67,7 @@
     <Reference Include="DataProtobufSerializer">
       <HintPath>..\DataProtoBuf\bin\DataProtobufSerializer.dll</HintPath>
     </Reference>
-    <Reference Include="Dsl, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Dsl">
       <HintPath>..\..\..\ExternalLibrary\Dsl.dll</HintPath>
     </Reference>
     <Reference Include="LitJson">

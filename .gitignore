@@ -84,6 +84,7 @@ Tools/LogicDataGenerator/*.user
 Tools/TableReaderGenerator/*.suo
 Tools/TableReaderGenerator/obj
 Tools/TableReaderGenerator/*.user
+Test
 Unity3d/*.csproj
 Unity3d/*.sln
 Unity3d/*.suo

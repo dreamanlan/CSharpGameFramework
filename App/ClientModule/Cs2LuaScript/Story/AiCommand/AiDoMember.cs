@@ -54,7 +54,7 @@ public class AiDoMember : ISimpleStoryCommandPlugin
             return true;
         }
 
-        EntityInfo leader = AiLogicUtility.GetLivingCharacterInfoHelper(npc, info.LeaderID);
+        EntityInfo leader = AiLogicUtility.GetLivingCharacterInfoHelper(npc, info.LeaderId);
         ScriptRuntime.Vector3 srcPos = npc.GetMovementStateInfo().GetPosition3D();
         ScriptRuntime.Vector3 homePos = ScriptRuntime.Vector3.Zero;
         if (null != leader) {
@@ -112,7 +112,7 @@ public class AiDoMember : ISimpleStoryCommandPlugin
         if (info.Time > c_IntervalTime) {
             info.Time = 0;
 
-            EntityInfo leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderID);
+            EntityInfo leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderId);
             if (null != leader) {
                 float minDist = entity.GetRadius() + leader.GetRadius();
                 ScriptRuntime.Vector3 targetPos = GetHomePos(entity.GetMovementStateInfo().FormationIndex, leader);
@@ -159,7 +159,7 @@ public class AiDoMember : ISimpleStoryCommandPlugin
     {
         bool ret = true;
         AiStateInfo info = entity.GetAiStateInfo();
-        EntityInfo leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderID);
+        EntityInfo leader = AiLogicUtility.GetLivingCharacterInfoHelper(entity, info.LeaderId);
         if (null != leader) {
             ret = leader.IsDead();
         }

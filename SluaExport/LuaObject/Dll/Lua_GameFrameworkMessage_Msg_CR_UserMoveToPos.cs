@@ -32,7 +32,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_UserMoveToPos : LuaObject {
 	static public int set_target_pos(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_UserMoveToPos self=(GameFrameworkMessage.Msg_CR_UserMoveToPos)checkSelf(l);
-			System.UInt64 v;
+			GameFrameworkMessage.Position v;
 			checkType(l,2,out v);
 			self.target_pos=v;
 			pushValue(l,true);

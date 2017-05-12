@@ -58,7 +58,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AdjustPosition : LuaObject {
 	static public int set_x(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AdjustPosition self=(GameFrameworkMessage.Msg_RC_AdjustPosition)checkSelf(l);
-			int v;
+			float v;
 			checkType(l,2,out v);
 			self.x=v;
 			pushValue(l,true);
@@ -84,7 +84,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AdjustPosition : LuaObject {
 	static public int set_z(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AdjustPosition self=(GameFrameworkMessage.Msg_RC_AdjustPosition)checkSelf(l);
-			int v;
+			float v;
 			checkType(l,2,out v);
 			self.z=v;
 			pushValue(l,true);
@@ -110,7 +110,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AdjustPosition : LuaObject {
 	static public int set_face_dir(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AdjustPosition self=(GameFrameworkMessage.Msg_RC_AdjustPosition)checkSelf(l);
-			int v;
+			float v;
 			checkType(l,2,out v);
 			self.face_dir=v;
 			pushValue(l,true);

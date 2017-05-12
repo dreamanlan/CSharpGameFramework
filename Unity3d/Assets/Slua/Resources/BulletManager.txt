@@ -45,9 +45,7 @@ BulletManager = {
 		local instance_methods = {
 			GetCollideObject = function(this, bullet)
 				local pos1; pos1 = bullet.transform.position;
-				local __compiler_foreach_15 = (this.m_Bullets):GetEnumerator();
-				while __compiler_foreach_15:MoveNext() do
-					pair = __compiler_foreach_15.Current;
+				for pair in getiterator(this.m_Bullets) do
 					local other; other = pair.Value;
 					local otherObj; otherObj = other.Obj;
 					if invokeexternoperator(UnityEngine.Object, "op_Inequality", bullet, otherObj) then
@@ -78,7 +76,7 @@ BulletManager = {
 				end;
 			end,
 			AddBullet = function(this, bullet)
-				this.m_Bullets:Add(bullet:GetInstanceID(), newobject(BulletManager.CollideInfo, "ctor", {(function() Obj = bullet; return Obj; end)()}));
+				this.m_Bullets:Add(bullet:GetInstanceID(), newobject(BulletManager.CollideInfo, "ctor", {Obj = bullet}));
 			end,
 			RemoveBullet = function(this, bullet)
 				this.m_Bullets:Remove(bullet:GetInstanceID());
@@ -89,7 +87,7 @@ BulletManager = {
 
 		local instance_fields_build = function()
 			local instance_fields = {
-				m_Bullets = newexterndictionary(System.Collections.Generic.Dictionary_TKey_TValue, "System.Collections.Generic.Dictionary_TKey_TValue", "ctor", nil, {}),
+				m_Bullets = newexterndictionary(System.Collections.Generic.Dictionary_TKey_TValue, "System.Collections.Generic.Dictionary_TKey_TValue", "ctor", {}),
 			};
 			return instance_fields;
 		end;
@@ -132,7 +130,7 @@ BulletManager.CollideInfo = {
 				end;
 			end,
 			SetLastPos = function(this, pos)
-				this.LastSetIndex = (( (this.LastSetIndex + 1) ) % 2);
+				this.LastSetIndex = invokeintegeroperator(1, "%", ( invokeintegeroperator(2, "+", this.LastSetIndex, 1, System.Int32, System.Int32) ), 2, System.Int32, System.Int32);
 				if (this.LastSetIndex == 0) then
 					this.LastPos1 = pos;
 				else

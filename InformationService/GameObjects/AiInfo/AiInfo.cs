@@ -79,7 +79,7 @@ namespace GameFramework
 
             m_Time = 0;
             m_FormationId = 1;
-            m_leaderID = 0;
+            m_leaderId = 0;
             m_HomePos = Vector3.Zero;
             m_Target = 0;
             m_HateTarget = 0;
@@ -119,10 +119,10 @@ namespace GameFramework
             get { return m_FormationId; }
             set { m_FormationId = value; }
         }
-        public int LeaderID
+        public int LeaderId
         {
-            get { return m_leaderID; }
-            set { m_leaderID = value; }
+            get { return m_leaderId; }
+            set { m_leaderId = value; }
         }
         public ScriptRuntime.Vector3 HomePos
         {
@@ -167,7 +167,7 @@ namespace GameFramework
 
         private long m_Time = 0;
         private int m_FormationId = 1;
-        private int m_leaderID = 0;
+        private int m_leaderId = 0;
         private ScriptRuntime.Vector3 m_HomePos = ScriptRuntime.Vector3.Zero;
         private int m_Target = 0;
         private int m_HateTarget = 0;

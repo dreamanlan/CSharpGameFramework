@@ -29,9 +29,9 @@ namespace GameFramework.GmCommands
             if (null != scene) {
               GameFrameworkMessage.Msg_RC_AdjustPosition adjustPos = new GameFrameworkMessage.Msg_RC_AdjustPosition();
               adjustPos.role_id = objId;
-              adjustPos.face_dir = ProtoHelper.EncodeFloat(msi.GetFaceDir());
-              adjustPos.x = ProtoHelper.EncodeFloat(x);
-              adjustPos.z = ProtoHelper.EncodeFloat(z);
+              adjustPos.face_dir = msi.GetFaceDir();
+              adjustPos.x = x;
+              adjustPos.z = z;
 
               scene.NotifyAllUser(RoomMessageDefine.Msg_RC_AdjustPosition, adjustPos);
             }

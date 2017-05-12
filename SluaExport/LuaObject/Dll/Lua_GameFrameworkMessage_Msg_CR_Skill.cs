@@ -110,7 +110,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 	static public int set_target_dir(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Skill self=(GameFrameworkMessage.Msg_CR_Skill)checkSelf(l);
-			int v;
+			float v;
 			checkType(l,2,out v);
 			self.target_dir=v;
 			pushValue(l,true);

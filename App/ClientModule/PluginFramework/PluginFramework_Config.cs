@@ -15,7 +15,10 @@ namespace GameFramework
             //字典表需要为字典功能提供查表机制
             Dict.OnFindDictionary += (Dict.FindDictionaryDelegation)((string key) => {
                 TableConfig.StrDictionary cfg = TableConfig.StrDictionaryProvider.Instance.GetStrDictionary(key);
-                return cfg.Content;
+                if (null != cfg)
+                    return cfg.Content;
+                else
+                    return key;
             });
             TableConfig.LevelProvider.Instance.Clear();
             TableConfig.LevelProvider.Instance.LoadForClient();

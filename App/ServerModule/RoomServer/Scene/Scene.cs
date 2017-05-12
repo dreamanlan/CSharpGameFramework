@@ -62,7 +62,6 @@ namespace GameFramework
             m_GameTime.Reset();
             m_ServerDelayActionProcessor.Reset();
             m_KdTree.Clear();
-            m_BlackBoard.Reset();
 
             m_StorySystem.Reset();
             m_EntityController.Reset();

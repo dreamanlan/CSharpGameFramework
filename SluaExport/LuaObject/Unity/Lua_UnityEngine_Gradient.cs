@@ -99,12 +99,39 @@ public class Lua_UnityEngine_Gradient : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_mode(IntPtr l) {
+		try {
+			UnityEngine.Gradient self=(UnityEngine.Gradient)checkSelf(l);
+			pushValue(l,true);
+			pushEnum(l,(int)self.mode);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_mode(IntPtr l) {
+		try {
+			UnityEngine.Gradient self=(UnityEngine.Gradient)checkSelf(l);
+			UnityEngine.GradientMode v;
+			checkEnum(l,2,out v);
+			self.mode=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Gradient");
 		addMember(l,Evaluate);
 		addMember(l,SetKeys);
 		addMember(l,"colorKeys",get_colorKeys,set_colorKeys,true);
 		addMember(l,"alphaKeys",get_alphaKeys,set_alphaKeys,true);
+		addMember(l,"mode",get_mode,set_mode,true);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.Gradient));
 	}
 }

@@ -126,12 +126,6 @@ message Msg_LR_ReplyRegisterRoomServer
 
 message Msg_LR_RoomUserInfo
 {
-
-	message MemberInfo
-	{
-		required int32 Hero = 1;
-		required int32 Level = 2;
-	}
 	required uint64 Guid = 1;
 	required string Nick = 2;
 	required uint32 Key = 3;
@@ -141,8 +135,6 @@ message Msg_LR_RoomUserInfo
 	required int32 Level = 7;
 	optional float EnterX = 8;
 	optional float EnterY = 9;
-	repeated MemberInfo Members = 10;
-	required int32 SummonerSkillId = 11;
 }
 
 message Msg_LR_UserQuit

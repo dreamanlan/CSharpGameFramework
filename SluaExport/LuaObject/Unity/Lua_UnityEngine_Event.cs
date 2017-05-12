@@ -37,6 +37,18 @@ public class Lua_UnityEngine_Event : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int Use(IntPtr l) {
+		try {
+			UnityEngine.Event self=(UnityEngine.Event)checkSelf(l);
+			self.Use();
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int GetTypeForControl(IntPtr l) {
 		try {
 			UnityEngine.Event self=(UnityEngine.Event)checkSelf(l);
@@ -46,18 +58,6 @@ public class Lua_UnityEngine_Event : LuaObject {
 			pushValue(l,true);
 			pushEnum(l,(int)ret);
 			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Use(IntPtr l) {
-		try {
-			UnityEngine.Event self=(UnityEngine.Event)checkSelf(l);
-			self.Use();
-			pushValue(l,true);
-			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
@@ -372,6 +372,18 @@ public class Lua_UnityEngine_Event : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_isScrollWheel(IntPtr l) {
+		try {
+			UnityEngine.Event self=(UnityEngine.Event)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.isScrollWheel);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_rawType(IntPtr l) {
 		try {
 			UnityEngine.Event self=(UnityEngine.Event)checkSelf(l);
@@ -619,8 +631,8 @@ public class Lua_UnityEngine_Event : LuaObject {
 	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Event");
-		addMember(l,GetTypeForControl);
 		addMember(l,Use);
+		addMember(l,GetTypeForControl);
 		addMember(l,KeyboardEvent_s);
 		addMember(l,PopEvent_s);
 		addMember(l,GetEventCount_s);
@@ -636,6 +648,7 @@ public class Lua_UnityEngine_Event : LuaObject {
 		addMember(l,"current",get_current,set_current,false);
 		addMember(l,"isKey",get_isKey,null,true);
 		addMember(l,"isMouse",get_isMouse,null,true);
+		addMember(l,"isScrollWheel",get_isScrollWheel,null,true);
 		addMember(l,"rawType",get_rawType,null,true);
 		addMember(l,"type",get_type,set_type,true);
 		addMember(l,"button",get_button,set_button,true);

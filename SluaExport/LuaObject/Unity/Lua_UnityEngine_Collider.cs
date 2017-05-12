@@ -32,6 +32,21 @@ public class Lua_UnityEngine_Collider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int ClosestPoint(IntPtr l) {
+		try {
+			UnityEngine.Collider self=(UnityEngine.Collider)checkSelf(l);
+			UnityEngine.Vector3 a1;
+			checkType(l,2,out a1);
+			var ret=self.ClosestPoint(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int Raycast(IntPtr l) {
 		try {
 			UnityEngine.Collider self=(UnityEngine.Collider)checkSelf(l);
@@ -207,6 +222,7 @@ public class Lua_UnityEngine_Collider : LuaObject {
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Collider");
 		addMember(l,ClosestPointOnBounds);
+		addMember(l,ClosestPoint);
 		addMember(l,Raycast);
 		addMember(l,"enabled",get_enabled,set_enabled,true);
 		addMember(l,"attachedRigidbody",get_attachedRigidbody,null,true);

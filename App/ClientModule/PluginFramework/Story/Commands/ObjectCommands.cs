@@ -9,7 +9,7 @@ using GameFramework.Skill;
 namespace GameFramework.Story.Commands
 {
     /// <summary>
-    /// objface(obj_id, dir);
+    /// objface(obj_id, dir[, immediately]);
     /// </summary>
     internal class ObjFaceCommand : AbstractStoryCommand
     {
@@ -18,45 +18,59 @@ namespace GameFramework.Story.Commands
             ObjFaceCommand cmd = new ObjFaceCommand();
             cmd.m_ObjId = m_ObjId.Clone();
             cmd.m_Dir = m_Dir.Clone();
+            cmd.m_Immediately = m_Immediately.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_ObjId.Evaluate(instance, iterator, args);
             m_Dir.Evaluate(instance, iterator, args);
+            m_Immediately.Evaluate(instance, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             int objId = m_ObjId.Value;
             float dir = m_Dir.Value;
+            int im = 0;
+            if(m_Immediately.HaveValue)
+                im = m_Immediately.Value;
             EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
             if (null != obj) {
                 MovementStateInfo msi = obj.GetMovementStateInfo();
-                msi.SetFaceDir(dir);
+                if (im != 0) {
+                    msi.SetFaceDir(dir);
+
+                    var uobj = PluginFramework.Instance.GetGameObject(objId);
+                    if (null != uobj) {
+                        var e = uobj.transform.eulerAngles;
+                        uobj.transform.eulerAngles = new UnityEngine.Vector3(e.x, Geometry.RadianToDegree(dir), e.z);
+                    }
+                } else {
+                    msi.SetWantedFaceDir(dir);
+                }
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
                 m_Dir.InitFromDsl(callData.GetParam(1));
+                if (num > 2)
+                    m_Immediately.InitFromDsl(callData.GetParam(2));
             }
         }
 
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private IStoryValue<float> m_Dir = new StoryValue<float>();
+        private IStoryValue<int> m_Immediately = new StoryValue<int>();
     }
     /// <summary>
-    /// objmove(obj_id, vector3(x,y,z));
+    /// objmove(obj_id, vector3(x,y,z)[, event]);
     /// </summary>
     internal class ObjMoveCommand : AbstractStoryCommand
     {
@@ -65,23 +79,23 @@ namespace GameFramework.Story.Commands
             ObjMoveCommand cmd = new ObjMoveCommand();
             cmd.m_ObjId = m_ObjId.Clone();
             cmd.m_Pos = m_Pos.Clone();
+            cmd.m_Event = m_Event.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_ObjId.Evaluate(instance, iterator, args);
             m_Pos.Evaluate(instance, iterator, args);
+            m_Event.Evaluate(instance, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             int objId = m_ObjId.Value;
             Vector3 pos = m_Pos.Value;
+            string eventName = m_Event.Value;
             EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
             if (null != obj) {
                 List<Vector3> waypoints = new List<Vector3>();
@@ -95,27 +109,30 @@ namespace GameFramework.Story.Commands
                 data.WayPoints = waypoints;
                 data.Index = 0;
                 data.IsFinish = false;
+                data.Event = eventName;
                 obj.GetMovementStateInfo().TargetPosition = pos;
                 aiInfo.Time = 1000;//下一帧即触发移动
                 aiInfo.ChangeToState((int)PredefinedAiStateId.MoveCommand);
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num > 0) {
+            if (num > 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
                 m_Pos.InitFromDsl(callData.GetParam(1));
+                if (num > 2)
+                    m_Event.InitFromDsl(callData.GetParam(2));
             }
         }
 
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private IStoryValue<Vector3> m_Pos = new StoryValue<Vector3>();
+        private IStoryValue<string> m_Event = new StoryValue<string>();
     }
     /// <summary>
-    /// objmovewithwaypoints(obj_id, vector3list("1 2 3 4 5 6"));
+    /// objmovewithwaypoints(obj_id, vector3list("1 2 3 4 5 6")[, event]);
     /// </summary>
     internal class ObjMoveWithWaypointsCommand : AbstractStoryCommand
     {
@@ -124,23 +141,23 @@ namespace GameFramework.Story.Commands
             ObjMoveWithWaypointsCommand cmd = new ObjMoveWithWaypointsCommand();
             cmd.m_ObjId = m_ObjId.Clone();
             cmd.m_WayPoints = m_WayPoints.Clone();
+            cmd.m_Event = m_Event.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_ObjId.Evaluate(instance, iterator, args);
             m_WayPoints.Evaluate(instance, iterator, args);
+            m_Event.Evaluate(instance, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             int objId = m_ObjId.Value;
             List<object> poses = m_WayPoints.Value;
+            string eventName = m_Event.Value;
             EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
             if (null != obj && null != poses && poses.Count > 0) {
                 List<Vector3> waypoints = new List<Vector3>();
@@ -158,24 +175,27 @@ namespace GameFramework.Story.Commands
                 data.WayPoints = waypoints;
                 data.Index = 0;
                 data.IsFinish = false;
+                data.Event = eventName;
                 obj.GetMovementStateInfo().TargetPosition = waypoints[0];
                 aiInfo.Time = 1000;//下一帧即触发移动
                 aiInfo.ChangeToState((int)PredefinedAiStateId.MoveCommand);
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num > 0) {
+            if (num > 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
                 m_WayPoints.InitFromDsl(callData.GetParam(1));
+                if (num > 2)
+                    m_Event.InitFromDsl(callData.GetParam(2));
             }
         }
 
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private IStoryValue<List<object>> m_WayPoints = new StoryValue<List<object>>();
+        private IStoryValue<string> m_Event = new StoryValue<string>();
     }
     /// <summary>
     /// objstop(obj_id);

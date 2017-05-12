@@ -157,6 +157,62 @@ public class Lua_GameFramework_PluginFramework : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int LoadBattle(IntPtr l) {
+		try {
+			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			self.LoadBattle(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int OnBattleLoaded(IntPtr l) {
+		try {
+			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
+			TableConfig.Level a1;
+			checkType(l,2,out a1);
+			self.OnBattleLoaded(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int UnloadBattle(IntPtr l) {
+		try {
+			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			self.UnloadBattle(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int OnBattleUnloaded(IntPtr l) {
+		try {
+			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
+			TableConfig.Level a1;
+			checkType(l,2,out a1);
+			self.OnBattleUnloaded(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int OnRoomServerDisconnected(IntPtr l) {
 		try {
 			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
@@ -976,11 +1032,11 @@ public class Lua_GameFramework_PluginFramework : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_LastMainUiSceneId(IntPtr l) {
+	static public int get_SceneInfo(IntPtr l) {
 		try {
 			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.LastMainUiSceneId);
+			pushValue(l,self.SceneInfo);
 			return 2;
 		}
 		catch(Exception e) {
@@ -988,11 +1044,23 @@ public class Lua_GameFramework_PluginFramework : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_SceneInfo(IntPtr l) {
+	static public int get_BattleSceneId(IntPtr l) {
 		try {
 			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.SceneInfo);
+			pushValue(l,self.BattleSceneId);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_BattleSceneInfo(IntPtr l) {
+		try {
+			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.BattleSceneInfo);
 			return 2;
 		}
 		catch(Exception e) {
@@ -1012,62 +1080,12 @@ public class Lua_GameFramework_PluginFramework : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_IsStoryScene(IntPtr l) {
+	static public int get_IsBattleState(IntPtr l) {
 		try {
 			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.IsStoryScene);
+			pushValue(l,self.IsBattleState);
 			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_IsRoomScene(IntPtr l) {
-		try {
-			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.IsRoomScene);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_IsPvpScene(IntPtr l) {
-		try {
-			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.IsPvpScene);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_IsStoryState(IntPtr l) {
-		try {
-			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.IsStoryState);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_IsStoryState(IntPtr l) {
-		try {
-			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
-			bool v;
-			checkType(l,2,out v);
-			self.IsStoryState=v;
-			pushValue(l,true);
-			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
@@ -1086,11 +1104,11 @@ public class Lua_GameFramework_PluginFramework : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_SummonerSkillId(IntPtr l) {
+	static public int get_RoomObjId(IntPtr l) {
 		try {
 			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.SummonerSkillId);
+			pushValue(l,self.RoomObjId);
 			return 2;
 		}
 		catch(Exception e) {
@@ -1098,11 +1116,11 @@ public class Lua_GameFramework_PluginFramework : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_LeaderID(IntPtr l) {
+	static public int get_RoomUnitId(IntPtr l) {
 		try {
 			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.LeaderID);
+			pushValue(l,self.RoomUnitId);
 			return 2;
 		}
 		catch(Exception e) {
@@ -1110,12 +1128,24 @@ public class Lua_GameFramework_PluginFramework : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_LeaderID(IntPtr l) {
+	static public int get_LeaderId(IntPtr l) {
+		try {
+			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.LeaderId);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_LeaderId(IntPtr l) {
 		try {
 			GameFramework.PluginFramework self=(GameFramework.PluginFramework)checkSelf(l);
 			int v;
 			checkType(l,2,out v);
-			self.LeaderID=v;
+			self.LeaderId=v;
 			pushValue(l,true);
 			return 1;
 		}
@@ -1221,6 +1251,10 @@ public class Lua_GameFramework_PluginFramework : LuaObject {
 		addMember(l,DelayChangeScene);
 		addMember(l,ChangeScene);
 		addMember(l,OnSceneLoaded);
+		addMember(l,LoadBattle);
+		addMember(l,OnBattleLoaded);
+		addMember(l,UnloadBattle);
+		addMember(l,OnBattleUnloaded);
 		addMember(l,OnRoomServerDisconnected);
 		addMember(l,OnRoomServerConnected);
 		addMember(l,GetBossCount);
@@ -1265,16 +1299,15 @@ public class Lua_GameFramework_PluginFramework : LuaObject {
 		addMember(l,LoadTableConfig_s);
 		addMember(l,"Instance",get_Instance,null,false);
 		addMember(l,"SceneId",get_SceneId,null,true);
-		addMember(l,"LastMainUiSceneId",get_LastMainUiSceneId,null,true);
 		addMember(l,"SceneInfo",get_SceneInfo,null,true);
+		addMember(l,"BattleSceneId",get_BattleSceneId,null,true);
+		addMember(l,"BattleSceneInfo",get_BattleSceneInfo,null,true);
 		addMember(l,"IsMainUiScene",get_IsMainUiScene,null,true);
-		addMember(l,"IsStoryScene",get_IsStoryScene,null,true);
-		addMember(l,"IsRoomScene",get_IsRoomScene,null,true);
-		addMember(l,"IsPvpScene",get_IsPvpScene,null,true);
-		addMember(l,"IsStoryState",get_IsStoryState,set_IsStoryState,true);
+		addMember(l,"IsBattleState",get_IsBattleState,null,true);
 		addMember(l,"SelectedTarget",get_SelectedTarget,null,true);
-		addMember(l,"SummonerSkillId",get_SummonerSkillId,null,true);
-		addMember(l,"LeaderID",get_LeaderID,set_LeaderID,true);
+		addMember(l,"RoomObjId",get_RoomObjId,null,true);
+		addMember(l,"RoomUnitId",get_RoomUnitId,null,true);
+		addMember(l,"LeaderId",get_LeaderId,set_LeaderId,true);
 		addMember(l,"CampId",get_CampId,set_CampId,true);
 		addMember(l,"EntityManager",get_EntityManager,null,true);
 		addMember(l,"SceneLogicInfoManager",get_SceneLogicInfoManager,null,true);

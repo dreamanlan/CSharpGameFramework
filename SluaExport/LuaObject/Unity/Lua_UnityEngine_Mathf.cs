@@ -17,6 +17,134 @@ public class Lua_UnityEngine_Mathf : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int ClosestPowerOfTwo_s(IntPtr l) {
+		try {
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Mathf.ClosestPowerOfTwo(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int GammaToLinearSpace_s(IntPtr l) {
+		try {
+			System.Single a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Mathf.GammaToLinearSpace(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int LinearToGammaSpace_s(IntPtr l) {
+		try {
+			System.Single a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Mathf.LinearToGammaSpace(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int CorrelatedColorTemperatureToRGB_s(IntPtr l) {
+		try {
+			System.Single a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Mathf.CorrelatedColorTemperatureToRGB(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int IsPowerOfTwo_s(IntPtr l) {
+		try {
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Mathf.IsPowerOfTwo(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int NextPowerOfTwo_s(IntPtr l) {
+		try {
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Mathf.NextPowerOfTwo(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int PerlinNoise_s(IntPtr l) {
+		try {
+			System.Single a1;
+			checkType(l,1,out a1);
+			System.Single a2;
+			checkType(l,2,out a2);
+			var ret=UnityEngine.Mathf.PerlinNoise(a1,a2);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int FloatToHalf_s(IntPtr l) {
+		try {
+			System.Single a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Mathf.FloatToHalf(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int HalfToFloat_s(IntPtr l) {
+		try {
+			System.UInt16 a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Mathf.HalfToFloat(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int Sin_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -777,76 +905,6 @@ public class Lua_UnityEngine_Mathf : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int ClosestPowerOfTwo_s(IntPtr l) {
-		try {
-			System.Int32 a1;
-			checkType(l,1,out a1);
-			var ret=UnityEngine.Mathf.ClosestPowerOfTwo(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GammaToLinearSpace_s(IntPtr l) {
-		try {
-			System.Single a1;
-			checkType(l,1,out a1);
-			var ret=UnityEngine.Mathf.GammaToLinearSpace(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int LinearToGammaSpace_s(IntPtr l) {
-		try {
-			System.Single a1;
-			checkType(l,1,out a1);
-			var ret=UnityEngine.Mathf.LinearToGammaSpace(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int IsPowerOfTwo_s(IntPtr l) {
-		try {
-			System.Int32 a1;
-			checkType(l,1,out a1);
-			var ret=UnityEngine.Mathf.IsPowerOfTwo(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int NextPowerOfTwo_s(IntPtr l) {
-		try {
-			System.Int32 a1;
-			checkType(l,1,out a1);
-			var ret=UnityEngine.Mathf.NextPowerOfTwo(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int DeltaAngle_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -854,50 +912,6 @@ public class Lua_UnityEngine_Mathf : LuaObject {
 			System.Single a2;
 			checkType(l,2,out a2);
 			var ret=UnityEngine.Mathf.DeltaAngle(a1,a2);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int PerlinNoise_s(IntPtr l) {
-		try {
-			System.Single a1;
-			checkType(l,1,out a1);
-			System.Single a2;
-			checkType(l,2,out a2);
-			var ret=UnityEngine.Mathf.PerlinNoise(a1,a2);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int FloatToHalf_s(IntPtr l) {
-		try {
-			System.Single a1;
-			checkType(l,1,out a1);
-			var ret=UnityEngine.Mathf.FloatToHalf(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int HalfToFloat_s(IntPtr l) {
-		try {
-			System.UInt16 a1;
-			checkType(l,1,out a1);
-			var ret=UnityEngine.Mathf.HalfToFloat(a1);
 			pushValue(l,true);
 			pushValue(l,ret);
 			return 2;
@@ -974,6 +988,15 @@ public class Lua_UnityEngine_Mathf : LuaObject {
 	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Mathf");
+		addMember(l,ClosestPowerOfTwo_s);
+		addMember(l,GammaToLinearSpace_s);
+		addMember(l,LinearToGammaSpace_s);
+		addMember(l,CorrelatedColorTemperatureToRGB_s);
+		addMember(l,IsPowerOfTwo_s);
+		addMember(l,NextPowerOfTwo_s);
+		addMember(l,PerlinNoise_s);
+		addMember(l,FloatToHalf_s);
+		addMember(l,HalfToFloat_s);
 		addMember(l,Sin_s);
 		addMember(l,Cos_s);
 		addMember(l,Tan_s);
@@ -1011,15 +1034,7 @@ public class Lua_UnityEngine_Mathf : LuaObject {
 		addMember(l,Repeat_s);
 		addMember(l,PingPong_s);
 		addMember(l,InverseLerp_s);
-		addMember(l,ClosestPowerOfTwo_s);
-		addMember(l,GammaToLinearSpace_s);
-		addMember(l,LinearToGammaSpace_s);
-		addMember(l,IsPowerOfTwo_s);
-		addMember(l,NextPowerOfTwo_s);
 		addMember(l,DeltaAngle_s);
-		addMember(l,PerlinNoise_s);
-		addMember(l,FloatToHalf_s);
-		addMember(l,HalfToFloat_s);
 		addMember(l,"PI",get_PI,null,false);
 		addMember(l,"Infinity",get_Infinity,null,false);
 		addMember(l,"NegativeInfinity",get_NegativeInfinity,null,false);

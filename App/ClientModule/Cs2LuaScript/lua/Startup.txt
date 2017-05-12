@@ -37,7 +37,7 @@ Startup = {
 				HandlerRegister.Call(name, unpack(args));
 			end,
 			Tick = wrapenumerable(function(this)
-				wrapyield(newexternobject(UnityEngine.WaitForSeconds, "UnityEngine.WaitForSeconds", "ctor", nil, {}, 10), false, true);
+				wrapyield(newexternobject(UnityEngine.WaitForSeconds, "UnityEngine.WaitForSeconds", "ctor", {}, 10), false, true);
 				UnityEngine.Debug.Log("tick after start 10 seconds.");
 				wrapyield(nil, false, false);
 			end),

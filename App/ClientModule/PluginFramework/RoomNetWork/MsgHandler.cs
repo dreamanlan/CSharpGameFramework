@@ -64,10 +64,11 @@ internal class Msg_RC_CreateNpc_Handler
                 npc.OwnerId = targetmsg.owner_id;
             }
             if (targetmsg.leader_id > 0) {
-                npc.GetAiStateInfo().LeaderID = targetmsg.leader_id;
+                npc.GetAiStateInfo().LeaderId = targetmsg.leader_id;
             }
             if (targetmsg.key > 0 && targetmsg.key == NetworkSystem.Instance.Key) {
-                PluginFramework.Instance.LeaderID = targetmsg.npc_id;
+                PluginFramework.Instance.RoomObjId = targetmsg.npc_id;
+                PluginFramework.Instance.RoomUnitId = targetmsg.unit_id;
             }
         }
     }
@@ -128,15 +129,15 @@ internal class Msg_RC_NpcMove_Handler
             return;
         }
         if (targetmsg.velocity > 0) {
-            float x, y;
-            float tx, ty;
-            ProtoHelper.DecodePosition2D(targetmsg.cur_pos, out x, out y);
-            ProtoHelper.DecodePosition2D(targetmsg.target_pos, out tx, out ty);
+            float x = targetmsg.cur_pos.x;
+            float y = targetmsg.cur_pos.z;
+            float tx = targetmsg.target_pos.x;
+            float ty = targetmsg.target_pos.z;
             Vector2 curPos = new Vector2(x, y);
             Vector2 targetPos = new Vector2(tx, ty);
 
             MovementStateInfo msi = npc.GetMovementStateInfo();
-            float velocity = ProtoHelper.DecodeFloat(targetmsg.velocity);
+            float velocity = targetmsg.velocity;
             npc.ActualProperty.SetFloat(CharacterPropertyEnum.x2011_最终速度, velocity);
             if (Geometry.DistanceSquare(msi.GetPosition2D(), curPos) > c_MaxPosDeltaSqr) {
                 msi.SetPosition2D(curPos);
@@ -149,8 +150,8 @@ internal class Msg_RC_NpcMove_Handler
                 viewModel.MoveTo(targetPos.X, 0, targetPos.Y);
             }
         } else {
-            float x, y;
-            ProtoHelper.DecodePosition2D(targetmsg.cur_pos, out x, out y);
+            float x = targetmsg.cur_pos.x;
+            float y = targetmsg.cur_pos.z;
             Vector2 curPos = new Vector2(x, y);
             MovementStateInfo msi = npc.GetMovementStateInfo();
             if (Geometry.DistanceSquare(msi.GetPosition2D(), curPos) > c_MaxPosDeltaSqr) {
@@ -166,7 +167,7 @@ internal class Msg_RC_NpcMove_Handler
         }
     }
 
-    private const float c_MaxPosDeltaSqr = 36.0f;
+    private const float c_MaxPosDeltaSqr = 256.0f;
 }
 internal class Msg_RC_NpcFace_Handler
 {
@@ -182,7 +183,7 @@ internal class Msg_RC_NpcFace_Handler
         if (npc.HaveState(CharacterPropertyEnum.x3002_昏睡)) {
             return;
         }
-        float dir = ProtoHelper.DecodeFloat(face_msg.face_direction);
+        float dir = face_msg.face_direction;
         npc.GetMovementStateInfo().SetFaceDir(dir);
 
         UnityEngine.GameObject actor = EntityController.Instance.GetGameObject(npc.GetId());
@@ -201,10 +202,9 @@ internal class Msg_RC_NpcSkill_Handler
         if (null == npc) {
             return;
         }
-        float x = 0.0f;
-        float z = 0.0f;
-        ProtoHelper.DecodePosition2D(targetmsg.stand_pos, out x, out z);
-        float faceDir = ProtoHelper.DecodeFloat(targetmsg.face_direction);
+        float x = targetmsg.stand_pos.x;
+        float z = targetmsg.stand_pos.z;
+        float faceDir = targetmsg.face_direction;
         int skillId = targetmsg.skill_id;
         LogSystem.Info("Receive Msg_RC_NpcSkill, EntityId={0}, SkillId={1}", targetmsg.npc_id, skillId);
 
@@ -340,9 +340,9 @@ internal class Msg_RC_AdjustPosition_Handler
             return;
         EntityInfo npc = PluginFramework.Instance.GetEntityById(_msg.role_id);
         if (null != npc) {
-            float x = ProtoHelper.DecodeFloat(_msg.x);
-            float z = ProtoHelper.DecodeFloat(_msg.z);
-            float faceDir = ProtoHelper.DecodeFloat(_msg.face_dir);
+            float x = _msg.x;
+            float z = _msg.z;
+            float faceDir = _msg.face_dir;
 
             MovementStateInfo msi = npc.GetMovementStateInfo();
             msi.SetPosition2D(x, z);

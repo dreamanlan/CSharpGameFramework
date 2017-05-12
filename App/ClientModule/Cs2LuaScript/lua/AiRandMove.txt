@@ -53,8 +53,8 @@ AiRandMove = {
 				return false;
 			end,
 			RandMoveHandler = function(this, npc, info, deltaTime)
-				info.Time = (info.Time + deltaTime);
-				this.m_PursueInterval = (this.m_PursueInterval + deltaTime);
+				info.Time = invokeintegeroperator(2, "+", info.Time, deltaTime, System.Int64, System.Int64);
+				this.m_PursueInterval = invokeintegeroperator(2, "+", this.m_PursueInterval, deltaTime, System.Int64, System.Int64);
 				if (info.Time > this.m_Time) then
 					info.Time = 0;
 					npc:GetMovementStateInfo().IsMoving = false;
@@ -89,8 +89,8 @@ AiRandMove = {
 			end,
 			SelectTargetPos = function(this, npc)
 				local pos; pos = npc:GetMovementStateInfo():GetPosition3D();
-				local dx; dx = (GameFramework.Helper.Random.Next(this.m_Radius) - invokespecialintegeroperator("/", this.m_Radius, 2, System.Int32, System.Int32));
-				local dz; dz = (GameFramework.Helper.Random.Next(this.m_Radius) - invokespecialintegeroperator("/", this.m_Radius, 2, System.Int32, System.Int32));
+				local dx; dx = invokeintegeroperator(3, "-", GameFramework.Helper.Random.Next(this.m_Radius), invokeintegeroperator(0, "/", this.m_Radius, 2, System.Int32, System.Int32), System.Int32, System.Int32);
+				local dz; dz = invokeintegeroperator(3, "-", GameFramework.Helper.Random.Next(this.m_Radius), invokeintegeroperator(0, "/", this.m_Radius, 2, System.Int32, System.Int32), System.Int32, System.Int32);
 				pos.X = (pos.X + dx);
 				pos.Z = (pos.Z + dz);
 				npc:GetMovementStateInfo().TargetPosition = AiCommand.AiGetValidPosition(npc, pos, this.m_Radius);

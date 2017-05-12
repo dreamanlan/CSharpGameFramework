@@ -325,10 +325,10 @@ namespace GameFramework.Story.Commands
                 int objId = m_ObjId.Value;
                 EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
                 if (null != npc) {
-                    npc.GetAiStateInfo().LeaderID = leaderId;
+                    npc.GetAiStateInfo().LeaderId = leaderId;
                 }
             } else {
-                PluginFramework.Instance.LeaderID = leaderId;
+                PluginFramework.Instance.LeaderId = leaderId;
             }
             return false;
         }
@@ -433,7 +433,7 @@ namespace GameFramework.Story.Commands
             if (null != obj) {
                 UnityEngine.Vector3 pos = obj.transform.position;
                 if (type == "myself") {
-                    EntityViewModel view = EntityController.Instance.GetEntityViewById(PluginFramework.Instance.LeaderID);
+                    EntityViewModel view = EntityController.Instance.GetEntityViewById(PluginFramework.Instance.LeaderId);
                     if (null != view && null != view.Actor) {
                         if ((view.Actor.transform.position - pos).sqrMagnitude < radius * radius) {
                             GfxStorySystem.Instance.SendMessage(eventName, name, radius, type);
@@ -441,7 +441,7 @@ namespace GameFramework.Story.Commands
                         }
                     }
                 } else if (type == "anyenemy" || type == "anyfriend") {
-                    EntityInfo myself = PluginFramework.Instance.GetEntityById(PluginFramework.Instance.LeaderID);
+                    EntityInfo myself = PluginFramework.Instance.GetEntityById(PluginFramework.Instance.LeaderId);
                     PluginFramework.Instance.KdTree.QueryWithFunc(pos.x, pos.y, pos.z, radius, (float distSqr, KdTreeObject kdObj) => {
                         if (type == "anyenemy" && EntityInfo.GetRelation(myself, kdObj.Object) == CharacterRelation.RELATION_ENEMY ||
                             type == "anyfriend" && EntityInfo.GetRelation(myself, kdObj.Object) == CharacterRelation.RELATION_FRIEND) {
@@ -509,14 +509,16 @@ namespace GameFramework.Story.Commands
         private bool m_HaveSet = false;
     }
     /// <summary>
-    /// setstorystate(0_or_1);
+    /// loadui(name, prefab, dslfile);
     /// </summary>
-    internal class SetStoryStateCommand : AbstractStoryCommand
+    internal class LoadUiCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
-            SetStoryStateCommand cmd = new SetStoryStateCommand();
-            cmd.m_StoryState = m_StoryState.Clone();
+            LoadUiCommand cmd = new LoadUiCommand();
+            cmd.m_Name = m_Name.Clone();
+            cmd.m_Prefab = m_Prefab.Clone();
+            cmd.m_DslFile = m_DslFile.Clone();
             return cmd;
         }
 
@@ -526,25 +528,50 @@ namespace GameFramework.Story.Commands
 
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-            m_StoryState.Evaluate(instance, iterator, args);
+            m_Name.Evaluate(instance, iterator, args);
+            m_Prefab.Evaluate(instance, iterator, args);
+            m_DslFile.Evaluate(instance, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
-            int state = m_StoryState.Value;
-            PluginFramework.Instance.IsStoryState = state != 0;
+            string name = m_Name.Value;
+            string prefab = m_Prefab.Value;
+            string dslfile = m_DslFile.Value;
+            GfxStorySystem.Instance.PreloadNamespacedStory(name, dslfile);
+            UnityEngine.GameObject asset = UiResourceSystem.Instance.GetUiResource(prefab) as UnityEngine.GameObject;
+            if (null != asset) {
+                UnityEngine.GameObject uiObj = UnityEngine.GameObject.Instantiate(asset);
+                if (null != uiObj) {
+                    uiObj.name = name;
+                    if (!string.IsNullOrEmpty(dslfile)) {
+                        GameFramework.Story.UiStoryInitializer initer = uiObj.GetComponent<GameFramework.Story.UiStoryInitializer>();
+                        if (null == initer) {
+                            initer = uiObj.AddComponent<GameFramework.Story.UiStoryInitializer>();
+                        }
+                        if (null != initer) {
+                            initer.WindowName = name;
+                            initer.Init();
+                        }
+                    }
+                }
+            }
             return false;
         }
 
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num > 0) {
-                m_StoryState.InitFromDsl(callData.GetParam(0));
+            if (num > 2) {
+                m_Name.InitFromDsl(callData.GetParam(0));
+                m_Prefab.InitFromDsl(callData.GetParam(1));
+                m_DslFile.InitFromDsl(callData.GetParam(2));
             }
         }
 
-        private IStoryValue<int> m_StoryState = new StoryValue<int>();
+        private IStoryValue<string> m_Name = new StoryValue<string>();
+        private IStoryValue<string> m_Prefab = new StoryValue<string>();
+        private IStoryValue<string> m_DslFile = new StoryValue<string>();
     }
     /// <summary>
     /// bindui(gameobject){

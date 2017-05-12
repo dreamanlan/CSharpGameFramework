@@ -393,7 +393,7 @@ namespace GameFramework.Story.Values
                     int objId = m_ObjId.Value;
                     EntityInfo npc = scene.GetEntityById(objId);
                     if (null != npc) {
-                        m_Value = npc.GetAiStateInfo().LeaderID;
+                        m_Value = npc.GetAiStateInfo().LeaderId;
                     } else {
                         m_Value = 0;
                     }
@@ -407,12 +407,12 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class GetLeaderLinkIdValue : IStoryValue<object>
+    public sealed class GetLeaderTableIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getleaderlinkid") {
+            if (null != callData && callData.GetId() == "getleadertableid") {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjId.InitFromDsl(callData.GetParam(0));
@@ -421,7 +421,7 @@ namespace GameFramework.Story.Values
         }
         public IStoryValue<object> Clone()
         {
-            GetLeaderLinkIdValue val = new GetLeaderLinkIdValue();
+            GetLeaderTableIdValue val = new GetLeaderTableIdValue();
             val.m_ObjId = m_ObjId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -457,7 +457,13 @@ namespace GameFramework.Story.Values
                     int objId = m_ObjId.Value;
                     EntityInfo obj = scene.SceneContext.GetEntityById(objId);
                     if (null != obj) {
-                        m_Value = obj.GetLinkId();
+                        int leaderId = obj.GetAiStateInfo().LeaderId;
+                        EntityInfo leader = scene.SceneContext.GetEntityById(leaderId);
+                        if (null != leader) {
+                            m_Value = leader.GetTableId();
+                        } else {
+                            m_Value = 0;
+                        }
                     } else {
                         m_Value = 0;
                     }
@@ -513,22 +519,17 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class GetMemberCountValue : IStoryValue<object>
+    internal sealed class GetRoomIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getmembercount") {
-                int num = callData.GetParamNum();
-                if (num > 0) {
-                    m_ObjId.InitFromDsl(callData.GetParam(0));
-                }
+            if (null != callData && callData.GetId() == "getroomid") {
             }
         }
         public IStoryValue<object> Clone()
         {
-            GetMemberCountValue val = new GetMemberCountValue();
-            val.m_ObjId = m_ObjId.Clone();
+            GetRoomIdValue val = new GetRoomIdValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -536,7 +537,6 @@ namespace GameFramework.Story.Values
         public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_ObjId.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -558,46 +558,25 @@ namespace GameFramework.Story.Values
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
-                if (m_ObjId.HaveValue) {
-                    m_HaveValue = true;
-                    int objId = m_ObjId.Value;
-                    EntityInfo obj = scene.SceneContext.GetEntityById(objId);
-                    if (null != obj) {
-                        User user = obj.CustomData as User;
-                        if (null != user && null != user.LobbyUserData) {
-                            m_Value = user.LobbyUserData.Members.Count;
-                        } else {
-                            m_Value = 0;
-                        }
-                    } else {
-                        m_Value = 0;
-                    }
-                }
+                m_HaveValue = true;
+                m_Value = scene.GetRoomUserManager().RoomId;
             }
         }
 
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class GetMemberLinkIdValue : IStoryValue<object>
+    internal sealed class GetSceneIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getmemberlinkid") {
-                int num = callData.GetParamNum();
-                if (num > 1) {
-                    m_ObjId.InitFromDsl(callData.GetParam(0));
-                    m_Index.InitFromDsl(callData.GetParam(1));
-                }
+            if (null != callData && callData.GetId() == "getsceneid") {
             }
         }
         public IStoryValue<object> Clone()
         {
-            GetMemberLinkIdValue val = new GetMemberLinkIdValue();
-            val.m_ObjId = m_ObjId.Clone();
-            val.m_Index = m_Index.Clone();
+            GetSceneIdValue val = new GetSceneIdValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -605,8 +584,6 @@ namespace GameFramework.Story.Values
         public void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_ObjId.Evaluate(instance, iterator, args);
-            m_Index.Evaluate(instance, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -628,99 +605,11 @@ namespace GameFramework.Story.Values
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
-                if (m_ObjId.HaveValue && m_Index.HaveValue) {
-                    m_HaveValue = true;
-                    int objId = m_ObjId.Value;
-                    int index = m_Index.Value;
-                    EntityInfo obj = scene.SceneContext.GetEntityById(objId);
-                    if (null != obj) {
-                        User user = obj.CustomData as User;
-                        if (null != user && null != user.LobbyUserData && index >= 0 && index < user.LobbyUserData.Members.Count) {
-                            m_Value = user.LobbyUserData.Members[index].Hero;
-                        } else {
-                            m_Value = 0;
-                        }
-                    } else {
-                        m_Value = 0;
-                    }
-                }
+                m_HaveValue = true;
+                m_Value = scene.SceneResId;
             }
         }
 
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
-        private IStoryValue<int> m_Index = new StoryValue<int>();
-        private bool m_HaveValue;
-        private object m_Value;
-    }
-    public sealed class GetMemberLevelValue : IStoryValue<object>
-    {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
-        {
-            Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getmemberlevel") {
-                int num = callData.GetParamNum();
-                if (num > 1) {
-                    m_ObjId.InitFromDsl(callData.GetParam(0));
-                    m_Index.InitFromDsl(callData.GetParam(1));
-                }
-            }
-        }
-        public IStoryValue<object> Clone()
-        {
-            GetMemberLevelValue val = new GetMemberLevelValue();
-            val.m_ObjId = m_ObjId.Clone();
-            val.m_Index = m_Index.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
-        {
-            m_HaveValue = false;
-            m_ObjId.Evaluate(instance, iterator, args);
-            m_Index.Evaluate(instance, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public object Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                if (m_ObjId.HaveValue && m_Index.HaveValue) {
-                    m_HaveValue = true;
-                    int objId = m_ObjId.Value;
-                    int index = m_Index.Value;
-                    EntityInfo obj = scene.SceneContext.GetEntityById(objId);
-                    if (null != obj) {
-                        User user = obj.CustomData as User;
-                        if (null != user && null != user.LobbyUserData && index >= 0 && index < user.LobbyUserData.Members.Count) {
-                            m_Value = user.LobbyUserData.Members[index].Level;
-                        } else {
-                            m_Value = 0;
-                        }
-                    } else {
-                        m_Value = 0;
-                    }
-                }
-            }
-        }
-
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
-        private IStoryValue<int> m_Index = new StoryValue<int>();
         private bool m_HaveValue;
         private object m_Value;
     }

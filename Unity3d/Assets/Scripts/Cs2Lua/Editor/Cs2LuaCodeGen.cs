@@ -158,7 +158,7 @@ public static class Cs2LuaCodeGen
         sb.AppendFormat("{0}using GameFramework.Plugin;", GetIndentString());
         sb.AppendLine();
         sb.AppendLine();
-        sb.AppendFormat("{0}namespace CsLibrary", GetIndentString());
+        sb.AppendFormat("{0}namespace GameFramework", GetIndentString());
         sb.AppendLine();
         sb.AppendFormat("{0}", GetIndentString());
         sb.AppendLine("{");

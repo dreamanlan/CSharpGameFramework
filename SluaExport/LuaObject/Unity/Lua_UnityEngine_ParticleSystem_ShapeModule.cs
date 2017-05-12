@@ -75,12 +75,12 @@ public class Lua_UnityEngine_ParticleSystem_ShapeModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_randomDirection(IntPtr l) {
+	static public int get_randomDirectionAmount(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ShapeModule self;
 			checkValueType(l,1,out self);
 			pushValue(l,true);
-			pushValue(l,self.randomDirection);
+			pushValue(l,self.randomDirectionAmount);
 			return 2;
 		}
 		catch(Exception e) {
@@ -88,13 +88,71 @@ public class Lua_UnityEngine_ParticleSystem_ShapeModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_randomDirection(IntPtr l) {
+	static public int set_randomDirectionAmount(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.randomDirectionAmount=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_sphericalDirectionAmount(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.sphericalDirectionAmount);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_sphericalDirectionAmount(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.sphericalDirectionAmount=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_alignToDirection(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.alignToDirection);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_alignToDirection(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ShapeModule self;
 			checkValueType(l,1,out self);
 			bool v;
 			checkType(l,2,out v);
-			self.randomDirection=v;
+			self.alignToDirection=v;
 			setBack(l,self);
 			pushValue(l,true);
 			return 1;
@@ -124,6 +182,122 @@ public class Lua_UnityEngine_ParticleSystem_ShapeModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.radius=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_radiusMode(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushEnum(l,(int)self.radiusMode);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_radiusMode(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			UnityEngine.ParticleSystemShapeMultiModeValue v;
+			checkEnum(l,2,out v);
+			self.radiusMode=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_radiusSpread(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.radiusSpread);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_radiusSpread(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.radiusSpread=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_radiusSpeed(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.radiusSpeed);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_radiusSpeed(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			UnityEngine.ParticleSystem.MinMaxCurve v;
+			checkValueType(l,2,out v);
+			self.radiusSpeed=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_radiusSpeedMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.radiusSpeedMultiplier);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_radiusSpeedMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.radiusSpeedMultiplier=v;
 			setBack(l,self);
 			pushValue(l,true);
 			return 1;
@@ -452,6 +626,35 @@ public class Lua_UnityEngine_ParticleSystem_ShapeModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_meshScale(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.meshScale);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_meshScale(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.meshScale=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_arc(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ShapeModule self;
@@ -480,12 +683,134 @@ public class Lua_UnityEngine_ParticleSystem_ShapeModule : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_arcMode(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushEnum(l,(int)self.arcMode);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_arcMode(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			UnityEngine.ParticleSystemShapeMultiModeValue v;
+			checkEnum(l,2,out v);
+			self.arcMode=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_arcSpread(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.arcSpread);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_arcSpread(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.arcSpread=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_arcSpeed(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.arcSpeed);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_arcSpeed(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			UnityEngine.ParticleSystem.MinMaxCurve v;
+			checkValueType(l,2,out v);
+			self.arcSpeed=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_arcSpeedMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.arcSpeedMultiplier);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_arcSpeedMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.ShapeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.arcSpeedMultiplier=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ParticleSystem.ShapeModule");
 		addMember(l,"enabled",get_enabled,set_enabled,true);
 		addMember(l,"shapeType",get_shapeType,set_shapeType,true);
-		addMember(l,"randomDirection",get_randomDirection,set_randomDirection,true);
+		addMember(l,"randomDirectionAmount",get_randomDirectionAmount,set_randomDirectionAmount,true);
+		addMember(l,"sphericalDirectionAmount",get_sphericalDirectionAmount,set_sphericalDirectionAmount,true);
+		addMember(l,"alignToDirection",get_alignToDirection,set_alignToDirection,true);
 		addMember(l,"radius",get_radius,set_radius,true);
+		addMember(l,"radiusMode",get_radiusMode,set_radiusMode,true);
+		addMember(l,"radiusSpread",get_radiusSpread,set_radiusSpread,true);
+		addMember(l,"radiusSpeed",get_radiusSpeed,set_radiusSpeed,true);
+		addMember(l,"radiusSpeedMultiplier",get_radiusSpeedMultiplier,set_radiusSpeedMultiplier,true);
 		addMember(l,"angle",get_angle,set_angle,true);
 		addMember(l,"length",get_length,set_length,true);
 		addMember(l,"box",get_box,set_box,true);
@@ -497,7 +822,12 @@ public class Lua_UnityEngine_ParticleSystem_ShapeModule : LuaObject {
 		addMember(l,"meshMaterialIndex",get_meshMaterialIndex,set_meshMaterialIndex,true);
 		addMember(l,"useMeshColors",get_useMeshColors,set_useMeshColors,true);
 		addMember(l,"normalOffset",get_normalOffset,set_normalOffset,true);
+		addMember(l,"meshScale",get_meshScale,set_meshScale,true);
 		addMember(l,"arc",get_arc,set_arc,true);
+		addMember(l,"arcMode",get_arcMode,set_arcMode,true);
+		addMember(l,"arcSpread",get_arcSpread,set_arcSpread,true);
+		addMember(l,"arcSpeed",get_arcSpeed,set_arcSpeed,true);
+		addMember(l,"arcSpeedMultiplier",get_arcSpeedMultiplier,set_arcSpeedMultiplier,true);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.ParticleSystem.ShapeModule),typeof(System.ValueType));
 	}
 }

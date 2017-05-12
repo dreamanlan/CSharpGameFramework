@@ -11,29 +11,12 @@ enum ArgType
 	STRING = 3;
 }
 
-message EncodePosition
-{
-	required int32 x = 1;
-	required int32 z = 2;
-}
-
-message EncodePosition3D
-{
-	required int32 x = 1;
-	required int32 y = 2;
-	required int32 z = 3;
-}
-
 message Msg_CR_DlgClosed
 {
 	required int32 dialog_id = 1;
 }
 
 message Msg_CR_Enter
-{
-}
-
-message Msg_CR_GiveUpBattle
 {
 }
 
@@ -45,11 +28,6 @@ message Msg_CR_GmCommand
 
 message Msg_CR_Observer
 {
-}
-
-message Msg_CR_OperateMode
-{
-	required bool isauto = 1;
 }
 
 message Msg_CR_Quit
@@ -67,7 +45,7 @@ message Msg_CR_Skill
 	required int32 role_id = 1;
 	required int32 skill_id = 2;
 	optional int32 target_id = 3;
-	optional int32 target_dir = 4;
+	optional float target_dir = 4;
 }
 
 message Msg_CR_StopSkill
@@ -81,7 +59,7 @@ message Msg_CR_SwitchDebug
 
 message Msg_CR_UserMoveToPos
 {
-	required uint64 target_pos = 1;
+	required Position target_pos = 1;
 	optional bool is_stop = 2;
 }
 
@@ -126,9 +104,9 @@ message Msg_RC_AddSkill
 message Msg_RC_AdjustPosition
 {
 	required int32 role_id = 1;
-	required int32 x = 2;
-	required int32 z = 3;
-	required int32 face_dir = 4;
+	required float x = 2;
+	required float z = 3;
+	required float face_dir = 4;
 }
 
 message Msg_RC_CampChanged
@@ -210,23 +188,23 @@ message Msg_RC_NpcDead
 message Msg_RC_NpcFace
 {
 	optional int32 npc_id = 1;
-	required int32 face_direction = 2;
+	required float face_direction = 2;
 }
 
 message Msg_RC_NpcMove
 {
 	required int32 npc_id = 1;
-	optional int32 velocity = 2;
-	optional uint64 cur_pos = 3;
-	optional uint64 target_pos = 4;
+	optional float velocity = 2;
+	optional Position cur_pos = 3;
+	optional Position target_pos = 4;
 }
 
 message Msg_RC_NpcSkill
 {
 	required int32 npc_id = 1;
 	required int32 skill_id = 2;
-	required uint64 stand_pos = 3;
-	required int32 face_direction = 4;
+	required Position stand_pos = 3;
+	required float face_direction = 4;
 	required int32 target_id = 5;
 }
 

@@ -9,7 +9,7 @@ using GameFrameworkMessage;
 namespace GameFramework.Story.Commands
 {
     /// <summary>
-    /// createnpc(npc_unit_id,vector3(x,y,z),dir,camp,linkId[,ai,stringlist("param1 param2 param3 ..."),leaderId])[objid("@objid")];
+    /// createnpc(npc_unit_id,vector3(x,y,z),dir,camp,tableId[,ai,stringlist("param1 param2 param3 ..."),leaderId])[objid("@objid")];
     /// </summary>
     public class CreateNpcCommand : AbstractStoryCommand
     {
@@ -20,7 +20,7 @@ namespace GameFramework.Story.Commands
             cmd.m_Pos = m_Pos.Clone();
             cmd.m_Dir = m_Dir.Clone();
             cmd.m_Camp = m_Camp.Clone();
-            cmd.m_LinkId = m_LinkId.Clone();
+            cmd.m_TableId = m_TableId.Clone();
             cmd.m_AiLogic = m_AiLogic.Clone();
             cmd.m_AiParams = m_AiParams.Clone();
             cmd.m_LeaderId = m_LeaderId.Clone();
@@ -41,7 +41,7 @@ namespace GameFramework.Story.Commands
                 m_Pos.Evaluate(instance, iterator, args);
                 m_Dir.Evaluate(instance, iterator, args);
                 m_Camp.Evaluate(instance, iterator, args);
-                m_LinkId.Evaluate(instance, iterator, args);
+                m_TableId.Evaluate(instance, iterator, args);
 
                 if (m_ParamNum > 6) {
                     m_AiLogic.Evaluate(instance, iterator, args);
@@ -65,7 +65,7 @@ namespace GameFramework.Story.Commands
                     Vector3 pos = m_Pos.Value;
                     float dir = m_Dir.Value;
                     int camp = m_Camp.Value;
-                    int linkId = m_LinkId.Value;
+                    int tableId = m_TableId.Value;
                     
                     if (m_ParamNum > 6) {
                         string aiLogic = m_AiLogic.Value;
@@ -74,18 +74,18 @@ namespace GameFramework.Story.Commands
                         foreach (string aiParam in aiParamEnumer) {
                             aiParams.Add(aiParam);
                         }
-                        objId = scene.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, linkId, aiLogic, aiParams.ToArray());
+                        objId = scene.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, tableId, aiLogic, aiParams.ToArray());
                     } else {
-                        objId = scene.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, linkId);
+                        objId = scene.CreateEntity(m_UnitId.Value, pos.X, pos.Y, pos.Z, dir, camp, tableId);
                     }
                     if (m_ParamNum > 6) {
                         EntityInfo charObj = scene.GetEntityById(objId);
                         if (null != charObj) {
                             if (m_ParamNum > 7) {
                                 int leaderId = m_LeaderId.Value;
-                                charObj.GetAiStateInfo().LeaderID = leaderId;
+                                charObj.GetAiStateInfo().LeaderId = leaderId;
                             } else {
-                                charObj.GetAiStateInfo().LeaderID = 0;
+                                charObj.GetAiStateInfo().LeaderId = 0;
                             }
                         }
                     }
@@ -111,7 +111,7 @@ namespace GameFramework.Story.Commands
                 m_Pos.InitFromDsl(callData.GetParam(1));
                 m_Dir.InitFromDsl(callData.GetParam(2));
                 m_Camp.InitFromDsl(callData.GetParam(3));
-                m_LinkId.InitFromDsl(callData.GetParam(4));
+                m_TableId.InitFromDsl(callData.GetParam(4));
 
                 if (m_ParamNum > 6) {
                     m_AiLogic.InitFromDsl(callData.GetParam(5));
@@ -148,7 +148,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<Vector3> m_Pos = new StoryValue<Vector3>();
         private IStoryValue<float> m_Dir = new StoryValue<float>();
         private IStoryValue<int> m_Camp = new StoryValue<int>();
-        private IStoryValue<int> m_LinkId = new StoryValue<int>();
+        private IStoryValue<int> m_TableId = new StoryValue<int>();
         private IStoryValue<string> m_AiLogic = new StoryValue<string>();
         private IStoryValue<IEnumerable> m_AiParams = new StoryValue<IEnumerable>();
         private IStoryValue<int> m_LeaderId = new StoryValue<int>();
@@ -1012,8 +1012,8 @@ namespace GameFramework.Story.Commands
                         skillBuilder.skill_id = skillId;
                         float x = obj.GetMovementStateInfo().GetPosition3D().X;
                         float z = obj.GetMovementStateInfo().GetPosition3D().Z;
-                        skillBuilder.stand_pos = ProtoHelper.EncodePosition2D(x, z);
-                        skillBuilder.face_direction = ProtoHelper.EncodeFloat(obj.GetMovementStateInfo().GetFaceDir());
+                        skillBuilder.stand_pos = DataSyncUtility.ToPosition(x, z);
+                        skillBuilder.face_direction = obj.GetMovementStateInfo().GetFaceDir();
 
                         scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcSkill, skillBuilder);
                     }

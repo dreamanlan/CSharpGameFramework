@@ -65,16 +65,16 @@ UiScrollInfo = {
 						if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, content) then
 							local w;
 							local h;
-							local __compiler_invoke_52; __compiler_invoke_52, w, h = this:CalcBounds(text, content, newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, {}, rectTrans.rect.width, rectTrans.rect.height), (this.m_Width - dw), __cs2lua_out, __cs2lua_out);
+							local __compiler_invoke_52; __compiler_invoke_52, w, h = this:CalcBounds(text, content, newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", {}, rectTrans.rect.width, rectTrans.rect.height), (this.m_Width - dw), __cs2lua_out, __cs2lua_out);
 							if (h < 24) then
 								h = 24;
 							end;
 							content.text = text;
-							rectTrans.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, {}, 0, this.m_Top, 0);
-							rectTrans.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, {}, (this.m_Width - dw), (h + dh));
+							rectTrans.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", {}, 0, this.m_Top, 0);
+							rectTrans.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", {}, (this.m_Width - dw), (h + dh));
 							this.m_Top = this.m_Top - (h + dh);
-							this.m_RectTransform.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, {}, 0, 0, 0);
-							this.m_RectTransform.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, {}, this.m_RectTransform.sizeDelta.x, (dh - this.m_Top));
+							this.m_RectTransform.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", {}, 0, 0, 0);
+							this.m_RectTransform.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", {}, this.m_RectTransform.sizeDelta.x, (dh - this.m_Top));
 						end;
 					end;
 				end;
@@ -95,7 +95,7 @@ UiScrollInfo = {
 					textSetting.verticalOverflow = 1;
 					textSetting.horizontalOverflow = 0;
 					textSetting.updateBounds = true;
-					local generator; generator = newexternobject(UnityEngine.TextGenerator, "UnityEngine.TextGenerator", "ctor", nil, {});
+					local generator; generator = newexternobject(UnityEngine.TextGenerator, "UnityEngine.TextGenerator", "ctor", {});
 					local pw; pw = generator:GetPreferredWidth(txt, textSetting);
 					if generator:Populate(txt, textSetting) then
 						local w; w = generator.rectExtents.width;
@@ -109,7 +109,7 @@ UiScrollInfo = {
 						height = (height + h);
 						ret = true;
 					end;
-				i = i+ 1;
+				i = invokeintegeroperator(2, "+", i, 1, System.Int32, System.Int32);
 				end;
 				return ret, width, height;
 			end,

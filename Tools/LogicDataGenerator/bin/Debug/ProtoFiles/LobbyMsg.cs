@@ -1098,13 +1098,6 @@ namespace GameFrameworkMessage
       get { return _Level; }
       set { _Level = value; }
     }
-    private int _SummonerSkillId;
-    [global::ProtoBuf.ProtoMember(5, IsRequired = true, Name=@"SummonerSkillId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int SummonerSkillId
-    {
-      get { return _SummonerSkillId; }
-      set { _SummonerSkillId = value; }
-    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -1383,13 +1376,6 @@ namespace GameFrameworkMessage
       get { return _Friends; }
     }
   
-    private int _SummonerSkillId;
-    [global::ProtoBuf.ProtoMember(12, IsRequired = true, Name=@"SummonerSkillId", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int SummonerSkillId
-    {
-      get { return _SummonerSkillId; }
-      set { _SummonerSkillId = value; }
-    }
     [global::ProtoBuf.ProtoContract(Name=@"RoleEnterResultEnum")]
     public enum RoleEnterResultEnum
     {

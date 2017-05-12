@@ -600,7 +600,7 @@ namespace GameFramework.Skill
         public void Tick()
         {
             try {
-                UnityEngine.Profiler.BeginSample("GfxSkillSystem.Tick");
+                UnityEngine.Profiling.Profiler.BeginSample("GfxSkillSystem.Tick");
                 int ct = m_SkillLogicInfos.Count;
                 long delta = (long)(Time.deltaTime * 1000000);
                 for (int ix = ct - 1; ix >= 0; --ix) {
@@ -618,7 +618,7 @@ namespace GameFramework.Skill
                     }
                 }
             } finally {
-                UnityEngine.Profiler.EndSample();
+                UnityEngine.Profiling.Profiler.EndSample();
             }
         }
 

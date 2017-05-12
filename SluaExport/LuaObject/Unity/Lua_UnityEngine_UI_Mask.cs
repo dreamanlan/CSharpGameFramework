@@ -4,6 +4,19 @@ using SLua;
 using System.Collections.Generic;
 public class Lua_UnityEngine_UI_Mask : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int MaskEnabled(IntPtr l) {
+		try {
+			UnityEngine.UI.Mask self=(UnityEngine.UI.Mask)checkSelf(l);
+			var ret=self.MaskEnabled();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int IsRaycastLocationValid(IntPtr l) {
 		try {
 			UnityEngine.UI.Mask self=(UnityEngine.UI.Mask)checkSelf(l);
@@ -87,6 +100,7 @@ public class Lua_UnityEngine_UI_Mask : LuaObject {
 	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.UI.Mask");
+		addMember(l,MaskEnabled);
 		addMember(l,IsRaycastLocationValid);
 		addMember(l,GetModifiedMaterial);
 		addMember(l,"rectTransform",get_rectTransform,null,true);

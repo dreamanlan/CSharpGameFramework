@@ -11,8 +11,6 @@ namespace GameFrameworkMessage
 		Msg_Ping = 1,
 		Msg_Pong,
 		Position,
-		EncodePosition,
-		EncodePosition3D,
 		Msg_CR_ShakeHands,
 		Msg_RC_ShakeHands_Ret,
 		Msg_CR_Observer,
@@ -21,8 +19,6 @@ namespace GameFrameworkMessage
 		Msg_CR_UserMoveToPos,
 		Msg_CR_Skill,
 		Msg_CR_StopSkill,
-		Msg_CR_OperateMode,
-		Msg_CR_GiveUpBattle,
 		Msg_CR_SwitchDebug,
 		Msg_CR_GmCommand,
 		Msg_RC_CreateNpc,
@@ -72,22 +68,14 @@ namespace GameFrameworkMessage
 
 		static RoomMessageDefine2Type()
 		{
-			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.EncodePosition, typeof(EncodePosition));
-			s_Type2RoomMessageDefine.Add(typeof(EncodePosition), (int)RoomMessageDefine.EncodePosition);
-			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.EncodePosition3D, typeof(EncodePosition3D));
-			s_Type2RoomMessageDefine.Add(typeof(EncodePosition3D), (int)RoomMessageDefine.EncodePosition3D);
 			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_DlgClosed, typeof(Msg_CR_DlgClosed));
 			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_DlgClosed), (int)RoomMessageDefine.Msg_CR_DlgClosed);
 			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_Enter, typeof(Msg_CR_Enter));
 			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_Enter), (int)RoomMessageDefine.Msg_CR_Enter);
-			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_GiveUpBattle, typeof(Msg_CR_GiveUpBattle));
-			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_GiveUpBattle), (int)RoomMessageDefine.Msg_CR_GiveUpBattle);
 			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_GmCommand, typeof(Msg_CR_GmCommand));
 			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_GmCommand), (int)RoomMessageDefine.Msg_CR_GmCommand);
 			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_Observer, typeof(Msg_CR_Observer));
 			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_Observer), (int)RoomMessageDefine.Msg_CR_Observer);
-			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_OperateMode, typeof(Msg_CR_OperateMode));
-			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_OperateMode), (int)RoomMessageDefine.Msg_CR_OperateMode);
 			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_Quit, typeof(Msg_CR_Quit));
 			s_Type2RoomMessageDefine.Add(typeof(Msg_CR_Quit), (int)RoomMessageDefine.Msg_CR_Quit);
 			s_RoomMessageDefine2Type.Add((int)RoomMessageDefine.Msg_CR_ShakeHands, typeof(Msg_CR_ShakeHands));

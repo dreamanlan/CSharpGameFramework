@@ -83,7 +83,7 @@ public sealed class SkillBarManager
         try {
             SkillBar.SkillInfo skill = skillBar.GetSkillByID(objID);
             if (skill != null) {
-                if (skill.objID != PluginFramework.Instance.LeaderID) {
+                if (skill.objID != PluginFramework.Instance.LeaderId) {
                     if (!skill.isEmpty && skill.skillID == skillID) {
                         skill.StartCooldown(cooldownTime);
                     }

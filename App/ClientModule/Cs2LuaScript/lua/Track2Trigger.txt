@@ -84,7 +84,7 @@ Track2Trigger = {
 							else
 								this.m_TargetPos = obj.transform:TransformPoint(0, 0, (this.m_Speed * this.m_Lifetime));
 							end;
-							local newSectionDuration; newSectionDuration = (this.m_TriggerProxy.StartTime + typecast(( (this.m_Lifetime * 1000) ), System.Int64, false));
+							local newSectionDuration; newSectionDuration = invokeintegeroperator(2, "+", this.m_TriggerProxy.StartTime, typecast(( (this.m_Lifetime * 1000) ), System.Int64, false), System.Int64, System.Int64);
 							if (instance.CurSectionDuration < newSectionDuration) then
 								instance:SetCurSectionDuration(newSectionDuration);
 							end;
@@ -116,7 +116,7 @@ Track2Trigger = {
 								this.m_Effect:SetActive(true);
 								local em; em = instance.CustomDatas:GetData(GameFramework.Skill.Trigers.EffectManager);
 								if (em == nil) then
-									em = newexternobject(GameFramework.Skill.Trigers.EffectManager, "GameFramework.Skill.Trigers.EffectManager", "ctor", nil, {});
+									em = newexternobject(GameFramework.Skill.Trigers.EffectManager, "GameFramework.Skill.Trigers.EffectManager", "ctor", {});
 									instance.CustomDatas:AddData(GameFramework.Skill.Trigers.EffectManager, em);
 								end;
 								em:AddEffect(this.m_Effect);
@@ -138,15 +138,15 @@ Track2Trigger = {
 							end;
 							dest = GameFramework.Utility.FrontOfTarget(this.m_StartPos, dest, 0.1);
 --m_Effect.transform.position = Vector3.MoveTowards(m_Effect.transform.position, m_TargetPos, m_RealSpeed * Time.deltaTime);
-							this.m_Effect.transform.position = GameFramework.Utility.GetBezierPoint(this.m_StartPos, this.m_ControlPos, this.m_TargetPos, ((( (curSectionTime - this.m_TriggerProxy.StartTime) ) / 1000) / this.m_Lifetime));
+							this.m_Effect.transform.position = GameFramework.Utility.GetBezierPoint(this.m_StartPos, this.m_ControlPos, this.m_TargetPos, ((( invokeintegeroperator(3, "-", curSectionTime, this.m_TriggerProxy.StartTime, System.Int64, System.Int64) ) / 1000) / this.m_Lifetime));
 							local pos; pos = this.m_Effect.transform.position;
 							if (not this.m_IsHit) then
 								local distSqr; distSqr = 3.402823E+38;
 								if (this.m_LastPos.sqrMagnitude > 0.0001) then
 									local np;
-									local targetPos; targetPos = newexternobject(ScriptRuntime.Vector2, "ScriptRuntime.Vector2", "ctor", nil, {}, dest.x, dest.z);
-									local lastPos; lastPos = newexternobject(ScriptRuntime.Vector2, "ScriptRuntime.Vector2", "ctor", nil, {}, this.m_LastPos.x, this.m_LastPos.z);
-									distSqr, np = GameFramework.Geometry.PointToLineSegmentDistanceSquare(targetPos, lastPos, newexternobject(ScriptRuntime.Vector2, "ScriptRuntime.Vector2", "ctor", nil, {}, pos.x, pos.z), __cs2lua_out);
+									local targetPos; targetPos = newexternobject(ScriptRuntime.Vector2, "ScriptRuntime.Vector2", "ctor", {}, dest.x, dest.z);
+									local lastPos; lastPos = newexternobject(ScriptRuntime.Vector2, "ScriptRuntime.Vector2", "ctor", {}, this.m_LastPos.x, this.m_LastPos.z);
+									distSqr, np = GameFramework.Geometry.PointToLineSegmentDistanceSquare(targetPos, lastPos, newexternobject(ScriptRuntime.Vector2, "ScriptRuntime.Vector2", "ctor", {}, pos.x, pos.z), __cs2lua_out);
 								else
 									distSqr = ( (dest - pos) ).sqrMagnitude;
 								end;
@@ -221,14 +221,23 @@ Track2Trigger = {
 				end;
 			end,
 			ctor = function(this)
+				this:__ctor();
+			end,
+			__ctor = function(this)
+				if this.__ctor_called then
+					return;
+				else
+					this.__ctor_called = true;
+				end
+				this.m_HitEffectRotation = newexternobject(UnityEngine.Quaternion, "UnityEngine.Quaternion", nil, {});
 			end,
 		};
 
 		local instance_fields_build = function()
 			local instance_fields = {
-				m_TrackBone = newexternobject(SkillSystem.SkillStringParam, "SkillSystem.SkillStringParam", "ctor", nil, {}),
-				m_Duration = newexternobject(SkillSystem.SkillLongParam, "SkillSystem.SkillLongParam", "ctor", nil, {}),
-				m_DamageInterval = newexternobject(SkillSystem.SkillLongParam, "SkillSystem.SkillLongParam", "ctor", nil, {}),
+				m_TrackBone = newexternobject(SkillSystem.SkillStringParam, "SkillSystem.SkillStringParam", "ctor", {}),
+				m_Duration = newexternobject(SkillSystem.SkillLongParam, "SkillSystem.SkillLongParam", "ctor", {}),
+				m_DamageInterval = newexternobject(SkillSystem.SkillLongParam, "SkillSystem.SkillLongParam", "ctor", {}),
 				m_BulletRadius = 0.1,
 				m_BulletRadiusSquare = 0.01,
 				m_StartPos = UnityEngine.Vector3.zero,
@@ -239,12 +248,13 @@ Track2Trigger = {
 				m_Speed = 10,
 				m_Lifetime = 1,
 				m_IsStarted = false,
-				m_HitEffectRotation = 0,
+				m_HitEffectRotation = __cs2lua_nil_field_value,
 				m_Effect = __cs2lua_nil_field_value,
 				m_BoneTransform = __cs2lua_nil_field_value,
 				m_IsHit = false,
 				m_TriggerProxy = __cs2lua_nil_field_value,
 				__attributes = Track2Trigger__Attrs,
+				__ctor_called = false,
 			};
 			return instance_fields;
 		end;

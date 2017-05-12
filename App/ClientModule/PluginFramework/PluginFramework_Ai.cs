@@ -105,8 +105,9 @@ namespace GameFramework
 
             //判断是否状态结束并执行相应处理
             if (data.IsFinish) {
-                GfxStorySystem.Instance.SendMessage("npcarrived:" + npc.GetUnitId(), npc.GetId());
-                GfxStorySystem.Instance.SendMessage("objarrived", npc.GetId());
+                if (!string.IsNullOrEmpty(data.Event)) {
+                    GfxStorySystem.Instance.SendMessage(data.Event, npc.GetId(), npc.GetUnitId());
+                }
                 AiStopPursue(npc);
                 npc.GetAiStateInfo().ChangeToState((int)PredefinedAiStateId.Idle);
             }

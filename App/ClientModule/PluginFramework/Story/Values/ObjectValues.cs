@@ -277,18 +277,33 @@ namespace GameFramework.Story.Values
         private void TryUpdateValue(StoryInstance instance)
         {
             if (m_ObjId.HaveValue) {
-                int objId = m_ObjId.Value;
                 m_HaveValue = true;
-                EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
-                if (null != obj) {
-                    m_Value = obj.GetMovementStateInfo().GetPosition3D();
+                var valObj = m_ObjId.Value;
+                if (valObj is int) {
+                    int objId = (int)valObj;
+                    EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
+                    if (null != obj) {
+                        m_Value = obj.GetMovementStateInfo().GetPosition3D();
+                    } else {
+                        m_Value = Vector3.Zero;
+                    }
                 } else {
-                    m_Value = Vector3.Zero;
+                    string path = valObj as string;
+                    if (!string.IsNullOrEmpty(path)) {
+                        var gameObj = UnityEngine.GameObject.Find(path);
+                        if (null != gameObj) {
+                            var pt = gameObj.transform.position;
+                            m_Value = new ScriptRuntime.Vector3(pt.x, pt.y, pt.z);
+                        } else {
+                            m_Value = Vector3.Zero;
+                        }
+                    } else {
+                        m_Value = Vector3.Zero;
+                    }
                 }
             }
         }
-
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryValue<object> m_ObjId = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
@@ -333,18 +348,33 @@ namespace GameFramework.Story.Values
         private void TryUpdateValue(StoryInstance instance)
         {
             if (m_ObjId.HaveValue) {
-                int objId = m_ObjId.Value;
                 m_HaveValue = true;
-                EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
-                if (null != obj) {
-                    m_Value = obj.GetMovementStateInfo().PositionX;
+                var valObj = m_ObjId.Value;
+                if (valObj is int) {
+                    int objId = (int)valObj;
+                    EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
+                    if (null != obj) {
+                        m_Value = obj.GetMovementStateInfo().PositionX;
+                    } else {
+                        m_Value = 0.0f;
+                    }
                 } else {
-                    m_Value = 0.0f;
+                    string path = valObj as string;
+                    if (!string.IsNullOrEmpty(path)) {
+                        var gameObj = UnityEngine.GameObject.Find(path);
+                        if (null != gameObj) {
+                            var pt = gameObj.transform.position;
+                            m_Value = pt.x;
+                        } else {
+                            m_Value = 0.0f;
+                        }
+                    } else {
+                        m_Value = 0.0f;
+                    }
                 }
             }
         }
-
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryValue<object> m_ObjId = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
@@ -389,18 +419,33 @@ namespace GameFramework.Story.Values
         private void TryUpdateValue(StoryInstance instance)
         {
             if (m_ObjId.HaveValue) {
-                int objId = m_ObjId.Value;
                 m_HaveValue = true;
-                EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
-                if (null != obj) {
-                    m_Value = obj.GetMovementStateInfo().PositionY;
+                var valObj = m_ObjId.Value;
+                if (valObj is int) {
+                    int objId = (int)valObj;
+                    EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
+                    if (null != obj) {
+                        m_Value = obj.GetMovementStateInfo().PositionY;
+                    } else {
+                        m_Value = 0.0f;
+                    }
                 } else {
-                    m_Value = 0.0f;
+                    string path = valObj as string;
+                    if (!string.IsNullOrEmpty(path)) {
+                        var gameObj = UnityEngine.GameObject.Find(path);
+                        if (null != gameObj) {
+                            var pt = gameObj.transform.position;
+                            m_Value = pt.y;
+                        } else {
+                            m_Value = 0.0f;
+                        }
+                    } else {
+                        m_Value = 0.0f;
+                    }
                 }
             }
         }
-
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryValue<object> m_ObjId = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
@@ -445,18 +490,33 @@ namespace GameFramework.Story.Values
         private void TryUpdateValue(StoryInstance instance)
         {
             if (m_ObjId.HaveValue) {
-                int objId = m_ObjId.Value;
                 m_HaveValue = true;
-                EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
-                if (null != obj) {
-                    m_Value = obj.GetMovementStateInfo().PositionZ;
+                var valObj = m_ObjId.Value;
+                if (valObj is int) {
+                    int objId = (int)valObj;
+                    EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
+                    if (null != obj) {
+                        m_Value = obj.GetMovementStateInfo().PositionZ;
+                    } else {
+                        m_Value = 0.0f;
+                    }
                 } else {
-                    m_Value = 0.0f;
+                    string path = valObj as string;
+                    if (!string.IsNullOrEmpty(path)) {
+                        var gameObj = UnityEngine.GameObject.Find(path);
+                        if (null != gameObj) {
+                            var pt = gameObj.transform.position;
+                            m_Value = pt.z;
+                        } else {
+                            m_Value = 0.0f;
+                        }
+                    } else {
+                        m_Value = 0.0f;
+                    }
                 }
             }
         }
-
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryValue<object> m_ObjId = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
@@ -1071,18 +1131,18 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class GetLinkIdValue : IStoryValue<object>
+    internal sealed class GetTableIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getlinkid" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetId() == "gettableid" && callData.GetParamNum() == 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
             }
         }
         public IStoryValue<object> Clone()
         {
-            GetLinkIdValue val = new GetLinkIdValue();
+            GetTableIdValue val = new GetTableIdValue();
             val.m_ObjId = m_ObjId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -1116,7 +1176,7 @@ namespace GameFramework.Story.Values
                 m_HaveValue = true;
                 EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
                 if (null != obj) {
-                    m_Value = obj.GetLinkId();
+                    m_Value = obj.GetTableId();
                 } else {
                     m_Value = 0;
                 }

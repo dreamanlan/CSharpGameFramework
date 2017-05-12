@@ -189,7 +189,7 @@ namespace GameFramework
 
             TableConfig.SkillEventProvider.Instance.skillEventTable.TryGetValue(cfg.id, out m_SkillEventConfigData);
             
-            SetLinkId(cfg.id);
+            SetTableId(cfg.id);
             SetModel(cfg.avatar);
             EntityType = cfg.type;
             m_Radius = cfg.size;

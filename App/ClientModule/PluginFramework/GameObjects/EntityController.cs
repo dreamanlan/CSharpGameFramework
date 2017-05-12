@@ -242,7 +242,7 @@ namespace GameFramework
                     entity.GetSkillStateInfo().SetCurSkillInfo(skillId);
                     skillInfo.IsSkillActivated = true;
                     skillInfo.CdEndTime = TimeUtility.GetLocalMilliseconds() + (long)skillInfo.ConfigData.skillData.cooldown;
-                    if (skillInfo.ConfigData.skillData.addsc > 0 && PluginFramework.Instance.IsBattleScene) {
+                    if (skillInfo.ConfigData.skillData.addsc > 0 && PluginFramework.Instance.IsBattleState) {
                         //回蓝
                         entity.Energy += skillInfo.ConfigData.skillData.addsc;
                         entity.EntityManager.FireDamageEvent(actorId, 0, false, false, 0, -skillInfo.ConfigData.skillData.addsc);
@@ -744,7 +744,7 @@ namespace GameFramework
         }
         public void ImpactDamage(int srcObjId, int targetId, int impactId, int seq, bool isFinal)
         {
-            if (!PluginFramework.Instance.IsBattleScene)
+            if (!PluginFramework.Instance.IsBattleState)
                 return;
             EntityViewModel view = GetEntityViewById(targetId);
             EntityViewModel srcView = GetEntityViewById(srcObjId);
@@ -801,22 +801,14 @@ namespace GameFramework
                         } else if (targetObj.Shield > 0) {
                             int leftDamage = (int)damage - targetObj.Shield;
                             targetObj.Shield = 0;
-                            if (targetObj.GetId() == PluginFramework.Instance.LeaderID && targetObj.Hp <= leftDamage) {
-                                //队长不死，demo专用代码
-                            } else {
-                                targetObj.Hp -= (int)leftDamage;
-                                if (targetObj.Hp <= 0) {
-                                    isKiller = true;
-                                }
+                            targetObj.Hp -= (int)leftDamage;
+                            if (targetObj.Hp <= 0) {
+                                isKiller = true;
                             }
-                        } else {
-                            if (targetObj.GetId() == PluginFramework.Instance.LeaderID && targetObj.Hp <= damage) {
-                                //队长不死，demo专用代码
-                            } else {
-                                targetObj.Hp -= (int)damage;
-                                if (targetObj.Hp <= 0) {
-                                    isKiller = true;
-                                }
+                        } else {                            
+                            targetObj.Hp -= (int)damage;
+                            if (targetObj.Hp <= 0) {
+                                isKiller = true;
                             }
                         }
                         if (isKiller) {

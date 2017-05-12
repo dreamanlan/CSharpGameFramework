@@ -269,20 +269,6 @@ public class Lua_UnityEngine_Vector4 : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int SqrMagnitude_s(IntPtr l) {
-		try {
-			UnityEngine.Vector4 a1;
-			checkType(l,1,out a1);
-			var ret=UnityEngine.Vector4.SqrMagnitude(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int Min_s(IntPtr l) {
 		try {
 			UnityEngine.Vector4 a1;
@@ -432,6 +418,20 @@ public class Lua_UnityEngine_Vector4 : LuaObject {
 			UnityEngine.Vector4 a2;
 			checkType(l,2,out a2);
 			var ret=(a1!=a2);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int SqrMagnitude_s(IntPtr l) {
+		try {
+			UnityEngine.Vector4 a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Vector4.SqrMagnitude(a1);
 			pushValue(l,true);
 			pushValue(l,ret);
 			return 2;
@@ -676,7 +676,6 @@ public class Lua_UnityEngine_Vector4 : LuaObject {
 		addMember(l,Project_s);
 		addMember(l,Distance_s);
 		addMember(l,Magnitude_s);
-		addMember(l,SqrMagnitude_s);
 		addMember(l,Min_s);
 		addMember(l,Max_s);
 		addMember(l,op_Addition);
@@ -686,6 +685,7 @@ public class Lua_UnityEngine_Vector4 : LuaObject {
 		addMember(l,op_Division);
 		addMember(l,op_Equality);
 		addMember(l,op_Inequality);
+		addMember(l,SqrMagnitude_s);
 		addMember(l,getItem);
 		addMember(l,setItem);
 		addMember(l,"kEpsilon",get_kEpsilon,null,false);

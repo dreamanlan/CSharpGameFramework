@@ -75,6 +75,35 @@ public class Lua_UnityEngine_ParticleSystem_LimitVelocityOverLifetimeModule : Lu
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_limitXMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.limitXMultiplier);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_limitXMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.limitXMultiplier=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_limitY(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule self;
@@ -95,6 +124,35 @@ public class Lua_UnityEngine_ParticleSystem_LimitVelocityOverLifetimeModule : Lu
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.limitY=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_limitYMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.limitYMultiplier);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_limitYMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.limitYMultiplier=v;
 			setBack(l,self);
 			pushValue(l,true);
 			return 1;
@@ -133,6 +191,35 @@ public class Lua_UnityEngine_ParticleSystem_LimitVelocityOverLifetimeModule : Lu
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_limitZMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.limitZMultiplier);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_limitZMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.limitZMultiplier=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_limit(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule self;
@@ -153,6 +240,35 @@ public class Lua_UnityEngine_ParticleSystem_LimitVelocityOverLifetimeModule : Lu
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.limit=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_limitMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.limitMultiplier);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_limitMultiplier(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.limitMultiplier=v;
 			setBack(l,self);
 			pushValue(l,true);
 			return 1;
@@ -252,9 +368,13 @@ public class Lua_UnityEngine_ParticleSystem_LimitVelocityOverLifetimeModule : Lu
 		getTypeTable(l,"UnityEngine.ParticleSystem.LimitVelocityOverLifetimeModule");
 		addMember(l,"enabled",get_enabled,set_enabled,true);
 		addMember(l,"limitX",get_limitX,set_limitX,true);
+		addMember(l,"limitXMultiplier",get_limitXMultiplier,set_limitXMultiplier,true);
 		addMember(l,"limitY",get_limitY,set_limitY,true);
+		addMember(l,"limitYMultiplier",get_limitYMultiplier,set_limitYMultiplier,true);
 		addMember(l,"limitZ",get_limitZ,set_limitZ,true);
+		addMember(l,"limitZMultiplier",get_limitZMultiplier,set_limitZMultiplier,true);
 		addMember(l,"limit",get_limit,set_limit,true);
+		addMember(l,"limitMultiplier",get_limitMultiplier,set_limitMultiplier,true);
 		addMember(l,"dampen",get_dampen,set_dampen,true);
 		addMember(l,"separateAxes",get_separateAxes,set_separateAxes,true);
 		addMember(l,"space",get_space,set_space,true);

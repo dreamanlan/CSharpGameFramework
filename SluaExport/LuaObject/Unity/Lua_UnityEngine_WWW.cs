@@ -85,90 +85,6 @@ public class Lua_UnityEngine_WWW : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetAudioClip(IntPtr l) {
-		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				UnityEngine.WWW self=(UnityEngine.WWW)checkSelf(l);
-				System.Boolean a1;
-				checkType(l,2,out a1);
-				var ret=self.GetAudioClip(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(argc==3){
-				UnityEngine.WWW self=(UnityEngine.WWW)checkSelf(l);
-				System.Boolean a1;
-				checkType(l,2,out a1);
-				System.Boolean a2;
-				checkType(l,3,out a2);
-				var ret=self.GetAudioClip(a1,a2);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(argc==4){
-				UnityEngine.WWW self=(UnityEngine.WWW)checkSelf(l);
-				System.Boolean a1;
-				checkType(l,2,out a1);
-				System.Boolean a2;
-				checkType(l,3,out a2);
-				UnityEngine.AudioType a3;
-				checkEnum(l,4,out a3);
-				var ret=self.GetAudioClip(a1,a2,a3);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetAudioClipCompressed(IntPtr l) {
-		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==1){
-				UnityEngine.WWW self=(UnityEngine.WWW)checkSelf(l);
-				var ret=self.GetAudioClipCompressed();
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(argc==2){
-				UnityEngine.WWW self=(UnityEngine.WWW)checkSelf(l);
-				System.Boolean a1;
-				checkType(l,2,out a1);
-				var ret=self.GetAudioClipCompressed(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(argc==3){
-				UnityEngine.WWW self=(UnityEngine.WWW)checkSelf(l);
-				System.Boolean a1;
-				checkType(l,2,out a1);
-				UnityEngine.AudioType a2;
-				checkEnum(l,3,out a2);
-				var ret=self.GetAudioClipCompressed(a1,a2);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int LoadImageIntoTexture(IntPtr l) {
 		try {
 			UnityEngine.WWW self=(UnityEngine.WWW)checkSelf(l);
@@ -383,18 +299,6 @@ public class Lua_UnityEngine_WWW : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_audioClip(IntPtr l) {
-		try {
-			UnityEngine.WWW self=(UnityEngine.WWW)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.audioClip);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_isDone(IntPtr l) {
 		try {
 			UnityEngine.WWW self=(UnityEngine.WWW)checkSelf(l);
@@ -496,8 +400,6 @@ public class Lua_UnityEngine_WWW : LuaObject {
 		getTypeTable(l,"UnityEngine.WWW");
 		addMember(l,Dispose);
 		addMember(l,InitWWW);
-		addMember(l,GetAudioClip);
-		addMember(l,GetAudioClipCompressed);
 		addMember(l,LoadImageIntoTexture);
 		addMember(l,EscapeURL_s);
 		addMember(l,UnEscapeURL_s);
@@ -509,7 +411,6 @@ public class Lua_UnityEngine_WWW : LuaObject {
 		addMember(l,"error",get_error,null,true);
 		addMember(l,"texture",get_texture,null,true);
 		addMember(l,"textureNonReadable",get_textureNonReadable,null,true);
-		addMember(l,"audioClip",get_audioClip,null,true);
 		addMember(l,"isDone",get_isDone,null,true);
 		addMember(l,"progress",get_progress,null,true);
 		addMember(l,"uploadProgress",get_uploadProgress,null,true);

@@ -251,6 +251,7 @@ message(TableGlobalData)
 //////////////////////////////////////////////////////////////////////
 message(TableAccount) 
 {
+	wrapname(AccountInfo);
 	member(AccountId, string, required){
 		maxsize(64);
 		primarykey;
@@ -259,7 +260,10 @@ message(TableAccount)
 	  maxsize(256);
 	};
 	member(IsBanned, bool, required); 
-	member(UserGuid, ulong, required);
+	member(UserGuid, ulong, required);  
+	member(Nickname, string, required){
+		maxsize(32);
+	};
 };
 
 message(TableUserInfo) 
@@ -290,7 +294,6 @@ message(TableUserInfo)
 	member(FaceDir, float, required);
 	member(Money, int, required);
 	member(Gold, int, required);
-	member(SummonerSkillId, int, required);
 	member(IntDatas, "Dictionary<string,int>", required);
 	member(FloatDatas, "Dictionary<string,float>", required);
 	member(StringDatas, "Dictionary<string,string>", required);

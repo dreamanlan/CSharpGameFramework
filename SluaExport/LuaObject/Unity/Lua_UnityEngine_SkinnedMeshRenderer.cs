@@ -192,6 +192,32 @@ public class Lua_UnityEngine_SkinnedMeshRenderer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_skinnedMotionVectors(IntPtr l) {
+		try {
+			UnityEngine.SkinnedMeshRenderer self=(UnityEngine.SkinnedMeshRenderer)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.skinnedMotionVectors);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_skinnedMotionVectors(IntPtr l) {
+		try {
+			UnityEngine.SkinnedMeshRenderer self=(UnityEngine.SkinnedMeshRenderer)checkSelf(l);
+			bool v;
+			checkType(l,2,out v);
+			self.skinnedMotionVectors=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_localBounds(IntPtr l) {
 		try {
 			UnityEngine.SkinnedMeshRenderer self=(UnityEngine.SkinnedMeshRenderer)checkSelf(l);
@@ -227,6 +253,7 @@ public class Lua_UnityEngine_SkinnedMeshRenderer : LuaObject {
 		addMember(l,"quality",get_quality,set_quality,true);
 		addMember(l,"sharedMesh",get_sharedMesh,set_sharedMesh,true);
 		addMember(l,"updateWhenOffscreen",get_updateWhenOffscreen,set_updateWhenOffscreen,true);
+		addMember(l,"skinnedMotionVectors",get_skinnedMotionVectors,set_skinnedMotionVectors,true);
 		addMember(l,"localBounds",get_localBounds,set_localBounds,true);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.SkinnedMeshRenderer),typeof(UnityEngine.Renderer));
 	}

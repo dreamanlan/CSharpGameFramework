@@ -83,7 +83,7 @@ namespace GameFramework
         {
             m_Id = id;
             m_UnitId = 0;
-            m_LinkId = 0;
+            m_TableId = 0;
             m_AIEnable = true;
             m_BaseProperty = new CharacterProperty();
             m_ActualProperty = new CharacterProperty();
@@ -115,13 +115,13 @@ namespace GameFramework
         {
             m_UnitId = id;
         }
-        public int GetLinkId()
+        public int GetTableId()
         {
-            return m_LinkId;
+            return m_TableId;
         }
-        public void SetLinkId(int id)
+        public void SetTableId(int id)
         {
-            m_LinkId = id;
+            m_TableId = id;
         }
         public void SetName(string name)
         {
@@ -572,12 +572,11 @@ namespace GameFramework
         private int m_Id = 0;
         private float m_Radius = 1.0f;
         private int m_UnitId = 0;
-        private int m_LinkId = 0;
+        private int m_TableId = 0;
         private int m_OwnerId = -1;
         private int m_SummonerId = 0;
         private int m_SummonSkillId = 0;
         private string m_Name = "";
-        private int m_Level = 1;
         private string m_Model = "";
         private bool m_AIEnable = true;
         private int m_UniqueId = 0;

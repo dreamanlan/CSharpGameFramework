@@ -20,7 +20,7 @@ class MiniMap : ITickPlugin
     public void Update()
     {
         if (null == m_GamePlayer) {
-            m_GamePlayer = PluginFramework.Instance.GetGameObject(PluginFramework.Instance.LeaderID);
+            m_GamePlayer = PluginFramework.Instance.GetGameObject(PluginFramework.Instance.LeaderId);
         } else {
             var pos = m_GamePlayer.transform.position;
             float x = pos.x * m_MapWidth / m_TerrainWidth - m_MapWidth / 2;

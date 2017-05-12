@@ -172,6 +172,35 @@ public class Lua_UnityEngine_ParticleSystem_EmitParams : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_applyShapeToPosition(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.EmitParams self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.applyShapeToPosition);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_applyShapeToPosition(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.EmitParams self;
+			checkValueType(l,1,out self);
+			bool v;
+			checkType(l,2,out v);
+			self.applyShapeToPosition=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_velocity(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.EmitParams self;
@@ -250,6 +279,35 @@ public class Lua_UnityEngine_ParticleSystem_EmitParams : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.startSize=v;
+			setBack(l,self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_startSize3D(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.EmitParams self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.startSize3D);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_startSize3D(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.EmitParams self;
+			checkValueType(l,1,out self);
+			UnityEngine.Vector3 v;
+			checkType(l,2,out v);
+			self.startSize3D=v;
 			setBack(l,self);
 			pushValue(l,true);
 			return 1;
@@ -473,9 +531,11 @@ public class Lua_UnityEngine_ParticleSystem_EmitParams : LuaObject {
 		addMember(l,ResetRandomSeed);
 		addMember(l,ResetStartLifetime);
 		addMember(l,"position",get_position,set_position,true);
+		addMember(l,"applyShapeToPosition",get_applyShapeToPosition,set_applyShapeToPosition,true);
 		addMember(l,"velocity",get_velocity,set_velocity,true);
 		addMember(l,"startLifetime",get_startLifetime,set_startLifetime,true);
 		addMember(l,"startSize",get_startSize,set_startSize,true);
+		addMember(l,"startSize3D",get_startSize3D,set_startSize3D,true);
 		addMember(l,"axisOfRotation",get_axisOfRotation,set_axisOfRotation,true);
 		addMember(l,"rotation",get_rotation,set_rotation,true);
 		addMember(l,"rotation3D",get_rotation3D,set_rotation3D,true);

@@ -17,6 +17,26 @@ public class Lua_UnityEngine_Matrix4x4 : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int SetTRS(IntPtr l) {
+		try {
+			UnityEngine.Matrix4x4 self;
+			checkValueType(l,1,out self);
+			UnityEngine.Vector3 a1;
+			checkType(l,2,out a1);
+			UnityEngine.Quaternion a2;
+			checkType(l,3,out a2);
+			UnityEngine.Vector3 a3;
+			checkType(l,4,out a3);
+			self.SetTRS(a1,a2,a3);
+			pushValue(l,true);
+			setBack(l,self);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int GetColumn(IntPtr l) {
 		try {
 			UnityEngine.Matrix4x4 self;
@@ -133,26 +153,6 @@ public class Lua_UnityEngine_Matrix4x4 : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int SetTRS(IntPtr l) {
-		try {
-			UnityEngine.Matrix4x4 self;
-			checkValueType(l,1,out self);
-			UnityEngine.Vector3 a1;
-			checkType(l,2,out a1);
-			UnityEngine.Quaternion a2;
-			checkType(l,3,out a2);
-			UnityEngine.Vector3 a3;
-			checkType(l,4,out a3);
-			self.SetTRS(a1,a2,a3);
-			pushValue(l,true);
-			setBack(l,self);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int Inverse_s(IntPtr l) {
 		try {
 			UnityEngine.Matrix4x4 a1;
@@ -186,20 +186,6 @@ public class Lua_UnityEngine_Matrix4x4 : LuaObject {
 			UnityEngine.Matrix4x4 a1;
 			checkValueType(l,1,out a1);
 			var ret=UnityEngine.Matrix4x4.Determinant(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Scale_s(IntPtr l) {
-		try {
-			UnityEngine.Vector3 a1;
-			checkType(l,1,out a1);
-			var ret=UnityEngine.Matrix4x4.Scale(a1);
 			pushValue(l,true);
 			pushValue(l,ret);
 			return 2;
@@ -271,6 +257,24 @@ public class Lua_UnityEngine_Matrix4x4 : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int LookAt_s(IntPtr l) {
+		try {
+			UnityEngine.Vector3 a1;
+			checkType(l,1,out a1);
+			UnityEngine.Vector3 a2;
+			checkType(l,2,out a2);
+			UnityEngine.Vector3 a3;
+			checkType(l,3,out a3);
+			var ret=UnityEngine.Matrix4x4.LookAt(a1,a2,a3);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int op_Multiply(IntPtr l) {
 		try {
 			int argc = LuaDLL.lua_gettop(l);
@@ -326,6 +330,34 @@ public class Lua_UnityEngine_Matrix4x4 : LuaObject {
 			UnityEngine.Matrix4x4 a2;
 			checkValueType(l,2,out a2);
 			var ret=(a1!=a2);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int Scale_s(IntPtr l) {
+		try {
+			UnityEngine.Vector3 a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Matrix4x4.Scale(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int Translate_s(IntPtr l) {
+		try {
+			UnityEngine.Vector3 a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Matrix4x4.Translate(a1);
 			pushValue(l,true);
 			pushValue(l,ret);
 			return 2;
@@ -907,6 +939,7 @@ public class Lua_UnityEngine_Matrix4x4 : LuaObject {
 	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Matrix4x4");
+		addMember(l,SetTRS);
 		addMember(l,GetColumn);
 		addMember(l,GetRow);
 		addMember(l,SetColumn);
@@ -914,17 +947,18 @@ public class Lua_UnityEngine_Matrix4x4 : LuaObject {
 		addMember(l,MultiplyPoint);
 		addMember(l,MultiplyPoint3x4);
 		addMember(l,MultiplyVector);
-		addMember(l,SetTRS);
 		addMember(l,Inverse_s);
 		addMember(l,Transpose_s);
 		addMember(l,Determinant_s);
-		addMember(l,Scale_s);
 		addMember(l,TRS_s);
 		addMember(l,Ortho_s);
 		addMember(l,Perspective_s);
+		addMember(l,LookAt_s);
 		addMember(l,op_Multiply);
 		addMember(l,op_Equality);
 		addMember(l,op_Inequality);
+		addMember(l,Scale_s);
+		addMember(l,Translate_s);
 		addMember(l,getItem);
 		addMember(l,setItem);
 		addMember(l,"m00",get_m00,set_m00,true);

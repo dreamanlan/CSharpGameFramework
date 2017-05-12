@@ -51,7 +51,7 @@ namespace GameFramework
             }
             MovementStateInfo msi = obj.GetMovementStateInfo();
             //npc执行移动时忽略阻挡与避让，这些行为由ai模块在规划其路径时执行。
-            if (!obj.IsDead() && obj.CanMove && msi.IsMoving && !msi.IsSkillMoving) {
+            if (!obj.IsDead() && obj.CanMove && msi.IsMoving) {
                 ScriptRuntime.Vector3 pos = msi.GetPosition3D();
                 float speed = (float)obj.ActualProperty.GetFloat(CharacterPropertyEnum.x2011_最终速度);
                 float distance = (speed * (float)(int)deltaTime) / 1000.0f;
@@ -65,15 +65,7 @@ namespace GameFramework
                     y = msi.TargetPosition.Z;
                     ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(x, y);
                     msi.SetPosition2D(newPos);
-
                     msi.IsMoving = false;
-                    Scene scene = obj.SceneContext.CustomData as Scene;
-                    if (null != scene) {
-                        Msg_RC_NpcMove npcMoveBuilder = DataSyncUtility.BuildNpcMoveMessage(obj);
-                        if (null != npcMoveBuilder) {
-                            scene.NotifyAllUser(RoomMessageDefine.Msg_RC_NpcMove, npcMoveBuilder);
-                        }
-                    }
                 } else {
                     ScriptRuntime.Vector3 tpos = pos + dir * distance;
                     msi.SetPosition(tpos);

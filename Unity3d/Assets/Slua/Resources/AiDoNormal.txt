@@ -58,7 +58,7 @@ AiDoNormal = {
 				return false;
 			end,
 			CombatHandler = function(this, npc, info, deltaTime)
-				info.Time = (info.Time + deltaTime);
+				info.Time = invokeintegeroperator(2, "+", info.Time, deltaTime, System.Int64, System.Int64);
 				if (info.Time > 100) then
 					info.Time = 0;
 				else
@@ -110,7 +110,7 @@ AiDoNormal = {
 				return true;
 			end,
 			GohomeHandler = function(this, npc, info, deltaTime)
-				info.Time = (info.Time + deltaTime);
+				info.Time = invokeintegeroperator(2, "+", info.Time, deltaTime, System.Int64, System.Int64);
 				if (info.Time > 100) then
 					info.Time = 0;
 				else

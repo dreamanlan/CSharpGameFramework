@@ -7,101 +7,9 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 	static public int constructor(IntPtr l) {
 		try {
 			UnityEngine.Experimental.Director.AnimatorControllerPlayable o;
-			UnityEngine.RuntimeAnimatorController a1;
-			checkType(l,2,out a1);
-			o=new UnityEngine.Experimental.Director.AnimatorControllerPlayable(a1);
+			o=new UnityEngine.Experimental.Director.AnimatorControllerPlayable();
 			pushValue(l,true);
 			pushValue(l,o);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int AddInput(IntPtr l) {
-		try {
-			UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-			UnityEngine.Experimental.Director.AnimationPlayable a1;
-			checkType(l,2,out a1);
-			var ret=self.AddInput(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int SetInput(IntPtr l) {
-		try {
-			UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-			UnityEngine.Experimental.Director.AnimationPlayable a1;
-			checkType(l,2,out a1);
-			System.Int32 a2;
-			checkType(l,3,out a2);
-			var ret=self.SetInput(a1,a2);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int SetInputs(IntPtr l) {
-		try {
-			UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-			System.Collections.Generic.IEnumerable<UnityEngine.Experimental.Director.AnimationPlayable> a1;
-			checkType(l,2,out a1);
-			var ret=self.SetInputs(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int RemoveInput(IntPtr l) {
-		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,2,typeof(UnityEngine.Experimental.Director.AnimationPlayable))){
-				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-				UnityEngine.Experimental.Director.AnimationPlayable a1;
-				checkType(l,2,out a1);
-				var ret=self.RemoveInput(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(matchType(l,argc,2,typeof(int))){
-				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				var ret=self.RemoveInput(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int RemoveAllInputs(IntPtr l) {
-		try {
-			UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-			var ret=self.RemoveAllInputs();
-			pushValue(l,true);
-			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -489,12 +397,28 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int GetCurrentAnimatorClipInfo(IntPtr l) {
 		try {
-			UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-			System.Int32 a1;
-			checkType(l,2,out a1);
-			var ret=self.GetCurrentAnimatorClipInfo(a1);
-			pushValue(l,true);
-			pushValue(l,ret);
+			int argc = LuaDLL.lua_gettop(l);
+			if(argc==2){
+				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
+				System.Int32 a1;
+				checkType(l,2,out a1);
+				var ret=self.GetCurrentAnimatorClipInfo(a1);
+				pushValue(l,true);
+				pushValue(l,ret);
+				return 2;
+			}
+			else if(argc==3){
+				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
+				System.Int32 a1;
+				checkType(l,2,out a1);
+				System.Collections.Generic.List<UnityEngine.AnimatorClipInfo> a2;
+				checkType(l,3,out a2);
+				self.GetCurrentAnimatorClipInfo(a1,a2);
+				pushValue(l,true);
+				return 1;
+			}
+			pushValue(l,false);
+			LuaDLL.lua_pushstring(l,"No matched override function to call");
 			return 2;
 		}
 		catch(Exception e) {
@@ -504,10 +428,56 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int GetNextAnimatorClipInfo(IntPtr l) {
 		try {
+			int argc = LuaDLL.lua_gettop(l);
+			if(argc==2){
+				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
+				System.Int32 a1;
+				checkType(l,2,out a1);
+				var ret=self.GetNextAnimatorClipInfo(a1);
+				pushValue(l,true);
+				pushValue(l,ret);
+				return 2;
+			}
+			else if(argc==3){
+				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
+				System.Int32 a1;
+				checkType(l,2,out a1);
+				System.Collections.Generic.List<UnityEngine.AnimatorClipInfo> a2;
+				checkType(l,3,out a2);
+				self.GetNextAnimatorClipInfo(a1,a2);
+				pushValue(l,true);
+				return 1;
+			}
+			pushValue(l,false);
+			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int GetCurrentAnimatorClipInfoCount(IntPtr l) {
+		try {
 			UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
 			System.Int32 a1;
 			checkType(l,2,out a1);
-			var ret=self.GetNextAnimatorClipInfo(a1);
+			var ret=self.GetCurrentAnimatorClipInfoCount(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int GetNextAnimatorClipInfoCount(IntPtr l) {
+		try {
+			UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			var ret=self.GetNextAnimatorClipInfoCount(a1);
 			pushValue(l,true);
 			pushValue(l,ret);
 			return 2;
@@ -594,9 +564,9 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 				pushValue(l,true);
 				return 1;
 			}
-			else if(matchType(l,argc,2,typeof(string),typeof(float),typeof(int),typeof(float))){
+			else if(matchType(l,argc,2,typeof(int),typeof(float),typeof(int),typeof(float))){
 				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-				System.String a1;
+				System.Int32 a1;
 				checkType(l,2,out a1);
 				System.Single a2;
 				checkType(l,3,out a2);
@@ -608,9 +578,9 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 				pushValue(l,true);
 				return 1;
 			}
-			else if(matchType(l,argc,2,typeof(int),typeof(float),typeof(int),typeof(float))){
+			else if(matchType(l,argc,2,typeof(string),typeof(float),typeof(int),typeof(float))){
 				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-				System.Int32 a1;
+				System.String a1;
 				checkType(l,2,out a1);
 				System.Single a2;
 				checkType(l,3,out a2);
@@ -678,9 +648,9 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 				pushValue(l,true);
 				return 1;
 			}
-			else if(matchType(l,argc,2,typeof(string),typeof(float),typeof(int),typeof(float))){
+			else if(matchType(l,argc,2,typeof(int),typeof(float),typeof(int),typeof(float))){
 				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-				System.String a1;
+				System.Int32 a1;
 				checkType(l,2,out a1);
 				System.Single a2;
 				checkType(l,3,out a2);
@@ -692,9 +662,9 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 				pushValue(l,true);
 				return 1;
 			}
-			else if(matchType(l,argc,2,typeof(int),typeof(float),typeof(int),typeof(float))){
+			else if(matchType(l,argc,2,typeof(string),typeof(float),typeof(int),typeof(float))){
 				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-				System.Int32 a1;
+				System.String a1;
 				checkType(l,2,out a1);
 				System.Single a2;
 				checkType(l,3,out a2);
@@ -754,9 +724,9 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 				pushValue(l,true);
 				return 1;
 			}
-			else if(matchType(l,argc,2,typeof(string),typeof(int),typeof(float))){
+			else if(matchType(l,argc,2,typeof(int),typeof(int),typeof(float))){
 				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-				System.String a1;
+				System.Int32 a1;
 				checkType(l,2,out a1);
 				System.Int32 a2;
 				checkType(l,3,out a2);
@@ -766,9 +736,9 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 				pushValue(l,true);
 				return 1;
 			}
-			else if(matchType(l,argc,2,typeof(int),typeof(int),typeof(float))){
+			else if(matchType(l,argc,2,typeof(string),typeof(int),typeof(float))){
 				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-				System.Int32 a1;
+				System.String a1;
 				checkType(l,2,out a1);
 				System.Int32 a2;
 				checkType(l,3,out a2);
@@ -826,9 +796,9 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 				pushValue(l,true);
 				return 1;
 			}
-			else if(matchType(l,argc,2,typeof(string),typeof(int),typeof(float))){
+			else if(matchType(l,argc,2,typeof(int),typeof(int),typeof(float))){
 				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-				System.String a1;
+				System.Int32 a1;
 				checkType(l,2,out a1);
 				System.Int32 a2;
 				checkType(l,3,out a2);
@@ -838,9 +808,9 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 				pushValue(l,true);
 				return 1;
 			}
-			else if(matchType(l,argc,2,typeof(int),typeof(int),typeof(float))){
+			else if(matchType(l,argc,2,typeof(string),typeof(int),typeof(float))){
 				UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
-				System.Int32 a1;
+				System.String a1;
 				checkType(l,2,out a1);
 				System.Int32 a2;
 				checkType(l,3,out a2);
@@ -876,12 +846,26 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_animatorController(IntPtr l) {
+	static public int get_handle(IntPtr l) {
 		try {
 			UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.animatorController);
+			pushValue(l,self.handle);
 			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int set_handle(IntPtr l) {
+		try {
+			UnityEngine.Experimental.Director.AnimatorControllerPlayable self=(UnityEngine.Experimental.Director.AnimatorControllerPlayable)checkSelf(l);
+			UnityEngine.Experimental.Director.PlayableHandle v;
+			checkValueType(l,2,out v);
+			self.handle=v;
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
@@ -913,11 +897,6 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 	}
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Experimental.Director.AnimatorControllerPlayable");
-		addMember(l,AddInput);
-		addMember(l,SetInput);
-		addMember(l,SetInputs);
-		addMember(l,RemoveInput);
-		addMember(l,RemoveAllInputs);
 		addMember(l,GetFloat);
 		addMember(l,SetFloat);
 		addMember(l,GetBool);
@@ -936,6 +915,8 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 		addMember(l,GetAnimatorTransitionInfo);
 		addMember(l,GetCurrentAnimatorClipInfo);
 		addMember(l,GetNextAnimatorClipInfo);
+		addMember(l,GetCurrentAnimatorClipInfoCount);
+		addMember(l,GetNextAnimatorClipInfoCount);
 		addMember(l,IsInTransition);
 		addMember(l,GetParameter);
 		addMember(l,CrossFadeInFixedTime);
@@ -943,7 +924,7 @@ public class Lua_UnityEngine_Experimental_Director_AnimatorControllerPlayable : 
 		addMember(l,PlayInFixedTime);
 		addMember(l,Play);
 		addMember(l,HasState);
-		addMember(l,"animatorController",get_animatorController,null,true);
+		addMember(l,"handle",get_handle,set_handle,true);
 		addMember(l,"layerCount",get_layerCount,null,true);
 		addMember(l,"parameterCount",get_parameterCount,null,true);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.Experimental.Director.AnimatorControllerPlayable),typeof(UnityEngine.Experimental.Director.AnimationPlayable));

@@ -10,61 +10,6 @@
 // Generated from: ProtoFiles/RoomMsg.proto
 namespace GameFrameworkMessage
 {
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"EncodePosition")]
-  public partial class EncodePosition : global::ProtoBuf.IExtensible
-  {
-    public EncodePosition() {}
-    
-    private int _x;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"x", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int x
-    {
-      get { return _x; }
-      set { _x = value; }
-    }
-    private int _z;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"z", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int z
-    {
-      get { return _z; }
-      set { _z = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"EncodePosition3D")]
-  public partial class EncodePosition3D : global::ProtoBuf.IExtensible
-  {
-    public EncodePosition3D() {}
-    
-    private int _x;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"x", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int x
-    {
-      get { return _x; }
-      set { _x = value; }
-    }
-    private int _y;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"y", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int y
-    {
-      get { return _y; }
-      set { _y = value; }
-    }
-    private int _z;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"z", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int z
-    {
-      get { return _z; }
-      set { _z = value; }
-    }
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
   [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_CR_DlgClosed")]
   public partial class Msg_CR_DlgClosed : global::ProtoBuf.IExtensible
   {
@@ -86,16 +31,6 @@ namespace GameFrameworkMessage
   public partial class Msg_CR_Enter : global::ProtoBuf.IExtensible
   {
     public Msg_CR_Enter() {}
-    
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_CR_GiveUpBattle")]
-  public partial class Msg_CR_GiveUpBattle : global::ProtoBuf.IExtensible
-  {
-    public Msg_CR_GiveUpBattle() {}
     
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
@@ -132,23 +67,6 @@ namespace GameFrameworkMessage
   {
     public Msg_CR_Observer() {}
     
-    private global::ProtoBuf.IExtension extensionObject;
-    global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
-      { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
-  }
-  
-  [global::System.Serializable, global::ProtoBuf.ProtoContract(Name=@"Msg_CR_OperateMode")]
-  public partial class Msg_CR_OperateMode : global::ProtoBuf.IExtensible
-  {
-    public Msg_CR_OperateMode() {}
-    
-    private bool _isauto;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"isauto", DataFormat = global::ProtoBuf.DataFormat.Default)]
-    public bool isauto
-    {
-      get { return _isauto; }
-      set { _isauto = value; }
-    }
     private global::ProtoBuf.IExtension extensionObject;
     global::ProtoBuf.IExtension global::ProtoBuf.IExtensible.GetExtensionObject(bool createIfMissing)
       { return global::ProtoBuf.Extensible.GetExtensionObject(ref extensionObject, createIfMissing); }
@@ -215,10 +133,10 @@ namespace GameFrameworkMessage
       get { return _target_id; }
       set { _target_id = value; }
     }
-    private int _target_dir = default(int);
-    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"target_dir", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(int))]
-    public int target_dir
+    private float _target_dir = default(float);
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"target_dir", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    [global::System.ComponentModel.DefaultValue(default(float))]
+    public float target_dir
     {
       get { return _target_dir; }
       set { _target_dir = value; }
@@ -260,9 +178,9 @@ namespace GameFrameworkMessage
   {
     public Msg_CR_UserMoveToPos() {}
     
-    private ulong _target_pos;
-    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"target_pos", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public ulong target_pos
+    private GameFrameworkMessage.Position _target_pos;
+    [global::ProtoBuf.ProtoMember(1, IsRequired = true, Name=@"target_pos", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public GameFrameworkMessage.Position target_pos
     {
       get { return _target_pos; }
       set { _target_pos = value; }
@@ -450,23 +368,23 @@ namespace GameFrameworkMessage
       get { return _role_id; }
       set { _role_id = value; }
     }
-    private int _x;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"x", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int x
+    private float _x;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"x", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float x
     {
       get { return _x; }
       set { _x = value; }
     }
-    private int _z;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"z", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int z
+    private float _z;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"z", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float z
     {
       get { return _z; }
       set { _z = value; }
     }
-    private int _face_dir;
-    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"face_dir", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int face_dir
+    private float _face_dir;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"face_dir", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float face_dir
     {
       get { return _face_dir; }
       set { _face_dir = value; }
@@ -812,9 +730,9 @@ namespace GameFrameworkMessage
       get { return _npc_id; }
       set { _npc_id = value; }
     }
-    private int _face_direction;
-    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"face_direction", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int face_direction
+    private float _face_direction;
+    [global::ProtoBuf.ProtoMember(2, IsRequired = true, Name=@"face_direction", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float face_direction
     {
       get { return _face_direction; }
       set { _face_direction = value; }
@@ -836,26 +754,26 @@ namespace GameFrameworkMessage
       get { return _npc_id; }
       set { _npc_id = value; }
     }
-    private int _velocity = default(int);
-    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"velocity", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(int))]
-    public int velocity
+    private float _velocity = default(float);
+    [global::ProtoBuf.ProtoMember(2, IsRequired = false, Name=@"velocity", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    [global::System.ComponentModel.DefaultValue(default(float))]
+    public float velocity
     {
       get { return _velocity; }
       set { _velocity = value; }
     }
-    private ulong _cur_pos = default(ulong);
-    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"cur_pos", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(ulong))]
-    public ulong cur_pos
+    private GameFrameworkMessage.Position _cur_pos = null;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = false, Name=@"cur_pos", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public GameFrameworkMessage.Position cur_pos
     {
       get { return _cur_pos; }
       set { _cur_pos = value; }
     }
-    private ulong _target_pos = default(ulong);
-    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"target_pos", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    [global::System.ComponentModel.DefaultValue(default(ulong))]
-    public ulong target_pos
+    private GameFrameworkMessage.Position _target_pos = null;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = false, Name=@"target_pos", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    [global::System.ComponentModel.DefaultValue(null)]
+    public GameFrameworkMessage.Position target_pos
     {
       get { return _target_pos; }
       set { _target_pos = value; }
@@ -884,16 +802,16 @@ namespace GameFrameworkMessage
       get { return _skill_id; }
       set { _skill_id = value; }
     }
-    private ulong _stand_pos;
-    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"stand_pos", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public ulong stand_pos
+    private GameFrameworkMessage.Position _stand_pos;
+    [global::ProtoBuf.ProtoMember(3, IsRequired = true, Name=@"stand_pos", DataFormat = global::ProtoBuf.DataFormat.Default)]
+    public GameFrameworkMessage.Position stand_pos
     {
       get { return _stand_pos; }
       set { _stand_pos = value; }
     }
-    private int _face_direction;
-    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"face_direction", DataFormat = global::ProtoBuf.DataFormat.TwosComplement)]
-    public int face_direction
+    private float _face_direction;
+    [global::ProtoBuf.ProtoMember(4, IsRequired = true, Name=@"face_direction", DataFormat = global::ProtoBuf.DataFormat.FixedSize)]
+    public float face_direction
     {
       get { return _face_direction; }
       set { _face_direction = value; }

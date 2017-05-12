@@ -228,6 +228,11 @@ namespace GameFramework
             if (user == null) {
                 return;
             }
+            Msg_RL_UserQuit quitBuilder = new Msg_RL_UserQuit();
+            quitBuilder.UserGuid = user.Guid;
+            quitBuilder.RoomId = RoomId;
+            m_Connector.SendMsgToLobby(quitBuilder);
+
             foreach (User otheruser in m_RoomUsers) {
                 if (null != otheruser && otheruser != user) {
                     otheruser.RemoveSameRoomUser(user);
@@ -238,6 +243,7 @@ namespace GameFramework
                 Scene scene = m_ActiveScene;
                 scene.LeaveScene(user);
             }
+
             LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [Room.RemoveUser]", user.LocalID, user.Guid, user.GetKey());
             m_RoomUsers.Remove(user);
             if (free) {

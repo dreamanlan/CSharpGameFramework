@@ -8,6 +8,7 @@ public class Lua_UnityEngine_CameraType : LuaObject {
 		addMember(l,1,"Game");
 		addMember(l,2,"SceneView");
 		addMember(l,4,"Preview");
+		addMember(l,8,"VR");
 		LuaDLL.lua_pop(l, 1);
 	}
 }

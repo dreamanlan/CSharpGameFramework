@@ -42,7 +42,7 @@ AiChase = {
 					local info; info = npc:GetAiStateInfo();
 					local target; target = GameFramework.PluginFramework.Instance:GetEntityById(info.Target);
 					if ((nil ~= target) and (nil ~= this.m_SkillInfo)) then
-						info.Time = (info.Time + delta);
+						info.Time = invokeintegeroperator(2, "+", info.Time, delta, System.Int64, System.Int64);
 						if (info.Time > 100) then
 							info.Time = 0;
 						else

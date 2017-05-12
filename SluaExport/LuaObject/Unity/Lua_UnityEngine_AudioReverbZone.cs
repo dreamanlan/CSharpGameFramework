@@ -381,32 +381,6 @@ public class Lua_UnityEngine_AudioReverbZone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_roomRolloffFactor(IntPtr l) {
-		try {
-			UnityEngine.AudioReverbZone self=(UnityEngine.AudioReverbZone)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.roomRolloffFactor);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_roomRolloffFactor(IntPtr l) {
-		try {
-			UnityEngine.AudioReverbZone self=(UnityEngine.AudioReverbZone)checkSelf(l);
-			float v;
-			checkType(l,2,out v);
-			self.roomRolloffFactor=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_diffusion(IntPtr l) {
 		try {
 			UnityEngine.AudioReverbZone self=(UnityEngine.AudioReverbZone)checkSelf(l);
@@ -474,7 +448,6 @@ public class Lua_UnityEngine_AudioReverbZone : LuaObject {
 		addMember(l,"reverbDelay",get_reverbDelay,set_reverbDelay,true);
 		addMember(l,"HFReference",get_HFReference,set_HFReference,true);
 		addMember(l,"LFReference",get_LFReference,set_LFReference,true);
-		addMember(l,"roomRolloffFactor",get_roomRolloffFactor,set_roomRolloffFactor,true);
 		addMember(l,"diffusion",get_diffusion,set_diffusion,true);
 		addMember(l,"density",get_density,set_density,true);
 		createTypeMetatable(l,constructor, typeof(UnityEngine.AudioReverbZone),typeof(UnityEngine.Behaviour));

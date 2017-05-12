@@ -56,13 +56,13 @@ namespace GameFramework
             pos_bd.z = (float)pos.Z;
             bder.cur_pos = pos_bd;
             bder.face_direction = (float)npc.GetMovementStateInfo().GetFaceDir();
-            bder.link_id = npc.GetLinkId();
+            bder.link_id = npc.GetTableId();
             bder.camp_id = npc.GetCampId();
             if (npc.OwnerId > 0) {
                 bder.owner_id = npc.OwnerId;
             }
-            if (npc.GetAiStateInfo().LeaderID > 0) {
-                bder.leader_id = npc.GetAiStateInfo().LeaderID;
+            if (npc.GetAiStateInfo().LeaderId > 0) {
+                bder.leader_id = npc.GetAiStateInfo().LeaderId;
             }
             User user = npc.CustomData as User;
             if (null != user) {
@@ -106,13 +106,13 @@ namespace GameFramework
             Msg_RC_NpcMove npcMoveBuilder = new Msg_RC_NpcMove();
             if (npc.GetMovementStateInfo().IsMoving) {
                 npcMoveBuilder.npc_id = npc.GetId();
-                npcMoveBuilder.velocity = ProtoHelper.EncodeFloat(npc.ActualProperty.GetFloat(CharacterPropertyEnum.x2011_最终速度));
+                npcMoveBuilder.velocity = npc.ActualProperty.GetFloat(CharacterPropertyEnum.x2011_最终速度);
                 ScriptRuntime.Vector3 targetPos = npc.GetMovementStateInfo().TargetPosition;
-                npcMoveBuilder.target_pos = ProtoHelper.EncodePosition2D(targetPos.X, targetPos.Z);
-                npcMoveBuilder.cur_pos = ProtoHelper.EncodePosition2D(srcPos.X, srcPos.Z);
+                npcMoveBuilder.target_pos = ToPosition(targetPos.X, targetPos.Z);
+                npcMoveBuilder.cur_pos = ToPosition(srcPos.X, srcPos.Z);
             } else {
                 npcMoveBuilder.npc_id = npc.GetId();
-                npcMoveBuilder.cur_pos = ProtoHelper.EncodePosition2D(srcPos.X, srcPos.Z);
+                npcMoveBuilder.cur_pos = ToPosition(srcPos.X, srcPos.Z);
             }
             return npcMoveBuilder;
         }
@@ -121,7 +121,7 @@ namespace GameFramework
         {
             Msg_RC_NpcFace npcFaceBuilder = new Msg_RC_NpcFace();
             npcFaceBuilder.npc_id = npc.GetId();
-            npcFaceBuilder.face_direction = ProtoHelper.EncodeFloat(npc.GetMovementStateInfo().GetFaceDir());
+            npcFaceBuilder.face_direction = npc.GetMovementStateInfo().GetFaceDir();
             return npcFaceBuilder;
         }
 
@@ -133,8 +133,8 @@ namespace GameFramework
             Msg_RC_NpcSkill msg = new Msg_RC_NpcSkill();
             msg.npc_id = obj.GetId();
             msg.skill_id = skillId;
-            msg.stand_pos = ProtoHelper.EncodePosition2D(pos.X, pos.Z);
-            msg.face_direction = ProtoHelper.EncodeFloat(msi.GetFaceDir());
+            msg.stand_pos = ToPosition(pos.X, pos.Z);
+            msg.face_direction = msi.GetFaceDir();
             msg.target_id = obj.GetAiStateInfo().Target;
 
             return msg;
@@ -146,6 +146,11 @@ namespace GameFramework
             msg.npc_id = obj.GetId();
 
             return msg;
+        }
+
+        public static Position ToPosition(float x, float z)
+        {
+            return new Position { x = x, z = z };
         }
     }
 }

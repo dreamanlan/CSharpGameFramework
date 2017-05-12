@@ -7,10 +7,6 @@ namespace GameFramework
 {
   public class BlackBoard
   {
-    public TypedDataCollection BlackBoardDatas
-    {
-      get { return m_BlackBoardDatas; }
-    }
     public void ClearVariables()
     {
         m_BlackBoardVariables.Clear();
@@ -27,18 +23,7 @@ namespace GameFramework
     {
         return m_BlackBoardVariables.TryGetValue(key, out val);
     }
-    public void Reset()
-    {
-      m_BlackBoardDatas.Clear();
-    }
-    public bool IsGameOver
-    {
-        get { return m_IsGameOver; }
-        set { m_IsGameOver = value; }
-    }
 
-    private bool m_IsGameOver = false;
-    private TypedDataCollection m_BlackBoardDatas = new TypedDataCollection();
     private Dictionary<string, object> m_BlackBoardVariables = new Dictionary<string, object>();
   }
 }

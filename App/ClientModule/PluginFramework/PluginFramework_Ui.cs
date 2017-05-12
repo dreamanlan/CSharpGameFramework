@@ -13,7 +13,7 @@ namespace GameFramework
     {
         public bool IsLocalSkillEffect(GfxSkillSenderInfo info)
         {
-            if (info.ActorId == m_leaderID || info.TargetActorId == m_leaderID) {
+            if (info.ActorId == m_LeaderId || info.TargetActorId == m_LeaderId) {
                 return true;
             }
             EntityInfo sender = GetEntityById(info.ActorId);
@@ -149,7 +149,7 @@ namespace GameFramework
             EntityInfo target = GetEntityById(targetId);
             if (null != target) {
                 m_SelectedTarget = new LockTargetInfo { Target = target, TargetId = targetId };
-                EntityInfo leader = GetEntityById(LeaderID);
+                EntityInfo leader = GetEntityById(LeaderId);
                 if (null != leader) {
                     AiStateInfo aiInfo = leader.GetAiStateInfo();
                     if (null != SelectedTarget) {
@@ -162,7 +162,7 @@ namespace GameFramework
         }
         public void MoveTo(float x, float y, float z)
         {
-            if (IsStoryScene || IsActivityScene) {
+            if (!IsBattleState) {
                 Network.NetworkSystem.Instance.SyncPlayerMoveToPos(new ScriptRuntime.Vector3(x, y, z));
             } else {
                 GfxStorySystem.Instance.SendMessage("move_to", x, y, z);
@@ -201,7 +201,7 @@ namespace GameFramework
                         if (null != SelectedTarget) {
                             targetId = SelectedTarget.TargetId;
                         }
-                        if (IsStoryScene || IsActivityScene) {
+                        if (!IsBattleState) {
                             Network.NetworkSystem.Instance.SyncPlayerSkill(obj, skillId, targetId, obj.GetMovementStateInfo().GetFaceDir());
                         } else {
                             AiStateInfo aiInfo = obj.GetAiStateInfo();

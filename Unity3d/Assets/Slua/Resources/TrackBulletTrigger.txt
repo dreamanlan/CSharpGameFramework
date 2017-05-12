@@ -90,7 +90,7 @@ TrackBulletTrigger = {
 									this.m_Lifetime = (( (dest - this.m_StartPos) ).magnitude / this.m_Speed);
 								end;
 							end;
-							local newSectionDuration; newSectionDuration = (this.m_TriggerProxy.StartTime + typecast(( (this.m_Lifetime * 1000) ), System.Int64, false));
+							local newSectionDuration; newSectionDuration = invokeintegeroperator(2, "+", this.m_TriggerProxy.StartTime, typecast(( (this.m_Lifetime * 1000) ), System.Int64, false), System.Int64, System.Int64);
 							if (instance.CurSectionDuration < newSectionDuration) then
 								instance:SetCurSectionDuration(newSectionDuration);
 							end;
@@ -141,7 +141,7 @@ TrackBulletTrigger = {
 								end;
 								dest = GameFramework.Utility.FrontOfTarget(this.m_StartPos, dest, 0.1);
 --m_Effect.transform.position = Vector3.MoveTowards(m_Effect.transform.position, dest, m_RealSpeed * Time.deltaTime);
-								this.m_Effect.transform.position = GameFramework.Utility.GetBezierPoint(this.m_StartPos, this.m_ControlPos, dest, ((( (curSectionTime - this.m_TriggerProxy.StartTime) ) / 1000) / this.m_Lifetime));
+								this.m_Effect.transform.position = GameFramework.Utility.GetBezierPoint(this.m_StartPos, this.m_ControlPos, dest, ((( invokeintegeroperator(3, "-", curSectionTime, this.m_TriggerProxy.StartTime, System.Int64, System.Int64) ) / 1000) / this.m_Lifetime));
 								local pos; pos = this.m_Effect.transform.position;
 								if this:CheckCollide(senderObj, instance, obj) then
 									return true;
@@ -254,7 +254,7 @@ TrackBulletTrigger = {
 						effectObj.transform.parent = nil;
 						local em; em = instance.CustomDatas:GetData(GameFramework.Skill.Trigers.EffectManager);
 						if (em == nil) then
-							em = newexternobject(GameFramework.Skill.Trigers.EffectManager, "GameFramework.Skill.Trigers.EffectManager", "ctor", nil, {});
+							em = newexternobject(GameFramework.Skill.Trigers.EffectManager, "GameFramework.Skill.Trigers.EffectManager", "ctor", {});
 							instance.CustomDatas:AddData(GameFramework.Skill.Trigers.EffectManager, em);
 						end;
 						em:AddEffect(effectObj);
@@ -277,28 +277,38 @@ TrackBulletTrigger = {
 				return false;
 			end,
 			ctor = function(this)
+				this:__ctor();
+			end,
+			__ctor = function(this)
+				if this.__ctor_called then
+					return;
+				else
+					this.__ctor_called = true;
+				end
+				this.m_HitEffectRotation = newexternobject(UnityEngine.Quaternion, "UnityEngine.Quaternion", nil, {});
 			end,
 		};
 
 		local instance_fields_build = function()
 			local instance_fields = {
-				m_TrackBone = newexternobject(SkillSystem.SkillStringParam, "SkillSystem.SkillStringParam", "ctor", nil, {}),
+				m_TrackBone = newexternobject(SkillSystem.SkillStringParam, "SkillSystem.SkillStringParam", "ctor", {}),
 				m_NoImpact = false,
-				m_Duration = newexternobject(SkillSystem.SkillLongParam, "SkillSystem.SkillLongParam", "ctor", nil, {}),
+				m_Duration = newexternobject(SkillSystem.SkillLongParam, "SkillSystem.SkillLongParam", "ctor", {}),
 				m_NotMove = false,
-				m_EffectPath = newexternobject(SkillSystem.SkillResourceParam, "SkillSystem.SkillResourceParam", "ctor", nil, {}),
-				m_DeleteTime = newexternobject(SkillSystem.SkillLongParam, "SkillSystem.SkillLongParam", "ctor", nil, {}),
+				m_EffectPath = newexternobject(SkillSystem.SkillResourceParam, "SkillSystem.SkillResourceParam", "ctor", {}),
+				m_DeleteTime = newexternobject(SkillSystem.SkillLongParam, "SkillSystem.SkillLongParam", "ctor", {}),
 				m_StartPos = UnityEngine.Vector3.zero,
 				m_ControlPos = UnityEngine.Vector3.zero,
 				m_Speed = 10,
 				m_Lifetime = 1,
 				m_IsStarted = false,
-				m_HitEffectRotation = 0,
+				m_HitEffectRotation = __cs2lua_nil_field_value,
 				m_Effect = __cs2lua_nil_field_value,
 				m_BoneTransform = __cs2lua_nil_field_value,
 				m_IsHit = false,
 				m_TriggerProxy = __cs2lua_nil_field_value,
 				__attributes = TrackBulletTrigger__Attrs,
+				__ctor_called = false,
 			};
 			return instance_fields;
 		end;

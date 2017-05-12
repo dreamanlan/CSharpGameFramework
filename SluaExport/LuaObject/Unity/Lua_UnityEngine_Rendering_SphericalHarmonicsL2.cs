@@ -67,6 +67,24 @@ public class Lua_UnityEngine_Rendering_SphericalHarmonicsL2 : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int Evaluate(IntPtr l) {
+		try {
+			UnityEngine.Rendering.SphericalHarmonicsL2 self;
+			checkValueType(l,1,out self);
+			UnityEngine.Vector3[] a1;
+			checkArray(l,2,out a1);
+			UnityEngine.Color[] a2;
+			checkArray(l,3,out a2);
+			self.Evaluate(a1,a2);
+			pushValue(l,true);
+			setBack(l,self);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int op_Multiply(IntPtr l) {
 		try {
 			int argc = LuaDLL.lua_gettop(l);
@@ -151,6 +169,7 @@ public class Lua_UnityEngine_Rendering_SphericalHarmonicsL2 : LuaObject {
 		addMember(l,Clear);
 		addMember(l,AddAmbientLight);
 		addMember(l,AddDirectionalLight);
+		addMember(l,Evaluate);
 		addMember(l,op_Multiply);
 		addMember(l,op_Addition);
 		addMember(l,op_Equality);

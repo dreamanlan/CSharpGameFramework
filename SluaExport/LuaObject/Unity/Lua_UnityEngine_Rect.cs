@@ -237,6 +237,17 @@ public class Lua_UnityEngine_Rect : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static public int get_zero(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.Rect.zero);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int get_x(IntPtr l) {
 		try {
 			UnityEngine.Rect self;
@@ -623,6 +634,7 @@ public class Lua_UnityEngine_Rect : LuaObject {
 		addMember(l,PointToNormalized_s);
 		addMember(l,op_Inequality);
 		addMember(l,op_Equality);
+		addMember(l,"zero",get_zero,null,false);
 		addMember(l,"x",get_x,set_x,true);
 		addMember(l,"y",get_y,set_y,true);
 		addMember(l,"position",get_position,set_position,true);

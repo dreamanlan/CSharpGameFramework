@@ -20,11 +20,7 @@ namespace GameFramework
         internal void SaveCreateUser(AccountInfo ai, string nickname, ulong userGuid)
         {
             try {
-                TableAccount dataAccount = new TableAccount();
-                dataAccount.AccountId = ai.AccountId;
-                dataAccount.Password = ai.Password;
-                dataAccount.IsBanned = false;
-                dataAccount.UserGuid = ai.UserGuid;
+                TableAccount dataAccount = ai.ToProto();
                 Msg_LD_Save msg = new Msg_LD_Save();
                 msg.MsgId = (int)DataEnum.TableAccount;
                 msg.PrimaryKeys.Add(dataAccount.AccountId);

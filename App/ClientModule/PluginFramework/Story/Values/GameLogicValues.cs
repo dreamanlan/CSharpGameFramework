@@ -76,6 +76,157 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
+	    internal sealed class OffsetSplineValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "offsetspline" && callData.GetParamNum() == 2) {
+                m_Spline.InitFromDsl(callData.GetParam(0));
+                m_Offset.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            OffsetSplineValue val = new OffsetSplineValue();
+            val.m_Spline = m_Spline.Clone();
+            val.m_Offset = m_Offset.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            {
+                m_Spline.Evaluate(instance, iterator, args);
+                m_Offset.Evaluate(instance, iterator, args);
+            }
+
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_Spline.HaveValue && m_Offset.HaveValue) {
+                var list = m_Spline.Value as IList<object>;
+                Vector3 offset = m_Offset.Value;
+                m_HaveValue = true;
+                if (null != list) {
+                    List<object> npts = new List<object>();
+                    int ct = list.Count;
+                    float dir = 0;
+                    Vector3 curPt = Vector3.Zero;
+                    for (int i = 0; i < ct; ++i) {
+                        if (i == 0) {
+                            curPt = (Vector3)list[i];
+                        }
+                        Vector3 pt = Vector3.Zero;
+                        if (i + 1 < ct) {
+                            pt = (Vector3)list[i + 1];
+                            dir = Geometry.GetYRadian(curPt, pt);
+                        }
+                        npts.Add(curPt + Geometry.GetRotate(offset, dir));
+                        curPt = pt;
+                    }
+                    m_Value = npts;
+                } else {
+                    m_Value = null;
+                }
+            }
+        }
+        private IStoryValue<List<object>> m_Spline = new StoryValue<List<object>>();
+        private IStoryValue<Vector3> m_Offset = new StoryValue<Vector3>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class OffsetVector3Value : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "offsetvector3" && (callData.GetParamNum() == 2 || callData.GetParamNum() == 3)) {
+                m_ParamNum = callData.GetParamNum();
+                m_Pt.InitFromDsl(callData.GetParam(0));
+                if (m_ParamNum == 3) {
+                    m_Pt2.InitFromDsl(callData.GetParam(1));
+                    m_Offset.InitFromDsl(callData.GetParam(2));
+                } else {
+                    m_Offset.InitFromDsl(callData.GetParam(1));
+                }
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            OffsetVector3Value val = new OffsetVector3Value();
+            val.m_ParamNum = m_ParamNum;
+            val.m_Pt = m_Pt.Clone();
+            val.m_Pt2 = m_Pt2.Clone();
+            val.m_Offset = m_Offset.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_Pt.Evaluate(instance, iterator, args);
+            m_Pt2.Evaluate(instance, iterator, args);
+            m_Offset.Evaluate(instance, iterator, args);
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue()
+        {
+            if (m_Pt.HaveValue) {
+                m_HaveValue = true;
+                Vector3 offset = m_Offset.Value;                
+                Vector3 pt = m_Pt.Value;
+                if (m_ParamNum == 3) {
+                    Vector3 pt2 = m_Pt2.Value;
+                    float dir = Geometry.GetYRadian(pt, pt2);
+                    m_Value = pt + Geometry.GetRotate(offset, dir);
+                } else {
+                    m_Value = pt + offset;
+                }
+            }
+        }
+
+        private int m_ParamNum = 0;
+        private IStoryValue<Vector3> m_Pt = new StoryValue<Vector3>();
+        private IStoryValue<Vector3> m_Pt2 = new StoryValue<Vector3>();
+        private IStoryValue<Vector3> m_Offset = new StoryValue<Vector3>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
     internal sealed class GetDialogItemValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
@@ -332,70 +483,6 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class GetLeaderIdValue : IStoryValue<object>
-    {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
-        {
-            Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getleaderid") {
-                m_ParamNum = callData.GetParamNum();
-                if (m_ParamNum > 0) {
-                    m_ObjId.InitFromDsl(callData.GetParam(0));
-                }
-            }
-        }
-        public IStoryValue<object> Clone()
-        {
-            GetLeaderIdValue val = new GetLeaderIdValue();
-            val.m_ParamNum = m_ParamNum;
-            val.m_ObjId = m_ObjId.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
-        {
-            m_HaveValue = false;
-            if (m_ParamNum > 0)
-                m_ObjId.Evaluate(instance, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public object Value
-        {
-            get
-            {
-                return m_Value;
-            }
-        }
-
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            m_HaveValue = true;
-            if (m_ParamNum > 0) {
-                int objId = m_ObjId.Value;
-                EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
-                if(null!=npc){
-                    m_Value = npc.GetAiStateInfo().LeaderID;
-                } else {
-                    m_Value = 0;
-                }
-            } else {
-                m_Value = PluginFramework.Instance.LeaderID;
-            }
-        }
-
-        private int m_ParamNum = 0;
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
-        private bool m_HaveValue;
-        private object m_Value;
-    }
     internal sealed class GetActorValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
@@ -451,17 +538,169 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class GetLeaderLinkIdValue : IStoryValue<object>
+    internal sealed class GetPlayerIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getleaderlinkid") {
+            if (null != callData && callData.GetId() == "getplayerid") {
             }
         }
         public IStoryValue<object> Clone()
         {
-            GetLeaderLinkIdValue val = new GetLeaderLinkIdValue();
+            GetPlayerIdValue val = new GetPlayerIdValue();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            m_HaveValue = true;
+            m_Value = PluginFramework.Instance.RoomObjId;
+        }
+
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class GetPlayerUnitIdValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getplayerunitid") {
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetPlayerUnitIdValue val = new GetPlayerUnitIdValue();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            m_HaveValue = true;
+            m_Value = PluginFramework.Instance.RoomUnitId;
+        }
+
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class GetLeaderIdValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getleaderid") {
+                m_ParamNum = callData.GetParamNum();
+                if (m_ParamNum > 0) {
+                    m_ObjId.InitFromDsl(callData.GetParam(0));
+                }
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetLeaderIdValue val = new GetLeaderIdValue();
+            val.m_ParamNum = m_ParamNum;
+            val.m_ObjId = m_ObjId.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            if (m_ParamNum > 0)
+                m_ObjId.Evaluate(instance, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            m_HaveValue = true;
+            if (m_ParamNum > 0) {
+                int objId = m_ObjId.Value;
+                EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
+                if(null!=npc){
+                    m_Value = npc.GetAiStateInfo().LeaderId;
+                } else {
+                    m_Value = 0;
+                }
+            } else {
+                m_Value = PluginFramework.Instance.LeaderId;
+            }
+        }
+
+        private int m_ParamNum = 0;
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class GetLeaderTableIdValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getleadertableid") {
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetLeaderTableIdValue val = new GetLeaderTableIdValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -584,12 +823,56 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class GetMemberLinkIdValue : IStoryValue<object>
+    internal sealed class GetSceneIdValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getmemberlinkid") {
+            if (null != callData && callData.GetId() == "getsceneid") {
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            GetSceneIdValue val = new GetSceneIdValue();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            m_HaveValue = true;
+            m_Value = GfxStorySystem.Instance.SceneId;
+        }
+
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class GetMemberTableIdValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "getmembertableid") {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_Index.InitFromDsl(callData.GetParam(0));
@@ -598,7 +881,7 @@ namespace GameFramework.Story.Values
         }
         public IStoryValue<object> Clone()
         {
-            GetMemberLinkIdValue val = new GetMemberLinkIdValue();
+            GetMemberTableIdValue val = new GetMemberTableIdValue();
             val.m_Index = m_Index.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;

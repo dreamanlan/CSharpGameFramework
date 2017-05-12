@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace GameFramework
 {
@@ -40,7 +41,6 @@ namespace GameFramework
                         m_Agent.radius = entity.GetRadius();
                         m_Agent.speed = entity.ActualProperty.GetFloat(CharacterPropertyEnum.x2011_最终速度);
                         m_Agent.obstacleAvoidanceType = ObstacleAvoidanceType.NoObstacleAvoidance;
-                        m_Agent.ResetPath();
                     }
                     m_Animator = Actor.GetComponentInChildren<Animator>();
                     EntityDrawGizmos gizmos = Actor.GetComponent<EntityDrawGizmos>();
@@ -51,6 +51,13 @@ namespace GameFramework
                         gizmos.npcInfo = m_Entity;
                     }
                     SetMoveAgentEnable(true);
+                    try{
+                        if (null != m_Agent) {
+                            m_Agent.ResetPath();
+                        }
+                    } catch {
+                        m_Agent.enabled = true;
+                    }
                 }
             }
         }
@@ -75,7 +82,6 @@ namespace GameFramework
                 msi.SetPosition(v3.x, v3.y, v3.z);
                 float dir = Utility.DegreeToRadian(Actor.transform.localEulerAngles.y);
                 msi.SetFaceDir(dir);
-                msi.SetMoveDir(dir);
 
                 if (msi.IsMoving) {
                     Vector3 tpos = new Vector3(msi.TargetPosition.X, msi.TargetPosition.Y, msi.TargetPosition.Z);
@@ -119,8 +125,8 @@ namespace GameFramework
                         m_LastSyncTime = curTime;
                         if (m_Entity.IsServerEntity) {
                             Transform t = m_Actor.transform;
-                            ScriptRuntime.Vector3 dir = msi.GetMoveDir3D();
-                            Vector3 pos = t.position + new Vector3(dir.X, 0, dir.Z) * 8.0f * c_SyncInterval;
+                            Vector3 pos = t.TransformPoint(0, 0, m_Entity.Speed * c_SyncInterval);
+                            Network.NetworkSystem.Instance.SyncPlayerMoveToPos(new ScriptRuntime.Vector3(pos.x, pos.y, pos.z));
                         }
                     }
 
@@ -128,7 +134,7 @@ namespace GameFramework
                         Utility.EventSystem.Publish("ui_actor_name", "ui", m_Entity.GetId(), string.Format("{0}({1}):c({2},{3})", m_Entity.GetName(), m_Entity.GetId(), msi.PositionX, msi.PositionZ));
                     }
 
-                    if (m_Entity.GetId() != PluginFramework.Instance.LeaderID) {
+                    if (m_Entity.GetId() != PluginFramework.Instance.LeaderId) {
                         if (Geometry.DistanceSquare(msi.GetPosition3D(), msi.TargetPosition) > 0.625f) {
                             MoveTo(msi.TargetPosition.X, msi.TargetPosition.Y, msi.TargetPosition.Z);
                         } else {
@@ -190,11 +196,15 @@ namespace GameFramework
             msi.IsMoving = true;
             msi.TargetPosition = new ScriptRuntime.Vector3(x, y, z);
             if (null != Agent && Agent.enabled) {
-                Agent.SetDestination(new Vector3(x, y, z));
-                Agent.Resume();
+                try {
+                    Agent.SetDestination(new Vector3(x, y, z));
+                    Agent.isStopped = false;
+                } catch {
+                    m_Agent.enabled = true;
+                }
             }
             if (null != Animator) {
-                if (ObjId == PluginFramework.Instance.LeaderID) {
+                if (ObjId == PluginFramework.Instance.LeaderId) {
                     //Animator.CrossFade(c_MoveAnim, c_CrossFadeTime);
                     Animator.Play(c_MoveAnim);
                 } else {
@@ -208,10 +218,14 @@ namespace GameFramework
             MovementStateInfo msi = m_Entity.GetMovementStateInfo();
             msi.IsMoving = false;
             if (null != Agent && Agent.enabled) {
-                Agent.Stop();
+                try {
+                    m_Agent.isStopped = true;
+                } catch {
+                    m_Agent.enabled = true;
+                }
             }
             if (null != Animator) {
-                if (ObjId == PluginFramework.Instance.LeaderID) {
+                if (ObjId == PluginFramework.Instance.LeaderId) {
                     //Animator.CrossFade(c_StandAnim, c_CrossFadeTime);
                     Animator.Play(c_StandAnim);
                 } else {
@@ -223,7 +237,7 @@ namespace GameFramework
         public void PlayAnimation(string anim)
         {
             if (null != Animator) {
-                if (ObjId == PluginFramework.Instance.LeaderID) {
+                if (ObjId == PluginFramework.Instance.LeaderId) {
                     //Animator.CrossFade(anim, c_CrossFadeTime);
                     Animator.Play(anim);
                 } else {
