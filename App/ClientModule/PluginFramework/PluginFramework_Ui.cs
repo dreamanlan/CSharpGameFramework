@@ -13,14 +13,14 @@ namespace GameFramework
     {
         public bool IsLocalSkillEffect(GfxSkillSenderInfo info)
         {
-            if (info.ActorId == m_LeaderId || info.TargetActorId == m_LeaderId) {
+            if (info.ObjId == m_LeaderId || info.TargetObjId == m_LeaderId) {
                 return true;
             }
-            EntityInfo sender = GetEntityById(info.ActorId);
+            EntityInfo sender = GetEntityById(info.ObjId);
             if (null != sender && !sender.IsServerEntity) {
                 return true;
             }
-            EntityInfo target = GetEntityById(info.TargetActorId);
+            EntityInfo target = GetEntityById(info.TargetObjId);
             if (null != target && !target.IsServerEntity) {
                 return true;
             }

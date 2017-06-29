@@ -245,6 +245,156 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
+    internal sealed class IsVisibleValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "isvisible") {
+                int num = callData.GetParamNum();
+                if (num > 0) {
+                    m_ObjPath.InitFromDsl(callData.GetParam(0));
+                }
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            IsVisibleValue val = new IsVisibleValue();
+            val.m_ObjPath = m_ObjPath.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_ObjPath.Evaluate(instance, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjPath.HaveValue) {
+                m_HaveValue = true;
+                object o = m_ObjPath.Value;
+                string objPath = o as string;
+                var uobj = o as UnityEngine.GameObject;
+                if (null != uobj) {
+                    if (null != objPath) {
+                        uobj = UnityEngine.GameObject.Find(objPath);
+                    } else {
+                        try {
+                            int objId = (int)o;
+                            uobj = PluginFramework.Instance.GetGameObject(objId);
+                        } catch {
+                            uobj = null;
+                        }
+                    }
+                }
+                if (null != uobj) {
+                    var renderer = uobj.GetComponent<UnityEngine.Renderer>();
+                    if (null != renderer) {
+                        m_Value = renderer.isVisible ? 1 : 0;
+                    } else {
+                        m_Value = 0;
+                    }
+                } else {
+                    m_Value = 0;
+                }
+            }
+        }
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class IsNavmeshAgentEnabledValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "isnavmeshagentenabled") {
+                int num = callData.GetParamNum();
+                if (num > 0) {
+                    m_ObjPath.InitFromDsl(callData.GetParam(0));
+                }
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            IsNavmeshAgentEnabledValue val = new IsNavmeshAgentEnabledValue();
+            val.m_ObjPath = m_ObjPath.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_ObjPath.Evaluate(instance, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjPath.HaveValue) {
+                m_HaveValue = true;
+                object o = m_ObjPath.Value;
+                string objPath = o as string;
+                var uobj = o as UnityEngine.GameObject;
+                if (null != uobj) {
+                    if (null != objPath) {
+                        uobj = UnityEngine.GameObject.Find(objPath);
+                    } else {
+                        try {
+                            int objId = (int)o;
+                            uobj = PluginFramework.Instance.GetGameObject(objId);
+                        } catch {
+                            uobj = null;
+                        }
+                    }
+                }
+                if (null != uobj) {
+                    var agent = uobj.GetComponent<UnityEngine.AI.NavMeshAgent>();
+                    if (null != agent) {
+                        m_Value = agent.enabled ? 1 : 0;
+                    } else {
+                        m_Value = 0;
+                    }
+                } else {
+                    m_Value = 0;
+                }
+            }
+        }
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
     internal sealed class GetComponentValue : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)

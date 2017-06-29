@@ -1,6 +1,6 @@
 input
 {
-  circle(256,256,180);
+  circle(64,64,32);
   sampler("img", "F:/OpenSource/CSharpGameFramework_local/circle.png");
 }
 height

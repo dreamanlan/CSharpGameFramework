@@ -797,20 +797,22 @@ namespace SLua
 			temp = temp.Replace("$TN", t.Name);
 			temp = temp.Replace("$FN", SimpleType(t));
 			MethodInfo mi = t.GetMethod("Invoke");
-			List<int> outindex = new List<int>();
-			List<int> refindex = new List<int>();
-			temp = temp.Replace("$ARGS", ArgsList(mi, ref outindex, ref refindex));
+			temp = temp.Replace("$ARGS", ArgsList(mi));
 			Write(file, temp);
 			
 			this.indent = 4;
-			
-			for (int n = 0; n < mi.GetParameters().Length; n++)
-			{
-				if (!outindex.Contains(n))
-					Write(file, "pushValue(l,a{0});", n + 1);
+
+            var pars = mi.GetParameters();
+            for (int n = 0; n < pars.Length; n++) {
+                ParameterInfo p = pars[n];
+                if (p.ParameterType.IsByRef && p.IsOut) {
+                    Write(file, "LuaDLL.lua_pushnil(l);");
+                } else {
+                    Write(file, "pushValue(l, a{0});", n + 1);
+                }
 			}
 			
-			Write(file, "ld.pcall({0}, error);", mi.GetParameters().Length - outindex.Count);
+			Write(file, "ld.pcall({0}, error);", mi.GetParameters().Length);
 
 			int offset = 0;
 			if (mi.ReturnType != typeof(void))
@@ -818,19 +820,19 @@ namespace SLua
 				offset = 1;
 				WriteValueCheck(file, mi.ReturnType, offset, "ret", "error+");
 			}
-			
-			foreach (int i in outindex)
-			{
-				string a = string.Format("a{0}", i + 1);
-				WriteCheckType(file, mi.GetParameters()[i].ParameterType, i + offset, a, "error+");
-			}
-			
-			foreach (int i in refindex)
-			{
-				string a = string.Format("a{0}", i + 1);
-				WriteCheckType(file, mi.GetParameters()[i].ParameterType, i + offset, a, "error+");
-			}
-			
+
+            for (int n = 0; n < pars.Length; n++) {
+                ParameterInfo p = pars[n];
+                if (p.ParameterType.IsByRef && p.IsOut) {
+                    ++offset;
+                    string a = string.Format("a{0}", n + 1);
+                    WriteCheckType(file, p.ParameterType, offset, a, "error+");
+                } else if (p.ParameterType.IsByRef) {
+                    ++offset;
+                    string a = string.Format("a{0}", n + 1);
+                    WriteCheckType(file, p.ParameterType, offset, a, "error+");
+                }
+            }			
 			
 			Write(file, "LuaDLL.lua_settop(l, error-1);");
 			if (mi.ReturnType != typeof(void))
@@ -844,32 +846,28 @@ namespace SLua
 			Write(file, "}");
 		}
 		
-		string ArgsList(MethodInfo m, ref List<int> outindex, ref List<int> refindex)
+		string ArgsList(MethodInfo m)
 		{
 			string str = "";
 			ParameterInfo[] pars = m.GetParameters();
 			for (int n = 0; n < pars.Length; n++)
 			{
-				string t = SimpleType(pars[n].ParameterType);
-				
+				string t = SimpleType(pars[n].ParameterType);				
 				
 				ParameterInfo p = pars[n];
 				if (p.ParameterType.IsByRef && p.IsOut)
 				{
 					str += string.Format("out {0} a{1}", t, n + 1);
-					outindex.Add(n);
 				}
 				else if (p.ParameterType.IsByRef)
 				{
 					str += string.Format("ref {0} a{1}", t, n + 1);
-					refindex.Add(n);
 				}
 				else
 					str += string.Format("{0} a{1}", t, n + 1);
+
 				if (n < pars.Length - 1)
-					str += ",";
-				
-				
+					str += ",";			
 			}
 			return str;
 		}
@@ -1178,6 +1176,7 @@ namespace SLua
 				    && !DontExport(mi)
 				    && !funcname.Contains(fn)
 				    && isUsefullMethod(mi)
+                    && !hasUnsafeParameter(mi.GetParameters())
 				    && !MemberInFilter(t, mi))
 				{
 					WriteFunctionDec(file, fn);
@@ -1418,7 +1417,8 @@ namespace SLua
 				//if (fi.Name == "Item" || IsObsolete(fi) || MemberInFilter(t,fi) || DontExport(fi))
 				if (IsObsolete(fi) || MemberInFilter(t, fi) || DontExport(fi))
 					continue;
-				if (fi.Name == "Item"
+                if (fi.Name == "Item"
+                    || (t.Name == "StringBuilder" && fi.Name == "Chars")
 				    || (t.Name == "String" && fi.Name == "Chars")) // for string[]
 				{
 					//for this[]
@@ -1874,6 +1874,15 @@ namespace SLua
 			}
 			return false;
 		}
+
+        bool hasUnsafeParameter(ParameterInfo[] pis)
+        {
+            foreach(var pi in pis) {
+                if (pi.ParameterType.IsPointer)
+                    return true;
+            }
+            return false;
+        }
 		
 		void WriteFunctionDec(StreamWriter file, string name)
 		{
@@ -1944,8 +1953,9 @@ namespace SLua
 						MethodInfo mi = cons[n] as MethodInfo;
 						
 						ParameterInfo[] pars = mi.GetParameters();
-						if (isUsefullMethod(mi)
-						    && !mi.ReturnType.ContainsGenericParameters
+                        if (isUsefullMethod(mi)
+                            && !mi.ReturnType.ContainsGenericParameters
+                            && !hasUnsafeParameter(pars)
 						    /*&& !ContainGeneric(pars)*/) // don't support generic method
 						{
 							bool isExtension = IsExtensionMethod(mi) && (bf & BindingFlags.Instance) == BindingFlags.Instance;

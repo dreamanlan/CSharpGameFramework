@@ -36,7 +36,7 @@ namespace GameFramework.Skill.Trigers
             int impactId = senderObj.ConfigData.impact;
             if (senderObj.ConfigData.type != (int)SkillOrImpactType.Skill) {
                 if (impactId <= 0) {
-                    int skillId = EntityController.Instance.GetImpactSkillId(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                    int skillId = EntityController.Instance.GetImpactSkillId(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                     TableConfig.Skill cfg = TableConfig.SkillProvider.Instance.GetSkill(skillId);
                     if (null != cfg) {
                         impactId = cfg.impact;
@@ -45,7 +45,7 @@ namespace GameFramework.Skill.Trigers
             }
             Dictionary<string, object> args;
             TriggerUtil.CalcImpactConfig(0, 0, instance, senderObj.ConfigData, out args);
-            EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, true, args);
+            EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, senderId, targetId, impactId, true, args);
             return false;
         }
         protected override void OnInitProperties()
@@ -97,7 +97,7 @@ namespace GameFramework.Skill.Trigers
             int impactId = senderObj.ConfigData.impacttoself;
             if (senderObj.ConfigData.type != (int)SkillOrImpactType.Skill) {
                 if (impactId <= 0) {
-                    int skillId = EntityController.Instance.GetImpactSkillId(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                    int skillId = EntityController.Instance.GetImpactSkillId(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                     TableConfig.Skill cfg = TableConfig.SkillProvider.Instance.GetSkill(skillId);
                     if (null != cfg) {
                         impactId = cfg.impacttoself;
@@ -107,7 +107,7 @@ namespace GameFramework.Skill.Trigers
             if (m_Radius <= Geometry.c_FloatPrecision) {
                 Dictionary<string, object> args;
                 TriggerUtil.CalcImpactConfig(0, 0, instance, senderObj.ConfigData, out args);
-                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, senderId, impactId, true, args);
+                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, senderId, senderId, impactId, true, args);
             } else {
                 GameObject targetObj = senderObj.TargetGfxObj;
                 int ct = 0;
@@ -115,7 +115,7 @@ namespace GameFramework.Skill.Trigers
                 TriggerUtil.AoeQuery(obj, targetObj, m_AoeType, m_Radius, m_AngleOrLength, instance, senderId, (int)SkillTargetType.Friend, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                     Dictionary<string, object> args;
                     TriggerUtil.CalcImpactConfig(0, 0, instance, senderObj.ConfigData, out args);
-                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, true, args);
+                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, senderId, objId, impactId, true, args);
                     targetIds.Add(objId);
                     ++ct;
                     if (m_MaxCount <= 0 || ct < m_MaxCount) {
@@ -183,7 +183,7 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < StartTime) {
                 return true;
             }
-            int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+            int targetType = EntityController.Instance.GetTargetType(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
             int impactId = TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
             int senderId;
             int targetId;
@@ -200,7 +200,7 @@ namespace GameFramework.Skill.Trigers
             }
             Dictionary<string, object> args;
             TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
-            EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, IsFinal, args);
+            EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, senderId, targetId, impactId, IsFinal, args);
             return false;
         }
         protected override void OnInitProperties()
@@ -252,20 +252,20 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (curSectionTime >= StartTime) {
-                int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                int targetType = EntityController.Instance.GetTargetType(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
                 int impactId = TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
                 int senderId = 0;
                 if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                    senderId = senderObj.ActorId;
+                    senderId = senderObj.ObjId;
                 } else {
-                    senderId = senderObj.TargetActorId;
+                    senderId = senderObj.TargetObjId;
                 }
                 int ct = 0;
                 List<int> targetIds = new List<int>();
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                     Dictionary<string, object> args;
                     TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
-                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, IsFinal, args);
+                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, senderId, objId, impactId, IsFinal, args);
                     targetIds.Add(objId);
                     ++ct;
                     if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
@@ -346,12 +346,12 @@ namespace GameFramework.Skill.Trigers
                 m_LastTime = curSectionTime;
                 int ct = m_Targets.Count;
                 if (ct <= 0) {
-                    int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                    int targetType = EntityController.Instance.GetTargetType(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
                     int impactId = TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
                     if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                        m_SenderId = senderObj.ActorId;
+                        m_SenderId = senderObj.ObjId;
                     } else {
-                        m_SenderId = senderObj.TargetActorId;
+                        m_SenderId = senderObj.TargetObjId;
                     }
                     TriggerUtil.AoeQuery(senderObj, instance, m_SenderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                         m_SortedTargets.Add((int)(distSqr * c_MaxObjectId) * c_MaxObjectId + objId, objId);
@@ -373,7 +373,7 @@ namespace GameFramework.Skill.Trigers
                 if (ct > 0 && m_CurTargetIndex < ct) {
                     Dictionary<string, object> args;
                     TriggerUtil.CalcImpactConfig(0, m_ImpactId, instance, senderObj.ConfigData, out args);
-                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, m_SenderId, m_Targets[m_CurTargetIndex], m_ImpactId, IsFinal, args);
+                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, m_SenderId, m_Targets[m_CurTargetIndex], m_ImpactId, IsFinal, args);
                     ++m_CurTargetIndex;
                 } else {
                     return false;
@@ -454,7 +454,7 @@ namespace GameFramework.Skill.Trigers
             }
             if (m_LastTime + intervalTime < curSectionTime) {
                 m_LastTime = curSectionTime;
-                int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                int targetType = EntityController.Instance.GetTargetType(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
                 int impactId = TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
                 int senderId;
                 int targetId;
@@ -471,7 +471,7 @@ namespace GameFramework.Skill.Trigers
                 }
                 Dictionary<string, object> args;
                 TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
-                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, IsFinal, args);
+                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, senderId, targetId, impactId, IsFinal, args);
             }
             return true;
         }
@@ -542,20 +542,20 @@ namespace GameFramework.Skill.Trigers
             }
             if (m_LastTime + interval < curSectionTime) {
                 m_LastTime = curSectionTime;
-                int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                int targetType = EntityController.Instance.GetTargetType(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
                 int impactId = TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
                 int senderId = 0;
                 if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                    senderId = senderObj.ActorId;
+                    senderId = senderObj.ObjId;
                 } else {
-                    senderId = senderObj.TargetActorId;
+                    senderId = senderObj.TargetObjId;
                 }
                 int ct = 0;
                 List<int> targetIds = new List<int>();
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
                     Dictionary<string, object> args;
                     TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
-                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, impactId, IsFinal, args);
+                    EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, senderId, objId, impactId, IsFinal, args);
                     targetIds.Add(objId);
                     ++ct;
                     if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
@@ -642,7 +642,7 @@ namespace GameFramework.Skill.Trigers
                             dest.y += 1.5f;
                             LogSystem.Warn("[skill:{0} dsl skill id:{1}] track bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, trackBone);
                         }
-                        m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                        m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                         dest = Utility.FrontOfTarget(m_StartPos, dest, 0.1f);
                         object speedObj;
                         if (instance.Variables.TryGetValue("emitSpeed", out speedObj)) {
@@ -715,14 +715,14 @@ namespace GameFramework.Skill.Trigers
                                 if (m_NoImpact) {
                                     instance.SetVariable("hitEffectRotation", m_HitEffectRotation);
                                 } else {
-                                    int impactId = EntityController.Instance.GetTrackSendImpact(senderObj.ActorId, senderObj.Seq, instance.Variables);
+                                    int impactId = EntityController.Instance.GetTrackSendImpact(senderObj.ObjId, senderObj.Seq, instance.Variables);
                                     Dictionary<string, object> args;
                                     TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
                                     if (args.ContainsKey("hitEffectRotation"))
                                         args["hitEffectRotation"] = m_HitEffectRotation;
                                     else
                                         args.Add("hitEffectRotation", m_HitEffectRotation);
-                                    EntityController.Instance.TrackSendImpact(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, impactId, args);
+                                    EntityController.Instance.TrackSendImpact(senderObj.ObjId, senderObj.SkillId, senderObj.Seq, impactId, args);
                                     int senderId, targetId;
                                     EntityController.Instance.CalcSenderAndTarget(senderObj, out senderId, out targetId);
                                 }
@@ -827,12 +827,12 @@ namespace GameFramework.Skill.Trigers
                 return true;
             }
             int senderId = 0;
-            int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+            int targetType = EntityController.Instance.GetTargetType(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
             int impactId = TriggerUtil.GetSkillImpactId(instance.Variables, senderObj.ConfigData);
             if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                senderId = senderObj.ActorId;
+                senderId = senderObj.ObjId;
             } else {
-                senderId = senderObj.TargetActorId;
+                senderId = senderObj.TargetObjId;
             }
             float range = 0;
             TableConfig.Skill cfg = senderObj.ConfigData;
@@ -863,7 +863,7 @@ namespace GameFramework.Skill.Trigers
                                 m_Targets.Add(targetId);
                                 Dictionary<string, object> args;
                                 TriggerUtil.CalcImpactConfig(0, impactId, instance, senderObj.ConfigData, out args);
-                                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, impactId, IsFinal, args);
+                                EntityController.Instance.SendImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, senderId, targetId, impactId, IsFinal, args);
                                 targetIds.Add(targetId);
                                 ++ct;
                                 if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {

@@ -1,11 +1,12 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 require "AiCommand";
 
 AiCastSkill = {
 	__new_object = function(...)
-		return newobject(AiCastSkill, nil, {}, ...);
+		return newobject(AiCastSkill, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = AiCastSkill;
@@ -25,7 +26,7 @@ AiCastSkill = {
 
 		local instance_methods = {
 			Clone = function(this)
-				return newobject(AiCastSkill, "ctor", {});
+				return newobject(AiCastSkill, "ctor", nil);
 			end,
 			ResetState = function(this)
 				this.m_ParamReaded = false;
@@ -47,7 +48,7 @@ AiCastSkill = {
 							local targetPos; targetPos = target:GetMovementStateInfo():GetPosition3D();
 							local dir; dir = GameFramework.Geometry.GetYRadian(srcPos, targetPos);
 							local curDir; curDir = npc:GetMovementStateInfo():GetFaceDir();
-							if (UnityEngine.Mathf.Abs((dir - curDir)) > 0.157) then
+							if (UnityEngine.Mathf.Abs((dir - curDir)) > 0.16) then
 								npc:GetMovementStateInfo():SetWantedFaceDir(dir);
 							else
 								this.m_SkillCasted = true;
@@ -103,5 +104,7 @@ AiCastSkill = {
 		return defineclass(nil, "AiCastSkill", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 AiCastSkill.__define_class();

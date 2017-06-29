@@ -11,7 +11,7 @@ using GameFramework;
 
 public sealed class UiEditWindow : EditorWindow
 {
-    [MenuItem("工具/UI布局导入导出")]
+    [MenuItem("工具/UI布局与挂点导入导出")]
     internal static void InitWindow()
     {
         UiEditWindow window = (UiEditWindow)EditorWindow.GetWindow(typeof(UiEditWindow));
@@ -30,8 +30,11 @@ public sealed class UiEditWindow : EditorWindow
         if (GUILayout.Button("导出选中场景结点")) {
             ExportSelectedSceneNodes();
         }
-        if (GUILayout.Button("导入")) {
+        if (GUILayout.Button("导入UI/GameObject")) {
             ImportAll();
+        }
+        if (GUILayout.Button("导入挂点到选中结点")) {
+            ImportAttachPointToSelectedSceneNodes();
         }
         EditorGUILayout.EndHorizontal();
 
@@ -59,7 +62,7 @@ public sealed class UiEditWindow : EditorWindow
                 File.Delete(path);
             }
             foreach (ItemInfo item in m_Prefabs) {
-                if (item.Selected) {                    
+                if (item.Selected) {
                     if (null != item.Prefab) {
                         UiEditUtility.Export(path, item.Prefab);
                         Debug.Log("BatchExportAll " + item.Path);
@@ -76,9 +79,21 @@ public sealed class UiEditWindow : EditorWindow
         if (!string.IsNullOrEmpty(path)) {
             if (File.Exists(path)) {
                 File.Delete(path);
-            }            
+            }
             foreach (GameObject obj in Selection.gameObjects) {
                 UiEditUtility.Export(path, obj);
+                Debug.Log("BatchExportAll " + obj.name);
+            }
+            EditorUtility.DisplayDialog("提示", "处理完成", "ok");
+        }
+    }
+
+    private void ImportAttachPointToSelectedSceneNodes()
+    {
+        string path = EditorUtility.OpenFilePanel("请选择要导入的dsl文件", string.Empty, "dsl");
+        if (!string.IsNullOrEmpty(path) && File.Exists(path)) {
+            foreach (GameObject obj in Selection.gameObjects) {
+                UiEditUtility.ImportAttachPoint(path, obj);
                 Debug.Log("BatchExportAll " + obj.name);
             }
             EditorUtility.DisplayDialog("提示", "处理完成", "ok");
@@ -127,7 +142,7 @@ public sealed class UiEditWindow : EditorWindow
                 root = obj;
             }
             UiEditUtility.Import(path, root);
-			EditorUtility.DisplayDialog ("提示", "处理完成", "ok");
+            EditorUtility.DisplayDialog("提示", "处理完成", "ok");
         }
     }
 
@@ -150,7 +165,7 @@ public sealed class UiEditWindow : EditorWindow
             if (null != rectTrans) {
                 m_Prefabs.Add(new ItemInfo { Path = path, Selected = false, Prefab = obj });
             }
-        }        
+        }
         string[] dirs = Directory.GetDirectories(dir);
         foreach (string subDir in dirs) {
             SearchFileRecursively(subDir);
@@ -159,7 +174,7 @@ public sealed class UiEditWindow : EditorWindow
 
     private string PathToAssetPath(string path)
     {
-        string rootPath = Application.dataPath.Replace('\\','/');
+        string rootPath = Application.dataPath.Replace('\\', '/');
         path = path.Replace('\\', '/');
         if (path.StartsWith(rootPath)) {
             return "Assets" + path.Substring(rootPath.Length);
@@ -191,12 +206,27 @@ internal static class UiEditUtility
         }
     }
 
+    internal static void ImportAttachPoint(string path, GameObject root)
+    {
+        Dsl.DslFile file = new Dsl.DslFile();
+        if (file.Load(path, (string msg) => { Debug.Log(msg); })) {
+            foreach (var info in file.DslInfos) {
+                foreach (var comp in info.First.Statements) {
+                    var funcData = comp as Dsl.FunctionData;
+                    if (null != funcData && funcData.GetId() == "object") {
+                        ReadAttachPoint(funcData, root.transform);
+                    }
+                }
+            }
+        }
+    }
+
     internal static void Export(string path, GameObject prefab)
     {
-        var rectTrans = prefab.GetComponent<RectTransform>();
-        if (null != rectTrans) {
+        var trans = prefab.GetComponent<Transform>();
+        if (null != trans) {
             using (var sw = new StreamWriter(path, true)) {
-                WriteObject(sw, 0, rectTrans);
+                WriteObject(sw, 0, trans);
                 sw.Close();
             }
         }
@@ -663,6 +693,42 @@ internal static class UiEditUtility
         }
     }
 
+    private static void ReadAttachPoint(Dsl.FunctionData funcData, Transform trans)
+    {
+        if (null == funcData)
+            return;
+        //跳过非骨胳结点
+        foreach (var statement in funcData.Statements) {
+            string id = statement.GetId();
+            if (id == "asset" || id == "component") {
+                return;
+            }
+        }
+        string name = funcData.Call.GetParamId(0);
+        GameObject obj = null;
+        var t = trans.Find(name);
+        if (null != t) {
+            obj = t.gameObject;
+        } else {
+            obj = new GameObject(name);
+            obj.transform.SetParent(trans, false);
+        }
+        foreach (var statement in funcData.Statements) {
+            string id = statement.GetId();
+            if (id == "recttransform") {
+                ReadRectTransform(statement, obj);
+            } else if (id == "transform") {
+                ReadTransform(statement, obj);
+            }
+        }
+        foreach (var statement in funcData.Statements) {
+            string id = statement.GetId();
+            if (id == "object") {
+                ReadAttachPoint(statement as Dsl.FunctionData, obj.transform);
+            }
+        }
+    }
+
     private static void WriteObject(StreamWriter sw, int indent, Transform trans)
     {
         var obj = trans.gameObject;
@@ -683,7 +749,7 @@ internal static class UiEditUtility
             sw.WriteLine("{0}}};", GetIndent(indent));
 
             WriteUiComponents(sw, indent, trans);
-            
+
             int ct = rectTrans.childCount;
             for (int i = 0; i < ct; ++i) {
                 var t = rectTrans.GetChild(i);
@@ -706,7 +772,7 @@ internal static class UiEditUtility
                 var t = trans.GetChild(i);
                 WriteObject(sw, indent, t);
             }
-        }        
+        }
         --indent;
         sw.WriteLine("{0}}};", GetIndent(indent));
     }
@@ -865,7 +931,7 @@ internal static class UiEditUtility
     {
         GameObject ret = null;
         var trans = obj.transform;
-        while(null != trans && !(trans is RectTransform)) {
+        while (null != trans && !(trans is RectTransform)) {
             ret = trans.gameObject;
             trans = trans.parent;
         }
@@ -874,7 +940,7 @@ internal static class UiEditUtility
     private static Object LoadAssetByPathAndName(string path, string name)
     {
         var objs = AssetDatabase.LoadAllAssetsAtPath(path);
-        foreach(var obj in objs) {
+        foreach (var obj in objs) {
             if (obj.name == name)
                 return obj;
         }

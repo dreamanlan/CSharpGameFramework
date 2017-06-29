@@ -1348,6 +1348,111 @@ namespace GameFramework.Story.Commands
         private IStoryValue<ScriptRuntime.Vector3> m_Scale = new StoryValue<ScriptRuntime.Vector3>();
     }
     /// <summary>
+    /// settransform(name, local_or_world){
+    ///     position(vector3(x,y,z));
+    ///     rotation(vector3(x,y,z));
+    ///     scale(vector3(x,y,z));
+    /// };
+    /// </summary>
+    internal class SetTransformCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SetTransformCommand cmd = new SetTransformCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            cmd.m_LocalOrWorld = m_LocalOrWorld.Clone();
+            cmd.m_Position = m_Position.Clone();
+            cmd.m_Rotation = m_Rotation.Clone();
+            cmd.m_Scale = m_Scale.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+            m_LocalOrWorld.Evaluate(instance, iterator, args);
+            m_Position.Evaluate(instance, iterator, args);
+            m_Rotation.Evaluate(instance, iterator, args);
+            m_Scale.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object objVal = m_ObjPath.Value;
+            int localOrWorld = m_LocalOrWorld.Value;
+            string objPath = objVal as string;
+            UnityEngine.GameObject obj = null;
+            if (null != objPath) {
+                obj = UnityEngine.GameObject.Find(objPath);
+            } else {
+                obj = objVal as UnityEngine.GameObject;
+                if (null == obj) {
+                    try {
+                        int id = (int)objVal;
+                        obj = PluginFramework.Instance.GetGameObject(id);
+                    } catch {
+                        obj = null;
+                    }
+                }
+            }
+            if (null != obj) {
+                if (m_Position.HaveValue) {
+                    var v = m_Position.Value;
+                    if (0 == localOrWorld)
+                        obj.transform.localPosition = new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                    else
+                        obj.transform.position = new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                }
+                if (m_Rotation.HaveValue) {
+                    var v = m_Rotation.Value;
+                    if (0 == localOrWorld)
+                        obj.transform.localEulerAngles = new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                    else
+                        obj.transform.eulerAngles = new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                }
+                if (m_Scale.HaveValue) {
+                    var v = m_Scale.Value;
+                    obj.transform.localScale = new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                }
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+                m_LocalOrWorld.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        protected override void Load(Dsl.FunctionData funcData)
+        {
+            var callData = funcData.Call;
+            Load(callData);
+            foreach (var comp in funcData.Statements) {
+                var cd = comp as Dsl.CallData;
+                if (null != cd) {
+                    LoadOptional(cd);
+                }
+            }
+        }
+        private void LoadOptional(Dsl.CallData callData)
+        {
+            string id = callData.GetId();
+            if (id == "position") {
+                m_Position.InitFromDsl(callData.GetParam(0));
+            } else if (id == "rotation") {
+                m_Rotation.InitFromDsl(callData.GetParam(0));
+            } else if (id == "scale") {
+                m_Scale.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private IStoryValue<int> m_LocalOrWorld = new StoryValue<int>();
+        private IStoryValue<ScriptRuntime.Vector3> m_Position = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryValue<ScriptRuntime.Vector3> m_Rotation = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryValue<ScriptRuntime.Vector3> m_Scale = new StoryValue<ScriptRuntime.Vector3>();
+    }
+    /// <summary>
     /// destroygameobject(path);
     /// </summary>
     internal class DestroyGameObjectCommand : AbstractStoryCommand
@@ -1436,9 +1541,13 @@ namespace GameFramework.Story.Commands
             if (null != obj) {
                 string parentPath = parentVal as string;
                 if (null != parentPath) {
-                    var pobj = UnityEngine.GameObject.Find(parentPath);
-                    if (null != pobj) {
-                        obj.transform.SetParent(pobj.transform, stayWorldPos != 0);
+                    if (string.IsNullOrEmpty(parentPath)) {
+                        obj.transform.SetParent(null, stayWorldPos != 0);
+                    } else {
+                        var pobj = UnityEngine.GameObject.Find(parentPath);
+                        if (null != pobj) {
+                            obj.transform.SetParent(pobj.transform, stayWorldPos != 0);
+                        }
                     }
                 } else {
                     var pobj = parentVal as UnityEngine.GameObject;
@@ -1447,9 +1556,13 @@ namespace GameFramework.Story.Commands
                     } else {
                         try {
                             int id = (int)parentVal;
-                            pobj = PluginFramework.Instance.GetGameObject(id);
-                            if (null != pobj) {
-                                obj.transform.SetParent(pobj.transform, stayWorldPos != 0);
+                            if (id <= 0) {
+                                obj.transform.SetParent(null, stayWorldPos != 0);
+                            } else {
+                                pobj = PluginFramework.Instance.GetGameObject(id);
+                                if (null != pobj) {
+                                    obj.transform.SetParent(pobj.transform, stayWorldPos != 0);
+                                }
                             }
                         } catch {
                         }
@@ -1523,6 +1636,123 @@ namespace GameFramework.Story.Commands
 
         private IStoryValue<object> m_ObjPath = new StoryValue();
         private IStoryValue<int> m_Active = new StoryValue<int>();
+    }
+    /// <summary>
+    /// setvisible(objpath,1_or_0);
+    /// </summary>
+    internal class SetVisibleCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SetVisibleCommand cmd = new SetVisibleCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            cmd.m_Visible = m_Visible.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+            m_Visible.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object objVal = m_ObjPath.Value;
+            int visible = m_Visible.Value;
+            string objPath = objVal as string;
+            UnityEngine.GameObject obj = null;
+            if (null != objPath) {
+                obj = UnityEngine.GameObject.Find(objPath);
+            } else {
+                obj = objVal as UnityEngine.GameObject;
+                if (null == obj) {
+                    try {
+                        int id = (int)objVal;
+                        var view = EntityController.Instance.GetEntityViewById(id);
+                        if (null != view) {
+                            obj = view.Actor;
+                            view.Visible = visible != 0;
+                            return false;
+                        }
+                    } catch {
+                        obj = null;
+                    }
+                }
+            }
+            if (null != obj) {
+                var renderer = obj.GetComponent<UnityEngine.Renderer>();
+                if (null != renderer) {
+                    renderer.enabled = visible != 0;
+                }
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+                m_Visible.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private IStoryValue<int> m_Visible = new StoryValue<int>();
+    }
+    /// <summary>
+    /// setnavmeshagentenable(objpath,1_or_0);
+    /// </summary>
+    internal class SetNavmeshAgentEnableCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SetNavmeshAgentEnableCommand cmd = new SetNavmeshAgentEnableCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            cmd.m_Visible = m_Visible.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+            m_Visible.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object objVal = m_ObjPath.Value;
+            int enabled = m_Visible.Value;
+            string objPath = objVal as string;
+            UnityEngine.GameObject obj = null;
+            if (null != objPath) {
+                obj = UnityEngine.GameObject.Find(objPath);
+            } else {
+                obj = objVal as UnityEngine.GameObject;
+                if (null == obj) {
+                    try {
+                        int id = (int)objVal;
+                        obj = PluginFramework.Instance.GetGameObject(id);
+                    } catch {
+                        obj = null;
+                    }
+                }
+            }
+            if (null != obj) {
+                var agent = obj.GetComponent<UnityEngine.AI.NavMeshAgent>();
+                if (null != agent) {
+                    agent.enabled = enabled != 0;
+                }
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+                m_Visible.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private IStoryValue<int> m_Visible = new StoryValue<int>();
     }
     /// <summary>
     /// addcomponent(objpath,type)[obj("varname")];
@@ -2269,5 +2499,346 @@ namespace GameFramework.Story.Commands
 
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private IStoryValue<object> m_Value = new StoryValue();
+    }
+    /// <summary>
+    /// gameobjectanimation(obj, anim[, normalized_time]);
+    /// </summary>
+    internal class GameObjectAnimationCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            GameObjectAnimationCommand cmd = new GameObjectAnimationCommand();
+            cmd.m_ParamNum = m_ParamNum;
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            cmd.m_Anim = m_Anim.Clone();
+            cmd.m_Time = m_Time.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+            m_Anim.Evaluate(instance, iterator, args);
+            if (m_ParamNum > 2) {
+                m_Time.Evaluate(instance, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object o = m_ObjPath.Value;
+            string objPath = o as string;
+            var uobj = o as UnityEngine.GameObject;
+            if (null == uobj) {
+                if (null != objPath) {
+                    uobj = UnityEngine.GameObject.Find(objPath);
+                } else {
+                    try {
+                        int objId = (int)o;
+                        uobj = PluginFramework.Instance.GetGameObject(objId);
+                    } catch {
+                        uobj = null;
+                    }
+                }
+            }
+            if (null != uobj) {
+                string anim = m_Anim.Value;
+                EntityViewModel view = EntityController.Instance.GetEntityView(uobj);
+                if (null != view && null != view.Animator) {
+                    view.Animator.Play(anim);
+                } else {
+                    var animator = uobj.GetComponent<UnityEngine.Animator>();
+                    if (null != animator) {
+                        animator.Play(anim);
+                    }
+                }
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            m_ParamNum = callData.GetParamNum();
+            if (m_ParamNum > 1) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+                m_Anim.InitFromDsl(callData.GetParam(1));
+            }
+            if (m_ParamNum > 2) {
+                m_Time.InitFromDsl(callData.GetParam(2));
+            }
+        }
+        private int m_ParamNum = 0;
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private IStoryValue<string> m_Anim = new StoryValue<string>();
+        private IStoryValue<float> m_Time = new StoryValue<float>();
+    }
+    /// <summary>
+    /// gameobjectanimationparam(obj)
+    /// {
+    ///     float(name,val);
+    ///     int(name,val);
+    ///     bool(name,val);
+    ///     trigger(name,val);
+    /// };
+    /// </summary>
+    internal class GameObjectAnimationParamCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            GameObjectAnimationParamCommand cmd = new GameObjectAnimationParamCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            for (int i = 0; i < m_Params.Count; ++i) {
+                ParamInfo param = new ParamInfo();
+                param.CopyFrom(m_Params[i]);
+                cmd.m_Params.Add(param);
+            }
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+            for (int i = 0; i < m_Params.Count; ++i) {
+                var pair = m_Params[i];
+                pair.Key.Evaluate(instance, iterator, args);
+                pair.Value.Evaluate(instance, iterator, args);
+            }
+
+            for (int i = 0; i < m_Params.Count; ++i) {
+                var pair = m_Params[i];
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object o = m_ObjPath.Value;
+            string objPath = o as string;
+            var obj = o as UnityEngine.GameObject;
+            if (null == obj) {
+                if (null != objPath) {
+                    obj = UnityEngine.GameObject.Find(objPath);
+                } else {
+                    try {
+                        int objId = (int)o;
+                        obj = PluginFramework.Instance.GetGameObject(objId);
+                    } catch {
+                        obj = null;
+                    }
+                }
+            }
+            if (null != obj) {
+                UnityEngine.Animator animator = obj.GetComponentInChildren<UnityEngine.Animator>();
+                if (null != animator) {
+                    for (int i = 0; i < m_Params.Count; ++i) {
+                        var param = m_Params[i];
+                        string type = param.Type;
+                        string key = param.Key.Value;
+                        object val = param.Value.Value;
+                        if (type == "int") {
+                            int v = (int)Convert.ChangeType(val, typeof(int));
+                            animator.SetInteger(key, v);
+                        } else if (type == "float") {
+                            float v = (float)Convert.ChangeType(val, typeof(float));
+                            animator.SetFloat(key, v);
+                        } else if (type == "bool") {
+                            bool v = (bool)Convert.ChangeType(val, typeof(bool));
+                            animator.SetBool(key, v);
+                        } else if (type == "trigger") {
+                            string v = val.ToString();
+                            if (v == "false") {
+                                animator.ResetTrigger(key);
+                            } else {
+                                animator.SetTrigger(key);
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 1) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        protected override void Load(Dsl.FunctionData funcData)
+        {
+            Dsl.CallData callData = funcData.Call;
+            if (null != callData) {
+                Load(callData);
+                for (int i = 0; i < funcData.Statements.Count; ++i) {
+                    Dsl.ISyntaxComponent statement = funcData.Statements[i];
+                    Dsl.CallData stCall = statement as Dsl.CallData;
+                    if (null != stCall && stCall.GetParamNum() >= 2) {
+                        string id = stCall.GetId();
+                        ParamInfo param = new ParamInfo(id, stCall.GetParam(0), stCall.GetParam(1));
+                        m_Params.Add(param);
+                    }
+                }
+            }
+        }
+        private class ParamInfo
+        {
+            internal string Type;
+            internal IStoryValue<string> Key;
+            internal IStoryValue<object> Value;
+            internal ParamInfo()
+            {
+                Init();
+            }
+            internal ParamInfo(string type, Dsl.ISyntaxComponent keyDsl, Dsl.ISyntaxComponent valDsl)
+                : this()
+            {
+                Type = type;
+                Key.InitFromDsl(keyDsl);
+                Value.InitFromDsl(valDsl);
+            }
+            internal void CopyFrom(ParamInfo other)
+            {
+                Type = other.Type;
+                Key = other.Key.Clone();
+                Value = other.Value.Clone();
+            }
+            private void Init()
+            {
+                Type = string.Empty;
+                Key = new StoryValue<string>();
+                Value = new StoryValue();
+            }
+        }
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private List<ParamInfo> m_Params = new List<ParamInfo>();
+    }
+    /// <summary>
+    /// gameobjectcastskill(obj, skillid, arg1, arg2, ...);
+    /// </summary>
+    internal class GameObjectCastSkillCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            GameObjectCastSkillCommand cmd = new GameObjectCastSkillCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            cmd.m_SkillId = m_SkillId.Clone();
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                cmd.m_Args.Add(val.Clone());
+            }
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+            m_SkillId.Evaluate(instance, iterator, args);
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                val.Evaluate(instance, iterator, args);
+            }
+
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object o = m_ObjPath.Value;
+            string objPath = o as string;
+            var uobj = o as UnityEngine.GameObject;
+            if (null == uobj) {
+                if (null != objPath) {
+                    uobj = UnityEngine.GameObject.Find(objPath);
+                } else {
+                    try {
+                        int objId = (int)o;
+                        uobj = PluginFramework.Instance.GetGameObject(objId);
+                    } catch {
+                        uobj = null;
+                    }
+                }
+            }
+            int skillId = m_SkillId.Value;
+            StrObjDict locals = new StrObjDict();
+            for (int i = 0; i < m_Args.Count - 1; i += 2) {
+                string key = m_Args[i].Value as string;
+                object val = m_Args[i + 1].Value;
+                if (!string.IsNullOrEmpty(key)) {
+                    locals.Add(key, val);
+                }
+            }
+            var cfg = TableConfig.SkillProvider.Instance.GetSkill(skillId);
+            if (null != cfg) {
+                GfxSkillSystem.Instance.StartSkillWithGameObject(uobj, cfg, 0, locals);
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+                m_SkillId.InitFromDsl(callData.GetParam(1));
+            }
+            for (int i = 2; i < callData.GetParamNum(); ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_Args.Add(val);
+            }
+        }
+        private IStoryValue<object> m_ObjPath = new StoryValue();
+        private IStoryValue<int> m_SkillId = new StoryValue<int>();
+        private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
+    }
+    /// <summary>
+    /// gameobjectstopskill(obj);
+    /// </summary>
+    internal class GameObjectStopSkillCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            GameObjectStopSkillCommand cmd = new GameObjectStopSkillCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjPath.Evaluate(instance, iterator, args);
+
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object o = m_ObjPath.Value;
+            string objPath = o as string;
+            var uobj = o as UnityEngine.GameObject;
+            if (null == uobj) {
+                if (null != objPath) {
+                    uobj = UnityEngine.GameObject.Find(objPath);
+                } else {
+                    try {
+                        int objId = (int)o;
+                        uobj = PluginFramework.Instance.GetGameObject(objId);
+                    } catch {
+                        uobj = null;
+                    }
+                }
+            }
+            GfxSkillSystem.Instance.StopAllSkillWithGameObject(uobj, true);
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        private IStoryValue<object> m_ObjPath = new StoryValue();
     }
 }

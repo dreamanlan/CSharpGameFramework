@@ -61,7 +61,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
                         dest.y += 1.5f;
                         LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, trackBone);
                     }
-                    m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                    m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                     dest = Utility.FrontOfTarget(m_StartPos, dest, 0.1f);
                     object speedObj;
                     if (instance.Variables.TryGetValue("emitSpeed", out speedObj)) {
@@ -151,7 +151,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
                                     args["hitEffectRotation"] = m_HitEffectRotation;
                                 else
                                     args.Add("hitEffectRotation", m_HitEffectRotation);
-                                EntityController.Instance.TrackSendImpact(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, impactId, args);
+                                EntityController.Instance.TrackSendImpact(senderObj.ObjId, senderObj.SkillId, senderObj.Seq, impactId, args);
 
                                 //LogSystem.Warn("trackbullet effect hit target {0} {1} {2}", pos.x, pos.y, pos.z);
                             }
@@ -246,11 +246,11 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
             TriggerUtil.SetObjVisible(effectObj, true);
             effectObj.SetActive(false);
             if (null != obj.transform) {
-                effectObj.transform.parent = obj.transform;
+                effectObj.transform.SetParent(obj.transform);
                 effectObj.transform.localPosition = Vector3.zero;
                 effectObj.transform.localScale = Vector3.one;
                 effectObj.transform.rotation = m_HitEffectRotation;
-                effectObj.transform.parent = null;
+                effectObj.transform.SetParent(null);
 
                 EffectManager em = instance.CustomDatas.GetData<EffectManager>();
                 if (em == null) {

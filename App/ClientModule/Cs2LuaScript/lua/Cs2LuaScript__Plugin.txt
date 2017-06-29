@@ -1,6 +1,7 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 Cs2LuaScript.Plugin = {
 	__define_class = function()
@@ -31,5 +32,7 @@ Cs2LuaScript.Plugin = {
 		return defineclass(nil, "Cs2LuaScript.Plugin", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
 	end,
 };
+
+
 
 Cs2LuaScript.Plugin.__define_class();

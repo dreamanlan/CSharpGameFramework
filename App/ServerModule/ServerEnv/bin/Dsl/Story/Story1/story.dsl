@@ -28,25 +28,8 @@ story(story_main)
   };
   onmessage("client:touchnpc")
   {
-    $userId = $0;
-    showdlg(2)touser($userId);
-  };
-  onmessage("dialog_over",2)
-  {
+    log("touchnpc");
     $userId = $0;
     sendclientstorymessage("open_battle", 10001)touser($userId);
-  };
-  onmessage("refreshmonsters")
-  {
-    log("scene2");    
-    if(@monsterRefresh==0){
-      @monsterRefresh=1;
-      loop(32){      	
-	      $monsterInfo = getmonsterinfo(1,$$);
-	      if(!isnull($monsterInfo)){
-	      	createnpc(1006+$$,vector3($monsterInfo.x,0,$monsterInfo.y),$monsterInfo.dir*3.1415926/180,2,$monsterInfo.actorID,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));
-	      };
-	    };      
-    };
   };
 };

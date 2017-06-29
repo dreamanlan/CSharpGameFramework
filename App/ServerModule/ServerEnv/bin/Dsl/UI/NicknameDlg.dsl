@@ -3,7 +3,6 @@ story(main)
   local
   {
     @nicknameList(0);
-    @rndname(0);
   };
   onmessage("start")
   {
@@ -20,15 +19,15 @@ story(main)
   {
     @window.SetActive(changetype(1,"bool"));
     @nicknameList=$0;
-    @rndname=rndfromlist(@nicknameList);
-    @nickname_Input.text=@rndname;
+    $rndname=rndfromlist(@nicknameList);
+    @nickname_Input.text=$rndname;
   };  
   onnamespacedmessage("on_click")
   {
   	log("NicknameDlg on click {0} {1}",$0,$1);
   	if($0=="roll"){
-	    @rndname=rndfromlist(@nicknameList);
-	    @nickname_Input.text=@rndname;
+	    $rndname=rndfromlist(@nicknameList);
+	    @nickname_Input.text=$rndname;
   	}else{
 	  	firemessage("do_nickname",listget($1,0,"unknown"));
     	@window.SetActive(changetype(0,"bool"));

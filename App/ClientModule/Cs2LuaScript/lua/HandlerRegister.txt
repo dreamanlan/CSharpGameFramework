@@ -1,6 +1,7 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 HandlerRegister = {
 	__define_class = function()
@@ -13,7 +14,7 @@ HandlerRegister = {
 			Call = function(name, ...)
 				local args = wraparray{...};
 				local handler;
-				if (function() local __compiler_invoke_15; __compiler_invoke_15, handler = HandlerRegister.s_Handlers:TryGetValue(name, __cs2lua_out) return __compiler_invoke_15; end)() then
+				if (function() local __compiler_invoke_15; __compiler_invoke_15, handler = HandlerRegister.s_Handlers:TryGetValue(name, __cs2lua_out); return __compiler_invoke_15; end)() then
 					handler(unpack(args));
 				end;
 			end,
@@ -40,5 +41,7 @@ HandlerRegister = {
 		return defineclass(nil, "HandlerRegister", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
 	end,
 };
+
+
 
 HandlerRegister.__define_class();

@@ -4,7 +4,7 @@ id	prefab	type	SceneDslFile	ClientDslFile	RoomDslFile	SceneUi	EnterX	EnterY	Ente
 //หตร๗														
 1	Main	1	Story/MainUi/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun_empty.dsl		1;2;100				RoomSvr1	4	4	24	1
 2	SkillViewer	1	Story/SkillViewer/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun_empty.dsl		100;101	110	40	5	RoomSvr1	4	4	24	1
-101	Story1	2	Story/Story1/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun.dsl		3;100	55	75	10	RoomSvr1	4	4	24	1
+101	Story1	2	Story/Story1/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun.dsl		3;100	16	54	10	RoomSvr1	4	4	24	1
 102	Story2	2	Story/Story2/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
-10001	Battle1	4	Story/Battle1/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
-10002	Battle2	4	Story/Battle2/story.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl;Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr2	4	4	24	1
+10001	Battle1	4	Story/Battle1/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr1	4	4	24	1
+10002	Battle2	4	Story/Battle2/story.dsl	Story/Common/autorun_battle.dsl	Story/Common/localmain.dsl;Story/Common/skillstory.dsl	3;100	55	75	10	RoomSvr2	4	4	24	1

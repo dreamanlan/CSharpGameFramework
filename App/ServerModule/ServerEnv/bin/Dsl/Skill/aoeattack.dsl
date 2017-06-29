@@ -14,4 +14,13 @@ skill(4)
     };
     aoeimpact(100,0,0,0,false);
   };
+	hitskill
+	{
+		section(1000)
+		{
+	    animation(Hit)adjustduration();
+	    selfeffect(hitEffect, 1000, hit, 0);
+	    damage(0);
+		};
+	};
 };

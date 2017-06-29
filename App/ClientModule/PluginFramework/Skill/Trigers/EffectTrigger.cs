@@ -86,7 +86,7 @@ namespace GameFramework.Skill.Trigers
                 if (curSectionTime >= StartTime) {
                     m_RealDeleteTime = m_DeleteTime.Get(instance);
                     if (m_RealDeleteTime <= 0) {
-                        m_RealDeleteTime = EntityController.Instance.GetImpactDuration(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                        m_RealDeleteTime = EntityController.Instance.GetImpactDuration(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                     }
                     if (m_RealDeleteTime <= 0) {
                         LogSystem.Warn("[skill:{0} dsl skill id:{1}] selfeffect deleteTime <= 0.", senderObj.SkillId, instance.DslSkillId);
@@ -112,18 +112,18 @@ namespace GameFramework.Skill.Trigers
                         }
                         effectObj.SetActive(false);
                         if (null != bone) {
-                            effectObj.transform.parent = bone;
+                            effectObj.transform.SetParent(bone);
                             effectObj.transform.localPosition = m_Pos;
                             object effectRotation;
                             if (instance.Variables.TryGetValue("hitEffectRotation", out effectRotation)) {
-                                effectObj.transform.parent = null;
+                                effectObj.transform.SetParent(null);
                                 effectObj.transform.rotation = (Quaternion)effectRotation;
                             } else {
                                 effectObj.transform.localRotation = m_Dir;
                             }                            
                             effectObj.transform.localScale = m_Scale;
                             if (!m_IsAttach) {
-                                effectObj.transform.parent = null;
+                                effectObj.transform.SetParent(null);
                             }
                             EffectManager em = instance.CustomDatas.GetData<EffectManager>();
                             if (em == null) {
@@ -251,7 +251,7 @@ namespace GameFramework.Skill.Trigers
                     }
                     m_RealDeleteTime = m_DeleteTime.Get(instance);
                     if (m_RealDeleteTime <= 0) {
-                        m_RealDeleteTime = EntityController.Instance.GetImpactDuration(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                        m_RealDeleteTime = EntityController.Instance.GetImpactDuration(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                     }
                     if (m_RealDeleteTime <= 0) {
                         LogSystem.Warn("[skill:{0} dsl skill id:{1}] targeteffect deleteTime <= 0.", senderObj.SkillId, instance.DslSkillId);
@@ -277,12 +277,12 @@ namespace GameFramework.Skill.Trigers
                         }
                         effectObj.SetActive(false);
                         if (null != bone) {
-                            effectObj.transform.parent = bone;
+                            effectObj.transform.SetParent(bone);
                             effectObj.transform.localPosition = m_Pos;
                             effectObj.transform.localRotation = m_Dir;
                             effectObj.transform.localScale = m_Scale;
                             if (!m_IsAttach) {
-                                effectObj.transform.parent = null;
+                                effectObj.transform.SetParent(null);
                             }
                             EffectManager em = instance.CustomDatas.GetData<EffectManager>();
                             if (em == null) {
@@ -420,9 +420,9 @@ namespace GameFramework.Skill.Trigers
                         effectObj.transform.position = pos;
                         effectObj.transform.localScale = m_Scale;
                         if (m_IsRotateRelativeUser) {
-                            effectObj.transform.parent = obj.transform;
+                            effectObj.transform.SetParent(obj.transform);
                             effectObj.transform.localRotation = m_Dir;
-                            effectObj.transform.parent = null;
+                            effectObj.transform.SetParent(null);
                         } else {
                             effectObj.transform.localRotation = m_Dir;
                         }
@@ -544,7 +544,7 @@ namespace GameFramework.Skill.Trigers
                                     args.Add(pair.Key, pair.Value);
                                 }
                             }
-                            EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, targetId, emitBone, emitImpact, m_Pos, IsFinal, args);
+                            EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, senderId, targetId, emitBone, emitImpact, m_Pos, IsFinal, args);
                         }
                     } else {
                         LogSystem.Warn("[skill:{0} dsl skill id:{1}] emit effect is empty.", senderObj.SkillId, instance.DslSkillId);
@@ -662,12 +662,12 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {
                 if (curSectionTime >= StartTime) {
-                    int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                    int targetType = EntityController.Instance.GetTargetType(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
                     int senderId = 0;
                     if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                        senderId = senderObj.ActorId;
+                        senderId = senderObj.ObjId;
                     } else {
-                        senderId = senderObj.TargetActorId;
+                        senderId = senderObj.TargetObjId;
                     }
                     string effectPath = m_EffectPath.Get(instance, senderObj.ConfigData.resources);
                     string emitBone = m_EmitBone.Get(instance);
@@ -689,7 +689,7 @@ namespace GameFramework.Skill.Trigers
                                 args.Add(pair.Key, pair.Value);
                             }
                         }
-                        EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ActorId, senderId, objId, emitBone, emitImpact, m_Pos, IsFinal, args);
+                        EntityController.Instance.TrackImpact(senderObj.ConfigData, senderObj.Seq, senderObj.ObjId, senderId, objId, emitBone, emitImpact, m_Pos, IsFinal, args);
                         ++ct;
                         if (senderObj.ConfigData.maxAoeTargetCount <= 0 || ct < senderObj.ConfigData.maxAoeTargetCount) {
                             return true;

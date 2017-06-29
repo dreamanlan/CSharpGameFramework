@@ -571,10 +571,7 @@ namespace Lobby
             RoomInfo room = m_LobbyInfo.GetRoomByID(roomId);
             if (null != room) {
                 int campId = (int)CampIdEnum.Blue;
-                TableConfig.Level cfg = TableConfig.LevelProvider.Instance.GetLevel(room.SceneType);
-                if (null != cfg) {
-                    campId = (int)CampIdEnum.FreedomCamp_Begin + info.WorldId;//room.GenNextCampId();
-                }
+
                 room.AddUsers(campId, info.Guid);
                 Msg_LR_EnterScene enterSceneMsg = new Msg_LR_EnterScene();
                 enterSceneMsg.UserGuid = info.Guid;

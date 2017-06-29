@@ -1,11 +1,12 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 require "AiCommand";
 
 AiKeepAway = {
 	__new_object = function(...)
-		return newobject(AiKeepAway, nil, {}, ...);
+		return newobject(AiKeepAway, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = AiKeepAway;
@@ -25,7 +26,7 @@ AiKeepAway = {
 
 		local instance_methods = {
 			Clone = function(this)
-				return newobject(AiKeepAway, "ctor", {});
+				return newobject(AiKeepAway, "ctor", nil);
 			end,
 			ResetState = function(this)
 				this.m_KeepAwayStarted = false;
@@ -71,7 +72,7 @@ AiKeepAway = {
 			local instance_fields = {
 				m_ObjId = 0,
 				m_SkillInfo = __cs2lua_nil_field_value,
-				m_Ratio = 1,
+				m_Ratio = 1.00,
 				m_KeepAwayStarted = false,
 			};
 			return instance_fields;
@@ -92,5 +93,7 @@ AiKeepAway = {
 		return defineclass(nil, "AiKeepAway", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 AiKeepAway.__define_class();

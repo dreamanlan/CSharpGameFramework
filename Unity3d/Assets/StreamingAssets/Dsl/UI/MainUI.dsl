@@ -15,9 +15,13 @@ story(main)
       onevent("button","btn3","Panel/Button3");
       onevent("button","btn4","Panel/Button4");
     };
+    @window.SetActive(changetype(1,"bool"));
     installplugin("MainUI/Panel/TextBkg/ScrollView/Viewport/Content", "UiScrollInfo", 1, 0);
     installplugin("MainUI/Panel/Image/RawImage", "MiniMap", 1, 0);
-    @window.SetActive(changetype(1,"bool"));
+  };
+  onmessage("set_map_image")
+  {
+    sendgfxmessage("MainUI/Panel/Image/RawImage", "CallScript", "SetImage", $0);
   };
   onmessage("push_tip_info")
   {

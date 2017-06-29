@@ -1,6 +1,7 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 AiCommand = {
 	__define_class = function()
@@ -31,9 +32,9 @@ AiCommand = {
 			end,
 			AiGetValidPosition = function(npc, target, maxDistance)
 				local navMeshHit;
-				local __compiler_invoke_38; __compiler_invoke_38, navMeshHit = UnityEngine.NavMesh.SamplePosition(newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", {}, target.X, target.Y, target.Z), __cs2lua_out, maxDistance, -1);
+				local __compiler_invoke_39; __compiler_invoke_39, navMeshHit = UnityEngine.AI.NavMesh.SamplePosition(newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, target.X, target.Y, target.Z), __cs2lua_out, maxDistance, -1);
 				if (((not System.Single.IsInfinity(navMeshHit.position.x)) and (not System.Single.IsInfinity(navMeshHit.position.y))) and (not System.Single.IsInfinity(navMeshHit.position.z))) then
-					return newexternobject(ScriptRuntime.Vector3, "ScriptRuntime.Vector3", "ctor", {}, navMeshHit.position.x, navMeshHit.position.y, navMeshHit.position.z);
+					return newexternobject(ScriptRuntime.Vector3, "ScriptRuntime.Vector3", "ctor", nil, navMeshHit.position.x, navMeshHit.position.y, navMeshHit.position.z);
 				end;
 				return target;
 			end,
@@ -93,5 +94,7 @@ AiCommand = {
 		return defineclass(nil, "AiCommand", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
 	end,
 };
+
+
 
 AiCommand.__define_class();

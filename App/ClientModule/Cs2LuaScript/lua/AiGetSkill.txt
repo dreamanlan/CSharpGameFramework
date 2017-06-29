@@ -1,10 +1,11 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 AiGetSkill = {
 	__new_object = function(...)
-		return newobject(AiGetSkill, nil, {}, ...);
+		return newobject(AiGetSkill, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = AiGetSkill;
@@ -27,7 +28,7 @@ AiGetSkill = {
 				this.m_Proxy = result;
 			end,
 			Clone = function(this)
-				return newobject(AiGetSkill, "ctor", {});
+				return newobject(AiGetSkill, "ctor", nil);
 			end,
 			Evaluate = function(this, instance, _params)
 				local args; args = _params.Values;
@@ -61,7 +62,7 @@ AiGetSkill = {
 					if (skillId > 0) then
 						local skillInfo; skillInfo = npc:GetSkillStateInfo():GetSkillInfoById(skillId);
 						if (nil == skillInfo) then
-							skillInfo = newexternobject(GameFramework.SkillInfo, "GameFramework.SkillInfo", "ctor", {}, skillId);
+							skillInfo = newexternobject(GameFramework.SkillInfo, "GameFramework.SkillInfo", "ctor", nil, skillId);
 							npc:GetSkillStateInfo():AddSkill(skillInfo);
 						end;
 						this.m_Proxy.Value = skillInfo;
@@ -96,5 +97,7 @@ AiGetSkill = {
 		return defineclass(nil, "AiGetSkill", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 AiGetSkill.__define_class();

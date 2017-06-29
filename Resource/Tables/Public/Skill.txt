@@ -5,7 +5,7 @@ id		desc	type	icon	impacttoself	impact	targetType	aoeType	aoeSize	aoeAngleOrLeng
 1	出生		0	0	0	0	1	0	0	0	0	Skill/born.dsl
 2	死亡		0	0	0	0	1	0	0	0	0	Skill/dead.dsl
 3	普通砍		0	0	0	0	1	0	0	0	0	Skill/attack.dsl
-4	群体攻击		0	0	0	0	1	1	5	0	0	Skill/aoeattack.dsl
+4	群体攻击		0	0	0	0	1	1	10	0	0	Skill/aoeattack.dsl
 5	魔法攻击		0	16	0	0	1	0	0	0	0	Skill/magicattack.dsl
 6	加buff		0	16	0	0	1	0	0	0	0	Skill/addbuff.dsl
 7	buff		0	16	0	0	1	0	0	0	0	Skill/buff.dsl

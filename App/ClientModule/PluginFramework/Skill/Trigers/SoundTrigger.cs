@@ -129,22 +129,22 @@ namespace GameFramework.Skill.Trigers
             if (m_IsBoneSound) {
                 Transform attach_node = TriggerUtil.GetChildNodeByName(obj, m_BoneName);
                 if (attach_node != null) {
-                    audiosource_obj.transform.parent = attach_node;
+                    audiosource_obj.transform.SetParent(attach_node);
                     audiosource_obj.transform.rotation = Quaternion.identity;
                     audiosource_obj.transform.position = Vector3.zero;
                     if (!m_IsAttach) {
-                        audiosource_obj.transform.parent = null;
+                        audiosource_obj.transform.SetParent(null);
                     }
                 } else {
                     audiosource_obj.transform.position = obj.transform.TransformPoint(m_Position);
                     if (m_IsAttach) {
-                        audiosource_obj.transform.parent = obj.transform;
+                        audiosource_obj.transform.SetParent(obj.transform);
                     }
                 }
             } else {
                 audiosource_obj.transform.position = obj.transform.TransformPoint(m_Position);
                 if (m_IsAttach) {
-                    audiosource_obj.transform.parent = obj.transform;
+                    audiosource_obj.transform.SetParent(obj.transform);
                 }
             }
             return audiosource_obj.GetComponentInChildren<AudioSource>();

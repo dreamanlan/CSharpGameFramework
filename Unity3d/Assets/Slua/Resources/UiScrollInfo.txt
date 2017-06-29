@@ -1,10 +1,11 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 UiScrollInfo = {
 	__new_object = function(...)
-		return newobject(UiScrollInfo, nil, {}, ...);
+		return newobject(UiScrollInfo, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = UiScrollInfo;
@@ -16,7 +17,7 @@ UiScrollInfo = {
 
 		local static_fields_build = function()
 			local static_fields = {
-				c_MinTextHeight = 24,
+				c_MinTextHeight = 24.00,
 			};
 			return static_fields;
 		end;
@@ -65,16 +66,16 @@ UiScrollInfo = {
 						if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, content) then
 							local w;
 							local h;
-							local __compiler_invoke_52; __compiler_invoke_52, w, h = this:CalcBounds(text, content, newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", {}, rectTrans.rect.width, rectTrans.rect.height), (this.m_Width - dw), __cs2lua_out, __cs2lua_out);
-							if (h < 24) then
-								h = 24;
+							local __compiler_invoke_52; __compiler_invoke_52, w, h = this:CalcBounds(text, content, newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, rectTrans.rect.width, rectTrans.rect.height), (this.m_Width - dw), __cs2lua_out, __cs2lua_out);
+							if (h < 24.00) then
+								h = 24.00;
 							end;
 							content.text = text;
-							rectTrans.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", {}, 0, this.m_Top, 0);
-							rectTrans.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", {}, (this.m_Width - dw), (h + dh));
+							rectTrans.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, 0, this.m_Top, 0);
+							rectTrans.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, (this.m_Width - dw), (h + dh));
 							this.m_Top = this.m_Top - (h + dh);
-							this.m_RectTransform.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", {}, 0, 0, 0);
-							this.m_RectTransform.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", {}, this.m_RectTransform.sizeDelta.x, (dh - this.m_Top));
+							this.m_RectTransform.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, 0, 0, 0);
+							this.m_RectTransform.sizeDelta = newexternobject(UnityEngine.Vector2, "UnityEngine.Vector2", "ctor", nil, this.m_RectTransform.sizeDelta.x, (dh - this.m_Top));
 						end;
 					end;
 				end;
@@ -95,7 +96,7 @@ UiScrollInfo = {
 					textSetting.verticalOverflow = 1;
 					textSetting.horizontalOverflow = 0;
 					textSetting.updateBounds = true;
-					local generator; generator = newexternobject(UnityEngine.TextGenerator, "UnityEngine.TextGenerator", "ctor", {});
+					local generator; generator = newexternobject(UnityEngine.TextGenerator, "UnityEngine.TextGenerator", "ctor", nil);
 					local pw; pw = generator:GetPreferredWidth(txt, textSetting);
 					if generator:Populate(txt, textSetting) then
 						local w; w = generator.rectExtents.width;
@@ -146,5 +147,7 @@ UiScrollInfo = {
 		return defineclass(nil, "UiScrollInfo", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 UiScrollInfo.__define_class();

@@ -19,13 +19,15 @@ story(battle_main)
     };
     camerafollow(1000);
     publishgfxevent("loading_complete", "ui");
+    
+    startstory("auto_battle");
   };
   onmessage("dialog_over",2)
   {
     sendgfxmessage("Main Camera", "LightScreen", 3000);
     log("scene2");
     loop(26){
-    	@pt = getcomponent("pt"+($$/7),"PositionMarker").Position;
+    	@pt = getcomponent("pt"+($$%7),"PositionMarker").Position;
       createnpc(1006+$$,rndvector3(@pt,10),0,4,$$+6,"ai_normal",stringlist("Ai/ailogic_normal.dsl"));
     };
     highlightprompt(0,"Tip_1");

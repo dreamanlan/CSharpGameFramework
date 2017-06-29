@@ -1,11 +1,12 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 require "AiLogicUtility";
 
 AiSelectSkill = {
 	__new_object = function(...)
-		return newobject(AiSelectSkill, nil, {}, ...);
+		return newobject(AiSelectSkill, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = AiSelectSkill;
@@ -28,7 +29,7 @@ AiSelectSkill = {
 				this.m_Proxy = result;
 			end,
 			Clone = function(this)
-				return newobject(AiSelectSkill, "ctor", {});
+				return newobject(AiSelectSkill, "ctor", nil);
 			end,
 			Evaluate = function(this, instance, _params)
 				local args; args = _params.Values;
@@ -65,5 +66,7 @@ AiSelectSkill = {
 		return defineclass(nil, "AiSelectSkill", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 AiSelectSkill.__define_class();

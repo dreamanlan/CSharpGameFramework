@@ -32,6 +32,13 @@ class MiniMap : ITickPlugin
     }
     public void Call(string name, params object[] args)
     {
+        if (name == "SetImage") {
+            string res = args[0] as string;
+            var obj = UiResourceSystem.Instance.GetUiResource(res) as Texture2D;
+            if (null != obj) {
+                m_RawImage.texture = obj;
+            }
+        }
     }
 
     private RawImage m_RawImage = null;

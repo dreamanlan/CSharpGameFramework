@@ -1,10 +1,11 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 AiStateId = {
-	Combat = 101,
-	Gohome = 102,
+	["Combat"] = 101,
+	["Gohome"] = 102,
 };
 
 rawset(AiStateId, "Value2String", {

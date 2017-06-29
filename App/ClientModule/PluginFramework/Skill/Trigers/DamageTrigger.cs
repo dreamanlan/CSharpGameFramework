@@ -30,7 +30,7 @@ namespace GameFramework.Skill.Trigers
             }
             if (curSectionTime >= StartTime) {
                 if (senderObj.ConfigData.type != (int)SkillOrImpactType.Skill) {
-                    EntityController.Instance.ImpactDamage(senderObj.TargetActorId, senderObj.ActorId, senderObj.SkillId, senderObj.Seq, IsFinal);
+                    EntityController.Instance.ImpactDamage(senderObj.TargetObjId, senderObj.ObjId, senderObj.SkillId, senderObj.Seq, IsFinal);
                 }
                 return false;
             } else {
@@ -80,11 +80,11 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) {
-                EntityController.Instance.RemoveState(senderObj.ActorId, m_State);
+                EntityController.Instance.RemoveState(senderObj.ObjId, m_State);
                 return false;
             }
             if (curSectionTime >= StartTime) {
-                EntityController.Instance.AddState(senderObj.ActorId, m_State);
+                EntityController.Instance.AddState(senderObj.ObjId, m_State);
                 return false;
             } else {
                 return true;
@@ -132,11 +132,11 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) {
-                EntityController.Instance.RemoveState(senderObj.ActorId, m_State);
+                EntityController.Instance.RemoveState(senderObj.ObjId, m_State);
                 return false;
             }
             if (curSectionTime >= StartTime) {
-                EntityController.Instance.RemoveState(senderObj.ActorId, m_State);
+                EntityController.Instance.RemoveState(senderObj.ObjId, m_State);
                 return false;
             } else {
                 return true;
@@ -183,11 +183,11 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) {
-                EntityController.Instance.RemoveShield(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                EntityController.Instance.RemoveShield(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
                 return false;
             }
             if (curSectionTime >= StartTime) {
-                EntityController.Instance.AddShield(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                EntityController.Instance.AddShield(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
                 return false;
             } else {
                 return true;
@@ -227,11 +227,11 @@ namespace GameFramework.Skill.Trigers
             if (null == senderObj) return false;
             GameObject obj = senderObj.GfxObj;
             if (null == obj) {
-                EntityController.Instance.RemoveShield(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                EntityController.Instance.RemoveShield(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
                 return false;
             }
             if (curSectionTime >= StartTime) {
-                EntityController.Instance.RemoveShield(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                EntityController.Instance.RemoveShield(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
                 return false;
             } else {
                 return true;

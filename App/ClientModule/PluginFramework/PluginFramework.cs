@@ -126,6 +126,8 @@ namespace GameFramework
             AttrCalculator.LoadConfig();
             LoadTableConfig();
 
+            ResourceSystem.Instance.Init();
+
             m_SceneContextInfo.OnHighlightPrompt = (int userId, string dict, object[] args) => {
                 PluginFramework.Instance.HighlightPrompt(dict, args);
             };
@@ -868,11 +870,11 @@ namespace GameFramework
             if (null == m_SelectedEffect) {
                 return;
             }
-            m_SelectedEffect.transform.parent = null;
+            m_SelectedEffect.transform.SetParent(null);
             if (newSelect > 0) {
                 EntityViewModel viewModel = EntityController.Instance.GetEntityViewById(newSelect);
                 if (null != viewModel && null != viewModel.Actor) {
-                    m_SelectedEffect.transform.parent = viewModel.Actor.transform;
+                    m_SelectedEffect.transform.SetParent(viewModel.Actor.transform);
                     m_SelectedEffect.transform.localPosition = UnityEngine.Vector3.zero;
                     m_SelectedEffect.transform.localRotation = UnityEngine.Quaternion.identity;
                     m_SelectedEffect.SetActive(true);

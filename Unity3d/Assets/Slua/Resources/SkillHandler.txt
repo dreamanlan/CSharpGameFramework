@@ -1,6 +1,7 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 SkillHandler = {
 	__define_class = function()
@@ -22,5 +23,7 @@ SkillHandler = {
 		return defineclass(nil, "SkillHandler", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
 	end,
 };
+
+
 
 SkillHandler.__define_class();

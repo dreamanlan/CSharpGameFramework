@@ -1,10 +1,11 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 TargetSelectTypeEnum = {
-	RANDOM = 0,
-	NEAREST = 1,
+	["RANDOM"] = 0,
+	["NEAREST"] = 1,
 };
 
 rawset(TargetSelectTypeEnum, "Value2String", {

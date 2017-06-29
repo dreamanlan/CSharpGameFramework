@@ -60,7 +60,7 @@ public class Track2Trigger : ISkillTriggerPlugin
                         dest.y += 1.5f;
                         LogSystem.Warn("[skill:{0} dsl skill id:{1}] trackbullet bone {2} can't find.", senderObj.SkillId, instance.DslSkillId, trackBone);
                     }
-                    m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                    m_StartPos = EntityController.Instance.GetImpactSenderPosition(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                     object speedObj;
                     if (instance.Variables.TryGetValue("emitSpeed", out speedObj)) {
                         m_Speed = (float)speedObj;
@@ -157,7 +157,7 @@ public class Track2Trigger : ISkillTriggerPlugin
                                     args["hitEffectRotation"] = m_HitEffectRotation;
                                 else
                                     args.Add("hitEffectRotation", m_HitEffectRotation);
-                                EntityController.Instance.TrackSendImpact(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, impactId, args);
+                                EntityController.Instance.TrackSendImpact(senderObj.ObjId, senderObj.SkillId, senderObj.Seq, impactId, args);
                                 //m_IsHit = true;
                             }
                         }

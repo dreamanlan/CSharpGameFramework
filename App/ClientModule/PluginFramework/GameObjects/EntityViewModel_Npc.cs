@@ -201,6 +201,8 @@ namespace GameFramework
                     Agent.isStopped = false;
                 } catch {
                     m_Agent.enabled = true;
+
+                    LogSystem.Error("MoveTo({0}, {1}, {2}) agent {3}({4}) failed.", x, y, z, m_ObjId, m_Entity.GetUnitId());
                 }
             }
             if (null != Animator) {

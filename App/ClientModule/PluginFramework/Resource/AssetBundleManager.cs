@@ -1,28 +1,43 @@
-﻿using System;
+﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
+using System.IO;
 
 namespace GameFramework
 {
     public class AssetBundleManager
     {
-        public void Init()
-        {
-
-        }
         public bool Contains(string res)
         {
+            string path = GetAssetBundleFile(res);            
+            if (File.Exists(path)) {
+                return true;
+            }
             return false;
         }
         public UnityEngine.Object Load(string res)
         {
-            return null;
+            string name = GetAssetName(res);
+            string path = GetAssetBundleFile(res);
+            AssetBundle ab = AssetBundle.LoadFromFile(path);
+            //Debug.LogWarningFormat("load {0}({1}) from assetbundle ({2}).", res, path, ab.name);
+            Object obj = ab.LoadAsset(name);
+            ab.Unload(false);
+            return obj;
         }
-        public void Unload(string res)
+
+        private string GetAssetName(string res)
         {
-
+            string name = Path.GetFileNameWithoutExtension(res);
+            return name.ToLower();
         }
-
+        private string GetAssetBundleFile(string res)
+        {
+            string path = HomePath.GetAbsolutePath(res);
+            path = Path.ChangeExtension(path, ".ab");
+            return path.ToLower();
+        }
+        
         public static AssetBundleManager Instance
         {
             get { return s_Instance; }

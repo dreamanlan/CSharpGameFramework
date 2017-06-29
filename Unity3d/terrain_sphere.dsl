@@ -1,13 +1,13 @@
 input
 {
-  circle(256,256,180);
+  circle(64,64,32);
 }
 height
 {
   $x=arg(0);
   $y=arg(1);
-  $ds = distsqr($x,$y,256,256);
-  height = sqrt(180*180-$ds)/180;
+  $ds = distsqr($x,$y,64,64);
+  height = sqrt(32*32-$ds)/32;
 }
 alphamap
 {

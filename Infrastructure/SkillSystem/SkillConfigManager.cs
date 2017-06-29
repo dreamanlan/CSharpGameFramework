@@ -102,14 +102,15 @@ namespace SkillSystem
                         if (callData.HaveParam()) {
                             dslId = int.Parse(callData.GetParamId(0));
                         }
-                        if (!m_SkillInstances.ContainsKey(dslId)) {
                             SkillInstance instance = new SkillInstance();
                             instance.Init(funcData);
                             instance.OuterDslSkillId = dslId;
+                        if (!m_SkillInstances.ContainsKey(dslId)) {
                             m_SkillInstances.Add(dslId, instance);
-
-                            LogSystem.Debug("ParseSkill {0}", dslId);
+                        } else {
+                            m_SkillInstances[dslId] = instance;
                         }
+                        LogSystem.Debug("ParseSkill {0}", dslId);
                     }
                 }
             }

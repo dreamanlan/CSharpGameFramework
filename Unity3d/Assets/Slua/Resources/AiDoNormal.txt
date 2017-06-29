@@ -1,12 +1,13 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 require "AiCommand";
 require "AiLogicUtility";
 
 AiDoNormal = {
 	__new_object = function(...)
-		return newobject(AiDoNormal, nil, {}, ...);
+		return newobject(AiDoNormal, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = AiDoNormal;
@@ -27,7 +28,7 @@ AiDoNormal = {
 
 		local instance_methods = {
 			Clone = function(this)
-				return newobject(AiDoNormal, "ctor", {});
+				return newobject(AiDoNormal, "ctor", nil);
 			end,
 			ResetState = function(this)
 				this.m_ParamReaded = false;
@@ -90,7 +91,7 @@ AiDoNormal = {
 					local targetPos; targetPos = attackTarget:GetMovementStateInfo():GetPosition3D();
 					local dir; dir = GameFramework.Geometry.GetYRadian(srcPos, targetPos);
 					local curDir; curDir = npc:GetMovementStateInfo():GetFaceDir();
-					if (UnityEngine.Mathf.Abs((dir - curDir)) > 0.157) then
+					if (UnityEngine.Mathf.Abs((dir - curDir)) > 0.16) then
 						npc:GetMovementStateInfo():SetWantedFaceDir(dir);
 					else
 						AiCommand.AiStopPursue(npc);
@@ -159,5 +160,7 @@ AiDoNormal = {
 		return defineclass(nil, "AiDoNormal", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 AiDoNormal.__define_class();

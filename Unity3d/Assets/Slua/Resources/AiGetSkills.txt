@@ -1,10 +1,11 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 AiGetSkills = {
 	__new_object = function(...)
-		return newobject(AiGetSkills, nil, {}, ...);
+		return newobject(AiGetSkills, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = AiGetSkills;
@@ -27,7 +28,7 @@ AiGetSkills = {
 				this.m_Proxy = result;
 			end,
 			Clone = function(this)
-				return newobject(AiGetSkills, "ctor", {});
+				return newobject(AiGetSkills, "ctor", nil);
 			end,
 			Evaluate = function(this, instance, _params)
 				local args; args = _params.Values;
@@ -63,5 +64,7 @@ AiGetSkills = {
 		return defineclass(nil, "AiGetSkills", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 AiGetSkills.__define_class();

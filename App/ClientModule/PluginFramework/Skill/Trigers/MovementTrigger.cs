@@ -224,7 +224,7 @@ namespace GameFramework.Skill.Trigers
                 targetPos = target.transform.position;
             }
             if (m_IsForRoundMove) {
-                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref targetPos);
+                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ObjId, senderObj.TargetObjId, ref targetPos);
                 m_TargetPos = targetPos;
             } else if (null == target) {
                 return;
@@ -329,7 +329,7 @@ namespace GameFramework.Skill.Trigers
                         targetPos = targetObj.transform.position;
                     }
                     if (m_IsForRoundMove) {
-                        TriggerUtil.GetSkillStartPosition(m_StartPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref targetPos);
+                        TriggerUtil.GetSkillStartPosition(m_StartPos, senderObj.ConfigData, instance, senderObj.ObjId, senderObj.TargetObjId, ref targetPos);
                     }
                     if (targetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
                         float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(m_StartPos.x, m_StartPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
@@ -502,7 +502,7 @@ namespace GameFramework.Skill.Trigers
                         targetPos = targetObj.transform.position;
                     }
                     if (m_IsForRoundMove) {
-                        TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref targetPos);
+                        TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ObjId, senderObj.TargetObjId, ref targetPos);
                     }
                     if (targetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
                         float degree = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));

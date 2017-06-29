@@ -27,16 +27,16 @@ CS.System.Double = CS.System.Double or __basic_type_func;
 CS.System.String = CS.System.String or __basic_type_func;
 CS.System.Collections = CS.System.Collections or {};
 CS.System.Collections.Generic = CS.System.Collections.Generic or {};
-CS.System.Collections.Generic.List_T = {__cs2lua_defined = true, __class_name = "CS.System.Collections.Generic.List_T", __exist = function(k) return false; end};
-CS.System.Collections.Generic.Queue_T = {__cs2lua_defined = true, __class_name = "CS.System.Collections.Generic.Queue_T", __exist = function(k) return false; end};
-CS.System.Collections.Generic.Stack_T = {__cs2lua_defined = true, __class_name = "CS.System.Collections.Generic.Stack_T", __exist = function(k) return false; end};
-CS.System.Collections.Generic.Dictionary_TKey_TValue = {__cs2lua_defined = true, __class_name = "CS.System.Collections.Generic.Dictionary_TKey_TValue", __exist = function(k) return false; end};
-CS.System.Collections.Generic.HashSet_T = {__cs2lua_defined = true, __class_name = "CS.System.Collections.Generic.HashSet_T", __exist = function(k) return false; end};
+CS.System.Collections.Generic.List_T = {__cs2lua_defined = true, __type_name = "CS.System.Collections.Generic.List_T", __exist = function(k) return false; end};
+CS.System.Collections.Generic.Queue_T = {__cs2lua_defined = true, __type_name = "CS.System.Collections.Generic.Queue_T", __exist = function(k) return false; end};
+CS.System.Collections.Generic.Stack_T = {__cs2lua_defined = true, __type_name = "CS.System.Collections.Generic.Stack_T", __exist = function(k) return false; end};
+CS.System.Collections.Generic.Dictionary_TKey_TValue = {__cs2lua_defined = true, __type_name = "CS.System.Collections.Generic.Dictionary_TKey_TValue", __exist = function(k) return false; end};
+CS.System.Collections.Generic.HashSet_T = {__cs2lua_defined = true, __type_name = "CS.System.Collections.Generic.HashSet_T", __exist = function(k) return false; end};
 CS.System.Array = CS.System.Array or {};
 
 CS.System.Collections.Generic.MyDictionary_TKey_TValue = CS.System.Collections.Generic.Dictionary_TKey_TValue;
 
-__cs2lua_out = (Slua and Slua.out) or {};
+__cs2lua_out = {};
 __cs2lua_nil_field_value = {};
 
 __cs2lua_special_integer_operators = { "/", "%", "+", "-", "*", "<<", ">>", "&", "|", "^", "~" };
@@ -217,82 +217,68 @@ function typeas(obj, t, isEnum)
  	end;
 end;
 
+function __typeis_check_xlua(objType, t)
+	local tType = typeof(t);
+	if objType == tType then
+		return true;
+	end
+	if objType:IsSubclassOf(tType) then
+		return true;
+	end
+	return false;
+end
+
 function typeis(obj, t, isEnum)
-  local meta = getmetatable(obj);
-  local meta2 = getmetatable(t);
-  local tn1 = nil;
-  local tn2 = nil;
-  if meta then
-  	tn1 = rawget(meta, "__fullname");
-  end;
-  if meta2 then
-  	tn2 = rawget(meta2, "__fullname");
-  end;
-  if meta then
-    if type(obj)=="userdata" then
-      if tn1 and tn1==tn2 then
-      	return true;
-      end;
-      --check slua parent metatable chain
-      local parent = rawget(meta, "__parent");
-      while parent ~= nil do
-      	tn1 = rawget(parent, "__fullname");
-      	if tn1 and tn1==tn2 then
-      		return true;
-      	end;
-      	parent = rawget(parent, "__parent");
-      end;
-    else
-  	  if rawget(meta, "__class") == t then
-  		  return true;
-  	  end;
-      local intfs = rawget(meta, "__interfaces");
-      if intfs then
-        for i,v in ipairs(intfs) do
-          if v == tn2 then
-            return true;
-          end;
-        end;
-      end;
-  	  --check cs2lua base class chain
-  	  local baseClass = rawget(meta, "__base_class");
-  	  local lastCheckedClass = meta;
-  	  while baseClass ~= nil do  	  
-    		if baseClass == t then
-    			return true;
-    		end;
-    		intfs = rawget(meta, "__interfaces");
-        if intfs then
-          for i,v in ipairs(intfs) do
-            if v == tn2 then
-              return true;
-            end;
-          end;
-        end;
-    		if rawget(baseClass, "__cs2lua_defined") then
-    			baseClass = rawget(baseClass, "__base_class");
-    		else
-    			lastCheckedClass = baseClass;
-    			break;
-    		end;
-    	end;
-    	--try slua base class and parent metatable chain 
-    	if not rawget(lastCheckedClass, "__cs2lua_defined") then
-    		local meta3 = getmetatable(lastCheckedClass);
-    		if meta3 then
-		      parent = rawget(meta3, "__parent");
-		      while parent ~= nil do
-		      	tn1 = rawget(parent, "__fullname");
-		      	if tn1 and tn1 == tn2 then
-		      		return true;
-		      	end;
-		      	parent = rawget(parent, "__parent");
-		      end;
-	      end;
-    	end;
-    end;
-  end;
-  return false;
+	local meta = getmetatable(obj);
+	local intfsname = nil;
+	if meta then
+		if type(obj)=="userdata" then
+			return __typeis_check_xlua(obj:GetType(), t);
+		else
+			if rawget(meta, "__class") == t then
+				return true;
+			end;
+			local intfs = rawget(meta, "__interfaces");
+			if intfs then
+				intfsname = rawget(t, "__type_name");
+				if intfsname ~= nil then
+					for i,v in ipairs(intfs) do
+						if v == intfsname then
+							return true;
+						end;
+					end;
+				end
+			end;
+			--check cs2lua base class chain
+			local baseClass = rawget(meta, "__base_class");
+			local lastCheckedClass = meta;
+			intfsname = rawget(t, "__type_name");			
+			while baseClass ~= nil do
+				if baseClass == t then
+					return true;
+				end;
+				intfs = rawget(meta, "__interfaces");
+				if intfs ~= nil and intfsname ~= nil then
+					for i,v in ipairs(intfs) do
+						if v == intfsname then
+							return true;
+						end;
+					end;
+				end;
+				if rawget(baseClass, "__cs2lua_defined") then
+					baseClass = rawget(baseClass, "__base_class");
+				else
+					lastCheckedClass = baseClass;
+					break;
+				end;
+			end;
+			--try xlua base class and parent metatable chain
+			if not rawget(lastCheckedClass, "__cs2lua_defined") then
+				return __typeis_check_xlua(typeof(lastCheckedClass), t);
+			end;
+		end;
+	end;
+	return false;
 end;
 
 function __do_eq(v1,v2)
@@ -428,14 +414,14 @@ __mt_index_of_array = function(t, k)
     return function(obj, v) table.insert(obj, v); end;
   elseif k=="Remove" then
     return function(obj, p)
-      local pos = 1;
+    	local pos = 0;
       local ret = nil;
-      for k,v in pairs(obj) do		        
+      for i,v in ipairs(obj) do		        
         if isequal(v,p) then
+        	pos = i;
           ret=v;
           break;
         end;
-        pos=pos+1;		        
       end;
       if ret then
         table.remove(obj,pos);
@@ -444,7 +430,19 @@ __mt_index_of_array = function(t, k)
     end;
   elseif k=="RemoveAt" then
     return function(obj, ix)
-      table.remove(obj,ix+1);
+      table.remove(obj, ix+1);
+    end;
+  elseif k=="RemoveAll" then
+    return function(obj, pred)
+    	local deletes = {};
+      for i,v in ipairs(obj) do		        
+        if pred(v) then
+        	table.insert(deletes, i);
+        end;
+      end;
+      for i,v in ipairs(deletes) do
+      	table.remove(obj, v);
+      end;
     end;
   elseif k=="AddRange" then
     return function(obj, coll)
@@ -678,7 +676,7 @@ __mt_index_of_hashset = function(t, k)
   elseif k=="CopyTo" then
     return function(obj, arr)
       for k,v in pairs(obj) do
-	      k = __wrap_if_string(l);
+	      k = __wrap_if_string(k);
         table.insert(arr,k);
       end;
     end;
@@ -828,14 +826,14 @@ end;
 function wrapenumerable(func)
 	return function(...)
 		local args = {...};
-		return UnityEngine.WrapEnumerator(coroutine.create(function()
-			func(unpack(args));
+		return WrapEnumerator(coroutine.create(function()
+			func(table.unpack(args));
 		end));
 	end;
 end;
 
 function wrapyield(yieldVal, isEnumerableOrEnumerator, isUnityYield)
-	UnityEngine.Yield(yieldVal);
+	Yield(yieldVal);
 end;
 
 LuaConsole = {
@@ -886,7 +884,7 @@ function defineclass(base, className, static, static_methods, static_fields_buil
     local class_props = static_props or {};
     local class_events = static_events or {};
     class["__cs2lua_defined"] = true;
-    class["__class_name"] = className;
+    class["__type_name"] = className;
     class["__is_value_type"] = is_value_type;
     class["__interfaces"] = interfaces;
     class["__interface_map"] = interface_map;
@@ -1004,11 +1002,27 @@ function defineclass(base, className, static, static_methods, static_fields_buil
               end;
               return __find_base_obj_key(k);
             end;
+			
+			local function __is_monobehaviour_instance(self)
+				local mt = getmetatable(self)
+				if mt == nil then
+					return false;
+				end
+				
+				local clsTbl = mt.__class;
+				local baseTbl = clsTbl.__base_class;
+				
+				if baseTbl == CS.UnityEngine.MonoBehaviour then
+					return true;
+				end
+				
+				return false;
+			end
             
             setmetatable(obj, {
             		__class = class,
             		__cs2lua_defined = true,
-            		__class_name = className,
+            		__type_name = className,
             		__is_value_type = is_value_type,
 				    		__interfaces = interfaces,
 				    		__interface_map = interface_map,
@@ -1048,7 +1062,18 @@ function defineclass(base, className, static, static_methods, static_fields_buil
                       end;
                     end;
                     if __find_base_obj_key(k) then
-                      ret = baseObj[k];
+                      ret = baseObj[k];					
+					  if type(ret) == 'function' and __is_monobehaviour_instance(t) then
+						
+							function __call_with_monobehaviour(obj, ...)
+								return ret(obj.MonoBehaviour, ...);
+							end
+							return __call_with_monobehaviour;
+						--return function(obj, ...)
+						--	return ret(obj.MonoBehaviour, ...)
+						--end
+					  end
+					
                       return ret;
                     end;
 				            --简单支持反射方法:GetType()
@@ -1315,11 +1340,16 @@ function delegationset(isevent, t, intf, k, handler)
   if k then
     v = t[k];
   end;
-  local n = #v;
-  for i=1,n do
-    table.remove(v);
+  if not v or type(v)~="table" then
+  	--取不到值或者值不是表，则有可能是普通的特性访问
+  	t[k] = handler;
+  else
+	  local n = #v;
+	  for i=1,n do
+	    table.remove(v);
+	  end;
+	  table.insert(v,handler);
   end;
-  table.insert(v,handler);
 end;
 function delegationadd(isevent, t, intf, k, handler)
   local v = t;
@@ -1347,7 +1377,7 @@ function delegationremove(isevent, t, intf, k, handler)
   end;
 end;
 
-function externdelegationcomparewithnil(t, inf, k, isequal)
+function externdelegationcomparewithnil(isevent, t, inf, k, isequal)
   local v = t;
   if k then
     v = t[k];
@@ -1416,21 +1446,21 @@ function getexterninstanceindexer(obj, intf, name, ...)
 	if meta then
 		local class = rawget(meta, "__class");
 		local typename = rawget(meta, "__typename");
-  	if class == CS.System.Collections.Generic.List_T then
-  	  return obj[index+1];
-  	elseif class == CS.System.Collections.Generic.Dictionary_TKey_TValue then
-      local v = obj[index];
-      if v then
-        return v.value;
-      else
-        return nil;
-      end;
-    elseif typename == "LuaArray" then
-    	return obj[index+1];
-    elseif typename == "LuaVarObject" then
-    	return obj[index];
-    else
-    	return obj:getItem(index);
+		if class == CS.System.Collections.Generic.List_T then
+			return obj[index+1];
+		elseif class == CS.System.Collections.Generic.Dictionary_TKey_TValue then
+			local v = obj[index];
+			if v then
+				return v.value;
+			else
+				return nil;
+			end;
+		elseif typename == "LuaArray" then
+			return obj[index+1];	-- todo: fixme
+		elseif typename == "LuaVarObject" then
+			return obj[index];		-- todo: fixme
+		else
+			return obj[index];
     end;
   end;
 end;
@@ -1456,42 +1486,13 @@ function setexterninstanceindexer(obj, intf, name, ...)
         obj:Add(index, val);
       end;
     elseif typename == "LuaArray" then
-    	obj[index+1] = val;
+    	obj[index+1] = val;	--todo: fixme
     elseif typename == "LuaVarObject" then
-    	obj[index] = val;
+    	obj[index] = val;  	--todo: fixme
     else
-    	obj:setItem(index, val);
+    	obj[index] = val;
     end;
   end;
-  return nil;
-end;
-
-function getstaticelement(class, name, ...)
-  return nil;
-end;
-function getinstanceelement(obj, name, ...)
-  return nil;
-end;
-function setstaticelement(class, name, ...)
-  --为了适应表达式内嵌赋值，这个函数需要返回值
-  return nil;
-end;
-function setinstanceelement(obj, name, ...)
-  --为了适应表达式内嵌赋值，这个函数需要返回值
-  return nil;
-end;
-function getexternstaticelement(class, name, ...)
-  return nil;
-end;
-function getexterninstanceelement(obj, name, ...)
-  return nil;
-end;
-function setexternstaticelement(class, name, ...)
-  --为了适应表达式内嵌赋值，这个函数需要返回值
-  return nil;
-end;
-function setexterninstanceelement(obj, name, ...)
-  --为了适应表达式内嵌赋值，这个函数需要返回值
   return nil;
 end;
 
@@ -1504,9 +1505,9 @@ function invokeexternoperator(class, method, ...)
 	  if args[1] and args[2] then
 	    return args[1]==args[2];
 	  elseif not args[1] then
-	    return Slua.IsNull(args[2]);
+	    return CS.XLuaExtensions.IsNull(args[2]);
 	  elseif not args[2] then
-	    return Slua.IsNull(args[1]);
+	    return CS.XLuaExtensions.IsNull(args[1]);
 	  else
 	    return true;
 	  end;
@@ -1514,15 +1515,15 @@ function invokeexternoperator(class, method, ...)
 	  if args[1] and args[2] then
 	    return args[1]~=args[2];
 	  elseif not args[1] then
-	    return not Slua.IsNull(args[2]);
+	    return not CS.XLuaExtensions.IsNull(args[2]);
 	  elseif not args[2] then
-	    return not Slua.IsNull(args[1]);
+	    return not CS.XLuaExtensions.IsNull(args[1]);
 	  else
 	    return false;
 	  end;	  
 	elseif method=="op_Implicit" then
 	  --这里就不仔细判断了，就假定是UnityEngine.Object子类了
-	  return not Slua.IsNull(args[1]);
+	  return not CS.XLuaExtensions.IsNull(args[1]);
 	end;
 	if argnum == 1 and args[1] then
 	  return args[1][method](...);
@@ -1570,6 +1571,32 @@ function setwithinterface(obj, intf, property, value)
 	return nil;
 end;
 
+function invokeforstring(str, method, ...)
+	if method == "Length" then
+		return string.len(str);
+	elseif method == "ToUpper" then
+		return string.upper(str);
+	elseif method == "ToLower" then
+		return string.lower(str);
+	elseif method == "Substring" then	
+		local pos, length = ...;	
+		if pos > string.len(str) then
+			error("Argument is out of range.");
+			return;
+		elseif length ~= nil and pos + length > string.len(str) then
+			error("Argument is out of range.");
+			return;
+		end
+		if length == nil then
+			return string.sub(str, pos + 1);
+		else
+			return string.sub(str, pos + 1, pos + length);
+		end
+	else
+		error("implement c# string method here" .. method)
+	end	
+end
+
 function invokeforbasicvalue(obj, isEnum, class, method, ...)
 	local args = {...};
 	local meta = getmetatable(obj);
@@ -1577,12 +1604,19 @@ function invokeforbasicvalue(obj, isEnum, class, method, ...)
 	  return class.Value2String[obj];
 	end;
 	if type(obj)=="string" then
-	  local csstr = CS.System.String(obj);
-	  return csstr[method](csstr,...);
+	  --local csstr = CS.System.String(obj);
+	  --return csstr[method](csstr,...);	
+	  return invokeforstring(obj, method, ...);
 	elseif meta then
 		return obj[method](obj,...);
 	elseif method=="CompareTo" then
-	  return obj==args[1];
+	  if obj>args[1] then
+	    return 1;
+	  elseif obj<args[1] then
+	    return -1;
+	  else
+	    return 0;
+	  end;
 	elseif method=="ToString" then
 	  return tostring(obj);
 	end;
@@ -1591,8 +1625,7 @@ end;
 function getforbasicvalue(obj, isEnum, class, property)
 	local meta = getmetatable(obj);
 	if type(obj)=="string" then
-	  local csstr = CS.System.String(obj);
-	  return csstr[property];
+	  return invokeforstring(obj, property);
 	elseif meta then
 		return obj[property];
 	else
@@ -1603,8 +1636,9 @@ end;
 function setforbasicvalue(obj, isEnum, class, property, value)
 	local meta = getmetatable(obj);
 	if type(obj)=="string" then
-	  local csstr = CS.System.String(obj);
-	  csstr[property]=value;
+	  --local csstr = CS.System.String(obj);
+	  --csstr[property]=value;
+	  return invokeforstring(obj, property, value);
 	elseif meta then
 		obj[property]=value;
 	else
@@ -1686,7 +1720,7 @@ function invokeintegeroperator(op, luaop, opd1, opd2, type1, type2)
   end;
 end;
 
-function getiterator(exp, isExtern)
+function getiterator(exp)
 	local meta = getmetatable(exp);
 	if meta and rawget(meta, "__cs2lua_defined") then
 		local enumer = exp:GetEnumerator();
@@ -1706,6 +1740,26 @@ function getiterator(exp, isExtern)
 				return nil;
 			end;
 		end;
+	end;
+end;
+
+function defaultvalue(type, typename, isExtern)
+	if type==CS.UnityEngine.Vector3 then
+		return CS.UnityEngine.Vector3.zero;
+	elseif type==CS.UnityEngine.Vector2 then
+		return CS.UnityEngine.Vector2.zero;
+	elseif type==CS.UnityEngine.Vector4 then
+		return CS.UnityEngine.Vector4.zero;
+	elseif type==CS.UnityEngine.Quaternion then
+		return CS.UnityEngine.Quaternion.identity;
+	elseif type==CS.UnityEngine.Color then
+		return CS.UnityEngine.Color.black;
+	elseif type==CS.UnityEngine.Color32 then
+		return CS.UnityEngine.Color32(0,0,0,0);
+	elseif isExtern then
+		return type();
+	else
+		return type.__new_object();
 	end;
 end;
 
@@ -1734,4 +1788,123 @@ function arrayset(arr, ...)
     arr[ix-1] = val;
   end;
   return val;
+end;
+
+LINQ={};
+LINQ.exec = function(linq)
+  local paramList = {};
+  local ix = 1;
+  return LINQ.execRecursively(linq, ix, paramList);
+end;
+LINQ.execRecursively = function(linq, ix, paramList)
+	local finalRs = {};
+	local interRs = {};
+	local itemNum = #linq;
+	while ix <= itemNum do
+		local v = linq[ix];
+		local key = v[1];
+		ix = ix + 1;
+		
+		if key=="from" then
+		  local nextIx = LINQ.getNextIndex(linq, ix);
+		  
+		  --获取目标集合
+			local coll = v[2](unpack(paramList));
+			LINQ.buildIntermediateResult(linq, ix, paramList, coll, interRs, finalRs);
+			
+			ix = nextIx;
+		elseif key=="where" then
+		  --在中间结果集上进行过滤处理
+		  local temp = interRs;
+		  interRs = {};
+		  for i,val in ipairs(temp) do
+		    if v[2](unpack(val)) then
+		      table.insert(interRs, val);
+		    end;
+		  end;
+		elseif key=="orderby" then
+		  --排序（多关键字）
+			table.sort(interRs, (function(l1, l2) return LINQ.compare(l1, l2, v[2]); end));
+		elseif key=="select" then
+		  --生成最终结果集
+		  for i,val in ipairs(interRs) do
+		    local r = v[2](unpack(val));
+		    table.insert(finalRs, r);
+		  end;
+		else
+			--其它子句暂不支持。。
+		end;
+	end;
+	return finalRs;
+end;
+LINQ.buildIntermediateResult = function(linq, ix, paramList, coll, interRs, finalRs)
+  --遍历目标集合，处理连续的let与where (这时where条件可以在单个元素遍历时进行，不用等中间结果集构建后再过滤)
+	--如果又遇到from，则递归调用自身来获取子集并合并到当前结果集
+	for cv in getiterator(coll) do
+		local newParamList = {unpack(paramList)};
+		table.insert(newParamList, cv);
+		local isMatch = true;
+		local newIx = ix;
+    local itemNum = #linq;
+		while newIx <= itemNum do
+			local v = linq[newIx];
+			local key = v[1];
+			
+			if key=="let" then
+				table.insert(newParamList, v[2](unpack(newParamList)));
+			elseif key=="where" then
+				if not v[2](unpack(newParamList)) then
+				  --不符合条件的记录不放到中间结果集
+					isMatch = false;
+					break;
+				end;
+			elseif key=="from" then
+			  --再次遇到from，递归调用再合并结果集
+			  local ts = LINQ.execRecursively(linq, newIx, newParamList);
+			  for i,val in ipairs(ts) do
+			    table.insert(finalRs, val); 
+			  end;
+			  isMatch = false;
+			  break;
+			else
+			  --其它子句需要在中间结果集完成后再处理，这里跳过
+				break;
+			end;
+			newIx = newIx + 1;
+		end;
+		if isMatch then
+			table.insert(interRs, newParamList);
+		end;
+	end;
+end;
+LINQ.compare = function(l1, l2, list)
+  for i,v in ipairs(list) do
+    local v1 = v[1](unpack(l1));
+    local v2 = v[1](unpack(l2));
+    local asc = v[2];
+    if v1~=v2 then
+      if asc then
+        return v1<v2;
+      else
+        return v1>v2;
+      end;
+    end;
+  end;
+  return true;
+end;
+LINQ.getNextIndex = function(linq, ix)
+  local itemNum = #linq;
+	while ix <= itemNum do
+		local v = linq[ix];
+		local key = v[1];
+		if key=="let" then
+		elseif key=="where" then
+		elseif key=="from" then
+		  return itemNum + 1;
+		else
+		  return ix;
+		end;
+		ix = ix + 1;
+	end;
+	return ix;
 end;

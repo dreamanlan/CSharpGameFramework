@@ -94,12 +94,12 @@ namespace GameFramework.Skill.Trigers
             if (parent == null) {
                 parent = owner.transform;
             }
-            obj.transform.parent = parent;
+            obj.transform.SetParent(parent);
             Vector3 world_pos = parent.TransformPoint(m_Postion);
             TriggerUtil.MoveObjTo(obj, world_pos);
             obj.transform.localRotation = Quaternion.Euler(m_Rotate);
             if (!m_IsAttach) {
-                obj.transform.parent = null;
+                obj.transform.SetParent(null);
             }
         }
         private void AttachToObjectForRandomRotate(GameObject obj, GameObject owner)
@@ -108,7 +108,7 @@ namespace GameFramework.Skill.Trigers
             if (parent == null) {
                 parent = owner.transform;
             }
-            obj.transform.parent = parent;
+            obj.transform.SetParent(parent);
             Vector3 world_pos = parent.TransformPoint(m_Postion);
             TriggerUtil.MoveObjTo(obj, world_pos);
             Vector3 resultrotate = new Vector3(
@@ -117,7 +117,7 @@ namespace GameFramework.Skill.Trigers
               m_Rotate.z + UnityEngine.Random.Range(m_RandomRotate.z / -2, m_RandomRotate.z / 2));
             obj.transform.localRotation = Quaternion.Euler(resultrotate);
             if (!m_IsAttach) {
-                obj.transform.parent = null;
+                obj.transform.SetParent(null);
             }
         }
         private void SetTransformRelativeSelf(GameObject obj)
@@ -175,7 +175,7 @@ namespace GameFramework.Skill.Trigers
                 if (null != targetObj) {
                     targetPos = targetObj.transform.position;
                 }
-                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref targetPos);
+                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ObjId, senderObj.TargetObjId, ref targetPos);
                 if (targetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
                     float angle = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
                     ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(targetPos.x, targetPos.z) + Geometry.GetRotate(new ScriptRuntime.Vector2(m_RelativeOffset.x, m_RelativeOffset.z), angle);
@@ -190,7 +190,7 @@ namespace GameFramework.Skill.Trigers
                 {
                     pos = targetObj.transform.position;
                 }
-                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref pos);
+                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ObjId, senderObj.TargetObjId, ref pos);
                 pos.y = srcPos.y;
                 TriggerUtil.MoveObjTo(obj, pos);
             }

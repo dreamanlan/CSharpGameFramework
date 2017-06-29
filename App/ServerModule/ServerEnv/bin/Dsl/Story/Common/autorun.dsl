@@ -1,4 +1,4 @@
-story(auto_main)
+story(auto_story)
 {
   local
   {
@@ -21,7 +21,9 @@ story(auto_main)
       $index=1;
       propset(@sceneKey, $index);
     };
-    objmove(getleaderid(), getposition("Config/"+$index), "touchnpc");
+    $pos = getposition("Config/"+$index);
+    log("findnpc, scene key:{0}, index:{1}, pos:{2}", @sceneKey, $index, $pos);
+    objmove(getplayerid(), $pos, "touchnpc");
     inc($index);
     propset(@sceneKey, $index);
     if($index>=$ct){
@@ -32,6 +34,7 @@ story(auto_main)
   };
   onmessage("touchnpc")
   {
+    log("touchnpc");
     sendroomstorymessage("touchnpc");
   };
 };

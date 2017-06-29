@@ -1,13 +1,14 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 require "HandlerRegister";
 require "SkillTriggerRegister";
 require "StoryRegister";
 
 Startup = {
 	__new_object = function(...)
-		return newobject(Startup, nil, {}, ...);
+		return newobject(Startup, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = Startup;
@@ -37,7 +38,7 @@ Startup = {
 				HandlerRegister.Call(name, unpack(args));
 			end,
 			Tick = wrapenumerable(function(this)
-				wrapyield(newexternobject(UnityEngine.WaitForSeconds, "UnityEngine.WaitForSeconds", "ctor", {}, 10), false, true);
+				wrapyield(newexternobject(UnityEngine.WaitForSeconds, "UnityEngine.WaitForSeconds", "ctor", nil, 10.00), false, true);
 				UnityEngine.Debug.Log("tick after start 10 seconds.");
 				wrapyield(nil, false, false);
 			end),
@@ -65,5 +66,7 @@ Startup = {
 		return defineclass(nil, "Startup", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 Startup.__define_class();

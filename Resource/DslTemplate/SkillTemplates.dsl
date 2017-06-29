@@ -1,4 +1,4 @@
-skilltemplate("ÆÕÍ¨¹¥»÷")
+skilltemplate("æ™®é€šæ”»å‡»")
 {:
   section(1000)
   {
@@ -18,7 +18,7 @@ skilltemplate("ÆÕÍ¨¹¥»÷")
 	  };
   };  
 :};
-skilltemplate("ÆÕÍ¨¹¥»÷¼Óbuff")
+skilltemplate("æ™®é€šæ”»å‡»åŠ buff")
 {:
   section(1000)
   {
@@ -38,7 +38,7 @@ skilltemplate("ÆÕÍ¨¹¥»÷¼Óbuff")
 	  };
   };
 :};
-skilltemplate("ÆÕÍ¨¹¥»÷²úÉúÉËº¦²¢¼Óbuff")
+skilltemplate("æ™®é€šæ”»å‡»äº§ç”Ÿä¼¤å®³å¹¶åŠ buff")
 {:
   section(1000)
   {
@@ -59,7 +59,7 @@ skilltemplate("ÆÕÍ¨¹¥»÷²úÉúÉËº¦²¢¼Óbuff")
 	  };
   };
 :};
-skilltemplate("·¶Î§¹¥»÷")
+skilltemplate("èŒƒå›´æ”»å‡»")
 {:
   section(1000)
   {
@@ -78,7 +78,7 @@ skilltemplate("·¶Î§¹¥»÷")
 	  };
   }; 
 :};
-skilltemplate("·¶Î§¹¥»÷¼Óbuff")
+skilltemplate("èŒƒå›´æ”»å‡»åŠ buff")
 {:
   section(1000)
   {
@@ -97,7 +97,7 @@ skilltemplate("·¶Î§¹¥»÷¼Óbuff")
 	  };
   }; 
 :};
-skilltemplate("·¶Î§¹¥»÷²úÉúÉËº¦²¢¼Óbuff")
+skilltemplate("èŒƒå›´æ”»å‡»äº§ç”Ÿä¼¤å®³å¹¶åŠ buff")
 {:
   section(1000)
   {
@@ -117,7 +117,7 @@ skilltemplate("·¶Î§¹¥»÷²úÉúÉËº¦²¢¼Óbuff")
 	  };
   }; 
 :};
-skilltemplate("×Óµ¯¼¼")
+skilltemplate("å­å¼¹æŠ€")
 {:
   section(1000)
   {
@@ -144,7 +144,7 @@ skilltemplate("×Óµ¯¼¼")
 	  };
   };  
 :};
-skilltemplate("×Óµ¯¼¼¼Óbuff")
+skilltemplate("å­å¼¹æŠ€åŠ buff")
 {:
   section(1000)
   {
@@ -170,7 +170,7 @@ skilltemplate("×Óµ¯¼¼¼Óbuff")
 	  };
   };  
 :};
-skilltemplate("×Óµ¯¼¼²úÉúÉËº¦²¢¼Óbuff")
+skilltemplate("å­å¼¹æŠ€äº§ç”Ÿä¼¤å®³å¹¶åŠ buff")
 {:
   section(1000)
   {
@@ -197,7 +197,7 @@ skilltemplate("×Óµ¯¼¼²úÉúÉËº¦²¢¼Óbuff")
 	  };
   };  
 :};
-skilltemplate("5Çò×Óµ¯¼¼")
+skilltemplate("5çƒå­å¼¹æŠ€")
 {:
   section(1000)
   {
@@ -237,14 +237,14 @@ skilltemplate("5Çò×Óµ¯¼¼")
 	  };
   }; 
 :};
-skilltemplate("×Ô¶¨Òå×Óµ¯¹ì¼£Ğ§¹û")
+skilltemplate("è‡ªå®šä¹‰å­å¼¹è½¨è¿¹æ•ˆæœ")
 {:
   section(10000)
   {
   	track(hit,false,0);
   };
 :};
-skilltemplate("×Ô¶¨Òå¶ÀÁ¢ÊÜ»÷Ğ§¹û")
+skilltemplate("è‡ªå®šä¹‰ç‹¬ç«‹å—å‡»æ•ˆæœ")
 {:
   section(1000)
   {
@@ -253,7 +253,7 @@ skilltemplate("×Ô¶¨Òå¶ÀÁ¢ÊÜ»÷Ğ§¹û")
     damage(0);
   };
 :};
-skilltemplate("¿ØÖÆbuff")
+skilltemplate("æ§åˆ¶buff")
 {:
   section(10)
   {

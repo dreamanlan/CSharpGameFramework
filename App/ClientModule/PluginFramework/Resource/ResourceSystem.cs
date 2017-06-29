@@ -6,6 +6,19 @@ using System.Reflection;
 
 namespace GameFramework
 {
+    public enum PredefinedResourceGroup
+    {
+        Default = 0,
+        PlayerSkillEffect,
+        PlayerImpactEffect,
+        PlayerBuffEffect,
+        OtherSkillEffect,
+        OtherImpactEffect,
+        OtherBuffEffect,
+        Miscellaneous,
+        Sound,        
+        MaxCount,        
+    }
     /// <summary>
     /// 资源管理器，提供资源缓存重用机制。
     /// 
@@ -13,6 +26,27 @@ namespace GameFramework
     /// </summary>
     public class ResourceSystem
     {
+        public void InitGroup(int groupCount)
+        {
+            for (int i = m_GroupedResources.Count; i < groupCount; ++i) {
+                m_GroupedResources.Add(new ResourceGroup());
+            }
+        }
+        public void SetGroupMaxCount(int group, int maxCount)
+        {
+            int ct = m_GroupedResources.Count;
+            if (group >= 0 && group < ct) {
+                m_GroupedResources[group].MaxCount = maxCount;
+            }
+        }
+        public int GetGroupResourceCount(int group)
+        {
+            int r = 0;
+            if (group >= 0 && group < m_GroupedResources.Count) {
+                r = m_GroupedResources[group].Resources.Count;
+            }
+            return r;
+        }
         public void SetVisible(UnityEngine.GameObject obj, bool visible, CharacterController cc)
         {
             obj.SetActive(visible);
@@ -22,6 +56,11 @@ namespace GameFramework
             m_ResPoolRoot = new GameObject("ResPool");
             GameObject.DontDestroyOnLoad(m_ResPoolRoot);
             m_ResPoolRootTransform = m_ResPoolRoot.transform;
+
+            for (int i = 0; i < (int)PredefinedResourceGroup.MaxCount; ++i) {
+                
+                InitGroup(i);
+            }
         }
         public void PreloadObject(string res, int ct)
         {
@@ -47,23 +86,49 @@ namespace GameFramework
         {
             GetSharedResource(res);
         }
+        public bool CanNewObject(int group)
+        {
+            bool r = false;
+            if (group >= 0 && group < m_GroupedResources.Count) {
+                int ct = m_GroupedResources[group].Resources.Count;
+                int maxCt = m_GroupedResources[group].MaxCount;
+                r = ct < maxCt;
+            }
+            return r;
+        }
         public UnityEngine.Object NewObject(string res)
         {
-            return NewObject(res, 0);
+            return NewObject(res, 0.0f);
         }
         public UnityEngine.Object NewObject(string res, float timeToRecycle)
         {
+            return NewObject(res, timeToRecycle, 0);
+        }
+        public UnityEngine.Object NewObject(string res, int group)
+        {
+            return NewObject(res, 0.0f, group);
+        }
+        public UnityEngine.Object NewObject(string res, float timeToRecycle, int group)
+        {
             UnityEngine.Object prefab = GetSharedResource(res);
-            return NewObject(prefab, timeToRecycle);
+            return NewObject(prefab, timeToRecycle, group);
         }
         public UnityEngine.Object NewObject(UnityEngine.Object prefab)
         {
-            return NewObject(prefab, 0);
+            return NewObject(prefab, 0.0f);
         }
         public UnityEngine.Object NewObject(UnityEngine.Object prefab, float timeToRecycle)
         {
+            return NewObject(prefab, timeToRecycle, 0);
+        }
+        public UnityEngine.Object NewObject(UnityEngine.Object prefab, int group)
+        {
+            return NewObject(prefab, 0.0f, group);
+        }
+        public UnityEngine.Object NewObject(UnityEngine.Object prefab, float timeToRecycle, int group)
+        {
             UnityEngine.Object obj = null;
-            if (null != prefab) {
+            if (null != prefab && CanNewObject(group)) {
                 float curTime = Time.time;
                 float time = timeToRecycle;
                 if (timeToRecycle > 0)
@@ -75,7 +140,7 @@ namespace GameFramework
                     AddToLayerDict(obj);
                 }
                 if (null != obj) {
-                    AddToUsedResources(obj, resId, time);
+                    AddToUsedResources(obj, resId, time, group);
                     InitializeObject(obj);
                 }
             }
@@ -85,16 +150,12 @@ namespace GameFramework
         {
             bool ret = false;
             if (null != obj) {
-                UnityEngine.GameObject gameObject = obj as UnityEngine.GameObject;
-                if (null != gameObject) {
-                }
-
                 int objId = obj.GetInstanceID();
-                if (m_UsedResources.Contains(objId)) {
-                    UsedResourceInfo resInfo = m_UsedResources[objId];
+                UsedResourceInfo resInfo;
+                if (m_UsedResources.TryGetValue(objId, out resInfo)) {
                     if (null != resInfo) {
                         FinalizeObject(resInfo.m_Object);
-                        RemoveFromUsedResources(objId);
+                        RemoveFromUsedResources(objId, resInfo.m_Group);
                         AddToUnusedResources(resInfo.m_ResId, obj);
                         resInfo.Recycle();
                         ret = true;
@@ -117,7 +178,7 @@ namespace GameFramework
 
                     FinalizeObject(resInfo.m_Object);
                     AddToUnusedResources(resInfo.m_ResId, resInfo.m_Object);
-                    RemoveFromUsedResources(resInfo.m_ObjId);
+                    RemoveFromUsedResources(resInfo.m_ObjId, resInfo.m_Group);
                     resInfo.Recycle();
                 } else {
                     node = node.Next;
@@ -139,8 +200,11 @@ namespace GameFramework
             for (LinkedListNode<UsedResourceInfo> node = m_UsedResources.FirstValue; null != node; ) {
                 UsedResourceInfo resInfo = node.Value;
                 node = node.Next;
-                RemoveFromUsedResources(resInfo.m_ObjId);
+                RemoveFromUsedResources(resInfo.m_ObjId, -1);
                 resInfo.Recycle();
+            }
+            for (int i = 0; i < m_GroupedResources.Count; ++i) {
+                m_GroupedResources[i].Resources.Clear();
             }
 
             foreach (KeyValuePair<int, Queue<UnityEngine.Object>> pair in m_UnusedResources) {
@@ -212,15 +276,22 @@ namespace GameFramework
                 m_UnusedResources.Add(res, queue);
             }
         }
-        private void AddToUsedResources(UnityEngine.Object obj, int resId, float recycleTime)
+        private void AddToUsedResources(UnityEngine.Object obj, int resId, float recycleTime, int group)
         {
             int objId = obj.GetInstanceID();
+            if (group >= 0 && group < m_GroupedResources.Count) {
+                var grp = m_GroupedResources[group];
+                if (!grp.Resources.Contains(objId)) {
+                    grp.Resources.Add(objId);
+                }
+            }
             if (!m_UsedResources.Contains(objId)) {
                 UsedResourceInfo info = m_UsedResourceInfoPool.Alloc();
                 info.m_ObjId = objId;
                 info.m_Object = obj;
                 info.m_ResId = resId;
                 info.m_RecycleTime = recycleTime;
+                info.m_Group = group;
 
                 m_UsedResources.AddLast(objId, info);
             }
@@ -229,13 +300,18 @@ namespace GameFramework
         {
             GameObject gameObj = obj as GameObject;
             if (null != gameObj) {
-                if (!m_LayerDict.ContainsKey(obj)) {
-                    m_LayerDict.Add(obj, gameObj.layer);
+                int instId = obj.GetInstanceID();
+                if (!m_LayerDict.ContainsKey(instId)) {
+                    m_LayerDict.Add(instId, gameObj.layer);
                 }
             }
         }
-        private void RemoveFromUsedResources(int objId)
+        private void RemoveFromUsedResources(int objId, int group)
         {
+            if (group >= 0 && group < m_GroupedResources.Count) {
+                var grp = m_GroupedResources[group];
+                grp.Resources.Remove(objId);
+            }
             m_UsedResources.Remove(objId);
         }
 
@@ -243,7 +319,7 @@ namespace GameFramework
         {
             GameObject gameObj = obj as GameObject;
             if (null != gameObj) {
-                gameObj.transform.SetParent(null, false);
+                gameObj.transform.SetParent(null);
                 gameObj.SetActive(true);
                 OnActiveChanged(gameObj, true);
             }
@@ -252,22 +328,23 @@ namespace GameFramework
         {
             GameObject gameObj = obj as GameObject;
             if (null != gameObj) {
-                gameObj.transform.SetParent(m_ResPoolRootTransform, false);
+                gameObj.transform.SetParent(m_ResPoolRootTransform);
                 OnActiveChanged(gameObj, false);
                 gameObj.SetActive(false);
             }
         }
         private void OnActiveChanged(UnityEngine.GameObject obj, bool active)
         {
-            if (active) {           
+            if (active) {
+                int instId = obj.GetInstanceID();
                 int layer;
-                if (m_LayerDict.TryGetValue(obj, out layer)) {
+                if (m_LayerDict.TryGetValue(instId, out layer)) {
                     SetLayer(obj, layer);
                 }
 
                 ParticleSystem[] pss = obj.GetComponentsInChildren<ParticleSystem>(true);
                 for (int i = 0; i < pss.Length; i++) {
-                    if (null != pss[i] && pss[i].playOnAwake) {
+                    if (null != pss[i] && pss[i].main.playOnAwake) {
                         //pss[i].Clear(true);
                         pss[i].Play(true);
                     }
@@ -291,7 +368,7 @@ namespace GameFramework
             } else {            
                 ParticleSystem[] pss = obj.GetComponentsInChildren<ParticleSystem>(true);
                 for (int i = 0; i < pss.Length; i++) {
-                    if (null != pss[i] && pss[i].playOnAwake) {
+                    if (null != pss[i] && pss[i].main.playOnAwake) {
                         pss[i].Clear(true);
                         pss[i].Stop(true);
                     }
@@ -316,7 +393,7 @@ namespace GameFramework
             }
         }
 
-        public static void FroceSetGameObjectLayer(GameObject obj, int layer)
+        public static void ForceSetGameObjectLayer(GameObject obj, int layer)
         {
             SetLayer(obj, layer);
         }
@@ -349,6 +426,7 @@ namespace GameFramework
             internal UnityEngine.Object m_Object;
             internal int m_ResId;
             internal float m_RecycleTime;
+            internal int m_Group;
 
             internal void Recycle()
             {
@@ -373,19 +451,26 @@ namespace GameFramework
             public UnityEngine.Object obj;
             public bool notdestroyed = false;
         }
-        private Dictionary<string, OjbectEx> m_LoadedPrefabs = new Dictionary<string, OjbectEx>();
+        private class ResourceGroup
+        {
+            internal int MaxCount = int.MaxValue;
+            internal HashSet<int> Resources = new HashSet<int>();
+        }
+        private List<ResourceGroup> m_GroupedResources = new List<ResourceGroup>();
+
+        private MyDictionary<string, OjbectEx> m_LoadedPrefabs = new MyDictionary<string, OjbectEx>();
         private List<string> m_WaitDeleteLoadedPrefabEntrys = new List<string>();
 
         private LinkedListDictionary<int, UsedResourceInfo> m_UsedResources = new LinkedListDictionary<int, UsedResourceInfo>();
-        private Dictionary<int, Queue<UnityEngine.Object>> m_UnusedResources = new Dictionary<int, Queue<UnityEngine.Object>>();
+        private MyDictionary<int, Queue<UnityEngine.Object>> m_UnusedResources = new MyDictionary<int, Queue<UnityEngine.Object>>();
 
-        private Dictionary<UnityEngine.Object, int> m_LayerDict = new Dictionary<UnityEngine.Object, int>();
+        private MyDictionary<int, int> m_LayerDict = new MyDictionary<int, int>();
         //private float m_LastTickTime = 0;
         private int m_DeactiveLayer = LayerMask.NameToLayer("DeActive");
 
         private GameObject m_ResPoolRoot = null;
         private Transform m_ResPoolRootTransform = null;
-
+                
         public static ResourceSystem Instance
         {
             get { return s_Instance; }

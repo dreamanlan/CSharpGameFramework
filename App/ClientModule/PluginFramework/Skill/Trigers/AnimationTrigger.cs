@@ -351,7 +351,7 @@ namespace GameFramework.Skill.Trigers
                         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(ix);
                         if (!string.IsNullOrEmpty(anim) && !string.IsNullOrEmpty(msgId) && (stateInfo.IsName(anim) || stateInfo.IsTag(anim))) {
                             if ((stateInfo.normalizedTime % 1.0f) >= time) {
-                                GfxSkillSystem.Instance.SendMessage(senderObj.ActorId, senderObj.SkillId, senderObj.Seq, msgId, m_Params);
+                                GfxSkillSystem.Instance.SendMessage(senderObj.ObjId, senderObj.SkillId, senderObj.Seq, msgId, m_Params);
                                 return false;
                             }
                         }

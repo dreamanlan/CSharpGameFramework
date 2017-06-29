@@ -78,9 +78,9 @@ namespace GameFramework.Skill
         {
             get { return m_Seq; }
         }
-        public int ActorId
+        public int ObjId
         {
-            get { return m_ActorId; }
+            get { return m_ObjId; }
         }
         public GameObject GfxObj
         {
@@ -93,10 +93,10 @@ namespace GameFramework.Skill
                 m_GfxObj = value;
             }
         }
-        public int TargetActorId
+        public int TargetObjId
         {
-            get { return m_TargetActorId; }
-            set { m_TargetActorId = value; }
+            get { return m_TargetObjId; }
+            set { m_TargetObjId = value; }
         }
         public GameObject TargetGfxObj
         {
@@ -108,25 +108,25 @@ namespace GameFramework.Skill
             get { return m_EmitEffectObj; }
             set { m_EmitEffectObj = value; }
         }
-        public GfxSkillSenderInfo(TableConfig.Skill configData, int seq, int actorId, GameObject gfxObj)
+        public GfxSkillSenderInfo(TableConfig.Skill configData, int seq, int objId, GameObject gfxObj)
         {
             m_Seq = seq;
             m_ConfigData = configData;
-            m_ActorId = actorId;
+            m_ObjId = objId;
             m_GfxObj = gfxObj;
         }
-        public GfxSkillSenderInfo(TableConfig.Skill configData, int seq, int actorId, GameObject gfxObj, int targetActorId, GameObject targetGfxObj)
-            : this(configData, seq, actorId, gfxObj)
+        public GfxSkillSenderInfo(TableConfig.Skill configData, int seq, int objId, GameObject gfxObj, int targetActorId, GameObject targetGfxObj)
+            : this(configData, seq, objId, gfxObj)
         {
-            m_TargetActorId = targetActorId;
+            m_TargetObjId = targetActorId;
             m_TargetGfxObj = targetGfxObj;
         }
 
         private TableConfig.Skill m_ConfigData;
         private int m_Seq;
-        private int m_ActorId;
+        private int m_ObjId;
         private GameObject m_GfxObj;
-        private int m_TargetActorId;
+        private int m_TargetObjId;
         private GameObject m_TargetGfxObj;
         private GameObject m_EmitEffectObj;
     }
@@ -153,9 +153,9 @@ namespace GameFramework.Skill
                     return m_Sender.Seq;
                 }
             }
-            public int ActorId
+            public int ObjId
             {
-                get { return m_Sender.ActorId; }
+                get { return m_Sender.ObjId; }
             }
             public GameObject GfxObj
             {
@@ -387,14 +387,14 @@ namespace GameFramework.Skill
                 return null;
             }
         }
-        public SkillInstance FindActiveSkillInstance(int actorId, int skillId, int seq)
+        public SkillInstance FindActiveSkillInstance(int objId, int skillId, int seq)
         {
             GfxSkillSenderInfo sender;
-            return FindActiveSkillInstance(actorId, skillId, seq, out sender);
+            return FindActiveSkillInstance(objId, skillId, seq, out sender);
         }
-        public SkillInstance FindActiveSkillInstance(int actorId, int skillId, int seq, out GfxSkillSenderInfo sender)
+        public SkillInstance FindActiveSkillInstance(int objId, int skillId, int seq, out GfxSkillSenderInfo sender)
         {
-            SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.ActorId == actorId && info.SkillId == skillId && info.Seq == seq);
+            SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.ObjId == objId && info.SkillId == skillId && info.Seq == seq);
             if (null != logicInfo) {
                 sender = logicInfo.Sender;
                 return logicInfo.SkillInst;
@@ -402,32 +402,41 @@ namespace GameFramework.Skill
             sender = null;
             return null;
         }
-        public bool StartSkill(int actorId, TableConfig.Skill configData, int seq, params Dictionary<string, object>[] locals)
+        public bool StartSkill(int objId, TableConfig.Skill configData, int seq, params Dictionary<string, object>[] locals)
+        {
+            GameObject obj = PluginFramework.Instance.GetGameObject(objId);
+            return StartSkillWithGameObjectImpl(objId, obj, configData, seq, locals);
+        }
+        public bool StartSkillWithGameObject(GameObject obj, TableConfig.Skill configData, int seq, params Dictionary<string, object>[] locals)
+        {
+            return StartSkillWithGameObjectImpl(0, obj, configData, seq, locals);
+        }
+        private bool StartSkillWithGameObjectImpl(int objId, GameObject obj, TableConfig.Skill configData, int seq, params Dictionary<string, object>[] locals)
         {
             bool ret = false;
             if (null == configData) {
-                LogSystem.Error("{0} can't cast skill, config is null !", actorId, seq);
+                LogSystem.Error("{0} can't cast skill, config is null !", objId, seq);
                 Helper.LogCallStack();
                 return false;
             }
-            if (!EntityController.Instance.CanCastSkill(actorId, configData, seq)) {
-                EntityController.Instance.CancelCastSkill(actorId);
-                LogSystem.Warn("{0} can't cast skill {1} {2}, cancel.", actorId, configData.id, seq);
-                EntityController.Instance.CancelIfImpact(actorId, configData, seq);
+            if (!EntityController.Instance.CanCastSkill(obj, configData, seq)) {
+                EntityController.Instance.CancelCastSkill(obj);
+                LogSystem.Warn("{0} can't cast skill {1} {2}, cancel.", objId, configData.id, seq);
+                EntityController.Instance.CancelIfImpact(obj, configData, seq);
                 return false;
             }
-            GfxSkillSenderInfo senderInfo = EntityController.Instance.BuildSkillInfo(actorId, configData, seq);
+            GfxSkillSenderInfo senderInfo = EntityController.Instance.BuildSkillInfo(obj, configData, seq);
             if (null != senderInfo && null != senderInfo.GfxObj) {
                 int skillId = senderInfo.SkillId;
-                GameObject obj = senderInfo.GfxObj;
                 SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq);
                 if (logicInfo != null) {
-                    LogSystem.Warn("{0} is casting skill {1} {2}, cancel.", actorId, skillId, seq);
-                    EntityController.Instance.CancelIfImpact(actorId, configData, seq);
+                    LogSystem.Warn("{0} is casting skill {1} {2}, cancel.", objId, skillId, seq);
+                    EntityController.Instance.CancelIfImpact(obj, configData, seq);
                     return false;
                 }
                 SkillInstanceInfo inst = null;
                 SkillInstance innerInstance = null;
+                if (null != locals) {
                 if (skillId == PredefinedSkill.c_EmitSkillId) {
                     for (int i = 0; i < locals.Length; ++i) {
                         object instObj;
@@ -436,8 +445,8 @@ namespace GameFramework.Skill
                         }
                     }
                     if (null == innerInstance) {
-                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found emitskill, cancel.", actorId, skillId, seq);
-                        //EntityController.Instance.CancelIfImpact(actorId, configData, seq);
+                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found emitskill, cancel.", objId, skillId, seq);
+                        //EntityController.Instance.CancelIfImpact(objId, configData, seq);
                         //return false;
                     }
                 } else if (skillId == PredefinedSkill.c_HitSkillId) {
@@ -448,11 +457,12 @@ namespace GameFramework.Skill
                         }
                     }
                     if (null == innerInstance) {
-                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found hitskill, cancel.", actorId, skillId, seq);
-                        //EntityController.Instance.CancelIfImpact(actorId, configData, seq);
+                        LogSystem.Warn("{0} use predefined skill {1} {2} but not found hitskill, cancel.", objId, skillId, seq);
+                        //EntityController.Instance.CancelIfImpact(objId, configData, seq);
                         //return false;
                     }
                 }
+				}
                 if (null == innerInstance) {
                     inst = NewSkillInstance(skillId, senderInfo.ConfigData);
                 } else {
@@ -461,8 +471,8 @@ namespace GameFramework.Skill
                 if (null != inst) {
                     m_SkillLogicInfos.Add(new SkillLogicInfo(senderInfo, inst));
                 } else {
-                    LogSystem.Warn("{0} cast skill {1} {2}, alloc failed.", actorId, skillId, seq);
-                    EntityController.Instance.CancelIfImpact(actorId, configData, seq);
+                    LogSystem.Warn("{0} cast skill {1} {2}, alloc failed.", objId, skillId, seq);
+                    EntityController.Instance.CancelIfImpact(obj, configData, seq);
                     return false;
                 }
 
@@ -480,7 +490,7 @@ namespace GameFramework.Skill
                     if (null != target && target != obj && configData.type == (int)SkillOrImpactType.Skill) {
                         Trigers.TriggerUtil.Lookat(obj, target.transform.position);
                     }
-                    EntityController.Instance.ActivateSkill(actorId, skillId, seq);
+                    EntityController.Instance.ActivateSkill(senderInfo, inst.m_SkillInstance);
                     logicInfo.SkillInst.Start(logicInfo.Sender);
                     ret = true;
                 }
@@ -488,23 +498,31 @@ namespace GameFramework.Skill
             return ret;
         }
         //在技能未开始时取消技能（用于上层逻辑检查失败时）
-        public void CancelSkill(int actorId, int skillId, int seq)
+        public void CancelSkill(int objId, int skillId, int seq)
         {
-            GameObject obj = EntityController.Instance.GetGameObject(actorId);
+            GameObject obj = PluginFramework.Instance.GetGameObject(objId);
+            CancelSkillWithGameObject(obj, skillId, seq);
+        }
+        public void CancelSkillWithGameObject(GameObject obj, int skillId, int seq)
+        {
             if (null != obj) {
-                SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq);
+                SkillLogicInfo logicInfo = FindSkillLogicInfo(obj, skillId, seq);
                 if (null != logicInfo) {
-                    EntityController.Instance.DeactivateSkill(actorId, skillId, seq);
+                    EntityController.Instance.DeactivateSkill(logicInfo.Sender, logicInfo.SkillInst);
                     RecycleSkillInstance(logicInfo.Info);
                     m_SkillLogicInfos.Remove(logicInfo);
                 }
             }
         }
-        public void PauseSkill(int actorId, int skillId, int seq, bool pause)
+        public void PauseSkill(int objId, int skillId, int seq, bool pause)
         {
-            GameObject obj = EntityController.Instance.GetGameObject(actorId);
+            GameObject obj = PluginFramework.Instance.GetGameObject(objId);
+            PauseSkillWithGameObject(obj, skillId, seq, pause);
+        }
+        public void PauseSkillWithGameObject(GameObject obj, int skillId, int seq, bool pause)
+        {
             if (null != obj) {
-                SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq);
+                SkillLogicInfo logicInfo = FindSkillLogicInfo(obj, skillId, seq);
                 if (null != logicInfo) {
                     logicInfo.IsPaused = pause;
 
@@ -512,13 +530,17 @@ namespace GameFramework.Skill
                     if (null != effectMgr) {
                         effectMgr.PauseEffects(pause);
                     }
-                    EntityController.Instance.PauseSkillAnimation(actorId, pause);
+                    EntityController.Instance.PauseSkillAnimation(obj, pause);
                 }
             }
         }
-        public void PauseAllSkill(int actorId, bool pause)
+        public void PauseAllSkill(int objId, bool pause)
         {
-            GameObject obj = EntityController.Instance.GetGameObject(actorId);
+            GameObject obj = PluginFramework.Instance.GetGameObject(objId);
+            PauseAllSkillWithGameObject(obj, pause);
+        }
+        public void PauseAllSkillWithGameObject(GameObject obj, bool pause)
+        {
             if (null == obj) {
                 return;
             }
@@ -536,13 +558,17 @@ namespace GameFramework.Skill
                     }
                 }
             }
-            EntityController.Instance.PauseSkillAnimation(actorId, pause);
+            EntityController.Instance.PauseSkillAnimation(obj, pause);
         }
-        public void StopSkill(int actorId, int skillId, int seq, bool isinterrupt)
+        public void StopSkill(int objId, int skillId, int seq, bool isinterrupt)
         {
-            GameObject obj = EntityController.Instance.GetGameObject(actorId);
+            GameObject obj = PluginFramework.Instance.GetGameObject(objId);
+            StopSkillWithGameObject(obj, skillId, seq, isinterrupt);
+        }
+        public void StopSkillWithGameObject(GameObject obj, int skillId, int seq, bool isinterrupt)
+        {
             if (null != obj) {
-                SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq);
+                SkillLogicInfo logicInfo = FindSkillLogicInfo(obj, skillId, seq);
                 if (null != logicInfo) {
                     if (isinterrupt) {
                         logicInfo.SkillInst.OnInterrupt(logicInfo.Sender);
@@ -553,13 +579,21 @@ namespace GameFramework.Skill
                 }
             }
         }
-        public void StopAllSkill(int actorId, bool isinterrupt)
+        public void StopAllSkill(int objId, bool isinterrupt)
         {
-            StopAllSkill(actorId, isinterrupt, false, false);
+            StopAllSkill(objId, isinterrupt, false, false);
         }
-        public void StopAllSkill(int actorId, bool isinterrupt, bool includeImpact, bool includeBuff)
+        public void StopAllSkill(int objId, bool isinterrupt, bool includeImpact, bool includeBuff)
         {
-            GameObject obj = EntityController.Instance.GetGameObject(actorId);
+            GameObject obj = PluginFramework.Instance.GetGameObject(objId);
+            StopAllSkillWithGameObject(obj, isinterrupt, includeImpact, includeBuff);
+        }
+        public void StopAllSkillWithGameObject(GameObject obj, bool isinterrupt)
+        {
+            StopAllSkillWithGameObject(obj, isinterrupt, false, false);
+        }
+        public void StopAllSkillWithGameObject(GameObject obj, bool isinterrupt, bool includeImpact, bool includeBuff)
+        {
             if (null == obj) {
                 return;
             }
@@ -582,11 +616,23 @@ namespace GameFramework.Skill
                 }
             }
         }
-        public void SendMessage(int actorId, int skillId, int seq, string msgId, Dictionary<string, object> locals)
+        public void SendMessage(int objId, int skillId, int seq, string msgId)
         {
-            GameObject obj = EntityController.Instance.GetGameObject(actorId);
+            SendMessage(objId, skillId, seq, msgId, null);
+        }
+        public void SendMessage(int objId, int skillId, int seq, string msgId, Dictionary<string, object> locals)
+        {
+            GameObject obj = PluginFramework.Instance.GetGameObject(objId);
+            SendMessageWithGameObject(obj, skillId, seq, msgId, locals);
+        }
+        public void SendMessageWithGameObject(GameObject obj, int skillId, int seq, string msgId)
+        {
+            SendMessageWithGameObject(obj, skillId, seq, msgId, null);
+        }
+        public void SendMessageWithGameObject(GameObject obj, int skillId, int seq, string msgId, Dictionary<string, object> locals)
+        {
             if (null != obj) {
-                SkillLogicInfo logicInfo = m_SkillLogicInfos.Find(info => info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq);
+                SkillLogicInfo logicInfo = FindSkillLogicInfo(obj, skillId, seq);
                 if (null != logicInfo && null != logicInfo.SkillInst) {
                     if (null != locals) {
                         foreach (KeyValuePair<string, object> pair in locals) {
@@ -605,8 +651,13 @@ namespace GameFramework.Skill
                 long delta = (long)(Time.deltaTime * 1000000);
                 for (int ix = ct - 1; ix >= 0; --ix) {
                     SkillLogicInfo info = m_SkillLogicInfos[ix];
-                    bool exist = EntityController.Instance.ExistGameObject(info.GfxObj);
-                    if (exist && !info.IsPaused) {
+                    bool exist = true;
+                    if (info.ObjId > 0) {
+                        exist = EntityController.Instance.ExistGameObject(info.GfxObj);
+                        if (exist && !info.IsPaused) {
+                            info.SkillInst.Tick(info.Sender, delta);
+                        }
+                    } else if(!info.IsPaused) {
                         info.SkillInst.Tick(info.Sender, delta);
                     }
                     if (!exist || info.SkillInst.IsFinished) {
@@ -622,6 +673,59 @@ namespace GameFramework.Skill
             }
         }
 
+        private SkillLogicInfo FindSkillLogicInfo(int objId, int skillId, int seq)
+        {
+            SkillLogicInfo ret = null;
+            int ct = m_SkillLogicInfos.Count;
+            for (int ix = 0; ix < ct; ++ix) {
+                var info = m_SkillLogicInfos[ix];
+                if (info.ObjId == objId && info.SkillId == skillId && info.Seq == seq) {
+                    ret = info;
+                    break;
+                }
+            }
+            return ret;
+        }
+        private SkillLogicInfo FindSkillLogicInfo(UnityEngine.GameObject obj, int skillId, int seq)
+        {
+            SkillLogicInfo ret = null;
+            int ct = m_SkillLogicInfos.Count;
+            for (int ix = 0; ix < ct; ++ix) {
+                var info = m_SkillLogicInfos[ix];
+                if (info.GfxObj == obj && info.SkillId == skillId && info.Seq == seq) {
+                    ret = info;
+                    break;
+                }
+            }
+            return ret;
+        }
+        private SkillLogicInfo FindSkillLogicInfoForSkillViewer(int skillId)
+        {
+            SkillLogicInfo ret = null;
+            int ct = m_SkillLogicInfos.Count;
+            for (int ix = 0; ix < ct; ++ix) {
+                var info = m_SkillLogicInfos[ix];
+                if (info.SkillId == skillId) {
+                    ret = info;
+                    break;
+                }
+            }
+            return ret;
+        }
+        private SkillLogicInfo FindInnerSkillLogicInfoForSkillViewer(int skillId, int innerDslSkillId, int outerDslSkillId)
+        {
+            SkillLogicInfo ret = null;
+            int ct = m_SkillLogicInfos.Count;
+            for (int ix = 0; ix < ct; ++ix) {
+                var info = m_SkillLogicInfos[ix];
+                if (info.SkillId == skillId && info.SkillInst.InnerDslSkillId == innerDslSkillId && info.SkillInst.OuterDslSkillId == outerDslSkillId) {
+                    ret = info;
+                    break;
+                }
+            }
+            return ret;
+        }
+
         private void StopSkillInstance(SkillLogicInfo info)
         {
             StopSkillInstance(info, false);
@@ -635,12 +739,12 @@ namespace GameFramework.Skill
                     effectMgr.StopEffects();
                 }
                 if (info.Sender.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                    EntityController.Instance.StopSkillAnimation(info.ActorId);
+                    EntityController.Instance.StopSkillAnimation(info.GfxObj);
                 }
             }
 
             //GameFramework.LogSystem.Debug("Skill {0} finished.", info.SkillId);
-            EntityController.Instance.DeactivateSkill(info.ActorId, info.SkillId, info.Sender.Seq);
+            EntityController.Instance.DeactivateSkill(info.Sender, info.SkillInst);
             RecycleSkillInstance(info.Info);
         }
         
@@ -740,6 +844,7 @@ namespace GameFramework.Skill
         private List<SkillLogicInfo> m_SkillLogicInfos = new List<SkillLogicInfo>();
         private Dictionary<int, List<SkillInstanceInfo>> m_SkillInstancePool = new Dictionary<int, List<SkillInstanceInfo>>();
 
+        private Dictionary<int, GameObject> m_TempObjs = new Dictionary<int, GameObject>();
         public static int CalcUniqueInnerSkillId(int skillId, SkillInstance innerInstance)
         {
             return innerInstance.InnerDslSkillId + innerInstance.OuterDslSkillId;

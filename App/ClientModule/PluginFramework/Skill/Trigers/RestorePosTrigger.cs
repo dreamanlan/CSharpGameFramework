@@ -53,7 +53,7 @@ namespace GameFramework.Skill.Trigers
                 if (null != target) {
                     targetPos = target.transform.position;
                 }           
-                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ActorId, senderObj.TargetActorId, ref targetPos);
+                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ObjId, senderObj.TargetObjId, ref targetPos);
                 if (targetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
                     instance.CustomDatas.AddData<Vector3>(targetPos);
                 }

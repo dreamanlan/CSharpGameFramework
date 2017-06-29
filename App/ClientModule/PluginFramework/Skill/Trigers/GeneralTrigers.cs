@@ -130,7 +130,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (curSectionTime >= StartTime) {
-                EntityController.Instance.BornFinish(senderObj.ActorId);
+                EntityController.Instance.BornFinish(senderObj.ObjId);
                 return false;
             } else {
                 return true;
@@ -171,7 +171,7 @@ namespace GameFramework.Skill.Trigers
             GameObject obj = senderObj.GfxObj;
             if (null == obj) return false;
             if (curSectionTime >= StartTime) {
-                EntityController.Instance.DeadFinish(senderObj.ActorId);
+                EntityController.Instance.DeadFinish(senderObj.ObjId);
                 return false;
             } else {
                 return true;
@@ -539,12 +539,12 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (senderObj.ConfigData.aoeType != (int)SkillAoeType.Unknown) {
-                int targetType = EntityController.Instance.GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);
+                int targetType = EntityController.Instance.GetTargetType(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);
                 int senderId = 0;
                 if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                    senderId = senderObj.ActorId;
+                    senderId = senderObj.ObjId;
                 } else {
-                    senderId = senderObj.TargetActorId;
+                    senderId = senderObj.TargetObjId;
                 }
                 int ct = 0;
                 TriggerUtil.AoeQuery(senderObj, instance, senderId, targetType, m_RelativeCenter, m_RelativeToTarget, (float distSqr, int objId) => {
@@ -558,9 +558,9 @@ namespace GameFramework.Skill.Trigers
                 });
             } else {
                 if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                    EntityController.Instance.KeepTarget(senderObj.TargetActorId);
+                    EntityController.Instance.KeepTarget(senderObj.TargetObjId);
                 } else {
-                    EntityController.Instance.KeepTarget(senderObj.ActorId);
+                    EntityController.Instance.KeepTarget(senderObj.ObjId);
                 }
             }
             return true;

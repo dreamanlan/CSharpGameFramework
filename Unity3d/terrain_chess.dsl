@@ -1,6 +1,6 @@
 input
 {
-  rect(10,10,492,492);
+  rect(10,10,116,116);
   sampler("img", "F:/OpenSource/CSharpGameFramework_local/chess.png");
 }
 height

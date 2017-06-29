@@ -14,4 +14,20 @@ skill(5)
     };
     emiteffect(emitEffect,"eyes",0,10,0);
   };
+  emitskill
+  {
+    section(10000)
+    {
+    	track(hit,false,200);
+    };
+  };
+	hitskill
+	{
+		section(1000)
+		{
+	    animation(Hit)adjustduration();
+	    selfeffect(hitEffect, 1000, hit, 0);
+	    damage(0);
+		};
+	};
 };

@@ -1,4 +1,4 @@
-story(auto_main)
+story(auto_story)
 {
   onmessage("start")
   {

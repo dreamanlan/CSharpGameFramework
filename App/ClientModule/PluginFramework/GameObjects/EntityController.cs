@@ -174,11 +174,11 @@ namespace GameFramework
                 return dist;
             }
         }
-        public bool CanCastSkill(int objId, TableConfig.Skill configData, int seq)
+        public bool CanCastSkill(UnityEngine.GameObject obj, TableConfig.Skill configData, int seq)
         {
-            bool ret=true;
+            bool ret = true;
             if (configData.type == (int)SkillOrImpactType.Skill) {
-                EntityViewModel view = GetEntityViewById(objId);
+                EntityViewModel view = GetEntityView(obj);
                 if (null != view && null != view.Entity) {
                     EntityInfo entity = view.Entity;
                     if (entity.GetSkillStateInfo().IsSkillActivated()) {
@@ -191,19 +191,20 @@ namespace GameFramework
             }
             return ret;
         }
-        public void CancelCastSkill(int actorId)
+        public void CancelCastSkill(UnityEngine.GameObject obj)
         {
-            EntityViewModel view = GetEntityViewById(actorId);
+            EntityViewModel view = GetEntityView(obj);
             if (null != view && null != view.Entity) {
                 view.Entity.IsControlByManual = false;
             }
         }
-        public GfxSkillSenderInfo BuildSkillInfo(int objId, TableConfig.Skill configData, int seq)
+        public GfxSkillSenderInfo BuildSkillInfo(UnityEngine.GameObject obj, TableConfig.Skill configData, int seq)
         {
             GfxSkillSenderInfo ret = null;
-            EntityViewModel view = GetEntityViewById(objId);
+            EntityViewModel view = GetEntityView(obj);
             if (null != view && null != view.Actor && null != view.Entity && null != configData) {
                 EntityInfo entity = view.Entity;
+                int objId = view.Entity.GetId();
                 int targetId = 0;
                 if (configData.type == (int)SkillOrImpactType.Skill) {
                     targetId = entity.GetAiStateInfo().Target;
@@ -219,19 +220,29 @@ namespace GameFramework
                 } else {
                     ret = new GfxSkillSenderInfo(configData, seq, objId, view.Actor);
                 }
+            } else {
+                ret = new GfxSkillSenderInfo(configData, seq, 0, obj);
             }
             return ret;
         }
-        public void ActivateSkill(int actorId, int skillId, int seq)
+        public void ActivateSkill(GfxSkillSenderInfo sender, SkillInstance instance)
         {
-            EntityViewModel view = GetEntityViewById(actorId);
+            int objId = sender.ObjId;
+            int skillId = sender.SkillId;
+            int seq = sender.Seq;
+
+            if (objId <= 0)
+                return;
+            //LogSystem.Warn("{0} ActivateSkill {1} {2}", objId, skillId, seq);
+
+            EntityViewModel view = GetEntityViewById(objId);
             if (null != view && null != view.Entity) {
                 EntityInfo entity = view.Entity;
                 SkillInfo skillInfo = entity.GetSkillStateInfo().GetSkillInfoById(skillId);
                 if (null != skillInfo) {
                     SkillInfo curSkillInfo = entity.GetSkillStateInfo().GetCurSkillInfo();
                     if (null != curSkillInfo && (curSkillInfo.ConfigData.skillData.interruptPriority < skillInfo.ConfigData.skillData.interruptPriority)) {
-                        GfxSkillSystem.Instance.StopSkill(actorId, curSkillInfo.SkillId, 0, true);
+                        GfxSkillSystem.Instance.StopSkill(objId, curSkillInfo.SkillId, 0, true);
                         if (skillId == view.Entity.ManualSkillId) {
                             LogSystem.Warn("ManualSkill {0} interrupt {1}.", skillId, curSkillInfo.SkillId);
                         }
@@ -245,14 +256,23 @@ namespace GameFramework
                     if (skillInfo.ConfigData.skillData.addsc > 0 && PluginFramework.Instance.IsBattleState) {
                         //回蓝
                         entity.Energy += skillInfo.ConfigData.skillData.addsc;
-                        entity.EntityManager.FireDamageEvent(actorId, 0, false, false, 0, -skillInfo.ConfigData.skillData.addsc);
+                        entity.EntityManager.FireDamageEvent(objId, 0, false, false, 0, -skillInfo.ConfigData.skillData.addsc);
                     }
                 }
             }
         }
-        public void DeactivateSkill(int actorId, int skillId, int seq)
+        public void DeactivateSkill(GfxSkillSenderInfo sender, SkillInstance instance)
         {
-            EntityViewModel view = GetEntityViewById(actorId);
+            int objId = sender.ObjId;
+            int skillId = sender.SkillId;
+            int seq = sender.Seq;
+
+            if (objId <= 0)
+                return;
+
+            //LogSystem.Warn("{0} DeactivateSkill {1} {2}", objId, skillId, seq);
+
+            EntityViewModel view = GetEntityViewById(objId);
             if (null != view && null != view.Entity) {
                 SkillInfo skillInfo = view.Entity.GetSkillStateInfo().GetSkillInfoById(skillId);
                 if (null != skillInfo) {
@@ -266,28 +286,24 @@ namespace GameFramework
                 }
             }
         }
-        public void CancelIfImpact(int actorId, TableConfig.Skill cfg, int seq)
+        public void CancelIfImpact(UnityEngine.GameObject obj, TableConfig.Skill cfg, int seq)
         {
-            EntityViewModel view = GetEntityViewById(actorId);
+            EntityViewModel view = GetEntityView(obj);
             if (null != view && null != view.Entity) {
                 if (cfg.type != (int)SkillOrImpactType.Skill) {
                     view.Entity.GetSkillStateInfo().RemoveImpact(seq);
                 }
             }
         }
-        public void StopSkillAnimation(int actorId)
+        public void StopSkillAnimation(UnityEngine.GameObject obj)
         {
-            UnityEngine.GameObject obj = GetGameObject(actorId);
-            if (null != obj) {
-                UnityEngine.Animator animator = obj.GetComponentInChildren<UnityEngine.Animator>();
-                if (null != animator) {
-                    animator.Play("Stand");
-                }
+            EntityViewModel view = GetEntityView(obj);
+            if (null != view && null != view.Actor && null != view.Entity && !view.Entity.IsDead()) {
+            
             }
         }
-        public void PauseSkillAnimation(int actorId, bool pause)
+        public void PauseSkillAnimation(UnityEngine.GameObject obj, bool pause)
         {
-            UnityEngine.GameObject obj = GetGameObject(actorId);
             if (null != obj) {
                 UnityEngine.Animator animator = obj.GetComponentInChildren<UnityEngine.Animator>();
                 if (null != animator) {
@@ -483,30 +499,30 @@ namespace GameFramework
             senderId = 0;
             targetId = 0;
 
-            int targetType = GetTargetType(senderObj.ActorId, senderObj.ConfigData, senderObj.Seq);            
+            int targetType = GetTargetType(senderObj.ObjId, senderObj.ConfigData, senderObj.Seq);            
             if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                senderId = senderObj.ActorId;
-                targetId = senderObj.TargetActorId;
+                senderId = senderObj.ObjId;
+                targetId = senderObj.TargetObjId;
                 if (targetType == (int)SkillTargetType.RandEnemy) {
                     targetId = GetRandEnemyId(GetCampId(senderId));
                 } else if (targetType == (int)SkillTargetType.RandFriend) {
                     targetId = GetRandFriendId(GetCampId(senderId));
                 } else if (targetType == (int)SkillTargetType.Friend) {
-                    targetId = senderObj.ActorId;
+                    targetId = senderObj.ObjId;
                 } else if (targetType == (int)SkillTargetType.Self) {
-                    targetId = senderObj.ActorId;
+                    targetId = senderObj.ObjId;
                 }
             } else {
-                senderId = senderObj.TargetActorId;
-                targetId = senderObj.ActorId;
+                senderId = senderObj.TargetObjId;
+                targetId = senderObj.ObjId;
                 if (targetType == (int)SkillTargetType.RandEnemy) {
                     targetId = GetRandEnemyId(GetCampId(senderId));
                 } else if (targetType == (int)SkillTargetType.RandFriend) {
                     targetId = GetRandFriendId(GetCampId(senderId));
                 } else if (targetType == (int)SkillTargetType.Friend) {
-                    targetId = senderObj.TargetActorId;
+                    targetId = senderObj.TargetObjId;
                 } else if (targetType == (int)SkillTargetType.Self) {
-                    targetId = senderObj.TargetActorId;
+                    targetId = senderObj.TargetObjId;
                 }
             }
         }
@@ -596,7 +612,7 @@ namespace GameFramework
                 if(null!=skillInst){
                     Dictionary<string, object> args;
                     Skill.Trigers.TriggerUtil.CalcImpactConfig(0, impactId, skillInst, senderInfo.ConfigData, out args);
-                    return EntityController.Instance.SendImpact(senderInfo.ConfigData, senderInfo.Seq, senderInfo.ActorId, srcObjId, targetId, impactId, true, args);
+                    return EntityController.Instance.SendImpact(senderInfo.ConfigData, senderInfo.Seq, senderInfo.ObjId, srcObjId, targetId, impactId, true, args);
                 }
             }
             return null;

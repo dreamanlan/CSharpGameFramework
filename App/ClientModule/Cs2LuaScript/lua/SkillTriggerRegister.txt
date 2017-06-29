@@ -1,6 +1,7 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 require "Cs2LuaScript__Plugin";
 
 SkillTriggerRegister = {
@@ -27,5 +28,7 @@ SkillTriggerRegister = {
 		return defineclass(nil, "SkillTriggerRegister", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
 	end,
 };
+
+
 
 SkillTriggerRegister.__define_class();

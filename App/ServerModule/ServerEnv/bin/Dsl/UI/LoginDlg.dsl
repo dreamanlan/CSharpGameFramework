@@ -2,8 +2,6 @@ story(main)
 {
   local
   {
-  	@user(0);
-  	@pass(0);
   };
   onmessage("start")
   {
@@ -22,12 +20,12 @@ story(main)
   onnamespacedmessage("on_click")
   {
   	log("LoginDlg on click");
-  	@user=listget($1,0,"");
-  	@pass=listget($1,1,"");
-  	if(@user=="" || @pass==""){
+  	$user=listget($1,0,"");
+  	$pass=listget($1,1,"");
+  	if($user=="" || $pass==""){
     	highlightprompt(0,"Err_LoginNameOrPass");
   	}else{
-	  	firemessage("do_login",@user,@pass);
+	  	firemessage("do_login",$user,$pass);
     	@window.SetActive(changetype(0,"bool"));
 	  };
   };

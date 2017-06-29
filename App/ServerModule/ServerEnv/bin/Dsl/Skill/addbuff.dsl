@@ -14,4 +14,13 @@ skill(6)
     };
     impact(0,0,0,0,false);
   };
+	hitskill
+	{
+		section(1000)
+		{
+	    animation(Hit)adjustduration();
+	    selfeffect(hitEffect, 1000, hit, 0);
+	    damage(0);
+		};
+	};
 };

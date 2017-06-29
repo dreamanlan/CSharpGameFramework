@@ -1,11 +1,12 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 require "AiLogicUtility";
 
 AiSelectTarget = {
 	__new_object = function(...)
-		return newobject(AiSelectTarget, nil, {}, ...);
+		return newobject(AiSelectTarget, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = AiSelectTarget;
@@ -28,7 +29,7 @@ AiSelectTarget = {
 				this.m_Proxy = result;
 			end,
 			Clone = function(this)
-				return newobject(AiSelectTarget, "ctor", {});
+				return newobject(AiSelectTarget, "ctor", nil);
 			end,
 			Evaluate = function(this, instance, _params)
 				local args; args = _params.Values;
@@ -37,7 +38,7 @@ AiSelectTarget = {
 				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
 				if (nil ~= npc) then
 					local entity;
-					if (dist < 0.0001) then
+					if (dist < 0.00) then
 						entity = AiLogicUtility.GetNearstTargetHelper__GameFramework_EntityInfo__GameFramework_CharacterRelation(npc, 0);
 						if (nil ~= entity) then
 							npc:GetAiStateInfo().Target = entity:GetId();
@@ -77,5 +78,7 @@ AiSelectTarget = {
 		return defineclass(nil, "AiSelectTarget", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 AiSelectTarget.__define_class();

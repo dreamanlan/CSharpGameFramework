@@ -1,12 +1,13 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 require "AiLogicUtility";
 require "AiCommand";
 
 AiDoMember = {
 	__new_object = function(...)
-		return newobject(AiDoMember, nil, {}, ...);
+		return newobject(AiDoMember, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = AiDoMember;
@@ -27,7 +28,7 @@ AiDoMember = {
 
 		local instance_methods = {
 			Clone = function(this)
-				return newobject(AiDoMember, "ctor", {});
+				return newobject(AiDoMember, "ctor", nil);
 			end,
 			ResetState = function(this)
 				this.m_ParamReaded = false;
@@ -186,5 +187,7 @@ AiDoMember = {
 		return defineclass(nil, "AiDoMember", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 AiDoMember.__define_class();

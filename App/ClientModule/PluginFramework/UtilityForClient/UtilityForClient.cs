@@ -116,7 +116,7 @@ namespace GameFramework
             Quaternion rot = targetObject.transform.rotation * asset.transform.rotation;
             result = (GameObject)GameObject.Instantiate(asset, pos, rot);
             result.name = name;
-            result.transform.parent = targetObject.transform;
+            result.transform.SetParent(targetObject.transform);
             return result;
         }
         public static GameObject AttachUIAsset(GameObject targetObject, GameObject asset, string name)

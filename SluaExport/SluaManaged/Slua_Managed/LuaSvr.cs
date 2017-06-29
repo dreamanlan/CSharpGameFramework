@@ -30,48 +30,40 @@ namespace SLua
     using System.Threading;
     using System.Collections;
     using System.Collections.Generic;
-    using LuaInterface;
     using System.Reflection;
 #if !SLUA_STANDALONE
     using UnityEngine;
     using Debug = UnityEngine.Debug;
 #endif
 
-    public enum LuaSvrFlag
-    {
-        LSF_BASIC = 0,
-        LSF_DEBUG = 1,
-        LSF_EXTLIB = 2,
-        LSF_3RDDLL = 4
-    };
+	public enum LuaSvrFlag {
+		LSF_BASIC = 0,
+		LSF_EXTLIB = 1,
+		LSF_3RDDLL = 2
+	};
 
-    public class LuaSvr
-    {
-        public LuaState luaState;
-#if !SLUA_STANDALONE
-        static LuaSvrGameObject lgo;
-#endif
-        int errorReported = 0;
-        public bool inited = false;
+	public class LuaSvr 
+	{
+		public LuaState luaState;
+		#if !SLUA_STANDALONE
+		protected static LuaSvrGameObject lgo;
+		#endif
+		int errorReported = 0;
+		public bool inited = false;
 
-        public LuaSvr()
-        {
-            LuaState luaState = new LuaState();
-            this.luaState = luaState;
-        }
+		public LuaSvr()
+		{
+			LuaState luaState = new LuaState();
+			this.luaState = luaState;
+		}
 
-        private volatile int bindProgress = 0;
-        private void doBind(object state)
-        {
-            IntPtr L = (IntPtr)state;
+		List<Action<IntPtr>> collectBindInfo() {
 
-            List<Action<IntPtr>> list = new List<Action<IntPtr>>();
+			List<Action<IntPtr>> list = new List<Action<IntPtr>>();
 
-#if !SLUA_STANDALONE
-#if USE_STATIC_BINDER
+			#if !SLUA_STANDALONE
+			#if !USE_STATIC_BINDER
 			Assembly[] ams = AppDomain.CurrentDomain.GetAssemblies();
-			
-			bindProgress = 0;
 
 			List<Type> bindlist = new List<Type>();
 			for (int n = 0; n < ams.Length;n++ )
@@ -95,16 +87,14 @@ namespace SLua
 					}
 				}
 			}
-			
-			bindProgress = 1;
-			
+
 			bindlist.Sort(new System.Comparison<Type>((Type a, Type b) => {
 				LuaBinderAttribute la = System.Attribute.GetCustomAttribute( a, typeof(LuaBinderAttribute) ) as LuaBinderAttribute;
 				LuaBinderAttribute lb = System.Attribute.GetCustomAttribute( b, typeof(LuaBinderAttribute) ) as LuaBinderAttribute;
-				
+
 				return la.order.CompareTo(lb.order);
 			}));
-			
+
 			for (int n = 0; n < bindlist.Count; n++)
 			{
 				Type t = bindlist[n];
@@ -121,48 +111,62 @@ namespace SLua
 #endif
 #endif
 
-            bindProgress = 2;
+			return list;
 
-            int count = list.Count;
-            for (int n = 0; n < count; n++) {
-                Action<IntPtr> action = list[n];
-                action(L);
-                bindProgress = (int)(((float)n / count) * 98.0) + 2;
-            }
-
-            bindProgress = 100;
-        }
-
-        Action<IntPtr>[] getBindList(Assembly assembly, string ns)
-        {
-            Type t = assembly.GetType(ns);
-            if (t != null)
-                return (Action<IntPtr>[])t.GetMethod("GetBindList").Invoke(null, null);
-            return new Action<IntPtr>[0];
-        }
+		}
 
 
-        public IEnumerator waitForBind(Action<int> tick, Action complete)
-        {
-            int lastProgress = 0;
-            do {
-                if (tick != null)
-                    tick(bindProgress);
-                // too many yield return will increase binding time
-                // so check progress and skip odd progress
-                if (lastProgress != bindProgress && bindProgress % 2 == 0) {
-                    lastProgress = bindProgress;
-                    yield return null;
-                }
-            } while (bindProgress != 100);
+		protected void doBind(IntPtr L)
+		{
+			var list = collectBindInfo ();
 
-            if (tick != null)
-                tick(bindProgress);
+			int count = list.Count;
+			for (int n = 0; n < count; n++)
+			{
+				Action<IntPtr> action = list[n];
+				action(L);
+			}
+		}
 
-            complete();
-        }
 
-        void doinit(IntPtr L, LuaSvrFlag flag)
+
+		private IEnumerator doBind(IntPtr L,Action<int> _tick,Action complete)
+		{
+			Action<int> tick = (int p) => {
+				if (_tick != null)
+					_tick (p);
+			};
+
+			tick (0);
+			var list = collectBindInfo ();
+
+			tick (2);
+
+			int bindProgress = 2;
+			int lastProgress = bindProgress;
+			for (int n = 0; n < list.Count; n++)
+			{
+				Action<IntPtr> action = list[n];
+				action(L);
+				bindProgress = (int)(((float)n / list.Count) * 98.0) + 2;
+				if (_tick!=null && lastProgress != bindProgress && bindProgress % 5 == 0) {
+					tick (bindProgress);
+					yield return null;
+				}
+			}
+
+			tick (100);
+			complete ();
+		}
+
+		Action<IntPtr>[] getBindList(Assembly assembly,string ns) {
+			Type t=assembly.GetType(ns);
+			if(t!=null)
+				return (Action<IntPtr>[]) t.GetMethod("GetBindList").Invoke(null, null);
+			return new Action<IntPtr>[0];
+		}
+
+        protected void doinit(IntPtr L,LuaSvrFlag flag)
         {
 #if !SLUA_STANDALONE
             LuaTimer.reg(L);
@@ -189,7 +193,7 @@ namespace SLua
             inited = true;
         }
 
-        void checkTop(IntPtr L)
+        protected void checkTop(IntPtr L)
         {
             if (LuaDLL.lua_gettop(luaState.L) != errorReported) {
                 Logger.LogError("Some function not remove temp value from lua stack. You should fix it.");
@@ -228,8 +232,7 @@ namespace SLua
                 complete();
                 checkTop(L);
             } else {
-                ThreadPool.QueueUserWorkItem(doBind, L);
-                lgo.StartCoroutine(waitForBind(tick, () => {
+                lgo.StartCoroutine(doBind(L, tick, () => {
                     doinit(L, flag);
                     complete();
                     checkTop(L);

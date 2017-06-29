@@ -1,10 +1,11 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 MiniMap = {
 	__new_object = function(...)
-		return newobject(MiniMap, nil, {}, ...);
+		return newobject(MiniMap, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = MiniMap;
@@ -40,11 +41,18 @@ MiniMap = {
 					local x; x = (((pos.x * this.m_MapWidth) / this.m_TerrainWidth) - invokeintegeroperator(0, "/", this.m_MapWidth, 2, System.Int32, System.Int32));
 					local y; y = (((pos.z * this.m_MapHeight) / this.m_TerrainHeight) - invokeintegeroperator(0, "/", this.m_MapHeight, 2, System.Int32, System.Int32));
 					local rect; rect = typeas(this.m_MapPlayer.transform, UnityEngine.RectTransform, false);
-					rect.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", {}, x, y, 0);
+					rect.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, x, y, 0);
 				end;
 			end,
 			Call = function(this, name, ...)
 				local args = wraparray{...};
+				if (name == "SetImage") then
+					local res; res = typeas(args[1], System.String, false);
+					local obj; obj = typeas(GameFramework.UiResourceSystem.Instance:GetUiResource(res), UnityEngine.Texture2D, false);
+					if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, obj) then
+						this.m_RawImage.texture = obj;
+					end;
+				end;
 			end,
 			ctor = function(this)
 			end,
@@ -78,5 +86,7 @@ MiniMap = {
 		return defineclass(nil, "MiniMap", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 MiniMap.__define_class();

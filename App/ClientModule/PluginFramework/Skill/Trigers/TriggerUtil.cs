@@ -59,7 +59,7 @@ namespace GameFramework.Skill.Trigers
             if (source_child == null || target_child == null) {
                 return false;
             }
-            target.transform.parent = source_child;
+            target.transform.SetParent(source_child);
             target.transform.localRotation = Quaternion.identity;
             target.transform.localPosition = Vector3.zero;
             Vector3 ss = source_child.localScale;

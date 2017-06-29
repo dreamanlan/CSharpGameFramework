@@ -1,10 +1,11 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 AiQuery = {
 	__new_object = function(...)
-		return newobject(AiQuery, nil, {}, ...);
+		return newobject(AiQuery, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = AiQuery;
@@ -27,7 +28,7 @@ AiQuery = {
 				this.m_Proxy = result;
 			end,
 			Clone = function(this)
-				local newObj; newObj = newobject(AiQuery, "ctor", {});
+				local newObj; newObj = newobject(AiQuery, "ctor", nil);
 				if (nil ~= this.m_Select) then
 					newObj.m_Select = typeas(this.m_Select:Clone(), StorySystem.IStoryValue, false);
 				end;
@@ -70,7 +71,7 @@ AiQuery = {
 --排序
 					local ct; ct = this.m_OrderBy.Count;
 					if (ct > 0) then
-						coll:Sort(newexternobject(AiQueryComparer, "AiQueryComparer", "ctor", {}, this.m_Desc, ct));
+						coll:Sort(newexternobject(AiQueryComparer, "AiQueryComparer", "ctor", nil, this.m_Desc, ct));
 					end;
 --收集结果
 					local result; result = newexternlist(System.Collections.ArrayList, "System.Collections.ArrayList", "ctor", {});
@@ -86,18 +87,18 @@ AiQuery = {
 			LoadCallData = function(this, callData)
 				local id; id = callData:GetId();
 				if (id == "select") then
-					this.m_Select = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", {});
+					this.m_Select = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", nil);
 					this.m_Select:InitFromDsl(callData:GetParam(0));
 				elseif (id == "from") then
-					this.m_From = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", {});
+					this.m_From = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", nil);
 					this.m_From:InitFromDsl(callData:GetParam(0));
 				elseif (id == "where") then
-					this.m_Where = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", {});
+					this.m_Where = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", nil);
 					this.m_Where:InitFromDsl(callData:GetParam(0));
 				elseif (id == "orderby") then
 					local i; i = 0;
 					while (i < callData:GetParamNum()) do
-						local v; v = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", {});
+						local v; v = newexternobject(StorySystem.StoryValue, "StorySystem.StoryValue", "ctor", nil);
 						v:InitFromDsl(callData:GetParam(i));
 						this.m_OrderBy:Add(v);
 					i = invokeintegeroperator(2, "+", i, 1, System.Int32, System.Int32);
@@ -166,5 +167,7 @@ AiQuery = {
 		return defineclass(nil, "AiQuery", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 AiQuery.__define_class();

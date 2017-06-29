@@ -1,10 +1,11 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 BulletManager = {
 	__new_object = function(...)
-		return newobject(BulletManager, nil, {}, ...);
+		return newobject(BulletManager, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = BulletManager;
@@ -22,7 +23,7 @@ BulletManager = {
 				else
 					BulletManager.__cctor_called = true;
 				end
-				BulletManager.s_Instance = newobject(BulletManager, "ctor", {});
+				BulletManager.s_Instance = newobject(BulletManager, "ctor", nil);
 			end,
 		};
 
@@ -59,7 +60,7 @@ BulletManager = {
 							UnityEngine.Debug.Log(System.String.Format("Dist:{0}", distSqr));
 						end;
 						local dot; dot = UnityEngine.Vector3.Dot((lastPos2 - pos2), (pos1 - pos2));
-						if ((lastPos2.sqrMagnitude > 0.0001) and (dot > 0)) then
+						if ((lastPos2.sqrMagnitude > 0.00) and (dot > 0)) then
 							UnityEngine.Debug.Log("cross, collide.");
 							return otherObj;
 						else
@@ -71,12 +72,12 @@ BulletManager = {
 			end,
 			UpdatePos = function(this, bullet)
 				local info;
-				if (function() local __compiler_invoke_42; __compiler_invoke_42, info = this.m_Bullets:TryGetValue(bullet:GetInstanceID(), __cs2lua_out) return __compiler_invoke_42; end)() then
+				if (function() local __compiler_invoke_42; __compiler_invoke_42, info = this.m_Bullets:TryGetValue(bullet:GetInstanceID(), __cs2lua_out); return __compiler_invoke_42; end)() then
 					info:SetLastPos(bullet.transform.position);
 				end;
 			end,
 			AddBullet = function(this, bullet)
-				this.m_Bullets:Add(bullet:GetInstanceID(), newobject(BulletManager.CollideInfo, "ctor", {Obj = bullet}));
+				this.m_Bullets:Add(bullet:GetInstanceID(), newobject(BulletManager.CollideInfo, "ctor", (function(newobj) newobj.Obj = bullet; end)));
 			end,
 			RemoveBullet = function(this, bullet)
 				this.m_Bullets:Remove(bullet:GetInstanceID());
@@ -101,9 +102,11 @@ BulletManager = {
 };
 
 
+
+
 BulletManager.CollideInfo = {
 	__new_object = function(...)
-		return newobject(BulletManager.CollideInfo, nil, {}, ...);
+		return newobject(BulletManager.CollideInfo, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = BulletManager.CollideInfo;
@@ -158,6 +161,8 @@ BulletManager.CollideInfo = {
 		return defineclass(nil, "BulletManager.CollideInfo", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 BulletManager.CollideInfo.__define_class();
 BulletManager.__define_class();

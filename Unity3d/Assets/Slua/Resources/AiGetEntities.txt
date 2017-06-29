@@ -1,10 +1,11 @@
 require "cs2lua__utility";
 require "cs2lua__namespaces";
 require "cs2lua__externenums";
+require "cs2lua__interfaces";
 
 AiGetEntities = {
 	__new_object = function(...)
-		return newobject(AiGetEntities, nil, {}, ...);
+		return newobject(AiGetEntities, nil, nil, ...);
 	end,
 	__define_class = function()
 		local static = AiGetEntities;
@@ -27,7 +28,7 @@ AiGetEntities = {
 				this.m_Proxy = result;
 			end,
 			Clone = function(this)
-				return newobject(AiGetEntities, "ctor", {});
+				return newobject(AiGetEntities, "ctor", nil);
 			end,
 			Evaluate = function(this, instance, _params)
 				this.m_Proxy.Value = GameFramework.PluginFramework.Instance.EntityManager.Entities.Values;
@@ -58,5 +59,7 @@ AiGetEntities = {
 		return defineclass(nil, "AiGetEntities", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
 };
+
+
 
 AiGetEntities.__define_class();

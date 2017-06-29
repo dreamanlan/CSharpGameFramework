@@ -1112,48 +1112,6 @@ namespace GameFramework.Story.Commands
         private IStoryValue<string> m_Enable = new StoryValue<string>();
     }
     /// <summary>
-    /// setvisible(objid,value);
-    /// </summary>
-    internal class SetVisibleCommand : AbstractStoryCommand
-    {
-        public override IStoryCommand Clone()
-        {
-            SetVisibleCommand cmd = new SetVisibleCommand();
-            cmd.m_ObjId = m_ObjId.Clone();
-            cmd.m_Value = m_Value.Clone();
-            return cmd;
-        }
-
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
-        {
-            m_ObjId.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, long delta)
-        {
-            int objId = m_ObjId.Value;
-            int value = m_Value.Value;
-            EntityViewModel view = EntityController.Instance.GetEntityViewById(objId);
-            if (null != view) {
-                view.Visible = value != 0;
-            }
-            return false;
-        }
-
-        protected override void Load(Dsl.CallData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_ObjId.InitFromDsl(callData.GetParam(0));
-                m_Value.InitFromDsl(callData.GetParam(1));
-            }
-        }
-
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
-        private IStoryValue<int> m_Value = new StoryValue<int>();
-    }
-    /// <summary>
     /// sethp(objid,value);
     /// </summary>
     internal class SetHpCommand : AbstractStoryCommand

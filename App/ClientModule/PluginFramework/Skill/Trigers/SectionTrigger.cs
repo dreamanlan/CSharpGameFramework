@@ -53,7 +53,7 @@ namespace GameFramework.Skill.Trigers
                     }
                 }
             } else if (0 == m_Type.CompareTo("impact")) {
-                int time = EntityController.Instance.GetImpactDuration(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                int time = EntityController.Instance.GetImpactDuration(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                 if (time > 0) {
                     long newDuration = (long)time + m_DeltaTime;
                     if (instance.CurSectionDuration < newDuration)
@@ -146,7 +146,7 @@ namespace GameFramework.Skill.Trigers
             }
             if (m_LastKeepTime <= 0 || m_LastKeepTime + m_Interval >= curSectionTime) {
                 m_LastKeepTime = curSectionTime;
-                int time = EntityController.Instance.GetImpactDuration(senderObj.ActorId, senderObj.SkillId, senderObj.Seq);
+                int time = EntityController.Instance.GetImpactDuration(senderObj.ObjId, senderObj.SkillId, senderObj.Seq);
                 if (time > 0) {
                     instance.SetCurSectionDuration((long)time + m_DeltaTime);
                 } else {
@@ -201,18 +201,18 @@ namespace GameFramework.Skill.Trigers
             }
             if (m_HaveIsContinue) {
                 if (0 == m_Type.CompareTo("shield")) {
-                    if (EntityController.Instance.HaveShield(senderObj.ActorId))
+                    if (EntityController.Instance.HaveShield(senderObj.ObjId))
                         return true;
                 } else {
-                    if (EntityController.Instance.HaveState(senderObj.ActorId, m_Type))
+                    if (EntityController.Instance.HaveState(senderObj.ObjId, m_Type))
                         return true;
                 }
             } else {
                 if (0 == m_Type.CompareTo("shield")) {
-                    if (!EntityController.Instance.HaveShield(senderObj.ActorId))
+                    if (!EntityController.Instance.HaveShield(senderObj.ObjId))
                         return true;
                 } else {
-                    if (!EntityController.Instance.HaveState(senderObj.ActorId, m_Type))
+                    if (!EntityController.Instance.HaveState(senderObj.ObjId, m_Type))
                         return true;
                 }
             }

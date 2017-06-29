@@ -72,11 +72,11 @@ namespace GameFramework.Skill.Trigers
                 mgr = new TargetManager();
                 instance.CustomDatas.AddData(mgr);
             }
-            int targetId = EntityController.Instance.SelectTargetForSkill(m_Type, senderObj.ActorId, senderObj.ConfigData, senderObj.Seq, mgr.Targets);
+            int targetId = EntityController.Instance.SelectTargetForSkill(m_Type, senderObj.ObjId, senderObj.ConfigData, senderObj.Seq, mgr.Targets);
             if (targetId > 0) {
                 mgr.Add(targetId);
                 GameObject target = EntityController.Instance.GetGameObject(targetId);
-                senderObj.TargetActorId = targetId;
+                senderObj.TargetObjId = targetId;
                 senderObj.TargetGfxObj = target;
             }
             return false;
@@ -148,11 +148,11 @@ namespace GameFramework.Skill.Trigers
                     mgr = new TargetManager();
                     instance.CustomDatas.AddData(mgr);
                 }
-                int targetId = EntityController.Instance.SelectTargetForSkill(m_SelectTargetType, senderObj.ActorId, senderObj.ConfigData, senderObj.Seq, mgr.Targets);
+                int targetId = EntityController.Instance.SelectTargetForSkill(m_SelectTargetType, senderObj.ObjId, senderObj.ConfigData, senderObj.Seq, mgr.Targets);
                 if (targetId > 0) {
                     mgr.Add(targetId);
                     m_Target = EntityController.Instance.GetGameObject(targetId);
-                    senderObj.TargetActorId = targetId;
+                    senderObj.TargetObjId = targetId;
                     senderObj.TargetGfxObj = m_Target;
                 }
             }
