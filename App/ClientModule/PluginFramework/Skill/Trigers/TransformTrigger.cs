@@ -6,9 +6,9 @@ using SkillSystem;
 namespace GameFramework.Skill.Trigers
 {
     /// <summary>
-    /// transform(startime, bone, vector3(position), eular(rotate), relaitve_type, is_attach[, is_use_terrain_height=false][,randomrotate = Vector3.zero]);
+    /// transform(startime, bone, vector3(position) or objpath, eular(rotate) or objpath, relaitve_type, is_attach[, is_use_terrain_height=false][,randomrotate = Vector3.zero]);
     /// </summary>
-    public class TransformTrigger : AbstractSkillTriger
+    internal class TransformTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -16,7 +16,9 @@ namespace GameFramework.Skill.Trigers
             
             copy.m_BoneName = m_BoneName;
             copy.m_Postion = m_Postion;
+            copy.m_PosObjPath = m_PosObjPath;
             copy.m_Rotate = m_Rotate;
+            copy.m_RotateObjPath = m_RotateObjPath;
             copy.m_RelativeType = m_RelativeType;
             copy.m_IsAttach = m_IsAttach;
             copy.m_IsUseTerrainHeight = m_IsUseTerrainHeight;
@@ -26,19 +28,30 @@ namespace GameFramework.Skill.Trigers
         }
         public override void Reset()
         {
-            
         }
         protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
-            if (callData.GetParamNum() >= 6) {
+            if (callData.GetParamNum() >= 5) {
                 StartTime = long.Parse(callData.GetParamId(0));
                 m_BoneName = callData.GetParamId(1);
                 if (m_BoneName == " ") {
                     m_BoneName = "";
                 }
-                m_Postion = DslUtility.CalcVector3(callData.GetParam(2) as Dsl.CallData);
-                m_Rotate = DslUtility.CalcEularAngles(callData.GetParam(3) as Dsl.CallData);
+                var param2 = callData.GetParam(2);
+                m_PosObjPath = param2.GetId();
+                var cd2 = param2 as Dsl.CallData;
+                if (null != cd2 && m_PosObjPath == "vector3") {
+                    m_Postion = DslUtility.CalcVector3(cd2);
+                }
+                var param3 = callData.GetParam(3);
+                m_RotateObjPath = param3.GetId();
+                var cd3 = param3 as Dsl.CallData;
+                if (null != cd3 && m_RotateObjPath == "eular") {
+                    m_Rotate = DslUtility.CalcEularAngles(cd3);
+                }
                 m_RelativeType = callData.GetParamId(4);
+            }
+            if (callData.GetParamNum() >= 6) {
                 m_IsAttach = bool.Parse(callData.GetParamId(5));
             }
             if (callData.GetParamNum() >= 7) {
@@ -71,8 +84,22 @@ namespace GameFramework.Skill.Trigers
                     SetTransformRelativeTarget(obj, target);
                     break;
                 case "RelativeWorld":
-                    obj.transform.position = m_Postion;
-                    obj.transform.rotation = Quaternion.Euler(m_Rotate);
+                    if (m_PosObjPath == "vector3") {
+                        obj.transform.position = m_Postion;
+                    } else {
+                        var tobj = GameObject.Find(m_PosObjPath);
+                        if (null != tobj) {
+                            obj.transform.position = tobj.transform.position;
+                        }
+                    }
+                    if (m_RotateObjPath == "eular") {
+                        obj.transform.rotation = Quaternion.Euler(m_Rotate);
+                    } else {
+                        var tobj = GameObject.Find(m_RotateObjPath);
+                        if (null != tobj) {
+                            obj.transform.rotation = tobj.transform.rotation;
+                        }
+                    }
                     break;
             }
             if (m_IsUseTerrainHeight) {
@@ -129,29 +156,28 @@ namespace GameFramework.Skill.Trigers
         private string m_BoneName;
         private string m_RelativeType;
         private Vector3 m_Postion;
+        private string m_PosObjPath;
         private Vector3 m_Rotate;
+        private string m_RotateObjPath;
         private bool m_IsAttach;
         private bool m_IsUseTerrainHeight = false;
         private Vector3 m_RandomRotate = Vector3.zero;
         
     }
     /// <summary>
-    /// teleport(starttime, offset_x, offset_y, offset_z[, isForRoundMove]);
+    /// teleport([starttime[, vector3(offset_x, offset_y, offset_z) or objpath]]);
     /// </summary>
-    public class TeleportTrigger : AbstractSkillTriger
+    internal class TeleportTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
-            TeleportTrigger copy = new TeleportTrigger();
-            
+            TeleportTrigger copy = new TeleportTrigger();            
             copy.m_RelativeOffset = m_RelativeOffset;
-            
-            copy.m_IsForRoundMove = m_IsForRoundMove;
+            copy.m_ObjPath = m_ObjPath;
             return copy;
         }
         public override void Reset()
-        {
-            
+        {            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -169,61 +195,48 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < StartTime) {
                 return true;
             }
-            if (m_IsForRoundMove) {
+            if (null != targetObj && m_ObjPath == "vector3") {
+                Vector3 pos = targetObj.transform.TransformPoint(m_RelativeOffset);
                 Vector3 srcPos = obj.transform.position;
-                Vector3 targetPos = Vector3.zero;
-                if (null != targetObj) {
-                    targetPos = targetObj.transform.position;
-                }
-                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ObjId, senderObj.TargetObjId, ref targetPos);
-                if (targetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
-                    float angle = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
-                    ScriptRuntime.Vector2 newPos = new ScriptRuntime.Vector2(targetPos.x, targetPos.z) + Geometry.GetRotate(new ScriptRuntime.Vector2(m_RelativeOffset.x, m_RelativeOffset.z), angle);
-                    targetPos = new Vector3(newPos.X, srcPos.y + m_RelativeOffset.y, newPos.Y);
-                    TriggerUtil.MoveObjTo(obj, targetPos);
-                }
-            } else if (null != targetObj) {
-                //Vector3 pos = targetObj.transform.TransformPoint(m_RelativeOffset);
-                Vector3 srcPos = obj.transform.position;
-                Vector3 pos = Vector3.zero;
-                if (null != targetObj)
-                {
-                    pos = targetObj.transform.position;
-                }
-                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ObjId, senderObj.TargetObjId, ref pos);
                 pos.y = srcPos.y;
                 TriggerUtil.MoveObjTo(obj, pos);
+            } else {
+                var tobj = GameObject.Find(m_ObjPath);
+                if (null != tobj) {
+                    TriggerUtil.MoveObjTo(obj, tobj.transform.position);
+                }
             }
             return false;
         }
         protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
-            if (num >= 4) {
+            if (num >= 1) {
                 StartTime = long.Parse(callData.GetParamId(0));
-                m_RelativeOffset.x = float.Parse(callData.GetParamId(1));
-                m_RelativeOffset.y = float.Parse(callData.GetParamId(2));
-                m_RelativeOffset.z = float.Parse(callData.GetParamId(3));
             }
-            if (num >= 5) {
-                m_IsForRoundMove = callData.GetParamId(4) == "true";
+            if (num >= 2) {
+                var param = callData.GetParam(1);
+                m_ObjPath = param.GetId();
+                var cd = param as Dsl.CallData;
+                if (null != cd && m_ObjPath == "vector3") {
+                    m_RelativeOffset = DslUtility.CalcVector3(cd);
+                }
             }
-            
         }
+
         private Vector3 m_RelativeOffset = Vector3.zero;
-        
-        private bool m_IsForRoundMove = false;
+        private string m_ObjPath = string.Empty;
     }
     /// <summary>
-    /// follow(start_time, offset_x, offset_y, offset_z, duration);
+    /// follow(start_time, vector3(offset_x, offset_y, offset_z) or objpath, duration);
     /// </summary>
     internal class FollowTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
-            FollowTrigger triger = new FollowTrigger();
-            
+            FollowTrigger triger = new FollowTrigger();            
             triger.m_RelativeOffset = m_RelativeOffset;
+            triger.m_ObjPath = m_ObjPath;
             triger.m_DurationTime = m_DurationTime;
             
             return triger;
@@ -251,26 +264,34 @@ namespace GameFramework.Skill.Trigers
             if (StartTime + m_DurationTime < curSectionTime) {
                 return false;
             }
-            if (null != targetObj) {
+            if (null != targetObj && m_ObjPath == "vector3") {
                 Vector3 pos = targetObj.transform.TransformPoint(m_RelativeOffset);
                 TriggerUtil.MoveObjTo(obj, pos);
+            } else {
+                var tobj = GameObject.Find(m_ObjPath);
+                if (null != tobj) {
+                    TriggerUtil.MoveObjTo(obj, tobj.transform.position);
+                }
             }
             return true;
         }
         protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
-            if (num >= 5) {
+            if (num >= 3) {
                 StartTime = long.Parse(callData.GetParamId(0));
-                m_RelativeOffset.x = float.Parse(callData.GetParamId(1));
-                m_RelativeOffset.y = float.Parse(callData.GetParamId(2));
-                m_RelativeOffset.z = float.Parse(callData.GetParamId(3));
-                m_DurationTime = long.Parse(callData.GetParamId(4));
+                var param = callData.GetParam(1);
+                m_ObjPath = param.GetId();
+                var cd = param as Dsl.CallData;
+                if (null != cd && m_ObjPath == "vector3") {
+                    m_RelativeOffset = DslUtility.CalcVector3(cd);
+                }
+                m_DurationTime = long.Parse(callData.GetParamId(2));
             }
-            
         }
+
         private Vector3 m_RelativeOffset = Vector3.zero;
+        private string m_ObjPath = string.Empty;
         private long m_DurationTime = 1000;
-        
     }
 }

@@ -149,26 +149,30 @@ namespace GameFramework.Story.Values
                 object o = m_ObjPath.Value;
                 string objPath = o as string;
                 var uobj = o as UnityEngine.GameObject;
-                if (null == uobj) {
-                    if (null != objPath) {
-                        uobj = UnityEngine.GameObject.Find(objPath);
+                if (null != objPath) {
+                    UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
+                    if (null != obj) {
+                        m_Value = obj.activeSelf ? 1 : 0;
                     } else {
-                        try {
-                            int objId = (int)o;
-                            uobj = PluginFramework.Instance.GetGameObject(objId);
-                        } catch {
-                            uobj = null;
-                        }
+                        m_Value = 0;
                     }
-                }
-                if (null != uobj) {
+                } else if (null != uobj) {
                     m_Value = uobj.activeSelf ? 1 : 0;
                 } else {
-                    m_Value = 0;
+                    try {
+                        int objId = (int)o;
+                        UnityEngine.GameObject obj = PluginFramework.Instance.GetGameObject(objId);
+                        if (null != obj) {
+                            m_Value = obj.activeSelf ? 1 : 0;
+                        } else {
+                            m_Value = 0;
+                        }
+                    } catch {
+                        m_Value = 0;
+                    }
                 }
             }
         }
-
         private IStoryValue<object> m_ObjPath = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
@@ -221,26 +225,30 @@ namespace GameFramework.Story.Values
                 object o = m_ObjPath.Value;
                 string objPath = o as string;
                 var uobj = o as UnityEngine.GameObject;
-                if (null == uobj) {
-                    if (null != objPath) {
-                        uobj = UnityEngine.GameObject.Find(objPath);
+                if (null != objPath) {
+                    UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
+                    if (null != obj) {
+                        m_Value = obj.activeInHierarchy ? 1 : 0;
                     } else {
-                        try {
-                            int objId = (int)o;
-                            uobj = PluginFramework.Instance.GetGameObject(objId);
-                        } catch {
-                            uobj = null;
-                        }
+                        m_Value = 0;
                     }
-                }
-                if (null != uobj) {
+                } else if (null != uobj) {
                     m_Value = uobj.activeInHierarchy ? 1 : 0;
                 } else {
-                    m_Value = 0;
+                    try {
+                        int objId = (int)o;
+                        UnityEngine.GameObject obj = PluginFramework.Instance.GetGameObject(objId);
+                        if (null != obj) {
+                            m_Value = obj.activeInHierarchy ? 1 : 0;
+                        } else {
+                            m_Value = 0;
+                        }
+                    } catch {
+                        m_Value = 0;
+                    }
                 }
             }
         }
-
         private IStoryValue<object> m_ObjPath = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
@@ -443,40 +451,37 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
                 m_HaveValue = true;
-                object o = m_ObjPath.Value;
+                object objPath = m_ObjPath.Value;
                 object componentType = m_ComponentType.Value;
-                string objPath = o as string;
-                var uobj = o as UnityEngine.GameObject;
-                if (null == uobj) {
-                    if (null != objPath) {
-                        uobj = UnityEngine.GameObject.Find(objPath);
+                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                if (null == obj) {
+                    string path = objPath as string;
+                    if (null != path) {
+                        obj = UnityEngine.GameObject.Find(path);
                     } else {
                         try {
-                            int objId = (int)o;
-                            uobj = PluginFramework.Instance.GetGameObject(objId);
+                            int objId = (int)objPath;
+                            obj = PluginFramework.Instance.GetGameObject(objId);
                         } catch {
-                            uobj = null;
+                            obj = null;
                         }
                     }
                 }
-                if (null != uobj) {
+                if (null != obj) {
                     Type t = componentType as Type;
                     if (null != t) {
-                        UnityEngine.Component component = uobj.GetComponent(t);
+                        UnityEngine.Component component = obj.GetComponent(t);
                         m_Value = component;
                     } else {
                         string name = componentType as string;
                         if (null != name) {
-                            UnityEngine.Component component = uobj.GetComponent(name);
+                            UnityEngine.Component component = obj.GetComponent(name);
                             m_Value = component;
                         }
                     }
-                } else {
-                    m_Value = null;
                 }
             }
         }
-
         private IStoryValue<object> m_ObjPath = new StoryValue<object>();
         private IStoryValue<object> m_ComponentType = new StoryValue();
         private bool m_HaveValue;
@@ -597,26 +602,31 @@ namespace GameFramework.Story.Values
                 object o = m_ObjPath.Value;
                 string objPath = o as string;
                 var uobj = o as UnityEngine.GameObject;
-                if (null == uobj) {
-                    if (null != objPath) {
-                        uobj = UnityEngine.GameObject.Find(objPath);
+                if (null != objPath) {
+                    var obj = UnityEngine.GameObject.Find(objPath);
+                    if (null != obj && null != obj.transform.parent) {
+                        m_Value = obj.transform.parent.gameObject;
                     } else {
-                        try {
-                            int objId = (int)o;
-                            uobj = PluginFramework.Instance.GetGameObject(objId);
-                        } catch {
-                            uobj = null;
-                        }
+                        m_Value = null;
                     }
-                }
-                if (null != uobj) {
-                    if (null != uobj && null != uobj.transform.parent) {
+                } else if (null != uobj) {
+                    if (null != uobj.transform.parent) {
                         m_Value = uobj.transform.parent.gameObject;
                     } else {
                         m_Value = null;
                     }
                 } else {
-                    m_Value = null;
+                    try {
+                        int objId = (int)o;
+                        var obj = PluginFramework.Instance.GetGameObject(objId);
+                        if (null != obj && null != obj.transform.parent) {
+                            m_Value = obj.transform.parent.gameObject;
+                        } else {
+                            m_Value = null;
+                        }
+                    } catch {
+                        m_Value = null;
+                    }
                 }
             }
         }

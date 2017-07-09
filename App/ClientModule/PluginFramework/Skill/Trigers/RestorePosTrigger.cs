@@ -6,32 +6,24 @@ using SkillSystem;
 namespace GameFramework.Skill.Trigers
 {
     /// <summary>
-    /// storepos([start_time[, isForRoundMove]]);
+    /// storepos([start_time]);
     /// </summary>
-    public class StorePosTrigger : AbstractSkillTriger
+    internal class StorePosTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
             StorePosTrigger copy = new StorePosTrigger();
-            
-            
-            copy.m_IsForRoundMove = m_IsForRoundMove;
             return copy;
         }
         public override void Reset()
-        {
-            
+        {            
         }
         protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 1) {
                 StartTime = long.Parse(callData.GetParamId(0));
-            }
-            if (num >= 2) {
-                m_IsForRoundMove = callData.GetParamId(1)=="true";
-            }
-            
+            }     
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -47,47 +39,29 @@ namespace GameFramework.Skill.Trigers
             if (curSectionTime < StartTime) {
                 return true;
             }
-            if (m_IsForRoundMove) {
-                Vector3 srcPos = obj.transform.position;
-                Vector3 targetPos = Vector3.zero;
-                if (null != target) {
-                    targetPos = target.transform.position;
-                }           
-                TriggerUtil.GetSkillStartPosition(srcPos, senderObj.ConfigData, instance, senderObj.ObjId, senderObj.TargetObjId, ref targetPos);
-                if (targetPos.sqrMagnitude > Geometry.c_FloatPrecision) {
-                    instance.CustomDatas.AddData<Vector3>(targetPos);
-                }
-            } else {
-                Vector3 pos = obj.transform.position;
-                instance.CustomDatas.AddData<Vector3>(pos);
-            }
+            Vector3 pos = obj.transform.position;
+            instance.CustomDatas.AddData<Vector3>(pos);
             return false;
         }
-        
-        private bool m_IsForRoundMove = false;
     }
     /// <summary>
     /// restorepos([start_time]);
     /// </summary>
-    public class RestorePosTrigger : AbstractSkillTriger
+    internal class RestorePosTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
             RestorePosTrigger copy = new RestorePosTrigger();
-            
-            
             return copy;
         }
         public override void Reset()
-        {
-            
+        {            
         }
         protected override void Load(Dsl.CallData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() >= 1) {
                 StartTime = long.Parse(callData.GetParamId(0));
-            }
-            
+            }            
         }
         public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
         {
@@ -106,7 +80,6 @@ namespace GameFramework.Skill.Trigers
                 obj.transform.position = old_pos;
             }
             return false;
-        }
-        
+        }        
     }
 }

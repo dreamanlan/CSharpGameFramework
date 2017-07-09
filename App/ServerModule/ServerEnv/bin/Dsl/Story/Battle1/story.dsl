@@ -12,8 +12,6 @@ story(battle_main)
     createnpc(1000,vector3(65,1000,70),0,3,1,"ai_player",stringlist("Ai/ailogic_player.dsl"));
     setleaderid(unitid2objid(1000));
     npcsetformation(1000,0);
-    npcaddskill(1000,22);
-    npcaddskill(1000,23);
     loop(4){
       createnpc(1001+$$,vector3(55+rndint(0,10),1000,65+rndint(0,10)),0,3,$$+2,"ai_member",stringlist("Ai/ailogic_member.dsl"),getleaderid());
       npcsetformation(1001+$$,$$+1);

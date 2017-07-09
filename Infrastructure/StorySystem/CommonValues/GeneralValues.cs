@@ -1375,7 +1375,6 @@ namespace StorySystem.CommonValues
             if (null != callData && callData.GetId() == "rndvector3" && callData.GetParamNum() == 2) {
                 m_Pt.InitFromDsl(callData.GetParam(0));
                 m_Radius.InitFromDsl(callData.GetParam(1));
-                TryUpdateValue();
             }
         }
         public IStoryValue<object> Clone()
@@ -1433,7 +1432,6 @@ namespace StorySystem.CommonValues
             if (null != callData && callData.GetId() == "rndvector2" && callData.GetParamNum() == 2) {
                 m_Pt.InitFromDsl(callData.GetParam(0));
                 m_Radius.InitFromDsl(callData.GetParam(1));
-                TryUpdateValue();
             }
         }
         public IStoryValue<object> Clone()

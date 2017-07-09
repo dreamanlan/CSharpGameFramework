@@ -129,7 +129,7 @@ namespace GameFramework
             ResourceSystem.Instance.Init();
 
             m_SceneContextInfo.OnHighlightPrompt = (int userId, string dict, object[] args) => {
-                PluginFramework.Instance.HighlightPrompt(dict, args);
+                PluginFramework.Instance.HighlightPromptWithDict(dict, args);
             };
 
             m_SceneContextInfo.KdTree = m_KdTree;
@@ -606,10 +606,14 @@ namespace GameFramework
             SceneLogicInfo info = m_SceneLogicInfoManager.GetSceneLogicInfoByConfigId(configId);
             return info;
         }
-        public void HighlightPrompt(string id, params object[] args)
+        public void HighlightPromptWithDict(string id, params object[] args)
         {
             string info = Dict.Format(id, args);
-            Utility.EventSystem.Publish("ui_highlight_prompt","ui", info);
+            HighlightPrompt(info);
+        }
+        public void HighlightPrompt(string txt)
+        {
+            Utility.EventSystem.Publish("ui_highlight_prompt", "ui", txt);
         }
         public EntityInfo GetLeaderEntityInfo()
         {

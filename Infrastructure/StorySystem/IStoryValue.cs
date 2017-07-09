@@ -203,6 +203,8 @@ namespace StorySystem
                         SetValue(uint.Parse(id.Substring(2), System.Globalization.NumberStyles.HexNumber));
                     else
                         SetValue(int.Parse(id, System.Globalization.NumberStyles.Integer));
+                } else if (idType == Dsl.ValueData.BOOL_TOKEN) {
+                    SetValue(id == "true");
                 } else {
                     SetValue(id);
                 }
@@ -413,6 +415,8 @@ namespace StorySystem
                         SetValue(StoryValueHelper.CastTo<T>(uint.Parse(id.Substring(2), System.Globalization.NumberStyles.HexNumber)));
                     else
                         SetValue(StoryValueHelper.CastTo<T>(int.Parse(id, System.Globalization.NumberStyles.Integer)));
+                } else if (idType == Dsl.ValueData.BOOL_TOKEN) {
+                    SetValue(StoryValueHelper.CastTo<T>(id == "true"));
                 } else {
                     SetValue(StoryValueHelper.CastTo<T>(id));
                 }

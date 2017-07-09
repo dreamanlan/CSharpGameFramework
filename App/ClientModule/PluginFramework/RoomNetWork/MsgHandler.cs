@@ -594,7 +594,7 @@ internal class Msg_RC_HighlightPrompt_Handler
         Msg_RC_HighlightPrompt _msg = msg as Msg_RC_HighlightPrompt;
         if (null == _msg)
             return;
-        PluginFramework.Instance.HighlightPrompt(_msg.dict_id, _msg.argument.ToArray());
+        PluginFramework.Instance.HighlightPromptWithDict(_msg.dict_id, _msg.argument.ToArray());
     }
 }
 internal class Msg_RC_ShowDlg_Handler

@@ -40,6 +40,7 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setparent", new StoryCommandFactoryHelper<Story.Commands.SetParentCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setactive", new StoryCommandFactoryHelper<Story.Commands.SetActiveCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setvisible", new StoryCommandFactoryHelper<Story.Commands.SetVisibleCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "putonground", new StoryCommandFactoryHelper<Story.Commands.PutOnGroundCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setnavmeshagentenable", new StoryCommandFactoryHelper<Story.Commands.SetNavmeshAgentEnableCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "addcomponent", new StoryCommandFactoryHelper<Story.Commands.AddComponentCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "removecomponent", new StoryCommandFactoryHelper<Story.Commands.RemoveComponentCommand>());
@@ -58,14 +59,26 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "destroyscenelogic", new StoryCommandFactoryHelper<Story.Commands.DestroySceneLogicCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "pausescenelogic", new StoryCommandFactoryHelper<Story.Commands.PauseSceneLogicCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "restarttimeout", new StoryCommandFactoryHelper<Story.Commands.RestartTimeoutCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "highlightpromptwithdict", new StoryCommandFactoryHelper<Story.Commands.HighlightPromptWithDictCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "highlightprompt", new StoryCommandFactoryHelper<Story.Commands.HighlightPromptCommand>());
 
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "blackboardset", new StoryCommandFactoryHelper<Story.Commands.BlackboardSetCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "blackboardclear", new StoryCommandFactoryHelper<Story.Commands.BlackboardClearCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerafollow", new StoryCommandFactoryHelper<Story.Commands.CameraFollowCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerafollowrange", new StoryCommandFactoryHelper<Story.Commands.CameraFollowRangeCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerafollowpath", new StoryCommandFactoryHelper<Story.Commands.CameraFollowPathCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralook", new StoryCommandFactoryHelper<Story.Commands.CameraLookCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralookimmediately", new StoryCommandFactoryHelper<Story.Commands.CameraLookImmediatelyCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerafixedyaw", new StoryCommandFactoryHelper<Story.Commands.CameraFixedYawCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerayaw", new StoryCommandFactoryHelper<Story.Commands.CameraYawCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameraheight", new StoryCommandFactoryHelper<Story.Commands.CameraHeightCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameradistance", new StoryCommandFactoryHelper<Story.Commands.CameraDistanceCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerasetdistanceheight", new StoryCommandFactoryHelper<Story.Commands.CameraSetDistanceHeightCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameraresetdistanceheight", new StoryCommandFactoryHelper<Story.Commands.CameraResetDistanceHeightCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerasetfollowspeed", new StoryCommandFactoryHelper<Story.Commands.CameraSetFollowSpeedCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameraresetfollowspeed", new StoryCommandFactoryHelper<Story.Commands.CameraResetFollowSpeedCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "camerafollowobj", new StoryCommandFactoryHelper<Story.Commands.CameraFollowObjCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralookobj", new StoryCommandFactoryHelper<Story.Commands.CameraLookObjCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameralookobjimmediately", new StoryCommandFactoryHelper<Story.Commands.CameraLookObjImmediatelyCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "cameraenable", new StoryCommandFactoryHelper<Story.Commands.CameraEnableCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "lockframe", new StoryCommandFactoryHelper<Story.Commands.LockFrameCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "showdlg", new StoryCommandFactoryHelper<Story.Commands.ShowDlgCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "areadetect", new StoryCommandFactoryHelper<Story.Commands.AreaDetectCommand>());
@@ -93,8 +106,6 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcremoveimpact", new StoryCommandFactoryHelper<Story.Commands.NpcRemoveImpactCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npccastskill", new StoryCommandFactoryHelper<Story.Commands.NpcCastSkillCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcstopskill", new StoryCommandFactoryHelper<Story.Commands.NpcStopSkillCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcaddskill", new StoryCommandFactoryHelper<Story.Commands.NpcAddSkillCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcremoveskill", new StoryCommandFactoryHelper<Story.Commands.NpcRemoveSkillCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npclisten", new StoryCommandFactoryHelper<Story.Commands.NpcListenCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetcamp", new StoryCommandFactoryHelper<Story.Commands.NpcSetCampCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "npcsetsummonerid", new StoryCommandFactoryHelper<Story.Commands.NpcSetSummonerIdCommand>());
@@ -114,8 +125,6 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objremoveimpact", new StoryCommandFactoryHelper<Story.Commands.ObjRemoveImpactCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objcastskill", new StoryCommandFactoryHelper<Story.Commands.ObjCastSkillCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objstopskill", new StoryCommandFactoryHelper<Story.Commands.ObjStopSkillCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objaddskill", new StoryCommandFactoryHelper<Story.Commands.ObjAddSkillCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objremoveskill", new StoryCommandFactoryHelper<Story.Commands.ObjRemoveSkillCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objlisten", new StoryCommandFactoryHelper<Story.Commands.ObjListenCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetcamp", new StoryCommandFactoryHelper<Story.Commands.ObjSetCampCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetsummonerid", new StoryCommandFactoryHelper<Story.Commands.ObjSetSummonerIdCommand>());
@@ -150,7 +159,8 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getglobal", new StoryValueFactoryHelper<Story.Values.GetGlobalValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "clientmodule", new StoryValueFactoryHelper<Story.Values.ClientModuleValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getentityview", new StoryValueFactoryHelper<Story.Values.GetEntityViewValue>());
-
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "dictget", new StoryValueFactoryHelper<Story.Values.DictGetValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "dictformat", new StoryValueFactoryHelper<Story.Values.DictFormatValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "isclient", new StoryValueFactoryHelper<Story.Values.IsClientValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getsceneid", new StoryValueFactoryHelper<Story.Values.GetSceneIdValue>());
 

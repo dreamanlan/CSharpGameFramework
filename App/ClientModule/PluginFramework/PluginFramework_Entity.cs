@@ -44,9 +44,33 @@ namespace GameFramework
             }
             return id;
         }
-        public UnityEngine.GameObject GetGameObject(int actorId)
+        public EntityViewModel GetEntityView(UnityEngine.GameObject obj)
         {
-            return EntityController.Instance.GetGameObject(actorId);
+            return EntityController.Instance.GetEntityView(obj);
+        }
+        public EntityViewModel GetEntityViewById(int entityId)
+        {
+            return EntityController.Instance.GetEntityViewById(entityId);
+        }
+        public EntityViewModel GetEntityViewByUnitId(int unitId)
+        {
+            return EntityController.Instance.GetEntityViewByUnitId(unitId);
+        }
+        public bool ExistGameObject(UnityEngine.GameObject obj)
+        {
+            return EntityController.Instance.ExistGameObject(obj);
+        }
+        public bool ExistGameObject(int objId)
+        {
+            return EntityController.Instance.ExistGameObject(objId);
+        }
+        public UnityEngine.GameObject GetGameObject(int objId)
+        {
+            return EntityController.Instance.GetGameObject(objId);
+        }
+        public UnityEngine.GameObject GetGameObjectByUnitId(int unitId)
+        {
+            return EntityController.Instance.GetGameObjectByUnitId(unitId);
         }
         public int GetGameObjectId(UnityEngine.GameObject obj)
         {
@@ -55,6 +79,15 @@ namespace GameFramework
         public int GetGameObjectUnitId(UnityEngine.GameObject obj)
         {
             return EntityController.Instance.GetGameObjectUnitId(obj);
+        }
+        public EntityInfo GetEntityByGameObject(UnityEngine.GameObject obj)
+        {
+            int objId = GetGameObjectId(obj);
+            return GetEntityById(objId);
+        }
+        public UnityEngine.GameObject GetGameObjectByEntity(EntityInfo info)
+        {
+            return GetGameObject(info.GetId());
         }
         public int GetGameObjectCurSkillId(UnityEngine.GameObject obj)
         {

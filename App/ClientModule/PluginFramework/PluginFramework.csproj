@@ -92,7 +92,7 @@
     <Compile Include="PluginFramework.cs" />
     <Compile Include="PluginFramework_Config.cs" />
     <Compile Include="PluginFramework_Ai.cs" />
-    <Compile Include="PluginFramework_Ui.cs" />
+    <Compile Include="PluginFramework_Entity.cs" />
     <Compile Include="Common\DslUtility.cs" />
     <Compile Include="GameControler.cs" />
     <Compile Include="GameObjects\EntityViewModel_Base.cs" />
@@ -114,6 +114,13 @@
     <Compile Include="Plugin\PluginManager.cs" />
     <Compile Include="Plugin\PluginProxy.cs" />
     <Compile Include="Plugin\PluginUtility.cs" />
+    <Compile Include="RichText\Parser\Parser.cs" />
+    <Compile Include="RichText\Parser\ParserHelper.cs" />
+    <Compile Include="RichText\Parser\Program.cs" />
+    <Compile Include="RichText\Parser\RichText.cs" />
+    <Compile Include="RichText\RichText.cs" />
+    <Compile Include="RichText\RichTextAsset.cs" />
+    <Compile Include="RichText\RichTextGraphic.cs" />
     <Compile Include="RoomNetWork\MessageDispatch.cs" />
     <Compile Include="RoomNetWork\MsgHandler.cs" />
     <Compile Include="RoomNetWork\NetWorkSystem.cs" />
@@ -126,6 +133,7 @@
     <Compile Include="SceneLogic\SceneLogicViewModelManager.cs" />
     <Compile Include="SceneLogic\SceneLogicViewModel\SceneLogicViewModel_General.cs" />
     <Compile Include="Skill\GfxSkillSystem.cs" />
+    <Compile Include="Skill\HitFlight.cs" />
     <Compile Include="Skill\Trigers\AnimationTrigger.cs" />
     <Compile Include="Skill\Trigers\DamageTrigger.cs" />
     <Compile Include="Skill\Trigers\FaceToTargetTrigger.cs" />
@@ -186,7 +194,9 @@
       <Name>ClientProtoBuf</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="RichText\Parser\Parser.peg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

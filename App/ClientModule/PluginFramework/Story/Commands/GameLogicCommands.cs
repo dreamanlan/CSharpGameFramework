@@ -75,7 +75,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<object> m_Value = new StoryValue();
     }
     /// <summary>
-    /// camerafollow(npc_unit_id1,npc_unit_id2,...);
+    /// camerafollow(npc_unit_id1,npc_unit_id2,...)[with(camera_path)];
     /// </summary>
     internal class CameraFollowCommand : AbstractStoryCommand
     {
@@ -85,33 +85,40 @@ namespace GameFramework.Story.Commands
             for (int i = 0; i < m_UnitIds.Count; i++) {
                 cmd.m_UnitIds.Add(m_UnitIds[i].Clone());
             }
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             for (int i = 0; i < m_UnitIds.Count; i++) {
                 m_UnitIds[i].Evaluate(instance, iterator, args);
             }
+            m_CameraPath.Evaluate(instance, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
-            for (int i = 0; i < m_UnitIds.Count; i++) {
-                int unitId = m_UnitIds[i].Value;
-                EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
-                if (null != entity && (!entity.IsDead() || entity.IsBorning)) {
-                    Utility.SendMessage("GameRoot", "CameraFollow", entity.GetId());
-                    break;
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            if (m_UnitIds.Count <= 0) {
+                Utility.SendMessage(path, "CameraFollow", PluginFramework.Instance.LeaderId);
+            } else {
+                for (int i = 0; i < m_UnitIds.Count; i++) {
+                    int unitId = m_UnitIds[i].Value;
+                    EntityInfo npc = PluginFramework.Instance.GetEntityByUnitId(unitId);
+                    if (null != npc && (!npc.IsDead() || npc.IsBorning)) {
+                        Utility.SendMessage(path, "CameraFollow", npc.GetId());
+                        break;
+                    }
                 }
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -121,62 +128,34 @@ namespace GameFramework.Story.Commands
                 m_UnitIds.Add(val);
             }
         }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
 
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
         private List<IStoryValue<int>> m_UnitIds = new List<IStoryValue<int>>();
     }
     /// <summary>
-    /// camerafollowrange(npc_unit_id_begin,npc_unit_id_end);
-    /// </summary>
-    internal class CameraFollowRangeCommand : AbstractStoryCommand
-    {
-        public override IStoryCommand Clone()
-        {
-            CameraFollowRangeCommand cmd = new CameraFollowRangeCommand();
-            cmd.m_BeginUnitId = m_BeginUnitId.Clone();
-            cmd.m_EndUnitId = m_EndUnitId.Clone();
-            return cmd;
-        }
-
-        protected override void ResetState()
-        {
-        }
-
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
-        {
-            m_BeginUnitId.Evaluate(instance, iterator, args);
-            m_EndUnitId.Evaluate(instance, iterator, args);
-        }
-
-        protected override bool ExecCommand(StoryInstance instance, long delta)
-        {
-            int beginUnitId = m_BeginUnitId.Value;
-            int endUnitId = m_EndUnitId.Value;
-            for (int unitId = beginUnitId; unitId <= endUnitId; ++unitId) {
-                EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
-                if (null != entity && (!entity.IsDead() || entity.IsBorning)) {
-                    Utility.SendMessage("GameRoot", "CameraFollow", entity.GetId());
-                    break;
-                }
-            }
-            return false;
-        }
-
-        protected override void Load(Dsl.CallData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_BeginUnitId.InitFromDsl(callData.GetParam(0));
-                m_EndUnitId.InitFromDsl(callData.GetParam(1));
-            }
-        }
-
-        private IStoryValue<int> m_BeginUnitId = new StoryValue<int>();
-        private IStoryValue<int> m_EndUnitId = new StoryValue<int>();
-    }
-    /// <summary>
-    /// cameralookat(npc_unit_id);
+    /// cameralookat(npc_unit_id)[with(camera_path)];
     /// or
-    /// cameralookat(vector3(x,y,z));
+    /// cameralookat(vector3(x,y,z))[with(camera_path)];
     /// </summary>
     internal class CameraLookCommand : AbstractStoryCommand
     {
@@ -184,35 +163,38 @@ namespace GameFramework.Story.Commands
         {
             CameraLookCommand cmd = new CameraLookCommand();
             cmd.m_Arg = m_Arg.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
             m_Arg.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             object obj = m_Arg.Value;
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
             if (obj is int) {
                 int unitId = (int)obj;
-                EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
-                if (null != entity) {
-                    Vector3 pos = entity.GetMovementStateInfo().GetPosition3D();
-                    Utility.SendMessage("GameRoot", "CameraLook", new float[] { pos.X, pos.Y + entity.GetRadius(), pos.Z });
+                EntityInfo npc = PluginFramework.Instance.GetEntityByUnitId(unitId);
+                if (null != npc) {
+                    Vector3 pos = npc.GetMovementStateInfo().GetPosition3D();
+                    Utility.SendMessage(path, "CameraLook", new object[] { pos.X, pos.Y + npc.GetRadius(), pos.Z });
                 }
             } else {
                 Vector3 pos = (Vector3)obj;
-                Utility.SendMessage("GameRoot", "CameraLook", new float[] { pos.X, pos.Y, pos.Z });
+                Utility.SendMessage(path, "CameraLook", new object[] { pos.X, pos.Y, pos.Z });
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -220,39 +202,863 @@ namespace GameFramework.Story.Commands
                 m_Arg.InitFromDsl(callData.GetParam(0));
             }
         }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
 
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
         private IStoryValue<object> m_Arg = new StoryValue();
     }
     /// <summary>
-    /// camerafollowpath();
+    /// cameralookatimmediately(npc_unit_id)[with(camera_path)];
+    /// or
+    /// cameralookatimmediately(vector3(x,y,z))[with(camera_path)];
     /// </summary>
-    internal class CameraFollowPathCommand : AbstractStoryCommand
+    internal class CameraLookImmediatelyCommand : AbstractStoryCommand
     {
         public override IStoryCommand Clone()
         {
-            CameraFollowPathCommand cmd = new CameraFollowPathCommand();
+            CameraLookImmediatelyCommand cmd = new CameraLookImmediatelyCommand();
+            cmd.m_Arg = m_Arg.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
         {
-
+            m_Arg.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
-            Utility.SendMessage("GameRoot", "CameraFollowPath", null);
+            object obj = m_Arg.Value;
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            if (obj is int) {
+                int unitId = (int)obj;
+                EntityInfo npc = PluginFramework.Instance.GetEntityByUnitId(unitId);
+                if (null != npc) {
+                    Vector3 pos = npc.GetMovementStateInfo().GetPosition3D();
+                    Utility.SendMessage(path, "CameraLookImmediately", new object[] { pos.X, pos.Y + npc.GetRadius(), pos.Z });
+                }
+            } else {
+                Vector3 pos = (Vector3)obj;
+                Utility.SendMessage(path, "CameraLookImmediately", new object[] { pos.X, pos.Y, pos.Z });
+            }
             return false;
         }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_Arg.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
 
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryValue<object> m_Arg = new StoryValue();
+    }
+    /// <summary>
+    /// camerafixedyaw(yaw)[with(camera_path)];
+    /// </summary>
+    internal class CameraFixedYawCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraFixedYawCommand cmd = new CameraFixedYawCommand();
+            cmd.m_Arg1 = m_Arg1.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_Arg1.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            float arg1 = m_Arg1.Value;
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            Utility.SendMessage(path, "CameraFixedYaw", new object[] { arg1 });
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_Arg1.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
+    }
+    /// <summary>
+    /// camerayaw(yaw, anglelag, snaplag)[with(camera_path)];
+    /// </summary>
+    internal class CameraYawCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraYawCommand cmd = new CameraYawCommand();
+            cmd.m_Arg1 = m_Arg1.Clone();
+            cmd.m_Arg2 = m_Arg2.Clone();
+            cmd.m_Arg3 = m_Arg3.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_Arg1.Evaluate(instance, iterator, args);
+            m_Arg2.Evaluate(instance, iterator, args);
+            m_Arg3.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            float arg1 = m_Arg1.Value;
+            float arg2 = m_Arg2.Value;
+            float arg3 = m_Arg3.Value;
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            Utility.SendMessage(path, "CameraYaw", new object[] { arg1, arg2, arg3 });
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 2) {
+                m_Arg1.InitFromDsl(callData.GetParam(0));
+                m_Arg2.InitFromDsl(callData.GetParam(1));
+                m_Arg3.InitFromDsl(callData.GetParam(2));
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
+        private IStoryValue<float> m_Arg2 = new StoryValue<float>();
+        private IStoryValue<float> m_Arg3 = new StoryValue<float>();
+    }
+    /// <summary>
+    /// cameraheight(height, lag)[with(camera_path)];
+    /// </summary>
+    internal class CameraHeightCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraHeightCommand cmd = new CameraHeightCommand();
+            cmd.m_Arg1 = m_Arg1.Clone();
+            cmd.m_Arg2 = m_Arg2.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_Arg1.Evaluate(instance, iterator, args);
+            m_Arg2.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            float arg1 = m_Arg1.Value;
+            float arg2 = m_Arg2.Value;
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            Utility.SendMessage(path, "CameraHeight", new object[] { arg1, arg2 });
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_Arg1.InitFromDsl(callData.GetParam(0));
+                m_Arg2.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
+        private IStoryValue<float> m_Arg2 = new StoryValue<float>();
+    }
+    /// <summary>
+    /// cameradistance(distance, lag)[with(camera_path)];
+    /// </summary>
+    internal class CameraDistanceCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraDistanceCommand cmd = new CameraDistanceCommand();
+            cmd.m_Arg1 = m_Arg1.Clone();
+            cmd.m_Arg2 = m_Arg2.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_Arg1.Evaluate(instance, iterator, args);
+            m_Arg2.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            float arg1 = m_Arg1.Value;
+            float arg2 = m_Arg2.Value;
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            Utility.SendMessage(path, "CameraDistance", new object[] { arg1, arg2 });
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_Arg1.InitFromDsl(callData.GetParam(0));
+                m_Arg2.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
+        private IStoryValue<float> m_Arg2 = new StoryValue<float>();
+    }
+    /// <summary>
+    /// camerasetdistanceheight(distance, height)[with(camera_path)];
+    /// </summary>
+    internal class CameraSetDistanceHeightCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraSetDistanceHeightCommand cmd = new CameraSetDistanceHeightCommand();
+            cmd.m_Arg1 = m_Arg1.Clone();
+            cmd.m_Arg2 = m_Arg2.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_Arg1.Evaluate(instance, iterator, args);
+            m_Arg2.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            float arg1 = m_Arg1.Value;
+            float arg2 = m_Arg2.Value;
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            Utility.SendMessage(path, "SetDistanceAndHeight", new object[] { arg1, arg2 });
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_Arg1.InitFromDsl(callData.GetParam(0));
+                m_Arg2.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
+        private IStoryValue<float> m_Arg2 = new StoryValue<float>();
+    }
+    /// <summary>
+    /// cameraresetdistanceheight()[with(camera_path)];
+    /// </summary>
+    internal class CameraResetDistanceHeightCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraResetDistanceHeightCommand cmd = new CameraResetDistanceHeightCommand();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            Utility.SendMessage(path, "ResetDistanceAndHeight", null);
+            return false;
+        }
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
         }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+    }
+    /// <summary>
+    /// camerasetfollowspeed(maxdist, mindist, maxspeed, minspeed, power)[with(camera_path)];
+    /// </summary>
+    internal class CameraSetFollowSpeedCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraSetFollowSpeedCommand cmd = new CameraSetFollowSpeedCommand();
+            cmd.m_Arg1 = m_Arg1.Clone();
+            cmd.m_Arg2 = m_Arg2.Clone();
+            cmd.m_Arg3 = m_Arg3.Clone();
+            cmd.m_Arg4 = m_Arg4.Clone();
+            cmd.m_Arg5 = m_Arg5.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_Arg1.Evaluate(instance, iterator, args);
+            m_Arg2.Evaluate(instance, iterator, args);
+            m_Arg3.Evaluate(instance, iterator, args);
+            m_Arg4.Evaluate(instance, iterator, args);
+            m_Arg5.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            float arg1 = m_Arg1.Value;
+            float arg2 = m_Arg2.Value;
+            float arg3 = m_Arg3.Value;
+            float arg4 = m_Arg4.Value;
+            int arg5 = m_Arg5.Value;
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            Utility.SendMessage(path, "SetFollowSpeed", new object[] { arg1, arg2, arg3, arg4, arg5 });
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 4) {
+                m_Arg1.InitFromDsl(callData.GetParam(0));
+                m_Arg2.InitFromDsl(callData.GetParam(1));
+                m_Arg3.InitFromDsl(callData.GetParam(2));
+                m_Arg4.InitFromDsl(callData.GetParam(3));
+                m_Arg5.InitFromDsl(callData.GetParam(4));
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
+        private IStoryValue<float> m_Arg2 = new StoryValue<float>();
+        private IStoryValue<float> m_Arg3 = new StoryValue<float>();
+        private IStoryValue<float> m_Arg4 = new StoryValue<float>();
+        private IStoryValue<int> m_Arg5 = new StoryValue<int>();
+    }
+    /// <summary>
+    /// cameraresetfollowspeed()[with(camera_path)];
+    /// </summary>
+    internal class CameraResetFollowSpeedCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraResetFollowSpeedCommand cmd = new CameraResetFollowSpeedCommand();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            Utility.SendMessage(path, "ResetFollowSpeed", null);
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+    }
+    /// <summary>
+    /// camerafollowobj(objid)[with(camera_path)];
+    /// </summary>
+    internal class CameraFollowObjCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraFollowObjCommand cmd = new CameraFollowObjCommand();
+            cmd.m_ObjId = m_ObjId.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjId.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Value);
+            if (null != npc && (!npc.IsDead() || npc.IsBorning)) {
+                Utility.SendMessage(path, "CameraFollow", npc.GetId());
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if(num>0) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+    }
+    /// <summary>
+    /// cameralookobj(objid)[with(camera_path)];
+    /// </summary>
+    internal class CameraLookObjCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraLookObjCommand cmd = new CameraLookObjCommand();
+            cmd.m_ObjId = m_ObjId.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjId.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Value);
+            if (null != npc && (!npc.IsDead() || npc.IsBorning)) {
+                Vector3 pos = npc.GetMovementStateInfo().GetPosition3D();
+                Utility.SendMessage(path, "CameraLook", new object[] { pos.X, pos.Y + npc.GetRadius(), pos.Z });
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+    }
+    /// <summary>
+    /// cameralookobjimmediately(objid)[with(camera_path)];
+    /// </summary>
+    internal class CameraLookObjImmediatelyCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraLookObjImmediatelyCommand cmd = new CameraLookObjImmediatelyCommand();
+            cmd.m_ObjId = m_ObjId.Clone();
+            cmd.m_HaveCameraPath = m_HaveCameraPath;
+            cmd.m_CameraPath = m_CameraPath.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ObjId.Evaluate(instance, iterator, args);
+            m_CameraPath.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            string path = m_CameraPath.Value;
+            if (string.IsNullOrEmpty(path)) {
+                path = "GameRoot";
+            }
+            EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId.Value);
+            if (null != npc && (!npc.IsDead() || npc.IsBorning)) {
+                var pos = npc.GetMovementStateInfo().GetPosition3D();
+                Utility.SendMessage(path, "CameraLookImmediately", new object[] { pos.X, pos.Y + npc.GetRadius(), pos.Z });
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_ObjId.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            var first = statementData.First;
+            var second = statementData.Second;
+            if (null != first && null != second) {
+                var cd1 = first.Call;
+                var cd2 = second.Call;
+
+                Load(cd1);
+                LoadCameraPath(cd2);
+            }
+        }
+        private void LoadCameraPath(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_CameraPath.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private bool m_HaveCameraPath = false;
+        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+    }
+    /// <summary>
+    /// cameraenable(name, 0_or_1);
+    /// </summary>
+    internal class CameraEnableCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            CameraEnableCommand cmd = new CameraEnableCommand();
+            cmd.m_Path = m_Path.Clone();
+            cmd.m_Arg = m_Arg.Clone();
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_Path.Evaluate(instance, iterator, args);
+            m_Arg.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            string name = m_Path.Value;
+            int v = m_Arg.Value;
+            Utility.SendMessage("GameRoot", "CameraEnable", new object[] { name, v });
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_Path.InitFromDsl(callData.GetParam(0));
+                m_Arg.InitFromDsl(callData.GetParam(1));
+            }
+        }
+
+        private IStoryValue<string> m_Path = new StoryValue<string>();
+        private IStoryValue<int> m_Arg = new StoryValue<int>();
     }
     /// <summary>
     /// lockframe(scale);

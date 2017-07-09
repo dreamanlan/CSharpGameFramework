@@ -242,7 +242,7 @@ namespace GameFramework.Skill
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("enablemoveagent", new SkillTrigerFactoryHelper<Trigers.EnableMoveAgentTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("charge", new SkillTrigerFactoryHelper<Trigers.ChargeTriger>());
-            SkillTrigerManager.Instance.RegisterTrigerFactory("jump", new SkillTrigerFactoryHelper<Trigers.JumpTriger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("parabola", new SkillTrigerFactoryHelper<Trigers.ParabolaTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("curvemove", new SkillTrigerFactoryHelper<Trigers.CurveMovementTrigger>());
 
             SkillTrigerManager.Instance.RegisterTrigerFactory("damage", new SkillTrigerFactoryHelper<Trigers.DamageTriger>());
@@ -289,6 +289,7 @@ namespace GameFramework.Skill
                 }
             }
             m_SkillLogicInfos.Clear();
+            HitFlightManager.Instance.Reset();
         }
         public void PreloadSkillInstance(int skillId)
         {
@@ -668,6 +669,7 @@ namespace GameFramework.Skill
                         m_SkillLogicInfos.RemoveAt(ix);
                     }
                 }
+                HitFlightManager.Instance.Tick();
             } finally {
                 UnityEngine.Profiling.Profiler.EndSample();
             }

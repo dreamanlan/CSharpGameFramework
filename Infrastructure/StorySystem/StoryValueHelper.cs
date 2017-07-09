@@ -1534,6 +1534,7 @@ namespace StorySystem
                     StoryValue<P> val = new StoryValue<P>();
                     val.InitFromDsl(callData.GetParam(i));
                     m_Args.Add(val);
+                    m_Values.Add(default(P));
                 }
             }
         }
@@ -1543,6 +1544,7 @@ namespace StorySystem
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<P> arg = m_Args[i];
                 val.m_Args.Add(arg.Clone());
+                m_Values.Add(default(P));
             }
             return val;
         }
@@ -1555,6 +1557,7 @@ namespace StorySystem
         
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<P> val = m_Args[i];
+                m_Values[i] = val.Value;
             }
         }
         public bool HaveValue
@@ -1576,15 +1579,11 @@ namespace StorySystem
         {
             get
             {
-                List<P> vals = new List<P>();
-                for (int i = 0; i < m_Args.Count; ++i) {
-                    IStoryValue<P> val = m_Args[i];
-                    vals.Add(val.Value);
-                }
-                return vals;
+                return m_Values;
             }
         }
         private List<IStoryValue<P>> m_Args = new List<IStoryValue<P>>();
+        private List<P> m_Values = new List<P>();
     }
     public sealed class StoryValueParams : IStoryValueParam
     {
@@ -1596,6 +1595,7 @@ namespace StorySystem
                     StoryValue val = new StoryValue();
                     val.InitFromDsl(callData.GetParam(i));
                     m_Args.Add(val);
+                    m_Values.Add(null);
                 }
             }
         }
@@ -1605,6 +1605,7 @@ namespace StorySystem
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> arg = m_Args[i];
                 val.m_Args.Add(arg.Clone());
+                val.m_Values.Add(null);
             }
             return val;
         }
@@ -1617,6 +1618,7 @@ namespace StorySystem
 
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<object> val = m_Args[i];
+                m_Values[i] = val.Value;
             }
         }
         public bool HaveValue
@@ -1638,14 +1640,10 @@ namespace StorySystem
         {
             get
             {
-                ArrayList vals = new ArrayList();
-                for (int i = 0; i < m_Args.Count; ++i) {
-                    IStoryValue<object> val = m_Args[i];
-                    vals.Add(val.Value);
-                }
-                return vals;
+                return m_Values;
             }
         }
         private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
+        private ArrayList m_Values = new ArrayList();
     }
 }

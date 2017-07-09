@@ -1,0 +1,71 @@
+start = Start
+using = RichTextParser
+debug = none
+value = ParserValue
+
+Start := Words EOF;
+
+Words := Word*  `value.TextValues = new IRichTextList();foreach(var v in results)value.TextValues.Add(v.Value.TextValue);`
+	
+Word := String / MixString;
+
+String := [^[\]`]+ `value.TextValue = new NormalText{ Text = text };`
+	
+MixString := HyperText / EscapeLeftTag / LeftTag / EscapeRightTag / RightTag / EscapeEscape;
+
+EscapeLeftTag := "`[" `value.TextValue = new NormalText{ Text = "[" };`
+    
+LeftTag := "[" `value.TextValue = new NormalText{ Text = "[" };`
+
+EscapeRightTag := "`]" `value.TextValue = new NormalText{ Text = "]" };`
+    
+RightTag := "]" `value.TextValue = new NormalText{ Text = "]" };`
+
+#因为peg语法自己不能对`转义，下面语法定义用用$代替`，生成Parser.cs代码后需要自己手动把$改为`
+EscapeEscape := "``" `value.TextValue = new NormalText{ Text = "$" };`
+
+HyperText := "[" Attrs HyperWord "]" `var ht = new HyperText();ht.Attrs.AddRange(results[0].Value.AttrValues);ht.Texts.AddRange(results[1].Value.TextValues);value.TextValue = ht;`
+
+HyperWord := EmbedWord*  `value.TextValues = new IRichTextList();foreach(var v in results)value.TextValues.Add(v.Value.TextValue);`
+
+EmbedWord := String / HyperText / EscapeLeftTag / EscapeRightTag / EscapeEscape;
+	
+Attrs := Attr*  `value.AttrValues = new HyperTextAttrList();foreach(var v in results)value.AttrValues.Add(v.Value.AttrValue);`
+
+Attr := TagAttr / BraceAttr;
+
+TagAttr := S0 SimpleTag S0 SimpleTagValue S0	`value.AttrValue = new HyperTextAttr{ Key = results[0].Value.StringValue, Value = results.Count > 1 ? results[1].Value.StringValue : string.Empty };`
+
+SimpleTag := "-" / [!@#$%&*+=\\:?|~^] `value.StringValue = text;`
+
+SimpleTagValue := [^!@#$%&*+=\\:?|~^`{[\]\t\r\n -]* `value.StringValue = text;`
+	
+BraceAttr := S0 "{"	AttrValue "}"	`value = results[results.Count-1].Value;`
+
+AttrValue := KeyValue / KeyNoValue;
+
+KeyValue := Id ":" Value  `value.AttrValue = new HyperTextAttr{ Key = results[0].Value.StringValue, Value = results[1].Value.StringValue };`
+
+KeyNoValue := Id `value.AttrValue = new HyperTextAttr{ Key = results[0].Value.StringValue };`
+
+Id := NotStrId / Str1 / Str2 `value.StringValue = text.Trim();`
+
+Value := NotStrVal / Str1 / Str2   `value.StringValue = text.Trim();`
+			
+NotStrId := [^'":}] [^:}]*;
+	
+NotStrVal := [^'":}] [^}]*;
+
+Str1 := '"' [^"]* '"';
+
+Str2 := "'" [^']* "'";
+
+#text=null; 是一种特殊的处理，用以指明这个非终结符的值不传给调用方（上级产生式）
+
+S0 := S*	`text=null;`
+
+#S1 := S+	`text=null;`
+	
+S := [\r\n\t ];
+			
+EOF := !.;

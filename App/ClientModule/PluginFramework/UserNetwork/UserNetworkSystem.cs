@@ -88,7 +88,7 @@ namespace GameFramework.Network
                             if (m_LastShowQueueingTime + c_ShowQueueingCountInterval < curTime && m_QueueingNum > 0) {
                                 m_LastShowQueueingTime = curTime;
 
-                                PluginFramework.Instance.HighlightPrompt("Tip_QueueingCount", m_QueueingNum);
+                                PluginFramework.Instance.HighlightPromptWithDict("Tip_QueueingCount", m_QueueingNum);
                             }
                         } else if (m_HasLoggedOn) {//断线重连过程与正常游戏情形
                             if (m_IsLogining) {//登录中

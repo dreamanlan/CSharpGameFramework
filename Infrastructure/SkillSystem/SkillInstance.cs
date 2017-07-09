@@ -714,7 +714,9 @@ namespace SkillSystem
         }
         public string ToScriptString()
         {
-            return m_SkillDsl.ToScriptString(true);
+            Dsl.DslInfo info = new Dsl.DslInfo();
+            info.AddFunction(m_SkillDsl);
+            return info.ToScriptString(true);
         }
         public void Save(string file)
         {

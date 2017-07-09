@@ -9,8 +9,6 @@ namespace GameFramework.Skill.Trigers
 {
     public class TriggerUtil
     {
-        private static float s_RayCastMaxDistance = 50;
-        private static int s_TerrainLayer = 1 << LayerMask.NameToLayer("Terrain");
         public static void Lookat(GameObject obj, Vector3 target, float rotateDegree)
         {
             if (!EntityController.Instance.IsRotatableEntity(obj))
@@ -183,13 +181,56 @@ namespace GameFramework.Skill.Trigers
         }
         public static Vector3 GetGroundPos(Vector3 pos)
         {
-            Vector3 sourcePos = pos;
-            RaycastHit hit;
-            pos.y += 2;
-            if (Physics.Raycast(pos, -Vector3.up, out hit, s_RayCastMaxDistance, s_TerrainLayer)) {
-                sourcePos.y = hit.point.y;
+            Vector3 outPos = pos;
+            bool bHit = GetRayCastPosInNavMesh(pos + Vector3.up * 500, pos + Vector3.down * 500, ref outPos);
+            if (!bHit) {
+                outPos = SamplePositionInNavMesh(pos, 500);
             }
-            return sourcePos;
+            return outPos;
+        }
+        public static bool GetRayCastPosInNavMesh(Vector3 fromPos, Vector3 toPos, ref Vector3 outPosition)
+        {
+            Vector3 rayPos = Vector3.zero;
+            GameObject s_NavmeshCollider = null;
+            if (col == null) {
+                s_NavmeshCollider = new GameObject();
+                s_NavmeshCollider.name = "NavMesh";
+                MeshFilter meshfilter = s_NavmeshCollider.AddComponent<MeshFilter>();
+                col = s_NavmeshCollider.AddComponent<MeshCollider>();
+                Mesh mesh = new Mesh();
+                NavMeshTriangulation navTri = NavMesh.CalculateTriangulation();
+                mesh.vertices = navTri.vertices;
+                mesh.triangles = navTri.indices;
+                meshfilter.mesh = mesh;
+                col.sharedMesh = mesh;
+            }
+            Vector3 offset = toPos - fromPos;
+            Ray ray = new Ray();
+            ray.origin = fromPos;
+            ray.direction = offset.normalized;
+            RaycastHit hitInfo = default(RaycastHit);
+            bool isHit = col.Raycast(ray, out hitInfo, offset.magnitude);
+            if (isHit) {
+                outPosition = hitInfo.point;
+            }
+            if (!Application.isPlaying) {
+                if (s_NavmeshCollider != null) {
+                    GameObject.DestroyImmediate(s_NavmeshCollider);
+                    col = null;
+                }
+            }
+            return isHit;
+        }
+        public static Vector3 SamplePositionInNavMesh(Vector3 position, float maxDistance)
+        {
+            NavMeshHit hitInfo;
+            NavMesh.SamplePosition(position, out hitInfo, maxDistance, -1);
+            return hitInfo.position;
+        }
+        public static bool RaycastNavmesh(Vector3 curPos, Vector3 target)
+        {
+            NavMeshHit navMeshHit;
+            return NavMesh.Raycast(curPos, target, out navMeshHit, NavMesh.AllAreas);
         }
         public static bool FloatEqual(float a, float b)
         {
@@ -204,17 +245,9 @@ namespace GameFramework.Skill.Trigers
         }
         public static float GetHeightWithGround(Vector3 pos)
         {
-            if (Terrain.activeTerrain != null) {
-                return pos.y - Terrain.activeTerrain.SampleHeight(pos);
-            } else {
-                RaycastHit hit;
-                Vector3 higher_pos = pos;
-                higher_pos.y += 2;
-                if (Physics.Raycast(higher_pos, -Vector3.up, out hit, s_RayCastMaxDistance, s_TerrainLayer)) {
-                    return pos.y - hit.point.y;
-                }
-                return s_RayCastMaxDistance;
-            }
+            float y = pos.y;
+            pos = GetGroundPos(pos);
+            return y - pos.y;
         }
         public static bool GetSkillStartPosition(Vector3 srcPos, TableConfig.Skill cfg, SkillInstance instance, int srcId, int targetId, ref Vector3 targetPos)
         {
@@ -436,5 +469,7 @@ namespace GameFramework.Skill.Trigers
                 });
             }
         }
+
+        private static MeshCollider col = null;
     }
 }

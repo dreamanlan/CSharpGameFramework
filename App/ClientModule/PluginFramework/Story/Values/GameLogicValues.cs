@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using ScriptRuntime;
 using StorySystem;
@@ -980,6 +981,129 @@ namespace GameFramework.Story.Values
         }
 
         private IStoryValue<int> m_Index = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class DictGetValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "dictget") {
+                int num = callData.GetParamNum();
+                if (num > 0) {
+                    m_DictId.InitFromDsl(callData.GetParam(0));
+                }
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            DictGetValue val = new DictGetValue();
+            val.m_DictId = m_DictId.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_DictId.Evaluate(instance, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_DictId.HaveValue) {
+                m_HaveValue = true;
+                m_Value = null;
+                string dictId = m_DictId.Value;
+                m_Value = Dict.Get(dictId);
+            }
+        }
+        private IStoryValue<string> m_DictId = new StoryValue<string>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class DictFormatValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "dictformat") {
+                int num = callData.GetParamNum();
+                if (num > 0) {
+                    m_DictId.InitFromDsl(callData.GetParam(0));
+                }
+                for (int i = 1; i < num; ++i) {
+                    StoryValue val = new StoryValue();
+                    val.InitFromDsl(callData.GetParam(i));
+                    m_FormatArgs.Add(val);
+                }
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            DictFormatValue val = new DictFormatValue();
+            val.m_DictId = m_DictId.Clone();
+            for (int i = 0; i < m_FormatArgs.Count; i++) {
+                val.m_FormatArgs.Add(m_FormatArgs[i].Clone());
+            }
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_DictId.Evaluate(instance, iterator, args);
+            for (int i = 0; i < m_FormatArgs.Count; i++) {
+                m_FormatArgs[i].Evaluate(instance, iterator, args);
+            }
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_DictId.HaveValue) {
+                m_HaveValue = true;
+                m_Value = null;
+                string dictId = m_DictId.Value;
+                ArrayList arglist = new ArrayList();
+                for (int i = 0; i < m_FormatArgs.Count; i++) {
+                    arglist.Add(m_FormatArgs[i].Value);
+                }
+                object[] args = arglist.ToArray();
+                m_Value = Dict.Format(dictId, args);
+            }
+        }
+        private IStoryValue<string> m_DictId = new StoryValue<string>();
+        private List<IStoryValue<object>> m_FormatArgs = new List<IStoryValue<object>>();
         private bool m_HaveValue;
         private object m_Value;
     }
