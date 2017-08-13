@@ -216,6 +216,7 @@ namespace GameFramework.Skill
             SkillTrigerManager.Instance.RegisterTrigerFactory("sendconcurrentstorymessage", new Trigers.SendConcurrentStoryMessageTriggerFactory());
             SkillTrigerManager.Instance.RegisterTrigerFactory("sendgfxmessage", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("sendgfxmessagewithtag", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageWithTagTrigger>());
+            SkillTrigerManager.Instance.RegisterTrigerFactory("sendgfxmessagewithgameobject", new SkillTrigerFactoryHelper<Trigers.SendGfxMessageWithGameObjectTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("publishgfxevent", new SkillTrigerFactoryHelper<Trigers.PublishGfxEventTrigger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("params", new SkillTrigerFactoryHelper<Trigers.ParamsTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("keeptarget", new SkillTrigerFactoryHelper<Trigers.KeepTargetTrigger>());

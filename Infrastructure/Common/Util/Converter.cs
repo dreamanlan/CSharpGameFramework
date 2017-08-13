@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace GameFramework
 {
@@ -195,6 +196,61 @@ namespace GameFramework
             } catch (System.Exception ex) {
                 LogSystem.Error("ConvertEnumToStr {0} Exception:{1}/{2}", tVal, ex.Message, ex.StackTrace);
                 throw;
+            }
+        }
+        public static void CastArgsForCall(Type t, string method, BindingFlags flags, params object[] args)
+        {
+            var mis = t.GetMember(method, flags);
+            foreach (var mi in mis) {
+                var info = mi as MethodInfo;
+                if (null != info) {
+                    var pis = info.GetParameters();
+                    if (pis.Length == args.Length) {
+                        for (int i = 0; i < pis.Length; ++i) {
+                            args[i] = Convert.ChangeType(args[i], pis[i].ParameterType);
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        public static void CastArgsForSet(Type t, string property, BindingFlags flags, params object[] args)
+        {
+            var p = t.GetProperty(property, flags);
+            if (null != p) {
+                var info = p.GetSetMethod(true);
+                if (null != info) {
+                    var pis = info.GetParameters();
+                    if (pis.Length == args.Length) {
+                        for (int i = 0; i < pis.Length; ++i) {
+                            args[i] = Convert.ChangeType(args[i], pis[i].ParameterType);
+                        }
+                    }
+                }
+            } else {
+                var f = t.GetField(property, flags);
+                if (null != f && args.Length == 1) {
+                    args[0] = Convert.ChangeType(args[0], f.FieldType);
+                }
+            }
+        }
+        public static void CastArgsForGet(Type t, string property, BindingFlags flags, params object[] args)
+        {
+            var p = t.GetProperty(property, flags);
+            if (null != p) {
+                var info = p.GetGetMethod(true);
+                if (null != info) {
+                    var pis = info.GetParameters();
+                    if (pis.Length == args.Length) {
+                        for (int i = 0; i < pis.Length; ++i) {
+                            args[i] = Convert.ChangeType(args[i], pis[i].ParameterType);
+                        }
+                    }
+                }
+            } else {
+                var f = t.GetField(property, flags);
+                if (null != f && args.Length == 0) {
+                }
             }
         }
     }

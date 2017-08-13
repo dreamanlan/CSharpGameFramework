@@ -8,7 +8,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// adjustsectionduration(type[, start_time[, delta_time]]);
     /// </summary>
-    public class AdjustSectionDurationTrigger : AbstractSkillTriger
+    internal class AdjustSectionDurationTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -119,7 +119,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// keepsectionforbuff(internal_time[, start_time[, delta_time]]);
     /// </summary>
-    public class KeepSectionForBuffTrigger : AbstractSkillTriger
+    internal class KeepSectionForBuffTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -178,7 +178,7 @@ namespace GameFramework.Skill.Trigers
     /// stopsection([start_time])[if(type)];
     /// stopsection([start_time])[ifnot(type)];
     /// </summary>
-    public class StopSectionTrigger : AbstractSkillTriger
+    internal class StopSectionTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -252,7 +252,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// gotosection(starttime,sectionnum);
     /// </summary>
-    public class GotoSectionTrigger : AbstractSkillTriger
+    internal class GotoSectionTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

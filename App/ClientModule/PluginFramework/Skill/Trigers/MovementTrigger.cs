@@ -550,7 +550,7 @@ namespace GameFramework.Skill.Trigers
     }
 
     /// <summary>
-    /// parabola(duration, G, vector3(x,y,z) or objpath);
+    /// parabola(duration, G, vector3(x,y,z) or objpath[, moveType]);
     /// </summary>
     internal class ParabolaTriger : AbstractSkillTriger
     {
@@ -561,6 +561,7 @@ namespace GameFramework.Skill.Trigers
             triger.m_G = m_G;
             triger.m_Offset = m_Offset;
             triger.m_ObjPath = m_ObjPath;
+            triger.m_IsFaceToTarget = m_IsFaceToTarget;
             return triger;
         }
         public override void Reset()
@@ -618,6 +619,10 @@ namespace GameFramework.Skill.Trigers
                 m_Forward.y = 0;
                 m_Velocity = m_Forward.magnitude * 1000 / m_Duration;
                 m_Forward.Normalize();
+                if (m_IsFaceToTarget) {
+                    float radian = Geometry.GetYRadian(new ScriptRuntime.Vector2(srcPos.x, srcPos.z), new ScriptRuntime.Vector2(targetPos.x, targetPos.z));
+                    obj.transform.rotation = Quaternion.AngleAxis(Geometry.RadianToDegree(radian), Vector3.up); 
+                }
                 float tan = GetTanToPoint(m_Velocity, m_G, srcPos, targetPos);
                 m_InitY = srcPos.y;
                 m_YVelocity = m_Velocity * tan;
@@ -668,12 +673,18 @@ namespace GameFramework.Skill.Trigers
             if (num > 3) {
                 StartTime = long.Parse(callData.GetParamId(3));
             }
+            if (num > 4) {
+                string moveType = callData.GetParamId(4);
+                IList<string> list = Converter.ConvertStringList(moveType);
+                m_IsFaceToTarget = list.IndexOf("facetotarget") >= 0;
+            }
         }
 
         private long m_Duration = 1000;
         private float m_G = 10.0f;
         private Vector3 m_Offset = Vector3.zero;
         private string m_ObjPath = string.Empty;
+        private bool m_IsFaceToTarget = false;
         
         private bool m_TargetChecked = false;
         private float m_InitY = 0;

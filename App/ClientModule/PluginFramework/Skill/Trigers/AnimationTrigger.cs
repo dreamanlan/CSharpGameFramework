@@ -132,7 +132,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// animationspeed(start_time, speed [, is_effect_skill_time]);
     /// </summary>
-    public class AnimationSpeedTriger : AbstractSkillTriger
+    internal class AnimationSpeedTriger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

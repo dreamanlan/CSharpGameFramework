@@ -57,39 +57,128 @@ public class StoryCamera : MonoBehaviour
         if (null != obj) {
             m_CurTargetId = id;
             m_Target = obj.transform;
-            Collider collider = m_Target.GetComponent<Collider>();
-            if (null != collider) {
-                m_CurTargetPos = m_Target.position;
-                m_CenterOffset = collider.bounds.center - m_Target.position;
-                m_HeadOffset = m_CenterOffset;
-                m_HeadOffset.y = collider.bounds.max.y - m_Target.position.y;
-                Cut();
-            }
+            m_CurTargetPos = m_Target.position;
+            Cut();
             m_ControlByOtherScript = false;
         }
     }
-    private void CameraLookat(object[] coord)
+    private void CameraLook(object[] coord)
     {
         if (null == coord || coord.Length != 3)
             return;
         m_Target = null;
         m_TargetPos = new Vector3((float)coord[0], (float)coord[1], (float)coord[2]);
-        //Debug.Log("CameraLookat:" + m_TargetPos.ToString());
         Cut();
     }
-    private void CameraLookatImmediately(object[] coord)
+    private void CameraLookImmediately(object[] coord)
     {
         if (null == coord || coord.Length != 3)
             return;
         m_Target = null;
         m_TargetPos = new Vector3((float)coord[0], (float)coord[1], (float)coord[2]);
         m_CurTargetPos = m_TargetPos;
-        //Debug.Log("CameraLookat:" + m_TargetPos.ToString());
         Cut();
     }
-    private void CameraFixedYaw(float dir)
+    private void CameraLookToward(object[] coord)
     {
-        m_FixedYaw = Geometry.RadianToDegree(dir);
+        if (null == coord || coord.Length != 3 || null == m_CameraTransform)
+            return;
+        m_Target = null;
+        m_TargetPos = new Vector3((float)coord[0], (float)coord[1], (float)coord[2]);
+        m_CurTargetPos = m_TargetPos;
+        Vector3 targetCenter = m_CurTargetPos + m_CenterOffset;
+        var camPos = m_CameraTransform.transform.position;
+        m_Distance = (targetCenter - camPos).magnitude;
+        m_CurDistance = m_Distance;
+        float radian = Geometry.GetYRadian(new ScriptRuntime.Vector2(camPos.x, camPos.z), new ScriptRuntime.Vector2(m_TargetPos.x, m_TargetPos.z));
+        m_FixedYaw = Geometry.RadianToDegree(radian);
+        m_AngularSmoothLag = 0.3f;
+        m_SnapSmoothLag = 0.2f;
+        Cut();
+    }
+    private void CameraLookCopy(object[] args)
+    {
+        if (null == args || args.Length != 4) {
+            return;
+        }
+        var t = args[0] as Transform;
+        var tpos = new Vector3((float)args[1], (float)args[2], (float)args[3]);
+        
+        if (null != t ) {
+            var pos = t.position;
+            var euler = t.eulerAngles;
+
+            m_CenterOffset = Vector3.zero;
+            m_HeadOffset = Vector3.zero;
+            Vector3 targetCenter = tpos + m_CenterOffset;
+
+            m_Target = null;
+            m_TargetPos = tpos;
+            m_CurTargetPos = m_TargetPos;
+
+            m_Distance = (targetCenter - pos).magnitude;
+            m_CurDistance = m_Distance;
+            m_Height = pos.y - targetCenter.y;
+            m_FixedYaw = euler.y;
+
+            m_AngularSmoothLag = 0.3f;
+            m_SnapSmoothLag = 0.2f;
+            Cut();
+        }
+    }
+    private void CameraLookObjCopy(object[] args)
+    {
+        if (null == args || args.Length != 2) {
+            return;
+        }
+        var t = args[0] as Transform;
+        int id = (int)args[1];
+
+        GameObject obj = PluginFramework.Instance.GetGameObject(id);
+        if (null != t && null != obj) {
+            var tran = obj.transform;
+            var pos = t.position;
+            var euler = t.eulerAngles;
+            var tpos = tran.position;
+
+            var pos2d = new Vector2(pos.x,pos.z);
+            var tpos2d = new Vector2(tpos.x,tpos.z);
+            var dir = t.rotation*Vector3.forward;
+            var dir2d = tpos2d-pos2d;
+            var dist2d = dir2d.magnitude;
+            dir2d.Normalize();
+            var cos = Vector3.Dot(dir, Vector3.down);
+            var sin = Vector3.Dot(dir, new Vector3(dir2d.x, 0, dir2d.y));
+            var delta = cos * dist2d / sin;
+            float h = 0;
+            if (pos.y > tpos.y) {
+                h = pos.y - delta - tpos.y;
+            } else {
+                h = pos.y + delta - tpos.y;
+            }
+
+            m_CenterOffset.Set(0, h, 0);
+            m_HeadOffset.Set(0, h, 0);
+
+            Vector3 targetCenter = tpos + m_CenterOffset;
+
+            m_Target = null;
+            m_TargetPos = tpos;
+            m_CurTargetPos = m_TargetPos;
+
+            m_Distance = (targetCenter - pos).magnitude;
+            m_CurDistance = m_Distance;
+            m_Height = pos.y - targetCenter.y;
+            m_FixedYaw = euler.y;
+
+            m_AngularSmoothLag = 0.3f;
+            m_SnapSmoothLag = 0.2f;
+            Cut();
+        }
+    }
+    private void CameraFixedYaw(float angle)
+    {
+        m_FixedYaw = angle;
         m_AngularSmoothLag = 0.3f;
         m_SnapSmoothLag = 0.2f;
     }
@@ -97,10 +186,10 @@ public class StoryCamera : MonoBehaviour
     {
         if (null == args || args.Length != 3)
             return;
-        float dir = (float)args[0];
+        float angle = (float)args[0];
         float alag = (float)args[1] / 1000.0f;
         float slag = (float)args[2] / 1000.0f;
-        m_FixedYaw = Geometry.RadianToDegree(dir);
+        m_FixedYaw = angle;
         m_AngularSmoothLag = alag;
         m_SnapSmoothLag = slag;
     }
@@ -310,7 +399,7 @@ public class StoryCamera : MonoBehaviour
         float currentHeight = m_CameraTransform.position.y;
         if (m_NeedLookat) {
             if (!Geometry.IsSameFloat(currentHeight, m_TargetHeight) || !Geometry.IsSameFloat(m_CurDistance, m_Distance)) {
-                m_CameraTransform.LookAt(m_CurTargetPos);
+                m_CameraTransform.LookAt(m_CurTargetPos, Vector3.up);
             } else {
                 m_NeedLookat = false;
             }
@@ -402,6 +491,9 @@ public class StoryCamera : MonoBehaviour
     public float m_Distance = 7.0f;
     // the height we want the camera to be above the target
     public float m_Height = 6.0f;
+    public float m_FixedYaw = 0;
+    public Vector3 m_HeadOffset = Vector3.zero;
+    public Vector3 m_CenterOffset = Vector3.zero;
     public float m_MaxSpeedDistance = 50;
     public float m_MinSpeedDistance = 0.5f;
     public float m_MaxSpeed = 50;
@@ -413,7 +505,6 @@ public class StoryCamera : MonoBehaviour
     private bool m_ControlByOtherScript = false;
     private bool m_NeedLookat = false;
 
-    private float m_FixedYaw = 0;
     private Camera m_Camera;
     private Transform m_CameraTransform;
     private Transform m_Target;
@@ -438,8 +529,6 @@ public class StoryCamera : MonoBehaviour
     private float m_SnapSmoothLag = 0.2f;
     private float m_SnapMaxSpeed = 720.0f;
     private float m_ClampHeadPositionScreenSpace = 0.75f;
-    private Vector3 m_HeadOffset = Vector3.zero;
-    private Vector3 m_CenterOffset = Vector3.zero;
     private float m_HeightVelocity = 0.0f;
     private float m_AngleVelocity = 0.0f;
     private float m_DistanceVelocity = 0.0f;

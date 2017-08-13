@@ -8,7 +8,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// bufftotarget(starttime);
     /// </summary>
-    public class BuffToTargetTrigger : AbstractSkillTriger
+    internal class BuffToTargetTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -62,7 +62,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// bufftoself(starttime[,centerx,centery,centerz,radius,angle_or_length,aoetype,maxCount,relativeToTarget]);
     /// </summary>
-    public class BuffToSelfTrigger : AbstractSkillTriger
+    internal class BuffToSelfTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -158,7 +158,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// impact(starttime[,centerx,centery,centerz,relativeToTarget]);
     /// </summary>
-    public class ImpactTrigger : AbstractSkillTriger
+    internal class ImpactTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -418,7 +418,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// periodicallyimpact(starttime, center_x, center_y, center_z, relativeToTarget, duration, interval);
     /// </summary>
-    public class PeriodicallyImpactTrigger : AbstractSkillTriger
+    internal class PeriodicallyImpactTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

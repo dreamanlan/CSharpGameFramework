@@ -192,7 +192,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// sendstorymessage(start_time,msg,arg1,arg2,arg3,...);
     /// </summary>
-    public class SendStoryMessageTrigger : AbstractSkillTriger
+    internal class SendStoryMessageTrigger : AbstractSkillTriger
     {
         public SendStoryMessageTrigger(bool isConcurrent)
         {
@@ -264,7 +264,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// sendgfxmessage(start_time,objname,msg,arg1,arg2,arg3,...);
     /// </summary>
-    public class SendGfxMessageTrigger : AbstractSkillTriger
+    internal class SendGfxMessageTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -324,7 +324,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// sendgfxmessagewithtag(start_time,tag,msg,arg1,arg2,arg3,...);
     /// </summary>
-    public class SendGfxMessageWithTagTrigger : AbstractSkillTriger
+    internal class SendGfxMessageWithTagTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -382,9 +382,80 @@ namespace GameFramework.Skill.Trigers
         
     }
     /// <summary>
+    /// sendgfxmessagewithgameobject(start_time,type,msg,arg1,arg2,arg3,...);
+    /// </summary>
+    internal class SendGfxMessageWithGameObjectTrigger : AbstractSkillTriger
+    {
+        protected override ISkillTriger OnClone()
+        {
+            SendGfxMessageWithGameObjectTrigger copy = new SendGfxMessageWithGameObjectTrigger();
+            copy.m_Type = m_Type;
+            copy.m_Msg = m_Msg;
+            copy.m_Args.AddRange(m_Args);
+            return copy;
+        }
+        public override void Reset()
+        {
+
+        }
+        public override bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime)
+        {
+            GfxSkillSenderInfo senderObj = sender as GfxSkillSenderInfo;
+            if (null == senderObj) return false;
+            GameObject obj = senderObj.GfxObj;
+            if (null == obj) return false;
+            if (curSectionTime < StartTime) {
+                return true;
+            }
+            GameObject receiver = null;
+            switch (m_Type) {
+                case 0:
+                    receiver = obj;
+                    break;
+                case 1:
+                    receiver = senderObj.TargetGfxObj;
+                    break;
+                case 2:
+                    receiver = senderObj.TrackEffectObj;
+                    break;
+            }
+            if (null == receiver) return false;
+            List<object> arglist = new List<object>();
+            arglist.Add(senderObj);
+            for (int i = 0; i < m_Args.Count; ++i) {
+                arglist.Add(m_Args[i]);
+            }
+            object[] args = arglist.ToArray();
+            if (args.Length == 0)
+                receiver.SendMessage(m_Msg, UnityEngine.SendMessageOptions.DontRequireReceiver);
+            else if (args.Length == 1)
+                receiver.SendMessage(m_Msg, args[0], UnityEngine.SendMessageOptions.DontRequireReceiver);
+            else
+                receiver.SendMessage(m_Msg, args, UnityEngine.SendMessageOptions.DontRequireReceiver);
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        {
+            int num = callData.GetParamNum();
+            if (num > 2) {
+                StartTime = int.Parse(callData.GetParamId(0));
+                m_Type = int.Parse(callData.GetParamId(1));
+                m_Msg = callData.GetParamId(2);
+            }
+            for (int i = 3; i < num; ++i) {
+                m_Args.Add(callData.GetParamId(i));
+            }
+        }
+
+        private string m_Msg = string.Empty;
+        private int m_Type = 0;
+        private List<string> m_Args = new List<string>();
+
+    }
+    /// <summary>
     /// publishgfxevent(start_time,event,group,arg1,arg2,arg3,...);
     /// </summary>
-    public class PublishGfxEventTrigger : AbstractSkillTriger
+    internal class PublishGfxEventTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -517,7 +588,7 @@ namespace GameFramework.Skill.Trigers
     ///     aoecenter(x,y,z,relativeToTarget);
     /// };
     /// </summary>
-    public class KeepTargetTrigger : AbstractSkillTriger
+    internal class KeepTargetTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -603,7 +674,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// useimpact(impactid,[starttime[,is_external_impact]])[if(type)];
     /// </summary>
-    public class UseImpactTrigger : AbstractSkillTriger
+    internal class UseImpactTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

@@ -8,7 +8,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// stopeffect(starttime);
     /// </summary>
-    public class StopEffectTrigger : AbstractSkillTriger
+    internal class StopEffectTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

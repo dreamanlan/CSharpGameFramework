@@ -5,7 +5,7 @@ using SkillSystem;
 
 namespace GameFramework.Skill.Trigers
 {
-    public class AudioManager
+    internal class AudioManager
     {
         public bool IsContainAudioSource(string name)
         {
@@ -25,7 +25,7 @@ namespace GameFramework.Skill.Trigers
         }
         private Dictionary<string, AudioSource> m_AudioDict = new Dictionary<string, AudioSource>();
     }
-    public class PlaySoundTriger : AbstractSkillTriger
+    internal class PlaySoundTriger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -227,7 +227,7 @@ namespace GameFramework.Skill.Trigers
         private bool m_IsResourcePreloaded = false;
         
     }
-    public class StopSoundTrigger : AbstractSkillTriger
+    internal class StopSoundTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

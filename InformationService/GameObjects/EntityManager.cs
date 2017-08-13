@@ -57,7 +57,11 @@ namespace GameFramework
         }
 
         public EntityInfo AddEntity(int id, int unitId, int camp, TableConfig.Actor cfg, string ai, params string[] aiParams)
-        {
+        {                
+			if (m_Entities.Contains(id)) {
+            	LogSystem.Warn("duplicate entity {0} !!!", id);
+                return null;
+            }
             EntityInfo entity = NewEntityInfo(id);
             entity.SceneContext = m_SceneContext;
             entity.LoadData(unitId, camp, cfg, ai, aiParams);

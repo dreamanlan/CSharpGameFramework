@@ -17,7 +17,8 @@ namespace GameFramework.Skill.Trigers
                 if (m_EffectObject[i].activeSelf) {
                     ParticleSystem[] pss = m_EffectObject[i].GetComponentsInChildren<ParticleSystem>();
                     for (int j = 0; j < pss.Length; j++) {
-                        pss[j].playbackSpeed = speed;
+                        var main = pss[j].main;
+                        main.simulationSpeed = speed;
                     }
                 }
             }

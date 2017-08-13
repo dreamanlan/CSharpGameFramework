@@ -167,8 +167,7 @@ namespace GameFramework
         {
             try {
                 UnityEngine.Profiling.Profiler.BeginSample("GameController.TickGame");
-                TimeUtility.GfxTime = UnityEngine.Time.time;
-                TimeUtility.GfxTimeScale = UnityEngine.Time.timeScale;
+                TimeUtility.UpdateGfxTime(UnityEngine.Time.time, UnityEngine.Time.realtimeSinceStartup, UnityEngine.Time.timeScale);
                 PluginFramework.Instance.Tick();
                 s_Logger.Tick();
             } finally {

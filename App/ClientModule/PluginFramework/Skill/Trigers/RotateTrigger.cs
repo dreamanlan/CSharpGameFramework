@@ -6,7 +6,7 @@ using GameFramework;
 
 namespace GameFramework.Skill.Trigers
 {
-    public class RotateTrigger : AbstractSkillTriger
+    internal class RotateTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

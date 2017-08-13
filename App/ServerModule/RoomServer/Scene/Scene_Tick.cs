@@ -223,7 +223,7 @@ namespace GameFramework
 
         private void TickAi()
         {
-            long curTime = TimeUtility.GetLocalMicroseconds();
+            long curTime = TimeUtility.GetLocalMilliseconds();
             if (m_LastTickTimeForAi <= 0) {
                 m_LastTickTimeForAi = curTime;
                 return;

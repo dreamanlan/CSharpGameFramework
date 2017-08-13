@@ -698,7 +698,7 @@ namespace GameFramework.Story.Values
                     }
                 }
                 if (null != uobj) {
-                    var t = uobj.transform.Find(childPath);
+                    var t = Utility.FindChildRecursive(uobj.transform, childPath);
                     if (null != t) {
                         m_Value = t.gameObject;
                     } else {
@@ -981,7 +981,7 @@ namespace GameFramework.Story.Values
                 string typeName = m_TypeName.Value;
                 if (null != typeName) {
                     if (!typeName.StartsWith("UnityEngine.UI.")) {
-                        typeName = string.Format("UnityEngine.UI.{0},UnityEngine", typeName);
+                        typeName = string.Format("UnityEngine.UI.{0},UnityEngine.UI", typeName);
                     }
                     Type t = Type.GetType(typeName);
                     if (null != t) {

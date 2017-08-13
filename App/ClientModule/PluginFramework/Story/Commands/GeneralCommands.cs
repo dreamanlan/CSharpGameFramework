@@ -1129,7 +1129,79 @@ namespace GameFramework.Story.Commands
         private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
     }
     /// <summary>
-    /// sendskillmessage(actorid,skillid,seq,msg,arg1,arg2,...);
+    /// sendgfxmessagewithgameobject(gameobject,msg,arg1,arg2,...);
+    /// </summary>
+    internal class SendGfxMessageWithGameObjectCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            SendGfxMessageWithGameObjectCommand cmd = new SendGfxMessageWithGameObjectCommand();
+            cmd.m_Object = m_Object.Clone();
+            cmd.m_Msg = m_Msg.Clone();
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                cmd.m_Args.Add(val.Clone());
+            }
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_Object.Evaluate(instance, iterator, args);
+            m_Msg.Evaluate(instance, iterator, args);
+            for (int i = 0; i < m_Args.Count; ++i) {
+                IStoryValue<object> val = m_Args[i];
+                val.Evaluate(instance, iterator, args);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            object obj = m_Object.Value;
+            var uobj = obj as UnityEngine.GameObject;
+            if (null == uobj) {
+                try {
+                    int objId = (int)obj;
+                    uobj = PluginFramework.Instance.GetGameObject(objId);
+                } catch {
+                    uobj = null;
+                }
+            }
+            if (null != uobj) {
+                string msg = m_Msg.Value;
+                ArrayList arglist = new ArrayList();
+                for (int i = 0; i < m_Args.Count; ++i) {
+                    IStoryValue<object> val = m_Args[i];
+                    arglist.Add(val.Value);
+                }
+                object[] args = arglist.ToArray();
+                if (args.Length == 0)
+                    uobj.SendMessage(msg, UnityEngine.SendMessageOptions.DontRequireReceiver);
+                else if (args.Length == 1)
+                    uobj.SendMessage(msg, args[0], UnityEngine.SendMessageOptions.DontRequireReceiver);
+                else
+                    uobj.SendMessage(msg, args, UnityEngine.SendMessageOptions.DontRequireReceiver);
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_Object.InitFromDsl(callData.GetParam(0));
+                m_Msg.InitFromDsl(callData.GetParam(1));
+            }
+            for (int i = 2; i < callData.GetParamNum(); ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_Args.Add(val);
+            }
+        }
+        private IStoryValue<object> m_Object = new StoryValue();
+        private IStoryValue<string> m_Msg = new StoryValue<string>();
+        private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
+    }
+    /// <summary>
+    /// sendskillmessage(objId,skillid,seq,msg,arg1,arg2,...);
     /// </summary>
     internal class SendSkillMessageCommand : AbstractStoryCommand
     {
@@ -1213,6 +1285,7 @@ namespace GameFramework.Story.Commands
             CreateGameObjectCommand cmd = new CreateGameObjectCommand();
             cmd.m_Name = m_Name.Clone();
             cmd.m_Prefab = m_Prefab.Clone();
+            cmd.m_HaveParent = m_HaveParent;
             cmd.m_Parent = m_Parent.Clone();
             cmd.m_HaveObj = m_HaveObj;
             cmd.m_ObjVarName = m_ObjVarName.Clone();

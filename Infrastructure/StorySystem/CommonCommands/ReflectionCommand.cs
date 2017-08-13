@@ -41,7 +41,9 @@ namespace StorySystem.CommonCommands
                 Type t = obj as Type;
                 if (null != t) {
                     try {
-                        t.InvokeMember(method, BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic, null, null, args);
+                        BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
+                        GameFramework.Converter.CastArgsForCall(t, method, flags, args);
+                        t.InvokeMember(method, flags, null, null, args);
                     } catch (Exception ex) {
                         GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     }
@@ -49,7 +51,9 @@ namespace StorySystem.CommonCommands
                     t = obj.GetType();
                     if (null != t) {
                         try {
-                            t.InvokeMember(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic, null, obj, args);
+                            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
+                            GameFramework.Converter.CastArgsForCall(t, method, flags, args);
+                            t.InvokeMember(method, flags, null, obj, args);
                         } catch (Exception ex) {
                             GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                         }
@@ -111,7 +115,9 @@ namespace StorySystem.CommonCommands
                 Type t = obj as Type;
                 if (null != t) {
                     try {
-                        t.InvokeMember(method, BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic, null, null, args);
+                        BindingFlags flags = BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+                        GameFramework.Converter.CastArgsForSet(t, method, flags, args);
+                        t.InvokeMember(method, flags, null, null, args);
                     } catch (Exception ex) {
                         GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     }
@@ -119,7 +125,9 @@ namespace StorySystem.CommonCommands
                     t = obj.GetType();
                     if (null != t) {
                         try {
-                            t.InvokeMember(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic, null, obj, args);
+                            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+                            GameFramework.Converter.CastArgsForSet(t, method, flags, args);
+                            t.InvokeMember(method, flags, null, obj, args);
                         } catch (Exception ex) {
                             GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                         }

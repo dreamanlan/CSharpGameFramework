@@ -19,7 +19,7 @@ namespace GameFramework
     {
         public bool CanFinish
         {
-            get { return m_CanFinish || m_ActiveTime+c_WaitUserTime<TimeUtility.GetLocalMicroseconds(); }
+            get { return m_CanFinish || m_ActiveTime+c_WaitUserTime<TimeUtility.GetLocalMilliseconds(); }
         }
         public RoomState CurrentState
         {
@@ -147,7 +147,7 @@ namespace GameFramework
             //场景数据加载由加载线程执行（注：场景没有加载完成，场景状态仍然是sleep，Scene.Tick不会有实际的动作）
             SceneLoadThread.Instance.QueueAction(m_RoomUserMgr.ActiveScene.LoadData, scene_type);
             OnInit();
-            m_ActiveTime = TimeUtility.GetLocalMicroseconds();
+            m_ActiveTime = TimeUtility.GetLocalMilliseconds();
             CurrentState = RoomState.Active;
             m_CanFinish = false;
             LogSys.Log(LOG_TYPE.DEBUG, "Room Initialize: {0}  Scene: {1}", room_id, scene_type);

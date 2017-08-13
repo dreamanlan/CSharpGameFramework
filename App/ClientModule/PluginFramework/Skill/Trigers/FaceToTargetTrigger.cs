@@ -5,7 +5,7 @@ using SkillSystem;
 
 namespace GameFramework.Skill.Trigers
 {
-    public class TargetManager
+    internal class TargetManager
     {
         public HashSet<int> Targets
         {
@@ -28,7 +28,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// selecttarget(type[, start_time]);
     /// </summary>
-    public class SelectTargetTrigger : AbstractSkillTriger
+    internal class SelectTargetTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -87,7 +87,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// facetotarget(starttime,remaintime[,rotate,selecttype]);
     /// </summary>
-    public class FaceToTargetTrigger : AbstractSkillTriger
+    internal class FaceToTargetTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {
@@ -180,7 +180,7 @@ namespace GameFramework.Skill.Trigers
     /// <summary>
     /// cleartargets(starttime);
     /// </summary>
-    public class ClearTargetsTrigger : AbstractSkillTriger
+    internal class ClearTargetsTrigger : AbstractSkillTriger
     {
         protected override ISkillTriger OnClone()
         {

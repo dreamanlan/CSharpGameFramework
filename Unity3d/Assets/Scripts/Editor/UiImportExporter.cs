@@ -50,7 +50,13 @@ public sealed class UiEditWindow : EditorWindow
         string path = EditorUtility.OpenFolderPanel("请选择要收集UI预制件的根目录", Application.dataPath, string.Empty);
         if (!string.IsNullOrEmpty(path) && Directory.Exists(path)) {
             m_Prefabs.Clear();
-            SearchFileRecursively(path);
+            m_CurSearchCount = 0;
+            m_TotalSearchCount = 0;
+            CountFileRecursively(path);
+            if (m_TotalSearchCount > 0) {
+                SearchFileRecursively(path);
+                EditorUtility.ClearProgressBar();
+            }
         }
     }
 
@@ -62,7 +68,7 @@ public sealed class UiEditWindow : EditorWindow
                 File.Delete(path);
             }
             foreach (ItemInfo item in m_Prefabs) {
-                if (item.Selected) {
+                if (item.Selected) {                    
                     if (null != item.Prefab) {
                         UiEditUtility.Export(path, item.Prefab);
                         Debug.Log("BatchExportAll " + item.Path);
@@ -79,7 +85,7 @@ public sealed class UiEditWindow : EditorWindow
         if (!string.IsNullOrEmpty(path)) {
             if (File.Exists(path)) {
                 File.Delete(path);
-            }
+            }            
             foreach (GameObject obj in Selection.gameObjects) {
                 UiEditUtility.Export(path, obj);
                 Debug.Log("BatchExportAll " + obj.name);
@@ -87,7 +93,7 @@ public sealed class UiEditWindow : EditorWindow
             EditorUtility.DisplayDialog("提示", "处理完成", "ok");
         }
     }
-
+    
     private void ImportAttachPointToSelectedSceneNodes()
     {
         string path = EditorUtility.OpenFilePanel("请选择要导入的dsl文件", string.Empty, "dsl");
@@ -142,15 +148,54 @@ public sealed class UiEditWindow : EditorWindow
                 root = obj;
             }
             UiEditUtility.Import(path, root);
-            EditorUtility.DisplayDialog("提示", "处理完成", "ok");
+			EditorUtility.DisplayDialog ("提示", "处理完成", "ok");
         }
     }
 
     private void ListItem()
     {
+        GUILayout.BeginVertical();
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("全选", GUILayout.Width(40))) {
+            foreach (ItemInfo item in m_Prefabs) {
+                item.Selected = true;
+            }
+        }
+        if (GUILayout.Button("全不选", GUILayout.Width(60))) {
+            foreach (ItemInfo item in m_Prefabs) {
+                item.Selected = false;
+            }
+        }
+        GUILayout.Label(string.Format("Go to page ({0}) : ", m_Prefabs.Count / c_ItemsPerPage + 1), GUILayout.Width(100));
+        string strPage = GUILayout.TextField(m_Page.ToString(), GUILayout.Width(40));
+        int.TryParse(strPage, out m_Page);
+        if (GUILayout.Button("Prev", GUILayout.Width(80))) {
+            m_Page--;
+        }
+        if (GUILayout.Button("Next", GUILayout.Width(80))) {
+            m_Page++;
+        }
+        GUILayout.EndHorizontal();
+        m_Page = Mathf.Max(1, Mathf.Min(m_Prefabs.Count / c_ItemsPerPage + 1, m_Page));
+        GUILayout.EndVertical();
+        int index = 0;
+        int totalShown = 0;
         foreach (ItemInfo item in m_Prefabs) {
+            ++index;
+            if (index <= (m_Page - 1) * c_ItemsPerPage)
+                continue;
+            ++totalShown;
+            if (totalShown > c_ItemsPerPage)
+                break;
             EditorGUILayout.BeginHorizontal();
-            item.Selected = GUILayout.Toggle(item.Selected, item.Path);
+            item.Selected = GUILayout.Toggle(item.Selected, index + ".", GUILayout.Width(40));
+            Texture icon = AssetDatabase.GetCachedIcon(item.Path);
+            var oldAlignment = GUI.skin.button.alignment;
+            GUI.skin.button.alignment = TextAnchor.MiddleLeft;
+            if (GUILayout.Button(new GUIContent(item.Path, icon, item.Path))) {
+                SelectObject(item.Path);
+            }
+            GUI.skin.button.alignment = oldAlignment;
             EditorGUILayout.EndHorizontal();
         }
     }
@@ -164,22 +209,48 @@ public sealed class UiEditWindow : EditorWindow
             var rectTrans = obj.GetComponent<RectTransform>();
             if (null != rectTrans) {
                 m_Prefabs.Add(new ItemInfo { Path = path, Selected = false, Prefab = obj });
+                ++m_CurSearchCount;
+                EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_Prefabs.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
             }
-        }
+        }        
         string[] dirs = Directory.GetDirectories(dir);
         foreach (string subDir in dirs) {
             SearchFileRecursively(subDir);
         }
     }
 
+    private void CountFileRecursively(string dir)
+    {
+        string[] files = Directory.GetFiles(dir, "*.prefab");
+        m_TotalSearchCount += files.Length;
+
+        string[] dirs = Directory.GetDirectories(dir);
+        foreach (string subDir in dirs) {
+            CountFileRecursively(subDir);
+        }
+    }
+
     private string PathToAssetPath(string path)
     {
-        string rootPath = Application.dataPath.Replace('\\', '/');
+        string rootPath = Application.dataPath.Replace('\\','/');
         path = path.Replace('\\', '/');
         if (path.StartsWith(rootPath)) {
             return "Assets" + path.Substring(rootPath.Length);
         } else {
             return path;
+        }
+    }
+
+    private static void SelectObject(string assetPath)
+    {
+        var objLoaded = AssetDatabase.LoadMainAssetAtPath(assetPath);
+        if (objLoaded != null) {
+            if (Selection.activeObject != null && !(Selection.activeObject is GameObject)) {
+                Resources.UnloadAsset(Selection.activeObject);
+                Selection.activeObject = null;
+            }
+            Selection.activeObject = objLoaded;
+            EditorGUIUtility.PingObject(Selection.activeObject);
         }
     }
 
@@ -192,6 +263,11 @@ public sealed class UiEditWindow : EditorWindow
 
     private List<ItemInfo> m_Prefabs = new List<ItemInfo>();
     private Vector2 m_Pos = Vector2.zero;
+    private int m_Page = 1;
+    private int m_CurSearchCount = 0;
+    private int m_TotalSearchCount = 0;
+
+    private const int c_ItemsPerPage = 50;
 }
 
 internal static class UiEditUtility

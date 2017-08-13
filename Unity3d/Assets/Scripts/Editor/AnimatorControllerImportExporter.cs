@@ -39,6 +39,7 @@ public sealed class AnimatorControllerEditWindow : EditorWindow
     internal static void InitWindow()
     {
         AnimatorControllerEditWindow window = (AnimatorControllerEditWindow)EditorWindow.GetWindow(typeof(AnimatorControllerEditWindow));
+        window.minSize = new Vector2(640, 480);
         window.Show();
     }
 
@@ -54,6 +55,9 @@ public sealed class AnimatorControllerEditWindow : EditorWindow
         if (GUILayout.Button("批量导入全部")) {
             BatchImportAll();
         }
+        if (GUILayout.Button("清零ExitTime")) {
+            CleanupExitTime();
+        }
         EditorGUILayout.EndHorizontal();
 
         m_Pos = EditorGUILayout.BeginScrollView(m_Pos, true, true);
@@ -68,7 +72,13 @@ public sealed class AnimatorControllerEditWindow : EditorWindow
         string path = EditorUtility.OpenFolderPanel("请选择要收集动画控制器的根目录", Application.dataPath, string.Empty);
         if (!string.IsNullOrEmpty(path) && Directory.Exists(path)) {
             m_Controllers.Clear();
-            SearchFileRecursively(path);
+            m_CurSearchCount = 0;
+            m_TotalSearchCount = 0;
+            CountFileRecursively(path);
+            if (m_TotalSearchCount > 0) {
+                SearchFileRecursively(path);
+                EditorUtility.ClearProgressBar();
+            }
         }
     }
 
@@ -84,7 +94,7 @@ public sealed class AnimatorControllerEditWindow : EditorWindow
                         Debug.Log("BatchImportPartial " + item.Path);
                     }
                 }
-			}
+            }
 			EditorUtility.DisplayDialog ("提示", "处理完成", "ok");
         }
     }
@@ -106,11 +116,67 @@ public sealed class AnimatorControllerEditWindow : EditorWindow
         }
     }
 
+    private void CleanupExitTime()
+    {
+        var objs = Selection.objects;
+        foreach (var obj in objs) {
+            var path = AssetDatabase.GetAssetPath(obj);            
+            AnimatorController ctrl = AssetDatabase.LoadAssetAtPath<AnimatorController>(path);
+            if (null != ctrl) {
+                foreach (var layer in ctrl.layers) {
+                    var sm = layer.stateMachine;
+                    AnimatorControllerUtility.CleanupStateMachineExitTime(sm);
+                }
+                AssetDatabase.SaveAssets();
+            }
+        }
+    }
+
+
     private void ListItem()
     {
+        GUILayout.BeginVertical();
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("全选", GUILayout.Width(40))) {
+            foreach (ItemInfo item in m_Controllers) {
+                item.Selected = true;
+            }
+        }
+        if (GUILayout.Button("全不选", GUILayout.Width(60))) {
+            foreach (ItemInfo item in m_Controllers) {
+                item.Selected = false;
+            }
+        }
+        GUILayout.Label(string.Format("Go to page ({0}) : ", m_Controllers.Count / c_ItemsPerPage + 1), GUILayout.Width(100));
+        string strPage = GUILayout.TextField(m_Page.ToString(), GUILayout.Width(40));
+        int.TryParse(strPage, out m_Page);
+        if (GUILayout.Button("Prev", GUILayout.Width(80))) {
+            m_Page--;
+        }
+        if (GUILayout.Button("Next", GUILayout.Width(80))) {
+            m_Page++;
+        }
+        GUILayout.EndHorizontal();
+        m_Page = Mathf.Max(1, Mathf.Min(m_Controllers.Count / c_ItemsPerPage + 1, m_Page));
+        GUILayout.EndVertical();
+        int index = 0;
+        int totalShown = 0;
         foreach (ItemInfo item in m_Controllers) {
+            ++index;
+            if (index <= (m_Page - 1) * c_ItemsPerPage)
+                continue;
+            ++totalShown;
+            if (totalShown > c_ItemsPerPage)
+                break;
             EditorGUILayout.BeginHorizontal();
-            item.Selected = GUILayout.Toggle(item.Selected, item.Path);
+            item.Selected = GUILayout.Toggle(item.Selected, index + ".", GUILayout.Width(40));
+            Texture icon = AssetDatabase.GetCachedIcon(item.Path);
+            var oldAlignment = GUI.skin.button.alignment;
+            GUI.skin.button.alignment = TextAnchor.MiddleLeft;
+            if (GUILayout.Button(new GUIContent(item.Path, icon, item.Path))) {
+                SelectObject(item.Path);
+            }
+            GUI.skin.button.alignment = oldAlignment;
             EditorGUILayout.EndHorizontal();
         }
     }
@@ -120,10 +186,23 @@ public sealed class AnimatorControllerEditWindow : EditorWindow
         string[] files = Directory.GetFiles(dir, "*.controller");
         foreach (string file in files) {
             m_Controllers.Add(new ItemInfo { Path = PathToAssetPath(file), Selected = false });
+            ++m_CurSearchCount;
+            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_Controllers.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
         }        
         string[] dirs = Directory.GetDirectories(dir);
         foreach (string subDir in dirs) {
             SearchFileRecursively(subDir);
+        }
+    }
+
+    private void CountFileRecursively(string dir)
+    {
+        string[] files = Directory.GetFiles(dir, "*.controller");
+        m_TotalSearchCount += files.Length;
+
+        string[] dirs = Directory.GetDirectories(dir);
+        foreach (string subDir in dirs) {
+            CountFileRecursively(subDir);
         }
     }
 
@@ -138,6 +217,19 @@ public sealed class AnimatorControllerEditWindow : EditorWindow
         }
     }
 
+    private static void SelectObject(string assetPath)
+    {
+        var objLoaded = AssetDatabase.LoadMainAssetAtPath(assetPath);
+        if (objLoaded != null) {
+            if (Selection.activeObject != null && !(Selection.activeObject is GameObject)) {
+                Resources.UnloadAsset(Selection.activeObject);
+                Selection.activeObject = null;
+            }
+            Selection.activeObject = objLoaded;
+            EditorGUIUtility.PingObject(Selection.activeObject);
+        }
+    }
+
     private class ItemInfo
     {
         internal string Path;
@@ -146,6 +238,11 @@ public sealed class AnimatorControllerEditWindow : EditorWindow
 
     private List<ItemInfo> m_Controllers = new List<ItemInfo>();
     private Vector2 m_Pos = Vector2.zero;
+    private int m_Page = 1;
+    private int m_CurSearchCount = 0;
+    private int m_TotalSearchCount = 0;
+
+    private const int c_ItemsPerPage = 50;
 }
 
 public static class AnimatorControllerUtility
@@ -202,6 +299,20 @@ public static class AnimatorControllerUtility
             }
             --indent;
             sw.WriteLine("{0}{1}", GetIndent(indent), "};");
+        }
+    }
+
+    public static void CleanupStateMachineExitTime(AnimatorStateMachine stateMachine)
+    {
+        foreach (var state in stateMachine.states) {
+            foreach (var trans in state.state.transitions) {
+                trans.exitTime = 1;
+                trans.duration = 0;
+                trans.offset = 0;
+            }
+        }
+        foreach (var sm in stateMachine.stateMachines) {
+            CleanupStateMachineExitTime(sm.stateMachine);            
         }
     }
 
