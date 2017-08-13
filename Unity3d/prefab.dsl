@@ -11,4 +11,7 @@ filter
 }
 process
 {
+	looplist(getcomponentsinchildren(object,"SkinnedMeshRenderer")){
+		$$.skinnedMotionVectors=false;
+	};
 };

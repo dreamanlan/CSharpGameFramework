@@ -505,8 +505,11 @@ internal static class ResourceEditUtility
     {
         calc.Init();
         calc.Register("saveandreimport", new Expression.ExpressionFactoryHelper<SaveAndReimportExp>());
+        calc.Register("getdefaulttexturesetting", new Expression.ExpressionFactoryHelper<GetDefaultTextureSettingExp>());
         calc.Register("gettexturesetting", new Expression.ExpressionFactoryHelper<GetTextureSettingExp>());
         calc.Register("settexturesetting", new Expression.ExpressionFactoryHelper<SetTextureSettingExp>());
+        calc.Register("gettexturecompression", new Expression.ExpressionFactoryHelper<GetTextureCompressionExp>());
+        calc.Register("settexturecompression", new Expression.ExpressionFactoryHelper<SetTextureCompressionExp>());
         calc.Register("getmeshcompression", new Expression.ExpressionFactoryHelper<GetMeshCompressionExp>());
         calc.Register("setmeshcompression", new Expression.ExpressionFactoryHelper<SetMeshCompressionExp>());
         calc.Register("closemeshanimationifnoanimation", new Expression.ExpressionFactoryHelper<CloseMeshAnimationIfNoAnimationExp>());
@@ -593,6 +596,20 @@ internal class SaveAndReimportExp : Expression.SimpleExpressionBase
         return r;
     }
 }
+internal class GetDefaultTextureSettingExp : Expression.SimpleExpressionBase
+{
+    protected override object OnCalc(IList<object> operands, object[] args)
+    {
+        object r = null;
+        if (operands.Count >= 0) {
+            var importer = Calculator.NamedVariables["importer"] as TextureImporter;
+            if (null != importer) {
+                r = importer.GetDefaultPlatformTextureSettings();
+            }
+        }
+        return r;
+    }
+}
 internal class GetTextureSettingExp : Expression.SimpleExpressionBase
 {
     protected override object OnCalc(IList<object> operands, object[] args)
@@ -619,6 +636,56 @@ internal class SetTextureSettingExp : Expression.SimpleExpressionBase
             if (null != importer && null != setting) {
                 importer.SetPlatformTextureSettings(setting);
                 r = setting;
+            }
+        }
+        return r;
+    }
+}
+internal class GetTextureCompressionExp : Expression.SimpleExpressionBase
+{
+    protected override object OnCalc(IList<object> operands, object[] args)
+    {
+        object r = null;
+        if (operands.Count >= 1) {
+            var setting = operands[0] as TextureImporterPlatformSettings;
+            if (null != setting) {
+                switch (setting.textureCompression) {
+                    case TextureImporterCompression.Uncompressed:
+                        r = "none";
+                        break;
+                    case TextureImporterCompression.CompressedLQ:
+                        r = "lowquality";
+                        break;
+                    case TextureImporterCompression.Compressed:
+                        r = "normal";
+                        break;
+                    case TextureImporterCompression.CompressedHQ:
+                        r = "highquality";
+                        break;
+                }
+            }
+        }
+        return r;
+    }
+}
+internal class SetTextureCompressionExp : Expression.SimpleExpressionBase
+{
+    protected override object OnCalc(IList<object> operands, object[] args)
+    {
+        object r = null;
+        if (operands.Count >= 2) {
+            var setting = operands[0] as TextureImporterPlatformSettings;
+            var type = operands[1] as string;
+            if (null != setting && null != type) {
+                r = type;
+                if (type == "none")
+                    setting.textureCompression = TextureImporterCompression.Uncompressed;
+                else if (type == "lowquality")
+                    setting.textureCompression = TextureImporterCompression.CompressedLQ;
+                else if (type == "normal")
+                    setting.textureCompression = TextureImporterCompression.Compressed;
+                else if (type == "highquality")
+                    setting.textureCompression = TextureImporterCompression.CompressedHQ;
             }
         }
         return r;

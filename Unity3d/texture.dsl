@@ -1,6 +1,6 @@
 input("*.tga","*.png","*.jpg")
 {
-	int("startSize",1024);
+	int("startSize",512);
 }
 filter
 {
@@ -17,9 +17,11 @@ filter
 }
 process
 {
-	var(0) = gettexturesetting("iPhone");
+	//var(0) = gettexturesetting("iPhone");
+	var(0) = getdefaulttexturesetting();
 	var(0).overridden = changetype(1,"bool");
 	var(0).maxTextureSize = changetype(256, "int");
 	var(0).readable = false;
+	settexturecompression(var(0),"lowquality");
 	settexturesetting(var(0));
 };
