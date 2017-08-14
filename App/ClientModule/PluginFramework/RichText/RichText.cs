@@ -36,9 +36,29 @@ public class RichText : Text, IPointerClickHandler
     [System.Serializable]
     public class HrefClickEvent : UnityEvent<HyperText> { }
 
-    public string outputText
+    public override string text
     {
-        get { return m_OutputText; }
+        get
+        {
+            return base.text;
+        }
+        set
+        {
+            if (string.IsNullOrEmpty(value)) {
+                if (!string.IsNullOrEmpty(m_InputText)) {
+                    m_InputText = "";
+                    SetVerticesDirty();
+                }
+            } else if (m_InputText != value) {
+                m_InputText = value;
+                SetVerticesDirty();
+                SetLayoutDirty();
+            }
+        }
+    }
+    public string inputText
+    {
+        get { return m_InputText; }
     }
     public IRichTextList parsedTexts {
         get {
@@ -100,12 +120,9 @@ public class RichText : Text, IPointerClickHandler
     }
     public override void SetVerticesDirty()
     {
-        base.SetVerticesDirty();
-
         Analyze();
-        m_OutputText = m_TextBuilder.ToString();
-
-        Vector2 extents = rectTransform.rect.size;
+        m_Text = m_TextBuilder.ToString();
+        base.SetVerticesDirty();
     }
     protected override void OnPopulateMesh(VertexHelper toFill)
     {
@@ -121,7 +138,7 @@ public class RichText : Text, IPointerClickHandler
 
         Vector2 extents = rectTransform.rect.size;
         var settings = GetGenerationSettings(extents);
-        cachedTextGenerator.Populate(m_OutputText, settings);
+        cachedTextGenerator.Populate(m_Text, settings);
         toFill.Clear();
 
         CalcQuadTag(toFill);
@@ -320,7 +337,7 @@ public class RichText : Text, IPointerClickHandler
         if (null != m_ParsedTexts) {
             texts = m_ParsedTexts;
         } else {
-            m_RichTextParser.Parse(text);
+            m_RichTextParser.Parse(m_InputText);
             texts = m_RichTextParser.Texts;
         }
         m_TextBuilder.Length = 0;
@@ -382,7 +399,7 @@ public class RichText : Text, IPointerClickHandler
                 //[#id]
                 BuildLinkOrQuadInfo(id, val, txt);
             } else if (id == "@") {
-                //[@id{pos:x,y}]
+                //[@id{pos:x,y}{npcid:1,2,...}文本]
                 BuildLinkOrQuadInfo(id, val, txt);
             } else {
                 //[!...]等，其中！还可以为$%&*?\^~-+=|:
@@ -418,7 +435,16 @@ public class RichText : Text, IPointerClickHandler
             BuildQuadInfo(text, id, quadInfo.Name, quadInfo.Size, quadInfo.Count, isLink, quadInfo.Sprite, quadInfo.SpriteResource, quadInfo.InstantiatedPrefab, quadInfo.PrefabResource);
         } else {
             if (id == "#") {
-                BuildQuadInfo(text, id, name, defaultQuadSize, isLink);
+                BuildQuadInfo(text, id, name, defaultQuadSize, false);
+            } else if (id == "@") {
+                StringBuilder sb = new StringBuilder();
+                foreach (var txt in text.Texts) {
+                    var t = txt as NormalText;
+                    if (null != t) {
+                        sb.Append(t.Text);
+                    }
+                }
+                BuildHrefInfo(text, sb.ToString(), string.Empty, true);
             } else {
                 string color;
                 if (!s_LinkColors.TryGetValue(id, out color)) {
@@ -511,8 +537,11 @@ public class RichText : Text, IPointerClickHandler
     }
     private void BuildHrefInfo(HyperText text, string name, string color, bool isLink)
     {
+        bool includeColor = !string.IsNullOrEmpty(color);
         // 超链接颜色
-        m_TextBuilder.AppendFormat("<color={0}>", color);
+        if (includeColor) {
+            m_TextBuilder.AppendFormat("<color={0}>", color);
+        }
         var hrefInfo = new HrefInfo {
             startIndex = m_TextBuilder.Length * 4, // 超链接里的文本起始顶点索引
             endIndex = (m_TextBuilder.Length + name.Length - 1) * 4 + 3,
@@ -522,7 +551,9 @@ public class RichText : Text, IPointerClickHandler
         m_HrefInfos.Add(hrefInfo);
 
         m_TextBuilder.Append(name);
-        m_TextBuilder.Append("</color>");
+        if (includeColor) {
+            m_TextBuilder.Append("</color>");
+        }
     }
     private bool ExecOnBuildLinkOrQuadInfo(string id, string name, HyperText text, out LinkInfo linkInfo, out QuadInfo quadInfo)
     {
@@ -568,7 +599,7 @@ public class RichText : Text, IPointerClickHandler
     private RichTextParser.RichTextParser m_RichTextParser = new RichTextParser.RichTextParser();
     private StringBuilder m_TextBuilder = new StringBuilder();
 
-    private string m_OutputText;
+    private string m_InputText = string.Empty;
     private UIVertex[] m_TempVerts = new UIVertex[4];
 
     public static int defaultQuadSize

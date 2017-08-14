@@ -5,6 +5,6 @@ process
   setmeshcompression("high");
   setanimationcompression("optimal");
   clearanimationscalecurve();
-  setanimationtype("generic");
+  closemeshanimationifnoanimation();
   saveandreimport();
 };

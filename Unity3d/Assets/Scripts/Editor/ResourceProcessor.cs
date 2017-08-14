@@ -38,6 +38,9 @@ public sealed class ResourceEditWindow : EditorWindow
         if (GUILayout.Button("处理选中资源")) {
             Process();
         }
+        if (GUILayout.Button("生成后处理资源代码")) {
+            Generate();
+        }
         EditorGUILayout.EndHorizontal();
 
         if (m_Params.Count > 0) {
@@ -59,6 +62,8 @@ public sealed class ResourceEditWindow : EditorWindow
                             m_Params[pair.Key] = int.Parse(pair.Value);
                         } else if (val is float) {
                             m_Params[pair.Key] = float.Parse(pair.Value);
+                        } else if (val is string) {
+                            m_Params[pair.Key] = pair.Value;
                         }
                     }
                 }
@@ -133,6 +138,8 @@ public sealed class ResourceEditWindow : EditorWindow
                 }
                 if (!haveError) {
                     m_IsSearchInScene = false;
+                    m_PostProcessClass = string.Empty;
+                    m_PostProcessMethod = string.Empty;
                     m_TypeOrExtList.Clear();
                     m_TypeList.Clear();
                     m_Params.Clear();
@@ -152,8 +159,16 @@ public sealed class ResourceEditWindow : EditorWindow
                                 m_Params[key] = int.Parse(val);
                             } else if (id == "float") {
                                 m_Params[key] = float.Parse(val);
-                            } else if (id == "source") {
-                                m_IsSearchInScene = key == "scene";
+                            } else if (id == "string") {
+                                m_Params[key] = val;
+                            } else if (id == "option") {
+                                if(key=="source"){
+                                    m_IsSearchInScene = val == "scene";
+                                } else if (key == "postprocessclass") {
+                                    m_PostProcessClass = val;
+                                } else if (key == "postprocessmethod") {
+                                    m_PostProcessMethod = val;
+                                }
                             }
                         }
                     }
@@ -161,6 +176,8 @@ public sealed class ResourceEditWindow : EditorWindow
                 } else {
                     m_DslFile = null;
                     m_IsSearchInScene = false;
+                    m_PostProcessClass = string.Empty;
+                    m_PostProcessMethod = string.Empty;
                     m_TypeOrExtList.Clear();
                     m_TypeList.Clear();
                     m_Params.Clear();
@@ -173,6 +190,8 @@ public sealed class ResourceEditWindow : EditorWindow
             } else {
                 m_DslFile = null;
                 m_IsSearchInScene = false;
+                m_PostProcessClass = string.Empty;
+                m_PostProcessMethod = string.Empty;
                 m_TypeOrExtList.Clear();
                 m_TypeList.Clear();
                 m_Params.Clear();
@@ -234,6 +253,50 @@ public sealed class ResourceEditWindow : EditorWindow
         }
         EditorUtility.ClearProgressBar();
         EditorUtility.DisplayDialog("提示", "处理完成", "ok");
+    }
+    
+    private void Generate()
+    {
+        if (string.IsNullOrEmpty(m_PostProcessClass) || string.IsNullOrEmpty(m_PostProcessMethod)) {
+            EditorUtility.DisplayDialog("错误", "当前dsl没有配置后处理类与方法名 !", "ok");
+            return;
+        }
+        string path = AssetPathToPath("Assets/Scripts/Editor/PostProcess/");
+        string file = Path.Combine(path, string.Format("{0}_{1}.cs", m_PostProcessClass, m_PostProcessMethod));
+        using (StreamWriter sw = new StreamWriter(file)) {
+            sw.WriteLine("using UnityEngine;");
+            sw.WriteLine("using UnityEditor;");
+            sw.WriteLine("using System.Collections;");
+            sw.WriteLine("using System.Collections.Generic;");
+            sw.WriteLine();
+            sw.WriteLine("public static partial class {0}", m_PostProcessClass);
+            sw.WriteLine("{");
+            if (m_PostProcessMethod.Contains("Texture")) {
+                sw.WriteLine("\tstatic partial void {0}(HashSet<string> list, ref int maxSize)", m_PostProcessMethod);
+                sw.WriteLine("\t{");
+                object v;
+                if (m_Params.TryGetValue("maxSize", out v) && v is int) {
+                    sw.WriteLine("\t\tmaxSize = {0};", (int)v);
+                }
+                foreach (var item in m_ResourceList) {
+                    if (item.Selected && !string.IsNullOrEmpty(item.Path)) {
+                        sw.WriteLine("\t\tlist.Add(\"{0}\");", item.Path);
+                    }
+                }
+                sw.WriteLine("\t}");
+            } else {
+                sw.WriteLine("\tstatic partial void {0}(HashSet<string> list)", m_PostProcessMethod);
+                sw.WriteLine("\t{");
+                foreach (var item in m_ResourceList) {
+                    if (item.Selected && !string.IsNullOrEmpty(item.Path)) {
+                        sw.WriteLine("\t\tlist.Add(\"{0}\");", item.Path);
+                    }
+                }
+                sw.WriteLine("\t}");
+            }
+            sw.WriteLine("}");
+            sw.Close();
+        }
     }
 
     private void ListItem()
@@ -323,8 +386,8 @@ public sealed class ResourceEditWindow : EditorWindow
                         }
                     }
                     m_ResourceList.Add(new ItemInfo { Path = assetPath, Importer = importer, Object = obj, Info = info, Selected = false });
-                    EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
                 }
+                EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
             }
             string[] dirs = Directory.GetDirectories(dir);
             foreach (string subDir in dirs) {
@@ -385,8 +448,8 @@ public sealed class ResourceEditWindow : EditorWindow
                 }
             }
             m_ResourceList.Add(new ItemInfo { Path = path, Importer = importer, Object = obj, Info = info, Selected = false });
-            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
         }
+        EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
 
         var trans = obj.transform;
         int ct = trans.childCount;
@@ -455,6 +518,12 @@ public sealed class ResourceEditWindow : EditorWindow
         }
     }
 
+    private string AssetPathToPath(string assetPath)
+    {
+        string rootPath = Application.dataPath.Replace('\\', '/');
+        return Path.Combine(rootPath, assetPath.Substring("Assets/".Length));
+    }
+
     private static void SelectObject(string assetPath)
     {
         var objLoaded = AssetDatabase.LoadMainAssetAtPath(assetPath);
@@ -478,6 +547,8 @@ public sealed class ResourceEditWindow : EditorWindow
     }
 
     private bool m_IsSearchInScene = false;
+    private string m_PostProcessClass = string.Empty;
+    private string m_PostProcessMethod = string.Empty;
     private List<string> m_TypeOrExtList = new List<string>();
     private List<Type> m_TypeList = new List<Type>();
     private Dictionary<string, object> m_Params = new Dictionary<string, object>();
@@ -590,7 +661,13 @@ internal class SaveAndReimportExp : Expression.SimpleExpressionBase
         if (operands.Count >= 0) {
             var importer = Calculator.NamedVariables["importer"] as TextureImporter;
             if (null != importer) {
-                importer.SaveAndReimport();
+                //importer.SaveAndReimport();
+                try {
+                    AssetDatabase.StartAssetEditing();
+                    AssetDatabase.ImportAsset(importer.assetPath);
+                } finally {
+                    AssetDatabase.StopAssetEditing();
+                }
             }
         }
         return r;
