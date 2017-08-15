@@ -25,6 +25,12 @@ namespace GameFramework
             ab.Unload(false);
             return obj;
         }
+        public void LoadAsync(string res, ResourceSystem.ResourceLoadDelegation callback)
+        {
+            string name = GetAssetName(res);
+            string path = GetAssetBundleFile(res);
+            Utility.SendScriptMessage("LoadAssetAsync", new object[] { path, name, callback });
+        }
 
         private string GetAssetName(string res)
         {

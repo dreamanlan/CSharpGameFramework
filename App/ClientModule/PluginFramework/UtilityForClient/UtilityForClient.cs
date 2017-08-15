@@ -161,6 +161,11 @@ namespace GameFramework
             }
         }
 
+        public static void SendScriptMessage(string msg, object arg)
+        {
+            SendMessage("GameRoot", msg, arg, false);
+        }
+
         public static void SendMessage(string objname, string msg, object arg)
         {
             SendMessage(objname, msg, arg, false);
@@ -177,7 +182,47 @@ namespace GameFramework
         {
             SendMessageWithTagImpl(objtag, msg, arg, needReceiver);
         }
-        
+        public static string Format(string format, params object[] args)
+        {
+            for (int i = 0; i < args.Length; ++i) {
+                if (args[i] is double) {
+                    double v = (double)args[i];
+                    if (v - Math.Floor(v) < Geometry.c_DoublePrecision) {
+                        if (v > 0x7fffffffffffffff) {
+                            args[i] = (ulong)v;
+                        } else if (v > 0xffffffff || v < -0x80000000) {
+                            args[i] = (long)v;
+                        } else if (v > 0x7fffffff) {
+                            args[i] = (uint)v;
+                        } else {
+                            args[i] = (int)v;
+                        }
+                    }
+                }
+            }
+            return string.Format(format, args);
+        }
+        public static void AppendFormat(StringBuilder sb, string format, params object[] args)
+        {
+            for (int i = 0; i < args.Length; ++i) {
+                if (args[i] is double) {
+                    double v = (double)args[i];
+                    if (v - Math.Floor(v) < Geometry.c_DoublePrecision) {
+                        if (v > 0x7fffffffffffffff) {
+                            args[i] = (ulong)v;
+                        } else if (v > 0xffffffff || v < -0x80000000) {
+                            args[i] = (long)v;
+                        } else if (v > 0x7fffffff) {
+                            args[i] = (uint)v;
+                        } else {
+                            args[i] = (int)v;
+                        }
+                    }
+                }
+            }
+            sb.AppendFormat(format, args);
+        }
+
         private static void SendMessageImpl(string objname, string msg, object arg, bool needReceiver)
         {
             GameObject obj = GameObject.Find(objname);

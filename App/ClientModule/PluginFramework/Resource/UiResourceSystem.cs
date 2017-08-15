@@ -39,6 +39,7 @@ namespace GameFramework
         }
         public void CleanupAllUiResources()
         {
+            m_LoadedPrefabs.Clear();
             foreach (var pair in m_AssetBundles) {
                 AssetBundle ab = pair.Value;
                 ab.Unload(true);

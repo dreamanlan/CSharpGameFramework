@@ -237,6 +237,38 @@ public class Game : MonoBehaviour
     {
     }
 
+    private IEnumerator LoadAssetAsync(object[] args)
+    {
+        if (args.Length == 3) {
+            string path = args[0] as string;
+            string name = args[1] as string;
+            var callback = args[2] as ResourceSystem.ResourceLoadDelegation;
+
+            var req = AssetBundle.LoadFromFileAsync(path);
+            yield return req;
+            if (null != req.assetBundle) {
+                var req2 = req.assetBundle.LoadAssetAsync(name);
+                yield return req2;
+                if (null != callback) {
+                    callback(req2.asset);
+                }
+            }
+        }
+    }
+    private IEnumerator LoadResourceAsync(object[] args)
+    {
+        if (args.Length == 2) {
+            string path = args[0] as string;
+            var callback = args[1] as ResourceSystem.ResourceLoadDelegation;
+
+            var req = Resources.LoadAsync(path);
+            yield return req;
+            if (null != callback) {
+                callback(req.asset);
+            }
+        }
+    }
+	
     private void LoadUi(int levelId)
     {
         TableConfig.Level level = TableConfig.LevelProvider.Instance.GetLevel(levelId);

@@ -26,6 +26,22 @@ namespace GameFramework
     /// </summary>
     public class ResourceSystem
     {
+        public delegate void ResourceLoadDelegation(UnityEngine.Object obj);
+        public int MaxSameUnusedObjectNum
+        {
+            get { return m_MaxSameUnusedObjectNum; }
+            set { m_MaxSameUnusedObjectNum = value; }
+        }
+        public int MaxUnusedObjectNum
+        {
+            get { return m_MaxUnusedObjectNum; }
+            set { m_MaxUnusedObjectNum = value; }
+        }
+        public float MaxUnuseTimeForCleanup
+        {
+            get { return m_MaxUnuseTimeForCleanup; }
+            set { m_MaxUnuseTimeForCleanup = value; }
+        }
         public void InitGroup(int groupCount)
         {
             for (int i = m_GroupedResources.Count; i < groupCount; ++i) {
@@ -54,7 +70,10 @@ namespace GameFramework
         public void Init()
         {
             m_ResPoolRoot = new GameObject("ResPool");
-            GameObject.DontDestroyOnLoad(m_ResPoolRoot);
+            if (Application.isPlaying)
+            {
+                GameObject.DontDestroyOnLoad(m_ResPoolRoot);
+            }
             m_ResPoolRootTransform = m_ResPoolRoot.transform;
 
             for (int i = 0; i < (int)PredefinedResourceGroup.MaxCount; ++i) {
@@ -64,27 +83,33 @@ namespace GameFramework
         }
         public void PreloadObject(string res, int ct)
         {
-            for (int i = 0; i < ct; ++i) {
-                PreloadObject(res);
-            }
+            PreloadSharedResource(res, false, (UnityEngine.Object prefab) => {
+                for (int i = 0; i < ct; ++i) {
+                    int resId = prefab.GetInstanceID();
+                    UnityEngine.Object obj = GameObject.Instantiate(prefab);
+                    if (null != obj) {
+                        AddToLayerDict(obj);
+                        FinalizeObject(obj);
+                        AddToUnusedResources(resId, obj);
+                    }
+                }
+            });
         }
         public void PreloadObject(string res)
         {
-            UnityEngine.Object obj = null;
-            UnityEngine.Object prefab = GetSharedResource(res);
-            if (null != prefab) {
+            PreloadSharedResource(res, false, (UnityEngine.Object prefab) => {
                 int resId = prefab.GetInstanceID();
-                obj = GameObject.Instantiate(prefab);
+                UnityEngine.Object obj = GameObject.Instantiate(prefab);
                 if (null != obj) {
                     AddToLayerDict(obj);
                     FinalizeObject(obj);
                     AddToUnusedResources(resId, obj);
                 }
-            }
+            });
         }
         public void PreloadSharedResource(string res)
         {
-            GetSharedResource(res);
+            PreloadSharedResource(res, false, null);
         }
         public bool CanNewObject(int group)
         {
@@ -184,6 +209,39 @@ namespace GameFramework
                     node = node.Next;
                 }
             }
+            if (m_LastUnusedCheckTime + c_UnusedCheckInterval < curTime) {
+                m_LastUnusedCheckTime = c_UnusedCheckInterval;
+
+                bool fullCheck = m_ResPoolRootTransform.childCount >= m_MaxUnusedObjectNum;
+                int ct = 0;
+                foreach (var pair in m_UnusedResources) {
+                    var heap = pair.Value;
+                    if (heap.Count >= m_MaxSameUnusedObjectNum || fullCheck) {
+                        try {
+                            var tree = heap.LockData();
+                            for (int i = tree.Count - 1; i >= 0; --i) {
+                                var info = tree[i];
+                                if (info.UnuseTime + m_MaxUnuseTimeForCleanup <= curTime) {
+                                    ++ct;
+                                    heap.SetDataDirty();
+                                    tree.RemoveAt(i);
+                                    GameObject go = info.Obj as GameObject;
+                                    if (null != go) {
+                                        go.transform.SetParent(null);
+                                    }
+                                    GameObject.Destroy(info.Obj);
+                                    info.Recycle();
+                                }
+                            }
+                        } finally {
+                            heap.UnlockData();
+                        }
+                    }
+                    if (ct > 10) {
+                        break;
+                    }
+                }
+            }
         }
         public UnityEngine.Object GetSharedResource(string res)
         {
@@ -207,15 +265,15 @@ namespace GameFramework
                 m_GroupedResources[i].Resources.Clear();
             }
 
-            foreach (KeyValuePair<int, Queue<UnityEngine.Object>> pair in m_UnusedResources) {
+            foreach (var pair in m_UnusedResources) {
                 int key = pair.Key;
-                Queue<UnityEngine.Object> queue = pair.Value;
-                queue.Clear();
+                var heap = pair.Value;
+                heap.Clear();
             }
 
-            foreach (KeyValuePair<string, OjbectEx> pair in m_LoadedPrefabs) {
+            foreach (KeyValuePair<string, ObjectEx> pair in m_LoadedPrefabs) {
                 string key = pair.Key;
-                if (pair.Value != null && pair.Value.notdestroyed)
+                if (pair.Value != null && pair.Value.DontDestroyed)
                     continue;
                 m_WaitDeleteLoadedPrefabEntrys.Add(key);
             }
@@ -227,14 +285,14 @@ namespace GameFramework
             Resources.UnloadUnusedAssets();
         }
 
-        private UnityEngine.Object GetSharedResource(string res, bool notdestoryed)
+        private UnityEngine.Object GetSharedResource(string res, bool notdestroyed)
         {
             UnityEngine.Object obj = null;
             if (string.IsNullOrEmpty(res)) {
                 return obj;
             }
-            OjbectEx objEx = null;
-            if (!m_LoadedPrefabs.TryGetValue(res, out objEx)) {
+            ObjectEx objEx = null;
+            if (!m_LoadedPrefabs.TryGetValue(res, out objEx) || null == objEx || null == objEx.Obj) {
                 if (AssetBundleManager.Instance.Contains(res)) {
                     obj = AssetBundleManager.Instance.Load(res);
                 }
@@ -242,39 +300,81 @@ namespace GameFramework
                     obj = Resources.Load(res);
                 }
                 if (obj != null) {
-                    objEx = new OjbectEx();
-                    objEx.obj = obj;
-                    objEx.notdestroyed = notdestoryed;
-                    m_LoadedPrefabs.Add(res, objEx);
+                    objEx = new ObjectEx();
+                    objEx.Obj = obj;
+                    objEx.DontDestroyed = notdestroyed;
+                    m_LoadedPrefabs[res] = objEx;
                 } else {
                     UnityEngine.Debug.Log("LoadAsset failed:" + res);
-                    m_LoadedPrefabs.Add(res, null);
                 }
             } else if(objEx != null){
-                obj = objEx.obj;
+                obj = objEx.Obj;
             }
             return obj;
+        }
+        private void PreloadSharedResource(string res, bool notdestroyed, ResourceLoadDelegation callback)
+        {
+            if (string.IsNullOrEmpty(res)) {
+                return;
+            }
+            if (!m_LoadedPrefabs.ContainsKey(res)) {
+                m_LoadedPrefabs.Add(res, null);
+                if (AssetBundleManager.Instance.Contains(res)) {
+                    AssetBundleManager.Instance.LoadAsync(res, (UnityEngine.Object obj)=>{
+                        PreloadFinishCallback(res, notdestroyed, obj);
+                        if (null != callback) {
+                            callback(obj);
+                        }
+                    });
+                } else {
+                    ResourceLoadDelegation callback0 = (UnityEngine.Object obj) => {
+                        PreloadFinishCallback(res, notdestroyed, obj);
+                        if (null != callback) {
+                            callback(obj);
+                        }
+                    };
+                    Utility.SendScriptMessage("LoadResourceAsync", new object[] { res, callback0 });
+                }
+            }
+        }
+        private void PreloadFinishCallback(string res, bool notdestroyed, UnityEngine.Object obj)
+        {
+            ObjectEx objEx;
+            if (!m_LoadedPrefabs.TryGetValue(res, out objEx) || null == objEx || null == objEx.Obj) {
+                if (obj != null) {
+                    objEx = new ObjectEx();
+                    objEx.Obj = obj;
+                    objEx.DontDestroyed = notdestroyed;
+                    m_LoadedPrefabs[res] = objEx;
+                } else {
+                    UnityEngine.Debug.Log("LoadAsset failed:" + res);
+                }
+            }
         }
         private UnityEngine.Object NewFromUnusedResources(int res)
         {
             UnityEngine.Object obj = null;
-            Queue<UnityEngine.Object> queue;
-            if (m_UnusedResources.TryGetValue(res, out queue)) {
-                if (queue.Count > 0)
-                    obj = queue.Dequeue();
+            Heap<UnusedObjectInfo> heap;
+            if (m_UnusedResources.TryGetValue(res, out heap)) {
+                if (heap.Count > 0) {
+                    var info = heap.Pop();
+                    obj = info.Obj;
+                    info.Recycle();
+                }
             }
             return obj;
         }
         private void AddToUnusedResources(int res, UnityEngine.Object obj)
         {
-            Queue<UnityEngine.Object> queue;
-            if (m_UnusedResources.TryGetValue(res, out queue)) {
-                queue.Enqueue(obj);
-            } else {
-                queue = new Queue<UnityEngine.Object>();
-                queue.Enqueue(obj);
-                m_UnusedResources.Add(res, queue);
+            Heap<UnusedObjectInfo> heap;
+            if (!m_UnusedResources.TryGetValue(res, out heap)) {
+                heap = new Heap<UnusedObjectInfo>(m_UnusedObjectInfoComparer);
+                m_UnusedResources.Add(res, heap);
             }
+            var info = m_UnusedObjectInfoPool.Alloc();
+            info.Obj = obj;
+            info.UnuseTime = Time.time;
+            heap.Push(info);
         }
         private void AddToUsedResources(UnityEngine.Object obj, int resId, float recycleTime, int group)
         {
@@ -328,7 +428,7 @@ namespace GameFramework
         {
             GameObject gameObj = obj as GameObject;
             if (null != gameObj) {
-                gameObj.transform.SetParent(m_ResPoolRootTransform);
+                gameObj.transform.SetParent(m_ResPoolRootTransform, false);
                 OnActiveChanged(gameObj, false);
                 gameObj.SetActive(false);
             }
@@ -418,6 +518,7 @@ namespace GameFramework
         private ResourceSystem()
         {
             m_UsedResourceInfoPool.Init(256);
+            m_UnusedObjectInfoPool.Init(256);
         }
 
         private class UsedResourceInfo : IPoolAllocatedObject<UsedResourceInfo>
@@ -446,10 +547,10 @@ namespace GameFramework
 
         private ObjectPool<UsedResourceInfo> m_UsedResourceInfoPool = new ObjectPool<UsedResourceInfo>();
 
-        public class OjbectEx
+        private class ObjectEx
         {
-            public UnityEngine.Object obj;
-            public bool notdestroyed = false;
+            internal UnityEngine.Object Obj;
+            internal bool DontDestroyed = false;
         }
         private class ResourceGroup
         {
@@ -458,14 +559,58 @@ namespace GameFramework
         }
         private List<ResourceGroup> m_GroupedResources = new List<ResourceGroup>();
 
-        private MyDictionary<string, OjbectEx> m_LoadedPrefabs = new MyDictionary<string, OjbectEx>();
+        private MyDictionary<string, ObjectEx> m_LoadedPrefabs = new MyDictionary<string, ObjectEx>();
         private List<string> m_WaitDeleteLoadedPrefabEntrys = new List<string>();
 
         private LinkedListDictionary<int, UsedResourceInfo> m_UsedResources = new LinkedListDictionary<int, UsedResourceInfo>();
-        private MyDictionary<int, Queue<UnityEngine.Object>> m_UnusedResources = new MyDictionary<int, Queue<UnityEngine.Object>>();
+        private class UnusedObjectInfo : IPoolAllocatedObject<UnusedObjectInfo>
+        {
+            internal UnityEngine.Object Obj;
+            internal float UnuseTime;
+            internal void Recycle()
+            {
+                Obj = null;
+                m_Pool.Recycle(this);
+            }
+            public void InitPool(ObjectPool<UnusedObjectInfo> pool)
+            {
+                m_Pool = pool;
+            }
+            public UnusedObjectInfo Downcast()
+            {
+                return this;
+            }
+            private ObjectPool<UnusedObjectInfo> m_Pool = null;
+        }
+        private class Comparer : IComparer<UnusedObjectInfo>
+        {
+            public int Compare(UnusedObjectInfo x, UnusedObjectInfo y)
+            {
+                if (x == null) {
+                    return (y != null) ? -1 : 0;
+                }
+                if (y == null) {
+                    return 1;
+                }
+                if (x.UnuseTime < y.UnuseTime)
+                    return -1;
+                else if (Geometry.IsSameFloat(x.UnuseTime, y.UnuseTime))
+                    return 0;
+                else
+                    return 1;
+            }
+        }
+
+        private int m_MaxSameUnusedObjectNum = 10;
+        private float m_MaxUnuseTimeForCleanup = 5.0f;
+        private int m_MaxUnusedObjectNum = 150;
+        private ObjectPool<UnusedObjectInfo> m_UnusedObjectInfoPool = new ObjectPool<UnusedObjectInfo>();
+        private Comparer m_UnusedObjectInfoComparer = new Comparer();
+        private MyDictionary<int, Heap<UnusedObjectInfo>> m_UnusedResources = new MyDictionary<int, Heap<UnusedObjectInfo>>();
+        private float m_LastUnusedCheckTime = 0;
+        private const float c_UnusedCheckInterval = 10.0f;
 
         private MyDictionary<int, int> m_LayerDict = new MyDictionary<int, int>();
-        //private float m_LastTickTime = 0;
         private int m_DeactiveLayer = LayerMask.NameToLayer("DeActive");
 
         private GameObject m_ResPoolRoot = null;
