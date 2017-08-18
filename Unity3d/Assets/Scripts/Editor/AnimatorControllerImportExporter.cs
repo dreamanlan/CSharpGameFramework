@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Linq;
 
 [CustomEditor(typeof(AnimatorController))]
 public class AnimatorControllerImportExporter : Editor
@@ -183,7 +184,9 @@ public sealed class AnimatorControllerEditWindow : EditorWindow
 
     private void SearchFileRecursively(string dir)
     {
-        string[] files = Directory.GetFiles(dir, "*.controller");
+        string[] files = Directory.GetFiles(dir).Where((string file) => {
+            return Path.GetExtension(file).ToLower() == ".controller";
+        }).ToArray();
         foreach (string file in files) {
             m_Controllers.Add(new ItemInfo { Path = PathToAssetPath(file), Selected = false });
             ++m_CurSearchCount;
@@ -197,7 +200,9 @@ public sealed class AnimatorControllerEditWindow : EditorWindow
 
     private void CountFileRecursively(string dir)
     {
-        string[] files = Directory.GetFiles(dir, "*.controller");
+        string[] files = Directory.GetFiles(dir).Where((string file) => {
+            return Path.GetExtension(file).ToLower() == ".controller";
+        }).ToArray();
         m_TotalSearchCount += files.Length;
 
         string[] dirs = Directory.GetDirectories(dir);

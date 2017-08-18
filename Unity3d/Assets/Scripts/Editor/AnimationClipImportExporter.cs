@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.Linq;
 
 public sealed class AnimationClipEditWindow : EditorWindow
 {
@@ -183,7 +184,9 @@ public sealed class AnimationClipEditWindow : EditorWindow
 
     private void SearchFileRecursively(string dir)
     {
-        string[] files = Directory.GetFiles(dir, "*.fbx");
+        string[] files = Directory.GetFiles(dir).Where((string file) => {
+            return Path.GetExtension(file).ToLower() == ".fbx";
+        }).ToArray();
         foreach (string file in files) {
             m_FbxList.Add(new ItemInfo { Path = PathToAssetPath(file), Selected = false });
             ++m_CurSearchCount;
@@ -197,7 +200,9 @@ public sealed class AnimationClipEditWindow : EditorWindow
 
     private void CountFileRecursively(string dir)
     {
-        string[] files = Directory.GetFiles(dir, "*.fbx");
+        string[] files = Directory.GetFiles(dir).Where((string file) => {
+            return Path.GetExtension(file).ToLower() == ".fbx";
+        }).ToArray();
         m_TotalSearchCount += files.Length;
 
         string[] dirs = Directory.GetDirectories(dir);

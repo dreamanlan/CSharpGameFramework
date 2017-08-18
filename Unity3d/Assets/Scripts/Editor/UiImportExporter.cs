@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using GameFramework;
+using System.Linq;
 
 public sealed class UiEditWindow : EditorWindow
 {
@@ -202,7 +202,9 @@ public sealed class UiEditWindow : EditorWindow
 
     private void SearchFileRecursively(string dir)
     {
-        string[] files = Directory.GetFiles(dir, "*.prefab");
+        string[] files = Directory.GetFiles(dir).Where((string file) => {
+            return Path.GetExtension(file).ToLower() == ".prefab";
+        }).ToArray();
         foreach (string file in files) {
             var path = PathToAssetPath(file);
             var obj = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -221,7 +223,9 @@ public sealed class UiEditWindow : EditorWindow
 
     private void CountFileRecursively(string dir)
     {
-        string[] files = Directory.GetFiles(dir, "*.prefab");
+        string[] files = Directory.GetFiles(dir).Where((string file) => {
+            return Path.GetExtension(file).ToLower() == ".prefab";
+        }).ToArray();
         m_TotalSearchCount += files.Length;
 
         string[] dirs = Directory.GetDirectories(dir);
@@ -746,7 +750,7 @@ internal static class UiEditUtility
                             if (null != call) {
                                 string rootBone = call.GetParamId(0);
                                 var root = FindRoot(obj);
-                                var boneObj = Utility.FindChildObject(root, rootBone);
+                                var boneObj = GameFramework.Utility.FindChildObject(root, rootBone);
                                 if (null != boneObj) {
                                     skinnedMeshRenderer.rootBone = boneObj.transform;
                                 }

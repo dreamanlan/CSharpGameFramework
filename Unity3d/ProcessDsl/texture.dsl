@@ -1,8 +1,11 @@
 input("*.tga","*.png","*.jpg")
 {
 	int("maxSize",256);
-	option("postprocessclass","PostProcessDataOfIos");
-	option("postprocessmethod","GetTextureSet1");
+	int("postprocessindex", 1){
+	  option(1..16);
+	};	
+	feature("postprocessclass","PostProcessDataOfIos");
+	feature("postprocessmethod","GetTextureSet");	
 }
 filter
 {

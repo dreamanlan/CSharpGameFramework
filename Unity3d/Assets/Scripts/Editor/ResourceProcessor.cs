@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.IO;
+using System.Linq;
 using GameFramework;
 
 public sealed class ResourceEditWindow : EditorWindow
@@ -45,10 +46,30 @@ public sealed class ResourceEditWindow : EditorWindow
 
         if (m_Params.Count > 0) {
             foreach (var pair in m_Params) {
+                var info = pair.Value;
                 EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(pair.Key, GUILayout.Width(60));
-                string oldVal = pair.Value.ToString();
-                string newVal = GUILayout.TextField(oldVal, 1024);
+                GUILayout.Label(info.Name, GUILayout.Width(160));
+                string oldVal = info.Value.ToString();
+                string newVal = oldVal;
+                if (info.Options.Count > 0) {
+                    int ix = 0;
+                    string[] keys = new string[info.Options.Count];
+                    info.Options.Keys.CopyTo(keys, 0);
+                    foreach (var option in info.Options) {
+                        if (option.Value.ToString() == oldVal) {
+                            break;
+                        }
+                        ++ix;
+                    }
+                    if (ix >= info.Options.Count)
+                        ix = 0;
+                    int newIx = EditorGUILayout.Popup(ix, keys);
+                    if (newIx != ix) {
+                        newVal = info.Options[keys[newIx]];
+                    }
+                } else {
+                    newVal = GUILayout.TextField(oldVal, 1024);
+                }
                 EditorGUILayout.EndHorizontal();
                 if (newVal != oldVal) {
                     m_EditedParams.Add(pair.Key, newVal);
@@ -56,14 +77,14 @@ public sealed class ResourceEditWindow : EditorWindow
             }
             if (m_EditedParams.Count > 0) {
                 foreach (var pair in m_EditedParams) {
-                    object val;
+                    ResourceEditUtility.ParamInfo val;
                     if (m_Params.TryGetValue(pair.Key, out val)) {
-                        if (val is int) {
-                            m_Params[pair.Key] = int.Parse(pair.Value);
-                        } else if (val is float) {
-                            m_Params[pair.Key] = float.Parse(pair.Value);
-                        } else if (val is string) {
-                            m_Params[pair.Key] = pair.Value;
+                        if (val.Type == typeof(int)) {
+                            val.Value = int.Parse(pair.Value);
+                        } else if (val.Type == typeof(float)) {
+                            val.Value = float.Parse(pair.Value);
+                        } else if (val.Type == typeof(string)) {
+                            val.Value = pair.Value;
                         }
                     }
                 }
@@ -78,7 +99,7 @@ public sealed class ResourceEditWindow : EditorWindow
             }
         } else {
             if (!string.IsNullOrEmpty(m_Text)) {
-                EditorGUILayout.TextArea(m_Text, GUILayout.MaxHeight(128));
+                EditorGUILayout.TextArea(m_Text, GUILayout.MaxHeight(70));
             }
             m_PanelPos = EditorGUILayout.BeginScrollView(m_PanelPos, true, true);
             ListItem();
@@ -148,27 +169,19 @@ public sealed class ResourceEditWindow : EditorWindow
                         var first = info.First;
                         var input = first.Call;
                         foreach (var param in input.Params) {
-                            m_TypeOrExtList.Add(param.GetId());
+                            string ext = param.GetId();
+                            if (ext.Length > 0 && ext[0] == '*') {
+                                ext = ext.Substring(1);
+                            }
+                            m_TypeOrExtList.Add(ext.ToLower());
                         }
                         foreach (var comp in first.Statements) {
                             var callData = comp as Dsl.CallData;
-                            string id = callData.GetId();
-                            string key = callData.GetParamId(0);
-                            string val = callData.GetParamId(1);
-                            if (id == "int") {
-                                m_Params[key] = int.Parse(val);
-                            } else if (id == "float") {
-                                m_Params[key] = float.Parse(val);
-                            } else if (id == "string") {
-                                m_Params[key] = val;
-                            } else if (id == "option") {
-                                if(key=="source"){
-                                    m_IsSearchInScene = val == "scene";
-                                } else if (key == "postprocessclass") {
-                                    m_PostProcessClass = val;
-                                } else if (key == "postprocessmethod") {
-                                    m_PostProcessMethod = val;
-                                }
+                            if (null != callData) {
+                                ParseCallData(callData);
+                            } else {
+                                var funcData = comp as Dsl.FunctionData;
+                                ParseFunctionData(funcData);
                             }
                         }
                     }
@@ -204,8 +217,112 @@ public sealed class ResourceEditWindow : EditorWindow
             m_ResourceList.Clear();
         }
     }
+    private string ParseCallData(Dsl.CallData callData)
+    {
+        string id = callData.GetId();
+        string key = callData.GetParamId(0);
+        string val = callData.GetParamId(1);
+        if (id == "int") {
+            //int(val);
+            int v = int.Parse(val);
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(int), Value = v };
+        } else if (id == "float") {
+            //float(val);
+            float v = float.Parse(val);
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(float), Value = v };
+        } else if (id == "string") {
+            //string(val);
+            string v = val;
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(string), Value = v };
+        } else if (id == "feature") {
+            if (key == "source") {
+                //feature("source", "scene");
+                m_IsSearchInScene = val == "scene";
+            } else if (key == "postprocessclass") {
+                //feature("postprocessclass", "PostProcessDataOfIos|PostProcessDataOfAndroid");
+                m_PostProcessClass = val;
+            } else if (key == "postprocessmethod") {
+                //feature("postprocessmethod", "GetAnimaticFbxSet|GetUnanimaticFbxSet|GetTextureSet");
+                m_PostProcessMethod = val;
+            }
+        }
+        return key;
+    }
+    private void ParseFunctionData(Dsl.FunctionData funcData)
+    {
+        var callData = funcData.Call;
+        string name = ParseCallData(callData);
+        ResourceEditUtility.ParamInfo info;
+        if (m_Params.TryGetValue(name, out info)) {
+            foreach (var comp in funcData.Statements) {
+                var id = comp.GetId();
+                var cd = comp as Dsl.CallData;
+                if (null != cd) {
+                    if (id == "option") {
+                        int num = cd.GetParamNum();
+                        var p1 = cd.GetParam(0);
+                        var p2 = cd.GetParam(1);
+                        var pvd1 = p1 as Dsl.ValueData;
+                        var pvd2 = p2 as Dsl.ValueData;
+                        if (null != pvd1 && null != pvd2) {
+                            //option(key,val);
+                            string key = cd.GetParamId(0);
+                            string val = cd.GetParamId(1);
+                            info.Options[key] = val;
+                        } else {
+                            var pcd1 = p1 as Dsl.CallData;
+                            var pcd2 = p2 as Dsl.CallData;
+                            if (1 == num && null != pcd1) {
+                                if (pcd1.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_OPERATOR && pcd1.GetId() == "..") {
+                                    //option(min..max);
+                                    int min = int.Parse(pcd1.GetParamId(0));
+                                    int max = int.Parse(pcd1.GetParamId(1));
+                                    for (int v = min; v <= max; ++v) {
+                                        string kStr = v.ToString("D3");
+                                        string vStr = v.ToString();
+                                        info.Options[kStr] = vStr;
+                                    }
+                                } else if (pcd1.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd1.HaveId()) {
+                                    //option([v1,v2,v3,v4,v5]);
+                                    for (int i = 0; i < pcd1.GetParamNum(); ++i) {
+                                        var vStr = pcd1.GetParamId(i);
+                                        info.Options[vStr] = vStr;
+                                    }
+                                }
+                            } else if (2 == num) {
+                                if (null != pcd1 && null != pcd2) {
+                                    if (pcd1.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd1.HaveId() && pcd2.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd2.HaveId()) {
+                                        //option([k1,k2,k3,k4,k5],[v1,v2,v3,v4,v5]);
+                                        int num1 = pcd1.GetParamNum();
+                                        int num2 = pcd2.GetParamNum();
+                                        int n = num1 <= num2 ? num1 : num2;
+                                        for (int i = 0; i < n; ++i) {
+                                            var vStr1 = pcd1.GetParamId(i);
+                                            var vStr2 = pcd2.GetParamId(i);
+                                            info.Options[vStr1] = vStr2;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    var vd = comp as Dsl.ValueData;
+                    if (null != vd) {
+                        //用于支持标签属性
+                    }
+                }
+            }
+        }
+    }
 
     private void Collect()
+    {
+        m_CollectPath = string.Empty;
+        Refresh();
+    }
+
+    private void Refresh()
     {
         if (m_IsSearchInScene) {
             m_ResourceList.Clear();
@@ -217,14 +334,19 @@ public sealed class ResourceEditWindow : EditorWindow
                 EditorUtility.ClearProgressBar();
             }
         } else {
-            string path = EditorUtility.OpenFolderPanel("请选择要收集资源的根目录", Application.dataPath, string.Empty);
-            if (!string.IsNullOrEmpty(path) && Directory.Exists(path)) {
+            if (string.IsNullOrEmpty(m_CollectPath)) {
+                string path = EditorUtility.OpenFolderPanel("请选择要收集资源的根目录", Application.dataPath, string.Empty);
+                if (!string.IsNullOrEmpty(path) && Directory.Exists(path)) {
+                    m_CollectPath = path;
+                }
+            }
+            if (!string.IsNullOrEmpty(m_CollectPath)) {
                 m_ResourceList.Clear();
                 m_CurSearchCount = 0;
                 m_TotalSearchCount = 0;
-                CountFileRecursively(path);
+                CountFileRecursively(m_CollectPath);
                 if (m_TotalSearchCount > 0) {
-                    SearchFileRecursively(path);
+                    SearchFileRecursively(m_CollectPath);
                     EditorUtility.ClearProgressBar();
                 }
             }
@@ -235,6 +357,10 @@ public sealed class ResourceEditWindow : EditorWindow
     {
         if (null == m_DslFile) {
             EditorUtility.DisplayDialog("错误", "请先选择dsl !", "ok");
+            return;
+        }
+        if (null == m_ProcessCalculator || m_NextProcessIndex <= 0) {
+            EditorUtility.DisplayDialog("错误", "当前dsl没有配置process !\n【input(exts){...}filter{...}process{...};】", "ok");
             return;
         }
         int totalSelectedCount = 0;
@@ -257,11 +383,12 @@ public sealed class ResourceEditWindow : EditorWindow
     
     private void Generate()
     {
-        if (string.IsNullOrEmpty(m_PostProcessClass) || string.IsNullOrEmpty(m_PostProcessMethod)) {
-            EditorUtility.DisplayDialog("错误", "当前dsl没有配置后处理类与方法名 !", "ok");
+        ResourceEditUtility.ParamInfo paramInfo;
+        if (string.IsNullOrEmpty(m_PostProcessClass) || string.IsNullOrEmpty(m_PostProcessMethod) || !m_Params.TryGetValue("postprocessindex", out paramInfo)) {
+            EditorUtility.DisplayDialog("错误", "当前dsl没有配置后处理类、方法名或索引！\n【feature(\"postprocessclass\",\"PostProcessDataOfIos|PostProcessDataOfAndroid\"); feature(\"postprocessmethod\",\"GetAnimaticFbxSet|GetUnanimaticFbxSet|GetTextureSet\"); and int(\"postprocessindex\", 1..16);】", "ok");
             return;
         }
-        string path = AssetPathToPath("Assets/Scripts/Editor/PostProcess/");
+        string path = AssetPathToPath("Assets/Editor/PostProcess/");
         string file = Path.Combine(path, string.Format("{0}_{1}.cs", m_PostProcessClass, m_PostProcessMethod));
         using (StreamWriter sw = new StreamWriter(file)) {
             sw.WriteLine("using UnityEngine;");
@@ -274,9 +401,9 @@ public sealed class ResourceEditWindow : EditorWindow
             if (m_PostProcessMethod.Contains("Texture")) {
                 sw.WriteLine("\tstatic partial void {0}(HashSet<string> list, ref int maxSize)", m_PostProcessMethod);
                 sw.WriteLine("\t{");
-                object v;
-                if (m_Params.TryGetValue("maxSize", out v) && v is int) {
-                    sw.WriteLine("\t\tmaxSize = {0};", (int)v);
+                ResourceEditUtility.ParamInfo v;
+                if (m_Params.TryGetValue("maxSize", out v) && v.Type == typeof(int)) {
+                    sw.WriteLine("\t\tmaxSize = {0};", (int)v.Value);
                 }
                 foreach (var item in m_ResourceList) {
                     if (item.Selected && !string.IsNullOrEmpty(item.Path)) {
@@ -299,6 +426,22 @@ public sealed class ResourceEditWindow : EditorWindow
         }
     }
 
+    private void Sort(bool asc)
+    {
+        m_ResourceList.Sort((a, b) => {
+            int v;
+            if (a.Order < b.Order)
+                v = -1;
+            else if (a.Order > b.Order)
+                v = 1;
+            else
+                v = 0;
+            if (!asc)
+                v = - v;
+            return v;
+        });
+    }
+
     private void ListItem()
     {
         GUILayout.BeginVertical();
@@ -313,7 +456,8 @@ public sealed class ResourceEditWindow : EditorWindow
                 item.Selected = false;
             }
         }
-        GUILayout.Label(string.Format("Go to page ({0}) : ", m_ResourceList.Count / c_ItemsPerPage + 1), GUILayout.Width(100));
+        GUILayout.Label(string.Format("Total count ({0})", m_ResourceList.Count), GUILayout.Width(120));
+        GUILayout.Label(string.Format("Go to page ({0})", m_ResourceList.Count / c_ItemsPerPage + 1), GUILayout.Width(100));
         string strPage = GUILayout.TextField(m_Page.ToString(), GUILayout.Width(40));
         int.TryParse(strPage, out m_Page);
         if (GUILayout.Button("Prev", GUILayout.Width(80))) {
@@ -321,6 +465,15 @@ public sealed class ResourceEditWindow : EditorWindow
         }
         if (GUILayout.Button("Next", GUILayout.Width(80))) {
             m_Page++;
+        }
+        if (GUILayout.Button("Refresh", GUILayout.Width(60))) {
+            Refresh();
+        }
+        if (GUILayout.Button("升序", GUILayout.Width(60))) {
+            Sort(true);
+        }
+        if (GUILayout.Button("降序", GUILayout.Width(60))) {
+            Sort(false);
         }
         GUILayout.EndHorizontal();
         m_Page = Mathf.Max(1, Mathf.Min(m_ResourceList.Count / c_ItemsPerPage + 1, m_Page));
@@ -335,7 +488,7 @@ public sealed class ResourceEditWindow : EditorWindow
             if (totalShown > c_ItemsPerPage)
                 break;
             EditorGUILayout.BeginHorizontal();
-            item.Selected = GUILayout.Toggle(item.Selected, index + ".", GUILayout.Width(40));
+            item.Selected = GUILayout.Toggle(item.Selected, index + ".", GUILayout.Width(60));
             if (m_IsSearchInScene) {
                 var oldAlignment = GUI.skin.button.alignment;
                 GUI.skin.button.alignment = TextAnchor.MiddleLeft;
@@ -363,7 +516,10 @@ public sealed class ResourceEditWindow : EditorWindow
     private void SearchFileRecursively(string dir)
     {
         foreach (string ext in m_TypeOrExtList) {
-            string[] files = Directory.GetFiles(dir, ext);
+            string[] files = Directory.GetFiles(dir).Where((string file) => {
+                string ext0 = Path.GetExtension(file).ToLower();
+                return ext0 == ext;
+            }).ToArray();
             foreach (string file in files) {
                 ++m_CurSearchCount;
                 string assetPath = PathToAssetPath(file);
@@ -372,6 +528,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 var ret = ResourceEditUtility.Process(assetPath, importer, obj, m_FilterCalculator, m_NextFilterIndex, m_Params);
                 if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
                     string info = string.Empty;
+                    int order = m_ResourceList.Count;
                     if (null != m_FilterCalculator) {
                         object v;
                         if (m_FilterCalculator.NamedVariables.TryGetValue("object", out v)) {
@@ -384,8 +541,13 @@ public sealed class ResourceEditWindow : EditorWindow
                             if (null == info)
                                 info = string.Empty;
                         }
+                        if (m_FilterCalculator.NamedVariables.TryGetValue("order", out v)) {
+                            if (null != v) {
+                                order = (int)Convert.ChangeType(v, typeof(int));
+                            }
+                        }
                     }
-                    m_ResourceList.Add(new ItemInfo { Path = assetPath, Importer = importer, Object = obj, Info = info, Selected = false });
+                    m_ResourceList.Add(new ItemInfo { Path = assetPath, Importer = importer, Object = obj, Info = info, Order = order, Selected = false });
                 }
                 EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
             }
@@ -399,7 +561,10 @@ public sealed class ResourceEditWindow : EditorWindow
     private void CountFileRecursively(string dir)
     {
         foreach (string ext in m_TypeOrExtList) {
-            string[] files = Directory.GetFiles(dir, ext);
+            string[] files = Directory.GetFiles(dir).Where((string file) => {
+                string ext0 = Path.GetExtension(file).ToLower();
+                return ext0 == ext;
+            }).ToArray();
             m_TotalSearchCount += files.Length;
 
             string[] dirs = Directory.GetDirectories(dir);
@@ -434,6 +599,7 @@ public sealed class ResourceEditWindow : EditorWindow
         var ret = ResourceEditUtility.Process(path, importer, obj, m_FilterCalculator, m_NextFilterIndex, m_Params);
         if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
             string info = string.Empty;
+            int order = m_ResourceList.Count;
             if (null != m_FilterCalculator) {
                 object v;
                 if (m_FilterCalculator.NamedVariables.TryGetValue("importer", out v)) {
@@ -446,8 +612,13 @@ public sealed class ResourceEditWindow : EditorWindow
                     if (null == info)
                         info = string.Empty;
                 }
+                if (m_FilterCalculator.NamedVariables.TryGetValue("order", out v)) {
+                    if (null != v) {
+                        order = (int)Convert.ChangeType(v, typeof(int));
+                    }
+                }
             }
-            m_ResourceList.Add(new ItemInfo { Path = path, Importer = importer, Object = obj, Info = info, Selected = false });
+            m_ResourceList.Add(new ItemInfo { Path = path, Importer = importer, Object = obj, Info = info, Order = order, Selected = false });
         }
         EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
 
@@ -543,6 +714,7 @@ public sealed class ResourceEditWindow : EditorWindow
         internal AssetImporter Importer;
         internal UnityEngine.Object Object;
         internal string Info;
+        internal int Order;
         internal bool Selected;
     }
 
@@ -551,9 +723,10 @@ public sealed class ResourceEditWindow : EditorWindow
     private string m_PostProcessMethod = string.Empty;
     private List<string> m_TypeOrExtList = new List<string>();
     private List<Type> m_TypeList = new List<Type>();
-    private Dictionary<string, object> m_Params = new Dictionary<string, object>();
+    private SortedDictionary<string, ResourceEditUtility.ParamInfo> m_Params = new SortedDictionary<string, ResourceEditUtility.ParamInfo>();
     private List<ItemInfo> m_ResourceList = new List<ItemInfo>();
     private Dsl.DslFile m_DslFile = null;
+    private string m_CollectPath = string.Empty;
 
     private Expression.DslCalculator m_FilterCalculator = null;
     private Expression.DslCalculator m_ProcessCalculator = null;
@@ -572,27 +745,35 @@ public sealed class ResourceEditWindow : EditorWindow
 
 internal static class ResourceEditUtility
 {
+    internal class ParamInfo
+    {
+        internal string Name;
+        internal Type Type;
+        internal object Value;
+        internal SortedList<string, string> Options = new SortedList<string, string>();
+    }
     internal static void InitCalculator(Expression.DslCalculator calc)
     {
         calc.Init();
-        calc.Register("saveandreimport", new Expression.ExpressionFactoryHelper<SaveAndReimportExp>());
-        calc.Register("getdefaulttexturesetting", new Expression.ExpressionFactoryHelper<GetDefaultTextureSettingExp>());
-        calc.Register("gettexturesetting", new Expression.ExpressionFactoryHelper<GetTextureSettingExp>());
-        calc.Register("settexturesetting", new Expression.ExpressionFactoryHelper<SetTextureSettingExp>());
-        calc.Register("gettexturecompression", new Expression.ExpressionFactoryHelper<GetTextureCompressionExp>());
-        calc.Register("settexturecompression", new Expression.ExpressionFactoryHelper<SetTextureCompressionExp>());
-        calc.Register("getmeshcompression", new Expression.ExpressionFactoryHelper<GetMeshCompressionExp>());
-        calc.Register("setmeshcompression", new Expression.ExpressionFactoryHelper<SetMeshCompressionExp>());
-        calc.Register("closemeshanimationifnoanimation", new Expression.ExpressionFactoryHelper<CloseMeshAnimationIfNoAnimationExp>());
-        calc.Register("getanimationcompression", new Expression.ExpressionFactoryHelper<GetAnimationCompressionExp>());
-        calc.Register("setanimationcompression", new Expression.ExpressionFactoryHelper<SetAnimationCompressionExp>());
-        calc.Register("getanimationtype", new Expression.ExpressionFactoryHelper<GetAnimationTypeExp>());
-        calc.Register("setanimationtype", new Expression.ExpressionFactoryHelper<SetAnimationTypeExp>());
-        calc.Register("clearanimationscalecurve", new Expression.ExpressionFactoryHelper<ClearAnimationScaleCurveExp>());
-        calc.Register("getaudiosetting", new Expression.ExpressionFactoryHelper<GetAudioSettingExp>());
-        calc.Register("setaudiosetting", new Expression.ExpressionFactoryHelper<SetAudioSettingExp>());
+        calc.Register("saveandreimport", new Expression.ExpressionFactoryHelper<ResourceEditApi.SaveAndReimportExp>());
+        calc.Register("getdefaulttexturesetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetDefaultTextureSettingExp>());
+        calc.Register("gettexturesetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetTextureSettingExp>());
+        calc.Register("settexturesetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetTextureSettingExp>());
+        calc.Register("gettexturecompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetTextureCompressionExp>());
+        calc.Register("settexturecompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetTextureCompressionExp>());
+        calc.Register("getmeshcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetMeshCompressionExp>());
+        calc.Register("setmeshcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetMeshCompressionExp>());
+        calc.Register("closemeshanimationifnoanimation", new Expression.ExpressionFactoryHelper<ResourceEditApi.CloseMeshAnimationIfNoAnimationExp>());
+        calc.Register("collectmeshinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectMeshInfoExp>());
+        calc.Register("getanimationcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationCompressionExp>());
+        calc.Register("setanimationcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetAnimationCompressionExp>());
+        calc.Register("getanimationtype", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationTypeExp>());
+        calc.Register("setanimationtype", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetAnimationTypeExp>());
+        calc.Register("clearanimationscalecurve", new Expression.ExpressionFactoryHelper<ResourceEditApi.ClearAnimationScaleCurveExp>());
+        calc.Register("getaudiosetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAudioSettingExp>());
+        calc.Register("setaudiosetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetAudioSettingExp>());
     }
-    internal static object Process(string path, object importer, object obj, Expression.DslCalculator calc, int indexCount, Dictionary<string, object> args)
+    internal static object Process(string path, object importer, object obj, Expression.DslCalculator calc, int indexCount, SortedDictionary<string, ParamInfo> args)
     {
         object ret = null;
         if (null != importer && null != calc) {
@@ -601,7 +782,8 @@ internal static class ResourceEditUtility
             calc.NamedVariables.Add("importer", importer);
             calc.NamedVariables.Add("object", obj);
             foreach (var pair in args) {
-                calc.NamedVariables.Add(pair.Key, pair.Value);
+                var p = pair.Value;
+                calc.NamedVariables.Add(p.Name, p.Value);
             }
 
             for (int i = 0; i < indexCount; ++i) {
@@ -653,340 +835,405 @@ internal static class ResourceEditUtility
 }
 
 #region API
-internal class SaveAndReimportExp : Expression.SimpleExpressionBase
+namespace ResourceEditApi
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    public class MeshInfo
     {
-        object r = null;
-        if (operands.Count >= 0) {
-            var importer = Calculator.NamedVariables["importer"] as TextureImporter;
-            if (null != importer) {
-                //importer.SaveAndReimport();
-                try {
-                    AssetDatabase.StartAssetEditing();
-                    AssetDatabase.ImportAsset(importer.assetPath);
-                } finally {
-                    AssetDatabase.StopAssetEditing();
+        public int clipCount;
+        public int clipKeyFrameCount;
+        public int skinnedMeshCount;
+        public int meshFilterCount;
+        public int vertexCount;
+        public int triangleCount;
+        public int boneCount;
+        public int materialCount;
+    }
+    internal class SaveAndReimportExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 0) {
+                var importer = Calculator.NamedVariables["importer"] as TextureImporter;
+                if (null != importer) {
+                    //importer.SaveAndReimport();
+                    try {
+                        AssetDatabase.StartAssetEditing();
+                        AssetDatabase.ImportAsset(importer.assetPath);
+                    } finally {
+                        AssetDatabase.StopAssetEditing();
+                    }
                 }
             }
+            return r;
         }
-        return r;
     }
-}
-internal class GetDefaultTextureSettingExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
+    internal class GetDefaultTextureSettingExp : Expression.SimpleExpressionBase
     {
-        object r = null;
-        if (operands.Count >= 0) {
-            var importer = Calculator.NamedVariables["importer"] as TextureImporter;
-            if (null != importer) {
-                r = importer.GetDefaultPlatformTextureSettings();
-            }
-        }
-        return r;
-    }
-}
-internal class GetTextureSettingExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
-    {
-        object r = null;
-        if (operands.Count >= 1) {
-            var importer = Calculator.NamedVariables["importer"] as TextureImporter;
-            var platform = operands[0] as string;
-            if (null != importer) {
-                r = importer.GetPlatformTextureSettings(platform);
-            }
-        }
-        return r;
-    }
-}
-internal class SetTextureSettingExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
-    {
-        object r = null;
-        if (operands.Count >= 1) {
-            var importer = Calculator.NamedVariables["importer"] as TextureImporter;
-            var setting = operands[0] as TextureImporterPlatformSettings;
-            if (null != importer && null != setting) {
-                importer.SetPlatformTextureSettings(setting);
-                r = setting;
-            }
-        }
-        return r;
-    }
-}
-internal class GetTextureCompressionExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
-    {
-        object r = null;
-        if (operands.Count >= 1) {
-            var setting = operands[0] as TextureImporterPlatformSettings;
-            if (null != setting) {
-                switch (setting.textureCompression) {
-                    case TextureImporterCompression.Uncompressed:
-                        r = "none";
-                        break;
-                    case TextureImporterCompression.CompressedLQ:
-                        r = "lowquality";
-                        break;
-                    case TextureImporterCompression.Compressed:
-                        r = "normal";
-                        break;
-                    case TextureImporterCompression.CompressedHQ:
-                        r = "highquality";
-                        break;
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 0) {
+                var importer = Calculator.NamedVariables["importer"] as TextureImporter;
+                if (null != importer) {
+                    r = importer.GetDefaultPlatformTextureSettings();
                 }
             }
+            return r;
         }
-        return r;
     }
-}
-internal class SetTextureCompressionExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
+    internal class GetTextureSettingExp : Expression.SimpleExpressionBase
     {
-        object r = null;
-        if (operands.Count >= 2) {
-            var setting = operands[0] as TextureImporterPlatformSettings;
-            var type = operands[1] as string;
-            if (null != setting && null != type) {
-                r = type;
-                if (type == "none")
-                    setting.textureCompression = TextureImporterCompression.Uncompressed;
-                else if (type == "lowquality")
-                    setting.textureCompression = TextureImporterCompression.CompressedLQ;
-                else if (type == "normal")
-                    setting.textureCompression = TextureImporterCompression.Compressed;
-                else if (type == "highquality")
-                    setting.textureCompression = TextureImporterCompression.CompressedHQ;
-            }
-        }
-        return r;
-    }
-}
-internal class GetMeshCompressionExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
-    {
-        object r = null;
-        if (operands.Count >= 0) {
-            var importer = Calculator.NamedVariables["importer"] as ModelImporter;
-            if (null != importer) {
-                switch (importer.meshCompression) {
-                    case ModelImporterMeshCompression.Off:
-                        r = "off";
-                        break;
-                    case ModelImporterMeshCompression.Low:
-                        r = "low";
-                        break;
-                    case ModelImporterMeshCompression.Medium:
-                        r = "medium";
-                        break;
-                    case ModelImporterMeshCompression.High:
-                        r = "high";
-                        break;
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var importer = Calculator.NamedVariables["importer"] as TextureImporter;
+                var platform = operands[0] as string;
+                if (null != importer) {
+                    r = importer.GetPlatformTextureSettings(platform);
                 }
             }
+            return r;
         }
-        return r;
     }
-}
-internal class SetMeshCompressionExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
+    internal class SetTextureSettingExp : Expression.SimpleExpressionBase
     {
-        object r = null;
-        if (operands.Count >= 1) {
-            var importer = Calculator.NamedVariables["importer"] as ModelImporter;
-            var type = operands[0] as string;
-            if (null != importer && null != type) {
-                r = type;
-                if (type == "off")
-                    importer.meshCompression = ModelImporterMeshCompression.Off;
-                else if (type == "low")
-                    importer.meshCompression = ModelImporterMeshCompression.Low;
-                else if (type == "medium")
-                    importer.meshCompression = ModelImporterMeshCompression.Medium;
-                else if (type == "high")
-                    importer.meshCompression = ModelImporterMeshCompression.High;
-            }
-        }
-        return r;
-    }
-}
-internal class CloseMeshAnimationIfNoAnimationExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
-    {
-        object r = null;
-        if (operands.Count >= 0) {
-            var importer = Calculator.NamedVariables["importer"] as ModelImporter;
-            if (null != importer) {
-                if (importer.importedTakeInfos.Length <= 0 && importer.defaultClipAnimations.Length <= 0 && importer.clipAnimations.Length <= 0) {
-                    importer.animationType = ModelImporterAnimationType.None;
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var importer = Calculator.NamedVariables["importer"] as TextureImporter;
+                var setting = operands[0] as TextureImporterPlatformSettings;
+                if (null != importer && null != setting) {
+                    importer.SetPlatformTextureSettings(setting);
+                    r = setting;
                 }
             }
+            return r;
         }
-        return r;
     }
-}
-internal class GetAnimationCompressionExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
+    internal class GetTextureCompressionExp : Expression.SimpleExpressionBase
     {
-        object r = null;
-        if (operands.Count >= 0) {
-            var importer = Calculator.NamedVariables["importer"] as ModelImporter;
-            if (null != importer) {
-                switch (importer.animationCompression) {
-                    case ModelImporterAnimationCompression.Off:
-                        r = "off";
-                        break;
-                    case ModelImporterAnimationCompression.KeyframeReduction:
-                        r = "keyframe";
-                        break;
-                    case ModelImporterAnimationCompression.KeyframeReductionAndCompression:
-                        r = "keyframeandcompression";
-                        break;
-                    case ModelImporterAnimationCompression.Optimal:
-                        r = "optimal";
-                        break;
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var setting = operands[0] as TextureImporterPlatformSettings;
+                if (null != setting) {
+                    switch (setting.textureCompression) {
+                        case TextureImporterCompression.Uncompressed:
+                            r = "none";
+                            break;
+                        case TextureImporterCompression.CompressedLQ:
+                            r = "lowquality";
+                            break;
+                        case TextureImporterCompression.Compressed:
+                            r = "normal";
+                            break;
+                        case TextureImporterCompression.CompressedHQ:
+                            r = "highquality";
+                            break;
+                    }
                 }
             }
+            return r;
         }
-        return r;
     }
-}
-internal class SetAnimationCompressionExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
+    internal class SetTextureCompressionExp : Expression.SimpleExpressionBase
     {
-        object r = null;
-        if (operands.Count >= 1) {
-            var importer = Calculator.NamedVariables["importer"] as ModelImporter;
-            var type = operands[0] as string;
-            if (null != importer && null != type) {
-                r = type;
-                if (type == "off")
-                    importer.animationCompression = ModelImporterAnimationCompression.Off;
-                else if (type == "keyframe")
-                    importer.animationCompression = ModelImporterAnimationCompression.KeyframeReduction;
-                else if (type == "keyframeandcompression")
-                    importer.animationCompression = ModelImporterAnimationCompression.KeyframeReductionAndCompression;
-                else if (type == "optimal")
-                    importer.animationCompression = ModelImporterAnimationCompression.Optimal;
-            }
-        }
-        return r;
-    }
-}
-internal class GetAnimationTypeExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
-    {
-        object r = null;
-        if (operands.Count >= 0) {
-            var importer = Calculator.NamedVariables["importer"] as ModelImporter;
-            if (null != importer) {
-                switch (importer.animationType) {
-                    case ModelImporterAnimationType.None:
-                        r = "none";
-                        break;
-                    case ModelImporterAnimationType.Legacy:
-                        r = "legacy";
-                        break;
-                    case ModelImporterAnimationType.Generic:
-                        r = "generic";
-                        break;
-                    case ModelImporterAnimationType.Human:
-                        r = "humanoid";
-                        break;
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var setting = operands[0] as TextureImporterPlatformSettings;
+                var type = operands[1] as string;
+                if (null != setting && null != type) {
+                    r = type;
+                    if (type == "none")
+                        setting.textureCompression = TextureImporterCompression.Uncompressed;
+                    else if (type == "lowquality")
+                        setting.textureCompression = TextureImporterCompression.CompressedLQ;
+                    else if (type == "normal")
+                        setting.textureCompression = TextureImporterCompression.Compressed;
+                    else if (type == "highquality")
+                        setting.textureCompression = TextureImporterCompression.CompressedHQ;
                 }
             }
+            return r;
         }
-        return r;
     }
-}
-internal class SetAnimationTypeExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
+    internal class GetMeshCompressionExp : Expression.SimpleExpressionBase
     {
-        object r = null;
-        if (operands.Count >= 1) {
-            var importer = Calculator.NamedVariables["importer"] as ModelImporter;
-            var type = operands[0] as string;
-            if (null != importer && null != type) {
-                r = type;
-                if (type == "none")
-                    importer.animationType = ModelImporterAnimationType.None;
-                else if (type == "legacy")
-                    importer.animationType = ModelImporterAnimationType.Legacy;
-                else if (type == "generic")
-                    importer.animationType = ModelImporterAnimationType.Generic;
-                else if (type == "humanoid")
-                    importer.animationType = ModelImporterAnimationType.Human;
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 0) {
+                var importer = Calculator.NamedVariables["importer"] as ModelImporter;
+                if (null != importer) {
+                    switch (importer.meshCompression) {
+                        case ModelImporterMeshCompression.Off:
+                            r = "off";
+                            break;
+                        case ModelImporterMeshCompression.Low:
+                            r = "low";
+                            break;
+                        case ModelImporterMeshCompression.Medium:
+                            r = "medium";
+                            break;
+                        case ModelImporterMeshCompression.High:
+                            r = "high";
+                            break;
+                    }
+                }
             }
+            return r;
         }
-        return r;
     }
-}
-internal class ClearAnimationScaleCurveExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
+    internal class SetMeshCompressionExp : Expression.SimpleExpressionBase
     {
-        object r = null;
-        if (operands.Count >= 0) {
-            var path = Calculator.NamedVariables["assetpath"] as string;
-            if (null != path) {
-                GameObject obj = AssetDatabase.LoadMainAssetAtPath(path) as GameObject;
-                List<AnimationClip> animationClipList = new List<AnimationClip>(AnimationUtility.GetAnimationClips(obj));
-                foreach (AnimationClip theAnimation in animationClipList) {
-                    foreach (EditorCurveBinding theCurveBinding in AnimationUtility.GetCurveBindings(theAnimation)) {
-                        string name = theCurveBinding.propertyName.ToLower();
-                        if (name.Contains("scale")) {
-                            AnimationUtility.SetEditorCurve(theAnimation, theCurveBinding, null);
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var importer = Calculator.NamedVariables["importer"] as ModelImporter;
+                var type = operands[0] as string;
+                if (null != importer && null != type) {
+                    r = type;
+                    if (type == "off")
+                        importer.meshCompression = ModelImporterMeshCompression.Off;
+                    else if (type == "low")
+                        importer.meshCompression = ModelImporterMeshCompression.Low;
+                    else if (type == "medium")
+                        importer.meshCompression = ModelImporterMeshCompression.Medium;
+                    else if (type == "high")
+                        importer.meshCompression = ModelImporterMeshCompression.High;
+                }
+            }
+            return r;
+        }
+    }
+    internal class CloseMeshAnimationIfNoAnimationExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 0) {
+                var importer = Calculator.NamedVariables["importer"] as ModelImporter;
+                if (null != importer) {
+                    if (importer.importedTakeInfos.Length <= 0 && importer.defaultClipAnimations.Length <= 0 && importer.clipAnimations.Length <= 0) {
+                        importer.animationType = ModelImporterAnimationType.None;
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class CollectMeshInfoExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var importer = Calculator.NamedVariables["importer"] as ModelImporter;
+                var obj = operands[0] as UnityEngine.GameObject;
+                if (null != obj) {
+                    var info = new MeshInfo();
+                    if (null != importer) {
+                        info.clipCount = importer.clipAnimations.Length;
+                    }
+                    int vc = 0;
+                    int tc = 0;
+                    int bc = 0;
+                    int mc = 0;
+                    var renderers = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
+                    info.skinnedMeshCount = renderers.Length;
+                    foreach (var renderer in renderers) {
+                        vc += renderer.sharedMesh.vertexCount;
+                        tc += renderer.sharedMesh.triangles.Length / 3;
+                        bc += renderer.bones.Length;
+                        mc += renderer.sharedMaterials.Length;
+                    }
+                    var filters = obj.GetComponentsInChildren<MeshFilter>();
+                    info.meshFilterCount = filters.Length;
+                    foreach (var filter in filters) {
+                        vc += filter.sharedMesh.vertexCount;
+                        tc += filter.sharedMesh.triangles.Length / 3;
+                    }
+                    info.vertexCount = vc;
+                    info.triangleCount = tc;
+                    info.boneCount = bc;
+                    info.materialCount = mc;
+                    int kfc = 0;
+                    var clips = AnimationUtility.GetAnimationClips(obj);
+                    foreach (var clip in clips) {
+                        var bindings = AnimationUtility.GetCurveBindings(clip);
+                        foreach (var binding in bindings) {
+                            var curve = AnimationUtility.GetEditorCurve(clip, binding);
+                            kfc += curve.keys.Length;
+                        }
+                    }
+                    info.clipKeyFrameCount = kfc;
+                    r = info;
+                }
+            }
+            return r;
+        }
+    }
+    internal class GetAnimationCompressionExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 0) {
+                var importer = Calculator.NamedVariables["importer"] as ModelImporter;
+                if (null != importer) {
+                    switch (importer.animationCompression) {
+                        case ModelImporterAnimationCompression.Off:
+                            r = "off";
+                            break;
+                        case ModelImporterAnimationCompression.KeyframeReduction:
+                            r = "keyframe";
+                            break;
+                        case ModelImporterAnimationCompression.KeyframeReductionAndCompression:
+                            r = "keyframeandcompression";
+                            break;
+                        case ModelImporterAnimationCompression.Optimal:
+                            r = "optimal";
+                            break;
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class SetAnimationCompressionExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var importer = Calculator.NamedVariables["importer"] as ModelImporter;
+                var type = operands[0] as string;
+                if (null != importer && null != type) {
+                    r = type;
+                    if (type == "off")
+                        importer.animationCompression = ModelImporterAnimationCompression.Off;
+                    else if (type == "keyframe")
+                        importer.animationCompression = ModelImporterAnimationCompression.KeyframeReduction;
+                    else if (type == "keyframeandcompression")
+                        importer.animationCompression = ModelImporterAnimationCompression.KeyframeReductionAndCompression;
+                    else if (type == "optimal")
+                        importer.animationCompression = ModelImporterAnimationCompression.Optimal;
+                }
+            }
+            return r;
+        }
+    }
+    internal class GetAnimationTypeExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 0) {
+                var importer = Calculator.NamedVariables["importer"] as ModelImporter;
+                if (null != importer) {
+                    switch (importer.animationType) {
+                        case ModelImporterAnimationType.None:
+                            r = "none";
+                            break;
+                        case ModelImporterAnimationType.Legacy:
+                            r = "legacy";
+                            break;
+                        case ModelImporterAnimationType.Generic:
+                            r = "generic";
+                            break;
+                        case ModelImporterAnimationType.Human:
+                            r = "humanoid";
+                            break;
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class SetAnimationTypeExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var importer = Calculator.NamedVariables["importer"] as ModelImporter;
+                var type = operands[0] as string;
+                if (null != importer && null != type) {
+                    r = type;
+                    if (type == "none")
+                        importer.animationType = ModelImporterAnimationType.None;
+                    else if (type == "legacy")
+                        importer.animationType = ModelImporterAnimationType.Legacy;
+                    else if (type == "generic")
+                        importer.animationType = ModelImporterAnimationType.Generic;
+                    else if (type == "humanoid")
+                        importer.animationType = ModelImporterAnimationType.Human;
+                }
+            }
+            return r;
+        }
+    }
+    internal class ClearAnimationScaleCurveExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 0) {
+                var path = Calculator.NamedVariables["assetpath"] as string;
+                if (null != path) {
+                    GameObject obj = AssetDatabase.LoadMainAssetAtPath(path) as GameObject;
+                    List<AnimationClip> animationClipList = new List<AnimationClip>(AnimationUtility.GetAnimationClips(obj));
+                    foreach (AnimationClip theAnimation in animationClipList) {
+                        foreach (EditorCurveBinding theCurveBinding in AnimationUtility.GetCurveBindings(theAnimation)) {
+                            string name = theCurveBinding.propertyName.ToLower();
+                            if (name.Contains("scale")) {
+                                AnimationUtility.SetEditorCurve(theAnimation, theCurveBinding, null);
+                            }
                         }
                     }
                 }
             }
+            return r;
         }
-        return r;
     }
-}
-internal class GetAudioSettingExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
+    internal class GetAudioSettingExp : Expression.SimpleExpressionBase
     {
-        object r = null;
-        if (operands.Count >= 1) {
-            var importer = Calculator.NamedVariables["importer"] as AudioImporter;
-            var platform = operands[0] as string;
-            if (null != importer) {
-                r = importer.GetOverrideSampleSettings(platform);
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var importer = Calculator.NamedVariables["importer"] as AudioImporter;
+                var platform = operands[0] as string;
+                if (null != importer) {
+                    r = importer.GetOverrideSampleSettings(platform);
+                }
             }
+            return r;
         }
-        return r;
     }
-}
-internal class SetAudioSettingExp : Expression.SimpleExpressionBase
-{
-    protected override object OnCalc(IList<object> operands, object[] args)
+    internal class SetAudioSettingExp : Expression.SimpleExpressionBase
     {
-        object r = null;
-        if (operands.Count >= 2) {
-            var importer = Calculator.NamedVariables["importer"] as AudioImporter;
-            var platform = operands[0] as string;
-            var setting = (AudioImporterSampleSettings)operands[1];
-            if (null != importer) {
-                importer.SetOverrideSampleSettings(platform, setting);
-                r = setting;
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var importer = Calculator.NamedVariables["importer"] as AudioImporter;
+                var platform = operands[0] as string;
+                var setting = (AudioImporterSampleSettings)operands[1];
+                if (null != importer) {
+                    importer.SetOverrideSampleSettings(platform, setting);
+                    r = setting;
+                }
             }
+            return r;
         }
-        return r;
     }
 }
 #endregion
@@ -2398,6 +2645,35 @@ namespace Expression
 
         private List<IExpression> m_Expressions = new List<IExpression>();
     }
+    internal sealed class FormatExp : AbstractExpression
+    {
+        public override object Calc(object[] args)
+        {
+            object v = 0;
+            string fmt = string.Empty;
+            ArrayList al = new ArrayList();
+            for (int ix = 0; ix < m_Expressions.Count; ++ix) {
+                var exp = m_Expressions[ix];
+                v = exp.Calc(args);
+                if (ix == 0)
+                    fmt = v as string;
+                else
+                    al.Add(v);
+            }
+            v = Utility.Format(fmt, al.ToArray());
+            return v;
+        }
+        protected override bool Load(Dsl.CallData callData)
+        {
+            for (int i = 0; i < callData.GetParamNum(); ++i) {
+                Dsl.ISyntaxComponent param = callData.GetParam(i);
+                m_Expressions.Add(Calculator.Load(param));
+            }
+            return true;
+        }
+
+        private List<IExpression> m_Expressions = new List<IExpression>();
+    }
     internal sealed class GetTypeExp : AbstractExpression
     {
         public override object Calc(object[] args)
@@ -2406,7 +2682,16 @@ namespace Expression
             if (m_Expressions.Count >= 1) {
                 string type = m_Expressions[0].Calc(args) as string;
                 try {
-                    ret = Type.GetType(type);
+                    ret = Type.GetType("UnityEngine." + type + ", UnityEngine");
+                    if (null == ret) {
+                        ret = Type.GetType("UnityEngine.UI." + type + ", UnityEngine.UI");
+                    }
+                    if (null == ret) {
+                        ret = Type.GetType(type + ", Assembly-CSharp");
+                    }
+                    if (null == ret) {
+                        ret = Type.GetType(type);
+                    }
                     if (null == ret) {
                         Debug.LogWarningFormat("null == Type.GetType({0})", type);
                     }
@@ -2461,7 +2746,16 @@ namespace Expression
                     } else if (0 == type.CompareTo("bool")) {
                         ret = CastTo<bool>(obj);
                     } else {
-                        Type t = Type.GetType(type);
+                        Type t = Type.GetType("UnityEngine." + type + ", UnityEngine");
+                        if (null == t) {
+                            t = Type.GetType("UnityEngine.UI." + type + ", UnityEngine.UI");
+                        }
+                        if (null == t) {
+                            t = Type.GetType(type + ", Assembly-CSharp");
+                        }
+                        if (null == t) {
+                            t = Type.GetType(type);
+                        }
                         if (null != t) {
                             ret = Convert.ChangeType(obj, t);
                         } else {
@@ -2836,6 +3130,7 @@ namespace Expression
             Register("loop", new ExpressionFactoryHelper<LoopExp>());
             Register("looplist", new ExpressionFactoryHelper<LoopListExp>());
             Register("foreach", new ExpressionFactoryHelper<ForeachExp>());
+            Register("format", new ExpressionFactoryHelper<FormatExp>());
             Register("gettype", new ExpressionFactoryHelper<GetTypeExp>());
             Register("changetype", new ExpressionFactoryHelper<ChangeTypeExp>());
             Register("dotnetcall", new ExpressionFactoryHelper<DotnetCallExp>());
