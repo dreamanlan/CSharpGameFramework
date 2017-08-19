@@ -26,7 +26,7 @@ process
 	var(0) = getdefaulttexturesetting();
 	var(0).overridden = changetype(1,"bool");
 	var(0).maxTextureSize = changetype(maxSize, "int");
-	var(0).readable = false;
+	importer.isReadable = false;
 	settexturecompression(var(0),"lowquality");
 	settexturesetting(var(0));
   saveandreimport();

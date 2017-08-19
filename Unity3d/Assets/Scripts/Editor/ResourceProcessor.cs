@@ -44,35 +44,96 @@ public sealed class ResourceEditWindow : EditorWindow
         }
         EditorGUILayout.EndHorizontal();
 
-        if (m_Params.Count > 0) {
-            foreach (var pair in m_Params) {
-                var info = pair.Value;
-                EditorGUILayout.BeginHorizontal();
-                GUILayout.Label(info.Name, GUILayout.Width(160));
-                string oldVal = info.Value.ToString();
-                string newVal = oldVal;
-                if (info.Options.Count > 0) {
-                    int ix = 0;
-                    string[] keys = new string[info.Options.Count];
-                    info.Options.Keys.CopyTo(keys, 0);
-                    foreach (var option in info.Options) {
-                        if (option.Value.ToString() == oldVal) {
-                            break;
+        if (m_ParamNames.Count > 0) {
+            foreach (var name in m_ParamNames) {
+                ResourceEditUtility.ParamInfo info;
+                if (m_Params.TryGetValue(name, out info)) {
+                    EditorGUILayout.BeginHorizontal();
+                    GUILayout.Label(info.Name, GUILayout.Width(160));
+                    string oldVal = info.Value.ToString();
+                    string newVal = oldVal;
+                    if (info.Options.Count > 0) {
+                        if (info.OptionStyle == "toggle") {
+                            bool changed = false;
+                            foreach (var key in info.OptionNames) {
+                                string val;
+                                if (info.Options.TryGetValue(key, out val)) {
+                                    if (changed) {
+                                        GUILayout.Toggle(false, key);
+                                    } else {
+                                        bool toggle = val == oldVal;
+                                        if (GUILayout.Toggle(toggle, key)) {
+                                            if (!toggle) {
+                                                changed = true;
+                                                newVal = val;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        } else if(info.OptionStyle == "multiple") {
+                            var oldVals = oldVal.Split('|');
+                            List<string> newVals = new List<string>();
+                            foreach (var key in info.OptionNames) {
+                                string val;
+                                if (info.Options.TryGetValue(key, out val)) {
+                                    bool toggle = Array.IndexOf(oldVals, val) >= 0;
+                                    if (GUILayout.Toggle(toggle, key)) {
+                                        newVals.Add(val);
+                                    }
+                                }
+                            }
+                            newVal = string.Join("|", newVals.ToArray());
+                        } else {
+                            int ix = 0;
+                            string[] keys = info.OptionNames.ToArray();
+                            foreach (var key in info.OptionNames) {
+                                string val;
+                                if (info.Options.TryGetValue(key, out val)) {
+                                    if (val == oldVal) {
+                                        break;
+                                    }
+                                }
+                                ++ix;
+                            }
+                            if (ix >= info.Options.Count)
+                                ix = 0;
+                            int newIx = ix;
+                            newIx = EditorGUILayout.Popup(ix, keys);
+                            if (newIx != ix) {
+                                newVal = info.Options[keys[newIx]];
+                            }
                         }
-                        ++ix;
+                    } else if (info.Type == typeof(bool)) {
+                        bool v = GUILayout.Toggle((bool)info.Value, string.Empty);
+                        newVal = v ? "true" : "false";
+                    } else if (info.Type == typeof(int)) {
+                        if (null != info.MinValue && null != info.MaxValue) {
+                            int min = (int)info.MinValue;
+                            int max = (int)info.MaxValue;
+                            int v = EditorGUILayout.IntSlider((int)info.Value, min, max);
+                            newVal = v.ToString();
+                        } else {
+                            int v = EditorGUILayout.IntField((int)info.Value);
+                            newVal = v.ToString();
+                        }
+                    } else if (info.Type == typeof(float)) {
+                        if (null != info.MinValue && null != info.MaxValue) {
+                            float min = (float)info.MinValue;
+                            float max = (float)info.MaxValue;
+                            float v = EditorGUILayout.Slider((float)info.Value, min, max);
+                            newVal = v.ToString();
+                        } else {
+                            float v = EditorGUILayout.FloatField((float)info.Value);
+                            newVal = v.ToString();
+                        }
+                    } else {
+                        newVal = GUILayout.TextField(oldVal, 1024);
                     }
-                    if (ix >= info.Options.Count)
-                        ix = 0;
-                    int newIx = EditorGUILayout.Popup(ix, keys);
-                    if (newIx != ix) {
-                        newVal = info.Options[keys[newIx]];
+                    EditorGUILayout.EndHorizontal();
+                    if (newVal != oldVal) {
+                        m_EditedParams.Add(name, newVal);
                     }
-                } else {
-                    newVal = GUILayout.TextField(oldVal, 1024);
-                }
-                EditorGUILayout.EndHorizontal();
-                if (newVal != oldVal) {
-                    m_EditedParams.Add(pair.Key, newVal);
                 }
             }
             if (m_EditedParams.Count > 0) {
@@ -80,18 +141,48 @@ public sealed class ResourceEditWindow : EditorWindow
                     ResourceEditUtility.ParamInfo val;
                     if (m_Params.TryGetValue(pair.Key, out val)) {
                         if (val.Type == typeof(int)) {
-                            val.Value = int.Parse(pair.Value);
+                            int v = int.Parse(pair.Value);
+                            if (null != val.MinValue && null != val.MaxValue) {
+                                int min = (int)val.MinValue;
+                                int max = (int)val.MaxValue;
+                                if (v < min) v = min;
+                                if (v > max) v = max;
+                            }
+                            val.Value = v;
                         } else if (val.Type == typeof(float)) {
-                            val.Value = float.Parse(pair.Value);
+                            float v = float.Parse(pair.Value);
+                            if (null != val.MinValue && null != val.MaxValue) {
+                                float min = (float)val.MinValue;
+                                float max = (float)val.MaxValue;
+                                if (v < min) v = min;
+                                if (v > max) v = max;
+                            }
+                            val.Value = v;
                         } else if (val.Type == typeof(string)) {
-                            val.Value = pair.Value;
+                            string v = pair.Value;
+                            if (null != val.MinValue && null != val.MaxValue) {
+                                string min = (string)val.MinValue;
+                                string max = (string)val.MaxValue;                                
+                                if (v.CompareTo(min) < 0) v = min;
+                                if (v.CompareTo(min) > 0) v = max;
+                            }
+                            val.Value = v;
+                        } else if (val.Type == typeof(bool)) {
+                            bool v = bool.Parse(pair.Value);
+                            if (null != val.MinValue && null != val.MaxValue) {
+                                bool min = (bool)val.MinValue;
+                                bool max = (bool)val.MaxValue;
+                                if (v.CompareTo(min) < 0) v = min;
+                                if (v.CompareTo(min) > 0) v = max;
+                            }
+                            val.Value = v;
                         }
                     }
                 }
                 m_EditedParams.Clear();
             }
         }
-        if (m_ResourceList.Count <= 0) {
+        if (m_ResourceList.Count <= 0 && string.IsNullOrEmpty(m_CollectPath)) {
             if (!string.IsNullOrEmpty(m_Text)) {
                 m_PanelPos = EditorGUILayout.BeginScrollView(m_PanelPos, true, true);
                 EditorGUILayout.TextArea(m_Text);
@@ -163,6 +254,7 @@ public sealed class ResourceEditWindow : EditorWindow
                     m_PostProcessMethod = string.Empty;
                     m_TypeOrExtList.Clear();
                     m_TypeList.Clear();
+                    m_ParamNames.Clear();
                     m_Params.Clear();
 
                     foreach (var info in m_DslFile.DslInfos) {
@@ -193,6 +285,7 @@ public sealed class ResourceEditWindow : EditorWindow
                     m_PostProcessMethod = string.Empty;
                     m_TypeOrExtList.Clear();
                     m_TypeList.Clear();
+                    m_ParamNames.Clear();
                     m_Params.Clear();
                     m_Text = null;
                     m_NextFilterIndex = 0;
@@ -207,6 +300,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 m_PostProcessMethod = string.Empty;
                 m_TypeOrExtList.Clear();
                 m_TypeList.Clear();
+                m_ParamNames.Clear();
                 m_Params.Clear();
                 m_Text = null;
                 m_NextFilterIndex = 0;
@@ -215,6 +309,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 m_ProcessCalculator = null;
             }
             m_ResourceList.Clear();
+            m_Page = 1;
         }
     }
     private string ParseCallData(Dsl.CallData callData)
@@ -223,17 +318,25 @@ public sealed class ResourceEditWindow : EditorWindow
         string key = callData.GetParamId(0);
         string val = callData.GetParamId(1);
         if (id == "int") {
-            //int(val);
+            //int(name, val);
             int v = int.Parse(val);
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(int), Value = v };
+            m_ParamNames.Add(key);
         } else if (id == "float") {
-            //float(val);
+            //float(name, val);
             float v = float.Parse(val);
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(float), Value = v };
+            m_ParamNames.Add(key);
         } else if (id == "string") {
-            //string(val);
+            //string(name, val);
             string v = val;
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(string), Value = v };
+            m_ParamNames.Add(key);
+        } else if (id == "bool") {
+            //bool(name, val);
+            bool v = bool.Parse(val);
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(bool), Value = v };
+            m_ParamNames.Add(key);
         } else if (id == "feature") {
             if (key == "source") {
                 //feature("source", "scene");
@@ -258,7 +361,37 @@ public sealed class ResourceEditWindow : EditorWindow
                 var id = comp.GetId();
                 var cd = comp as Dsl.CallData;
                 if (null != cd) {
-                    if (id == "option") {
+                    if (id == "range") {
+                        int num = cd.GetParamNum();
+                        var p1 = cd.GetParam(0);
+                        var p2 = cd.GetParam(1);
+                        var pvd1 = p1 as Dsl.ValueData;
+                        var pvd2 = p2 as Dsl.ValueData;
+                        if (null != pvd1 && null != pvd2) {
+                            //range(min,max);
+                            string min = pvd1.GetId();
+                            string max = pvd2.GetId();
+                            if(info.Type == typeof(int)) {
+                                info.MinValue = int.Parse(min);
+                                info.MaxValue = int.Parse(max);
+                            } else if (info.Type == typeof(float)) {
+                                info.MinValue = float.Parse(min);
+                                info.MaxValue = float.Parse(max);
+                            } else if (info.Type == typeof(string)) {
+                                info.MinValue = min;
+                                info.MaxValue = max;
+                            } else if (info.Type == typeof(bool)) {
+                                info.MinValue = bool.Parse(min);
+                                info.MaxValue = bool.Parse(max);
+                            }
+                        }
+                    } else if (id == "popup" || id=="toggle" || id=="multiple") {
+                        if (string.IsNullOrEmpty(info.OptionStyle)) {
+                            info.OptionStyle = id;
+                        } else if (info.OptionStyle != id) {
+                            EditorUtility.DisplayDialog("错误", string.Format("param's option must use same style, {0} will use {1} style (dont use {2}) !", info.Name, info.OptionStyle, id), "ok");
+                        }
+
                         int num = cd.GetParamNum();
                         var p1 = cd.GetParam(0);
                         var p2 = cd.GetParam(1);
@@ -266,9 +399,10 @@ public sealed class ResourceEditWindow : EditorWindow
                         var pvd2 = p2 as Dsl.ValueData;
                         if (null != pvd1 && null != pvd2) {
                             //option(key,val);
-                            string key = cd.GetParamId(0);
-                            string val = cd.GetParamId(1);
+                            string key = pvd1.GetId();
+                            string val = pvd2.GetId();
                             info.Options[key] = val;
+                            info.OptionNames.Add(key);
                         } else {
                             var pcd1 = p1 as Dsl.CallData;
                             var pcd2 = p2 as Dsl.CallData;
@@ -281,12 +415,14 @@ public sealed class ResourceEditWindow : EditorWindow
                                         string kStr = v.ToString("D3");
                                         string vStr = v.ToString();
                                         info.Options[kStr] = vStr;
+                                        info.OptionNames.Add(kStr);
                                     }
                                 } else if (pcd1.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd1.HaveId()) {
                                     //option([v1,v2,v3,v4,v5]);
                                     for (int i = 0; i < pcd1.GetParamNum(); ++i) {
                                         var vStr = pcd1.GetParamId(i);
                                         info.Options[vStr] = vStr;
+                                        info.OptionNames.Add(vStr);
                                     }
                                 }
                             } else if (2 == num) {
@@ -297,9 +433,10 @@ public sealed class ResourceEditWindow : EditorWindow
                                         int num2 = pcd2.GetParamNum();
                                         int n = num1 <= num2 ? num1 : num2;
                                         for (int i = 0; i < n; ++i) {
-                                            var vStr1 = pcd1.GetParamId(i);
-                                            var vStr2 = pcd2.GetParamId(i);
-                                            info.Options[vStr1] = vStr2;
+                                            var kStr = pcd1.GetParamId(i);
+                                            var vStr = pcd2.GetParamId(i);
+                                            info.Options[kStr] = vStr;
+                                            info.OptionNames.Add(kStr);
                                         }
                                     }
                                 }
@@ -326,6 +463,7 @@ public sealed class ResourceEditWindow : EditorWindow
     {
         if (m_IsSearchInScene) {
             m_ResourceList.Clear();
+            m_Page = 1;
             m_CurSearchCount = 0;
             m_TotalSearchCount = 0;
             CountSceneObjectRecursively();
@@ -342,13 +480,15 @@ public sealed class ResourceEditWindow : EditorWindow
             }
             if (!string.IsNullOrEmpty(m_CollectPath)) {
                 m_ResourceList.Clear();
+                m_Page = 1;
                 m_CurSearchCount = 0;
                 m_TotalSearchCount = 0;
-                CountFileRecursively(m_CollectPath);
+                CountFile(m_CollectPath);
                 if (m_TotalSearchCount > 0) {
-                    SearchFileRecursively(m_CollectPath);
+                    SearchFile(m_CollectPath);
                     EditorUtility.ClearProgressBar();
                 }
+                CheckDuplication();
             }
         }
     }
@@ -513,63 +653,97 @@ public sealed class ResourceEditWindow : EditorWindow
         }
     }
 
-    private void SearchFileRecursively(string dir)
+    private void SearchFile(string dir)
     {
+        string dirName = Path.GetFileName(dir).ToLower();
+        if (s_IgnoredDirs.Contains(dirName))
+            return;
         foreach (string ext in m_TypeOrExtList) {
-            string[] files = Directory.GetFiles(dir).Where((string file) => {
-                string ext0 = Path.GetExtension(file).ToLower();
-                return ext0 == ext;
-            }).ToArray();
-            foreach (string file in files) {
-                ++m_CurSearchCount;
-                string assetPath = PathToAssetPath(file);
-                var importer = AssetImporter.GetAtPath(assetPath);
-                UnityEngine.Object obj = null;
-                var ret = ResourceEditUtility.Process(assetPath, importer, obj, m_FilterCalculator, m_NextFilterIndex, m_Params);
-                if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
-                    string info = string.Empty;
-                    int order = m_ResourceList.Count;
-                    if (null != m_FilterCalculator) {
-                        object v;
-                        if (m_FilterCalculator.NamedVariables.TryGetValue("object", out v)) {
-                            if (null != v) {
-                                obj = v as UnityEngine.Object;
-                            }
-                        }
-                        if (m_FilterCalculator.NamedVariables.TryGetValue("info", out v)) {
-                            info = v as string;
-                            if (null == info)
-                                info = string.Empty;
-                        }
-                        if (m_FilterCalculator.NamedVariables.TryGetValue("order", out v)) {
-                            if (null != v) {
-                                order = (int)Convert.ChangeType(v, typeof(int));
-                            }
-                        }
-                    }
-                    m_ResourceList.Add(new ItemInfo { Path = assetPath, Importer = importer, Object = obj, Info = info, Order = order, Selected = false });
-                }
-                EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
-            }
-            string[] dirs = Directory.GetDirectories(dir);
-            foreach (string subDir in dirs) {
-                SearchFileRecursively(subDir);
-            }
+            SearchFileRecursively(dir, ext);
         }
     }
 
-    private void CountFileRecursively(string dir)
+    private void SearchFileRecursively(string dir, string ext)
     {
-        foreach (string ext in m_TypeOrExtList) {
-            string[] files = Directory.GetFiles(dir).Where((string file) => {
-                string ext0 = Path.GetExtension(file).ToLower();
-                return ext0 == ext;
-            }).ToArray();
-            m_TotalSearchCount += files.Length;
+        string[] files = Directory.GetFiles(dir).Where((string file) => {
+            string ext0 = Path.GetExtension(file).ToLower();
+            return ext0 == ext;
+        }).ToArray();
+        foreach (string file in files) {
+            ++m_CurSearchCount;
+            string assetPath = PathToAssetPath(file);
+            var importer = AssetImporter.GetAtPath(assetPath);
+            UnityEngine.Object obj = null;
+            var ret = ResourceEditUtility.Process(assetPath, importer, obj, m_FilterCalculator, m_NextFilterIndex, m_Params);
+            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+                string info = string.Empty;
+                int order = m_ResourceList.Count;
+                if (null != m_FilterCalculator) {
+                    object v;
+                    if (m_FilterCalculator.NamedVariables.TryGetValue("object", out v)) {
+                        if (null != v) {
+                            obj = v as UnityEngine.Object;
+                        }
+                    }
+                    if (m_FilterCalculator.NamedVariables.TryGetValue("info", out v)) {
+                        info = v as string;
+                        if (null == info)
+                            info = string.Empty;
+                    }
+                    if (m_FilterCalculator.NamedVariables.TryGetValue("order", out v)) {
+                        if (null != v) {
+                            order = (int)Convert.ChangeType(v, typeof(int));
+                        }
+                    }
+                }
+                m_ResourceList.Add(new ItemInfo { Path = assetPath, Importer = importer, Object = obj, Info = info, Order = order, Selected = false });
+            }
+            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+        }
+        string[] dirs = Directory.GetDirectories(dir);
+        foreach (string subDir in dirs) {
+            string dirName = Path.GetFileName(subDir).ToLower();
+            if (s_IgnoredDirs.Contains(dirName))
+                continue;
+            SearchFileRecursively(subDir, ext);
+        }
+    }
 
-            string[] dirs = Directory.GetDirectories(dir);
-            foreach (string subDir in dirs) {
-                CountFileRecursively(subDir);
+    private void CountFile(string dir)
+    {
+        string dirName = Path.GetFileName(dir).ToLower();
+        if (s_IgnoredDirs.Contains(dirName))
+            return;
+        foreach (string ext in m_TypeOrExtList) {
+            CountFileRecursively(dir, ext);
+        }
+    }
+
+    private void CountFileRecursively(string dir, string ext)
+    {
+        string[] files = Directory.GetFiles(dir).Where((string file) => {
+            string ext0 = Path.GetExtension(file).ToLower();
+            return ext0 == ext;
+        }).ToArray();
+        m_TotalSearchCount += files.Length;
+
+        string[] dirs = Directory.GetDirectories(dir);
+        foreach (string subDir in dirs) {
+            string dirName = Path.GetFileName(subDir).ToLower();
+            if (s_IgnoredDirs.Contains(dirName))
+                continue;
+            CountFileRecursively(subDir, ext);
+        }
+    }
+
+    private void CheckDuplication()
+    {
+        var hash = new HashSet<string>();
+        foreach (var info in m_ResourceList) {
+            if (hash.Contains(info.Path)) {
+                Debug.LogWarningFormat("{0} duplicate !", info.Path);
+            } else {
+                hash.Add(info.Path);
             }
         }
     }
@@ -723,7 +897,8 @@ public sealed class ResourceEditWindow : EditorWindow
     private string m_PostProcessMethod = string.Empty;
     private List<string> m_TypeOrExtList = new List<string>();
     private List<Type> m_TypeList = new List<Type>();
-    private SortedDictionary<string, ResourceEditUtility.ParamInfo> m_Params = new SortedDictionary<string, ResourceEditUtility.ParamInfo>();
+    private List<string> m_ParamNames = new List<string>();
+    private Dictionary<string, ResourceEditUtility.ParamInfo> m_Params = new Dictionary<string, ResourceEditUtility.ParamInfo>();
     private List<ItemInfo> m_ResourceList = new List<ItemInfo>();
     private Dsl.DslFile m_DslFile = null;
     private string m_CollectPath = string.Empty;
@@ -741,6 +916,7 @@ public sealed class ResourceEditWindow : EditorWindow
     private int m_TotalSearchCount = 0;
 
     private const int c_ItemsPerPage = 50;
+    private static readonly HashSet<string> s_IgnoredDirs = new HashSet<string> { "plugins", "streamingassets" };
 }
 
 internal static class ResourceEditUtility
@@ -750,7 +926,11 @@ internal static class ResourceEditUtility
         internal string Name;
         internal Type Type;
         internal object Value;
-        internal SortedList<string, string> Options = new SortedList<string, string>();
+        internal object MinValue;
+        internal object MaxValue;
+        internal List<string> OptionNames = new List<string>();
+        internal Dictionary<string, string> Options = new Dictionary<string, string>();
+        internal string OptionStyle = string.Empty;
     }
     internal static void InitCalculator(Expression.DslCalculator calc)
     {
@@ -773,24 +953,29 @@ internal static class ResourceEditUtility
         calc.Register("getaudiosetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAudioSettingExp>());
         calc.Register("setaudiosetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetAudioSettingExp>());
     }
-    internal static object Process(string path, object importer, object obj, Expression.DslCalculator calc, int indexCount, SortedDictionary<string, ParamInfo> args)
+    internal static object Process(string path, object importer, object obj, Expression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args)
     {
-        object ret = null;
-        if (null != importer && null != calc) {
-            calc.NamedVariables.Clear();
-            calc.NamedVariables.Add("assetpath", path);
-            calc.NamedVariables.Add("importer", importer);
-            calc.NamedVariables.Add("object", obj);
-            foreach (var pair in args) {
-                var p = pair.Value;
-                calc.NamedVariables.Add(p.Name, p.Value);
-            }
+        try {
+            object ret = null;
+            if (null != importer && null != calc) {
+                calc.NamedVariables.Clear();
+                calc.NamedVariables.Add("assetpath", path);
+                calc.NamedVariables.Add("importer", importer);
+                calc.NamedVariables.Add("object", obj);
+                foreach (var pair in args) {
+                    var p = pair.Value;
+                    calc.NamedVariables.Add(p.Name, p.Value);
+                }
 
-            for (int i = 0; i < indexCount; ++i) {
-                ret = calc.Calc(i.ToString());
+                for (int i = 0; i < indexCount; ++i) {
+                    ret = calc.Calc(i.ToString());
+                }
             }
+            return ret;
+        } catch(Exception ex) {
+            Debug.LogErrorFormat("process {0} exception:{1}\n{2}", path, ex.Message, ex.StackTrace);
+            return null;
         }
-        return ret;
     }
 
     private static GameObject FindRoot(GameObject obj)
