@@ -192,9 +192,7 @@ public sealed class ResourceEditWindow : EditorWindow
             if (!string.IsNullOrEmpty(m_Text)) {
                 EditorGUILayout.TextArea(m_Text, GUILayout.MaxHeight(70));
             }
-            m_PanelPos = EditorGUILayout.BeginScrollView(m_PanelPos, true, true);
             ListItem();
-            EditorGUILayout.EndScrollView();
         }
     }
 
@@ -618,6 +616,7 @@ public sealed class ResourceEditWindow : EditorWindow
         GUILayout.EndHorizontal();
         m_Page = Mathf.Max(1, Mathf.Min(m_ResourceList.Count / c_ItemsPerPage + 1, m_Page));
         GUILayout.EndVertical();
+        m_PanelPos = EditorGUILayout.BeginScrollView(m_PanelPos, true, true);
         int index = 0;
         int totalShown = 0;
         foreach (ItemInfo item in m_ResourceList) {
@@ -648,9 +647,10 @@ public sealed class ResourceEditWindow : EditorWindow
                 }
                 GUI.skin.button.alignment = oldAlignment;
             }
-            GUILayout.Label(item.Info);
+            GUILayout.TextArea(item.Info, GUILayout.MaxHeight(72));
             EditorGUILayout.EndHorizontal();
         }
+        EditorGUILayout.EndScrollView();
     }
 
     private void SearchFile(string dir)
@@ -945,6 +945,7 @@ internal static class ResourceEditUtility
         calc.Register("setmeshcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetMeshCompressionExp>());
         calc.Register("closemeshanimationifnoanimation", new Expression.ExpressionFactoryHelper<ResourceEditApi.CloseMeshAnimationIfNoAnimationExp>());
         calc.Register("collectmeshinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectMeshInfoExp>());
+        calc.Register("collectanimatorcontrollerinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectAnimatorControllerInfoExp>());
         calc.Register("getanimationcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationCompressionExp>());
         calc.Register("setanimationcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetAnimationCompressionExp>());
         calc.Register("getanimationtype", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationTypeExp>());
@@ -1024,14 +1025,35 @@ namespace ResourceEditApi
 {
     public class MeshInfo
     {
-        public int clipCount;
-        public int clipKeyFrameCount;
         public int skinnedMeshCount;
         public int meshFilterCount;
         public int vertexCount;
         public int triangleCount;
         public int boneCount;
         public int materialCount;
+        public int clipCount;
+        public int maxKeyFrameCount;
+        public string maxKeyFrameCurveName = string.Empty;
+        public string maxKeyFrameClipName = string.Empty;
+    }
+    public class AnimationClipInfo
+    {
+        public string clipName = string.Empty;
+        public int maxKeyFrameCount;
+        public string maxKeyFrameCurveName = string.Empty;
+        public List<string> curves = new List<string>();
+        public List<int> keyFrameCounts = new List<int>();
+    }
+    public class AnimatorControllerInfo
+    {
+        public int layerCount;
+        public int paramCount;
+        public int stateCount;
+        public int subStateMachineCount;
+        public int maxKeyFrameCount;
+        public string maxKeyFrameCurveName = string.Empty;
+        public string maxKeyFrameClipName = string.Empty;
+        public List<AnimationClipInfo> clips = new List<AnimationClipInfo>();
     }
     internal class SaveAndReimportExp : Expression.SimpleExpressionBase
     {
@@ -1220,13 +1242,9 @@ namespace ResourceEditApi
         {
             object r = null;
             if (operands.Count >= 1) {
-                var importer = Calculator.NamedVariables["importer"] as ModelImporter;
                 var obj = operands[0] as UnityEngine.GameObject;
                 if (null != obj) {
                     var info = new MeshInfo();
-                    if (null != importer) {
-                        info.clipCount = importer.clipAnimations.Length;
-                    }
                     int vc = 0;
                     int tc = 0;
                     int bc = 0;
@@ -1234,35 +1252,138 @@ namespace ResourceEditApi
                     var renderers = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
                     info.skinnedMeshCount = renderers.Length;
                     foreach (var renderer in renderers) {
-                        vc += renderer.sharedMesh.vertexCount;
-                        tc += renderer.sharedMesh.triangles.Length / 3;
+                        if (null != renderer.sharedMesh) {
+                            vc += renderer.sharedMesh.vertexCount;
+                            tc += renderer.sharedMesh.triangles.Length / 3;
+                        }
                         bc += renderer.bones.Length;
                         mc += renderer.sharedMaterials.Length;
                     }
                     var filters = obj.GetComponentsInChildren<MeshFilter>();
                     info.meshFilterCount = filters.Length;
                     foreach (var filter in filters) {
-                        vc += filter.sharedMesh.vertexCount;
-                        tc += filter.sharedMesh.triangles.Length / 3;
+                        if (null != filter.sharedMesh) {
+                            vc += filter.sharedMesh.vertexCount;
+                            tc += filter.sharedMesh.triangles.Length / 3;
+                        }
                     }
                     info.vertexCount = vc;
                     info.triangleCount = tc;
                     info.boneCount = bc;
                     info.materialCount = mc;
-                    int kfc = 0;
-                    var clips = AnimationUtility.GetAnimationClips(obj);
-                    foreach (var clip in clips) {
-                        var bindings = AnimationUtility.GetCurveBindings(clip);
-                        foreach (var binding in bindings) {
-                            var curve = AnimationUtility.GetEditorCurve(clip, binding);
-                            kfc += curve.keys.Length;
+                    int maxKfc = 0;
+                    string clipName = string.Empty;
+                    string curveName = string.Empty;
+                    var animator = obj.GetComponentInChildren<Animator>();
+                    if (null != animator) {
+                        var ctrl = animator.runtimeAnimatorController;
+                        if (null != ctrl) {
+                            info.clipCount = ctrl.animationClips.Length;
+                            foreach (var clip in ctrl.animationClips) {
+                                var bindings = AnimationUtility.GetCurveBindings(clip);
+                                foreach (var binding in bindings) {
+                                    var curve = AnimationUtility.GetEditorCurve(clip, binding);
+                                    int kfc = curve.keys.Length;
+                                    if (maxKfc < kfc) {
+                                        maxKfc = kfc;
+                                        curveName = binding.path;
+                                        clipName = clip.name;
+                                    }
+                                }
+                            }
                         }
                     }
-                    info.clipKeyFrameCount = kfc;
+                    info.maxKeyFrameCount = maxKfc;
+                    info.maxKeyFrameCurveName = curveName;
+                    info.maxKeyFrameClipName = clipName;
                     r = info;
                 }
             }
             return r;
+        }
+    }
+    internal class CollectAnimatorControllerInfoExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var ctrl = operands[0] as RuntimeAnimatorController;
+                if (null != ctrl) {
+                    var info = new AnimatorControllerInfo();
+                    var editorCtrl = ctrl as UnityEditor.Animations.AnimatorController;
+                    if (null == editorCtrl) {
+                        var overrideCtrl = ctrl as AnimatorOverrideController;
+                        if (null != overrideCtrl) {
+                            editorCtrl = overrideCtrl.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
+                        }
+                    }
+                    if (null != editorCtrl) {
+                        info.layerCount = editorCtrl.layers.Length;
+                        info.paramCount = editorCtrl.parameters.Length;
+                        int sc = 0;
+                        int smc = 0;
+                        foreach(var layer in editorCtrl.layers) {
+                            sc += CalcStateCount(layer.stateMachine);
+                            smc += CalcSubStateMachineCount(layer.stateMachine);
+                        }
+                        info.stateCount = sc;
+                        info.subStateMachineCount = smc;
+                    }
+                    int gMaxKfc = 0;
+                    string gCurveName = string.Empty;
+                    string gClipName = string.Empty;
+                    foreach (var clip in ctrl.animationClips) {
+                        var clipInfo = new AnimationClipInfo();
+                        clipInfo.clipName = clip.name;
+                        var bindings = AnimationUtility.GetCurveBindings(clip);
+                        int maxKfc = 0;
+                        string curveName = string.Empty;
+                        foreach (var binding in bindings) {
+                            var curve = AnimationUtility.GetEditorCurve(clip, binding);
+                            int kfc = curve.keys.Length;
+                            clipInfo.keyFrameCounts.Add(kfc);
+                            clipInfo.curves.Add(binding.path);
+                            if (maxKfc < kfc) {
+                                maxKfc = kfc;
+                                curveName = binding.path;
+                            }
+                        }
+                        clipInfo.maxKeyFrameCount = maxKfc;
+                        clipInfo.maxKeyFrameCurveName = curveName;
+                        info.clips.Add(clipInfo);
+
+                        if (gMaxKfc < maxKfc) {
+                            gMaxKfc = maxKfc;
+                            gCurveName = curveName;
+                            gClipName = clip.name;
+                        }
+                    }
+                    info.maxKeyFrameCount = gMaxKfc;
+                    info.maxKeyFrameCurveName = gCurveName;
+                    info.maxKeyFrameClipName = gClipName;
+                    r = info;
+                }
+            }
+            return r;
+        }
+        private static int CalcStateCount(AnimatorStateMachine sm)
+        {
+            int ct = 0;
+            ct += sm.states.Length;
+            foreach(var ssm in sm.stateMachines) {
+                ct += CalcStateCount(ssm.stateMachine);
+            }
+            return ct;
+        }
+        private static int CalcSubStateMachineCount(AnimatorStateMachine sm)
+        {
+            int ct = 0;
+            ct += sm.stateMachines.Length;
+            foreach (var ssm in sm.stateMachines) {
+                ct += CalcSubStateMachineCount(ssm.stateMachine);
+            }
+            return ct;
         }
     }
     internal class GetAnimationCompressionExp : Expression.SimpleExpressionBase
@@ -3255,6 +3376,82 @@ namespace Expression
             return r;
         }
     }
+    internal class NewStringBuilderExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 0) {
+                r = new StringBuilder();
+            }
+            return r;
+        }
+    }
+    internal class AppendFormatExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var sb = operands[0] as StringBuilder;
+                string fmt = string.Empty;
+                var al = new ArrayList();
+                for(int i = 1; i < operands.Count; ++i) {
+                    if (i == 1)
+                        fmt = operands[i] as string;
+                    else
+                        al.Add(operands[i]);
+                }
+                if (null != sb && !string.IsNullOrEmpty(fmt)) {
+                    Utility.AppendFormat(sb, fmt, al.ToArray());
+                    r = sb;
+                }
+            }
+            return r;
+        }
+    }
+    internal class AppendLineFormatExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var sb = operands[0] as StringBuilder;
+                string fmt = string.Empty;
+                var al = new ArrayList();
+                for (int i = 1; i < operands.Count; ++i) {
+                    if (i == 1)
+                        fmt = operands[i] as string;
+                    else
+                        al.Add(operands[i]);
+                }
+                if (null != sb) {
+                    if (string.IsNullOrEmpty(fmt)) {
+                        sb.AppendLine();
+                    } else {
+                        Utility.AppendFormat(sb, fmt, al.ToArray());
+                        sb.AppendLine();
+                    }
+                    r = sb;
+                }
+            }
+            return r;
+        }
+    }
+    internal class StringBuilderToStringExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var sb = operands[0] as StringBuilder;
+                if (null != sb) {
+                    r = sb.ToString();
+                }
+            }
+            return r;
+        }
+    }
     public sealed class DslCalculator
     {
         public void Init()
@@ -3327,6 +3524,10 @@ namespace Expression
             Register("getcomponent", new ExpressionFactoryHelper<GetComponentExp>());
             Register("getcomponentinchildren", new ExpressionFactoryHelper<GetComponentInChildrenExp>());
             Register("getcomponentsinchildren", new ExpressionFactoryHelper<GetComponentsInChildrenExp>());
+            Register("newstringbuilder", new ExpressionFactoryHelper<NewStringBuilderExp>());
+            Register("appendformat", new ExpressionFactoryHelper<AppendFormatExp>());
+            Register("appendlineformat", new ExpressionFactoryHelper<AppendLineFormatExp>());
+            Register("stringbuildertostring", new ExpressionFactoryHelper<StringBuilderToStringExp>());
         }
         public void Register(string name, IExpressionFactory factory)
         {
