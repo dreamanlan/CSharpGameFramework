@@ -68,6 +68,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonValues\Linq.cs" />
     <Compile Include="CustomCommandValueParser.cs" />
     <Compile Include="CommonCommands\Assign.cs" />
     <Compile Include="CommonCommands\Composite.cs" />

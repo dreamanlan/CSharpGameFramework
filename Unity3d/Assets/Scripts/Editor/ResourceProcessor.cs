@@ -647,7 +647,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 }
                 GUI.skin.button.alignment = oldAlignment;
             }
-            GUILayout.TextArea(item.Info, GUILayout.MaxHeight(72));
+            EditorGUILayout.TextArea(item.Info, GUILayout.MaxHeight(72));
             EditorGUILayout.EndHorizontal();
         }
         EditorGUILayout.EndScrollView();
@@ -946,6 +946,7 @@ internal static class ResourceEditUtility
         calc.Register("closemeshanimationifnoanimation", new Expression.ExpressionFactoryHelper<ResourceEditApi.CloseMeshAnimationIfNoAnimationExp>());
         calc.Register("collectmeshinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectMeshInfoExp>());
         calc.Register("collectanimatorcontrollerinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectAnimatorControllerInfoExp>());
+        calc.Register("getanimationclipinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationClipInfoExp>());
         calc.Register("getanimationcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationCompressionExp>());
         calc.Register("setanimationcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetAnimationCompressionExp>());
         calc.Register("getanimationtype", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationTypeExp>());
@@ -1035,6 +1036,7 @@ namespace ResourceEditApi
         public int maxKeyFrameCount;
         public string maxKeyFrameCurveName = string.Empty;
         public string maxKeyFrameClipName = string.Empty;
+        public List<AnimationClipInfo> clips = new List<AnimationClipInfo>();
     }
     public class AnimationClipInfo
     {
@@ -1243,6 +1245,9 @@ namespace ResourceEditApi
             object r = null;
             if (operands.Count >= 1) {
                 var obj = operands[0] as UnityEngine.GameObject;
+                ModelImporter importer = null;
+                if(operands.Count >= 2)
+                    importer = operands[1] as ModelImporter;
                 if (null != obj) {
                     var info = new MeshInfo();
                     int vc = 0;
@@ -1271,31 +1276,97 @@ namespace ResourceEditApi
                     info.triangleCount = tc;
                     info.boneCount = bc;
                     info.materialCount = mc;
-                    int maxKfc = 0;
-                    string clipName = string.Empty;
-                    string curveName = string.Empty;
                     var animator = obj.GetComponentInChildren<Animator>();
                     if (null != animator) {
                         var ctrl = animator.runtimeAnimatorController;
                         if (null != ctrl) {
                             info.clipCount = ctrl.animationClips.Length;
+                            int gMaxKfc = 0;
+                            string gCurveName = string.Empty;
+                            string gClipName = string.Empty;
                             foreach (var clip in ctrl.animationClips) {
+                                var clipInfo = new AnimationClipInfo();
+                                clipInfo.clipName = clip.name;
                                 var bindings = AnimationUtility.GetCurveBindings(clip);
+                                int maxKfc = 0;
+                                string curveName = string.Empty;
                                 foreach (var binding in bindings) {
                                     var curve = AnimationUtility.GetEditorCurve(clip, binding);
                                     int kfc = curve.keys.Length;
+                                    clipInfo.keyFrameCounts.Add(kfc);
+                                    clipInfo.curves.Add(binding.path + "/" + binding.propertyName);
                                     if (maxKfc < kfc) {
                                         maxKfc = kfc;
-                                        curveName = binding.path;
-                                        clipName = clip.name;
+                                        curveName = binding.path + "/" + binding.propertyName;
                                     }
+                                }
+                                clipInfo.maxKeyFrameCount = maxKfc;
+                                clipInfo.maxKeyFrameCurveName = curveName;
+                                info.clips.Add(clipInfo);
+
+                                if (gMaxKfc < maxKfc) {
+                                    gMaxKfc = maxKfc;
+                                    gCurveName = curveName;
+                                    gClipName = clip.name;
+                                }
+                            }
+                            info.maxKeyFrameCount = gMaxKfc;
+                            info.maxKeyFrameCurveName = gCurveName;
+                            info.maxKeyFrameClipName = gClipName;
+                        }
+                    }
+                    if (null != importer && info.clipCount <= 0) {
+                        info.clipCount = importer.clipAnimations.Length;
+                        if (info.clipCount <= 0)
+                            info.clipCount = importer.defaultClipAnimations.Length;
+                        int gMaxKfc = 0;
+                        string gCurveName = string.Empty;
+                        string gClipName = string.Empty;
+                        var objs = AssetDatabase.LoadAllAssetsAtPath(importer.assetPath);
+                        foreach(var clipObj in objs) {
+                            var clip = clipObj as AnimationClip;
+                            if (null != clip) {
+                                if (importer.clipAnimations.Length > 0) {
+                                    bool isDefault = false;
+                                    foreach (var ci in importer.defaultClipAnimations) {
+                                        if (ci.name == clip.name) {
+                                            isDefault = true;
+                                            break;
+                                        }
+                                    }
+                                    if (isDefault)
+                                        continue;
+                                }
+                                var clipInfo = new AnimationClipInfo();
+                                clipInfo.clipName = clip.name;
+                                var bindings = AnimationUtility.GetCurveBindings(clip);
+                                int maxKfc = 0;
+                                string curveName = string.Empty;
+                                foreach (var binding in bindings) {
+                                    var curve = AnimationUtility.GetEditorCurve(clip, binding);
+                                    int kfc = curve.keys.Length;
+                                    clipInfo.keyFrameCounts.Add(kfc);
+                                    clipInfo.curves.Add(binding.path + "/" + binding.propertyName);
+                                    if (maxKfc < kfc) {
+                                        maxKfc = kfc;
+                                        curveName = binding.path + "/" + binding.propertyName;
+                                    }
+                                }
+                                clipInfo.maxKeyFrameCount = maxKfc;
+                                clipInfo.maxKeyFrameCurveName = curveName;
+                                info.clips.Add(clipInfo);
+
+                                if (gMaxKfc < maxKfc) {
+                                    gMaxKfc = maxKfc;
+                                    gCurveName = curveName;
+                                    gClipName = clip.name;
                                 }
                             }
                         }
+                        info.maxKeyFrameCount = gMaxKfc;
+                        info.maxKeyFrameCurveName = gCurveName;
+                        info.maxKeyFrameClipName = gClipName;
                     }
-                    info.maxKeyFrameCount = maxKfc;
-                    info.maxKeyFrameCurveName = curveName;
-                    info.maxKeyFrameClipName = clipName;
                     r = info;
                 }
             }
@@ -1343,10 +1414,10 @@ namespace ResourceEditApi
                             var curve = AnimationUtility.GetEditorCurve(clip, binding);
                             int kfc = curve.keys.Length;
                             clipInfo.keyFrameCounts.Add(kfc);
-                            clipInfo.curves.Add(binding.path);
+                            clipInfo.curves.Add(binding.path + "/" + binding.propertyName);
                             if (maxKfc < kfc) {
                                 maxKfc = kfc;
-                                curveName = binding.path;
+                                curveName = binding.path + "/" + binding.propertyName;
                             }
                         }
                         clipInfo.maxKeyFrameCount = maxKfc;
@@ -1384,6 +1455,44 @@ namespace ResourceEditApi
                 ct += CalcSubStateMachineCount(ssm.stateMachine);
             }
             return ct;
+        }
+    }
+    internal class GetAnimationClipInfoExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands, object[] args)
+        {
+            object r = null;
+            if (operands.Count >= 0) {
+                string assetPath = Calculator.NamedVariables["assetpath"] as string;
+                if (!string.IsNullOrEmpty(assetPath)) {
+                    var obj = AssetDatabase.LoadMainAssetAtPath(assetPath);
+                    if (null != obj) {
+                        var clip = obj as AnimationClip;
+                        if (null != clip) {
+                            var clipInfo = new AnimationClipInfo();
+                            clipInfo.clipName = clip.name;
+                            var bindings = AnimationUtility.GetCurveBindings(clip);
+                            int maxKfc = 0;
+                            string curveName = string.Empty;
+                            foreach (var binding in bindings) {
+                                var curve = AnimationUtility.GetEditorCurve(clip, binding);
+                                int kfc = curve.keys.Length;
+                                clipInfo.keyFrameCounts.Add(kfc);
+                                clipInfo.curves.Add(binding.path + "/" + binding.propertyName);
+                                if (maxKfc < kfc) {
+                                    maxKfc = kfc;
+                                    curveName = binding.path + "/" + binding.propertyName;
+                                }
+                            }
+                            clipInfo.maxKeyFrameCount = maxKfc;
+                            clipInfo.maxKeyFrameCurveName = curveName;
+                            r = clipInfo;
+                        }
+                        Resources.UnloadAsset(obj);
+                    }
+                }
+            }
+            return r;
         }
     }
     internal class GetAnimationCompressionExp : Expression.SimpleExpressionBase
@@ -2691,7 +2800,7 @@ namespace Expression
             object v1 = m_Op1.Calc(args);
             object v2 = null;
             object v3 = null;
-            object v = ToDouble(v1) != 0 ? v2 = m_Op2.Calc(args) : v3 = m_Op3.Calc(args);
+            object v = ToLong(v1) != 0 ? v2 = m_Op2.Calc(args) : v3 = m_Op3.Calc(args);
             return v;
         }
         protected override bool Load(Dsl.StatementData statementData)
@@ -2725,7 +2834,7 @@ namespace Expression
                 var clause = m_Clauses[ix];
                 if (null != clause.Condition) {
                     object condVal = clause.Condition.Calc(args);
-                    if (ToDouble(condVal) != 0) {
+                    if (ToLong(condVal) != 0) {
                         for (int index = 0; index < clause.Expressions.Count; ++index) {
                             v = clause.Expressions[index].Calc(args);
                         }
@@ -2804,7 +2913,7 @@ namespace Expression
             object v = 0;
             for (;;) {
                 object condVal = m_Condition.Calc(args);
-                if (ToDouble(condVal) != 0) {
+                if (ToLong(condVal) != 0) {
                     for (int index = 0; index < m_Expressions.Count; ++index) {
                         v = m_Expressions[index].Calc(args);
                     }
@@ -3250,6 +3359,102 @@ namespace Expression
 
         private List<IExpression> m_Expressions = new List<IExpression>();
     }
+    internal sealed class LinqExp : AbstractExpression
+    {
+        public override object Calc(object[] args)
+        {
+            object v = 0;
+            object list = m_List.Calc(args);
+            string method = m_Method.Calc(args) as string;
+            IEnumerable obj = list as IEnumerable;
+            if (null != obj && !string.IsNullOrEmpty(method)) {
+                if (method == "orderby" || method == "orderbydesc") {
+                    bool desc = method == "orderbydesc";
+                    List<object> results = new List<object>();
+                    IEnumerator enumer = obj.GetEnumerator();
+                    while (enumer.MoveNext()) {
+                        object val = enumer.Current;
+                        results.Add(val);
+                    }
+                    results.Sort((object o1, object o2) => {
+                        Calculator.NamedVariables["$$"] = o1;
+                        object r1 = null;
+                        for (int index = 0; index < m_Expressions.Count; ++index) {
+                            r1 = m_Expressions[index].Calc(args);
+                        }
+                        Calculator.NamedVariables["$$"] = o2;
+                        object r2 = null;
+                        for (int index = 0; index < m_Expressions.Count; ++index) {
+                            r2 = m_Expressions[index].Calc(args);
+                        }
+                        string rs1 = r1 as string;
+                        string rs2 = r2 as string;
+                        int r = 0;
+                        if(null != rs1 && null != rs2) {
+                            r = rs1.CompareTo(rs2);
+                        } else {
+                            double rd1 = ToDouble(r1);
+                            double rd2 = ToDouble(r2);
+                            r = rd1.CompareTo(rd2);
+                        }
+                        if (desc)
+                            r = -r;
+                        return r;
+                    });
+                    v = results;
+                } else if(method == "where") {
+                    List<object> results = new List<object>();
+                    IEnumerator enumer = obj.GetEnumerator();
+                    while (enumer.MoveNext()) {
+                        object val = enumer.Current;
+
+                        Calculator.NamedVariables["$$"] = val;
+                        object r = null;
+                        for (int index = 0; index < m_Expressions.Count; ++index) {
+                            r = m_Expressions[index].Calc(args);
+                        }
+                        if (ToLong(r) != 0) {
+                            results.Add(val);
+                        }
+                    }
+                    v = results;
+                } else if(method == "top") {
+                    object r = null;
+                    for (int index = 0; index < m_Expressions.Count; ++index) {
+                        r = m_Expressions[index].Calc(args);
+                    }
+                    long ct = ToLong(r);
+                    List<object> results = new List<object>();
+                    IEnumerator enumer = obj.GetEnumerator();
+                    while (enumer.MoveNext()) {
+                        object val = enumer.Current;
+                        if (ct > 0) {
+                            results.Add(val);
+                            --ct;
+                        }
+                    }
+                    v = results;
+                }
+            }
+            return v;
+        }
+        protected override bool Load(Dsl.CallData callData)
+        {
+            Dsl.ISyntaxComponent list = callData.GetParam(0);
+            m_List = Calculator.Load(list);
+            Dsl.ISyntaxComponent method = callData.GetParam(1);
+            m_Method = Calculator.Load(method);
+            for (int i = 2; i < callData.GetParamNum(); ++i) {
+                Dsl.ISyntaxComponent param = callData.GetParam(i);
+                m_Expressions.Add(Calculator.Load(param));
+            }
+            return true;
+        }
+
+        private IExpression m_List;
+        private IExpression m_Method;
+        private List<IExpression> m_Expressions = new List<IExpression>();
+    }
     internal sealed class IsNullExp : AbstractExpression
     {
         public override object Calc(object[] args)
@@ -3518,6 +3723,7 @@ namespace Expression
             Register("dotnetcall", new ExpressionFactoryHelper<DotnetCallExp>());
             Register("dotnetset", new ExpressionFactoryHelper<DotnetSetExp>());
             Register("dotnetget", new ExpressionFactoryHelper<DotnetGetExp>());
+            Register("linq", new ExpressionFactoryHelper<LinqExp>());
             Register("isnull", new ExpressionFactoryHelper<IsNullExp>());
             Register("loadasset", new ExpressionFactoryHelper<LoadAssetExp>());
             Register("unloadasset", new ExpressionFactoryHelper<UnloadAssetExp>());
@@ -3655,8 +3861,15 @@ namespace Expression
                                     innerParamClass == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
                                     innerParamClass == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS)) {
                                     //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> dotnetcall(obj,member,a,b,...)
+                                    string apiName;
+                                    string member = innerCall.GetParamId(0);
+                                    if (member == "orderby" || member == "orderbydesc" || member == "where" || member == "top") {
+                                        apiName = "linq";
+                                    } else {
+                                        apiName = "dotnetcall";
+                                    }
                                     Dsl.CallData newCall = new Dsl.CallData();
-                                    newCall.Name = new Dsl.ValueData("dotnetcall", Dsl.ValueData.ID_TOKEN);
+                                    newCall.Name = new Dsl.ValueData(apiName, Dsl.ValueData.ID_TOKEN);
                                     newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                     if (innerCall.IsHighOrder) {
                                         newCall.Params.Add(innerCall.Call);
@@ -3674,9 +3887,15 @@ namespace Expression
                                         }
                                     }
 
-                                    var callExp = new DotnetCallExp();
-                                    callExp.Load(newCall, this);
-                                    return callExp;
+                                    if (apiName == "dotnetcall") {
+                                        var callExp = new DotnetCallExp();
+                                        callExp.Load(newCall, this);
+                                        return callExp;
+                                    } else {
+                                        var callExp = new LinqExp();
+                                        callExp.Load(newCall, this);
+                                        return callExp;
+                                    }
                                 }
                             }
                             if (paramClass == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||

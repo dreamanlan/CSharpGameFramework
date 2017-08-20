@@ -150,8 +150,15 @@ namespace StorySystem
                           innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS
                           )) {
                             //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> dotnetcall(obj,member,a,b,...)
+                            string method = innerCall.GetParamId(0);
+                            string apiName;
+                            if (method == "orderby" || method == "orderbydesc" || method == "where" || method == "top") {
+                                apiName = "linq";
+                            } else {
+                                apiName = "dotnetcall";
+                            }
                             Dsl.CallData newCall = new Dsl.CallData();
-                            newCall.Name = new Dsl.ValueData("dotnetcall", Dsl.ValueData.ID_TOKEN);
+                            newCall.Name = new Dsl.ValueData(apiName, Dsl.ValueData.ID_TOKEN);
                             newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                             if (innerCall.IsHighOrder) {
                                 newCall.Params.Add(innerCall.Call);

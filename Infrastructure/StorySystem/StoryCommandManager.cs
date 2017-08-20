@@ -278,6 +278,7 @@ namespace StorySystem
             StoryValueManager.Instance.RegisterValueFactory("changetype", new StoryValueFactoryHelper<CommonValues.ChangeTypeValue>());
             StoryValueManager.Instance.RegisterValueFactory("pgrep", new StoryValueFactoryHelper<CommonValues.PgrepValue>());
             StoryValueManager.Instance.RegisterValueFactory("plist", new StoryValueFactoryHelper<CommonValues.PlistValue>());
+            StoryValueManager.Instance.RegisterValueFactory("linq", new StoryValueFactoryHelper<CommonValues.LinqValue>());
             StoryValueManager.Instance.RegisterValueFactory("json2str", new StoryValueFactoryHelper<CommonValues.Json2StrValue>());
             StoryValueManager.Instance.RegisterValueFactory("str2json", new StoryValueFactoryHelper<CommonValues.Str2JsonValue>());
             StoryValueManager.Instance.RegisterValueFactory("jsonarray", new StoryValueFactoryHelper<CommonValues.JsonArrayValue>());
