@@ -204,6 +204,10 @@ namespace StorySystem
             RegisterCommandFactory("if", new StoryCommandFactoryHelper<CommonCommands.IfElseCommand>());
             RegisterCommandFactory("log", new StoryCommandFactoryHelper<CommonCommands.LogCommand>());
             RegisterCommandFactory("listset", new StoryCommandFactoryHelper<CommonCommands.ListSetCommand>());
+            RegisterCommandFactory("listadd", new StoryCommandFactoryHelper<CommonCommands.ListAddCommand>());
+            RegisterCommandFactory("listremove", new StoryCommandFactoryHelper<CommonCommands.ListRemoveCommand>());
+            RegisterCommandFactory("listinsert", new StoryCommandFactoryHelper<CommonCommands.ListInsertCommand>());
+            RegisterCommandFactory("listremoveat", new StoryCommandFactoryHelper<CommonCommands.ListRemoveAtCommand>());
             RegisterCommandFactory("dotnetexec", new StoryCommandFactoryHelper<CommonCommands.DotnetExecCommand>());
             RegisterCommandFactory("dotnetset", new StoryCommandFactoryHelper<CommonCommands.DotnetSetCommand>());
             RegisterCommandFactory("system", new StoryCommandFactoryHelper<CommonCommands.SystemCommand>());
@@ -230,6 +234,7 @@ namespace StorySystem
             StoryValueManager.Instance.RegisterValueFactory("rndfromlist", new StoryValueFactoryHelper<CommonValues.RandomFromListValue>());
             StoryValueManager.Instance.RegisterValueFactory("listget", new StoryValueFactoryHelper<CommonValues.ListGetValue>());
             StoryValueManager.Instance.RegisterValueFactory("listsize", new StoryValueFactoryHelper<CommonValues.ListSizeValue>());
+            StoryValueManager.Instance.RegisterValueFactory("listindexof", new StoryValueFactoryHelper<CommonValues.ListIndexOfValue>());
             StoryValueManager.Instance.RegisterValueFactory("vector2dist", new StoryValueFactoryHelper<CommonValues.Vector2DistanceValue>());
             StoryValueManager.Instance.RegisterValueFactory("vector3dist", new StoryValueFactoryHelper<CommonValues.Vector3DistanceValue>());
             StoryValueManager.Instance.RegisterValueFactory("vector2to3", new StoryValueFactoryHelper<CommonValues.Vector2To3Value>());

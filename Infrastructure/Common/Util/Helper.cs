@@ -7,6 +7,30 @@ namespace GameFramework
 {
     public sealed class Helper
     {
+        public static T ConvertTo<T>(object obj)
+        {
+            if (obj is T) {
+                return (T)obj;
+            } else {
+                try {
+                    return (T)Convert.ChangeType(obj, typeof(T));
+                } catch {
+                    return default(T);
+                }
+            }
+        }
+        public static object ConvertTo(object obj, Type type)
+        {
+            if (type.IsAssignableFrom(obj.GetType()) || obj.GetType().IsSubclassOf(type)) {
+                return obj;
+            } else {
+                try {
+                    return Convert.ChangeType(obj, type);
+                } catch {
+                    return null;
+                }
+            }
+        }
         public static void BubbleSort<T>(List<T> list, Comparison<T> comparison)
         {
             int ct = list.Count;

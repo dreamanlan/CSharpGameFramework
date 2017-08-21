@@ -1,6 +1,6 @@
 input("MeshRenderer")
 {
-	option("source", "scene");
+	option("source", "sceneobjects");
 }
 process
 {

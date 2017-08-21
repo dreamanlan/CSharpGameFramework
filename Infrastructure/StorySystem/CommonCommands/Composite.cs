@@ -145,7 +145,7 @@ namespace StorySystem.CommonCommands
                         stackInfo.m_CommandQueue.Enqueue(cmd.LeadCommand);
                     stackInfo.m_CommandQueue.Enqueue(cmd);
                 }
-            } else {
+            } else if (null != m_InitialCommands) {
                 for (int i = 0; i < m_InitialCommands.Count; ++i) {
                     IStoryCommand cmd = m_InitialCommands[i].Clone();
                     if (null != cmd.LeadCommand)

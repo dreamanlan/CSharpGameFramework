@@ -1367,6 +1367,70 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private object m_Value;
     }
+    internal sealed class ListIndexOfValue : IStoryValue<object>
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetId() == "listindexof") {
+
+                m_ParamNum = callData.GetParamNum();
+                if (m_ParamNum > 1) {
+                    m_ListValue.InitFromDsl(callData.GetParam(0));
+                    m_IndexOfValue.InitFromDsl(callData.GetParam(1));
+                    TryUpdateValue();
+                }
+            }
+        }
+        public IStoryValue<object> Clone()
+        {
+            ListIndexOfValue val = new ListIndexOfValue();
+            val.m_ParamNum = m_ParamNum;
+            val.m_ListValue = m_ListValue.Clone();
+            val.m_IndexOfValue = m_IndexOfValue.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            if (m_ParamNum > 1) {
+                m_ListValue.Evaluate(instance, iterator, args);
+                m_IndexOfValue.Evaluate(instance, iterator, args);
+            }
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue()
+        {
+            if (m_ListValue.HaveValue && m_IndexOfValue.HaveValue) {
+                m_HaveValue = true;
+                IList listValue = m_ListValue.Value;
+                object val = m_IndexOfValue.Value;
+                m_Value = listValue.IndexOf(val);
+            }
+        }
+        private int m_ParamNum = 0;
+        private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
+        private IStoryValue<object> m_IndexOfValue = new StoryValue();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
     internal sealed class RandVector3Value : IStoryValue<object>
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)

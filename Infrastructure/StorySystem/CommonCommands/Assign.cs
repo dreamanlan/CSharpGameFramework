@@ -360,4 +360,157 @@ namespace StorySystem.CommonCommands
         private IStoryValue<int> m_IndexValue = new StoryValue<int>();
         private IStoryValue<object> m_Value = new StoryValue();
     }
+    /// <summary>
+    /// listadd(list,value);
+    /// </summary>
+    internal sealed class ListAddCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ListAddCommand cmd = new ListAddCommand();
+            cmd.m_ListValue = m_ListValue.Clone();
+            cmd.m_Value = m_Value.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ListValue.Evaluate(instance, iterator, args);
+            m_Value.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            if (m_ListValue.HaveValue && m_Value.HaveValue) {
+                IList listValue = m_ListValue.Value;
+                object val = m_Value.Value;
+                listValue.Add(val);
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ListValue.InitFromDsl(callData.GetParam(0));
+                m_Value.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
+        private IStoryValue<object> m_Value = new StoryValue();
+    }
+    /// <summary>
+    /// listremove(list,value);
+    /// </summary>
+    internal sealed class ListRemoveCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ListRemoveCommand cmd = new ListRemoveCommand();
+            cmd.m_ListValue = m_ListValue.Clone();
+            cmd.m_Value = m_Value.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ListValue.Evaluate(instance, iterator, args);
+            m_Value.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            if (m_ListValue.HaveValue && m_Value.HaveValue) {
+                IList listValue = m_ListValue.Value;
+                object val = m_Value.Value;
+                listValue.Remove(val);
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ListValue.InitFromDsl(callData.GetParam(0));
+                m_Value.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
+        private IStoryValue<object> m_Value = new StoryValue();
+    }
+    /// <summary>
+    /// listinsert(list,index,value);
+    /// </summary>
+    internal sealed class ListInsertCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ListInsertCommand cmd = new ListInsertCommand();
+            cmd.m_ListValue = m_ListValue.Clone();
+            cmd.m_IndexValue = m_IndexValue.Clone();
+            cmd.m_Value = m_Value.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ListValue.Evaluate(instance, iterator, args);
+            m_IndexValue.Evaluate(instance, iterator, args);
+            m_Value.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            if (m_ListValue.HaveValue && m_IndexValue.HaveValue && m_Value.HaveValue) {
+                IList listValue = m_ListValue.Value;
+                int index = m_IndexValue.Value;
+                object val = m_Value.Value;
+                listValue.Insert(index, val);
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 2) {
+                m_ListValue.InitFromDsl(callData.GetParam(0));
+                m_IndexValue.InitFromDsl(callData.GetParam(1));
+                m_Value.InitFromDsl(callData.GetParam(2));
+            }
+        }
+        private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
+        private IStoryValue<int> m_IndexValue = new StoryValue<int>();
+        private IStoryValue<object> m_Value = new StoryValue();
+    }
+    /// <summary>
+    /// listremoveat(list,index,value);
+    /// </summary>
+    internal sealed class ListRemoveAtCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ListRemoveAtCommand cmd = new ListRemoveAtCommand();
+            cmd.m_ListValue = m_ListValue.Clone();
+            cmd.m_IndexValue = m_IndexValue.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ListValue.Evaluate(instance, iterator, args);
+            m_IndexValue.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            if (m_ListValue.HaveValue && m_IndexValue.HaveValue) {
+                IList listValue = m_ListValue.Value;
+                int index = m_IndexValue.Value;
+                listValue.RemoveAt(index);
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ListValue.InitFromDsl(callData.GetParam(0));
+                m_IndexValue.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
+        private IStoryValue<int> m_IndexValue = new StoryValue<int>();
+    }
 }

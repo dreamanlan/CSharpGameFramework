@@ -7,6 +7,7 @@ input("*.tga","*.png","*.jpg")
 		multiple(["readable","mipmap"],[1,2]);
 	};
 	string("filter", "");
+	feature("source", "sceneassets");
 }
 filter
 {
