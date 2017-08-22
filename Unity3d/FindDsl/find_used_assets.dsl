@@ -1,4 +1,4 @@
-input("t:texture","t:mesh","t:model")
+input("t:texture","t:mesh","t:model","t:material")
 {
 	string("filter", "");
 	feature("source", "allassets");
@@ -6,7 +6,6 @@ input("t:texture","t:mesh","t:model")
 filter
 {
   if(assetpath.Contains(filter)){
-    info = stringjoin(",", getreferencebyassets(assetpath));
     1;
   }else{
     0;

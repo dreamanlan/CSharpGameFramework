@@ -1,4 +1,4 @@
-input("*.tga","*.png","*.jpg")
+input("*.tga","*.png","*.jpg","*.exr")
 {
 	int("maxSize",256){
 		range(1,1024);

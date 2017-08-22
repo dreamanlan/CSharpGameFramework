@@ -1,9 +1,10 @@
 input("*.tga","*.png","*.jpg")
 {
-	int("maxSize",256);
+	int("maxSize",512);
 	int("postprocessindex", 1){
 	  popup(1..16);
 	};	
+	feature("source", "sceneassets");
 	feature("postprocessclass","PostProcessDataOfIos");
 	feature("postprocessmethod","GetTextureSet");	
 }

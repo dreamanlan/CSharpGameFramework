@@ -1,4 +1,4 @@
-input("*.tga","*.png","*.jpg","*.fbx","*.mat","*.controller")
+input("*.tga","*.png","*.jpg","*.fbx","*.exr","*.mat","*.controller","*.shader")
 {
 	string("filter", "");
 	feature("source", "unusedassets");
