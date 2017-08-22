@@ -1306,7 +1306,7 @@ internal static class ResourceEditUtility
     {
         try {
             object ret = null;
-            if (null != importer && null != calc) {
+            if (null != calc) {
                 calc.NamedVariables.Clear();
                 calc.NamedVariables.Add("assetpath", path);
                 calc.NamedVariables.Add("importer", importer);
