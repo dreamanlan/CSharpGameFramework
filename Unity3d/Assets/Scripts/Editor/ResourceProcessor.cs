@@ -185,7 +185,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 m_EditedParams.Clear();
             }
         }
-        if (m_ResourceList.Count <= 0 && string.IsNullOrEmpty(m_CollectPath)) {
+        if (m_ItemList.Count <= 0 && string.IsNullOrEmpty(m_CollectPath)) {
             if (!string.IsNullOrEmpty(m_Text)) {
                 m_PanelPos = EditorGUILayout.BeginScrollView(m_PanelPos, true, true);
                 EditorGUILayout.TextArea(m_Text);
@@ -309,7 +309,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 m_FilterCalculator = null;
                 m_ProcessCalculator = null;
             }
-            m_ResourceList.Clear();
+            m_ItemList.Clear();
             m_Page = 1;
             m_SelectedAssetPath = string.Empty;
         }
@@ -464,18 +464,28 @@ public sealed class ResourceEditWindow : EditorWindow
     private void Refresh()
     {
         if (m_SearchSource == "sceneobjects") {
-            m_ResourceList.Clear();
+            m_ItemList.Clear();
+            m_Page = 1;
+            m_SelectedAssetPath = string.Empty;
+            m_CurSearchCount = 0;
+            m_TotalSearchCount = CountSceneObjects();
+            if (m_TotalSearchCount > 0) {
+                SearchSceneObjects();
+                EditorUtility.ClearProgressBar();
+            }
+        } else if (m_SearchSource == "sceneareas") {
+            m_ItemList.Clear();
             m_Page = 1;
             m_SelectedAssetPath = string.Empty;
             m_CurSearchCount = 0;
             m_TotalSearchCount = 0;
-            CountSceneObjectsRecursively();
+            CountSceneAreas();
             if (m_TotalSearchCount > 0) {
-                SearchSceneObjectsRecursively();
+                SearchSceneAreas();
                 EditorUtility.ClearProgressBar();
             }
         } else if (m_SearchSource == "sceneassets") {
-            m_ResourceList.Clear();
+            m_ItemList.Clear();
             m_Page = 1;
             m_SelectedAssetPath = string.Empty;
             m_CurSearchCount = 0;
@@ -486,7 +496,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 EditorUtility.ClearProgressBar();
             }
         } else if (m_SearchSource == "allassets") {
-            m_ResourceList.Clear();
+            m_ItemList.Clear();
             m_Page = 1;
             m_SelectedAssetPath = string.Empty;
             m_CurSearchCount = 0;
@@ -497,7 +507,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 EditorUtility.ClearProgressBar();
             }
         } else if (m_SearchSource == "unusedassets") {
-            m_ResourceList.Clear();
+            m_ItemList.Clear();
             m_Page = 1;
             m_SelectedAssetPath = string.Empty;
             m_CurSearchCount = 0;
@@ -515,7 +525,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 }
             }
             if (!string.IsNullOrEmpty(m_CollectPath)) {
-                m_ResourceList.Clear();
+                m_ItemList.Clear();
                 m_Page = 1;
                 m_SelectedAssetPath = string.Empty;
                 m_CurSearchCount = 0;
@@ -542,14 +552,14 @@ public sealed class ResourceEditWindow : EditorWindow
         }
         int totalSelectedCount = 0;
         int index = 0;
-        foreach (var item in m_ResourceList) {
+        foreach (var item in m_ItemList) {
             if (item.Selected) {
                 ++totalSelectedCount;
             }
         }
-        foreach (var item in m_ResourceList) {
+        foreach (var item in m_ItemList) {
             if (item.Selected) {
-                ResourceEditUtility.Process(item.Path, item.Importer, item.Object, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
+                ResourceEditUtility.Process(false, item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
                 ++index;
                 EditorUtility.DisplayProgressBar("处理进度", string.Format("{0}/{1}", index, totalSelectedCount), index * 1.0f / totalSelectedCount);
             }
@@ -582,7 +592,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 if (m_Params.TryGetValue("maxSize", out v) && v.Type == typeof(int)) {
                     sw.WriteLine("\t\tmaxSize = {0};", (int)v.Value);
                 }
-                foreach (var item in m_ResourceList) {
+                foreach (var item in m_ItemList) {
                     if (item.Selected && !string.IsNullOrEmpty(item.Path)) {
                         sw.WriteLine("\t\tlist.Add(\"{0}\");", item.Path);
                     }
@@ -591,7 +601,7 @@ public sealed class ResourceEditWindow : EditorWindow
             } else {
                 sw.WriteLine("\tstatic partial void {0}(HashSet<string> list)", m_PostProcessMethod);
                 sw.WriteLine("\t{");
-                foreach (var item in m_ResourceList) {
+                foreach (var item in m_ItemList) {
                     if (item.Selected && !string.IsNullOrEmpty(item.Path)) {
                         sw.WriteLine("\t\tlist.Add(\"{0}\");", item.Path);
                     }
@@ -605,7 +615,7 @@ public sealed class ResourceEditWindow : EditorWindow
 
     private void Sort(bool asc)
     {
-        m_ResourceList.Sort((a, b) => {
+        m_ItemList.Sort((a, b) => {
             int v;
             if (a.Order < b.Order)
                 v = -1;
@@ -623,17 +633,17 @@ public sealed class ResourceEditWindow : EditorWindow
     {
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("全选", GUILayout.Width(40))) {
-            foreach (ItemInfo item in m_ResourceList) {
+            foreach (var item in m_ItemList) {
                 item.Selected = true;
             }
         }
         if (GUILayout.Button("全不选", GUILayout.Width(60))) {
-            foreach (ItemInfo item in m_ResourceList) {
+            foreach (var item in m_ItemList) {
                 item.Selected = false;
             }
         }
-        GUILayout.Label(string.Format("Total count ({0})", m_ResourceList.Count), GUILayout.Width(120));
-        GUILayout.Label(string.Format("Go to page ({0})", m_ResourceList.Count / c_ItemsPerPage + 1), GUILayout.Width(100));
+        GUILayout.Label(string.Format("Total count ({0})", m_ItemList.Count), GUILayout.Width(120));
+        GUILayout.Label(string.Format("Go to page ({0})", m_ItemList.Count / c_ItemsPerPage + 1), GUILayout.Width(100));
         string strPage = EditorGUILayout.TextField(m_Page.ToString(), GUILayout.Width(40));
         int.TryParse(strPage, out m_Page);
         if (GUILayout.Button("Prev", GUILayout.Width(80))) {
@@ -652,7 +662,7 @@ public sealed class ResourceEditWindow : EditorWindow
             Sort(false);
         }
         EditorGUILayout.EndHorizontal();
-        m_Page = Mathf.Max(1, Mathf.Min(m_ResourceList.Count / c_ItemsPerPage + 1, m_Page));
+        m_Page = Mathf.Max(1, Mathf.Min(m_ItemList.Count / c_ItemsPerPage + 1, m_Page));
         bool showReferences = false;
         float rightWidth = 0;
         if (!string.IsNullOrEmpty(m_SelectedAssetPath) && (m_ReferenceAssets.Count > 0 || m_ReferenceByAssets.Count > 0)) {
@@ -665,7 +675,7 @@ public sealed class ResourceEditWindow : EditorWindow
         m_PanelPos = EditorGUILayout.BeginScrollView(m_PanelPos, true, true, GUILayout.Width(windowWidth - rightWidth));
         int index = 0;
         int totalShown = 0;
-        foreach (ItemInfo item in m_ResourceList) {
+        foreach (var item in m_ItemList) {
             ++index;
             if (index <= (m_Page - 1) * c_ItemsPerPage)
                 continue;
@@ -674,11 +684,12 @@ public sealed class ResourceEditWindow : EditorWindow
                 break;
             EditorGUILayout.BeginHorizontal();
             item.Selected = GUILayout.Toggle(item.Selected, index + ".", GUILayout.Width(60));
-            if (m_SearchSource == "sceneobjects") {
+            if (m_SearchSource == "sceneobjects" || m_SearchSource == "sceneareas") {
                 var oldAlignment = GUI.skin.button.alignment;
                 GUI.skin.button.alignment = TextAnchor.MiddleLeft;
-                if (GUILayout.Button(new GUIContent(item.Path), GUILayout.Width(windowWidth - rightWidth))) {
+                if (GUILayout.Button(new GUIContent(item.Path), GUILayout.MinWidth(80), GUILayout.MaxWidth(windowWidth - rightWidth))) {
                     Selection.activeObject = item.Object;
+                    SelectSceneObject(item.Object);
                     m_SelectedAssetPath = string.Empty;
                 }
                 GUI.skin.button.alignment = oldAlignment;
@@ -686,16 +697,16 @@ public sealed class ResourceEditWindow : EditorWindow
                 Texture icon = AssetDatabase.GetCachedIcon(item.Path);
                 var oldAlignment = GUI.skin.button.alignment;
                 GUI.skin.button.alignment = TextAnchor.MiddleLeft;
-                if (GUILayout.Button(new GUIContent(item.Path, icon, item.Path), GUILayout.MaxWidth(windowWidth - rightWidth))) {
+                if (GUILayout.Button(new GUIContent(item.Path, icon, item.Path), GUILayout.MinWidth(80), GUILayout.MaxWidth(windowWidth - rightWidth))) {
                     if (null != item.Object)
-                        Selection.activeObject = item.Object;
+                        SelectObject(item.Object);
                     else
                         SelectObject(item.Path);
                     m_SelectedAssetPath = item.Path;
                 }
                 GUI.skin.button.alignment = oldAlignment;
             }
-            EditorGUILayout.TextArea(item.Info, GUILayout.MaxHeight(72), GUILayout.MinWidth(80));
+            EditorGUILayout.TextArea(item.Info, GUILayout.MaxHeight(72), GUILayout.MinWidth(80), GUILayout.MaxWidth(windowWidth - rightWidth));
             EditorGUILayout.EndHorizontal();
         }
         EditorGUILayout.EndScrollView();
@@ -717,7 +728,7 @@ public sealed class ResourceEditWindow : EditorWindow
                     Texture icon = AssetDatabase.GetCachedIcon(assetPath);
                     var oldAlignment = GUI.skin.button.alignment;
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
-                    if (GUILayout.Button(new GUIContent(assetPath, icon, assetPath), GUILayout.MaxWidth(rightWidth))) {
+                    if (GUILayout.Button(new GUIContent(assetPath, icon, assetPath), GUILayout.MinWidth(80), GUILayout.MaxWidth(rightWidth))) {
                         SelectObject(assetPath);
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -734,7 +745,7 @@ public sealed class ResourceEditWindow : EditorWindow
                     Texture icon = AssetDatabase.GetCachedIcon(assetPath);
                     var oldAlignment = GUI.skin.button.alignment;
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
-                    if (GUILayout.Button(new GUIContent(assetPath, icon, assetPath), GUILayout.MaxWidth(rightWidth))) {
+                    if (GUILayout.Button(new GUIContent(assetPath, icon, assetPath), GUILayout.MinWidth(80), GUILayout.MaxWidth(rightWidth))) {
                         SelectObject(assetPath);
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -746,7 +757,7 @@ public sealed class ResourceEditWindow : EditorWindow
         }
         EditorGUILayout.EndHorizontal();
     }
-    
+
     private void SearchFiles(string dir)
     {
         string dirName = Path.GetFileName(dir).ToLower();
@@ -767,32 +778,12 @@ public sealed class ResourceEditWindow : EditorWindow
             ++m_CurSearchCount;
             string assetPath = PathToAssetPath(file);
             var importer = AssetImporter.GetAtPath(assetPath);
-            UnityEngine.Object obj = null;
-            var ret = ResourceEditUtility.Process(assetPath, importer, obj, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
+            var item = new ResourceEditUtility.ItemInfo { Path = assetPath, Importer = importer, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
+            var ret = ResourceEditUtility.Process(true, item, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
             if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
-                string info = string.Empty;
-                int order = m_ResourceList.Count;
-                if (null != m_FilterCalculator) {
-                    object v;
-                    if (m_FilterCalculator.NamedVariables.TryGetValue("object", out v)) {
-                        if (null != v) {
-                            obj = v as UnityEngine.Object;
-                        }
-                    }
-                    if (m_FilterCalculator.NamedVariables.TryGetValue("info", out v)) {
-                        info = v as string;
-                        if (null == info)
-                            info = string.Empty;
-                    }
-                    if (m_FilterCalculator.NamedVariables.TryGetValue("order", out v)) {
-                        if (null != v) {
-                            order = (int)Convert.ChangeType(v, typeof(int));
-                        }
-                    }
-                }
-                m_ResourceList.Add(new ItemInfo { Path = assetPath, Importer = importer, Object = obj, Info = info, Order = order, Selected = false });
+                m_ItemList.Add(item);
             }
-            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
         }
         string[] dirs = Directory.GetDirectories(dir);
         foreach (string subDir in dirs) {
@@ -833,7 +824,7 @@ public sealed class ResourceEditWindow : EditorWindow
     private void CheckDuplication()
     {
         var hash = new HashSet<string>();
-        foreach (var info in m_ResourceList) {
+        foreach (var info in m_ItemList) {
             if (hash.Contains(info.Path)) {
                 Debug.LogWarningFormat("{0} duplicate !", info.Path);
             } else {
@@ -893,6 +884,46 @@ public sealed class ResourceEditWindow : EditorWindow
         EditorUtility.ClearProgressBar();
     }
 
+    private void AnalyseSceneObjects()
+    {
+        m_SceneAreaInfo.areas.Clear();
+        var terrain = Terrain.activeTerrain;
+        var size = terrain.terrainData.size;
+        m_SceneAreaInfo.Init(size);
+
+        int totalCount = CountSceneObjects();
+        int curCount = 0;
+
+        for (int i = 0; i < EditorSceneManager.sceneCount; ++i) {
+            var scene = EditorSceneManager.GetSceneAt(i);
+            var objs = scene.GetRootGameObjects();
+            foreach (var obj in objs) {
+                AnalyseChildObjectsRecursively(string.Empty, obj, totalCount, ref curCount);
+            }
+        }
+        EditorUtility.ClearProgressBar();
+    }
+
+    private void AnalyseChildObjectsRecursively(string path, GameObject obj, int totalCount, ref int curCount)
+    {
+        if (string.IsNullOrEmpty(path)) {
+            path = obj.name;
+        } else {
+            path = path + "/" + obj.name;
+        }
+
+        m_SceneAreaInfo.AddObject(path, obj);
+        ++curCount;
+        EditorUtility.DisplayProgressBar("物件分析进度", string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
+
+        var trans = obj.transform;
+        int ct = trans.childCount;
+        for (int i = 0; i < ct; ++i) {
+            var t = trans.GetChild(i);
+            AnalyseChildObjectsRecursively(path, t.gameObject, totalCount, ref curCount);
+        }
+    }
+
     private void SearchUnusedAssets()
     {
         if (m_UnusedAssets.Count <= 0)
@@ -909,32 +940,12 @@ public sealed class ResourceEditWindow : EditorWindow
                 ++m_CurSearchCount;
                 string assetPath = PathToAssetPath(file);
                 var importer = AssetImporter.GetAtPath(assetPath);
-                UnityEngine.Object obj = null;
-                var ret = ResourceEditUtility.Process(assetPath, importer, obj, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
+                var item = new ResourceEditUtility.ItemInfo { Path = assetPath, Importer = importer, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
+                var ret = ResourceEditUtility.Process(true, item, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
                 if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
-                    string info = string.Empty;
-                    int order = m_ResourceList.Count;
-                    if (null != m_FilterCalculator) {
-                        object v;
-                        if (m_FilterCalculator.NamedVariables.TryGetValue("object", out v)) {
-                            if (null != v) {
-                                obj = v as UnityEngine.Object;
-                            }
-                        }
-                        if (m_FilterCalculator.NamedVariables.TryGetValue("info", out v)) {
-                            info = v as string;
-                            if (null == info)
-                                info = string.Empty;
-                        }
-                        if (m_FilterCalculator.NamedVariables.TryGetValue("order", out v)) {
-                            if (null != v) {
-                                order = (int)Convert.ChangeType(v, typeof(int));
-                            }
-                        }
-                    }
-                    m_ResourceList.Add(new ItemInfo { Path = assetPath, Importer = importer, Object = obj, Info = info, Order = order, Selected = false });
+                    m_ItemList.Add(item);
                 }
-                EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+                EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
             }
         }
     }
@@ -971,32 +982,12 @@ public sealed class ResourceEditWindow : EditorWindow
             ++m_CurSearchCount;
             string assetPath = PathToAssetPath(file);
             var importer = AssetImporter.GetAtPath(assetPath);
-            UnityEngine.Object obj = null;
-            var ret = ResourceEditUtility.Process(assetPath, importer, obj, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
+            var item = new ResourceEditUtility.ItemInfo { Path = assetPath, Importer = importer, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
+            var ret = ResourceEditUtility.Process(true, item, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
             if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
-                string info = string.Empty;
-                int order = m_ResourceList.Count;
-                if (null != m_FilterCalculator) {
-                    object v;
-                    if (m_FilterCalculator.NamedVariables.TryGetValue("object", out v)) {
-                        if (null != v) {
-                            obj = v as UnityEngine.Object;
-                        }
-                    }
-                    if (m_FilterCalculator.NamedVariables.TryGetValue("info", out v)) {
-                        info = v as string;
-                        if (null == info)
-                            info = string.Empty;
-                    }
-                    if (m_FilterCalculator.NamedVariables.TryGetValue("order", out v)) {
-                        if (null != v) {
-                            order = (int)Convert.ChangeType(v, typeof(int));
-                        }
-                    }
-                }
-                m_ResourceList.Add(new ItemInfo { Path = assetPath, Importer = importer, Object = obj, Info = info, Order = order, Selected = false });
+                m_ItemList.Add(item);
             }
-            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
         }
     }
 
@@ -1027,32 +1018,12 @@ public sealed class ResourceEditWindow : EditorWindow
                     ++m_CurSearchCount;
                     string assetPath = PathToAssetPath(file);
                     var importer = AssetImporter.GetAtPath(assetPath);
-                    UnityEngine.Object obj = null;
-                    var ret = ResourceEditUtility.Process(assetPath, importer, obj, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
+                    var item = new ResourceEditUtility.ItemInfo { Path = assetPath, Importer = importer, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
+                    var ret = ResourceEditUtility.Process(true, item, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
                     if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
-                        string info = string.Empty;
-                        int order = m_ResourceList.Count;
-                        if (null != m_FilterCalculator) {
-                            object v;
-                            if (m_FilterCalculator.NamedVariables.TryGetValue("object", out v)) {
-                                if (null != v) {
-                                    obj = v as UnityEngine.Object;
-                                }
-                            }
-                            if (m_FilterCalculator.NamedVariables.TryGetValue("info", out v)) {
-                                info = v as string;
-                                if (null == info)
-                                    info = string.Empty;
-                            }
-                            if (m_FilterCalculator.NamedVariables.TryGetValue("order", out v)) {
-                                if (null != v) {
-                                    order = (int)Convert.ChangeType(v, typeof(int));
-                                }
-                            }
-                        }
-                        m_ResourceList.Add(new ItemInfo { Path = assetPath, Importer = importer, Object = obj, Info = info, Order = order, Selected = false });
+                        m_ItemList.Add(item);
                     }
-                    EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+                    EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
                 }
             }
         }
@@ -1075,7 +1046,43 @@ public sealed class ResourceEditWindow : EditorWindow
         }
     }
 
-    private void SearchSceneObjectsRecursively()
+    private void SearchSceneAreas()
+    {
+        foreach (var area in m_SceneAreaInfo.areas) {
+            ++m_CurSearchCount;
+            string path = AssetDatabase.GetAssetPath(PrefabUtility.GetPrefabParent(area.maxTriangleObject));
+            AssetImporter importer = null;
+            if (string.IsNullOrEmpty(path)) {
+                path = string.Format("{0},{1}", area.rowIndex, area.colIndex);
+            } else {
+                importer = AssetImporter.GetAtPath(path);
+            }
+            var item = new ResourceEditUtility.ItemInfo { Path = path, Importer = importer, Object = area.maxTriangleObject, Area = area, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
+            var ret = ResourceEditUtility.Process(true, item, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
+            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+                m_ItemList.Add(item);
+            }
+            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+        }
+    }
+
+    private void CountSceneAreas()
+    {
+        ResourceEditUtility.ParamInfo paramInfo;
+        if (m_Params.TryGetValue("areasize", out paramInfo) && paramInfo.Type == typeof(int)) {
+            int v = (int)paramInfo.Value;
+            if (ResourceEditUtility.SceneAreaInfo.s_AreaSize != v) {
+                ResourceEditUtility.SceneAreaInfo.s_AreaSize = v;
+                m_SceneAreaInfo.Clear();
+            }
+        }
+        if (m_SceneAreaInfo.areas.Count <= 0) {
+            AnalyseSceneObjects();
+        }
+        m_TotalSearchCount = m_SceneAreaInfo.areas.Count;
+    }
+
+    private void SearchSceneObjects()
     {
         for (int i = 0; i < EditorSceneManager.sceneCount; ++i) {
             var scene = EditorSceneManager.GetSceneAt(i);
@@ -1095,33 +1102,20 @@ public sealed class ResourceEditWindow : EditorWindow
         }
         ++m_CurSearchCount;
         if (IsMatchedObject(obj)) {
+            string assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetPrefabParent(obj));
             AssetImporter importer = null;
-            var ret = ResourceEditUtility.Process(path, importer, obj, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
+            if (string.IsNullOrEmpty(assetPath)) {
+                assetPath = path;
+            } else {
+                importer = AssetImporter.GetAtPath(assetPath);
+            }
+            var item = new ResourceEditUtility.ItemInfo { Path = assetPath, Importer = importer, Object = obj, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
+            var ret = ResourceEditUtility.Process(true, item, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
             if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
-                string info = string.Empty;
-                int order = m_ResourceList.Count;
-                if (null != m_FilterCalculator) {
-                    object v;
-                    if (m_FilterCalculator.NamedVariables.TryGetValue("importer", out v)) {
-                        if (null != v) {
-                            importer = v as AssetImporter;
-                        }
-                    }
-                    if (m_FilterCalculator.NamedVariables.TryGetValue("info", out v)) {
-                        info = v as string;
-                        if (null == info)
-                            info = string.Empty;
-                    }
-                    if (m_FilterCalculator.NamedVariables.TryGetValue("order", out v)) {
-                        if (null != v) {
-                            order = (int)Convert.ChangeType(v, typeof(int));
-                        }
-                    }
-                }
-                m_ResourceList.Add(new ItemInfo { Path = path, Importer = importer, Object = obj, Info = info, Order = order, Selected = false });
+                m_ItemList.Add(item);
             }
         }
-        EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ResourceList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+        EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
 
         var trans = obj.transform;
         int ct = trans.childCount;
@@ -1155,28 +1149,32 @@ public sealed class ResourceEditWindow : EditorWindow
         return false;
     }
 
-    private void CountSceneObjectsRecursively()
+    private int CountSceneObjects()
     {
+        int totalCount = 0;
         for (int i = 0; i < EditorSceneManager.sceneCount; ++i) {
             var scene = EditorSceneManager.GetSceneAt(i);
             var objs = scene.GetRootGameObjects();
-            m_TotalSearchCount += objs.Length;
+            totalCount += objs.Length;
 
             foreach (var obj in objs) {
-                CountChildObjectsRecursively(obj);
+                totalCount += CountChildObjectsRecursively(obj);
             }
         }
+        return totalCount;
     }
 
-    private void CountChildObjectsRecursively(GameObject obj)
+    private int CountChildObjectsRecursively(GameObject obj)
     {
+        int totalCount = 0;
         var trans = obj.transform;
         int ct = trans.childCount;
-        m_TotalSearchCount += ct;
+        totalCount += ct;
         for (int i = 0; i < ct; ++i) {
             var t = trans.GetChild(i);
-            CountChildObjectsRecursively(t.gameObject);
+            totalCount += CountChildObjectsRecursively(t.gameObject);
         }
+        return totalCount;
     }
 
     private string PathToAssetPath(string path)
@@ -1220,14 +1218,17 @@ public sealed class ResourceEditWindow : EditorWindow
         }
     }
 
-    private class ItemInfo
+    private static void SelectObject(UnityEngine.Object obj)
     {
-        internal string Path;
-        internal AssetImporter Importer;
-        internal UnityEngine.Object Object;
-        internal string Info;
-        internal int Order;
-        internal bool Selected;
+        Selection.activeObject = obj;
+        EditorGUIUtility.PingObject(Selection.activeObject);
+    }
+
+    private static void SelectSceneObject(UnityEngine.Object obj)
+    {
+        EditorGUIUtility.PingObject(obj);
+        //SceneView.lastActiveSceneView.FrameSelected(true);
+        SceneView.FrameLastActiveSceneView();
     }
 
     private string m_SearchSource = string.Empty;
@@ -1240,7 +1241,8 @@ public sealed class ResourceEditWindow : EditorWindow
     private Dictionary<string, HashSet<string>> m_ReferenceAssets = new Dictionary<string, HashSet<string>>();
     private Dictionary<string, HashSet<string>> m_ReferenceByAssets = new Dictionary<string, HashSet<string>>();
     private List<string> m_UnusedAssets = new List<string>();
-    private List<ItemInfo> m_ResourceList = new List<ItemInfo>();
+    private List<ResourceEditUtility.ItemInfo> m_ItemList = new List<ResourceEditUtility.ItemInfo>();
+    private ResourceEditUtility.SceneAreaInfo m_SceneAreaInfo = new ResourceEditUtility.SceneAreaInfo();
     private Dsl.DslFile m_DslFile = null;
     private string m_CollectPath = string.Empty;
 
@@ -1277,6 +1279,178 @@ internal static class ResourceEditUtility
         internal Dictionary<string, string> Options = new Dictionary<string, string>();
         internal string OptionStyle = string.Empty;
     }
+    internal class ItemInfo
+    {
+        internal string Path;
+        internal AssetImporter Importer;
+        internal UnityEngine.Object Object;
+        internal AreaInfo Area;
+        internal string Info;
+        internal int Order;
+        internal bool Selected;
+    }
+    internal class AreaInfo
+    {
+        internal int rowIndex;
+        internal int colIndex;
+        internal int vertexCount;
+        internal int triangleCount;
+        internal int materialCount;
+        internal int boneCount;
+        internal int differentMaterialCount;
+        internal Dictionary<string, GameObject> objects = new Dictionary<string, GameObject>();
+        internal GameObject maxTriangleObject;
+        internal int maxTriangleCount;
+        internal GameObject maxMaterialObject;
+        internal int maxMaterialCount;
+        internal GameObject maxBoneObject;
+        internal int maxBoneCount;
+        internal GameObject maxBatchObject;
+        internal int maxBatchCount;
+    }
+    internal class SceneAreaInfo
+    {
+        internal static int s_AreaSize = 10;
+        internal int rowCount;
+        internal int colCount;
+        internal List<AreaInfo> areas = new List<AreaInfo>();
+
+        internal void Init(Vector3 size)
+        {
+            colCount = (int)Mathf.Ceil(size.x / s_AreaSize);
+            rowCount = (int)Mathf.Ceil(size.z / s_AreaSize);
+            areas.Clear();
+            for (int i = 0; i < rowCount; ++i) {
+                for (int j = 0; j < colCount; ++j) {
+                    var info = new AreaInfo();
+                    info.rowIndex = i;
+                    info.colIndex = j;
+                    areas.Add(info);
+                }
+            }
+        }
+        internal void Clear()
+        {
+            rowCount = 0;
+            colCount = 0;
+            areas.Clear();
+        }
+        internal int CalcIndex(float x, float z)
+        {
+            int col = (int)Mathf.Floor(x / s_AreaSize);
+            int row = (int)Mathf.Floor(z / s_AreaSize);
+            if (row >= 0 && col >= 0 && row < rowCount && col < colCount)
+                return row * colCount + col;
+            else
+                return -1;
+        }
+        internal void AddObject(string path, GameObject obj)
+        {
+            var tran = obj.transform;
+            int index = CalcIndex(tran.position.x, tran.position.z);
+            if (index >= 0 && index < areas.Count) {
+                var info = areas[index];
+                int vc, tc, mc, bc, dmc;
+                CollectInfo(obj, out vc, out tc, out mc, out bc, out dmc);
+                info.vertexCount += vc;
+                info.triangleCount += tc;
+                info.materialCount += mc;
+                info.boneCount += bc;
+                info.differentMaterialCount += dmc;
+                if (info.maxTriangleCount < tc) {
+                    info.maxTriangleObject = obj;
+                    info.maxTriangleCount = tc;
+                }
+                if (info.maxMaterialCount < mc) {
+                    info.maxMaterialObject = obj;
+                    info.maxMaterialCount = mc;
+                }
+                if (info.maxBoneCount < bc) {
+                    info.maxBoneObject = obj;
+                    info.maxBoneCount = bc;
+                }
+                if (info.maxBatchCount < dmc) {
+                    info.maxBatchObject = obj;
+                    info.maxBatchCount = dmc;
+                }
+                info.objects[path] = obj;
+            }
+        }
+        internal AreaInfo FindArea(string path)
+        {
+            GameObject obj = GameObject.Find(path);
+            if (null != obj) {
+                var tran = obj.transform;
+                return FindArea(tran.position.x, tran.position.z);
+            }
+            return null;
+        }
+        internal AreaInfo FindArea(GameObject obj)
+        {
+            if (null != obj) {
+                var tran = obj.transform;
+                return FindArea(tran.position.x, tran.position.z);
+            }
+            return null;
+        }
+        internal AreaInfo FindArea(float x, float z)
+        {
+            int index = CalcIndex(x, z);
+            if (index >= 0 && index < areas.Count) {
+                var info = areas[index];
+                return info;
+            }
+            return null;
+        }
+
+        internal static void CollectInfo(GameObject obj, out int vertexCount, out int triangleCount, out int materialCount, out int boneCount, out int differentMaterialCount)
+        {
+            int vc = 0;
+            int tc = 0;
+            int mc = 0;
+            int bc = 0;
+            HashSet<string> mats = new HashSet<string>();
+            var skinnedrenderers = obj.GetComponents<SkinnedMeshRenderer>();
+            foreach (var renderer in skinnedrenderers) {
+                if (null != renderer.sharedMesh) {
+                    vc += renderer.sharedMesh.vertexCount;
+                    tc += renderer.sharedMesh.triangles.Length / 3;
+                }
+                mc += renderer.sharedMaterials.Length;
+                bc += renderer.bones.Length;
+
+                foreach (var mat in renderer.sharedMaterials) {
+                    string path = AssetDatabase.GetAssetPath(mat);
+                    if (!string.IsNullOrEmpty(path) && !mats.Contains(path)) {
+                        mats.Add(path);
+                    }
+                }
+            }
+            var filters = obj.GetComponents<MeshFilter>();
+            foreach (var filter in filters) {
+                if (null != filter.sharedMesh) {
+                    vc += filter.sharedMesh.vertexCount;
+                    tc += filter.sharedMesh.triangles.Length / 3;
+                }
+            }
+            var meshrenderers = obj.GetComponents<MeshRenderer>();
+            foreach (var renderer in meshrenderers) {
+                mc += renderer.sharedMaterials.Length;
+
+                foreach (var mat in renderer.sharedMaterials) {
+                    string path = AssetDatabase.GetAssetPath(mat);
+                    if (!string.IsNullOrEmpty(path) && !mats.Contains(path)) {
+                        mats.Add(path);
+                    }
+                }
+            }
+            vertexCount = vc;
+            triangleCount = tc;
+            materialCount = mc;
+            boneCount = bc;
+            differentMaterialCount = mats.Count;
+        }
+    }
     internal static void InitCalculator(Expression.DslCalculator calc)
     {
         calc.Init();
@@ -1302,15 +1476,16 @@ internal static class ResourceEditUtility
         calc.Register("getaudiosetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAudioSettingExp>());
         calc.Register("setaudiosetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetAudioSettingExp>());
     }
-    internal static object Process(string path, object importer, object obj, Expression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
+    internal static object Process(bool isFilter, ItemInfo item, Expression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
         try {
             object ret = null;
             if (null != calc) {
                 calc.NamedVariables.Clear();
-                calc.NamedVariables.Add("assetpath", path);
-                calc.NamedVariables.Add("importer", importer);
-                calc.NamedVariables.Add("object", obj);
+                calc.NamedVariables.Add("assetpath", item.Path);
+                calc.NamedVariables.Add("importer", item.Importer);
+                calc.NamedVariables.Add("object", item.Object);
+                calc.NamedVariables.Add("area", item.Area);
                 calc.NamedVariables.Add("refdict", refDict);
                 calc.NamedVariables.Add("refbydict", refByDict);
                 foreach (var pair in args) {
@@ -1321,10 +1496,44 @@ internal static class ResourceEditUtility
                 for (int i = 0; i < indexCount; ++i) {
                     ret = calc.Calc(i.ToString());
                 }
+
+                if (isFilter) {
+                    object v;
+                    if (calc.NamedVariables.TryGetValue("path", out v)) {
+                        var path = v as string;
+                        if (!string.IsNullOrEmpty(path))
+                            item.Path = path;
+                    }
+                    if (calc.NamedVariables.TryGetValue("importer", out v)) {
+                        if (null != v) {
+                            item.Importer = v as AssetImporter;
+                        }
+                    }
+                    if (calc.NamedVariables.TryGetValue("object", out v)) {
+                        if (null != v) {
+                            item.Object = v as UnityEngine.Object;
+                        }
+                    }
+                    if (null == item.Area && calc.NamedVariables.TryGetValue("area", out v)) {
+                        if (null != v) {
+                            item.Area = v as AreaInfo;
+                        }
+                    }
+                    if (calc.NamedVariables.TryGetValue("info", out v)) {
+                        item.Info = v as string;
+                        if (null == item.Info)
+                            item.Info = string.Empty;
+                    }
+                    if (calc.NamedVariables.TryGetValue("order", out v)) {
+                        if (null != v) {
+                            item.Order = (int)Convert.ChangeType(v, typeof(int));
+                        }
+                    }
+                }
             }
             return ret;
         } catch (Exception ex) {
-            Debug.LogErrorFormat("process {0} exception:{1}\n{2}", path, ex.Message, ex.StackTrace);
+            Debug.LogErrorFormat("process {0} exception:{1}\n{2}", item.Path, ex.Message, ex.StackTrace);
             return null;
         }
     }
@@ -2109,8 +2318,7 @@ namespace Expression
         protected virtual bool Load(Dsl.FunctionData funcData) { return false; }
         protected virtual bool Load(Dsl.StatementData statementData) { return false; }
 
-        protected DslCalculator Calculator
-        {
+        protected DslCalculator Calculator {
             get { return m_Calculator; }
         }
 
@@ -3314,7 +3522,7 @@ namespace Expression
         public override object Calc(object[] args)
         {
             object v = 0;
-            for (; ; ) {
+            for (;;) {
                 object condVal = m_Condition.Calc(args);
                 if (ToLong(condVal) != 0) {
                     for (int index = 0; index < m_Expressions.Count; ++index) {
@@ -4371,12 +4579,10 @@ namespace Expression
             return ret;
         }
 
-        public Dictionary<string, object> NamedVariables
-        {
+        public Dictionary<string, object> NamedVariables {
             get { return m_NamedVariables; }
         }
-        public Dictionary<int, object> Variables
-        {
+        public Dictionary<int, object> Variables {
             get { return m_Variables; }
         }
         internal IExpression Load(Dsl.ISyntaxComponent comp)
