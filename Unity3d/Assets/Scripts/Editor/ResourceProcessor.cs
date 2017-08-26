@@ -4,6 +4,7 @@ using UnityEditor;
 using UnityEditor.UI;
 using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
+using UnityEditor.MemoryProfiler;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,40 +22,77 @@ public sealed class ResourceEditWindow : EditorWindow
         ResourceEditWindow window = (ResourceEditWindow)EditorWindow.GetWindow(typeof(ResourceEditWindow));
         window.Init();
         window.Show();
+        EditorUtility.ClearProgressBar();
     }
 
     private void Init()
     {
+        if (!m_SnapshotRegistered) {
+            MemorySnapshot.OnSnapshotReceived += IncomingSnapshot;
+            m_SnapshotRegistered = true;
+        }
     }
 
     private void OnGUI()
     {
+        bool oldRichText = GUI.skin.button.richText;
+        GUI.skin.button.richText = true;
         bool skipToNextFrame = false;
         EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("选择处理脚本")) {
+        if (GUILayout.Button("<color=navy>选择处理脚本</color>")) {
             SelectDsl();
         }
-        if (GUILayout.Button("收集资源")) {
+        if (GUILayout.Button("<color=navy>收集资源</color>")) {
             Collect();
         }
-        if (GUILayout.Button("处理选中资源")) {
+        if (GUILayout.Button("<color=navy>处理选中资源</color>")) {
             Process();
         }
-        if (GUILayout.Button("同步选择unity3d资源或场景")) {
+        if (GUILayout.Button("<color=teal>同步选择u3d资源或场景</color>")) {
             SelectAssetsOrObjects();
         }
-        if (GUILayout.Button("生成后处理资源代码")) {
+        if (GUILayout.Button("<color=teal>生成资源后处理代码</color>")) {
             Generate();
         }
-        if (GUILayout.Button("生成场景")) {
+        if (GUILayout.Button("<color=teal>生成场景</color>")) {
             GenerateScene();
             skipToNextFrame = true;
         }
-        if (GUILayout.Button("分析资源依赖")) {
+        GUILayout.Space(20);
+        EditorGUILayout.LabelField("资源依赖:", GUILayout.Width(60));
+        if (GUILayout.Button("<color=purple>分析</color>")) {
             AnalyseAssets();
+        }
+        if (GUILayout.Button("<color=purple>保存</color>")) {
+            SaveDependencies();
+        }
+        if (GUILayout.Button("<color=purple>加载</color>")) {
+            LoadDependencies();
+        }
+        EditorGUILayout.LabelField("内存:", GUILayout.Width(40));
+        if (GUILayout.Button("<color=fuchsia>捕获</color>")) {
+            if (UnityEditorInternal.ProfilerDriver.connectedProfiler != -1) {
+                string id = UnityEditorInternal.ProfilerDriver.GetConnectionIdentifier(UnityEditorInternal.ProfilerDriver.connectedProfiler);
+                m_ActiveProfilerIsEditor = id == "Editor";
+            } else {
+                m_ActiveProfilerIsEditor = true;
+            }
+            MemorySnapshot.RequestNewSnapshot();
+        }
+        if (GUILayout.Button("<color=fuchsia>保存</color>")) {
+            SaveMemoryInfo();
+        }
+        if (GUILayout.Button("<color=fuchsia>加载</color>")) {
+            LoadMemoryInfo();
         }
         EditorGUILayout.EndHorizontal();
         
+        if (m_NeedAnalyseSnapshot) {
+            m_NeedAnalyseSnapshot = false;
+            AnalyseSnapshot();
+        		CalcTotalValue();
+            skipToNextFrame = true;
+        }
         if (skipToNextFrame)
             return;
 
@@ -208,6 +246,7 @@ public sealed class ResourceEditWindow : EditorWindow
             }
             ListItem();
         }
+        GUI.skin.button.richText = oldRichText;
     }
 
     private void SelectDsl()
@@ -507,6 +546,10 @@ public sealed class ResourceEditWindow : EditorWindow
                 EditorUtility.ClearProgressBar();
             }
         } else if (m_SearchSource == "allassets") {
+            if (m_ReferenceAssets.Count <= 0 && m_ReferenceByAssets.Count <= 0 && m_UnusedAssets.Count <= 0) {
+                EditorUtility.DisplayDialog("错误", "未找到资源依赖信息，请先执行资源依赖‘分析’或‘加载’！", "ok");
+                return;
+            }
             m_ItemList.Clear();
             m_Page = 1;
             m_SelectedAssetPath = string.Empty;
@@ -518,6 +561,10 @@ public sealed class ResourceEditWindow : EditorWindow
                 EditorUtility.ClearProgressBar();
             }
         } else if (m_SearchSource == "unusedassets") {
+            if (m_ReferenceAssets.Count <= 0 && m_ReferenceByAssets.Count <= 0 && m_UnusedAssets.Count <= 0) {
+                EditorUtility.DisplayDialog("错误", "未找到资源依赖信息，请先执行资源依赖‘分析’或‘加载’！", "ok");
+                return;
+            }
             m_ItemList.Clear();
             m_Page = 1;
             m_SelectedAssetPath = string.Empty;
@@ -528,6 +575,17 @@ public sealed class ResourceEditWindow : EditorWindow
                 SearchUnusedAssets();
                 EditorUtility.ClearProgressBar();
             }
+        } else if (m_SearchSource == "snapshot") {
+            if (m_ClassifiedMemoryInfos.Count <= 0) {
+                EditorUtility.DisplayDialog("错误", "未找到内存对象信息，请先执行内存‘捕获’或‘加载’！", "ok");
+                return;
+            }
+            m_ItemList.Clear();
+            m_Page = 1;
+            m_SelectedAssetPath = string.Empty;
+            m_CurSearchCount = 0;
+            m_TotalSearchCount = 0;
+            SearchSnapshot();
         } else {
             if (string.IsNullOrEmpty(m_CollectPath)) {
                 string path = EditorUtility.OpenFolderPanel("请选择要收集资源的根目录", Application.dataPath, string.Empty);
@@ -546,8 +604,16 @@ public sealed class ResourceEditWindow : EditorWindow
                     SearchFiles(m_CollectPath);
                     EditorUtility.ClearProgressBar();
                 }
-                CheckDuplication();
             }
+        }
+        CalcTotalValue();
+    }
+    
+    private void CalcTotalValue()
+    {
+        m_TotalItemValue = 0;
+        foreach (var item in m_ItemList) {
+            m_TotalItemValue += item.Value;
         }
     }
 
@@ -572,7 +638,7 @@ public sealed class ResourceEditWindow : EditorWindow
             if (item.Selected) {
                 ResourceEditUtility.Process(false, item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
                 ++index;
-                EditorUtility.DisplayProgressBar("处理进度", string.Format("{0}/{1}", index, totalSelectedCount), index * 1.0f / totalSelectedCount);
+                DisplayProgressBar("处理进度", index, totalSelectedCount);
             }
         }
         EditorUtility.ClearProgressBar();
@@ -673,6 +739,158 @@ public sealed class ResourceEditWindow : EditorWindow
         }
     }
 
+    private void SaveDependencies()
+    {
+        string path = EditorUtility.SaveFilePanel("请指定要保存依赖信息的文件", string.Empty, "dependencies", "txt");
+        if (!string.IsNullOrEmpty(path)) {
+            if (File.Exists(path)) {
+                File.Delete(path);
+            }
+            using (StreamWriter sw = new StreamWriter(path)) {
+                sw.WriteLine("asset1\tasset2");
+                int curCount = 0;
+                int totalCount = 0;
+                foreach (var pair in m_ReferenceAssets) {
+                    totalCount += pair.Value.Count;
+                }
+                totalCount += m_UnusedAssets.Count;
+                foreach (var pair in m_ReferenceAssets) {
+                    var asset1 = pair.Key;
+                    foreach (var asset2 in pair.Value) {
+                        sw.WriteLine("{0}\t{1}", asset1, asset2); 
+                        ++curCount;
+                        DisplayProgressBar("保存进度", curCount, totalCount);
+                    }
+                }
+                foreach (var asset in m_UnusedAssets) {
+                    sw.WriteLine("unused_asset_tag\t{0}", asset);
+                    ++curCount;
+                    DisplayProgressBar("保存进度", curCount, totalCount);
+                }
+                sw.Close();
+                EditorUtility.ClearProgressBar();
+            }
+        }
+    }
+    private void LoadDependencies()
+    {
+        string path = EditorUtility.OpenFilePanel("请指定要加载依赖信息的文件", string.Empty, "txt");
+        if (!string.IsNullOrEmpty(path) && File.Exists(path)) {
+            int i = 0;
+            try {
+                var txt = File.ReadAllText(path);
+                var lines = txt.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                m_ReferenceAssets.Clear();
+                m_ReferenceByAssets.Clear();
+                m_UnusedAssets.Clear();
+                int curCount = 1;
+                int totalCount = lines.Length;
+                for (i = 1; i < lines.Length; ++i) {
+                    var fields = lines[i].Split('\t');
+                    var one = fields[0];
+                    var two = fields[1];
+
+                    if (one == "unused_asset_tag") {
+                        m_UnusedAssets.Add(two);
+                    } else {
+                        HashSet<string> refSet;
+                        if (!m_ReferenceAssets.TryGetValue(one, out refSet)) {
+                            refSet = new HashSet<string>();
+                            m_ReferenceAssets.Add(one, refSet);
+                        }
+                        if (!refSet.Contains(two))
+                            refSet.Add(two);
+                        HashSet<string> refBySet;
+                        if (!m_ReferenceByAssets.TryGetValue(two, out refBySet)) {
+                            refBySet = new HashSet<string>();
+                            m_ReferenceByAssets.Add(two, refBySet);
+                        }
+                        if (!refBySet.Contains(one))
+                            refBySet.Add(one);
+                    }
+
+                    ++curCount;
+                    DisplayProgressBar("加载进度", curCount, totalCount);
+                }
+            } catch (Exception ex) {
+                EditorUtility.DisplayDialog("异常", string.Format("line {0} exception {1}\n{2}", i, ex.Message, ex.StackTrace), "ok");
+            }
+            EditorUtility.ClearProgressBar();
+        }
+    }
+
+    private void SaveMemoryInfo()
+    {
+        if (m_ClassifiedMemoryInfos.Count > 0) {
+            string path = EditorUtility.SaveFilePanel("请指定要保存内存信息的文件", string.Empty, "memory", "txt");
+            if (!string.IsNullOrEmpty(path)) {
+                if (File.Exists(path)) {
+                    File.Delete(path);
+                }
+                using (StreamWriter sw = new StreamWriter(path)) {
+                    sw.WriteLine("id\tasset\tpath\tname\tclass\tsize\tis_manager\tis_persistent\tis_dont_destroy_on_load\taddress");
+                    int curCount = 0;
+                    int totalCount = 0;
+                    foreach (var pair in m_ClassifiedMemoryInfos) {
+                        totalCount += pair.Value.Count;
+                    }
+                    foreach (var pair in m_ClassifiedMemoryInfos) {
+                        foreach (var memory in pair.Value) {
+                            sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t0x{9:X}", (uint)memory.instanceId, memory.assetPath, memory.scenePath, memory.name, memory.className, memory.size, memory.isManager, memory.isPersistent, memory.isDontDestroyOnLoad, memory.nativeObjectAddress);
+                            ++curCount;
+                            DisplayProgressBar("保存进度", curCount, totalCount);
+                        }
+                    }
+                    sw.Close();
+                    EditorUtility.ClearProgressBar();
+                }
+            }
+        } else {
+            EditorUtility.DisplayDialog("错误", "没有内存快照，请先捕获内存快照！", "ok");
+        }
+    }
+    private void LoadMemoryInfo()
+    {
+        string path = EditorUtility.OpenFilePanel("请指定要加载内存信息的文件", string.Empty, "txt");
+        if (!string.IsNullOrEmpty(path) && File.Exists(path)) {
+            int i = 0;
+            try {
+                var txt = File.ReadAllText(path);
+                var lines = txt.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                m_ClassifiedMemoryInfos.Clear();
+                int curCount = 1;
+                int totalCount = lines.Length;
+                for (i = 1; i < lines.Length; ++i) {
+                    var fields = lines[i].Split('\t');
+                    var info = new ResourceEditUtility.MemoryInfo();
+                    info.instanceId = (int)uint.Parse(fields[0]);
+                    info.assetPath = fields[1];
+                    info.scenePath = fields[2];
+                    info.name = fields[3];
+                    info.className = fields[4];
+                    info.size = int.Parse(fields[5]);
+                    info.isManager = bool.Parse(fields[6]);
+                    info.isPersistent = bool.Parse(fields[7]);
+                    info.isDontDestroyOnLoad = bool.Parse(fields[8]);
+                    info.nativeObjectAddress = long.Parse(fields[9].Substring(2), System.Globalization.NumberStyles.HexNumber);
+
+                    List<ResourceEditUtility.MemoryInfo> list;
+                    if (!m_ClassifiedMemoryInfos.TryGetValue(info.className, out list)) {
+                        list = new List<ResourceEditUtility.MemoryInfo>();
+                        m_ClassifiedMemoryInfos.Add(info.className, list);
+                    }
+                    list.Add(info);
+
+                    ++curCount;
+                    DisplayProgressBar("加载进度", curCount, totalCount);
+                }
+            } catch(Exception ex) {
+                EditorUtility.DisplayDialog("异常", string.Format("line {0} exception {1}\n{2}", i, ex.Message, ex.StackTrace), "ok");
+            }
+            EditorUtility.ClearProgressBar();
+        }
+    }
+
     private GameObject CreateTerrain(int areaSize, out int cx, out int cy)
     {
         const int c_size = 512;
@@ -738,6 +956,7 @@ public sealed class ResourceEditWindow : EditorWindow
         if (GUILayout.Button("降序", GUILayout.Width(60))) {
             Sort(false);
         }
+        GUILayout.Label(string.Format("Total value ({0})", m_TotalItemValue));
         EditorGUILayout.EndHorizontal();
         m_Page = Mathf.Max(1, Mathf.Min(m_ItemList.Count / c_ItemsPerPage + 1, m_Page));
         bool showReferences = false;
@@ -766,8 +985,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 var oldAlignment = GUI.skin.button.alignment;
                 GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                 if (GUILayout.Button(new GUIContent(buttonName, buttonName), GUILayout.MinWidth(80), GUILayout.MaxWidth(windowWidth - rightWidth))) {
-                    Selection.activeObject = item.Object;
-                    SelectSceneObject(item.Object);
+                    SelectObject(item.Object);
                     m_SelectedAssetPath = string.Empty;
                 }
                 GUI.skin.button.alignment = oldAlignment;
@@ -861,7 +1079,7 @@ public sealed class ResourceEditWindow : EditorWindow
             if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
                 m_ItemList.Add(item);
             }
-            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+            DisplayProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount);
         }
         string[] dirs = Directory.GetDirectories(dir);
         foreach (string subDir in dirs) {
@@ -898,19 +1116,7 @@ public sealed class ResourceEditWindow : EditorWindow
             CountFilesRecursively(subDir, ext);
         }
     }
-
-    private void CheckDuplication()
-    {
-        var hash = new HashSet<string>();
-        foreach (var info in m_ItemList) {
-            if (hash.Contains(info.AssetPath)) {
-                Debug.LogWarningFormat("{0} duplicate !", info.AssetPath);
-            } else {
-                hash.Add(info.AssetPath);
-            }
-        }
-    }
-
+    
     private void AnalyseAssets()
     {
         m_ReferenceAssets.Clear();
@@ -952,7 +1158,13 @@ public sealed class ResourceEditWindow : EditorWindow
                 }
             }
             int ct = i + 1;
-            EditorUtility.DisplayProgressBar("依赖分析进度", string.Format("{0} in {1}/{2}", depFiles.Count, ct, guids.Length), ct * 1.0f / guids.Length);
+            if(DisplayCancelableProgressBar("依赖分析进度", depFiles.Count, ct, guids.Length, false)) {
+                m_ReferenceAssets.Clear();
+                m_ReferenceByAssets.Clear();
+                m_UnusedAssets.Clear();
+                EditorUtility.ClearProgressBar();
+                return;      
+            }
         }
         foreach (string file in allFiles) {
             if (!depFiles.Contains(file)) {
@@ -992,7 +1204,7 @@ public sealed class ResourceEditWindow : EditorWindow
 
         m_SceneAreaInfo.AddObject(path, obj);
         ++curCount;
-        EditorUtility.DisplayProgressBar("物件分析进度", string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
+        DisplayProgressBar("物件分析进度", curCount, totalCount);
 
         var trans = obj.transform;
         int ct = trans.childCount;
@@ -1023,16 +1235,13 @@ public sealed class ResourceEditWindow : EditorWindow
                 if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
                     m_ItemList.Add(item);
                 }
-                EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+                DisplayProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount);
             }
         }
     }
 
     private void CountUnusedAssets()
     {
-        if (m_ReferenceAssets.Count <= 0 && m_ReferenceByAssets.Count <= 0 && m_UnusedAssets.Count <= 0) {
-            AnalyseAssets();
-        }
         foreach (string ext in m_TypeOrExtList) {
             string lowerExt = ext.ToLower();
             var files = m_UnusedAssets.Where((string file) => {
@@ -1065,15 +1274,12 @@ public sealed class ResourceEditWindow : EditorWindow
             if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
                 m_ItemList.Add(item);
             }
-            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+            DisplayProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount);
         }
     }
 
     private void CountAllAssets()
     {
-        if (m_ReferenceAssets.Count <= 0 && m_ReferenceByAssets.Count <= 0 && m_UnusedAssets.Count <= 0) {
-            AnalyseAssets();
-        }
         string filter = string.Join(" ", m_TypeOrExtList.ToArray());
         var guids = AssetDatabase.FindAssets(filter);
         m_TotalSearchCount = guids.Length;
@@ -1083,7 +1289,7 @@ public sealed class ResourceEditWindow : EditorWindow
     {
         for (int i = 0; i < EditorSceneManager.sceneCount; ++i) {
             var scene = EditorSceneManager.GetSceneAt(i);
-            var assets = AssetDatabase.GetDependencies(scene.path);
+            var assets = GetDependencies(scene.path);
 
             foreach (string ext in m_TypeOrExtList) {
                 string lowerExt = ext.ToLower();
@@ -1101,7 +1307,7 @@ public sealed class ResourceEditWindow : EditorWindow
                     if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
                         m_ItemList.Add(item);
                     }
-                    EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+                    DisplayProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount);
                 }
             }
         }
@@ -1111,7 +1317,7 @@ public sealed class ResourceEditWindow : EditorWindow
     {
         for (int i = 0; i < EditorSceneManager.sceneCount; ++i) {
             var scene = EditorSceneManager.GetSceneAt(i);
-            var assets = AssetDatabase.GetDependencies(scene.path);
+            var assets = GetDependencies(scene.path);
 
             foreach (string ext in m_TypeOrExtList) {
                 string lowerExt = ext.ToLower();
@@ -1141,7 +1347,7 @@ public sealed class ResourceEditWindow : EditorWindow
             if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
                 m_ItemList.Add(item);
             }
-            EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+            DisplayProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount);
         }
     }
 
@@ -1194,7 +1400,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 m_ItemList.Add(item);
             }
         }
-        EditorUtility.DisplayProgressBar("采集进度", string.Format("{0} in {1}/{2}", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount), m_CurSearchCount * 1.0f / m_TotalSearchCount);
+        DisplayProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount);
 
         var trans = obj.transform;
         int ct = trans.childCount;
@@ -1256,6 +1462,305 @@ public sealed class ResourceEditWindow : EditorWindow
         return totalCount;
     }
 
+    private void SearchSnapshot()
+    {
+        string type = string.Empty;
+        ResourceEditUtility.ParamInfo paramInfo;
+        if (m_Params.TryGetValue("type", out paramInfo)) {
+            type = paramInfo.Value as string;
+        }
+        int curCount = 0;
+        int totalCount = 0;
+        bool handled = false;
+        if (!string.IsNullOrEmpty(type)) {
+            List<ResourceEditUtility.MemoryInfo> list;
+            if (m_ClassifiedMemoryInfos.TryGetValue(type, out list)) {
+                totalCount = list.Count;
+                foreach (var memory in list) {
+                    DoFilterMemoryInfo(memory);
+                    ++curCount;
+                    DisplayProgressBar("采集进度", m_ItemList.Count, curCount, totalCount);
+                }
+                handled = true;
+            }
+        }
+        if (!handled) {
+            totalCount = m_Snapshot.nativeObjects.Length;
+            foreach (var pair in m_ClassifiedMemoryInfos) {
+                foreach (var memory in pair.Value) {
+                    DoFilterMemoryInfo(memory);
+                    ++curCount;
+                    DisplayProgressBar("采集进度", m_ItemList.Count, curCount, totalCount);
+                }
+            }
+        }
+        EditorUtility.ClearProgressBar();
+    }
+
+    private void DoFilterMemoryInfo(ResourceEditUtility.MemoryInfo memory)
+    {
+        string assetPath = memory.assetPath;
+        string scenePath = memory.scenePath;
+        UnityEngine.Object assetObj = memory.Object;
+        AssetImporter importer = null;
+        if (null == assetObj && !string.IsNullOrEmpty(scenePath)) {
+            assetObj = GameObject.Find(scenePath);
+        }
+        if (!string.IsNullOrEmpty(assetPath)) {
+            importer = AssetImporter.GetAtPath(assetPath);
+            if (null == assetObj)
+                assetObj = AssetDatabase.LoadMainAssetAtPath(assetPath);
+        }
+        var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = scenePath, Importer = importer, Object = assetObj, Memory = memory, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
+        var ret = ResourceEditUtility.Process(true, item, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
+        if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+            m_ItemList.Add(item);
+        }
+    }
+    
+    private void IncomingSnapshot(PackedMemorySnapshot snapshot)
+    {
+        if (EditorWindow.focusedWindow != this)
+            return;
+
+        m_Snapshot = snapshot;
+        m_NeedAnalyseSnapshot = true;
+    }
+   
+    private void AnalyseSnapshot()
+    {
+        m_ClassifiedMemoryInfos.Clear();
+        int curCount = 0;
+        int totalCount = m_Snapshot.nativeObjects.Length;
+        foreach (var obj in m_Snapshot.nativeObjects) {
+            var typeInfo = m_Snapshot.nativeTypes[obj.nativeTypeArrayIndex];
+            string assetPath = string.Empty;
+            string scenePath = string.Empty;
+            UnityEngine.Object assetObj = null;
+            bool handled = false;
+            if (m_ActiveProfilerIsEditor) {
+                var runtimeObj = UnityEditorInternal.InternalEditorUtility.GetObjectFromInstanceID(obj.instanceId);
+                if (null != runtimeObj) {
+                    assetPath = AssetDatabase.GetAssetPath(runtimeObj);
+                    var go = runtimeObj as UnityEngine.GameObject;
+                    if (null == go) {
+                        var comp = runtimeObj as UnityEngine.Component;
+                        if (null != comp) {
+                            go = comp.gameObject;
+                        }
+                    }
+                    if (null != go) {
+                        var tran = go.transform;
+                        List<string> paths = new List<string>();
+                        while (null != tran) {
+                            paths.Insert(0, tran.name);
+                            tran = tran.parent;
+                        }
+                        scenePath = string.Join("/", paths.ToArray());
+                        if (string.IsNullOrEmpty(assetPath)) {
+                            assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetPrefabParent(go));
+                        }
+                    }
+                    assetObj = runtimeObj;
+                    handled = true;
+                }
+            }
+            if (!handled) {
+                handled = FindSceneObject(obj.name, typeInfo.name, ref assetPath, ref scenePath, ref assetObj);
+            }
+            if (!handled && !string.IsNullOrEmpty(obj.name) && !string.IsNullOrEmpty(typeInfo.name)) {                
+                var guids = AssetDatabase.FindAssets(obj.name);
+                foreach (var guid in guids) {
+                    string path = AssetDatabase.GUIDToAssetPath(guid);
+                    if (Path.GetExtension(path).ToLower() == ".unity")
+                        continue;
+                    string osPath = AssetPathToPath(path);
+                    if (File.Exists(osPath)) {
+                        bool find = false;
+                        var objs = AssetDatabase.LoadAllAssetsAtPath(path);
+                        foreach (var assetObject in objs) {
+                            if (null != assetObject && assetObject.GetType().Name.EndsWith(typeInfo.name)) {
+                                assetPath = path;
+                                assetObj = assetObject;
+                                find = true;
+                                break;
+                            }
+                        }
+                        if (find)
+                            break;
+                    }
+                }
+            }
+            var memory = new ResourceEditUtility.MemoryInfo();
+            memory.instanceId = obj.instanceId;
+            memory.name = obj.name;
+            memory.className = typeInfo.name;
+            memory.size = obj.size;
+            memory.isManager = obj.isManager;
+            memory.isPersistent = obj.isPersistent;
+            memory.isDontDestroyOnLoad = obj.isDontDestroyOnLoad;
+            memory.nativeObjectAddress = obj.nativeObjectAddress;
+            memory.assetPath = assetPath;
+            memory.scenePath = scenePath;
+            memory.Object = assetObj;
+
+            List<ResourceEditUtility.MemoryInfo> list = null;
+            if (!m_ClassifiedMemoryInfos.TryGetValue(memory.className, out list)) {
+                list = new List<ResourceEditUtility.MemoryInfo>();
+                m_ClassifiedMemoryInfos.Add(memory.className, list);
+            }
+            list.Add(memory);
+
+            ++curCount;
+            if(DisplayCancelableProgressBar("内存信息分类进度", curCount, totalCount, false)) {
+                m_ClassifiedMemoryInfos.Clear();
+                EditorUtility.ClearProgressBar();
+                return;
+            }
+        }
+        EditorUtility.ClearProgressBar();
+    }
+    
+    private bool FindSceneObject(string name, string type, ref string assetPath, ref string scenePath, ref UnityEngine.Object sceneObj)
+    {
+        bool ret = false;
+        for (int i = 0; i < EditorSceneManager.sceneCount; ++i) {
+            var scene = EditorSceneManager.GetSceneAt(i);
+            var objs = scene.GetRootGameObjects();
+            foreach (var obj in objs) {
+                ret = FindChildObjectsRecursively(string.Empty, obj, name, type, ref assetPath, ref scenePath, ref sceneObj);
+                if(ret)
+                    break;
+            }
+            if (ret)
+                break;
+        }
+        return ret;
+    }
+
+    private bool FindChildObjectsRecursively(string path, GameObject obj, string name, string type, ref string assetPath, ref string scenePath, ref UnityEngine.Object sceneObj)
+    {
+        if (string.IsNullOrEmpty(path)) {
+            path = obj.name;
+        } else {
+            path = path + "/" + obj.name;
+        }
+        bool ret = false;
+        if (obj.name == name) {
+            if (type == "GameObject") {
+                ret = true;
+            } else if (type == "ParticleSystem") {
+                var comp = obj.GetComponent<ParticleSystem>();
+                if (null != comp) {
+                    ret = true;
+                }
+            }
+            var prefabObj = PrefabUtility.GetPrefabObject(obj);
+            var prefabPath = AssetDatabase.GetAssetPath(prefabObj);
+            if (!ret) {
+                var objs = AssetDatabase.LoadAllAssetsAtPath(prefabPath);
+                foreach (var assetObject in objs) {
+                    if (null != assetObject && assetObject.GetType().Name.EndsWith(type)) {
+                        ret = true;
+                        break;
+                    }
+                }
+            }
+            if (ret) {
+                assetPath = prefabPath;
+                if (string.IsNullOrEmpty(assetPath)) {
+                    assetPath = string.Empty;
+                }
+                scenePath = path;
+                sceneObj = obj;
+            }
+        }
+        if (!ret) {
+            var trans = obj.transform;
+            int ct = trans.childCount;
+            for (int i = 0; i < ct; ++i) {
+                var t = trans.GetChild(i);
+                ret = FindChildObjectsRecursively(path, t.gameObject, name, type, ref assetPath, ref scenePath, ref sceneObj);
+                if (ret)
+                    break;
+            }
+        }
+        return ret;
+    }
+
+    private void DisplayProgressBar(string title, int resultCount, int curCount, int totalCount)
+    {
+        DisplayProgressBar(title, resultCount, curCount, totalCount, true);
+    }
+    private void DisplayProgressBar(string title, int resultCount, int curCount, int totalCount, bool batch)
+    {
+        if (batch && totalCount > 1000) {
+            if (curCount % 10 == 0) {
+                EditorUtility.DisplayProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
+            }
+        } else {
+            EditorUtility.DisplayProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
+        }
+    }
+
+    private void DisplayProgressBar(string title, int curCount, int totalCount)
+    {
+        DisplayProgressBar(title, curCount, totalCount, true);
+    }
+    private void DisplayProgressBar(string title, int curCount, int totalCount, bool batch)
+    {
+        if (batch && totalCount > 1000) {
+            if (curCount % 10 == 0) {
+                EditorUtility.DisplayProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
+            }
+        } else {
+            EditorUtility.DisplayProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
+        }
+    }
+
+    private bool DisplayCancelableProgressBar(string title, int resultCount, int curCount, int totalCount)
+    {
+        return DisplayCancelableProgressBar(title, resultCount, curCount, totalCount, true);
+    }
+    private bool DisplayCancelableProgressBar(string title, int resultCount, int curCount, int totalCount, bool batch)
+    {
+        if (batch && totalCount > 1000) {
+            if (curCount % 10 == 0) {
+                return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
+            }
+        } else {
+            return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
+        }
+        return false;
+    }
+
+    private bool DisplayCancelableProgressBar(string title, int curCount, int totalCount)
+    {
+        return DisplayCancelableProgressBar(title, curCount, totalCount, true);
+    }
+    private bool DisplayCancelableProgressBar(string title, int curCount, int totalCount, bool batch)
+    {
+        if (batch && totalCount > 1000) {
+            if (curCount % 10 == 0) {
+                return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
+            }
+        } else {
+            return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
+        }
+        return false;
+    }
+
+
+    private IEnumerable<string> GetDependencies(string path)
+    {
+        HashSet<string> list;
+        if (m_ReferenceAssets.TryGetValue(path, out list)) {
+            return list;
+        } else {
+            return AssetDatabase.GetDependencies(path);
+        }
+    }
+
     private string PathToAssetPath(string path)
     {
         string rootPath = Application.dataPath.Replace('\\', '/');
@@ -1301,15 +1806,10 @@ public sealed class ResourceEditWindow : EditorWindow
     {
         Selection.activeObject = obj;
         EditorGUIUtility.PingObject(Selection.activeObject);
-    }
-
-    private static void SelectSceneObject(UnityEngine.Object obj)
-    {
-        EditorGUIUtility.PingObject(obj);
         //SceneView.lastActiveSceneView.FrameSelected(true);
         SceneView.FrameLastActiveSceneView();
     }
-
+    
     private string m_SearchSource = string.Empty;
     private string m_PostProcessClass = string.Empty;
     private string m_PostProcessMethod = string.Empty;
@@ -1320,8 +1820,10 @@ public sealed class ResourceEditWindow : EditorWindow
     private Dictionary<string, HashSet<string>> m_ReferenceAssets = new Dictionary<string, HashSet<string>>();
     private Dictionary<string, HashSet<string>> m_ReferenceByAssets = new Dictionary<string, HashSet<string>>();
     private List<string> m_UnusedAssets = new List<string>();
-    private List<ResourceEditUtility.ItemInfo> m_ItemList = new List<ResourceEditUtility.ItemInfo>();
+    private Dictionary<string, List<ResourceEditUtility.MemoryInfo>> m_ClassifiedMemoryInfos = new Dictionary<string, List<ResourceEditUtility.MemoryInfo>>();
     private ResourceEditUtility.SceneAreaInfo m_SceneAreaInfo = new ResourceEditUtility.SceneAreaInfo();
+    private List<ResourceEditUtility.ItemInfo> m_ItemList = new List<ResourceEditUtility.ItemInfo>();
+    private double m_TotalItemValue = 0;
     private Dsl.DslFile m_DslFile = null;
     private string m_CollectPath = string.Empty;
 
@@ -1339,6 +1841,15 @@ public sealed class ResourceEditWindow : EditorWindow
     private int m_CurSearchCount = 0;
     private int m_TotalSearchCount = 0;
     private string m_SelectedAssetPath = string.Empty;
+
+    [NonSerialized]
+    private bool m_SnapshotRegistered = false;
+    [NonSerialized]
+    private bool m_ActiveProfilerIsEditor = false;
+    [NonSerialized]
+    PackedMemorySnapshot m_Snapshot;
+    [NonSerialized]
+    private bool m_NeedAnalyseSnapshot = false;
 
     private const int c_ItemsPerPage = 50;
     private static readonly HashSet<string> s_IgnoredDirs = new HashSet<string> { "plugins", "streamingassets" };
@@ -1365,8 +1876,10 @@ internal static class ResourceEditUtility
         internal AssetImporter Importer;
         internal UnityEngine.Object Object;
         internal AreaInfo Area;
+        internal MemoryInfo Memory;
         internal string Info;
         internal int Order;
+        internal double Value;
         internal bool Selected;
     }
     internal class AreaInfo
@@ -1531,6 +2044,20 @@ internal static class ResourceEditUtility
             differentMaterialCount = mats.Count;
         }
     }
+    internal class MemoryInfo
+    {
+        internal int instanceId;
+        internal string name;
+        internal string className;
+        internal int size;
+        internal bool isManager;
+        internal bool isPersistent;
+        internal bool isDontDestroyOnLoad;
+        internal long nativeObjectAddress;
+        internal string assetPath;
+        internal string scenePath;
+        internal UnityEngine.Object Object;
+    }
     internal static void InitCalculator(Expression.DslCalculator calc)
     {
         calc.Init();
@@ -1567,6 +2094,7 @@ internal static class ResourceEditUtility
                 calc.NamedVariables.Add("importer", item.Importer);
                 calc.NamedVariables.Add("object", item.Object);
                 calc.NamedVariables.Add("area", item.Area);
+                calc.NamedVariables.Add("memory", item.Memory);
                 calc.NamedVariables.Add("refdict", refDict);
                 calc.NamedVariables.Add("refbydict", refByDict);
                 foreach (var pair in args) {
@@ -1600,6 +2128,11 @@ internal static class ResourceEditUtility
                             item.Area = v as AreaInfo;
                         }
                     }
+                    if (null == item.Memory && calc.NamedVariables.TryGetValue("memory", out v)) {
+                        if (null != v) {
+                            item.Memory = v as MemoryInfo;
+                        }
+                    }
                     if (calc.NamedVariables.TryGetValue("info", out v)) {
                         item.Info = v as string;
                         if (null == item.Info)
@@ -1608,6 +2141,11 @@ internal static class ResourceEditUtility
                     if (calc.NamedVariables.TryGetValue("order", out v)) {
                         if (null != v) {
                             item.Order = (int)Convert.ChangeType(v, typeof(int));
+                        }
+                    }
+                    if (calc.NamedVariables.TryGetValue("value", out v)) {
+                        if (null != v) {
+                            item.Value = (double)Convert.ChangeType(v, typeof(double));
                         }
                     }
                 }
