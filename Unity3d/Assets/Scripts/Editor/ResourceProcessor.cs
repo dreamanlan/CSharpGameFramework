@@ -5,6 +5,7 @@ using UnityEditor.UI;
 using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEditor.MemoryProfiler;
+using UnityEditorInternal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,61 +38,149 @@ public sealed class ResourceEditWindow : EditorWindow
     {
         bool oldRichText = GUI.skin.button.richText;
         GUI.skin.button.richText = true;
+        string[] textColors;
+        if (EditorGUIUtility.isProSkin) {
+            textColors = new string[] { "orange", "fuchsia", "fuchsia", "lime", "lightblue" };
+        } else {
+            textColors = new string[] { "green", "fuchsia", "fuchsia", "maroon", "darkblue" };
+        }
         bool skipToNextFrame = false;
         EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("<color=navy>选择处理脚本</color>")) {
-            SelectDsl();
-        }
-        if (GUILayout.Button("<color=navy>收集资源</color>")) {
-            Collect();
-        }
-        if (GUILayout.Button("<color=navy>处理选中资源</color>")) {
-            Process();
-        }
-        if (GUILayout.Button("<color=teal>同步选择u3d资源或场景</color>")) {
-            SelectAssetsOrObjects();
-        }
-        if (GUILayout.Button("<color=teal>生成资源后处理代码</color>")) {
-            Generate();
-        }
-        if (GUILayout.Button("<color=teal>生成场景</color>")) {
-            GenerateScene();
-            skipToNextFrame = true;
-        }
-        GUILayout.Space(20);
         EditorGUILayout.LabelField("资源依赖:", GUILayout.Width(60));
-        if (GUILayout.Button("<color=purple>分析</color>")) {
+        if (GUILayout.Button(string.Format("<color={0}>分析</color>", textColors[0]))) {
             AnalyseAssets();
         }
-        if (GUILayout.Button("<color=purple>保存</color>")) {
+        if (GUILayout.Button(string.Format("<color={0}>保存</color>", textColors[0]))) {
             SaveDependencies();
         }
-        if (GUILayout.Button("<color=purple>加载</color>")) {
+        if (GUILayout.Button(string.Format("<color={0}>加载</color>", textColors[0]))) {
             LoadDependencies();
         }
         EditorGUILayout.LabelField("内存:", GUILayout.Width(40));
-        if (GUILayout.Button("<color=fuchsia>捕获</color>")) {
-            if (UnityEditorInternal.ProfilerDriver.connectedProfiler != -1) {
-                string id = UnityEditorInternal.ProfilerDriver.GetConnectionIdentifier(UnityEditorInternal.ProfilerDriver.connectedProfiler);
+        if (GUILayout.Button(string.Format("<color={0}>捕获</color>", textColors[1]))) {
+            if (ProfilerDriver.connectedProfiler != -1) {
+                string id = ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler);
                 m_ActiveProfilerIsEditor = id == "Editor";
             } else {
                 m_ActiveProfilerIsEditor = true;
             }
             MemorySnapshot.RequestNewSnapshot();
         }
-        if (GUILayout.Button("<color=fuchsia>保存</color>")) {
+        if (GUILayout.Button(string.Format("<color={0}>保存</color>", textColors[1]))) {
             SaveMemoryInfo();
         }
-        if (GUILayout.Button("<color=fuchsia>加载</color>")) {
+        if (GUILayout.Button(string.Format("<color={0}>加载</color>", textColors[1]))) {
             LoadMemoryInfo();
         }
+        EditorGUILayout.LabelField("耗时:", GUILayout.Width(40));
+        if (GUILayout.Button(string.Format("<color={0}>清空</color>", textColors[2]))) {
+            ClearInstrumentInfo();
+        }
+        if (m_Record) {
+            if (GUILayout.Button(string.Format("<color={0}>停止</color>", textColors[2]))) {
+                m_Record = false;
+            }
+        } else {
+            if (GUILayout.Button(string.Format("<color={0}>记录</color>", textColors[2]))) {
+                m_Record = true;
+            }
+        }
+        if (GUILayout.Button(string.Format("<color={0}>保存</color>", textColors[2]))) {
+            SaveInstrumentInfo();
+        }
+        if (GUILayout.Button(string.Format("<color={0}>加载</color>", textColors[2]))) {
+            LoadInstrumentInfo();
+        }
         EditorGUILayout.EndHorizontal();
-        
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button(string.Format("<color={0}>选择处理脚本</color>", textColors[3]))) {
+            SelectDsl();
+        }
+        if (GUILayout.Button(string.Format("<color={0}>收集资源</color>", textColors[3]))) {
+            Collect();
+        }
+        if (GUILayout.Button(string.Format("<color={0}>处理选中资源</color>", textColors[3]))) {
+            Process();
+        }
+        if (GUILayout.Button(string.Format("<color={0}>同步选择u3d资源或场景</color>", textColors[4]))) {
+            SelectAssetsOrObjects();
+        }
+        if (GUILayout.Button(string.Format("<color={0}>生成资源后处理代码</color>", textColors[4]))) {
+            Generate();
+        }
+        if (GUILayout.Button(string.Format("<color={0}>生成场景</color>", textColors[4]))) {
+            GenerateScene();
+            skipToNextFrame = true;
+        }
+        EditorGUILayout.EndHorizontal();
+
         if (m_NeedAnalyseSnapshot) {
             m_NeedAnalyseSnapshot = false;
             AnalyseSnapshot();
-        		CalcTotalValue();
+            CalcTotalValue();
             skipToNextFrame = true;
+        }
+        if (m_Record) {
+            int firstIndex = ProfilerDriver.firstFrameIndex;
+            int lastIndex = ProfilerDriver.lastFrameIndex;
+
+            if (lastIndex >= firstIndex && lastIndex >= 0) {
+                float[] batches = new float[lastIndex - firstIndex + 1];
+                float[] triangles = new float[lastIndex - firstIndex + 1];
+                var labels = ProfilerDriver.GetGraphStatisticsPropertiesForArea(ProfilerArea.Rendering);
+                foreach (string l in labels) {
+                    var id = ProfilerDriver.GetStatisticsIdentifier(l);
+                    var lowerLabel = l.ToLower();
+                    if (lowerLabel == "batches") {
+                        float maxVal;
+                        ProfilerDriver.GetStatisticsValues(id, firstIndex, 1.0f, batches, out maxVal);
+                    } else if (lowerLabel == "triangles") {
+                        float maxVal;
+                        ProfilerDriver.GetStatisticsValues(id, firstIndex, 1.0f, triangles, out maxVal);
+                    }
+                }
+
+                for (int index = firstIndex > m_LastFrame ? firstIndex : m_LastFrame + 1; index <= lastIndex; ++index) {
+                    int ix = index - firstIndex;
+                    float triangle = 0;
+                    if (ix >= 0 && ix < triangles.Length) {
+                        triangle = triangles[ix];
+                    }
+                    float batch = 0;
+                    if (ix >= 0 && ix < batches.Length) {
+                        batch = batches[ix];
+                    }
+                    if (RecordInstrument(m_RecordIndex, index, ProfilerColumn.FunctionName, ProfilerViewType.Hierarchy, triangle, batch)) {
+                        ++m_RecordIndex;
+                    }
+                }
+                m_LastFrame = lastIndex;
+
+                if (lastIndex >= 0) {
+                    ProfilerProperty prop = new ProfilerProperty();
+                    prop.SetRoot(lastIndex, ProfilerColumn.FunctionName, ProfilerViewType.Hierarchy);
+                    prop.onlyShowGPUSamples = false;
+
+                    int ix = lastIndex - firstIndex;
+                    float triangle = 0;
+                    if (ix >= 0 && ix < triangles.Length) {
+                        triangle = triangles[ix];
+                    }
+                    float batch = 0;
+                    if (ix >= 0 && ix < batches.Length) {
+                        batch = batches[ix];
+                    }
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.AppendFormat("depth:{0}\tfps:{1}\tcpu time:{2}\tgpu time:{3} \triangles:{4} \tbatches:{5}", prop.depth, prop.frameFPS, prop.frameTime, prop.frameGpuTime, triangle, batch);
+                    sb.AppendLine();
+                    while (prop.Next(true)) {
+                        sb.AppendFormat("{0}:{1}->{2}\t{3}\t{4}\t{5}\t{6}", prop.depth, prop.propertyName, prop.propertyPath, prop.GetColumn(ProfilerColumn.Calls), prop.GetColumn(ProfilerColumn.GCMemory), prop.GetColumn(ProfilerColumn.SelfPercent), prop.GetColumn(ProfilerColumn.SelfTime));
+                        sb.AppendLine();
+                    }
+                    m_Text = sb.ToString();
+                }
+            }
         }
         if (skipToNextFrame)
             return;
@@ -586,6 +675,17 @@ public sealed class ResourceEditWindow : EditorWindow
             m_CurSearchCount = 0;
             m_TotalSearchCount = 0;
             SearchSnapshot();
+        } else if (m_SearchSource == "instruments") {
+            if (m_InstrumentInfos.Count <= 0) {
+                EditorUtility.DisplayDialog("错误", "未找到耗时信息，请先执行耗时‘记录’或‘加载’！", "ok");
+                return;
+            }
+            m_ItemList.Clear();
+            m_Page = 1;
+            m_SelectedAssetPath = string.Empty;
+            m_CurSearchCount = 0;
+            m_TotalSearchCount = 0;
+            SearchInstruments();
         } else {
             if (string.IsNullOrEmpty(m_CollectPath)) {
                 string path = EditorUtility.OpenFolderPanel("请选择要收集资源的根目录", Application.dataPath, string.Empty);
@@ -608,7 +708,7 @@ public sealed class ResourceEditWindow : EditorWindow
         }
         CalcTotalValue();
     }
-    
+
     private void CalcTotalValue()
     {
         m_TotalItemValue = 0;
@@ -650,7 +750,7 @@ public sealed class ResourceEditWindow : EditorWindow
         var list = new List<UnityEngine.Object>();
         foreach (var item in m_ItemList) {
             if (item.Selected) {
-                if(m_SearchSource=="sceneobjects" || m_SearchSource == "sceneareas") {
+                if (m_SearchSource == "sceneobjects" || m_SearchSource == "sceneareas") {
                     if (null != item.Object)
                         list.Add(item.Object);
                 } else {
@@ -712,7 +812,7 @@ public sealed class ResourceEditWindow : EditorWindow
             sw.Close();
         }
     }
-    
+
     private void GenerateScene()
     {
         var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
@@ -757,7 +857,7 @@ public sealed class ResourceEditWindow : EditorWindow
                 foreach (var pair in m_ReferenceAssets) {
                     var asset1 = pair.Key;
                     foreach (var asset2 in pair.Value) {
-                        sw.WriteLine("{0}\t{1}", asset1, asset2); 
+                        sw.WriteLine("{0}\t{1}", asset1, asset2);
                         ++curCount;
                         DisplayProgressBar("保存进度", curCount, totalCount);
                     }
@@ -884,7 +984,215 @@ public sealed class ResourceEditWindow : EditorWindow
                     ++curCount;
                     DisplayProgressBar("加载进度", curCount, totalCount);
                 }
-            } catch(Exception ex) {
+            } catch (Exception ex) {
+                EditorUtility.DisplayDialog("异常", string.Format("line {0} exception {1}\n{2}", i, ex.Message, ex.StackTrace), "ok");
+            }
+            EditorUtility.ClearProgressBar();
+        }
+    }
+
+    private void ClearInstrumentInfo()
+    {
+        m_InstrumentInfos.Clear();
+        m_RecordIndex = 0;
+        m_LastFrame = -1;
+    }
+    private bool RecordInstrument(int index, int frame, ProfilerColumn sortType, ProfilerViewType viewType, float triangle, float batch)
+    {
+        ProfilerProperty prop = new ProfilerProperty();
+        prop.SetRoot(frame, sortType, viewType);
+        prop.onlyShowGPUSamples = false;
+
+        if (!prop.frameDataReady)
+            return false;
+        
+        var info = new ResourceEditUtility.InstrumentInfo();
+        info.index = index;
+        info.frame = frame + 1;
+        info.sortType = (int)sortType;
+        info.viewType = (int)viewType;
+        info.triangle = triangle;
+        info.batch = batch;
+        info.totalCpuTime = InstrumentString2Float(prop.frameTime);
+        info.totalGpuTime = InstrumentString2Float(prop.frameGpuTime);
+        info.fps = InstrumentString2Float(prop.frameFPS);
+        info.totalCalls = 0;
+        info.totalGcMemory = 0;
+
+        while (prop.Next(true)) {
+            var data = new ResourceEditUtility.InstrumentRecord();
+            data.depth = prop.depth;
+            data.fps = info.fps;
+            data.calls = int.Parse(prop.GetColumn(ProfilerColumn.Calls));
+            data.gcMemory = InstrumentString2Float(prop.GetColumn(ProfilerColumn.GCMemory));
+            data.name = prop.propertyName;
+            data.layerPath = prop.propertyPath;
+            data.totalTime = InstrumentString2Float(prop.GetColumn(ProfilerColumn.TotalTime));
+            data.totalPercent = InstrumentString2Float(prop.GetColumn(ProfilerColumn.TotalPercent));
+            data.selfTime = InstrumentString2Float(prop.GetColumn(ProfilerColumn.SelfTime));
+            data.selfPercent = InstrumentString2Float(prop.GetColumn(ProfilerColumn.SelfPercent));
+            data.totalGpuTime = InstrumentString2Float(prop.GetColumn(ProfilerColumn.TotalGPUTime));
+            data.totalGpuPercent = InstrumentString2Float(prop.GetColumn(ProfilerColumn.TotalGPUPercent));
+            data.selfGpuTime = InstrumentString2Float(prop.GetColumn(ProfilerColumn.SelfGPUTime));
+            data.selfGpuPercent = InstrumentString2Float(prop.GetColumn(ProfilerColumn.SelfGPUPercent));
+
+            info.totalCalls += data.calls;
+            info.totalGcMemory += data.gcMemory;
+            info.records.Add(data);
+        }
+
+        var item = new ResourceEditUtility.ItemInfo { AssetPath = string.Empty, ScenePath = string.Empty, Instrument = info, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
+        var ret = ResourceEditUtility.Process(true, item, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
+        if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+            m_InstrumentInfos[index] = info;
+            return true;
+        }
+        return false;
+    }
+    private float InstrumentString2Float(string val)
+    {
+        try {
+            if (val == "N/A") {
+                return 0;
+            }
+            int ix = val.IndexOf('%');
+            if (ix > 0) {
+                return float.Parse(val.Substring(0, ix).Trim());
+            }
+            ix = val.IndexOf(" MB");
+            if (ix > 0) {
+                return float.Parse(val.Substring(0, ix).Trim()) * 1024.0f;
+            }
+            ix = val.IndexOf(" KB");
+            if (ix > 0) {
+                return float.Parse(val.Substring(0, ix).Trim());
+            }
+            ix = val.IndexOf(" B");
+            if (ix > 0) {
+                return float.Parse(val.Substring(0, ix).Trim()) / 1024.0f;
+            }
+            return float.Parse(val.Trim());
+        } catch(Exception ex) {
+            Debug.LogErrorFormat("InstrumentString2Float {0} throw exception:{1}\n{2}", val, ex.Message, ex.StackTrace);
+            return 0;
+        }
+    }
+    private void SaveInstrumentInfo()
+    {
+        if (m_InstrumentInfos.Count > 0) {
+            string path = EditorUtility.SaveFilePanel("请指定要保存耗时信息的文件", string.Empty, "instrument", "txt");
+            if (!string.IsNullOrEmpty(path)) {
+                if (File.Exists(path)) {
+                    File.Delete(path);
+                }
+                using (StreamWriter sw = new StreamWriter(path)) {
+                    sw.WriteLine("index\tframe\tdepth\tname\tpath\tfps\tcalls\tgc\ttotal_time\ttotal_percent\tself_time\tself_percent\ttotal_gpu_time\ttotal_gpu_percent\tself_gpu_time\tself_gpu_percent");
+                    int curCount = 0;
+                    int totalCount = 0;
+                    foreach (var pair in m_InstrumentInfos) {
+                        totalCount += pair.Value.records.Count;
+                    }
+                    foreach (var pair in m_InstrumentInfos) {
+                        var info = pair.Value;
+                        sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}",
+                            info.index, info.frame, 0, "frame_stat_tag", "frame_stat_tag",
+                            info.fps, info.totalCalls, info.totalGcMemory,
+                            info.totalCpuTime, 100, info.sortType, info.viewType,
+                            info.totalGpuTime, 100, info.triangle, info.batch);
+                        ++curCount;
+                        DisplayProgressBar("保存进度", curCount, totalCount);
+                        foreach (var record in info.records) {
+                            sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}",
+                                info.index, info.frame, record.depth, record.name, record.layerPath,
+                                info.fps, record.calls, record.gcMemory,
+                                record.totalTime, record.totalPercent, record.selfTime, record.selfPercent,
+                                record.totalGpuTime, record.totalGpuPercent, record.selfGpuTime, record.selfGpuPercent);
+                            ++curCount;
+                            DisplayProgressBar("保存进度", curCount, totalCount);
+                        }
+                    }
+                    sw.Close();
+                    EditorUtility.ClearProgressBar();
+                }
+            }
+        } else {
+            EditorUtility.DisplayDialog("错误", "没有记录耗时信息，请先记录！", "ok");
+        }
+    }
+    private void LoadInstrumentInfo()
+    {
+        string path = EditorUtility.OpenFilePanel("请指定要加载耗时信息的文件", string.Empty, "txt");
+        if (!string.IsNullOrEmpty(path) && File.Exists(path)) {
+            int i = 0;
+            try {
+                var txt = File.ReadAllText(path);
+                var lines = txt.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+                m_InstrumentInfos.Clear();
+                m_RecordIndex = 0;
+                m_LastFrame = -1;
+                int curCount = 1;
+                int totalCount = lines.Length;
+                for (i = 1; i < lines.Length; ++i) {
+                    var fields = lines[i].Split('\t');
+                    var index = int.Parse(fields[0]);
+                    var frame = int.Parse(fields[1]);
+                    var depth = int.Parse(fields[2]);
+                    var name = fields[3];
+                    var layerPath = fields[4];
+                    var fps = float.Parse(fields[5]);
+                    var calls = int.Parse(fields[6]);
+                    var gc = float.Parse(fields[7]);
+                    var totalTime = float.Parse(fields[8]);
+                    var totalPercent = float.Parse(fields[9]);
+                    var selfTime = float.Parse(fields[10]);
+                    var selfPercent = float.Parse(fields[11]);
+                    var totalGpuTime = float.Parse(fields[12]);
+                    var totalGpuPercent = float.Parse(fields[13]);
+                    var selfGpuTime = float.Parse(fields[14]);
+                    var selfGpuPercent = float.Parse(fields[15]);
+
+                    if (name == "frame_stat_tag" && layerPath == "frame_stat_tag") {
+                        var info = new ResourceEditUtility.InstrumentInfo();
+                        info.index = index;
+                        info.frame = frame;
+                        info.fps = fps;
+                        info.totalCalls = calls;
+                        info.totalGcMemory = gc;
+                        info.totalCpuTime = totalTime;
+                        info.totalGpuTime = totalGpuTime;
+                        info.sortType = (int)selfTime;
+                        info.viewType = (int)selfPercent;
+                        info.triangle = selfGpuTime;
+                        info.batch = selfGpuPercent;
+
+                        m_InstrumentInfos[index] = info;
+                        m_LastFrame = frame;
+                        m_RecordIndex = index + 1;
+                    } else {
+                        ResourceEditUtility.InstrumentInfo info;
+                        if (m_InstrumentInfos.TryGetValue(index, out info)) {
+                            var record = new ResourceEditUtility.InstrumentRecord();
+                            record.depth = depth;
+                            record.name = name;
+                            record.layerPath = layerPath;
+                            record.fps = fps;
+                            record.calls = calls;
+                            record.gcMemory = gc;
+                            record.totalTime = totalTime;
+                            record.totalPercent = totalPercent;
+                            record.selfTime = selfTime;
+                            record.selfPercent = selfPercent;
+                            record.totalGpuTime = totalGpuTime;
+                            record.totalGpuPercent = totalGpuPercent;
+                            record.selfGpuTime = selfGpuTime;
+                            record.selfGpuPercent = selfGpuPercent;
+                        }
+                    }
+
+                    ++curCount;
+                    DisplayProgressBar("加载进度", curCount, totalCount);
+                }
+            } catch (Exception ex) {
                 EditorUtility.DisplayDialog("异常", string.Format("line {0} exception {1}\n{2}", i, ex.Message, ex.StackTrace), "ok");
             }
             EditorUtility.ClearProgressBar();
@@ -1116,7 +1424,7 @@ public sealed class ResourceEditWindow : EditorWindow
             CountFilesRecursively(subDir, ext);
         }
     }
-    
+
     private void AnalyseAssets()
     {
         m_ReferenceAssets.Clear();
@@ -1158,12 +1466,12 @@ public sealed class ResourceEditWindow : EditorWindow
                 }
             }
             int ct = i + 1;
-            if(DisplayCancelableProgressBar("依赖分析进度", depFiles.Count, ct, guids.Length, false)) {
+            if (DisplayCancelableProgressBar("依赖分析进度", depFiles.Count, ct, guids.Length, false)) {
                 m_ReferenceAssets.Clear();
                 m_ReferenceByAssets.Clear();
                 m_UnusedAssets.Clear();
                 EditorUtility.ClearProgressBar();
-                return;      
+                return;
             }
         }
         foreach (string file in allFiles) {
@@ -1517,7 +1825,26 @@ public sealed class ResourceEditWindow : EditorWindow
             m_ItemList.Add(item);
         }
     }
-    
+
+    private void SearchInstruments()
+    {
+        if (m_InstrumentInfos.Count <= 0)
+            return;
+
+        m_TotalSearchCount = m_InstrumentInfos.Count;
+        foreach(var pair in m_InstrumentInfos) {
+            var info = pair.Value;
+            ++m_CurSearchCount;
+            var item = new ResourceEditUtility.ItemInfo { AssetPath = string.Empty, ScenePath = string.Empty, Instrument = info, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
+            var ret = ResourceEditUtility.Process(true, item, m_FilterCalculator, m_NextFilterIndex, m_Params, m_ReferenceAssets, m_ReferenceByAssets);
+            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+                m_ItemList.Add(item);
+            }
+            DisplayProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount);
+        }
+        EditorUtility.ClearProgressBar();
+    }
+
     private void IncomingSnapshot(PackedMemorySnapshot snapshot)
     {
         if (EditorWindow.focusedWindow != this)
@@ -1526,7 +1853,7 @@ public sealed class ResourceEditWindow : EditorWindow
         m_Snapshot = snapshot;
         m_NeedAnalyseSnapshot = true;
     }
-   
+
     private void AnalyseSnapshot()
     {
         m_ClassifiedMemoryInfos.Clear();
@@ -1539,7 +1866,7 @@ public sealed class ResourceEditWindow : EditorWindow
             UnityEngine.Object assetObj = null;
             bool handled = false;
             if (m_ActiveProfilerIsEditor) {
-                var runtimeObj = UnityEditorInternal.InternalEditorUtility.GetObjectFromInstanceID(obj.instanceId);
+                var runtimeObj = InternalEditorUtility.GetObjectFromInstanceID(obj.instanceId);
                 if (null != runtimeObj) {
                     assetPath = AssetDatabase.GetAssetPath(runtimeObj);
                     var go = runtimeObj as UnityEngine.GameObject;
@@ -1568,7 +1895,7 @@ public sealed class ResourceEditWindow : EditorWindow
             if (!handled) {
                 handled = FindSceneObject(obj.name, typeInfo.name, ref assetPath, ref scenePath, ref assetObj);
             }
-            if (!handled && !string.IsNullOrEmpty(obj.name) && !string.IsNullOrEmpty(typeInfo.name)) {                
+            if (!handled && !string.IsNullOrEmpty(obj.name) && !string.IsNullOrEmpty(typeInfo.name)) {
                 var guids = AssetDatabase.FindAssets(obj.name);
                 foreach (var guid in guids) {
                     string path = AssetDatabase.GUIDToAssetPath(guid);
@@ -1612,7 +1939,7 @@ public sealed class ResourceEditWindow : EditorWindow
             list.Add(memory);
 
             ++curCount;
-            if(DisplayCancelableProgressBar("内存信息分类进度", curCount, totalCount, false)) {
+            if (DisplayCancelableProgressBar("内存信息分类进度", curCount, totalCount, false)) {
                 m_ClassifiedMemoryInfos.Clear();
                 EditorUtility.ClearProgressBar();
                 return;
@@ -1620,7 +1947,7 @@ public sealed class ResourceEditWindow : EditorWindow
         }
         EditorUtility.ClearProgressBar();
     }
-    
+
     private bool FindSceneObject(string name, string type, ref string assetPath, ref string scenePath, ref UnityEngine.Object sceneObj)
     {
         bool ret = false;
@@ -1629,7 +1956,7 @@ public sealed class ResourceEditWindow : EditorWindow
             var objs = scene.GetRootGameObjects();
             foreach (var obj in objs) {
                 ret = FindChildObjectsRecursively(string.Empty, obj, name, type, ref assetPath, ref scenePath, ref sceneObj);
-                if(ret)
+                if (ret)
                     break;
             }
             if (ret)
@@ -1809,7 +2136,7 @@ public sealed class ResourceEditWindow : EditorWindow
         //SceneView.lastActiveSceneView.FrameSelected(true);
         SceneView.FrameLastActiveSceneView();
     }
-    
+
     private string m_SearchSource = string.Empty;
     private string m_PostProcessClass = string.Empty;
     private string m_PostProcessMethod = string.Empty;
@@ -1826,6 +2153,11 @@ public sealed class ResourceEditWindow : EditorWindow
     private double m_TotalItemValue = 0;
     private Dsl.DslFile m_DslFile = null;
     private string m_CollectPath = string.Empty;
+
+    private bool m_Record = false;
+    private SortedList<int, ResourceEditUtility.InstrumentInfo> m_InstrumentInfos = new SortedList<int, ResourceEditUtility.InstrumentInfo>();
+    private int m_RecordIndex = 0;
+    private int m_LastFrame = -1;
 
     private Expression.DslCalculator m_FilterCalculator = null;
     private Expression.DslCalculator m_ProcessCalculator = null;
@@ -1877,6 +2209,7 @@ internal static class ResourceEditUtility
         internal UnityEngine.Object Object;
         internal AreaInfo Area;
         internal MemoryInfo Memory;
+        internal InstrumentInfo Instrument;
         internal string Info;
         internal int Order;
         internal double Value;
@@ -2058,6 +2391,38 @@ internal static class ResourceEditUtility
         internal string scenePath;
         internal UnityEngine.Object Object;
     }
+    internal class InstrumentRecord
+    {
+        internal int depth;
+        internal string name;
+        internal string layerPath;
+        internal float totalTime;
+        internal float totalPercent;
+        internal float selfTime;
+        internal float selfPercent;
+        internal float totalGpuTime;
+        internal float totalGpuPercent;
+        internal float selfGpuTime;
+        internal float selfGpuPercent;
+        internal float fps;
+        internal int calls;
+        internal float gcMemory;
+    }
+    internal class InstrumentInfo
+    {
+        internal int index;
+        internal int frame;
+        internal float fps;
+        internal float totalGcMemory;
+        internal int totalCalls;
+        internal float totalCpuTime;
+        internal float totalGpuTime;
+        internal int sortType;
+        internal int viewType;
+        internal float batch;
+        internal float triangle;
+        internal List<InstrumentRecord> records = new List<InstrumentRecord>();
+    }
     internal static void InitCalculator(Expression.DslCalculator calc)
     {
         calc.Init();
@@ -2095,6 +2460,7 @@ internal static class ResourceEditUtility
                 calc.NamedVariables.Add("object", item.Object);
                 calc.NamedVariables.Add("area", item.Area);
                 calc.NamedVariables.Add("memory", item.Memory);
+                calc.NamedVariables.Add("instrument", item.Instrument);
                 calc.NamedVariables.Add("refdict", refDict);
                 calc.NamedVariables.Add("refbydict", refByDict);
                 foreach (var pair in args) {
@@ -2108,10 +2474,15 @@ internal static class ResourceEditUtility
 
                 if (isFilter) {
                     object v;
-                    if (calc.NamedVariables.TryGetValue("path", out v)) {
+                    if (calc.NamedVariables.TryGetValue("assetpath", out v)) {
                         var path = v as string;
                         if (!string.IsNullOrEmpty(path))
                             item.AssetPath = path;
+                    }
+                    if (calc.NamedVariables.TryGetValue("scenepath", out v)) {
+                        var path = v as string;
+                        if (!string.IsNullOrEmpty(path))
+                            item.ScenePath = path;
                     }
                     if (calc.NamedVariables.TryGetValue("importer", out v)) {
                         if (null != v) {
@@ -2121,16 +2492,6 @@ internal static class ResourceEditUtility
                     if (calc.NamedVariables.TryGetValue("object", out v)) {
                         if (null != v) {
                             item.Object = v as UnityEngine.Object;
-                        }
-                    }
-                    if (null == item.Area && calc.NamedVariables.TryGetValue("area", out v)) {
-                        if (null != v) {
-                            item.Area = v as AreaInfo;
-                        }
-                    }
-                    if (null == item.Memory && calc.NamedVariables.TryGetValue("memory", out v)) {
-                        if (null != v) {
-                            item.Memory = v as MemoryInfo;
                         }
                     }
                     if (calc.NamedVariables.TryGetValue("info", out v)) {
