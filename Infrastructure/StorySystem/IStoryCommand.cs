@@ -54,13 +54,28 @@ namespace StorySystem
         public bool Execute(StoryInstance instance, long delta, object iterator, object[] args)
         {
             if (IsCompositeCommand) {
-                return ExecCommand(instance, delta, iterator, args);
+                try {
+                    return ExecCommand(instance, delta, iterator, args);
+                } catch(Exception ex) {
+                    GameFramework.LogSystem.Error("AbstractStoryCommand Composite Command ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    return false;
+                }
             } else {
                 if (!m_LastExecResult) {
                     //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
-                    Evaluate(instance, iterator, args);
+                    try {
+                        Evaluate(instance, iterator, args);
+                    } catch (Exception ex) {
+                        GameFramework.LogSystem.Error("AbstractStoryCommand Evaluate Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                        return false;
+                    }
                 }
-                m_LastExecResult = ExecCommand(instance, delta);
+                try {
+                    m_LastExecResult = ExecCommand(instance, delta);
+                } catch (Exception ex) {
+                    GameFramework.LogSystem.Error("AbstractStoryCommand ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    m_LastExecResult = false;
+                }
                 return m_LastExecResult;
             }
         }

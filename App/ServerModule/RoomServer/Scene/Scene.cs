@@ -263,7 +263,7 @@ namespace GameFramework
                 RoomUserManager roomUserMgr = GetRoomUserManager();
                 if (null != roomUserMgr && null != roomUserMgr.ActiveScene) {
                     //同步场景数据给观察者
-                    for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+                    for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                         EntityInfo npc = linkNode.Value;
                         if (null != npc) {
                             Msg_RC_CreateNpc bder = DataSyncUtility.BuildCreateNpcMessage(npc);

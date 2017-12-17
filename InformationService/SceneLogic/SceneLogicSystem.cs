@@ -26,7 +26,7 @@ namespace GameFramework
             } else {
                 long delta = TimeUtility.GetLocalMilliseconds() - m_LastTickTime;
                 m_LastTickTime = TimeUtility.GetLocalMilliseconds();
-                for (LinkedListNode<SceneLogicInfo> node = m_SceneLogicInfoMgr.SceneLogicInfos.FirstValue; null != node; node = node.Next) {
+                for (LinkedListNode<SceneLogicInfo> node = m_SceneLogicInfoMgr.SceneLogicInfos.FirstNode; null != node; node = node.Next) {
                     SceneLogicInfo info = node.Value;
                     if (null != info) {
                         ISceneLogic logic = SceneLogicManager.Instance.GetSceneLogic(info.LogicId);

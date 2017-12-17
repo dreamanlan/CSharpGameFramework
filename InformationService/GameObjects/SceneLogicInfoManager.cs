@@ -31,7 +31,7 @@ namespace GameFramework
         public SceneLogicInfo GetSceneLogicInfoByConfigId(int id)
         {
             SceneLogicInfo ret = null;
-            for (LinkedListNode<SceneLogicInfo> linkNode = m_SceneLogicInfos.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<SceneLogicInfo> linkNode = m_SceneLogicInfos.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 SceneLogicInfo info = linkNode.Value;
                 if (info.ConfigId == id) {
                     ret = info;

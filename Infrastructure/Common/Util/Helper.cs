@@ -21,6 +21,9 @@ namespace GameFramework
         }
         public static object ConvertTo(object obj, Type type)
         {
+            if(obj == null) { 
+                return null;
+            }
             if (type.IsAssignableFrom(obj.GetType()) || obj.GetType().IsSubclassOf(type)) {
                 return obj;
             } else {

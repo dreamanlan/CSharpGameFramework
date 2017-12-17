@@ -84,6 +84,78 @@ namespace StorySystem.CommonCommands
         }
     }
     /// <summary>
+    /// storylocalmessage(msgid,arg1,arg2,...);
+    /// </summary>
+    internal sealed class StoryLocalMessageCommand : AbstractStoryCommand
+    {
+        public StoryLocalMessageCommand(bool isConcurrent)
+        {
+            m_IsConcurrent = isConcurrent;
+        }
+        public override IStoryCommand Clone()
+        {
+            StoryLocalMessageCommand cmd = new StoryLocalMessageCommand(m_IsConcurrent);
+            cmd.m_MsgId = m_MsgId.Clone();
+            for (int i = 0; i < m_MsgArgs.Count; i++) {
+                cmd.m_MsgArgs.Add(m_MsgArgs[i].Clone());
+            }
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_MsgId.Evaluate(instance, iterator, args);
+            for (int i = 0; i < m_MsgArgs.Count; i++) {
+                m_MsgArgs[i].Evaluate(instance, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            if (GameFramework.GlobalVariables.Instance.IsStorySkipped) {
+                return false;
+            }
+            string msgId = m_MsgId.Value;
+            ArrayList arglist = new ArrayList();
+            for (int i = 0; i < m_MsgArgs.Count; i++) {
+                arglist.Add(m_MsgArgs[i].Value);
+            }
+            object[] args = arglist.ToArray();
+            if (m_IsConcurrent)
+                instance.SendConcurrentMessage(msgId, args);
+            else
+                instance.SendMessage(msgId, args);
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_MsgId.InitFromDsl(callData.GetParam(0));
+            }
+            for (int i = 1; i < num; ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgArgs.Add(val);
+            }
+        }
+        private IStoryValue<string> m_MsgId = new StoryValue<string>();
+        private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
+        private bool m_IsConcurrent = false;
+    }
+    internal sealed class StoryLocalMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new StoryLocalMessageCommand(false);
+        }
+    }
+    internal sealed class StoryLocalConcurrentMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new StoryLocalMessageCommand(true);
+        }
+    }
+    /// <summary>
     /// clearmessage(msgid1,msgid2,...);
     /// </summary>
     internal sealed class ClearMessageCommand : AbstractStoryCommand
@@ -290,9 +362,240 @@ namespace StorySystem.CommonCommands
                 object varVal = m_SetVal.Value;
                 instance.SetVariable(varName, varVal);
             } else {
+                int timeout = m_TimeoutVal.Value;
                 int curTime = m_CurTime;
                 m_CurTime += (int)delta;
-                if (curTime <= m_TimeoutVal.Value) {
+                if (timeout <= 0 || curTime <= timeout) {
+                    ret = true;
+                } else {
+                    string varName = m_TimeoutSetVar.Value;
+                    object varVal = m_TimeoutSetVal.Value;
+                    instance.SetVariable(varName, varVal);
+                }
+            }
+            return ret;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            if (statementData.Functions.Count >= 3) {
+                Dsl.CallData first = statementData.Functions[0].Call;
+                Dsl.CallData second = statementData.Functions[1].Call;
+                Dsl.CallData third = statementData.Functions[2].Call;
+                if (null != first && null != second && null != third) {
+                    m_HaveSet = true;
+                    Load(first);
+                    LoadSet(second);
+                    LoadTimeoutSet(third);
+                }
+            }
+        }
+        private void LoadSet(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 2) {
+                m_SetVar.InitFromDsl(callData.GetParam(0));
+                m_SetVal.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        private void LoadTimeoutSet(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 3) {
+                m_TimeoutVal.InitFromDsl(callData.GetParam(0));
+                m_TimeoutSetVar.InitFromDsl(callData.GetParam(1));
+                m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
+            }
+        }
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
+        private IStoryValue<string> m_SetVar = new StoryValue<string>();
+        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
+        private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
+        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private bool m_HaveSet = false;
+        private int m_CurTime = 0;
+    }
+    /// <summary>
+    /// storywaitlocalmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// </summary>
+    internal sealed class StoryWaitLocalMessageCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            StoryWaitLocalMessageCommand cmd = new StoryWaitLocalMessageCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            cmd.m_SetVar = m_SetVar.Clone();
+            cmd.m_SetVal = m_SetVal.Clone();
+            cmd.m_TimeoutVal = m_TimeoutVal.Clone();
+            cmd.m_TimeoutSetVar = m_TimeoutSetVar.Clone();
+            cmd.m_TimeoutSetVal = m_TimeoutSetVal.Clone();
+            cmd.m_HaveSet = m_HaveSet;
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+            m_CurTime = 0;
+            m_StartTime = 0;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance, iterator, args);
+            }
+            if (m_HaveSet) {
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            if (m_StartTime <= 0) {
+                long startTime = GameFramework.TimeUtility.GetLocalMilliseconds();
+                m_StartTime = startTime;
+            }
+            bool triggered = false;
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                long time = instance.GetMessageTriggerTime(m_MsgIds[i].Value);
+                if (time > m_StartTime) {
+                    triggered = true;
+                    break;
+                }
+            }
+            bool ret = false;
+            if (triggered) {
+                string varName = m_SetVar.Value;
+                object varVal = m_SetVal.Value;
+                instance.SetVariable(varName, varVal);
+            } else {
+                int timeout = m_TimeoutVal.Value;
+                int curTime = m_CurTime;
+                m_CurTime += (int)delta;
+                if (!GameFramework.GlobalVariables.Instance.IsStorySkipped && (timeout <= 0 || curTime <= timeout)) {
+                    ret = true;
+                } else {
+                    string varName = m_TimeoutSetVar.Value;
+                    object varVal = m_TimeoutSetVal.Value;
+                    instance.SetVariable(varName, varVal);
+                }
+            }
+            return ret;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            if (statementData.Functions.Count >= 3) {
+                Dsl.CallData first = statementData.Functions[0].Call;
+                Dsl.CallData second = statementData.Functions[1].Call;
+                Dsl.CallData third = statementData.Functions[2].Call;
+                if (null != first && null != second && null != third) {
+                    m_HaveSet = true;
+                    Load(first);
+                    LoadSet(second);
+                    LoadTimeoutSet(third);
+                }
+            }
+        }
+        private void LoadSet(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 2) {
+                m_SetVar.InitFromDsl(callData.GetParam(0));
+                m_SetVal.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        private void LoadTimeoutSet(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 3) {
+                m_TimeoutVal.InitFromDsl(callData.GetParam(0));
+                m_TimeoutSetVar.InitFromDsl(callData.GetParam(1));
+                m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
+            }
+        }
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
+        private IStoryValue<string> m_SetVar = new StoryValue<string>();
+        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
+        private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
+        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private bool m_HaveSet = false;
+        private int m_CurTime = 0;
+        private long m_StartTime = 0;
+    }
+    /// <summary>
+    /// storywaitlocalmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// </summary>
+    internal sealed class StoryWaitLocalMessageHandlerCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            StoryWaitLocalMessageHandlerCommand cmd = new StoryWaitLocalMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            cmd.m_SetVar = m_SetVar.Clone();
+            cmd.m_SetVal = m_SetVal.Clone();
+            cmd.m_TimeoutVal = m_TimeoutVal.Clone();
+            cmd.m_TimeoutSetVar = m_TimeoutSetVar.Clone();
+            cmd.m_TimeoutSetVal = m_TimeoutSetVal.Clone();
+            cmd.m_HaveSet = m_HaveSet;
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+            m_CurTime = 0;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance, iterator, args);
+            }
+            if (m_HaveSet) {
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            int ct = 0;
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                ct += instance.CountMessage(m_MsgIds[i].Value);
+            }
+            bool ret = false;
+            if (ct <= 0) {
+                string varName = m_SetVar.Value;
+                object varVal = m_SetVal.Value;
+                instance.SetVariable(varName, varVal);
+            } else {
+                int timeout = m_TimeoutVal.Value;
+                int curTime = m_CurTime;
+                m_CurTime += (int)delta;
+                if (!GameFramework.GlobalVariables.Instance.IsStorySkipped && (timeout <= 0 || curTime <= timeout)) {
                     ret = true;
                 } else {
                     string varName = m_TimeoutSetVar.Value;
@@ -502,6 +805,82 @@ namespace StorySystem.CommonCommands
         public IStoryCommand Create()
         {
             return new LocalNamespacedMessageCommand(true);
+        }
+    }
+    /// <summary>
+    /// storylocalnamespacedmessage(msgid,arg1,arg2,...);
+    /// </summary>
+    internal sealed class StoryLocalNamespacedMessageCommand : AbstractStoryCommand
+    {
+        public StoryLocalNamespacedMessageCommand(bool isConcurrent)
+        {
+            m_IsConcurrent = isConcurrent;
+        }
+        public override IStoryCommand Clone()
+        {
+            StoryLocalNamespacedMessageCommand cmd = new StoryLocalNamespacedMessageCommand(m_IsConcurrent);
+            cmd.m_MsgId = m_MsgId.Clone();
+            for (int i = 0; i < m_MsgArgs.Count; i++) {
+                cmd.m_MsgArgs.Add(m_MsgArgs[i].Clone());
+            }
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_MsgId.Evaluate(instance, iterator, args);
+            for (int i = 0; i < m_MsgArgs.Count; i++) {
+                m_MsgArgs[i].Evaluate(instance, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            if (GameFramework.GlobalVariables.Instance.IsStorySkipped) {
+                return false;
+            }
+            string msgId = m_MsgId.Value;
+            ArrayList arglist = new ArrayList();
+            string _namespace = instance.Namespace;
+            if (!string.IsNullOrEmpty(_namespace)) {
+                msgId = string.Format("{0}:{1}", _namespace, msgId);
+            }
+            for (int i = 0; i < m_MsgArgs.Count; i++) {
+                arglist.Add(m_MsgArgs[i].Value);
+            }
+            object[] args = arglist.ToArray();
+            if (m_IsConcurrent)
+                instance.SendConcurrentMessage(msgId, args);
+            else
+                instance.SendMessage(msgId, args);
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_MsgId.InitFromDsl(callData.GetParam(0));
+            }
+            for (int i = 1; i < num; ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgArgs.Add(val);
+            }
+        }
+        private IStoryValue<string> m_MsgId = new StoryValue<string>();
+        private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
+        private bool m_IsConcurrent = false;
+    }
+    internal sealed class StoryLocalNamespacedMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new StoryLocalNamespacedMessageCommand(false);
+        }
+    }
+    internal sealed class StoryLocalConcurrentNamespacedMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new StoryLocalNamespacedMessageCommand(true);
         }
     }
     /// <summary>
@@ -738,6 +1117,254 @@ namespace StorySystem.CommonCommands
                 int curTime = m_CurTime;
                 m_CurTime += (int)delta;
                 if (curTime <= m_TimeoutVal.Value) {
+                    ret = true;
+                } else {
+                    string varName = m_TimeoutSetVar.Value;
+                    object varVal = m_TimeoutSetVal.Value;
+                    instance.SetVariable(varName, varVal);
+                }
+            }
+            return ret;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            if (statementData.Functions.Count >= 3) {
+                Dsl.CallData first = statementData.Functions[0].Call;
+                Dsl.CallData second = statementData.Functions[1].Call;
+                Dsl.CallData third = statementData.Functions[2].Call;
+                if (null != first && null != second && null != third) {
+                    m_HaveSet = true;
+                    Load(first);
+                    LoadSet(second);
+                    LoadTimeoutSet(third);
+                }
+            }
+        }
+        private void LoadSet(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 2) {
+                m_SetVar.InitFromDsl(callData.GetParam(0));
+                m_SetVal.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        private void LoadTimeoutSet(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 3) {
+                m_TimeoutVal.InitFromDsl(callData.GetParam(0));
+                m_TimeoutSetVar.InitFromDsl(callData.GetParam(1));
+                m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
+            }
+        }
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
+        private IStoryValue<string> m_SetVar = new StoryValue<string>();
+        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
+        private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
+        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private bool m_HaveSet = false;
+        private int m_CurTime = 0;
+    }
+    /// <summary>
+    /// storywaitlocalnamespacedmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// </summary>
+    internal sealed class StoryWaitLocalNamespacedMessageCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            StoryWaitLocalNamespacedMessageCommand cmd = new StoryWaitLocalNamespacedMessageCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            cmd.m_SetVar = m_SetVar.Clone();
+            cmd.m_SetVal = m_SetVal.Clone();
+            cmd.m_TimeoutVal = m_TimeoutVal.Clone();
+            cmd.m_TimeoutSetVar = m_TimeoutSetVar.Clone();
+            cmd.m_TimeoutSetVal = m_TimeoutSetVal.Clone();
+            cmd.m_HaveSet = m_HaveSet;
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+            m_CurTime = 0;
+            m_StartTime = 0;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance, iterator, args);
+            }
+            if (m_HaveSet) {
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            if (m_StartTime <= 0) {
+                long startTime = GameFramework.TimeUtility.GetLocalMilliseconds();
+                m_StartTime = startTime;
+            }
+            bool triggered = false;
+            string _namespace = instance.Namespace;
+            if (string.IsNullOrEmpty(_namespace)) {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    long time = instance.GetMessageTriggerTime(m_MsgIds[i].Value);
+                    if (time > m_StartTime) {
+                        triggered = true;
+                        break;
+                    }
+                }
+            } else {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    long time = instance.GetMessageTriggerTime(string.Format("{0}:{1}", _namespace, m_MsgIds[i].Value));
+                    if (time > m_StartTime) {
+                        triggered = true;
+                        break;
+                    }
+                }
+            }
+            bool ret = false;
+            if (triggered) {
+                string varName = m_SetVar.Value;
+                object varVal = m_SetVal.Value;
+                instance.SetVariable(varName, varVal);
+            } else {
+                int timeout = m_TimeoutVal.Value;
+                int curTime = m_CurTime;
+                m_CurTime += (int)delta;
+                if (!GameFramework.GlobalVariables.Instance.IsStorySkipped && (timeout <= 0 || curTime <= timeout)) {
+                    ret = true;
+                } else {
+                    string varName = m_TimeoutSetVar.Value;
+                    object varVal = m_TimeoutSetVal.Value;
+                    instance.SetVariable(varName, varVal);
+                }
+            }
+            return ret;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            if (statementData.Functions.Count >= 3) {
+                Dsl.CallData first = statementData.Functions[0].Call;
+                Dsl.CallData second = statementData.Functions[1].Call;
+                Dsl.CallData third = statementData.Functions[2].Call;
+                if (null != first && null != second && null != third) {
+                    m_HaveSet = true;
+                    Load(first);
+                    LoadSet(second);
+                    LoadTimeoutSet(third);
+                }
+            }
+        }
+        private void LoadSet(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 2) {
+                m_SetVar.InitFromDsl(callData.GetParam(0));
+                m_SetVal.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        private void LoadTimeoutSet(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 3) {
+                m_TimeoutVal.InitFromDsl(callData.GetParam(0));
+                m_TimeoutSetVar.InitFromDsl(callData.GetParam(1));
+                m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
+            }
+        }
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
+        private IStoryValue<string> m_SetVar = new StoryValue<string>();
+        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
+        private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
+        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private bool m_HaveSet = false;
+        private int m_CurTime = 0;
+        private long m_StartTime = 0;
+    }
+    /// <summary>
+    /// storywaitlocalnamespacedmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
+    /// </summary>
+    internal sealed class StoryWaitLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            StoryWaitLocalNamespacedMessageHandlerCommand cmd = new StoryWaitLocalNamespacedMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            cmd.m_SetVar = m_SetVar.Clone();
+            cmd.m_SetVal = m_SetVal.Clone();
+            cmd.m_TimeoutVal = m_TimeoutVal.Clone();
+            cmd.m_TimeoutSetVar = m_TimeoutSetVar.Clone();
+            cmd.m_TimeoutSetVal = m_TimeoutSetVal.Clone();
+            cmd.m_HaveSet = m_HaveSet;
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+            m_CurTime = 0;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance, iterator, args);
+            }
+            if (m_HaveSet) {
+                m_SetVar.Evaluate(instance, iterator, args);
+                m_SetVal.Evaluate(instance, iterator, args);
+                m_TimeoutVal.Evaluate(instance, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            int ct = 0;
+            string _namespace = instance.Namespace;
+            if (string.IsNullOrEmpty(_namespace)) {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    ct += instance.CountMessage(m_MsgIds[i].Value);
+                }
+            } else {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    ct += instance.CountMessage(string.Format("{0}:{1}", _namespace, m_MsgIds[i].Value));
+                }
+            }
+            bool ret = false;
+            if (ct <= 0) {
+                string varName = m_SetVar.Value;
+                object varVal = m_SetVal.Value;
+                instance.SetVariable(varName, varVal);
+            } else {
+                int timeout = m_TimeoutVal.Value;
+                int curTime = m_CurTime;
+                m_CurTime += (int)delta;
+                if (!GameFramework.GlobalVariables.Instance.IsStorySkipped && (timeout <= 0 || curTime <= timeout)) {
                     ret = true;
                 } else {
                     string varName = m_TimeoutSetVar.Value;

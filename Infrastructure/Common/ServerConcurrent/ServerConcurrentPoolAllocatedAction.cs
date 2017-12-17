@@ -840,6 +840,31 @@ namespace GameFramework
     private T16 m_T16;
   }
 
+  public sealed class ServerConcurrentPoolAllocatedFunc : IServerConcurrentPoolAllocatedObject<ServerConcurrentPoolAllocatedFunc>
+  {
+      public void Init(MyFunc action)
+      {
+          m_Action = action;
+      }
+      public void Run()
+      {
+          m_Action();
+          m_Action = null;
+          m_Pool.Recycle(this);
+      }
+
+      public void InitPool(ServerConcurrentObjectPool<ServerConcurrentPoolAllocatedFunc> pool)
+      {
+          m_Pool = pool;
+      }
+      public ServerConcurrentPoolAllocatedFunc Downcast()
+      {
+          return this;
+      }
+      private ServerConcurrentObjectPool<ServerConcurrentPoolAllocatedFunc> m_Pool;
+
+      private MyFunc m_Action;
+  }
   public sealed class ServerConcurrentPoolAllocatedFunc<R> : IServerConcurrentPoolAllocatedObject<ServerConcurrentPoolAllocatedFunc<R>>
   {
     public void Init(MyFunc<R> action)

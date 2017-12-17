@@ -33,7 +33,7 @@ namespace GameFramework
         public EntityInfo GetEntityInfoByUnitId(int id)
         {
             EntityInfo entity = null;
-            for (LinkedListNode<EntityInfo> linkNode = m_Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (info.GetUnitId() == id) {
                     entity = info;
@@ -119,7 +119,7 @@ namespace GameFramework
         {
             EntityInfo result = null;
             float powDist = 0.0f;
-            for (LinkedListNode<EntityInfo> linkNode = m_Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo entity = linkNode.Value;
                 if (null != entity && entity.IsCombatNpc()) {
                     powDist = Geometry.DistanceSquare(pos, entity.GetMovementStateInfo().GetPosition3D());
@@ -134,7 +134,7 @@ namespace GameFramework
         public bool HasCombatNpc()
         {
             bool result = false;
-            for (LinkedListNode<EntityInfo> linkNode = m_Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo entity = linkNode.Value;
                 if (null != entity && entity.IsCombatNpc()) {
                     result = true;
@@ -146,7 +146,7 @@ namespace GameFramework
         public bool HasCombatNpcAlive()
         {
             bool result = false;
-            for (LinkedListNode<EntityInfo> linkNode = m_Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo entity = linkNode.Value;
                 if (null != entity && entity.IsCombatNpc() && !entity.IsDead()) {
                     result = true;

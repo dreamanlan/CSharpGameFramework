@@ -123,14 +123,14 @@ namespace GameFramework
                 }
             }
         }
-        public LinkedListNode<TValue> FirstValue
+        public LinkedListNode<TValue> FirstNode
         {
             get
             {
                 return m_Objects.First;
             }
         }
-        public LinkedListNode<TValue> LastValue
+        public LinkedListNode<TValue> LastNode
         {
             get
             {

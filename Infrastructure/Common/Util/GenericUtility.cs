@@ -68,6 +68,11 @@ public class StrList : List<string>
     public StrList() { }
     public StrList(IEnumerable<string> coll) : base(coll) { }
 }
+public class ObjList : List<object>
+{
+    public ObjList() { }
+    public ObjList(IEnumerable<object> coll) : base(coll) { }
+}
 public class IntIntDict : Dictionary<int, int>
 {
     public IntIntDict() { }

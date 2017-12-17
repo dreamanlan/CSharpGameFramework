@@ -48,7 +48,7 @@ namespace GameFramework
                 EntityInfo userInfo = user.Info;
                 RoomUserManager roomUserMgr = GetRoomUserManager();
                 if (null != userInfo && null != roomUserMgr && null != roomUserMgr.ActiveScene) {
-                    for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+                    for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                         EntityInfo npc = linkNode.Value;
                         if (null != npc) {
                             Msg_RC_CreateNpc bder = DataSyncUtility.BuildCreateNpcMessage(npc);
@@ -70,7 +70,7 @@ namespace GameFramework
                 Msg_RC_SyncProperty msg = DataSyncUtility.BuildSyncPropertyMessage(userInfo);
                 RoomUserManager roomUserMgr = GetRoomUserManager();
                 if (null != userInfo && null != roomUserMgr && null != roomUserMgr.ActiveScene) {
-                    for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+                    for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                         EntityInfo npc = linkNode.Value;
                         if (null != npc && npc != userInfo) {
                             User other = npc.CustomData as User;
@@ -114,7 +114,7 @@ namespace GameFramework
         public int GetBossCount()
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead() && info.EntityType == (int)EntityTypeEnum.Boss) {
                     ++ct;
@@ -125,7 +125,7 @@ namespace GameFramework
         public int GetBattleNpcCount()
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead() && info.IsCombatNpc()) {
                     ++ct;
@@ -136,7 +136,7 @@ namespace GameFramework
         public int GetBattleNpcCount(EntityInfo src, CharacterRelation relation)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead() && info.IsCombatNpc() && EntityInfo.GetRelation(src, info) == relation) {
                     ++ct;
@@ -147,7 +147,7 @@ namespace GameFramework
         public int GetBattleNpcCount(int campId, CharacterRelation relation)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead() && info.IsCombatNpc() && EntityInfo.GetRelation(campId, info.GetCampId()) == relation) {
                     ++ct;
@@ -158,7 +158,7 @@ namespace GameFramework
         public int GetBattleNpcCount(int campId)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead() && info.IsCombatNpc() && info.GetCampId() == campId) {
                     ++ct;
@@ -169,7 +169,7 @@ namespace GameFramework
         public int GetDyingBattleNpcCount(int campId, CharacterRelation relation)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && info.IsDead() && info.DeadTime != 0 && info.IsCombatNpc() && EntityInfo.GetRelation(campId, info.GetCampId()) == relation) {
                     ++ct;
@@ -180,7 +180,7 @@ namespace GameFramework
         public int GetDyingBattleNpcCount(int campId)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && info.IsDead() && info.DeadTime != 0 && info.IsCombatNpc() && info.GetCampId() == campId) {
                     ++ct;
@@ -191,7 +191,7 @@ namespace GameFramework
         public int GetNpcCount(int startUnitId, int endUnitId)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead()) {
                     int unitId = info.GetUnitId();

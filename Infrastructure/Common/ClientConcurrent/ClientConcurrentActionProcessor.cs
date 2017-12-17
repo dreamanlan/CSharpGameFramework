@@ -348,7 +348,26 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<R>(MyFunc<R> action)
+    public void QueueFunc(MyFunc action)
+    {
+        bool needUseLambda = true;
+        ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc> pool;
+        m_ActionPools.GetOrNewData(out pool);
+        if (null != pool) {
+            ClientConcurrentPoolAllocatedFunc helper = pool.Alloc();
+            if (null != helper) {
+                helper.Init(action);
+                m_Actions.Enqueue(helper.Run);
+                needUseLambda = false;
+            }
+        }
+        if (needUseLambda) {
+            m_Actions.Enqueue(() => { action(); });
+            LogSystem.Warn("QueueAction {0}() use lambda expression, maybe out of memory.", action.Method.ToString());
+        }
+    }
+
+    public void QueueFunc<R>(MyFunc<R> action)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<R>> pool;
@@ -367,7 +386,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, R>(MyFunc<T1, R> action, T1 t1)
+    public void QueueFunc<T1, R>(MyFunc<T1, R> action, T1 t1)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, R>> pool;
@@ -386,7 +405,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, R>(MyFunc<T1, T2, R> action, T1 t1, T2 t2)
+    public void QueueFunc<T1, T2, R>(MyFunc<T1, T2, R> action, T1 t1, T2 t2)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, R>> pool;
@@ -405,7 +424,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, R>(MyFunc<T1, T2, T3, R> action, T1 t1, T2 t2, T3 t3)
+    public void QueueFunc<T1, T2, T3, R>(MyFunc<T1, T2, T3, R> action, T1 t1, T2 t2, T3 t3)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, R>> pool;
@@ -424,7 +443,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, R>(MyFunc<T1, T2, T3, T4, R> action, T1 t1, T2 t2, T3 t3, T4 t4)
+    public void QueueFunc<T1, T2, T3, T4, R>(MyFunc<T1, T2, T3, T4, R> action, T1 t1, T2 t2, T3 t3, T4 t4)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, R>> pool;
@@ -443,7 +462,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, R>(MyFunc<T1, T2, T3, T4, T5, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
+    public void QueueFunc<T1, T2, T3, T4, T5, R>(MyFunc<T1, T2, T3, T4, T5, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, R>> pool;
@@ -462,7 +481,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, R>(MyFunc<T1, T2, T3, T4, T5, T6, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, R>(MyFunc<T1, T2, T3, T4, T5, T6, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, R>> pool;
@@ -481,7 +500,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, T7, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, T7, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, T7, R>> pool;
@@ -500,7 +519,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, T7, T8, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, T7, T8, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, T7, T8, R>> pool;
@@ -519,7 +538,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, R>> pool;
@@ -538,7 +557,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R>> pool;
@@ -557,7 +576,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R>> pool;
@@ -576,7 +595,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R>> pool;
@@ -595,7 +614,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R>> pool;
@@ -614,7 +633,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R>> pool;
@@ -633,7 +652,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R>> pool;
@@ -652,7 +671,7 @@ namespace GameFramework
       }
     }
 
-    public void QueueAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16)
+    public void QueueFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16)
     {
       bool needUseLambda = true;
       ClientConcurrentObjectPool<ClientConcurrentPoolAllocatedFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R>> pool;

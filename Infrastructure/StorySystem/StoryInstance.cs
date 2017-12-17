@@ -417,8 +417,12 @@ namespace StorySystem
         {
             m_LastTickTime = 0;
             m_CurTime = 0;
-            foreach (KeyValuePair<string, object> pair in m_PreInitedLocalVariables) {
-                m_LocalVariables.Add(pair.Key, pair.Value);
+            try {
+                foreach (KeyValuePair<string, object> pair in m_PreInitedLocalVariables) {
+                    m_LocalVariables.Add(pair.Key, pair.Value);
+                }
+            } catch (Exception ex) {
+                LogSystem.Error("Story {0} local variable duplicate! (for AI, @objid is a system predefined variable; for UI, @window is a system predefined variable), Exception:{1}\n{2}", m_StoryId, ex.Message, ex.StackTrace);
             }
             SendMessage("start");
         }

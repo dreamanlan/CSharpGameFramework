@@ -82,14 +82,16 @@ namespace System.Collections.Concurrent
 						result = default (T);
 						return false;
 					} else {
-						result = ((Node)oldNext).Value;
-						advanced = ClientInterlocked.CompareExchange (ref head, oldNext, oldHead) == oldHead;
+                        if (oldNext != null) {
+                            result = ((Node)oldNext).Value;
+                            advanced = ClientInterlocked.CompareExchange(ref head, oldNext, oldHead) == oldHead;
+                        }
 					}
 				}
 			}
-
-			((Node)oldNext).Value = default (T);
-
+            if (null != oldNext) {
+                ((Node)oldNext).Value = default(T);
+            }
 			ClientInterlocked.Decrement (ref count);
 
 			return true;

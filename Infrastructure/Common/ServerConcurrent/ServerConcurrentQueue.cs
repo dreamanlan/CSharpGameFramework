@@ -81,16 +81,17 @@ namespace System.Collections.Concurrent
 						result = default (T);
 						return false;
 					} else {
-						result = oldNext.Value;
-						advanced = Interlocked.CompareExchange (ref head, oldNext, oldHead) == oldHead;
+                        if (null != oldNext) {
+                            result = oldNext.Value;
+                            advanced = Interlocked.CompareExchange(ref head, oldNext, oldHead) == oldHead;
+                        }
 					}
 				}
 			}
-
-			oldNext.Value = default (T);
-
+            if (null != oldNext) {
+                oldNext.Value = default(T);
+            }
 			Interlocked.Decrement (ref count);
-
 			return true;
 		}
 		

@@ -33,7 +33,7 @@ namespace GameFramework
                 if (delta > 1000)
                     delta = 1000;
                 if (null != m_EntityMgr) {
-                    for (LinkedListNode<EntityInfo> node = m_EntityMgr.Entities.FirstValue; null != node; node = node.Next) {
+                    for (LinkedListNode<EntityInfo> node = m_EntityMgr.Entities.FirstNode; null != node; node = node.Next) {
                         EntityInfo npc = node.Value;
                         if (null != npc) {
                             MoveNpc(npc, delta);

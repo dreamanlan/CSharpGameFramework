@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientConcurrent\ClientConcurrentActionProcessor.cs" />
+    <Compile Include="ClientConcurrent\ClientConcurrentCommandProcessor.cs" />
     <Compile Include="ClientConcurrent\ClientConcurrentDictionary.cs" />
     <Compile Include="ClientConcurrent\ClientConcurrentObjectPool.cs" />
     <Compile Include="ClientConcurrent\ClientConcurrentOrderedList.cs" />

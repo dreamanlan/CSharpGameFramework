@@ -59,7 +59,7 @@ namespace GameFramework
             TimeSnapshot.DoCheckPoint();
 
             m_KdTree.BeginBuild(m_EntityMgr.Entities.Count);
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 m_KdTree.AddObjForBuild(info);
             }
@@ -116,7 +116,7 @@ namespace GameFramework
         private void TickEntities()
         {
             m_DeletedEntities.Clear();
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityMgr.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 info.RetireAttackerInfos(60000);
                 if (info.LevelChanged || info.GetSkillStateInfo().BuffChanged) {
@@ -268,7 +268,7 @@ namespace GameFramework
                 }
                 if (needDebug) {
                     Msg_RC_DebugSpaceInfo builder = new Msg_RC_DebugSpaceInfo();
-                    for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+                    for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                         EntityInfo info = linkNode.Value;
                         Msg_RC_DebugSpaceInfo.DebugSpaceInfo infoBuilder = new Msg_RC_DebugSpaceInfo.DebugSpaceInfo();
                         infoBuilder.obj_id = info.GetId();
@@ -289,7 +289,7 @@ namespace GameFramework
 
         private void TickProperty()
         {
-            for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (!info.IsDead() && info.PropertyChanged) {
                     info.PropertyChanged = false;

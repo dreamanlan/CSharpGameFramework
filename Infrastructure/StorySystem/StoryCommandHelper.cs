@@ -83,9 +83,19 @@ namespace StorySystem
         {
             if (!m_LastExecResult) {
                 //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
-                m_Params.Evaluate(instance, iterator, args);
+                try {
+                    m_Params.Evaluate(instance, iterator, args);
+                } catch (Exception ex) {
+                    GameFramework.LogSystem.Error("SimpleStoryCommand Evaluate Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    return false;
+                }
             }
-            m_LastExecResult = ExecCommand(instance, (ValueParamType)m_Params, delta);
+            try {
+                m_LastExecResult = ExecCommand(instance, (ValueParamType)m_Params, delta);
+            } catch (Exception ex) {
+                GameFramework.LogSystem.Error("SimpleStoryCommand ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                m_LastExecResult = false;
+            }
             return m_LastExecResult;
         }
         public void Analyze(StoryInstance instance)

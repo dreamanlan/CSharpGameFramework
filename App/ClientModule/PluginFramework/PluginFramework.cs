@@ -184,7 +184,7 @@ namespace GameFramework
             GfxSkillSystem.Instance.Reset();
             GfxSkillSystem.Instance.ClearSkillInstancePool();
 
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info) {
                     EntityViewModelManager.Instance.DestroyEntityView(info.GetId());
@@ -223,7 +223,7 @@ namespace GameFramework
             }
 
             m_KdTree.BeginBuild(m_EntityManager.Entities.Count);
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 m_KdTree.AddObjForBuild(info);
             }
@@ -329,7 +329,7 @@ namespace GameFramework
             m_IsBattleState = false;
             
             //干掉全部客户端npc
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (!info.IsServerEntity) {
                     info.Hp = 0;
@@ -370,7 +370,7 @@ namespace GameFramework
         private void RefreshRoomScene()
         {
             LogSystem.Warn("PluginFramework.RefreshRoomScene Destory Objects...");
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info) {
                     EntityViewModelManager.Instance.DestroyEntityView(info.GetId());
@@ -388,7 +388,7 @@ namespace GameFramework
         public int GetBossCount()
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead() && info.EntityType == (int)EntityTypeEnum.Boss) {
                     ++ct;
@@ -399,7 +399,7 @@ namespace GameFramework
         public int GetBattleNpcCount()
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead() && info.IsCombatNpc()) {
                     ++ct;
@@ -410,7 +410,7 @@ namespace GameFramework
         public int GetBattleNpcCount(EntityInfo src, CharacterRelation relation)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead() && info.IsCombatNpc() && EntityInfo.GetRelation(src, info) == relation) {
                     ++ct;
@@ -421,7 +421,7 @@ namespace GameFramework
         public int GetBattleNpcCount(int campId, CharacterRelation relation)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead() && info.IsCombatNpc() && EntityInfo.GetRelation(campId, info.GetCampId()) == relation) {
                     ++ct;
@@ -432,7 +432,7 @@ namespace GameFramework
         public int GetBattleNpcCount(int campId)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && !info.IsDead() && info.IsCombatNpc() && info.GetCampId() == campId) {
                     ++ct;
@@ -443,7 +443,7 @@ namespace GameFramework
         public int GetDyingBattleNpcCount(int campId, CharacterRelation relation)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && info.IsDead() && info.DeadTime != 0 && info.IsCombatNpc() && EntityInfo.GetRelation(campId, info.GetCampId()) == relation) {
                     ++ct;
@@ -454,7 +454,7 @@ namespace GameFramework
         public int GetDyingBattleNpcCount(int campId)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (null != info && info.IsDead() && info.DeadTime != 0 && info.IsCombatNpc() && info.GetCampId() == campId) {
                     ++ct;
@@ -465,7 +465,7 @@ namespace GameFramework
         public int GetNpcCount(int startUnitId, int endUnitId)
         {
             int ct = 0;
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;                
                 if (null != info && !info.IsDead()) {
                     int unitId = info.GetUnitId();
@@ -627,7 +627,7 @@ namespace GameFramework
                 NpcOnAttackedToDead(npcId);
             }
             m_DeletedEntities.Clear();
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 info.RetireAttackerInfos(10000);
                 //Ai挂接与切换
@@ -768,7 +768,7 @@ namespace GameFramework
         }
         private void NpcOnAttackedToDead(int id)
         {
-            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next)
+            for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next)
             {
                 EntityInfo info = linkNode.Value;
                 var impacts = info.GetSkillStateInfo().GetAllImpact();

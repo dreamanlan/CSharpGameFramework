@@ -113,106 +113,112 @@ namespace GameFramework
             actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16);
         }
 
-        public void DispatchAction<R>(MyFunc<R> action)
+        public void DispatchFunc(MyFunc action)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action);
+            actionQueue.QueueFunc(action);
         }
 
-        public void DispatchAction<T1, R>(MyFunc<T1, R> action, T1 t1)
+        public void DispatchFunc<R>(MyFunc<R> action)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1);
+            actionQueue.QueueFunc(action);
         }
 
-        public void DispatchAction<T1, T2, R>(MyFunc<T1, T2, R> action, T1 t1, T2 t2)
+        public void DispatchFunc<T1, R>(MyFunc<T1, R> action, T1 t1)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2);
+            actionQueue.QueueFunc(action, t1);
         }
 
-        public void DispatchAction<T1, T2, T3, R>(MyFunc<T1, T2, T3, R> action, T1 t1, T2 t2, T3 t3)
+        public void DispatchFunc<T1, T2, R>(MyFunc<T1, T2, R> action, T1 t1, T2 t2)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3);
+            actionQueue.QueueFunc(action, t1, t2);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, R>(MyFunc<T1, T2, T3, T4, R> action, T1 t1, T2 t2, T3 t3, T4 t4)
+        public void DispatchFunc<T1, T2, T3, R>(MyFunc<T1, T2, T3, R> action, T1 t1, T2 t2, T3 t3)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4);
+            actionQueue.QueueFunc(action, t1, t2, t3);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, R>(MyFunc<T1, T2, T3, T4, T5, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
+        public void DispatchFunc<T1, T2, T3, T4, R>(MyFunc<T1, T2, T3, T4, R> action, T1 t1, T2 t2, T3 t3, T4 t4)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, R>(MyFunc<T1, T2, T3, T4, T5, T6, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
+        public void DispatchFunc<T1, T2, T3, T4, T5, R>(MyFunc<T1, T2, T3, T4, T5, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, T7, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, R>(MyFunc<T1, T2, T3, T4, T5, T6, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, T7, T8, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, T7, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7, t8);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6, t7);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9)
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, T7, T8, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7, t8, t9);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6, t7, t8);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10)
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6, t7, t8, t9);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11)
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12)
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13)
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14)
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15)
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14);
         }
 
-        public void DispatchAction<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16)
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15)
         {
             IActionQueue actionQueue = GetActionQueue();
-            actionQueue.QueueAction(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16);
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15);
+        }
+
+        public void DispatchFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R>(MyFunc<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, R> action, T1 t1, T2 t2, T3 t3, T4 t4, T5 t5, T6 t6, T7 t7, T8 t8, T9 t9, T10 t10, T11 t11, T12 t12, T13 t13, T14 t14, T15 t15, T16 t16)
+        {
+            IActionQueue actionQueue = GetActionQueue();
+            actionQueue.QueueFunc(action, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11, t12, t13, t14, t15, t16);
         }
 
         public void DebugPoolCount(MyAction<string> output)

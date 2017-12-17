@@ -192,7 +192,7 @@ namespace GameFramework
         public void Tick()
         {
             float curTime = Time.time;
-            for (LinkedListNode<UsedResourceInfo> node = m_UsedResources.FirstValue; null != node; ) {
+            for (LinkedListNode<UsedResourceInfo> node = m_UsedResources.FirstNode; null != node; ) {
                 UsedResourceInfo resInfo = node.Value;
                 if (resInfo.m_RecycleTime > 0 && resInfo.m_RecycleTime < curTime) {
                     node = node.Next;
@@ -255,7 +255,7 @@ namespace GameFramework
 
         public void CleanupResourcePool()
         {
-            for (LinkedListNode<UsedResourceInfo> node = m_UsedResources.FirstValue; null != node; ) {
+            for (LinkedListNode<UsedResourceInfo> node = m_UsedResources.FirstNode; null != node; ) {
                 UsedResourceInfo resInfo = node.Value;
                 node = node.Next;
                 RemoveFromUsedResources(resInfo.m_ObjId, -1);

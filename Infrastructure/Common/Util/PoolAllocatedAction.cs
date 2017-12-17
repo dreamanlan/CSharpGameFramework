@@ -1119,6 +1119,47 @@ namespace GameFramework
     private object m_PoolLock;
   }
 
+  public sealed class PoolAllocatedFunc : IPoolAllocatedObject<PoolAllocatedFunc>
+  {
+      public void Init(MyFunc action)
+      {
+          m_Action = action;
+      }
+      public void Run()
+      {
+          m_Action();
+          m_Action = null;
+          Recycle();
+      }
+
+      public void InitPool(ObjectPool<PoolAllocatedFunc> pool)
+      {
+          m_Pool = pool;
+      }
+      public PoolAllocatedFunc Downcast()
+      {
+          return this;
+      }
+      private ObjectPool<PoolAllocatedFunc> m_Pool;
+
+      private MyFunc m_Action;
+
+      public void SetPoolRecycleLock(object lockObj)
+      {
+          m_PoolLock = lockObj;
+      }
+      private void Recycle()
+      {
+          if (null != m_PoolLock) {
+              lock (m_PoolLock) {
+                  m_Pool.Recycle(this);
+              }
+          } else {
+              m_Pool.Recycle(this);
+          }
+      }
+      private object m_PoolLock;
+  }
   public sealed class PoolAllocatedFunc<R> : IPoolAllocatedObject<PoolAllocatedFunc<R>>
   {
     public void Init(MyFunc<R> action)

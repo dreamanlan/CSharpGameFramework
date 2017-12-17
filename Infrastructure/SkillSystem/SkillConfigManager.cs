@@ -33,7 +33,7 @@ namespace SkillSystem
 #else
         try {
           dataFile.LoadBinaryFile(file, GlobalVariables.Instance.DecodeTable);
-          Load(dataFile);
+          Load(id, dataFile);
         } catch {
         }
 #endif
@@ -55,7 +55,7 @@ namespace SkillSystem
 #else
       try {
         dataFile.LoadBinaryCode(text, GlobalVariables.Instance.DecodeTable);
-        Load(dataFile);
+        Load(id, dataFile);
       } catch {
       }
 #endif
@@ -102,14 +102,15 @@ namespace SkillSystem
                         if (callData.HaveParam()) {
                             dslId = int.Parse(callData.GetParamId(0));
                         }
-                            SkillInstance instance = new SkillInstance();
-                            instance.Init(funcData);
-                            instance.OuterDslSkillId = dslId;
+                        SkillInstance instance = new SkillInstance();
+                        instance.Init(funcData);
+                        instance.OuterDslSkillId = dslId;
                         if (!m_SkillInstances.ContainsKey(dslId)) {
                             m_SkillInstances.Add(dslId, instance);
                         } else {
                             m_SkillInstances[dslId] = instance;
                         }
+
                         LogSystem.Debug("ParseSkill {0}", dslId);
                     }
                 }

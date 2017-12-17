@@ -254,7 +254,7 @@ namespace GameFramework.AttrCalc
             } else {
                 Calculator.Log(m_TableId);
             }
-            for (var node = context.EntityManager.Entities.FirstValue; null != node; node = node.Next) {
+            for (var node = context.EntityManager.Entities.FirstNode; null != node; node = node.Next) {
                 EntityInfo info = node.Value;
                 if (null != info && info.GetTableId() == m_TableId) {
                     v = info.GetId();

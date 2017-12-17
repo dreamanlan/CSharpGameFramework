@@ -362,7 +362,7 @@ namespace GameFramework
         {
             int id = 0;
             List<int> ids = new List<int>();
-            for (LinkedListNode<EntityInfo> linkNode = PluginFramework.Instance.EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = PluginFramework.Instance.EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (EntityInfo.GetRelation(campId, info.GetCampId()) == CharacterRelation.RELATION_ENEMY && info.EntityType != (int)EntityTypeEnum.Tower) {
                     ids.Add(info.GetId());
@@ -384,7 +384,7 @@ namespace GameFramework
         {
             int id = 0;
             List<int> ids = new List<int>();
-            for (LinkedListNode<EntityInfo> linkNode = PluginFramework.Instance.EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = PluginFramework.Instance.EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (EntityInfo.GetRelation(campId, info.GetCampId()) == CharacterRelation.RELATION_FRIEND && info.EntityType != (int)EntityTypeEnum.Tower) {
                     ids.Add(info.GetId());
@@ -406,7 +406,7 @@ namespace GameFramework
         {
             int id = 0;
             List<int> ids = new List<int>();
-            for (LinkedListNode<EntityInfo> linkNode = PluginFramework.Instance.EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = PluginFramework.Instance.EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (EntityInfo.GetRelation(campId, info.GetCampId()) == CharacterRelation.RELATION_ENEMY && info.EntityType != (int)EntityTypeEnum.Tower) {
                     ids.Add(info.GetId());
@@ -422,7 +422,7 @@ namespace GameFramework
         {
             int id = 0;
             List<int> ids = new List<int>();
-            for (LinkedListNode<EntityInfo> linkNode = PluginFramework.Instance.EntityManager.Entities.FirstValue; null != linkNode; linkNode = linkNode.Next) {
+            for (LinkedListNode<EntityInfo> linkNode = PluginFramework.Instance.EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (EntityInfo.GetRelation(campId, info.GetCampId()) == CharacterRelation.RELATION_FRIEND && info.EntityType != (int)EntityTypeEnum.Tower) {
                     ids.Add(info.GetId());

@@ -91,8 +91,12 @@ namespace System.Collections.Concurrent
 
     void CheckKey(TKey key)
     {
-      if (key == null)
-        throw new ArgumentNullException("key");
+        Type t = typeof(TKey);
+        if (t.IsValueType || t.IsEnum) {
+            return;
+        }
+        if (key == null)
+            throw new ArgumentNullException("key");
     }
 
     void Add(TKey key, TValue value)
