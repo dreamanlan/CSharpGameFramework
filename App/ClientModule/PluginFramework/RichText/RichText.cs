@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using RichTextParser;
+using GameFramework;
 
 [System.Serializable]
 public class RichText : Text, IPointerClickHandler
@@ -33,24 +34,53 @@ public class RichText : Text, IPointerClickHandler
         public string PrefabResource = string.Empty;
     }
     public delegate bool BuildLinkOrGuadInfoDelegation(string id, string name, HyperText hyperText, out LinkInfo linkInfo, out QuadInfo quadInfo);
+    public delegate UnityEngine.Object LoadResourceDelegate(string assetName, System.Type type);
+
     [System.Serializable]
     public class HrefClickEvent : UnityEvent<HyperText> { }
-
+    private List<SpriteInfo> m_SpriteInfos = new List<SpriteInfo>();
     public override string text
     {
         get
         {
-            return base.text;
+            return m_Text;
         }
         set
         {
+
             if (string.IsNullOrEmpty(value)) {
                 if (!string.IsNullOrEmpty(m_InputText)) {
-                    m_InputText = "";
+                    m_InputText = string.Empty;
+                    m_HaveError = false;
+                    for (int i = 0; i < m_SpriteInfos.Count; ++i) {
+                        var spriteInfo = m_SpriteInfos[i];
+                        if (null != spriteInfo && null != spriteInfo.rectTransform) {
+                            spriteInfo.rectTransform.SetParent(null);
+                            Utility.DestroyObject(spriteInfo.rectTransform.gameObject);
+                        }
+                    }
+                    m_SpriteInfos.Clear();
+                    foreach (Transform child in rectTransform) {
+                        if (child.name == "richtextimage")
+                            Utility.DestroyObject(child.gameObject);
+                    }
                     SetVerticesDirty();
                 }
             } else if (m_InputText != value) {
-                m_InputText = value;
+                m_InputText = Escape(value);
+                m_HaveError = false;
+                for (int i = 0; i < m_SpriteInfos.Count; ++i) {
+                    var spriteInfo = m_SpriteInfos[i];
+                    if (null != spriteInfo && null != spriteInfo.rectTransform) {
+                        spriteInfo.rectTransform.SetParent(null);
+                        Utility.DestroyObject(spriteInfo.rectTransform.gameObject);
+                    }
+                }
+                m_SpriteInfos.Clear();
+                foreach (Transform child in rectTransform) {
+                    if (child.name == "richtextimage")
+                        Utility.DestroyObject(child.gameObject);
+                }
                 SetVerticesDirty();
                 SetLayoutDirty();
             }
@@ -58,10 +88,19 @@ public class RichText : Text, IPointerClickHandler
     }
     public string inputText
     {
-        get { return m_InputText; }
+        get
+        {
+            return m_InputText;
+        }
     }
-    public IRichTextList parsedTexts {
-        get {
+    public bool HaveError
+    {
+        get { return m_HaveError; }
+    }
+    public IRichTextList parsedTexts
+    {
+        get
+        {
             if (null != m_ParsedTexts) {
                 return m_ParsedTexts;
             } else {
@@ -70,14 +109,34 @@ public class RichText : Text, IPointerClickHandler
         }
         set { m_ParsedTexts = value; }
     }
+
+    public LoadResourceDelegate onLoadResource;
     public BuildLinkOrGuadInfoDelegation onBuildLinkOrQuadInfo;
     public HrefClickEvent onHrefClick
     {
         get { return m_OnHrefClick; }
         set { m_OnHrefClick = value; }
     }
-    public List<DrawSpriteInfo> drawSpriteInfos {
+    public List<DrawSpriteInfo> drawSpriteInfos
+    {
         get { return m_DrawSpriteInfos; }
+    }
+    private RichTextGraphic m_richTextGraphic = null;
+    protected override void OnDestroy()
+    {
+        if (null != m_richTextGraphic) {
+            m_richTextGraphic.RmoveSpriteInfo();
+        }
+    }
+    public void DoRichTextClick()
+    {
+
+        foreach (var hrefInfo in m_HrefInfos) {
+            if (!hrefInfo.isLink)
+                continue;
+            m_OnHrefClick.Invoke(hrefInfo.text);
+        }
+
     }
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -88,7 +147,7 @@ public class RichText : Text, IPointerClickHandler
         foreach (var hrefInfo in m_HrefInfos) {
             if (!hrefInfo.isLink)
                 continue;
-            var boxes = hrefInfo.boxes; 
+            var boxes = hrefInfo.boxes;
             for (var i = 0; i < boxes.Count; ++i) {
                 if (boxes[i].Contains(lp)) {
                     m_OnHrefClick.Invoke(hrefInfo.text);
@@ -102,7 +161,7 @@ public class RichText : Text, IPointerClickHandler
             }
         }
         foreach (var spriteInfo in m_SpriteInfos) {
-            if (!spriteInfo.isLink)
+            if (!spriteInfo.isLink || spriteInfo.isdirty)
                 continue;
             var boxes = spriteInfo.boxes;
             for (var i = 0; i < boxes.Count; ++i) {
@@ -118,11 +177,38 @@ public class RichText : Text, IPointerClickHandler
             }
         }
     }
+
+    private void OnClickHref(HyperText text)
+    {
+        if (text.Attrs.Count <= 0) {
+            return;
+        }
+        if (text.Attrs[0].Key == "@") {
+            Utility.EventSystem.Publish("[RichText]ClickOnPos", "richtext", text);
+        } else if (text.Attrs[0].Key == "!") {
+            Utility.EventSystem.Publish("[RichText]ClickOnItem", "richtext", text.Attrs[0].Value);
+        }
+        else if (text.Attrs[0].Key == "$")
+        {
+            Utility.EventSystem.Publish("[RichText]ClickOnPlayer", "richtext", text.Attrs[0].Value);
+        }
+        else if(text.Attrs[0].Key == "%")
+        {
+
+            Utility.EventSystem.Publish("[RichText]ClickOnSerCom", "richtext", text);
+        }
+    }
+
+
     public override void SetVerticesDirty()
     {
+
         Analyze();
         m_Text = m_TextBuilder.ToString();
         base.SetVerticesDirty();
+        if (null != m_richTextGraphic) {
+            m_richTextGraphic.RmoveSpriteInfo();
+        }
     }
     protected override void OnPopulateMesh(VertexHelper toFill)
     {
@@ -142,6 +228,11 @@ public class RichText : Text, IPointerClickHandler
         toFill.Clear();
 
         CalcQuadTag(toFill);
+
+        //richtextgrahic
+        if (m_richTextGraphic != null) {
+            m_richTextGraphic.CalulateUVforRichText(this);
+        }
 
         m_DisableFontTextureRebuiltCallback = false;
 
@@ -171,8 +262,26 @@ public class RichText : Text, IPointerClickHandler
         */
         #endregion
     }
+    protected override void Start()
+    {
+        onHrefClick.AddListener(OnClickHref);
+        base.Start();
+    }
     protected override void OnEnable()
     {
+        if (m_richTextGraphic == null) {
+            int level = 0;
+
+            var parent = transform;
+            while ((m_richTextGraphic = parent.GetComponentInChildren<RichTextGraphic>()) == null) {
+
+                parent = parent.parent;
+                level++;
+                if (null == parent || level >= 10)//avoid deadloop
+                    break;
+            }
+
+        }
         base.OnEnable();
         alignByGeometry = true;
         SetVerticesDirty();
@@ -239,6 +348,9 @@ public class RichText : Text, IPointerClickHandler
         }
         for (int i = 0; i < m_SpriteInfos.Count; i++) {
             var spriteInfo = m_SpriteInfos[i];
+            if (spriteInfo.isdirty)
+                continue;
+
             var textpos1 = vertsTemp[((spriteInfo.firstIndex + 1) * 4) - 1].position;
             var textpos2 = vertsTemp[((spriteInfo.lastIndex + 1) * 4) - 1].position;
 
@@ -275,7 +387,7 @@ public class RichText : Text, IPointerClickHandler
 
                 var rt = spriteInfo.rectTransform;
                 var size = rt.sizeDelta;
-                rt.anchoredPosition = new Vector2(textpos1.x + size.x / 2, textpos1.y + size.y / 2);
+                rt.anchoredPosition = new Vector2(textpos1.x, textpos1.y + size.y);
             }
         }
     }
@@ -333,27 +445,32 @@ public class RichText : Text, IPointerClickHandler
 
     private void Analyze()
     {
+
         IRichTextList texts;
         if (null != m_ParsedTexts) {
             texts = m_ParsedTexts;
-        } else {
-            m_RichTextParser.Parse(m_InputText);
+        } else if (!m_HaveError) {
+            try {
+                m_RichTextParser.Parse(m_InputText);
+            } catch (System.Exception ex) {
+                string errTxt = ex.Message;
+                m_TextBuilder.Append(errTxt);
+                m_HaveError = true;
+                return;
+            }
             texts = m_RichTextParser.Texts;
+        } else {
+            return;
         }
         m_TextBuilder.Length = 0;
-        
-        for (int i = 0; i < m_SpriteInfos.Count; ++i) {
-            var spriteInfo = m_SpriteInfos[i];
-            if (null != spriteInfo && null != spriteInfo.rectTransform) {
-                spriteInfo.rectTransform.SetParent(null);
-                GameObject.Destroy(spriteInfo.rectTransform.gameObject);
-            }
-        }
+
+
 
         m_HrefInfos.Clear();
-        m_SpriteInfos.Clear();
         m_DrawSpriteInfos.Clear();
-
+        for (int i = 0; i < m_SpriteInfos.Count; i++) {
+            m_SpriteInfos[i].isdirty = true;
+        }
         AnalyzeRichTexts(texts);
     }
     private void AnalyzeRichText(NormalText txt)
@@ -405,12 +522,15 @@ public class RichText : Text, IPointerClickHandler
                 //[!...]等，其中！还可以为$%&*?\^~-+=|:
                 BuildLinkOrQuadInfo(id, val, txt);
             }
+        } else if (txt.Texts.Count == 1) {
+            BuildLinkOrQuadInfo(string.Empty, string.Empty, txt);
         } else {
             AnalyzeRichTexts(txt.Texts);
         }
     }
     private void AnalyzeRichTexts(IList<IRichText> txts)
     {
+
         for (int ix = 0; ix < txts.Count; ++ix) {
             var txt = txts[ix];
             var normalText = txt as NormalText;
@@ -437,6 +557,29 @@ public class RichText : Text, IPointerClickHandler
             if (id == "#") {
                 BuildQuadInfo(text, id, name, defaultQuadSize, false);
             } else if (id == "@") {
+                string color = string.Empty;
+                foreach (var att in text.Attrs)
+                {
+                    if (att.Key == "c")
+                    {
+                        color = att.Value;
+                    }
+                }
+                StringBuilder sb = new StringBuilder();
+                foreach (var txt in text.Texts) {
+                    var t = txt as NormalText;
+                    if (null != t) {
+                        sb.Append("[" + t.Text + "]");
+                    }
+                }
+                BuildHrefInfo(text, sb.ToString(), color, true);
+            } else if (id == "!" || id == "$" || id =="%") {
+                string color = string.Empty;
+                foreach (var att in text.Attrs) {
+                    if (att.Key == "c") {
+                        color = att.Value;
+                    }
+                }
                 StringBuilder sb = new StringBuilder();
                 foreach (var txt in text.Texts) {
                     var t = txt as NormalText;
@@ -444,13 +587,31 @@ public class RichText : Text, IPointerClickHandler
                         sb.Append(t.Text);
                     }
                 }
-                BuildHrefInfo(text, sb.ToString(), string.Empty, true);
+                string bracketName = string.Format("[{0}]", sb.ToString());
+                BuildHrefInfo(text, bracketName, color, true);
+            } 
+
+
+            else if (id == "~") {
+
+                QuadInfo iconquadInfo = new RichText.QuadInfo();
+                iconquadInfo.Name = "icon";
+                iconquadInfo.SpriteResource = name;
+                BuildQuadInfo(text, id, iconquadInfo.Name, iconquadInfo.Size, iconquadInfo.Count, isLink, iconquadInfo.Sprite, iconquadInfo.SpriteResource, iconquadInfo.InstantiatedPrefab, iconquadInfo.PrefabResource);
+
             } else {
                 string color;
                 if (!s_LinkColors.TryGetValue(id, out color)) {
                     color = "blue";
                 }
-                string bracketName = string.Format("[{0}]", name);
+                StringBuilder sb = new StringBuilder();
+                foreach (var txt in text.Texts) {
+                    var t = txt as NormalText;
+                    if (null != t) {
+                        sb.Append(t.Text);
+                    }
+                }
+                string bracketName = string.Format("[{0}]", sb.ToString());
                 BuildHrefInfo(text, bracketName, color, isLink);
             }
         }
@@ -470,41 +631,67 @@ public class RichText : Text, IPointerClickHandler
             m_TextBuilder.AppendFormat("<quad name={0} size={1} x=0 y=0 width=1 height=1 />", name, size);
         }
 
-        var spriteInfo = new SpriteInfo();
-        spriteInfo.name = name;
-        spriteInfo.firstIndex = firstIndex;
-        spriteInfo.lastIndex = lastIndex;
-        spriteInfo.indexes = indexes;
-        spriteInfo.size = new Vector2(size, size);
-        spriteInfo.text = text;
-        spriteInfo.isLink = isLink;
-        m_SpriteInfos.Add(spriteInfo);
+        SpriteInfo newspriteinfor = null;
+        for (int i = 0; i < m_SpriteInfos.Count; i++) {
+            if (m_SpriteInfos[i].isdirty) {
+                newspriteinfor = m_SpriteInfos[i];
+                newspriteinfor.isdirty = false;
+
+                break;
+            }
+
+        }
+
+        if (newspriteinfor == null) {
+            newspriteinfor = new SpriteInfo();
+
+            m_SpriteInfos.Add(newspriteinfor);
+
+        }
+
+        newspriteinfor.name = name;
+        newspriteinfor.firstIndex = firstIndex;
+        newspriteinfor.lastIndex = lastIndex;
+        newspriteinfor.indexes = indexes;
+        newspriteinfor.size = new Vector2(size, size);
+        newspriteinfor.text = text;
+        newspriteinfor.isLink = isLink;
+
 
         if (null != sprite || !string.IsNullOrEmpty(spriteResource)) {
+
             Image img = null;
-            var resources = new DefaultControls.Resources();
-            var go = DefaultControls.CreateImage(resources);
-            go.layer = gameObject.layer;
-            var nrt = go.transform as RectTransform;
+            RectTransform nrt = newspriteinfor.rectTransform;
+
+            if (nrt == null) {
+                var resources = new DefaultControls.Resources();
+                var go = DefaultControls.CreateImage(resources);
+                go.name = "richtextimage";
+                go.layer = gameObject.layer;
+                nrt = go.transform as RectTransform;
+                newspriteinfor.rectTransform = nrt;
+            }
+
             if (null != nrt) {
                 nrt.SetParent(rectTransform);
                 nrt.localPosition = Vector3.zero;
                 nrt.localRotation = Quaternion.identity;
                 nrt.localScale = Vector3.one;
                 nrt.sizeDelta = new Vector2(size * count, size);
-                nrt.anchorMin = new Vector2(0.5f, 0.5f);
-                nrt.anchorMax = new Vector2(0.5f, 0.5f);
-                nrt.pivot = new Vector2(0.5f, 0.5f);
+                nrt.anchorMin = new Vector2(0f, 1f);
+                nrt.anchorMax = new Vector2(0f, 1f);
+                nrt.pivot = new Vector2(0f, 1f);
 
-                img = go.GetComponent<Image>();
+                img = nrt.GetComponent<Image>();
                 if (null != sprite) {
                     img.sprite = sprite;
-                } else if (!string.IsNullOrEmpty(spriteResource)) {
-                    img.sprite = Resources.Load<Sprite>(spriteResource);
+                } else if (!string.IsNullOrEmpty(spriteResource) && onLoadResource != null) {
+                    img.sprite = onLoadResource(spriteResource, typeof(Sprite)) as Sprite;
                 }
+                img.gameObject.SetActive(true);
                 img.enabled = true;
 
-                spriteInfo.rectTransform = nrt;
+                //spriteInfo.rectTransform = nrt;
             }
         }
         if (null != instantiatedPrefab || !string.IsNullOrEmpty(prefabResource)) {
@@ -525,14 +712,14 @@ public class RichText : Text, IPointerClickHandler
                     nrt.anchorMax = new Vector2(0.5f, 0.5f);
                     nrt.pivot = new Vector2(0.5f, 0.5f);
 
-                    spriteInfo.rectTransform = nrt;
+                    newspriteinfor.rectTransform = nrt;
                 }
             }
         }
 
         var drawSpriteInfo = new DrawSpriteInfo();
         drawSpriteInfo.id = id;
-        drawSpriteInfo.name = name;        
+        drawSpriteInfo.name = name;
         m_DrawSpriteInfos.Add(drawSpriteInfo);
     }
     private void BuildHrefInfo(HyperText text, string name, string color, bool isLink)
@@ -540,7 +727,7 @@ public class RichText : Text, IPointerClickHandler
         bool includeColor = !string.IsNullOrEmpty(color);
         // 超链接颜色
         if (includeColor) {
-            m_TextBuilder.AppendFormat("<color={0}>", color);
+            m_TextBuilder.AppendFormat("<color=#{0}>", color);
         }
         var hrefInfo = new HrefInfo {
             startIndex = m_TextBuilder.Length * 4, // 超链接里的文本起始顶点索引
@@ -566,6 +753,32 @@ public class RichText : Text, IPointerClickHandler
         }
         return isLink;
     }
+    private string Escape(string txt)
+    {
+        const char c_Escape = '`';
+        if (txt.IndexOf(c_Escape) >= 0) {
+            m_EscapeBuilder.Length = 0;
+            var strs = txt.Split(s_Splits, System.StringSplitOptions.RemoveEmptyEntries);
+            int ix = 1;
+            if (txt[0] == c_Escape) {
+                ix = 0;
+            } else {
+                m_EscapeBuilder.Append(strs[0]);
+            }
+            for (; ix < strs.Length; ++ix) {
+                var str = strs[ix];
+                char c = str[0];
+                m_EscapeBuilder.Append(c_Escape);
+                if (c != c_Escape && c != '[' && c != ']') {
+                    m_EscapeBuilder.Append(c_Escape);
+                }
+                m_EscapeBuilder.Append(str);
+            }
+            return m_EscapeBuilder.ToString();
+        } else {
+            return txt;
+        }
+    }
 
     private class HrefInfo
     {
@@ -575,6 +788,8 @@ public class RichText : Text, IPointerClickHandler
         internal HyperText text;
         internal bool isLink;
     }
+
+    [System.Serializable]
     private class SpriteInfo
     {
         internal string name;
@@ -584,24 +799,27 @@ public class RichText : Text, IPointerClickHandler
         internal Vector2 size;
         internal List<Rect> boxes = new List<Rect>();
         internal HyperText text;
-        internal RectTransform rectTransform;
+        internal RectTransform rectTransform = null;
         internal bool isLink;
+        internal bool isdirty = false;
     }
 
-    [SerializeField]
+
     private HrefClickEvent m_OnHrefClick = new HrefClickEvent();
 
     private List<HrefInfo> m_HrefInfos = new List<HrefInfo>();
-    private List<SpriteInfo> m_SpriteInfos = new List<SpriteInfo>();
+
     private List<DrawSpriteInfo> m_DrawSpriteInfos = new List<DrawSpriteInfo>();
 
     private IRichTextList m_ParsedTexts = null;
     private RichTextParser.RichTextParser m_RichTextParser = new RichTextParser.RichTextParser();
     private StringBuilder m_TextBuilder = new StringBuilder();
+    private StringBuilder m_EscapeBuilder = new StringBuilder();
 
     private string m_InputText = string.Empty;
+    private bool m_HaveError = false;
     private UIVertex[] m_TempVerts = new UIVertex[4];
-
+    
     public static int defaultQuadSize
     {
         get { return s_DefaultQuadSize; }
@@ -616,16 +834,17 @@ public class RichText : Text, IPointerClickHandler
         }
     }
 
-    private static int s_DefaultQuadSize = 48;
+    private static int s_DefaultQuadSize = 36;
     private static Dictionary<string, string> s_LinkColors = new Dictionary<string, string> {
         { "!", "green" },
         { "?", "cyan" },
         { "$", "lightblue" },
-        { "@", "brown" },
+        { "@", "#ff3c3c" },
         { "&", "orange" },
         { "%", "purple" },
         { "*", "red" },
         { "\\", "blue" }
     };
     private static readonly HashSet<string> s_SystemColors = new HashSet<string> { "aqua", "black", "blue", "brown", "cyan", "darkblue", "fuchsia", "green", "grey", "lightblue", "lime", "magenta", "maroon", "navy", "olive", "orange", "purple", "red", "silver", "teal", "white", "yellow" };
+    private static readonly char[] s_Splits = new char[] { '`' };
 }

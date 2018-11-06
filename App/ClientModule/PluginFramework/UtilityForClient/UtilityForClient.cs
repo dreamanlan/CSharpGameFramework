@@ -222,6 +222,22 @@ namespace GameFramework
             }
             sb.AppendFormat(format, args);
         }
+        public static void DestroyObject(UnityEngine.Object obj)
+        {
+            if (Application.isPlaying) {
+                UnityEngine.Object.Destroy(obj);
+            }
+        }
+        public static void DestroyObjectFull(UnityEngine.Object obj)
+        {
+            if (obj != null) {
+                if (Application.isEditor && !Application.isPlaying) {
+                    UnityEngine.Object.DestroyImmediate(obj);
+                } else {
+                    UnityEngine.Object.Destroy(obj);
+                }
+            }
+        }
 
         private static void SendMessageImpl(string objname, string msg, object arg, bool needReceiver)
         {

@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using GameFramework;
 
 public sealed class RichTextGraphic : MaskableGraphic
 {
@@ -38,12 +39,29 @@ public sealed class RichTextGraphic : MaskableGraphic
         }
     }
 
-    internal void Update()
+	void ReleaseMat()
+	{
+		if (s_EditModeMaterial != null)
+		{
+			Utility.DestroyObjectFull(s_EditModeMaterial);
+			s_EditModeMaterial = null;
+		}
+	}
+
+	protected override void OnDestroy()
+	{
+		ReleaseMat();
+		base.OnDestroy();
+	}
+
+	internal void Update()
     {
         m_Time += Time.deltaTime;
-        if (m_Time >= 0.1f) {
+        if (m_Time >= 0.2f) {
+            m_Time = 0.0f;
             //刷新一次 更新绘制图片的相关信息
-            Collect();
+            //Collect();
+
             for (int i = 0; i < m_AnimSpriteInfor.Count; i++) {
                 if (m_Index >= m_AnimSpriteInfor[i].Length) {
                     m_ListSprite[i] = m_AnimSpriteInfor[i][0];
@@ -56,7 +74,6 @@ public sealed class RichTextGraphic : MaskableGraphic
             if (m_Index >= AnimSpriteNum) {
                 m_Index = 0;
             }
-            m_Time = 0.0f;
         }
     }
     protected override void OnPopulateMesh(VertexHelper vh)
@@ -67,47 +84,97 @@ public sealed class RichTextGraphic : MaskableGraphic
     protected override void OnValidate()
     {
         base.OnValidate();
-        //Debug.Log("Texture ID is " + this.texture.GetInstanceID());
     }
 #endif
 
-    private void Collect()
+    public void RmoveSpriteInfo( )
     {
+
         m_ListSprite.Clear();
         m_AnimSpriteInfor.Clear();
+    }
+    public void CalulateUVforRichText(RichText richText)
+    {
+        bool find = false;
+        for (int i = 0; i < m_AnimSpriteInfor.Count; i++)
+        {
+          
+            if(m_AnimSpriteInfor[i].Length > 0 && m_AnimSpriteInfor[i][0].text == richText) //youhua
 
-        RichText[] allRichTexts = transform.parent.GetComponentsInChildren<RichText>();
-        for (int i = 0; i < allRichTexts.Length; i++) {
-            var richText = allRichTexts[i];
-            if (!richText.isActiveAndEnabled)
-                continue;
+            {
+                
+                var drawSpriteInfos = richText.drawSpriteInfos;
+                if (drawSpriteInfos != null)
+                {
+                    for (int j = 0; j < drawSpriteInfos.Count; j++)
+                    {
+                        var drawSpriteInfo = drawSpriteInfos[j];
+                        if (drawSpriteInfo.alreadyDraw)
+                            continue;
+
+                        //var spriteInfos = new SpriteInfo[tempListName.Count];
+                        for (int ix = 0; ix < m_AnimSpriteInfor[i].Length; ix++)
+                        {
+                            //spriteInfos[ix] = new SpriteInfo();
+
+                            int vertCount = drawSpriteInfo.vertices.Length;
+                            m_AnimSpriteInfor[i][ix].vertices = new Vector3[vertCount];
+                            for (int vix = 0; vix < vertCount; ++vix)
+                            {
+                                m_AnimSpriteInfor[i][ix].vertices[vix] = drawSpriteInfo.vertices[vix] + transform.InverseTransformPoint(richText.transform.position);
+                            }
+
+                        }
+
+                    }
+                    
+                }
+
+
+
+                find = true;
+                break;
+                
+            }
+
+
+        }
+        if(!find)
+        {
             var drawSpriteInfos = richText.drawSpriteInfos;
-            if (drawSpriteInfos != null) {
-                for (int j = 0; j < drawSpriteInfos.Count; j++) {
+            if (drawSpriteInfos != null)
+            {
+                for (int j = 0; j < drawSpriteInfos.Count; j++)
+                {
                     var drawSpriteInfo = drawSpriteInfos[j];
                     if (drawSpriteInfo.alreadyDraw)
                         continue;
                     List<string> tempListName = new List<string>();
-                    for (int k = 0; k < SpriteAsset.spriteList.Count; k++) {
-                        // Debug.Log((m_spriteAsset.listSpriteInfor[k].name));
-                        if (SpriteAsset.spriteList[k].name.Contains(drawSpriteInfo.name)) {
+                    for (int k = 0; k < SpriteAsset.spriteList.Count; k++)
+                    {
+                        if (SpriteAsset.spriteList[k].name.Contains(drawSpriteInfo.name))
+                        {
                             tempListName.Add(SpriteAsset.spriteList[k].name);
                         }
                     }
-                    if (tempListName.Count > 0) {
+                    if (tempListName.Count > 0)
+                    {
                         var spriteInfos = new SpriteInfo[tempListName.Count];
-                        for (int ix = 0; ix < tempListName.Count; ix++) {
+                        for (int ix = 0; ix < tempListName.Count; ix++)
+                        {
                             spriteInfos[ix] = new SpriteInfo();
 
                             int vertCount = drawSpriteInfo.vertices.Length;
                             spriteInfos[ix].vertices = new Vector3[vertCount];
-                            for (int vix = 0; vix < vertCount; ++vix) {
+                            for (int vix = 0; vix < vertCount; ++vix)
+                            {
                                 spriteInfos[ix].vertices[vix] = drawSpriteInfo.vertices[vix] + transform.InverseTransformPoint(richText.transform.position);
                             }
 
                             //计算其uv
                             Rect newSpriteRect = SpriteAsset.spriteList[0].rect;
-                            for (int m = 0; m < SpriteAsset.spriteList.Count; m++) {
+                            for (int m = 0; m < SpriteAsset.spriteList.Count; m++)
+                            {
                                 //通过标签的名称去索引spriteAsset里所对应的sprite的名称
                                 if (tempListName[ix] == SpriteAsset.spriteList[m].name)
                                     newSpriteRect = SpriteAsset.spriteList[m].rect;
@@ -121,14 +188,81 @@ public sealed class RichTextGraphic : MaskableGraphic
                             spriteInfos[ix].uv[3] = new Vector2(newSpriteRect.x / newTexSize.x, (newSpriteRect.y + newSpriteRect.height) / newTexSize.y);
 
                             spriteInfos[ix].triangles = new int[6];
+                            spriteInfos[ix].text = richText;
                         }
                         m_AnimSpriteInfor.Add(spriteInfos);
                         m_ListSprite.Add(spriteInfos[0]);
                     }
                 }
             }
+
         }
+        //SetAllDirty();
+
     }
+
+//     private void Collect()
+//     {
+//         m_ListSprite.Clear();
+//         m_AnimSpriteInfor.Clear();
+// 
+//         var parent = transform.parent;
+//         while (parent.childCount == 1) {
+//             parent = parent.parent;
+//         }
+// 
+//         RichText[] allRichTexts = parent.GetComponentsInChildren<RichText>();
+//         for (int i = 0; i < allRichTexts.Length; i++) {
+//             var richText = allRichTexts[i];
+//             if (!richText.isActiveAndEnabled)
+//                 continue;
+//             var drawSpriteInfos = richText.drawSpriteInfos;
+//             if (drawSpriteInfos != null) {
+//                 for (int j = 0; j < drawSpriteInfos.Count; j++) {
+//                     var drawSpriteInfo = drawSpriteInfos[j];
+//                     if (drawSpriteInfo.alreadyDraw)
+//                         continue;
+//                     List<string> tempListName = new List<string>();
+//                     for (int k = 0; k < SpriteAsset.spriteList.Count; k++) {
+//                         if (SpriteAsset.spriteList[k].name.Contains(drawSpriteInfo.name)) {
+//                             tempListName.Add(SpriteAsset.spriteList[k].name);
+//                         }
+//                     }
+//                     if (tempListName.Count > 0) {
+//                         var spriteInfos = new SpriteInfo[tempListName.Count];
+//                         for (int ix = 0; ix < tempListName.Count; ix++) {
+//                             spriteInfos[ix] = new SpriteInfo();
+// 
+//                             int vertCount = drawSpriteInfo.vertices.Length;
+//                             spriteInfos[ix].vertices = new Vector3[vertCount];
+//                             for (int vix = 0; vix < vertCount; ++vix) {
+//                                 spriteInfos[ix].vertices[vix] = drawSpriteInfo.vertices[vix] + transform.InverseTransformPoint(richText.transform.position);
+//                             }
+// 
+//                             //计算其uv
+//                             Rect newSpriteRect = SpriteAsset.spriteList[0].rect;
+//                             for (int m = 0; m < SpriteAsset.spriteList.Count; m++) {
+//                                 //通过标签的名称去索引spriteAsset里所对应的sprite的名称
+//                                 if (tempListName[ix] == SpriteAsset.spriteList[m].name)
+//                                     newSpriteRect = SpriteAsset.spriteList[m].rect;
+//                             }
+//                             Vector2 newTexSize = new Vector2(SpriteAsset.texSource.width, SpriteAsset.texSource.height);
+// 
+//                             spriteInfos[ix].uv = new Vector2[4];
+//                             spriteInfos[ix].uv[0] = new Vector2(newSpriteRect.x / newTexSize.x, newSpriteRect.y / newTexSize.y);
+//                             spriteInfos[ix].uv[1] = new Vector2((newSpriteRect.x + newSpriteRect.width) / newTexSize.x, (newSpriteRect.y + newSpriteRect.height) / newTexSize.y);
+//                             spriteInfos[ix].uv[2] = new Vector2((newSpriteRect.x + newSpriteRect.width) / newTexSize.x, newSpriteRect.y / newTexSize.y);
+//                             spriteInfos[ix].uv[3] = new Vector2(newSpriteRect.x / newTexSize.x, (newSpriteRect.y + newSpriteRect.height) / newTexSize.y);
+// 
+//                             spriteInfos[ix].triangles = new int[6];
+//                         }
+//                         m_AnimSpriteInfor.Add(spriteInfos);
+//                         m_ListSprite.Add(spriteInfos[0]);
+//                     }
+//                 }
+//             }
+//         }
+//     }
     private void Draw(VertexHelper vh)
     {
         vh.Clear();
@@ -160,7 +294,7 @@ public sealed class RichTextGraphic : MaskableGraphic
         }
     }
 
-    private class SpriteInfo
+    public class SpriteInfo
     {
         // 4 顶点 
         internal Vector3[] vertices;
@@ -168,6 +302,8 @@ public sealed class RichTextGraphic : MaskableGraphic
         internal Vector2[] uv;
         //6 三角顶点顺序
         internal int[] triangles;
+
+        public RichText text;
     }
 
     private float m_Time = 0.0f;
