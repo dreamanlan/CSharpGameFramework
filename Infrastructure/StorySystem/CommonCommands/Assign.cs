@@ -513,4 +513,37 @@ namespace StorySystem.CommonCommands
         private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
         private IStoryValue<int> m_IndexValue = new StoryValue<int>();
     }
+    /// <summary>
+    /// listclear(list);
+    /// </summary>
+    internal sealed class ListClearCommand : AbstractStoryCommand
+    {
+        public override IStoryCommand Clone()
+        {
+            ListClearCommand cmd = new ListClearCommand();
+            cmd.m_ListValue = m_ListValue.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        {
+            m_ListValue.Evaluate(instance, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, long delta)
+        {
+            if (m_ListValue.HaveValue) {
+                IList listValue = m_ListValue.Value;
+                listValue.Clear();
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_ListValue.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
+    }
 }

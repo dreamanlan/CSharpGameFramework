@@ -33,7 +33,7 @@ namespace StorySystem.CommonCommands
             int curTime = m_CurTime;
             m_CurTime += (int)delta;
             int val = m_Time.Value;
-            if (curTime <= val && val < StoryValueHelper.c_MaxWaitCommandTime)
+            if (curTime <= val && curTime <= StoryValueHelper.c_MaxWaitCommandTime)
                 return true;
             else
                 return false;
@@ -59,7 +59,7 @@ namespace StorySystem.CommonCommands
         private void LoadCondition(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num > 0 && callData.GetId() == "if") {
+            if (num > 0) {
                 m_HaveCondition = true;
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
@@ -102,7 +102,7 @@ namespace StorySystem.CommonCommands
             }
             int curTime = (int)GameFramework.TimeUtility.GetLocalRealMilliseconds();
             int val = m_Time.Value;
-            if (val < StoryValueHelper.c_MaxWaitCommandTime && m_RealStartTime + val < curTime)
+            if (curTime <= m_RealStartTime + val && curTime <= m_RealStartTime + StoryValueHelper.c_MaxWaitCommandTime)
                 return true;
             else
                 return false;
@@ -128,7 +128,7 @@ namespace StorySystem.CommonCommands
         private void LoadCondition(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num > 0 && callData.GetId() == "if") {
+            if (num > 0) {
                 m_HaveCondition = true;
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
@@ -172,7 +172,7 @@ namespace StorySystem.CommonCommands
             int curTime = m_CurTime;
             m_CurTime += (int)delta;
             int val = m_Time.Value;
-            if (curTime <= val && val < StoryValueHelper.c_MaxWaitCommandTime)
+            if (curTime <= val && curTime <= StoryValueHelper.c_MaxWaitCommandTime)
                 return true;
             else
                 return false;
@@ -198,7 +198,7 @@ namespace StorySystem.CommonCommands
         private void LoadCondition(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num > 0 && callData.GetId() == "if") {
+            if (num > 0) {
                 m_HaveCondition = true;
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
@@ -244,7 +244,7 @@ namespace StorySystem.CommonCommands
             }
             int curTime = (int)GameFramework.TimeUtility.GetLocalRealMilliseconds();
             int val = m_Time.Value;
-            if (val < StoryValueHelper.c_MaxWaitCommandTime && m_RealStartTime + val < curTime)
+            if (curTime <= m_RealStartTime + val && curTime <= m_RealStartTime + StoryValueHelper.c_MaxWaitCommandTime)
                 return true;
             else
                 return false;
@@ -270,7 +270,7 @@ namespace StorySystem.CommonCommands
         private void LoadCondition(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num > 0 && callData.GetId() == "if") {
+            if (num > 0) {
                 m_HaveCondition = true;
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }

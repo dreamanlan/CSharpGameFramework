@@ -8,7 +8,7 @@ namespace StorySystem.CommonValues
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "&&") {
+            if (null != callData) {
                 if (callData.GetParamNum() == 2) {
                     m_X.InitFromDsl(callData.GetParam(0));
                     m_Y.InitFromDsl(callData.GetParam(1));
@@ -78,7 +78,7 @@ namespace StorySystem.CommonValues
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "||") {
+            if (null != callData) {
                 if (callData.GetParamNum() == 2) {
                     m_X.InitFromDsl(callData.GetParam(0));
                     m_Y.InitFromDsl(callData.GetParam(1));
@@ -148,7 +148,7 @@ namespace StorySystem.CommonValues
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "!") {
+            if (null != callData) {
                 if (callData.GetParamNum() > 0) {
                     m_X.InitFromDsl(callData.GetParam(0));
                 }

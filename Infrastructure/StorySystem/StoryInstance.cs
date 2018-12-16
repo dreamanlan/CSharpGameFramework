@@ -149,8 +149,11 @@ namespace StorySystem
             m_IsTriggered = true;
             m_Arguments = args;
             if (null != m_ArgumentNames) {
-                for(int i=0;i<m_ArgumentNames.Length && i<args.Length;++i) {
-                    instance.SetVariable(m_ArgumentNames[i], args[i]);
+                for (int i = 0; i < m_ArgumentNames.Length; ++i) {
+                    if (i < args.Length)
+                        instance.SetVariable(m_ArgumentNames[i], args[i]);
+                    else
+                        instance.SetVariable(m_ArgumentNames[i], null);
                 };
             }
         }
@@ -290,9 +293,11 @@ namespace StorySystem
         }
         public bool Init(Dsl.DslInfo config)
         {
+            if (null == config || null == config.First)
+                return false;
             bool ret = false;
             Dsl.FunctionData story = config.First;
-            if (null != story && (story.GetId() == "story" || story.GetId() == "script")) {
+            if (story.GetId() == "story" || story.GetId() == "script") {
                 ret = true;
                 Dsl.CallData callData = story.Call;
                 if (null != callData && callData.HaveParam()) {

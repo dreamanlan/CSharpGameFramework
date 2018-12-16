@@ -11,7 +11,7 @@ namespace StorySystem.CommonValues
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "linq") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_Object.InitFromDsl(callData.GetParam(0));

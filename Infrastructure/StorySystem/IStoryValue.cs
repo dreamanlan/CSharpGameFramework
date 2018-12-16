@@ -16,7 +16,7 @@ namespace StorySystem
     }
     public interface IStoryValue : IStoryValue<object>
     { }
-    public sealed class StoryValue : IStoryValue
+    public class StoryValue : IStoryValue
     {
         public const int c_Iterator = -2;
         public const int c_NotArg = -1;
@@ -51,17 +51,8 @@ namespace StorySystem
         }
         public IStoryValue<object> Clone()
         {
-            StoryValue obj = new StoryValue();
-            obj.m_ArgIndex = m_ArgIndex;
-            obj.m_LocalName = m_LocalName;
-            obj.m_GlobalName = m_GlobalName;
-            obj.m_StackName = m_StackName;
-            if (null != m_Proxy) {
-                obj.m_Proxy = m_Proxy.Clone();
-            }
-            obj.m_HaveValue = m_HaveValue;
-            obj.m_Value = m_Value;
-            obj.m_IsConst = m_IsConst;
+            var obj = NewValueObject();
+            obj.CopyFrom(this);
             return obj;
         }
         public void Evaluate(StoryInstance instance, object iterator, object[] args)
@@ -116,6 +107,26 @@ namespace StorySystem
             {
                 return m_IsConst;
             }
+        }
+        
+        protected virtual StoryValue NewValueObject()
+        {
+            StoryValue obj = new StoryValue();
+            return obj;
+        }
+
+        private void CopyFrom(StoryValue other)
+        {
+            m_ArgIndex = other.m_ArgIndex;
+            m_LocalName = other.m_LocalName;
+            m_GlobalName = other.m_GlobalName;
+            m_StackName = other.m_StackName;
+            if (null != other.m_Proxy) {
+                m_Proxy = other.m_Proxy.Clone();
+            }
+            m_Value = other.m_Value;
+            m_HaveValue = other.m_HaveValue;
+            m_IsConst = other.m_IsConst;
         }
         private void SetArgument(int index)
         {
@@ -217,16 +228,16 @@ namespace StorySystem
 #endif
             }
         }
-        private bool m_HaveValue = false;
         private int m_ArgIndex = c_NotArg;
         private string m_LocalName = null;
         private string m_GlobalName = null;
         private string m_StackName = null;
         private IStoryValue<object> m_Proxy = null;
         private object m_Value;
+        private bool m_HaveValue = false;
         private bool m_IsConst = false;
     }
-    public sealed class StoryValue<T> : IStoryValue<T>
+    public class StoryValue<T> : IStoryValue<T>
     {
         public const int c_Iterator = -2;
         public const int c_NotArg = -1;
@@ -261,17 +272,8 @@ namespace StorySystem
         }
         public IStoryValue<T> Clone()
         {
-            StoryValue<T> obj = new StoryValue<T>();
-            obj.m_ArgIndex = m_ArgIndex;
-            obj.m_LocalName = m_LocalName;
-            obj.m_GlobalName = m_GlobalName;
-            obj.m_StackName = m_StackName;
-            if (null != m_Proxy) {
-                obj.m_Proxy = m_Proxy.Clone();
-            }
-            obj.m_HaveValue = m_HaveValue;
-            obj.m_Value = m_Value;
-            obj.m_IsConst = m_IsConst;
+            var obj = NewValueObject();
+            obj.CopyFrom(this);
             return obj;
         }
         public void Evaluate(StoryInstance instance, object iterator, object[] args)
@@ -330,6 +332,26 @@ namespace StorySystem
             {
                 return m_IsConst;
             }
+        }
+
+        protected virtual StoryValue<T> NewValueObject()
+        {
+            StoryValue<T> obj = new StoryValue<T>();
+            return obj;
+        }
+
+        private void CopyFrom(StoryValue<T> other)
+        {
+            m_ArgIndex = other.m_ArgIndex;
+            m_LocalName = other.m_LocalName;
+            m_GlobalName = other.m_GlobalName;
+            m_StackName = other.m_StackName;
+            if (null != other.m_Proxy) {
+                m_Proxy = other.m_Proxy.Clone();
+            }
+            m_Value = other.m_Value;
+            m_HaveValue = other.m_HaveValue;
+            m_IsConst = other.m_IsConst;
         }
         private void SetArgument(int index)
         {

@@ -8,7 +8,7 @@ namespace StorySystem.CommonValues
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "time") {
+            if (null != callData) {
             }
         }
         public IStoryValue<object> Clone()

@@ -31,31 +31,63 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             object obj = m_Object.Value;
-            string method = m_Method.Value;
+            object methodObj = m_Method.Value;
+            string method = methodObj as string;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
                 arglist.Add(m_Args[i].Value);
             }
             object[] args = arglist.ToArray();
-            if (null != obj && !string.IsNullOrEmpty(method)) {
-                Type t = obj as Type;
-                if (null != t) {
-                    try {
-                        BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
-                        GameFramework.Converter.CastArgsForCall(t, method, flags, args);
-                        t.InvokeMember(method, flags, null, null, args);
-                    } catch (Exception ex) {
-                        GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            if (null != obj) {
+                if (null != method) {
+                    IDictionary dict = obj as IDictionary;
+                    if (null != dict && dict.Contains(method) && dict[method] is Delegate) {
+                        var d = dict[method] as Delegate;
+                        if (null != d) {
+                            d.DynamicInvoke(args);
+                        }
+                    } else {
+                        Type t = obj as Type;
+                        if (null != t) {
+                            try {
+                                BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
+                                GameFramework.Converter.CastArgsForCall(t, method, flags, args);
+                                t.InvokeMember(method, flags, null, null, args);
+                            } catch (Exception ex) {
+                                GameFramework.LogSystem.Warn("DotnetExec {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                            }
+                        } else {
+                            t = obj.GetType();
+                            if (null != t) {
+                                try {
+                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
+                                    GameFramework.Converter.CastArgsForCall(t, method, flags, args);
+                                    t.InvokeMember(method, flags, null, obj, args);
+                                } catch (Exception ex) {
+                                    GameFramework.LogSystem.Warn("DotnetExec {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                                }
+                            }
+                        }
                     }
-                } else {                    
-                    t = obj.GetType();
-                    if (null != t) {
-                        try {
-                            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
-                            GameFramework.Converter.CastArgsForCall(t, method, flags, args);
-                            t.InvokeMember(method, flags, null, obj, args);
-                        } catch (Exception ex) {
-                            GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                } else {
+                    IDictionary dict = obj as IDictionary;
+                    if (null != dict && dict.Contains(methodObj)) {
+                        var d = dict[methodObj] as Delegate;
+                        if (null != d) {
+                            d.DynamicInvoke(args);
+                        }
+                    } else {
+                        IEnumerable enumer = obj as IEnumerable;
+                        if (null != enumer && methodObj is int) {
+                            int index = (int)methodObj;
+                            var e = enumer.GetEnumerator();
+                            for (int i = 0; i <= index; ++i) {
+                                e.MoveNext();
+                            }
+                            var d = e.Current as Delegate;
+                            if (null != d) {
+                                d.DynamicInvoke(args);
+                            }
                         }
                     }
                 }
@@ -76,7 +108,7 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<object> m_Object = new StoryValue();
-        private IStoryValue<string> m_Method = new StoryValue<string>();
+        private IStoryValue<object> m_Method = new StoryValue();
         private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
     }
     /// <summary>
@@ -105,31 +137,52 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, long delta)
         {
             object obj = m_Object.Value;
-            string method = m_Method.Value;
+            object methodObj = m_Method.Value;
+            string method = methodObj as string;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
                 arglist.Add(m_Args[i].Value);
             }
             object[] args = arglist.ToArray();
-            if (null != obj && !string.IsNullOrEmpty(method)) {
-                Type t = obj as Type;
-                if (null != t) {
-                    try {
-                        BindingFlags flags = BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
-                        GameFramework.Converter.CastArgsForSet(t, method, flags, args);
-                        t.InvokeMember(method, flags, null, null, args);
-                    } catch (Exception ex) {
-                        GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            if (null != obj) {
+                if (null != method) {
+                    IDictionary dict = obj as IDictionary;
+                    if (null != dict && null == obj.GetType().GetMethod(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic)) {
+                        dict[method] = args[0];
+                    } else {
+                        Type t = obj as Type;
+                        if (null != t) {
+                            try {
+                                BindingFlags flags = BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+                                GameFramework.Converter.CastArgsForSet(t, method, flags, args);
+                                t.InvokeMember(method, flags, null, null, args);
+                            } catch (Exception ex) {
+                                GameFramework.LogSystem.Warn("DotnetSet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                            }
+                        } else {
+                            t = obj.GetType();
+                            if (null != t) {
+                                try {
+                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+                                    GameFramework.Converter.CastArgsForSet(t, method, flags, args);
+                                    t.InvokeMember(method, flags, null, obj, args);
+                                } catch (Exception ex) {
+                                    GameFramework.LogSystem.Warn("DotnetSet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                                }
+                            }
+                        }
                     }
                 } else {
-                    t = obj.GetType();
-                    if (null != t) {
-                        try {
-                            BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
-                            GameFramework.Converter.CastArgsForSet(t, method, flags, args);
-                            t.InvokeMember(method, flags, null, obj, args);
-                        } catch (Exception ex) {
-                            GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    IDictionary dict = obj as IDictionary;
+                    if (null != dict && dict.Contains(methodObj)) {
+                        dict[methodObj] = args[0];
+                    } else {
+                        IList list = obj as IList;
+                        if (null != list && methodObj is int) {
+                            int index = (int)methodObj;
+                            if (index >= 0 && index < list.Count) {
+                                list[index] = args[0];
+                            }
                         }
                     }
                 }
@@ -150,7 +203,7 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<object> m_Object = new StoryValue();
-        private IStoryValue<string> m_Method = new StoryValue<string>();
+        private IStoryValue<object> m_Method = new StoryValue();
         private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
     }
     /// <summary>

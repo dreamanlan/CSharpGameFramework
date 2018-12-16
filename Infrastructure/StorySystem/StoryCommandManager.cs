@@ -101,10 +101,15 @@ namespace StorySystem
                                 return CreateCommand(newCall);
                             }
                         }
-                    } else if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_OPERATOR && callData.GetId() == "=") {
+                } else if ((callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_OPERATOR ||
+                        callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                        callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                        callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                        callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) &&
+                        callData.GetId() == "=") {
                         Dsl.CallData innerCall = callData.GetParam(0) as Dsl.CallData;
                         if (null != innerCall) {
-                            //obj.property = val -> setinstance(obj,property,val)
+                        //obj.property = val  or obj[property] = val or obj.(property) = val or obj.[property] = val or obj.{property} = val -> setinstance(obj,property,val)
                             Dsl.CallData newCall = new Dsl.CallData();
                             newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
                             newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
@@ -222,12 +227,16 @@ namespace StorySystem
             RegisterCommandFactory("listremove", new StoryCommandFactoryHelper<CommonCommands.ListRemoveCommand>());
             RegisterCommandFactory("listinsert", new StoryCommandFactoryHelper<CommonCommands.ListInsertCommand>());
             RegisterCommandFactory("listremoveat", new StoryCommandFactoryHelper<CommonCommands.ListRemoveAtCommand>());
+            RegisterCommandFactory("listclear", new StoryCommandFactoryHelper<CommonCommands.ListClearCommand>());
             RegisterCommandFactory("dotnetexec", new StoryCommandFactoryHelper<CommonCommands.DotnetExecCommand>());
             RegisterCommandFactory("dotnetset", new StoryCommandFactoryHelper<CommonCommands.DotnetSetCommand>());
             RegisterCommandFactory("system", new StoryCommandFactoryHelper<CommonCommands.SystemCommand>());
-            RegisterCommandFactory("jsonadd", new StoryCommandFactoryHelper<CommonCommands.JsonAddCommand>());
-            RegisterCommandFactory("jsonset", new StoryCommandFactoryHelper<CommonCommands.JsonSetCommand>());
-            RegisterCommandFactory("jsonremove", new StoryCommandFactoryHelper<CommonCommands.JsonRemoveCommand>());
+            RegisterCommandFactory("writealllines", new StoryCommandFactoryHelper<CommonCommands.WriteAllLinesCommand>());
+            RegisterCommandFactory("writefile", new StoryCommandFactoryHelper<CommonCommands.WriteFileCommand>());
+            RegisterCommandFactory("Hashtableadd", new StoryCommandFactoryHelper<CommonCommands.HashtableAddCommand>());
+            RegisterCommandFactory("Hashtableset", new StoryCommandFactoryHelper<CommonCommands.HashtableSetCommand>());
+            RegisterCommandFactory("Hashtableremove", new StoryCommandFactoryHelper<CommonCommands.HashtableRemoveCommand>());
+            RegisterCommandFactory("Hashtableclear", new StoryCommandFactoryHelper<CommonCommands.HashtableClearCommand>());
             //注册通用值与内部函数
             //object
             StoryValueManager.Instance.RegisterValueFactory("namespace", new StoryValueFactoryHelper<CommonValues.NamespaceValue>());
@@ -295,19 +304,19 @@ namespace StorySystem
             StoryValueManager.Instance.RegisterValueFactory("dotnetcall", new StoryValueFactoryHelper<CommonValues.DotnetCallValue>());
             StoryValueManager.Instance.RegisterValueFactory("dotnetget", new StoryValueFactoryHelper<CommonValues.DotnetGetValue>());
             StoryValueManager.Instance.RegisterValueFactory("changetype", new StoryValueFactoryHelper<CommonValues.ChangeTypeValue>());
+            StoryValueManager.Instance.RegisterValueFactory("parseenum", new StoryValueFactoryHelper<CommonValues.ParseEnumValue>());
             StoryValueManager.Instance.RegisterValueFactory("pgrep", new StoryValueFactoryHelper<CommonValues.PgrepValue>());
             StoryValueManager.Instance.RegisterValueFactory("plist", new StoryValueFactoryHelper<CommonValues.PlistValue>());
             StoryValueManager.Instance.RegisterValueFactory("linq", new StoryValueFactoryHelper<CommonValues.LinqValue>());
-            StoryValueManager.Instance.RegisterValueFactory("json2str", new StoryValueFactoryHelper<CommonValues.Json2StrValue>());
-            StoryValueManager.Instance.RegisterValueFactory("str2json", new StoryValueFactoryHelper<CommonValues.Str2JsonValue>());
-            StoryValueManager.Instance.RegisterValueFactory("jsonarray", new StoryValueFactoryHelper<CommonValues.JsonArrayValue>());
-            StoryValueManager.Instance.RegisterValueFactory("jsonobject", new StoryValueFactoryHelper<CommonValues.JsonObjectValue>());
-            StoryValueManager.Instance.RegisterValueFactory("jsonget", new StoryValueFactoryHelper<CommonValues.JsonGetValue>());
-            StoryValueManager.Instance.RegisterValueFactory("jsoncount", new StoryValueFactoryHelper<CommonValues.JsonCountValue>());
-            StoryValueManager.Instance.RegisterValueFactory("jsonkeys", new StoryValueFactoryHelper<CommonValues.JsonKeysValue>());
-            StoryValueManager.Instance.RegisterValueFactory("jsonvalues", new StoryValueFactoryHelper<CommonValues.JsonValuesValue>());
-            StoryValueManager.Instance.RegisterValueFactory("isjsonarray", new StoryValueFactoryHelper<CommonValues.IsJsonArrayValue>());
-            StoryValueManager.Instance.RegisterValueFactory("isjsonobject", new StoryValueFactoryHelper<CommonValues.IsJsonObjectValue>());
+            StoryValueManager.Instance.RegisterValueFactory("readalllines", new StoryValueFactoryHelper<CommonValues.ReadAllLinesValue>());
+            StoryValueManager.Instance.RegisterValueFactory("readfile", new StoryValueFactoryHelper<CommonValues.ReadFileValue>());
+            StoryValueManager.Instance.RegisterValueFactory("tojson", new StoryValueFactoryHelper<CommonValues.ToJsonValue>());
+            StoryValueManager.Instance.RegisterValueFactory("fromjson", new StoryValueFactoryHelper<CommonValues.FromJsonValue>());
+            StoryValueManager.Instance.RegisterValueFactory("hashtable", new StoryValueFactoryHelper<CommonValues.HashtableValue>());
+            StoryValueManager.Instance.RegisterValueFactory("hashtableget", new StoryValueFactoryHelper<CommonValues.HashtableGetValue>());
+            StoryValueManager.Instance.RegisterValueFactory("hashtablesize", new StoryValueFactoryHelper<CommonValues.HashtableSizeValue>());
+            StoryValueManager.Instance.RegisterValueFactory("hashtablekeys", new StoryValueFactoryHelper<CommonValues.HashtableKeysValue>());
+            StoryValueManager.Instance.RegisterValueFactory("hashtablevalues", new StoryValueFactoryHelper<CommonValues.HashtableValuesValue>());
         }
         private object m_Lock = new object();
         private Dictionary<string, IStoryCommandFactory> m_StoryCommandFactories = new Dictionary<string, IStoryCommandFactory>();

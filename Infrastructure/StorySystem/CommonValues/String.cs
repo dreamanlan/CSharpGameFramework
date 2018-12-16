@@ -8,7 +8,7 @@ namespace StorySystem.CommonValues
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "format") {
+            if (null != callData) {
 
                 int num = callData.GetParamNum();
                 if (num > 0) {
@@ -91,7 +91,7 @@ namespace StorySystem.CommonValues
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "substring" && callData.GetParamNum() > 0) {
+            if (null != callData && callData.GetParamNum() > 0) {
                 m_ParamNum = callData.GetParamNum();
                 m_String.InitFromDsl(callData.GetParam(0));
                 if (m_ParamNum > 1) {
@@ -179,7 +179,7 @@ namespace StorySystem.CommonValues
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "str2int" && callData.GetParamNum() > 0) {
+            if (null != callData && callData.GetParamNum() > 0) {
                 m_String.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
             }
@@ -234,7 +234,7 @@ namespace StorySystem.CommonValues
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "str2float" && callData.GetParamNum() > 0) {
+            if (null != callData && callData.GetParamNum() > 0) {
                 m_String.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
             }

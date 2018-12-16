@@ -68,13 +68,14 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonCommands\Hashtable.cs" />
+    <Compile Include="CommonValues\Hashtable.cs" />
     <Compile Include="CommonValues\Linq.cs" />
     <Compile Include="CustomCommandValueParser.cs" />
     <Compile Include="CommonCommands\Assign.cs" />
     <Compile Include="CommonCommands\Composite.cs" />
     <Compile Include="CommonCommands\Foreach.cs" />
     <Compile Include="CommonCommands\IfElse.cs" />
-    <Compile Include="CommonCommands\Json.cs" />
     <Compile Include="CommonCommands\LocalMessage.cs" />
     <Compile Include="CommonCommands\Log.cs" />
     <Compile Include="CommonCommands\ReflectionCommand.cs" />
@@ -85,7 +86,6 @@
     <Compile Include="CommonValues\Compare.cs" />
     <Compile Include="CommonValues\Composite.cs" />
     <Compile Include="CommonValues\GeneralValues.cs" />
-    <Compile Include="CommonValues\Json.cs" />
     <Compile Include="CommonValues\Logic.cs" />
     <Compile Include="CommonValues\ReflectionValue.cs" />
     <Compile Include="CommonValues\String.cs" />

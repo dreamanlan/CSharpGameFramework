@@ -71,6 +71,7 @@ namespace StorySystem.CommonCommands
                     if (m_Conditions[i].Value != 0) {
                         PrepareIf(i);
                         isElse = false;
+                        break;
                     }
                 }
                 if (isElse) {
