@@ -50,11 +50,15 @@ namespace GameFramework.GmCommands
       m_ConfigManager.Clear();
       m_ConfigManager.LoadStory(file, 0, string.Empty);
     }
-    internal void LoadStoryText(string text)
+    internal void LoadStoryText(byte[] bytes)
     {
-      m_StoryInstancePool.Clear();
-      m_ConfigManager.Clear();
-      m_ConfigManager.LoadStoryText(text, 0, string.Empty);
+        m_StoryInstancePool.Clear();
+        m_ConfigManager.Clear();
+        m_ConfigManager.LoadStoryText(string.Empty, bytes, 0, string.Empty);
+    }
+    internal StoryInstance GetStory(string storyId)
+    {
+        return GetStoryInstance(storyId);
     }
     internal void StartStory(string storyId)
     {
@@ -130,7 +134,7 @@ namespace GameFramework.GmCommands
       return info;
     }
 
-    private Dictionary<string, object> m_GlobalVariables = new Dictionary<string, object>();
+    private StrObjDict m_GlobalVariables = new StrObjDict();
     
     private List<StoryInstance> m_StoryLogicInfos = new List<StoryInstance>();
     private Dictionary<string, StoryInstance> m_StoryInstancePool = new Dictionary<string, StoryInstance>();

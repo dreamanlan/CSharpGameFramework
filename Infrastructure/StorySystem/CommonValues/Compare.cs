@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 namespace StorySystem.CommonValues
 {
-    internal sealed class GreaterThanOperator : IStoryValue<object>
+    internal sealed class GreaterThanOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -15,7 +15,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GreaterThanOperator val = new GreaterThanOperator();
             val.m_X = m_X.Clone();
@@ -24,11 +24,11 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_X.Evaluate(instance, iterator, args);
-            m_Y.Evaluate(instance, iterator, args);
+            m_X.Evaluate(instance, handler, iterator, args);
+            m_Y.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -56,12 +56,12 @@ namespace StorySystem.CommonValues
                 m_Value = (x > y ? 1 : 0);
             }
         }
-        private IStoryValue<object> m_X = new StoryValue();
-        private IStoryValue<object> m_Y = new StoryValue();
+        private IStoryValue m_X = new StoryValue();
+        private IStoryValue m_Y = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class GreaterEqualThanOperator : IStoryValue<object>
+    internal sealed class GreaterEqualThanOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -74,7 +74,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GreaterEqualThanOperator val = new GreaterEqualThanOperator();
             val.m_X = m_X.Clone();
@@ -83,11 +83,11 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_X.Evaluate(instance, iterator, args);
-            m_Y.Evaluate(instance, iterator, args);
+            m_X.Evaluate(instance, handler, iterator, args);
+            m_Y.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -115,12 +115,12 @@ namespace StorySystem.CommonValues
                 m_Value = (x >= y ? 1 : 0);
             }
         }
-        private IStoryValue<object> m_X = new StoryValue();
-        private IStoryValue<object> m_Y = new StoryValue();
+        private IStoryValue m_X = new StoryValue();
+        private IStoryValue m_Y = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class EqualOperator : IStoryValue<object>
+    internal sealed class EqualOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -133,7 +133,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             EqualOperator val = new EqualOperator();
             val.m_X = m_X.Clone();
@@ -142,11 +142,11 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_X.Evaluate(instance, iterator, args);
-            m_Y.Evaluate(instance, iterator, args);
+            m_X.Evaluate(instance, handler, iterator, args);
+            m_Y.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -180,12 +180,12 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue<object> m_X = new StoryValue();
-        private IStoryValue<object> m_Y = new StoryValue();
+        private IStoryValue m_X = new StoryValue();
+        private IStoryValue m_Y = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class NotEqualOperator : IStoryValue<object>
+    internal sealed class NotEqualOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -198,7 +198,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             NotEqualOperator val = new NotEqualOperator();
             val.m_X = m_X.Clone();
@@ -207,11 +207,11 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_X.Evaluate(instance, iterator, args);
-            m_Y.Evaluate(instance, iterator, args);
+            m_X.Evaluate(instance, handler, iterator, args);
+            m_Y.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -245,12 +245,12 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue<object> m_X = new StoryValue();
-        private IStoryValue<object> m_Y = new StoryValue();
+        private IStoryValue m_X = new StoryValue();
+        private IStoryValue m_Y = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class LessThanOperator : IStoryValue<object>
+    internal sealed class LessThanOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -263,7 +263,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             LessThanOperator val = new LessThanOperator();
             val.m_X = m_X.Clone();
@@ -272,11 +272,11 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_X.Evaluate(instance, iterator, args);
-            m_Y.Evaluate(instance, iterator, args);
+            m_X.Evaluate(instance, handler, iterator, args);
+            m_Y.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -304,12 +304,12 @@ namespace StorySystem.CommonValues
                 m_Value = (x < y ? 1 : 0);
             }
         }
-        private IStoryValue<object> m_X = new StoryValue();
-        private IStoryValue<object> m_Y = new StoryValue();
+        private IStoryValue m_X = new StoryValue();
+        private IStoryValue m_Y = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class LessEqualThanOperator : IStoryValue<object>
+    internal sealed class LessEqualThanOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -322,7 +322,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             LessEqualThanOperator val = new LessEqualThanOperator();
             val.m_X = m_X.Clone();
@@ -331,11 +331,11 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_X.Evaluate(instance, iterator, args);
-            m_Y.Evaluate(instance, iterator, args);
+            m_X.Evaluate(instance, handler, iterator, args);
+            m_Y.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -363,12 +363,12 @@ namespace StorySystem.CommonValues
                 m_Value = (x <= y ? 1 : 0);
             }
         }
-        private IStoryValue<object> m_X = new StoryValue();
-        private IStoryValue<object> m_Y = new StoryValue();
+        private IStoryValue m_X = new StoryValue();
+        private IStoryValue m_Y = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class IsNullOperator : IStoryValue<object>
+    internal sealed class IsNullOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -380,7 +380,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             IsNullOperator val = new IsNullOperator();
             val.m_X = m_X.Clone();
@@ -388,10 +388,10 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_X.Evaluate(instance, iterator, args);
+            m_X.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -413,10 +413,10 @@ namespace StorySystem.CommonValues
             if (m_X.HaveValue) {
                 m_HaveValue = true;
                 object objX = m_X.Value;
-                m_Value = (null == objX);
+                m_Value = object.Equals(null, objX);
             }
         }
-        private IStoryValue<object> m_X = new StoryValue();
+        private IStoryValue m_X = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }

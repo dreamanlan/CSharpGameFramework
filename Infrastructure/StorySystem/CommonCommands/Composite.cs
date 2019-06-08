@@ -3,121 +3,158 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics;
+using Dsl;
+
 namespace StorySystem.CommonCommands
 {
     /// <summary>
-    /// name(arg1,arg2,...);
+    /// name(arg1,arg2,...)
+    /// [{
+    ///     name1(val1);
+    ///     name2(val2);
+    ///     ...
+    /// }];
     /// </summary>
     /// <remarks>
     /// 这里的Name、ArgNames与InitialCommands为同一command定义的各个调用共享。
     /// 由于解析时需要处理交叉引用，先克隆后Load。
     /// 这里的自定义命令支持挂起-恢复执行或递归(性能较低，仅处理小规模问题)，但
     /// 二者不能同时使用。
-    /// 注意：所有依赖InitialCommands等共享数据的其它成员，初始化需要写成lazy的样式，不要在Clone与Load里初始化，因为
+    /// 注意：
+    /// 1、所有依赖InitialCommands等共享数据的其它成员，初始化需要写成lazy的样式，不要在Clone与Load里初始化，因为
     /// 此时共享数据可能还不完整！
+    /// 2、因为自定义的命令与值在使用时有函数调用语义，需要可以访问传递的参数。而Evaluate接口只有一组参数，这限制了自定义
+    /// 命令与值的形式至多是Function样式而不应支持Statement样式。
     /// </remarks>
     internal sealed class CompositeCommand : AbstractStoryCommand
     {
-        public string Name
+        internal string Name
         {
             get { return m_Name; }
             set { m_Name = value; }
         }
-        public IList<string> ArgNames
+        internal IList<string> ArgNames
         {
             get { return m_ArgNames; }
         }
-        public IList<StorySystem.IStoryCommand> InitialCommands
+        internal IDictionary<string, Dsl.ISyntaxComponent> OptArgs
+        {
+            get { return m_OptArgs; }
+        }
+        internal IList<StorySystem.IStoryCommand> InitialCommands
         {
             get { return m_InitialCommands; }
         }
-        public void InitSharedData()
+        internal void InitSharedData()
         {
             m_ArgNames = new List<string>();
+            m_OptArgs = new Dictionary<string, ISyntaxComponent>();
             m_InitialCommands = new List<IStoryCommand>();
         }
-        public void NewCall(StoryInstance instance, object iterator, object[] args)
+        internal void PreCall(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             //command的执行不像函数，它支持类似协程的机制，允许暂时挂起，稍后继续，这意味着并非每次调用ExecCommand都对应语义上的一次过程调用
             //，因此栈的创建不能在ExecCommand里进行（事实上，在ExecCommand里无法区分本次执行是一次新的过程调用还是一次挂起后的继续执行）。
 
-            StackElementInfo stackInfo = NewStackElementInfo();
+            var stackInfo = StoryLocalInfo.New();
             //调用实参部分需要在栈建立之前运算，结果需要记录在栈上
             for (int i = 0; i < m_LoadedArgs.Count; ++i) {
-                stackInfo.m_Args.Add(m_LoadedArgs[i].Clone());
+                stackInfo.Args.Add(m_LoadedArgs[i].Clone());
             }
-            for (int i = 0; i < stackInfo.m_Args.Count; i++) {
-                stackInfo.m_Args[i].Evaluate(instance, iterator, args);
+            foreach (var pair in m_LoadedOptArgs) {
+                stackInfo.OptArgs.Add(pair.Key, pair.Value.Clone());
+            }
+            for (int i = 0; i < stackInfo.Args.Count; i++) {
+                stackInfo.Args[i].Evaluate(instance, handler, iterator, args);
+            }
+            foreach (var pair in stackInfo.OptArgs) {
+                pair.Value.Evaluate(instance, handler, iterator, args);
             }
             //实参处理完，进入函数体执行，创建新的栈
-            PushStack(instance, stackInfo);
+            PushStack(instance, handler, stackInfo);
         }
-        public override IStoryCommand Clone()
+        internal void PostCall(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            PopStack(instance, handler);
+        }
+        public override IStoryCommand PrologueCommand
+        {
+            get {
+                return m_PrologueCommand;
+            }
+        }
+        public override IStoryCommand EpilogueCommand
+        {
+            get {
+                return m_EpilogueCommand;
+            }
+        }
+        protected override IStoryCommand CloneCommand()
         {
             CompositeCommand cmd = new CompositeCommand();
             cmd.m_LoadedArgs = m_LoadedArgs;
+            cmd.m_LoadedOptArgs = m_LoadedOptArgs;
             cmd.m_Name = m_Name;
-            cmd.m_ArgNames=m_ArgNames;
-            cmd.m_InitialCommands=m_InitialCommands;
+            cmd.m_ArgNames = m_ArgNames;
+            cmd.m_OptArgs = m_OptArgs;
+            cmd.m_InitialCommands = m_InitialCommands;
             cmd.IsCompositeCommand = true;
-            if (null == cmd.m_LeadCommand) {
-                cmd.m_LeadCommand = new CompositeCommandHelper(cmd);
+            if (null == cmd.m_PrologueCommand) {
+                cmd.m_PrologueCommand = new CompositePrologueCommandHelper(cmd);
+            }
+            if (null == cmd.m_EpilogueCommand) {
+                cmd.m_EpilogueCommand = new CompositeEpilogueCommandHelper(cmd);
             }
             return cmd;
         }
-        public override IStoryCommand LeadCommand
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            get
-            {
-                return m_LeadCommand;
-            }
+            //PreCall do all things, so do nothing here.
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
         {
-            if (m_Stack.Count > 0) {
-                StackElementInfo stackInfo = m_Stack.Peek();
-                for (int i = 0; i < m_ArgNames.Count; ++i) {
-                    if (i < stackInfo.m_Args.Count) {
-                        instance.SetVariable(m_ArgNames[i], stackInfo.m_Args[i].Value);
-                    } else {
-                        instance.SetVariable(m_ArgNames[i], null);
-                    }
-                }
+            var runtime = handler.PeekRuntime();
+            if (runtime.CompositeReentry) {
+                return false;
             }
-        }
-        protected override bool ExecCommand(StoryInstance instance, long delta, object iterator, object[] args)
-        {
             bool ret = false;
-            if (m_Stack.Count > 0) {
-                StackElementInfo stackInfo = m_Stack.Peek();
-                instance.StackVariables = stackInfo.m_StackVariables;
-                if (stackInfo.m_CommandQueue.Count == 0 && !stackInfo.m_AlreadyExecute) {
-                    Evaluate(instance, iterator, args);
-                    Prepare(stackInfo);
-                    stackInfo.m_AlreadyExecute = true;
+            var stackInfo = handler.PeekLocalInfo();
+            for (int i = 0; i < m_ArgNames.Count; ++i) {
+                if (i < stackInfo.Args.Count) {
+                    instance.SetVariable(m_ArgNames[i], stackInfo.Args[i].Value);
+                } else {
+                    instance.SetVariable(m_ArgNames[i], null);
                 }
-                if (stackInfo.m_CommandQueue.Count > 0) {
-                    while (stackInfo.m_CommandQueue.Count > 0) {
-                        IStoryCommand cmd = stackInfo.m_CommandQueue.Peek();
-                        if (cmd.Execute(instance, delta, iterator, args)) {
-                            ret = true;
-                            break;
-                        } else {
-                            cmd.Reset();
-                            stackInfo.m_CommandQueue.Dequeue();
-                        }
-                    }
-                }
-                if (!ret) {
-                    PopStack(instance);
-                    stackInfo.m_AlreadyExecute = false;
-                }
+            }
+            foreach (var pair in stackInfo.OptArgs) {
+                instance.SetVariable(pair.Key, pair.Value.Value);
+            }
+            Prepare(handler);
+            runtime = handler.PeekRuntime();
+            runtime.Arguments = new object[stackInfo.Args.Count];
+            for (int i = 0; i < stackInfo.Args.Count; i++) {
+                runtime.Arguments[i] = stackInfo.Args[i].Value;
+            }
+            runtime.Iterator = stackInfo.Args.Count;
+            //没有wait之类命令直接执行
+            runtime.Tick(instance, handler, delta);
+            if (runtime.CommandQueue.Count == 0) {
+                handler.PopRuntime();
+            } else {
+                //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
+                ret = true;
             }
             return ret;
         }
         protected override void Load(Dsl.CallData callData)
         {
-            m_LoadedArgs = new List<IStoryValue<object>>();
+            m_LoadedOptArgs = new Dictionary<string, IStoryValue>();
+            foreach (var pair in m_OptArgs) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(pair.Value);
+                m_LoadedOptArgs.Add(pair.Key, val);
+            }
+            m_LoadedArgs = new List<IStoryValue>();
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
                 StoryValue val = new StoryValue();
@@ -125,92 +162,66 @@ namespace StorySystem.CommonCommands
                 m_LoadedArgs.Add(val);
             }
             IsCompositeCommand = true;
-            if (null == m_LeadCommand) {
-                m_LeadCommand = new CompositeCommandHelper(this);
+            if (null == m_PrologueCommand) {
+                m_PrologueCommand = new CompositePrologueCommandHelper(this);
+            }
+            if (null == m_EpilogueCommand) {
+                m_EpilogueCommand = new CompositeEpilogueCommandHelper(this);
+            }
+        }
+        protected override void Load(FunctionData funcData)
+        {
+            var cd = funcData.Call;
+            Load(cd);
+            foreach (var comp in funcData.Statements) {
+                var fcd = comp as Dsl.CallData;
+                if (null != fcd) {
+                    var key = fcd.GetId();
+                    StoryValue val = new StoryValue();
+                    val.InitFromDsl(fcd.GetParam(0));
+                    m_LoadedOptArgs[key] = val;
+                }
             }
         }
 
-        private void Prepare(StackElementInfo stackInfo)
+        private void Prepare(StoryMessageHandler handler)
         {
-            if (null != m_InitialCommands && m_FirstStackCommands.Count <= 0) {
+            var runtime = StoryRuntime.New();
+            handler.PushRuntime(runtime);
+            if (null != m_InitialCommands) {
                 for (int i = 0; i < m_InitialCommands.Count; ++i) {
                     IStoryCommand cmd = m_InitialCommands[i].Clone();
-                    m_FirstStackCommands.Add(cmd);
-                }
-            }
-            if (m_Stack.Count <= 1) {
-                for (int i = 0; i < m_FirstStackCommands.Count; ++i) {
-                    IStoryCommand cmd = m_FirstStackCommands[i];
-                    if (null != cmd.LeadCommand)
-                        stackInfo.m_CommandQueue.Enqueue(cmd.LeadCommand);
-                    stackInfo.m_CommandQueue.Enqueue(cmd);
-                }
-            } else if (null != m_InitialCommands) {
-                for (int i = 0; i < m_InitialCommands.Count; ++i) {
-                    IStoryCommand cmd = m_InitialCommands[i].Clone();
-                    if (null != cmd.LeadCommand)
-                        stackInfo.m_CommandQueue.Enqueue(cmd.LeadCommand);
-                    stackInfo.m_CommandQueue.Enqueue(cmd);
+                    if (null != cmd.PrologueCommand)
+                        runtime.CommandQueue.Enqueue(cmd.PrologueCommand);
+                    runtime.CommandQueue.Enqueue(cmd);
+                    if (null != cmd.EpilogueCommand)
+                        runtime.CommandQueue.Enqueue(cmd.EpilogueCommand);
                 }
             }
         }
-        private StackElementInfo NewStackElementInfo()
+        private void PushStack(StoryInstance instance, StoryMessageHandler handler, StoryLocalInfo info)
         {
-            if (m_Stack.Count <= 0) {
-                m_FirstStackInfo.Reset();
-                return m_FirstStackInfo;
+            handler.PushLocalInfo(info);
+            instance.StackVariables = info.StackVariables;
+        }
+        private void PopStack(StoryInstance instance, StoryMessageHandler handler)
+        {
+            handler.PopLocalInfo();
+            if (handler.LocalInfoStack.Count > 0) {
+                instance.StackVariables = handler.PeekLocalInfo().StackVariables;
             } else {
-                return new StackElementInfo();
-            }
-        }
-        private void PushStack(StoryInstance instance, StackElementInfo info)
-        {
-            if (m_Stack.Count <= 0) {
-                m_TopStack = instance.StackVariables;
-            }
-            m_Stack.Push(info);
-            instance.StackVariables = info.m_StackVariables;
-        }
-        private void PopStack(StoryInstance instance)
-        {
-            if (m_Stack.Count > 0) {
-                m_Stack.Pop();
-                if (m_Stack.Count > 0) {
-                    StackElementInfo info = m_Stack.Peek();
-                    instance.StackVariables = info.m_StackVariables;
-                } else {
-                    instance.StackVariables = m_TopStack;
-                }
+                instance.StackVariables = handler.StackVariables;
             }
         }
 
-        private class StackElementInfo
-        {
-            internal List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
-            internal Queue<IStoryCommand> m_CommandQueue = new Queue<IStoryCommand>();
-            internal bool m_AlreadyExecute = false;
-            internal Dictionary<string, object> m_StackVariables = new Dictionary<string, object>();
-
-            internal void Reset()
-            {
-                m_Args.Clear();
-                m_CommandQueue.Clear();
-                m_StackVariables.Clear();
-                m_AlreadyExecute = false;
-            }
-        }
-
-        private StackElementInfo m_FirstStackInfo = new StackElementInfo();
-        private List<IStoryCommand> m_FirstStackCommands = new List<IStoryCommand>();
-
-        private Dictionary<string, object> m_TopStack = null;
-        private Stack<StackElementInfo> m_Stack = new Stack<StackElementInfo>();
-
-        private List<IStoryValue<object>> m_LoadedArgs = null;
-        private CompositeCommandHelper m_LeadCommand = null;
+        private List<IStoryValue> m_LoadedArgs = null;
+        private Dictionary<string, IStoryValue> m_LoadedOptArgs = null;
+        private CompositePrologueCommandHelper m_PrologueCommand = null;
+        private CompositeEpilogueCommandHelper m_EpilogueCommand = null;
 
         private string m_Name = string.Empty;
         private List<string> m_ArgNames = null;
+        private Dictionary<string, Dsl.ISyntaxComponent> m_OptArgs = null;
         private List<IStoryCommand> m_InitialCommands = null;
     }
     internal sealed class CompositeCommandFactory : IStoryCommandFactory
@@ -225,19 +236,35 @@ namespace StorySystem.CommonCommands
         }
         private CompositeCommand m_Cmd = null;
     }
-    internal sealed class CompositeCommandHelper : AbstractStoryCommand
+    internal sealed class CompositePrologueCommandHelper : AbstractStoryCommand
     {
-        public CompositeCommandHelper(CompositeCommand cmd)
+        public CompositePrologueCommandHelper(CompositeCommand cmd)
         {
             m_Cmd = cmd;
         }
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             return null;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Cmd.NewCall(instance, iterator, args);
+            m_Cmd.PreCall(instance, handler, iterator, args);
+        }
+        private CompositeCommand m_Cmd = null;
+    }
+    internal sealed class CompositeEpilogueCommandHelper : AbstractStoryCommand
+    {
+        public CompositeEpilogueCommandHelper(CompositeCommand cmd)
+        {
+            m_Cmd = cmd;
+        }
+        protected override IStoryCommand CloneCommand()
+        {
+            return null;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_Cmd.PostCall(instance, handler, iterator, args);
         }
         private CompositeCommand m_Cmd = null;
     }

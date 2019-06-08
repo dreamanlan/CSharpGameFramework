@@ -22,7 +22,7 @@ public class AiDoNormal : ISimpleStoryCommandPlugin
         m_EnableLearning = false;
     }
 
-    public bool ExecCommand(StoryInstance instance, StoryValueParams _params, long delta)
+    public bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params, long delta)
     {
         ArrayList args = _params.Values;
         if (!m_ParamReaded) {

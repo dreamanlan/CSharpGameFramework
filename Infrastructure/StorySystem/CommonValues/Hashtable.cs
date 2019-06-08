@@ -6,7 +6,7 @@ using StorySystem;
 using LitJson;
 namespace StorySystem.CommonValues
 {
-    internal sealed class ReadAllLinesValue : IStoryValue<object>
+    internal sealed class ReadAllLinesValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -16,7 +16,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             ReadAllLinesValue val = new ReadAllLinesValue();
             val.m_String = m_String.Clone();
@@ -24,10 +24,10 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_String.Evaluate(instance, iterator, args);
+            m_String.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -60,7 +60,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class ReadFileValue : IStoryValue<object>
+    internal sealed class ReadFileValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -70,7 +70,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             ReadFileValue val = new ReadFileValue();
             val.m_String = m_String.Clone();
@@ -78,10 +78,10 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_String.Evaluate(instance, iterator, args);
+            m_String.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -114,7 +114,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class ToJsonValue : IStoryValue<object>
+    internal sealed class ToJsonValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -124,7 +124,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             ToJsonValue val = new ToJsonValue();
             val.m_Hashtable = m_Hashtable.Clone();
@@ -132,10 +132,10 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_Hashtable.Evaluate(instance, iterator, args);
+            m_Hashtable.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -166,7 +166,7 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private IStoryValue<object> m_Hashtable = new StoryValue();
+        private IStoryValue m_Hashtable = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
 
@@ -211,7 +211,7 @@ namespace StorySystem.CommonValues
             }
         }
     }
-    internal sealed class FromJsonValue : IStoryValue<object>
+    internal sealed class FromJsonValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -221,7 +221,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             FromJsonValue val = new FromJsonValue();
             val.m_String = m_String.Clone();
@@ -229,10 +229,10 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_String.Evaluate(instance, iterator, args);
+            m_String.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -299,12 +299,12 @@ namespace StorySystem.CommonValues
             }
         }
     }
-    internal sealed class HashtableValue : IStoryValue<object>
+    internal sealed class HashtableValue : IStoryValue
     {
         private class Pair
         {
-            internal IStoryValue<object> m_Key = new StoryValue();
-            internal IStoryValue<object> m_Value = new StoryValue();
+            internal IStoryValue m_Key = new StoryValue();
+            internal IStoryValue m_Value = new StoryValue();
             internal Pair Clone()
             {
                 Pair pair = new Pair();
@@ -312,10 +312,10 @@ namespace StorySystem.CommonValues
                 pair.m_Value = m_Value.Clone();
                 return pair;
             }
-            internal void Evaluate(StoryInstance instance, object iterator, object[] args)
+            internal void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
             {
-                m_Key.Evaluate(instance, iterator, args);
-                m_Value.Evaluate(instance, iterator, args);
+                m_Key.Evaluate(instance, handler, iterator, args);
+                m_Value.Evaluate(instance, handler, iterator, args);
             }
             internal bool HaveValue
             {
@@ -347,7 +347,7 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             HashtableValue val = new HashtableValue();
             for (int i = 0; i < m_Args.Count; i++) {
@@ -357,11 +357,11 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
             for (int i = 0; i < m_Args.Count; i++) {
-                m_Args[i].Evaluate(instance, iterator, args);
+                m_Args[i].Evaluate(instance, handler, iterator, args);
             }
             TryUpdateValue();
         }
@@ -418,7 +418,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class HashtableGetValue : IStoryValue<object>
+    internal sealed class HashtableGetValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -435,7 +435,7 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             HashtableGetValue cmd = new HashtableGetValue();
             cmd.m_ParamNum = m_ParamNum;
@@ -444,15 +444,15 @@ namespace StorySystem.CommonValues
             cmd.m_DefValue = m_DefValue.Clone();
             return cmd;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 1) {
-                m_Var.Evaluate(instance, iterator, args);
-                m_Key.Evaluate(instance, iterator, args);
+                m_Var.Evaluate(instance, handler, iterator, args);
+                m_Key.Evaluate(instance, handler, iterator, args);
             }
             if (m_ParamNum > 2) {
-                m_DefValue.Evaluate(instance, iterator, args);
+                m_DefValue.Evaluate(instance, handler, iterator, args);
             }
 
             TryUpdateValue();
@@ -500,13 +500,13 @@ namespace StorySystem.CommonValues
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue<object> m_Var = new StoryValue();
-        private IStoryValue<object> m_Key = new StoryValue();
-        private IStoryValue<object> m_DefValue = new StoryValue();
+        private IStoryValue m_Var = new StoryValue();
+        private IStoryValue m_Key = new StoryValue();
+        private IStoryValue m_DefValue = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class HashtableSizeValue : IStoryValue<object>
+    internal sealed class HashtableSizeValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -519,18 +519,18 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             HashtableSizeValue cmd = new HashtableSizeValue();
             cmd.m_ParamNum = m_ParamNum;
             cmd.m_Var = m_Var.Clone();
             return cmd;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 0) {
-                m_Var.Evaluate(instance, iterator, args);
+                m_Var.Evaluate(instance, handler, iterator, args);
             }
             TryUpdateValue();
         }
@@ -564,11 +564,11 @@ namespace StorySystem.CommonValues
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue<object> m_Var = new StoryValue();
+        private IStoryValue m_Var = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class HashtableKeysValue : IStoryValue<object>
+    internal sealed class HashtableKeysValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -581,18 +581,18 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             HashtableKeysValue cmd = new HashtableKeysValue();
             cmd.m_ParamNum = m_ParamNum;
             cmd.m_Var = m_Var.Clone();
             return cmd;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 0) {
-                m_Var.Evaluate(instance, iterator, args);
+                m_Var.Evaluate(instance, handler, iterator, args);
             }
             TryUpdateValue();
         }
@@ -628,11 +628,11 @@ namespace StorySystem.CommonValues
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue<object> m_Var = new StoryValue();
+        private IStoryValue m_Var = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class HashtableValuesValue : IStoryValue<object>
+    internal sealed class HashtableValuesValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -645,18 +645,18 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             HashtableValuesValue cmd = new HashtableValuesValue();
             cmd.m_ParamNum = m_ParamNum;
             cmd.m_Var = m_Var.Clone();
             return cmd;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 0) {
-                m_Var.Evaluate(instance, iterator, args);
+                m_Var.Evaluate(instance, handler, iterator, args);
             }
             TryUpdateValue();
         }
@@ -692,7 +692,7 @@ namespace StorySystem.CommonValues
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue<object> m_Var = new StoryValue();
+        private IStoryValue m_Var = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }

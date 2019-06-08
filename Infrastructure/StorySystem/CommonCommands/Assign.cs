@@ -12,18 +12,18 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class AssignCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             AssignCommand cmd = new AssignCommand();
             cmd.m_VarName = m_VarName;
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Value.Evaluate(instance, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Value.HaveValue) {
                 instance.SetVariable(m_VarName, m_Value.Value);
@@ -39,7 +39,7 @@ namespace StorySystem.CommonCommands
             }
         }
         private string m_VarName = null;
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// inc(@local,value);
@@ -50,7 +50,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class IncCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             IncCommand cmd = new IncCommand();
             cmd.m_VarName = m_VarName;
@@ -58,11 +58,11 @@ namespace StorySystem.CommonCommands
             cmd.m_ParamNum = m_ParamNum;
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Value.Evaluate(instance, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_VarName.StartsWith("@@")) {
                 if (null != instance.GlobalVariables) {
@@ -157,7 +157,7 @@ namespace StorySystem.CommonCommands
         }
         private int m_ParamNum = 0;
         private string m_VarName = null;
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// dec(@local,value);
@@ -168,7 +168,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class DecCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             DecCommand cmd = new DecCommand();
             cmd.m_VarName = m_VarName;
@@ -176,11 +176,11 @@ namespace StorySystem.CommonCommands
             cmd.m_ParamNum = m_ParamNum;
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Value.Evaluate(instance, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_VarName.StartsWith("@@")) {
                 if (null != instance.GlobalVariables) {
@@ -275,26 +275,26 @@ namespace StorySystem.CommonCommands
         }
         private int m_ParamNum = 0;
         private string m_VarName = null;
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// propset(name,value);
     /// </summary>
     internal sealed class PropSetCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             PropSetCommand cmd = new PropSetCommand();
             cmd.m_VarName = m_VarName.Clone();
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_VarName.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
+            m_VarName.Evaluate(instance, handler, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_VarName.HaveValue && m_Value.HaveValue) {
                 string varName = m_VarName.Value;
@@ -311,14 +311,14 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<string> m_VarName = new StoryValue<string>();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// listset(list,index,value);
     /// </summary>
     internal sealed class ListSetCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ListSetCommand cmd = new ListSetCommand();
             cmd.m_ListValue = m_ListValue.Clone();
@@ -326,13 +326,13 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_ListValue.Evaluate(instance, iterator, args);
-            m_IndexValue.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
+            m_ListValue.Evaluate(instance, handler, iterator, args);
+            m_IndexValue.Evaluate(instance, handler, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_ListValue.HaveValue && m_IndexValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
@@ -358,26 +358,26 @@ namespace StorySystem.CommonCommands
         }
         private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
         private IStoryValue<int> m_IndexValue = new StoryValue<int>();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// listadd(list,value);
     /// </summary>
     internal sealed class ListAddCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ListAddCommand cmd = new ListAddCommand();
             cmd.m_ListValue = m_ListValue.Clone();
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_ListValue.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
+            m_ListValue.Evaluate(instance, handler, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_ListValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
@@ -395,26 +395,26 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// listremove(list,value);
     /// </summary>
     internal sealed class ListRemoveCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ListRemoveCommand cmd = new ListRemoveCommand();
             cmd.m_ListValue = m_ListValue.Clone();
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_ListValue.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
+            m_ListValue.Evaluate(instance, handler, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_ListValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
@@ -432,14 +432,14 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// listinsert(list,index,value);
     /// </summary>
     internal sealed class ListInsertCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ListInsertCommand cmd = new ListInsertCommand();
             cmd.m_ListValue = m_ListValue.Clone();
@@ -447,13 +447,13 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_ListValue.Evaluate(instance, iterator, args);
-            m_IndexValue.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
+            m_ListValue.Evaluate(instance, handler, iterator, args);
+            m_IndexValue.Evaluate(instance, handler, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_ListValue.HaveValue && m_IndexValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
@@ -474,26 +474,26 @@ namespace StorySystem.CommonCommands
         }
         private IStoryValue<IList> m_ListValue = new StoryValue<IList>();
         private IStoryValue<int> m_IndexValue = new StoryValue<int>();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
-    /// listremoveat(list,index,value);
+    /// listremoveat(list,index);
     /// </summary>
     internal sealed class ListRemoveAtCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ListRemoveAtCommand cmd = new ListRemoveAtCommand();
             cmd.m_ListValue = m_ListValue.Clone();
             cmd.m_IndexValue = m_IndexValue.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_ListValue.Evaluate(instance, iterator, args);
-            m_IndexValue.Evaluate(instance, iterator, args);
+            m_ListValue.Evaluate(instance, handler, iterator, args);
+            m_IndexValue.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_ListValue.HaveValue && m_IndexValue.HaveValue) {
                 IList listValue = m_ListValue.Value;
@@ -518,17 +518,17 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class ListClearCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ListClearCommand cmd = new ListClearCommand();
             cmd.m_ListValue = m_ListValue.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_ListValue.Evaluate(instance, iterator, args);
+            m_ListValue.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_ListValue.HaveValue) {
                 IList listValue = m_ListValue.Value;

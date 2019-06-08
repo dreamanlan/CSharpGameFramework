@@ -19,7 +19,7 @@ public class AiSelectTarget : ISimpleStoryValuePlugin
     {
         return new AiSelectTarget();
     }
-    public void Evaluate(StoryInstance instance, StoryValueParams _params)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
         ArrayList args = _params.Values;
         int objId = (int)args[0];

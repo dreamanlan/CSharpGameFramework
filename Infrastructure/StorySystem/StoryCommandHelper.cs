@@ -5,7 +5,7 @@ namespace StorySystem
     /// <summary>
     /// 简单的函数值基类，简化实现IStoryValue需要写的代码行数(当前值类只支持CallData样式)
     /// </summary>
-    public abstract class SimpleStoryValueBase<SubClassType, ValueParamType> : IStoryValue<object>
+    public abstract class SimpleStoryValueBase<SubClassType, ValueParamType> : IStoryValue
         where SubClassType : SimpleStoryValueBase<SubClassType, ValueParamType>, new()
         where ValueParamType : IStoryValueParam, new()
     {
@@ -13,18 +13,18 @@ namespace StorySystem
         {
             m_Params.InitFromDsl(param, 0);
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             SubClassType val = new SubClassType();
             val.m_Params = m_Params.Clone();
             val.m_Result = m_Result.Clone();
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_Result.HaveValue = false;
             {
-                m_Params.Evaluate(instance, iterator, args);
+                m_Params.Evaluate(instance, handler, iterator, args);
             }
         
             TryUpdateValue(instance);
@@ -60,37 +60,58 @@ namespace StorySystem
         where SubClassType : SimpleStoryCommandBase<SubClassType, ValueParamType>, new()
         where ValueParamType : IStoryValueParam, new()
     {
-        public void Init(Dsl.ISyntaxComponent config)
+        public bool Init(Dsl.ISyntaxComponent config)
         {
             m_Params.InitFromDsl(config, 0);
+            m_Config = config;
+            return config is Dsl.CallData;
         }
         public IStoryCommand Clone()
         {
             SubClassType cmd = new SubClassType();
             cmd.m_Params = m_Params.Clone();
+            cmd.m_Config = m_Config;
             return cmd;
         }
-        public IStoryCommand LeadCommand
+        public IStoryCommand PrologueCommand
         {
             get { return null; }
+        }
+        public IStoryCommand EpilogueCommand
+        {
+            get { return null; }
+        }
+        public string GetId()
+        {
+            return m_Config.GetId();
+        }
+        public Dsl.ISyntaxComponent GetConfig()
+        {
+            return m_Config;
+        }
+        public void ShareConfig(IStoryCommand cloner)
+        {
+            m_Config = cloner.GetConfig();
         }
         public void Reset()
         {
             m_LastExecResult = false;
             ResetState();
         }
-        public bool Execute(StoryInstance instance, long delta, object iterator, object[] args)
+        public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
         {
             if (!m_LastExecResult) {
                 //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
                 try {
-                    m_Params.Evaluate(instance, iterator, args);
+                    m_Params.Evaluate(instance, handler, iterator, args);
                 } catch (Exception ex) {
                     GameFramework.LogSystem.Error("SimpleStoryCommand Evaluate Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     return false;
                 }
             }
             try {
+                if (instance.IsDebug && ExecDebugger(instance, handler, delta, iterator, args))
+                    return true;
                 m_LastExecResult = ExecCommand(instance, (ValueParamType)m_Params, delta);
             } catch (Exception ex) {
                 GameFramework.LogSystem.Error("SimpleStoryCommand ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
@@ -98,17 +119,20 @@ namespace StorySystem
             }
             return m_LastExecResult;
         }
-        public void Analyze(StoryInstance instance)
+        public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
         {
-            SemanticAnalyze(instance);
+            if (null != instance.OnExecDebugger) {
+                return instance.OnExecDebugger(instance, handler, this, delta, iterator, args);
+            }
+            return false;
         }
         protected virtual void ResetState() { }
         protected virtual bool ExecCommand(StoryInstance instance, ValueParamType _params, long delta)
         {
             return false;
         }
-        protected virtual void SemanticAnalyze(StoryInstance instance) { }
         private bool m_LastExecResult = false;
         private IStoryValueParam m_Params = new ValueParamType();
+        private Dsl.ISyntaxComponent m_Config;
     }
 }

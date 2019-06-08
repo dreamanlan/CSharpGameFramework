@@ -48,7 +48,7 @@ AiQuery = {
 			end,
 			Evaluate = function(this, instance, iterator, args)
 				if ((nil ~= this.m_Select) and (nil ~= this.m_From)) then
-					this.m_From:Evaluate(instance, iterator, args);
+					this.m_From:Evaluate(instance, handler, iterator, args);
 					local coll; coll = newexternlist(System.Collections.ArrayList, "System.Collections.ArrayList", "ctor", {});
 --筛选
 					local enumer; enumer = typeas(this.m_From.Value, System.Collections.IEnumerable, false);

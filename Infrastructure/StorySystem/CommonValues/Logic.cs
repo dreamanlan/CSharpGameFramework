@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using StorySystem;
 namespace StorySystem.CommonValues
 {
-    internal sealed class AndOperator : IStoryValue<object>
+    internal sealed class AndOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -16,7 +16,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             AndOperator val = new AndOperator();
             val.m_X = m_X.Clone();
@@ -25,17 +25,17 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_X.Evaluate(instance, iterator, args);
+            m_X.Evaluate(instance, handler, iterator, args);
             if (m_X.HaveValue) {
                 int x = (int)Convert.ChangeType(m_X.Value, typeof(int));
                 if (x == 0) {
                     m_HaveValue = true;
                     m_Value = 0;
                 } else {
-                    m_Y.Evaluate(instance, iterator, args);
+                    m_Y.Evaluate(instance, handler, iterator, args);
                     if (m_Y.HaveValue) {
                         int y = (int)Convert.ChangeType(m_Y.Value, typeof(int));
                         m_HaveValue = true;
@@ -68,12 +68,12 @@ namespace StorySystem.CommonValues
                 m_Value = ((x != 0 && y != 0) ? 1 : 0);
             }
         }
-        private IStoryValue<object> m_X = new StoryValue();
-        private IStoryValue<object> m_Y = new StoryValue();
+        private IStoryValue m_X = new StoryValue();
+        private IStoryValue m_Y = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class OrOperator : IStoryValue<object>
+    internal sealed class OrOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -86,7 +86,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             OrOperator val = new OrOperator();
             val.m_X = m_X.Clone();
@@ -95,17 +95,17 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_X.Evaluate(instance, iterator, args);
+            m_X.Evaluate(instance, handler, iterator, args);
             if (m_X.HaveValue) {
                 int x = (int)Convert.ChangeType(m_X.Value, typeof(int));
                 if (x != 0) {
                     m_HaveValue = true;
                     m_Value = 1;
                 } else {
-                    m_Y.Evaluate(instance, iterator, args);
+                    m_Y.Evaluate(instance, handler, iterator, args);
                     if (m_Y.HaveValue) {
                         int y = (int)Convert.ChangeType(m_Y.Value, typeof(int));
                         m_HaveValue = true;
@@ -138,12 +138,12 @@ namespace StorySystem.CommonValues
                 m_Value = ((x != 0 || y != 0) ? 1 : 0);
             }
         }
-        private IStoryValue<object> m_X = new StoryValue();
-        private IStoryValue<object> m_Y = new StoryValue();
+        private IStoryValue m_X = new StoryValue();
+        private IStoryValue m_Y = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class NotOperator : IStoryValue<object>
+    internal sealed class NotOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -155,7 +155,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             NotOperator val = new NotOperator();
             val.m_X = m_X.Clone();
@@ -163,10 +163,10 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_X.Evaluate(instance, iterator, args);
+            m_X.Evaluate(instance, handler, iterator, args);
             TryUpdateValue();
         }
         public bool HaveValue
@@ -192,7 +192,7 @@ namespace StorySystem.CommonValues
                 m_Value = (x == 0 ? 1 : 0);
             }
         }
-        private IStoryValue<object> m_X = new StoryValue();
+        private IStoryValue m_X = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }

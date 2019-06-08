@@ -44,7 +44,7 @@ internal class NativeStoryCommand : AbstractStoryCommand
             m_Plugin = module as IStoryCommandPlugin;
         }
     }
-    public override IStoryCommand Clone()
+    protected override IStoryCommand CloneCommand()
     {
         var newObj = new NativeStoryCommand(m_ClassName, false);
         if (null != m_Plugin) {
@@ -58,16 +58,16 @@ internal class NativeStoryCommand : AbstractStoryCommand
             m_Plugin.ResetState();
         }
     }
-    protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+    protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
     {
         if (null != m_Plugin) {
-            m_Plugin.Evaluate(instance, iterator, args);
+            m_Plugin.Evaluate(instance, handler, iterator, args);
         }
     }
-    protected override bool ExecCommand(StoryInstance instance, long delta)
+    protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
     {
         if (null != m_Plugin) {
-            return m_Plugin.ExecCommand(instance, delta);
+            return m_Plugin.ExecCommand(instance, handler, delta);
         }
         return false;
     }
@@ -113,7 +113,7 @@ internal class LuaStoryCommand : AbstractStoryCommand
         }
     }
 
-    public override IStoryCommand Clone()
+    protected override IStoryCommand CloneCommand()
     {
         var newObj = new LuaStoryCommand(m_ClassName, false);
         if (null != m_Clone) {
@@ -131,13 +131,13 @@ internal class LuaStoryCommand : AbstractStoryCommand
             m_ResetState.call(m_Self);
         }
     }
-    protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+    protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
     {
         if (null != m_Evaluate) {
             m_Evaluate.call(m_Self, instance, iterator, args);
         }
     }
-    protected override bool ExecCommand(StoryInstance instance, long delta)
+    protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
     {
         if (null != m_ExecCommand) {
             var ret = m_ExecCommand.call(m_Self, instance, delta);

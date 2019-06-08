@@ -153,7 +153,7 @@ namespace EasyPolyMap
 
 		private void UpdateCamera(float deltaX, float deltaY)
 		{
-			m_cameraPivot.localPosition = this.transform.FindChild("UpAnchor").position;
+			m_cameraPivot.localPosition = this.transform.Find("UpAnchor").position;
 			if (deltaX == 0 && deltaY == 0) return;
 			if (Input.GetMouseButton(0))
 			{

@@ -13,7 +13,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class CreateNpcCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             CreateNpcCommand cmd = new CreateNpcCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -34,29 +34,29 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             if (m_ParamNum >= 5) {
-                m_UnitId.Evaluate(instance, iterator, args);
-                m_Pos.Evaluate(instance, iterator, args);
-                m_Dir.Evaluate(instance, iterator, args);
-                m_Camp.Evaluate(instance, iterator, args);
-                m_TableId.Evaluate(instance, iterator, args);
+                m_UnitId.Evaluate(instance, handler, iterator, args);
+                m_Pos.Evaluate(instance, handler, iterator, args);
+                m_Dir.Evaluate(instance, handler, iterator, args);
+                m_Camp.Evaluate(instance, handler, iterator, args);
+                m_TableId.Evaluate(instance, handler, iterator, args);
 
                 if (m_ParamNum > 6) {
-                    m_AiLogic.Evaluate(instance, iterator, args);
-                    m_AiParams.Evaluate(instance, iterator, args);
+                    m_AiLogic.Evaluate(instance, handler, iterator, args);
+                    m_AiParams.Evaluate(instance, handler, iterator, args);
                     if (m_ParamNum > 7) {
-                        m_LeaderId.Evaluate(instance, iterator, args);
+                        m_LeaderId.Evaluate(instance, handler, iterator, args);
                     }
                 }
             }
             if (m_HaveObjId) {
-                m_ObjIdVarName.Evaluate(instance, iterator, args);
+                m_ObjIdVarName.Evaluate(instance, handler, iterator, args);
             }
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int objId = 0;
             if (m_ParamNum >= 5) {
@@ -151,7 +151,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class DestroyNpcCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             DestroyNpcCommand cmd = new DestroyNpcCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -162,12 +162,12 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
@@ -192,7 +192,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class DestroyNpcWithObjIdCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             DestroyNpcWithObjIdCommand cmd = new DestroyNpcWithObjIdCommand();
             cmd.m_ObjId = m_ObjId.Clone();
@@ -203,12 +203,12 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_ObjId.Evaluate(instance, iterator, args);
+            m_ObjId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int objid = m_ObjId.Value;
             EntityInfo entity = PluginFramework.Instance.GetEntityById(objid);
@@ -233,7 +233,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcFaceCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcFaceCommand cmd = new NpcFaceCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -244,13 +244,13 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_Dir.Evaluate(instance, iterator, args);
-            m_Immediately.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_Dir.Evaluate(instance, handler, iterator, args);
+            m_Immediately.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             float dir = m_Dir.Value;
@@ -296,7 +296,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcMoveCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcMoveCommand cmd = new NpcMoveCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -307,13 +307,13 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_Pos.Evaluate(instance, iterator, args);
-            m_Event.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_Pos.Evaluate(instance, handler, iterator, args);
+            m_Event.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             Vector3 pos = m_Pos.Value;
@@ -358,7 +358,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcMoveWithWaypointsCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcMoveWithWaypointsCommand cmd = new NpcMoveWithWaypointsCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -369,13 +369,13 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_WayPoints.Evaluate(instance, iterator, args);
-            m_Event.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_WayPoints.Evaluate(instance, handler, iterator, args);
+            m_Event.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             List<object> poses = m_WayPoints.Value;
@@ -424,7 +424,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcStopCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcStopCommand cmd = new NpcStopCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -435,12 +435,12 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
@@ -476,7 +476,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcAttackCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcAttackCommand cmd = new NpcAttackCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -489,13 +489,13 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_TargetUnitId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_TargetUnitId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
@@ -529,7 +529,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcSetFormationCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcSetFormationCommand cmd = new NpcSetFormationCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -541,13 +541,13 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_FormationIndex.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_FormationIndex.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(m_UnitId.Value);
             if (null != obj) {
@@ -573,7 +573,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcEnableAiCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcEnableAiCommand cmd = new NpcEnableAiCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -585,13 +585,13 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_Enable.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_Enable.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(m_UnitId.Value);
             if (null != obj) {
@@ -621,7 +621,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcSetAiCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcSetAiCommand cmd = new NpcSetAiCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -630,15 +630,15 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_AiLogic.Evaluate(instance, iterator, args);
-            m_AiParams.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_AiLogic.Evaluate(instance, handler, iterator, args);
+            m_AiParams.Evaluate(instance, handler, iterator, args);
 
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             string aiLogic = m_AiLogic.Value;
@@ -679,7 +679,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcSetAiTargetCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcSetAiTargetCommand cmd = new NpcSetAiTargetCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -687,13 +687,13 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_TargetId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_TargetId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             int targetId = m_TargetId.Value;
@@ -722,7 +722,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcAnimationCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcAnimationCommand cmd = new NpcAnimationCommand();
             cmd.m_ParamNum = m_ParamNum;
@@ -736,16 +736,16 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_Anim.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_Anim.Evaluate(instance, handler, iterator, args);
             if (m_ParamNum > 2) {
-                m_Time.Evaluate(instance, iterator, args);
+                m_Time.Evaluate(instance, handler, iterator, args);
             }
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             string anim = m_Anim.Value;
@@ -791,7 +791,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcAnimationParamCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcAnimationParamCommand cmd = new NpcAnimationParamCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -807,17 +807,17 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_Params.Count; ++i) {
                 var pair = m_Params[i];
-                pair.Key.Evaluate(instance, iterator, args);
-                pair.Value.Evaluate(instance, iterator, args);
+                pair.Key.Evaluate(instance, handler, iterator, args);
+                pair.Value.Evaluate(instance, handler, iterator, args);
             }
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             UnityEngine.GameObject obj = EntityController.Instance.GetGameObjectByUnitId(unitId);
@@ -881,7 +881,7 @@ namespace GameFramework.Story.Commands
         {
             internal string Type;
             internal IStoryValue<string> Key;
-            internal IStoryValue<object> Value;
+            internal IStoryValue Value;
 
             internal ParamInfo()
             {
@@ -917,13 +917,13 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcAddImpactCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcAddImpactCommand cmd = new NpcAddImpactCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_ImpactId = m_ImpactId.Clone();
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
+                IStoryValue val = m_Args[i];
                 cmd.m_Args.Add(val.Clone());
             }
             cmd.m_HaveSeq = m_HaveSeq;
@@ -935,20 +935,20 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_ImpactId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_ImpactId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
-                val.Evaluate(instance, iterator, args);
+                IStoryValue val = m_Args[i];
+                val.Evaluate(instance, handler, iterator, args);
             }
             if (m_HaveSeq) {
-                m_SeqVarName.Evaluate(instance, iterator, args);
+                m_SeqVarName.Evaluate(instance, handler, iterator, args);
             }
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             int impactId = m_ImpactId.Value;
@@ -1016,7 +1016,7 @@ namespace GameFramework.Story.Commands
 
         private IStoryValue<int> m_UnitId = new StoryValue<int>();
         private IStoryValue<int> m_ImpactId = new StoryValue<int>();
-        private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
+        private List<IStoryValue> m_Args = new List<IStoryValue>();
         private bool m_HaveSeq = false;
         private IStoryValue<string> m_SeqVarName = new StoryValue<string>();
     }
@@ -1025,7 +1025,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcRemoveImpactCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcRemoveImpactCommand cmd = new NpcRemoveImpactCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -1037,13 +1037,13 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_Seq.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_Seq.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             int seq = m_Seq.Value;
@@ -1075,13 +1075,13 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcCastSkillCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcCastSkillCommand cmd = new NpcCastSkillCommand();
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_SkillId = m_SkillId.Clone();
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
+                IStoryValue val = m_Args[i];
                 cmd.m_Args.Add(val.Clone());
             }
             return cmd;
@@ -1091,17 +1091,17 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_SkillId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_SkillId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<object> val = m_Args[i];
-                val.Evaluate(instance, iterator, args);
+                IStoryValue val = m_Args[i];
+                val.Evaluate(instance, handler, iterator, args);
             }
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             int skillId = m_SkillId.Value;
@@ -1139,14 +1139,14 @@ namespace GameFramework.Story.Commands
 
         private IStoryValue<int> m_UnitId = new StoryValue<int>();
         private IStoryValue<int> m_SkillId = new StoryValue<int>();
-        private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
+        private List<IStoryValue> m_Args = new List<IStoryValue>();
     }
     /// <summary>
     /// npcstopskill(unit_id);
     /// </summary>
     internal class NpcStopSkillCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcStopSkillCommand cmd = new NpcStopSkillCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -1157,12 +1157,12 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(unitId);
@@ -1188,7 +1188,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcListenCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcListenCommand cmd = new NpcListenCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -1201,15 +1201,15 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_Event.Evaluate(instance, iterator, args);
-            m_Enable.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_Event.Evaluate(instance, handler, iterator, args);
+            m_Enable.Evaluate(instance, handler, iterator, args);
 
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             string eventName = m_Event.Value;
@@ -1245,7 +1245,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcSetCampCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcSetCampCommand cmd = new NpcSetCampCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -1257,13 +1257,13 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_CampId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_CampId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(m_UnitId.Value);
             if (null != obj) {
@@ -1290,7 +1290,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcSetSummonerIdCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcSetSummonerIdCommand cmd = new NpcSetSummonerIdCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -1302,13 +1302,13 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_SummonerId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_SummonerId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             int summonerId = m_SummonerId.Value;
@@ -1335,7 +1335,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class NpcSetSummonSkillIdCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             NpcSetSummonSkillIdCommand cmd = new NpcSetSummonSkillIdCommand();
             cmd.m_UnitId = m_UnitId.Clone();
@@ -1347,13 +1347,13 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_SummonSkillId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_SummonSkillId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int unitId = m_UnitId.Value;
             int summonSkillId = m_SummonSkillId.Value;

@@ -81,7 +81,7 @@ namespace GameFramework
                 if (stIndex > 0) {
 #if DEBUG
                     ClientGmStorySystem.Instance.Reset();
-                    ClientGmStorySystem.Instance.LoadStoryText("script(main){onmessage(\"start\"){" + cmd + "}}");
+                    ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes("script(main){onmessage(\"start\"){" + cmd + "}}"));
                     ClientGmStorySystem.Instance.StartStory("main");
 #else
           int edIndex = cmd.IndexOf(')');
@@ -107,15 +107,6 @@ namespace GameFramework
                 LogSystem.Warn("ExecCommand {0} finish.", cmd);
             } catch (Exception ex) {
                 LogSystem.Error("ExecCommand exception:{0}\n{1}", ex.Message, ex.StackTrace);
-            }
-        }
-        public void ExecCode(string code)
-        {
-            try {
-                GmCommands.ClientGmStorySystem.Instance.Reset();
-                GmCommands.ClientGmStorySystem.Instance.LoadStoryCode(code);
-                GmCommands.ClientGmStorySystem.Instance.StartStory("main");
-            } catch {
             }
         }
         #endregion

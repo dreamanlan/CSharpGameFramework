@@ -686,7 +686,7 @@ namespace GameFramework.Story
         private GfxStorySystem() { }
 
         private int m_SceneId = 0;
-        private Dictionary<string, object> m_GlobalVariables = new Dictionary<string, object>();
+        private StrObjDict m_GlobalVariables = new StrObjDict();
 
         private List<StoryInstance> m_StoryLogicInfos = new List<StoryInstance>();
         private Dictionary<string, StoryInstance> m_StoryInstancePool = new Dictionary<string, StoryInstance>();

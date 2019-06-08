@@ -37,7 +37,7 @@ namespace GameFramework.GmCommands
                 return m_StoryLogicInfos.Count;
             }
         }
-        internal Dictionary<string, object> GlobalVariables
+        internal StrObjDict GlobalVariables
         {
             get { return m_GlobalVariables; }
         }
@@ -59,17 +59,15 @@ namespace GameFramework.GmCommands
             m_ConfigManager.Clear();
             m_ConfigManager.LoadStory(file, 0, string.Empty);
         }
-        internal void LoadStoryText(string text)
+        internal void LoadStoryText(byte[] bytes)
         {
             m_StoryInstancePool.Clear();
             m_ConfigManager.Clear();
-            m_ConfigManager.LoadStoryText(text, 0, string.Empty);
+            m_ConfigManager.LoadStoryText(string.Empty, bytes, 0, string.Empty);
         }
-        internal void LoadStoryCode(string code)
+        internal StoryInstance GetStory(string storyId)
         {
-            m_StoryInstancePool.Clear();
-            m_ConfigManager.Clear();
-            m_ConfigManager.LoadStoryCode(code, 0, string.Empty);
+            return GetStoryInstance(storyId);
         }
         internal void StartStory(string storyId)
         {
@@ -147,7 +145,7 @@ namespace GameFramework.GmCommands
 
         private ClientGmStorySystem() { }
 
-        private Dictionary<string, object> m_GlobalVariables = new Dictionary<string, object>();
+        private StrObjDict m_GlobalVariables = new StrObjDict();
 
         private List<StoryInstance> m_StoryLogicInfos = new List<StoryInstance>();
         private Dictionary<string, StoryInstance> m_StoryInstancePool = new Dictionary<string, StoryInstance>();

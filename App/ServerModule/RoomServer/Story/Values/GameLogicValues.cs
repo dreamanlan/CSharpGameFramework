@@ -6,7 +6,7 @@ using GameFramework;
 
 namespace GameFramework.Story.Values
 {
-    public sealed class BlackboardGetValue : IStoryValue<object>
+    public sealed class BlackboardGetValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -21,7 +21,7 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             BlackboardGetValue val = new BlackboardGetValue();
             val.m_ParamNum = m_ParamNum;
@@ -31,14 +31,14 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 0) {
-                m_AttrName.Evaluate(instance, iterator, args);
+                m_AttrName.Evaluate(instance, handler, iterator, args);
             }
             if (m_ParamNum > 1) {
-                m_DefaultValue.Evaluate(instance, iterator, args);
+                m_DefaultValue.Evaluate(instance, handler, iterator, args);
             }
             TryUpdateValue(instance);
         }
@@ -74,11 +74,11 @@ namespace GameFramework.Story.Values
         }
         private int m_ParamNum = 0;
         private IStoryValue<string> m_AttrName = new StoryValue<string>();
-        private IStoryValue<object> m_DefaultValue = new StoryValue();
+        private IStoryValue m_DefaultValue = new StoryValue();
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class GetDialogItemValue : IStoryValue<object>
+    public sealed class GetDialogItemValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -91,7 +91,7 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GetDialogItemValue val = new GetDialogItemValue();
             val.m_DlgId = m_DlgId.Clone();
@@ -100,11 +100,11 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;        
-            m_DlgId.Evaluate(instance, iterator, args);
-            m_Index.Evaluate(instance, iterator, args);
+            m_DlgId.Evaluate(instance, handler, iterator, args);
+            m_Index.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -146,7 +146,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class GetActorIconValue : IStoryValue<object>
+    public sealed class GetActorIconValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -158,7 +158,7 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GetActorIconValue val = new GetActorIconValue();
             val.m_Index = m_Index.Clone();
@@ -166,10 +166,10 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;        
-            m_Index.Evaluate(instance, iterator, args);
+            m_Index.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -203,7 +203,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class GetMonsterInfoValue : IStoryValue<object>
+    public sealed class GetMonsterInfoValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -216,7 +216,7 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GetMonsterInfoValue val = new GetMonsterInfoValue();
             val.m_CampId = m_CampId.Clone();
@@ -225,11 +225,11 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;        
-            m_CampId.Evaluate(instance, iterator, args);
-            m_Index.Evaluate(instance, iterator, args);
+            m_CampId.Evaluate(instance, handler, iterator, args);
+            m_Index.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -276,7 +276,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class GetAiDataValue : IStoryValue<object>
+    public sealed class GetAiDataValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -289,7 +289,7 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GetAiDataValue val = new GetAiDataValue();
             val.m_ObjId = m_ObjId.Clone();
@@ -298,11 +298,11 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;        
-            m_ObjId.Evaluate(instance, iterator, args);
-            m_DataType.Evaluate(instance, iterator, args);
+            m_ObjId.Evaluate(instance, handler, iterator, args);
+            m_DataType.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -341,7 +341,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class GetLeaderIdValue : IStoryValue<object>
+    public sealed class GetLeaderIdValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -353,7 +353,7 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GetLeaderIdValue val = new GetLeaderIdValue();
             val.m_ParamNum = m_ParamNum;
@@ -362,11 +362,11 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 0)
-                m_ObjId.Evaluate(instance, iterator, args);
+                m_ObjId.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -407,7 +407,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class GetLeaderTableIdValue : IStoryValue<object>
+    public sealed class GetLeaderTableIdValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -419,7 +419,7 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GetLeaderTableIdValue val = new GetLeaderTableIdValue();
             val.m_ObjId = m_ObjId.Clone();
@@ -427,10 +427,10 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_ObjId.Evaluate(instance, iterator, args);
+            m_ObjId.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -475,7 +475,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    public sealed class IsClientValue : IStoryValue<object>
+    public sealed class IsClientValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -483,14 +483,14 @@ namespace GameFramework.Story.Values
             if (null != callData && callData.GetId() == "isclient") {
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             IsClientValue val = new IsClientValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
         
@@ -519,7 +519,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class GetRoomIdValue : IStoryValue<object>
+    internal sealed class GetRoomIdValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -527,14 +527,14 @@ namespace GameFramework.Story.Values
             if (null != callData && callData.GetId() == "getroomid") {
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GetRoomIdValue val = new GetRoomIdValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
             TryUpdateValue(instance);
@@ -566,7 +566,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class GetSceneIdValue : IStoryValue<object>
+    internal sealed class GetSceneIdValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -574,14 +574,14 @@ namespace GameFramework.Story.Values
             if (null != callData && callData.GetId() == "getsceneid") {
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GetSceneIdValue val = new GetSceneIdValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
             TryUpdateValue(instance);

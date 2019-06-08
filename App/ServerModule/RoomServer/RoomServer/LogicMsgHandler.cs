@@ -219,7 +219,7 @@ namespace GameFramework
                                 } else {
                                     scene.GmStorySystem.GlobalVariables.Add("EntityInfo", user.Info);
                                 }
-                                scene.GmStorySystem.LoadStoryText("script(main){onmessage(\"start\"){" + cmd + "}}");
+                                scene.GmStorySystem.LoadStoryText(System.Text.Encoding.UTF8.GetBytes("script(main){onmessage(\"start\"){" + cmd + "}}"));
                                 scene.GmStorySystem.StartStory("main");
 #else
                 if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
@@ -256,7 +256,7 @@ namespace GameFramework
         }
     }
 
-    public class StoryMessageHandler
+    public class MsgStoryMessageHandler
     {
         public static void Execute(object msg, User user)
         {

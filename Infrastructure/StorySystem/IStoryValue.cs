@@ -10,12 +10,18 @@ namespace StorySystem
     {
         void InitFromDsl(Dsl.ISyntaxComponent param);//从DSL语言初始化值实例
         IStoryValue<T> Clone();//克隆一个新实例，每个值只从DSL语言初始化一次，之后的实例由克隆产生，提升性能
-        void Evaluate(StoryInstance instance, object iterator, object[] args);//参数替换为参数值并计算StoryValue的值
+        void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args);//参数替换为参数值并计算StoryValue的值
         bool HaveValue { get; }//是否已经有值，对常量初始化后即产生值，对参数、变量与函数则在Evaluate后产生值
         T Value { get; }//具体的值
     }
-    public interface IStoryValue : IStoryValue<object>
-    { }
+    public interface IStoryValue
+    {
+        void InitFromDsl(Dsl.ISyntaxComponent param);//从DSL语言初始化值实例
+        IStoryValue Clone();//克隆一个新实例，每个值只从DSL语言初始化一次，之后的实例由克隆产生，提升性能
+        void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args);//参数替换为参数值并计算StoryValue的值
+        bool HaveValue { get; }//是否已经有值，对常量初始化后即产生值，对参数、变量与函数则在Evaluate后产生值
+        object Value { get; }//具体的值
+    }
     public class StoryValue : IStoryValue
     {
         public const int c_Iterator = -2;
@@ -49,13 +55,13 @@ namespace StorySystem
                 CalcInitValue(param);
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             var obj = NewValueObject();
             obj.CopyFrom(this);
             return obj;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             if (IsConst)
                 return;
@@ -66,7 +72,7 @@ namespace StorySystem
                 m_Value = iterator;
                 m_HaveValue = true;
             } else if (null != m_Proxy) {
-                m_Proxy.Evaluate(instance, iterator, args);
+                m_Proxy.Evaluate(instance, handler, iterator, args);
                 if (m_Proxy.HaveValue) {
                     m_Value = m_Proxy.Value;
                     m_HaveValue = true;
@@ -172,7 +178,7 @@ namespace StorySystem
             m_Value = null;
             m_IsConst = false;
         }
-        private void SetProxy(IStoryValue<object> proxy)
+        private void SetProxy(IStoryValue proxy)
         {
             m_HaveValue = false;
             m_ArgIndex = c_NotArg;
@@ -196,7 +202,7 @@ namespace StorySystem
         }
         private void CalcInitValue(Dsl.ISyntaxComponent param)
         {
-            IStoryValue<object> val = StoryValueManager.Instance.CalcValue(param);
+            IStoryValue val = StoryValueManager.Instance.CalcValue(param);
             if (null != val) {
                 //对初始化即能求得值的函数，不需要再记录函数表达式，直接转换为常量值。
                 if (val.HaveValue) {
@@ -224,7 +230,7 @@ namespace StorySystem
                 string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
                 throw new Exception(err);
 #else
-        GameFramework.LogSystem.Error("Unknown value, id:{0}", param.GetId());
+        CsLibrary.LogSystem.Error("Unknown value, id:{0}", param.GetId());
 #endif
             }
         }
@@ -232,7 +238,7 @@ namespace StorySystem
         private string m_LocalName = null;
         private string m_GlobalName = null;
         private string m_StackName = null;
-        private IStoryValue<object> m_Proxy = null;
+        private IStoryValue m_Proxy = null;
         private object m_Value;
         private bool m_HaveValue = false;
         private bool m_IsConst = false;
@@ -276,7 +282,7 @@ namespace StorySystem
             obj.CopyFrom(this);
             return obj;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             if (IsConst)
                 return;
@@ -287,7 +293,7 @@ namespace StorySystem
                 m_Value = StoryValueHelper.CastTo<T>(iterator);
                 m_HaveValue = true;
             } else if (null != m_Proxy) {
-                m_Proxy.Evaluate(instance, iterator, args);
+                m_Proxy.Evaluate(instance, handler, iterator, args);
                 if (m_Proxy.HaveValue) {
                     m_Value = StoryValueHelper.CastTo<T>(m_Proxy.Value);
                     m_HaveValue = true;
@@ -396,7 +402,7 @@ namespace StorySystem
             m_Value = default(T);
             m_IsConst = false;
         }
-        private void SetProxy(IStoryValue<object> proxy)
+        private void SetProxy(IStoryValue proxy)
         {
             m_HaveValue = false;
             m_ArgIndex = c_NotArg;
@@ -419,7 +425,7 @@ namespace StorySystem
         }
         private void CalcInitValue(Dsl.ISyntaxComponent param)
         {
-            IStoryValue<object> val = StoryValueManager.Instance.CalcValue(param);
+            IStoryValue val = StoryValueManager.Instance.CalcValue(param);
             if (null != val) {
                 //对初始化即能求得值的函数，不需要再记录函数表达式，直接转换为常量值。
                 if (val.HaveValue) {
@@ -447,7 +453,7 @@ namespace StorySystem
                 string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
                 throw new Exception(err);
 #else
-        GameFramework.LogSystem.Error("Unknown value, id:{0}", param.GetId());
+        CsLibrary.LogSystem.Error("Unknown value, id:{0}", param.GetId());
 #endif
             }
         }
@@ -456,25 +462,25 @@ namespace StorySystem
         private string m_LocalName = null;
         private string m_GlobalName = null;
         private string m_StackName = null;
-        private IStoryValue<object> m_Proxy = null;
+        private IStoryValue m_Proxy = null;
         private T m_Value;
         private bool m_IsConst = false;
     }
-    internal sealed class StoryValueAdapter<T> : IStoryValue<object>
+    internal sealed class StoryValueAdapter<T> : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             m_Original.InitFromDsl(param);
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             IStoryValue<T> newOriginal = m_Original.Clone();
             StoryValueAdapter<T> val = new StoryValueAdapter<T>(newOriginal);
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Original.Evaluate(instance, iterator, args);
+            m_Original.Evaluate(instance, handler, iterator, args);
         
         }
         public bool HaveValue

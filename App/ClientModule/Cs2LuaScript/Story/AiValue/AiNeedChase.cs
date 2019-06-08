@@ -19,7 +19,7 @@ public class AiNeedChase : ISimpleStoryValuePlugin
     {
         return new AiNeedChase();
     }
-    public void Evaluate(StoryInstance instance, StoryValueParams _params)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
         ArrayList args = _params.Values;
         int objId = (int)args[0];

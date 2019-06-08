@@ -21,7 +21,7 @@ public class AiKeepAway : ISimpleStoryCommandPlugin
         m_KeepAwayStarted = false;
     }
 
-    public bool ExecCommand(StoryInstance instance, StoryValueParams _params, long delta)
+    public bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params, long delta)
     {
         ArrayList args = _params.Values;
         if (!m_KeepAwayStarted) {

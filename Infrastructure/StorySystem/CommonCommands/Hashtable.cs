@@ -10,20 +10,20 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class WriteAllLinesCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             WriteAllLinesCommand cmd = new WriteAllLinesCommand();
             cmd.m_File = m_File.Clone();
             cmd.m_Val = m_Val.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_File.Evaluate(instance, iterator, args);
-            m_Val.Evaluate(instance, iterator, args);
+            m_File.Evaluate(instance, handler, iterator, args);
+            m_Val.Evaluate(instance, handler, iterator, args);
 
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_File.HaveValue && m_Val.HaveValue) {
                 string file = m_File.Value;
@@ -49,27 +49,27 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<string> m_File = new StoryValue<string>();
-        private IStoryValue<object> m_Val = new StoryValue();
+        private IStoryValue m_Val = new StoryValue();
     }
     /// <summary>
     /// writefile(file, val);
     /// </summary>
     internal sealed class WriteFileCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             WriteFileCommand cmd = new WriteFileCommand();
             cmd.m_File = m_File.Clone();
             cmd.m_Val = m_Val.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_File.Evaluate(instance, iterator, args);
-            m_Val.Evaluate(instance, iterator, args);
+            m_File.Evaluate(instance, handler, iterator, args);
+            m_Val.Evaluate(instance, handler, iterator, args);
 
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_File.HaveValue && m_Val.HaveValue) {
                 string file = m_File.Value;
@@ -89,14 +89,14 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<string> m_File = new StoryValue<string>();
-        private IStoryValue<object> m_Val = new StoryValue();
+        private IStoryValue m_Val = new StoryValue();
     }
     /// <summary>
     /// hashtableadd(hashtable, key, val);
     /// </summary>
     internal sealed class HashtableAddCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             HashtableAddCommand cmd = new HashtableAddCommand();
             cmd.m_Var = m_Var.Clone();
@@ -104,13 +104,13 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Var.Evaluate(instance, iterator, args);
-            m_Key.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
+            m_Var.Evaluate(instance, handler, iterator, args);
+            m_Key.Evaluate(instance, handler, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue && m_Key.HaveValue && m_Value.HaveValue) {
                 object obj = m_Var.Value;
@@ -132,16 +132,16 @@ namespace StorySystem.CommonCommands
                 m_Value.InitFromDsl(callData.GetParam(2));
             }
         }
-        private IStoryValue<object> m_Var = new StoryValue();
-        private IStoryValue<object> m_Key = new StoryValue();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Var = new StoryValue();
+        private IStoryValue m_Key = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// hashtableset(hashtable,key,val);
     /// </summary>
     internal sealed class HashtableSetCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             HashtableSetCommand cmd = new HashtableSetCommand();
             cmd.m_Var = m_Var.Clone();
@@ -149,14 +149,14 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Var.Evaluate(instance, iterator, args);
-            m_Key.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
+            m_Var.Evaluate(instance, handler, iterator, args);
+            m_Key.Evaluate(instance, handler, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue && m_Key.HaveValue && m_Value.HaveValue) {
                 object obj = m_Var.Value;
@@ -179,29 +179,29 @@ namespace StorySystem.CommonCommands
             }
         }
 
-        private IStoryValue<object> m_Var = new StoryValue();
-        private IStoryValue<object> m_Key = new StoryValue();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Var = new StoryValue();
+        private IStoryValue m_Key = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// hashtableremove(hashtable,key);
     /// </summary>
     internal sealed class HashtableRemoveCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             HashtableRemoveCommand cmd = new HashtableRemoveCommand();
             cmd.m_Var = m_Var.Clone();
             cmd.m_Key = m_Key.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Var.Evaluate(instance, iterator, args);
-            m_Key.Evaluate(instance, iterator, args);
+            m_Var.Evaluate(instance, handler, iterator, args);
+            m_Key.Evaluate(instance, handler, iterator, args);
         
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue && m_Key.HaveValue) {
                 object obj = m_Var.Value;
@@ -221,26 +221,26 @@ namespace StorySystem.CommonCommands
                 m_Key.InitFromDsl(callData.GetParam(1));
             }
         }
-        private IStoryValue<object> m_Var = new StoryValue();
-        private IStoryValue<object> m_Key = new StoryValue();
+        private IStoryValue m_Var = new StoryValue();
+        private IStoryValue m_Key = new StoryValue();
     }
     /// <summary>
     /// hashtableclear(hashtable);
     /// </summary>
     internal sealed class HashtableClearCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             HashtableClearCommand cmd = new HashtableClearCommand();
             cmd.m_Var = m_Var.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Var.Evaluate(instance, iterator, args);
+            m_Var.Evaluate(instance, handler, iterator, args);
 
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue) {
                 object obj = m_Var.Value;
@@ -259,6 +259,6 @@ namespace StorySystem.CommonCommands
             }
         }
 
-        private IStoryValue<object> m_Var = new StoryValue();
+        private IStoryValue m_Var = new StoryValue();
     }
 }

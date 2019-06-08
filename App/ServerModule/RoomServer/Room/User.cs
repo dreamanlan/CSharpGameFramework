@@ -63,7 +63,7 @@ namespace GameFramework
             m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_SwitchDebug, SwitchDebugHandler.Execute);
             m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_DlgClosed, Msg_CR_DlgClosedHandler.Execute);
             m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CR_GmCommand, Msg_CR_GmCommandHandler.Execute);
-            m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CRC_StoryMessage, StoryMessageHandler.Execute);
+            m_Dispatcher.RegClientMsgHandler(RoomMessageDefine.Msg_CRC_StoryMessage, MsgStoryMessageHandler.Execute);
         }
 
         public void RegisterObservers(IList<Observer> observers)

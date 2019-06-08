@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Text;
 using Lidgren.Network;
@@ -202,7 +202,7 @@ namespace GameFramework.Network
 
         internal void OnRoomServerWaitStart()
         {
-            //ÍøÂç±»¹Ø±ÕÓÖÃ»ÓĞÕı³£½áÊø£¬ÓĞ¿ÉÄÜÊÇ·şÎñÆ÷¸±±¾ÒÑ¾­¹Ø±Õ£¬Ö±½Ó³¢ÊÔ½áËã
+            //ç½‘ç»œè¢«å…³é—­åˆæ²¡æœ‰æ­£å¸¸ç»“æŸï¼Œæœ‰å¯èƒ½æ˜¯æœåŠ¡å™¨å‰¯æœ¬å·²ç»å…³é—­ï¼Œç›´æ¥å°è¯•ç»“ç®—
             GameFramework.Story.GfxStorySystem.Instance.SendMessage("try_stag_clear", 0);
             ClearArgs();
             PluginFramework.Instance.QueueAction(this.ShutdownNetClient);
@@ -292,7 +292,7 @@ namespace GameFramework.Network
 
         internal void SyncPlayerSkill(EntityInfo entity, int skillId, int targetId, float faceDir)
         {
-            if (entity.HaveState(CharacterPropertyEnum.x3002_»èË¯)) {
+            if (entity.HaveState(CharacterPropertyEnum.x3002_æ˜ç¡)) {
                 return;
             }
             Msg_CR_Skill bd = new Msg_CR_Skill();
@@ -309,7 +309,7 @@ namespace GameFramework.Network
 
         internal void SyncPlayerStopSkill(EntityInfo entity)
         {
-            if (entity.HaveState(CharacterPropertyEnum.x3002_»èË¯)) {
+            if (entity.HaveState(CharacterPropertyEnum.x3002_æ˜ç¡)) {
                 return;
             }
             Msg_CR_StopSkill bd = new Msg_CR_StopSkill();
@@ -650,7 +650,7 @@ namespace GameFramework.Network
         private uint m_Key = 0;
         private int m_RoomSceneId = 0;
 
-        //ÏûÏ¢Í³¼Æ
+        //æ¶ˆæ¯ç»Ÿè®¡
         private Dictionary<int, MessageCountInfo> m_SendMessageCounts = new Dictionary<int, MessageCountInfo>();
         private Dictionary<int, MessageCountInfo> m_ReceiveMessageCounts = new Dictionary<int, MessageCountInfo>();
     }

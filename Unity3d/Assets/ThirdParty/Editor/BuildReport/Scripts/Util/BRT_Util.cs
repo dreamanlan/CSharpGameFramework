@@ -92,18 +92,10 @@ public static class Util
 	{
 		switch (b)
 		{
-			case BuildTarget.WebPlayer:
-				return BuildPlatform.Web;
-			case BuildTarget.WebPlayerStreamed:
-				return BuildPlatform.Web;
 			case BuildTarget.iOS:
 				return BuildPlatform.iOS;
 			case BuildTarget.Android:
 				return BuildPlatform.Android;
-			case BuildTarget.XBOX360:
-				return BuildPlatform.XBOX360;
-			case BuildTarget.PS3:
-				return BuildPlatform.PS3;
 			case BuildTarget.StandaloneWindows:
 				return BuildPlatform.Windows32;
 			case BuildTarget.StandaloneWindows64:
@@ -119,8 +111,6 @@ public static class Util
 			case BuildTarget.StandaloneLinuxUniversal:
 				return BuildPlatform.LinuxUniversal;
 #endif
-			case BuildTarget.StandaloneOSXIntel:
-				return BuildPlatform.MacOSX32;
 
 #if UNITY_4_2_AND_GREATER
 			case BuildTarget.StandaloneOSXIntel64:

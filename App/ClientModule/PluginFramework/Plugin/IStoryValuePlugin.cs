@@ -10,7 +10,7 @@ namespace GameFramework.Plugin
     {
         void SetProxy(StoryValueResult result);
         IStoryValuePlugin Clone();
-        void Evaluate(StoryInstance instance, object iterator, object[] args);
+        void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args);
         void LoadCallData(Dsl.CallData callData);
         void LoadFuncData(Dsl.FunctionData funcData);
         void LoadStatementData(Dsl.StatementData statementData);
@@ -19,6 +19,6 @@ namespace GameFramework.Plugin
     {
         void SetProxy(StoryValueResult result);
         ISimpleStoryValuePlugin Clone();
-        void Evaluate(StoryInstance instance, StoryValueParams _params);
+        void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params);
     }
 }

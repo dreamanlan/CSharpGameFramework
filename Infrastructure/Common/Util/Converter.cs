@@ -81,9 +81,85 @@ namespace GameFramework
 
             return list;
         }
-        public static List<bool> ConvertBoolList(string vec)
+        public static IntList ConvertIntList(string vec)
         {
-            List<bool> list = new List<bool>();
+            IntList list = new IntList();
+            try {
+                string strPos = vec;
+                string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
+                if (resut != null && resut.Length > 0 && resut[0] != "") {
+                    for (int index = 0; index < resut.Length; index++) {
+                        list.Add((int)Convert.ChangeType(resut[index], typeof(int)));
+                    }
+                }
+            } catch (System.Exception ex) {
+                list.Clear();
+                LogSystem.Error("ConvertIntList {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
+                throw;
+            }
+
+            return list;
+        }
+        public static UintList ConvertUintList(string vec)
+        {
+            UintList list = new UintList();
+            try {
+                string strPos = vec;
+                string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
+                if (resut != null && resut.Length > 0 && resut[0] != "") {
+                    for (int index = 0; index < resut.Length; index++) {
+                        list.Add((uint)Convert.ChangeType(resut[index], typeof(uint)));
+                    }
+                }
+            } catch (System.Exception ex) {
+                list.Clear();
+                LogSystem.Error("ConvertUintList {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
+                throw;
+            }
+
+            return list;
+        }
+        public static FloatList ConvertFloatList(string vec)
+        {
+            FloatList list = new FloatList();
+            try {
+                string strPos = vec;
+                string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
+                if (resut != null && resut.Length > 0 && resut[0] != "") {
+                    for (int index = 0; index < resut.Length; index++) {
+                        list.Add((float)Convert.ChangeType(resut[index], typeof(float)));
+                    }
+                }
+            } catch (System.Exception ex) {
+                list.Clear();
+                LogSystem.Error("ConvertFloatList {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
+                throw;
+            }
+
+            return list;
+        }
+        public static DoubleList ConvertDoubleList(string vec)
+        {
+            DoubleList list = new DoubleList();
+            try {
+                string strPos = vec;
+                string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
+                if (resut != null && resut.Length > 0 && resut[0] != "") {
+                    for (int index = 0; index < resut.Length; index++) {
+                        list.Add((double)Convert.ChangeType(resut[index], typeof(double)));
+                    }
+                }
+            } catch (System.Exception ex) {
+                list.Clear();
+                LogSystem.Error("ConvertDoubleList {0} Exception:{1}/{2}", vec, ex.Message, ex.StackTrace);
+                throw;
+            }
+
+            return list;
+        }
+        public static BoolList ConvertBoolList(string vec)
+        {
+            BoolList list = new BoolList();
             try {
                 string[] resut = vec.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < resut.Length; ++i) {
@@ -100,9 +176,9 @@ namespace GameFramework
                 throw;
             }
         }
-        public static List<string> ConvertStringList(string vec)
+        public static StrList ConvertStringList(string vec)
         {
-            List<string> list = new List<string>();
+            StrList list = new StrList();
             try {
                 string[] resut = vec.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
                 for (int i = 0; i < resut.Length; ++i) {
@@ -140,9 +216,9 @@ namespace GameFramework
                 throw;
             }
         }
-        public static List<ScriptRuntime.Vector2> ConvertVector2DList(string vec)
+        public static Vector2List ConvertVector2DList(string vec)
         {
-            List<ScriptRuntime.Vector2> list = new List<ScriptRuntime.Vector2>();
+            Vector2List list = new Vector2List();
             try {
                 string strPos = vec;
                 string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
@@ -159,9 +235,9 @@ namespace GameFramework
             }
             return list;
         }
-        public static List<ScriptRuntime.Vector3> ConvertVector3DList(string vec)
+        public static Vector3List ConvertVector3DList(string vec)
         {
-            List<ScriptRuntime.Vector3> list = new List<ScriptRuntime.Vector3>();
+            Vector3List list = new Vector3List();
             try {
                 string strPos = vec;
                 string[] resut = strPos.Split(s_ListSplitString, StringSplitOptions.RemoveEmptyEntries);
@@ -207,7 +283,9 @@ namespace GameFramework
                     var pis = info.GetParameters();
                     if (pis.Length == args.Length) {
                         for (int i = 0; i < pis.Length; ++i) {
-                            args[i] = Convert.ChangeType(args[i], pis[i].ParameterType);
+                            if (null != args[i] && args[i].GetType() != pis[i].ParameterType && args[i].GetType().Name != "MonoType") {
+                                args[i] = CastTo(pis[i].ParameterType, args[i]);
+                            }
                         }
                         break;
                     }
@@ -223,14 +301,16 @@ namespace GameFramework
                     var pis = info.GetParameters();
                     if (pis.Length == args.Length) {
                         for (int i = 0; i < pis.Length; ++i) {
-                            args[i] = Convert.ChangeType(args[i], pis[i].ParameterType);
+                            if (null != args[i] && args[i].GetType() != pis[i].ParameterType && args[i].GetType().Name != "MonoType") {
+                                args[i] = CastTo(pis[i].ParameterType, args[i]);
+                            }
                         }
                     }
                 }
             } else {
                 var f = t.GetField(property, flags);
-                if (null != f && args.Length == 1) {
-                    args[0] = Convert.ChangeType(args[0], f.FieldType);
+                if (null != f && args.Length == 1 && null != args[0] && args[0].GetType() != f.FieldType && args[0].GetType().Name != "MonoType") {
+                    args[0] = CastTo(f.FieldType, args[0]);
                 }
             }
         }
@@ -243,7 +323,9 @@ namespace GameFramework
                     var pis = info.GetParameters();
                     if (pis.Length == args.Length) {
                         for (int i = 0; i < pis.Length; ++i) {
-                            args[i] = Convert.ChangeType(args[i], pis[i].ParameterType);
+                            if (null != args[i] && args[i].GetType() != pis[i].ParameterType && args[i].GetType().Name != "MonoType") {
+                                args[i] = CastTo(pis[i].ParameterType, args[i]);
+                            }
                         }
                     }
                 }
@@ -251,6 +333,43 @@ namespace GameFramework
                 var f = t.GetField(property, flags);
                 if (null != f && args.Length == 0) {
                 }
+            }
+        }
+        public static T CastTo<T>(object obj)
+        {
+            if (obj is T) {
+                return (T)obj;
+            } else {
+                try {
+                    return (T)Convert.ChangeType(obj, typeof(T));
+                } catch {
+                    return default(T);
+                }
+            }
+        }
+        public static object CastTo(Type t, object obj)
+        {
+            if (null == obj)
+                return null;
+            Type st = obj.GetType();
+            if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
+                return obj;
+            } else {
+                try {
+                    return Convert.ChangeType(obj, t);
+                } catch {
+                    return null;
+                }
+            }
+        }
+        public static string FileContent2Utf8String(byte[] bytes)
+        {
+            if(null==bytes)
+                return string.Empty;
+            if(bytes.Length>=3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
+                return System.Text.Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
+            } else {
+                return System.Text.Encoding.UTF8.GetString(bytes);
             }
         }
     }

@@ -45,9 +45,23 @@ internal class NativeSimpleStoryCommand : IStoryCommand
             m_Plugin = module as ISimpleStoryCommandPlugin;
         }
     }
-    public void Init(Dsl.ISyntaxComponent config)
+    public bool Init(Dsl.ISyntaxComponent config)
     {
         m_Params.InitFromDsl(config, 0);
+        m_Config = config;
+        return true;
+    }
+    public string GetId()
+    {
+        return m_Config.GetId();
+    }
+    public Dsl.ISyntaxComponent GetConfig()
+    {
+        return m_Config;
+    }
+    public void ShareConfig(IStoryCommand cloner)
+    {
+        m_Config = cloner.GetConfig();
     }
     public IStoryCommand Clone()
     {
@@ -58,7 +72,11 @@ internal class NativeSimpleStoryCommand : IStoryCommand
         }
         return newObj;
     }
-    public IStoryCommand LeadCommand
+    public IStoryCommand PrologueCommand
+    {
+        get { return null; }
+    }
+    public IStoryCommand EpilogueCommand
     {
         get { return null; }
     }
@@ -67,17 +85,18 @@ internal class NativeSimpleStoryCommand : IStoryCommand
         m_LastExecResult = false;
         ResetState();
     }
-    public bool Execute(StoryInstance instance, long delta, object iterator, object[] args)
+    public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
     {
         if (!m_LastExecResult) {
             //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
-            m_Params.Evaluate(instance, iterator, args);
+            m_Params.Evaluate(instance, handler, iterator, args);
         }
-        m_LastExecResult = ExecCommand(instance, m_Params, delta);
+        m_LastExecResult = ExecCommand(instance, handler, m_Params, delta);
         return m_LastExecResult;
     }
-    public void Analyze(StoryInstance instance)
+    public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
     {
+        return false;
     }
 
     private void ResetState()
@@ -86,16 +105,17 @@ internal class NativeSimpleStoryCommand : IStoryCommand
             m_Plugin.ResetState();
         }
     }
-    private bool ExecCommand(StoryInstance instance, StoryValueParams _params, long delta)
+    private bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params, long delta)
     {
         if (null != m_Plugin) {
-            return m_Plugin.ExecCommand(instance, _params, delta);
+            return m_Plugin.ExecCommand(instance, handler, _params, delta);
         }
         return false;
     }
 
     private bool m_LastExecResult = false;
     private StoryValueParams m_Params = new StoryValueParams();
+    private Dsl.ISyntaxComponent m_Config;
     
     private string m_ClassName;
     private ISimpleStoryCommandPlugin m_Plugin;
@@ -119,10 +139,23 @@ internal class LuaSimpleStoryCommand : IStoryCommand
             BindLuaInterface();
         }
     }
-
-    public void Init(Dsl.ISyntaxComponent config)
+    public bool Init(Dsl.ISyntaxComponent config)
     {
         m_Params.InitFromDsl(config, 0);
+        m_Config = config;
+        return true;
+    }
+    public string GetId()
+    {
+        return m_Config.GetId();
+    }
+    public Dsl.ISyntaxComponent GetConfig()
+    {
+        return m_Config;
+    }
+    public void ShareConfig(IStoryCommand cloner)
+    {
+        m_Config = cloner.GetConfig();
     }
     public IStoryCommand Clone()
     {
@@ -137,7 +170,11 @@ internal class LuaSimpleStoryCommand : IStoryCommand
         }
         return newObj;
     }
-    public IStoryCommand LeadCommand
+    public IStoryCommand PrologueCommand
+    {
+        get { return null; }
+    }
+    public IStoryCommand EpilogueCommand
     {
         get { return null; }
     }
@@ -146,17 +183,18 @@ internal class LuaSimpleStoryCommand : IStoryCommand
         m_LastExecResult = false;
         ResetState();
     }
-    public bool Execute(StoryInstance instance, long delta, object iterator, object[] args)
+    public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
     {
         if (!m_LastExecResult) {
             //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
-            m_Params.Evaluate(instance, iterator, args);
+            m_Params.Evaluate(instance, handler, iterator, args);
         }
-        m_LastExecResult = ExecCommand(instance, m_Params, delta);
+        m_LastExecResult = ExecCommand(instance, handler, m_Params, delta);
         return m_LastExecResult;
     }
-    public void Analyze(StoryInstance instance)
+    public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
     {
+        return false;
     }
 
     private void ResetState()
@@ -165,10 +203,10 @@ internal class LuaSimpleStoryCommand : IStoryCommand
             m_ResetState.call(m_Self);
         }
     }
-    private bool ExecCommand(StoryInstance instance, StoryValueParams _params, long delta)
+    private bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params, long delta)
     {
         if (null != m_ExecCommand) {
-            var ret = m_ExecCommand.call(m_Self, instance, _params, delta);
+            var ret = m_ExecCommand.call(m_Self, instance, handler, _params, delta);
             if (null != ret) {
                 return (bool)ret;
             }
@@ -187,6 +225,7 @@ internal class LuaSimpleStoryCommand : IStoryCommand
     
     private bool m_LastExecResult = false;
     private StoryValueParams m_Params = new StoryValueParams();
+    private Dsl.ISyntaxComponent m_Config;
 
     private string m_FileName;
     private string m_ClassName;

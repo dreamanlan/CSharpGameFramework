@@ -8,7 +8,7 @@ using SLua;
 
 internal class NativeSimpleStoryValueFactory : IStoryValueFactory
 {
-    public IStoryValue<object> Build()
+    public IStoryValue Build()
     {
         return new NativeSimpleStoryValue(m_ClassName);
     }
@@ -22,7 +22,7 @@ internal class NativeSimpleStoryValueFactory : IStoryValueFactory
 
 internal class LuaSimpleStoryValueFactory : IStoryValueFactory
 {
-    public IStoryValue<object> Build()
+    public IStoryValue Build()
     {
         return new LuaSimpleStoryValue(m_ClassName);
     }
@@ -55,7 +55,7 @@ internal class NativeSimpleStoryValue : IStoryValue
     {
         m_Params.InitFromDsl(param, 0);
     }
-    public IStoryValue<object> Clone()
+    public IStoryValue Clone()
     {
         var newObj = new NativeSimpleStoryValue(m_ClassName, false);
         newObj.m_Params = m_Params.Clone() as StoryValueParams;
@@ -68,13 +68,13 @@ internal class NativeSimpleStoryValue : IStoryValue
         }
         return newObj;
     }
-    public void Evaluate(StoryInstance instance, object iterator, object[] args)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
     {
         if (null != m_Plugin) {
             m_Proxy.HaveValue = false;
-            m_Params.Evaluate(instance, iterator, args);
+            m_Params.Evaluate(instance, handler, iterator, args);
             if (m_Params.HaveValue) {
-                m_Plugin.Evaluate(instance, m_Params);
+                m_Plugin.Evaluate(instance, handler, m_Params);
             }
         }
     }
@@ -126,7 +126,7 @@ internal class LuaSimpleStoryValue : IStoryValue
     {
         m_Params.InitFromDsl(param, 0);
     }
-    public IStoryValue<object> Clone()
+    public IStoryValue Clone()
     {
         var newObj = new LuaSimpleStoryValue(m_ClassName, false);
         newObj.m_Params = m_Params.Clone() as StoryValueParams;
@@ -143,11 +143,11 @@ internal class LuaSimpleStoryValue : IStoryValue
         }
         return newObj;
     }
-    public void Evaluate(StoryInstance instance, object iterator, object[] args)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
     {
         if (null != m_Evaluate) {
             m_Proxy.HaveValue = false;
-            m_Params.Evaluate(instance, iterator, args);
+            m_Params.Evaluate(instance, handler, iterator, args);
             if (m_Params.HaveValue) {
                 m_Evaluate.call(m_Self, instance, m_Params);
             }

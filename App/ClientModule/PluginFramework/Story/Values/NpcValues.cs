@@ -6,7 +6,7 @@ using ScriptRuntime;
 
 namespace GameFramework.Story.Values
 {
-    internal sealed class NpcIdListValue : IStoryValue<object>
+    internal sealed class NpcIdListValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -14,14 +14,14 @@ namespace GameFramework.Story.Values
             if (null != callData && callData.GetId() == "npcidlist") {
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             NpcIdListValue val = new NpcIdListValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
         
@@ -58,7 +58,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class CombatNpcCountValue : IStoryValue<object>
+    internal sealed class CombatNpcCountValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -70,7 +70,7 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             CombatNpcCountValue val = new CombatNpcCountValue();
             val.m_ParamNum = m_ParamNum;
@@ -79,11 +79,11 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 0) {
-                m_CampId.Evaluate(instance, iterator, args);
+                m_CampId.Evaluate(instance, handler, iterator, args);
             }
             TryUpdateValue(instance);
         }
@@ -117,7 +117,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class NpcGetFormationValue : IStoryValue<object>
+    internal sealed class NpcGetFormationValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -126,7 +126,7 @@ namespace GameFramework.Story.Values
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             NpcGetFormationValue val = new NpcGetFormationValue();
             val.m_UnitId = m_UnitId.Clone();
@@ -134,10 +134,10 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_UnitId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -169,7 +169,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class NpcGetNpcTypeValue : IStoryValue<object>
+    internal sealed class NpcGetNpcTypeValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -178,7 +178,7 @@ namespace GameFramework.Story.Values
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             NpcGetNpcTypeValue val = new NpcGetNpcTypeValue();
             val.m_UnitId = m_UnitId.Clone();
@@ -186,10 +186,10 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_UnitId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -225,7 +225,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class NpcGetSummonerIdValue : IStoryValue<object>
+    internal sealed class NpcGetSummonerIdValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -234,7 +234,7 @@ namespace GameFramework.Story.Values
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             NpcGetSummonerIdValue val = new NpcGetSummonerIdValue();
             val.m_UnitId = m_UnitId.Clone();
@@ -242,10 +242,10 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_UnitId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -281,7 +281,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class NpcGetSummonSkillIdValue : IStoryValue<object>
+    internal sealed class NpcGetSummonSkillIdValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -290,7 +290,7 @@ namespace GameFramework.Story.Values
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             NpcGetSummonSkillIdValue val = new NpcGetSummonSkillIdValue();
             val.m_UnitId = m_UnitId.Clone();
@@ -298,10 +298,10 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_UnitId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -337,7 +337,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class NpcFindImpactSeqByIdValue : IStoryValue<object>
+    internal sealed class NpcFindImpactSeqByIdValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -347,7 +347,7 @@ namespace GameFramework.Story.Values
                 m_ImpactId.InitFromDsl(callData.GetParam(1));
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             NpcFindImpactSeqByIdValue val = new NpcFindImpactSeqByIdValue();
             val.m_UnitId = m_UnitId.Clone();
@@ -356,11 +356,11 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_UnitId.Evaluate(instance, iterator, args);
-            m_ImpactId.Evaluate(instance, iterator, args);
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            m_ImpactId.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -399,7 +399,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class NpcCountValue : IStoryValue<object>
+    internal sealed class NpcCountValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -409,7 +409,7 @@ namespace GameFramework.Story.Values
                 m_EndUnitId.InitFromDsl(callData.GetParam(1));
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             NpcCountValue val = new NpcCountValue();
             val.m_StartUnitId = m_StartUnitId.Clone();
@@ -418,11 +418,11 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_StartUnitId.Evaluate(instance, iterator, args);
-            m_EndUnitId.Evaluate(instance, iterator, args);
+            m_StartUnitId.Evaluate(instance, handler, iterator, args);
+            m_EndUnitId.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue

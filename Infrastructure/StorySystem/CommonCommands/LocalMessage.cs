@@ -8,7 +8,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     public sealed class DummyCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             DummyCommand cmd = new DummyCommand();
             return cmd;
@@ -23,7 +23,7 @@ namespace StorySystem.CommonCommands
         {
             m_IsConcurrent = isConcurrent;
         }
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             LocalMessageCommand cmd = new LocalMessageCommand(m_IsConcurrent);
             cmd.m_MsgId = m_MsgId.Clone();
@@ -32,14 +32,14 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_MsgId.Evaluate(instance, iterator, args);
+            m_MsgId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_MsgArgs.Count; i++) {
-                m_MsgArgs[i].Evaluate(instance, iterator, args);
+                m_MsgArgs[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             string msgId = m_MsgId.Value;
             ArrayList arglist = new ArrayList();
@@ -66,7 +66,7 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
-        private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
+        private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
         private bool m_IsConcurrent = false;
     }
     internal sealed class LocalMessageCommandFactory : IStoryCommandFactory
@@ -92,7 +92,7 @@ namespace StorySystem.CommonCommands
         {
             m_IsConcurrent = isConcurrent;
         }
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             StoryLocalMessageCommand cmd = new StoryLocalMessageCommand(m_IsConcurrent);
             cmd.m_MsgId = m_MsgId.Clone();
@@ -101,14 +101,14 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_MsgId.Evaluate(instance, iterator, args);
+            m_MsgId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_MsgArgs.Count; i++) {
-                m_MsgArgs[i].Evaluate(instance, iterator, args);
+                m_MsgArgs[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (GameFramework.GlobalVariables.Instance.IsStorySkipped) {
                 return false;
@@ -138,7 +138,7 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
-        private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
+        private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
         private bool m_IsConcurrent = false;
     }
     internal sealed class StoryLocalMessageCommandFactory : IStoryCommandFactory
@@ -160,7 +160,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class ClearMessageCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ClearMessageCommand cmd = new ClearMessageCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -168,13 +168,13 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             string[] arglist = new string[m_MsgIds.Count];
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -199,7 +199,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class WaitLocalMessageCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             WaitLocalMessageCommand cmd = new WaitLocalMessageCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -218,20 +218,20 @@ namespace StorySystem.CommonCommands
             m_CurTime = 0;
             m_StartTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, iterator, args);
-                m_SetVal.Evaluate(instance, iterator, args);
-                m_TimeoutVal.Evaluate(instance, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+                m_SetVar.Evaluate(instance, handler, iterator, args);
+                m_SetVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_StartTime <= 0) {
                 long startTime = GameFramework.TimeUtility.GetLocalMilliseconds();
@@ -306,10 +306,10 @@ namespace StorySystem.CommonCommands
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue m_SetVal = new StoryValue();
         private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
         private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private IStoryValue m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
         private long m_StartTime = 0;
@@ -319,7 +319,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class WaitLocalMessageHandlerCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             WaitLocalMessageHandlerCommand cmd = new WaitLocalMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -337,20 +337,20 @@ namespace StorySystem.CommonCommands
         {
             m_CurTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, iterator, args);
-                m_SetVal.Evaluate(instance, iterator, args);
-                m_TimeoutVal.Evaluate(instance, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+                m_SetVar.Evaluate(instance, handler, iterator, args);
+                m_SetVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int ct = 0;
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -417,10 +417,10 @@ namespace StorySystem.CommonCommands
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue m_SetVal = new StoryValue();
         private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
         private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private IStoryValue m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
     }
@@ -429,7 +429,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class StoryWaitLocalMessageCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             StoryWaitLocalMessageCommand cmd = new StoryWaitLocalMessageCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -448,20 +448,20 @@ namespace StorySystem.CommonCommands
             m_CurTime = 0;
             m_StartTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, iterator, args);
-                m_SetVal.Evaluate(instance, iterator, args);
-                m_TimeoutVal.Evaluate(instance, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+                m_SetVar.Evaluate(instance, handler, iterator, args);
+                m_SetVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_StartTime <= 0) {
                 long startTime = GameFramework.TimeUtility.GetLocalMilliseconds();
@@ -536,10 +536,10 @@ namespace StorySystem.CommonCommands
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue m_SetVal = new StoryValue();
         private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
         private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private IStoryValue m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
         private long m_StartTime = 0;
@@ -549,7 +549,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class StoryWaitLocalMessageHandlerCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             StoryWaitLocalMessageHandlerCommand cmd = new StoryWaitLocalMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -567,20 +567,20 @@ namespace StorySystem.CommonCommands
         {
             m_CurTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, iterator, args);
-                m_SetVal.Evaluate(instance, iterator, args);
-                m_TimeoutVal.Evaluate(instance, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+                m_SetVar.Evaluate(instance, handler, iterator, args);
+                m_SetVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int ct = 0;
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -647,10 +647,10 @@ namespace StorySystem.CommonCommands
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue m_SetVal = new StoryValue();
         private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
         private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private IStoryValue m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
     }
@@ -659,7 +659,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class PauseLocalMessageHandlerCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             PauseLocalMessageHandlerCommand cmd = new PauseLocalMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -670,13 +670,13 @@ namespace StorySystem.CommonCommands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
                 instance.PauseMessageHandler(m_MsgIds[i].Value, true);
@@ -699,7 +699,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class ResumeLocalMessageHandlerCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ResumeLocalMessageHandlerCommand cmd = new ResumeLocalMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -710,13 +710,13 @@ namespace StorySystem.CommonCommands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
                 instance.PauseMessageHandler(m_MsgIds[i].Value, false);
@@ -743,7 +743,7 @@ namespace StorySystem.CommonCommands
         {
             m_IsConcurrent = isConcurrent;
         }
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             LocalNamespacedMessageCommand cmd = new LocalNamespacedMessageCommand(m_IsConcurrent);
             cmd.m_MsgId = m_MsgId.Clone();
@@ -752,14 +752,14 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_MsgId.Evaluate(instance, iterator, args);
+            m_MsgId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_MsgArgs.Count; i++) {
-                m_MsgArgs[i].Evaluate(instance, iterator, args);
+                m_MsgArgs[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             string msgId = m_MsgId.Value;
             ArrayList arglist = new ArrayList();
@@ -790,7 +790,7 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
-        private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
+        private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
         private bool m_IsConcurrent = false;
     }
     internal sealed class LocalNamespacedMessageCommandFactory : IStoryCommandFactory
@@ -816,7 +816,7 @@ namespace StorySystem.CommonCommands
         {
             m_IsConcurrent = isConcurrent;
         }
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             StoryLocalNamespacedMessageCommand cmd = new StoryLocalNamespacedMessageCommand(m_IsConcurrent);
             cmd.m_MsgId = m_MsgId.Clone();
@@ -825,14 +825,14 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_MsgId.Evaluate(instance, iterator, args);
+            m_MsgId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_MsgArgs.Count; i++) {
-                m_MsgArgs[i].Evaluate(instance, iterator, args);
+                m_MsgArgs[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (GameFramework.GlobalVariables.Instance.IsStorySkipped) {
                 return false;
@@ -866,7 +866,7 @@ namespace StorySystem.CommonCommands
             }
         }
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
-        private List<IStoryValue<object>> m_MsgArgs = new List<IStoryValue<object>>();
+        private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
         private bool m_IsConcurrent = false;
     }
     internal sealed class StoryLocalNamespacedMessageCommandFactory : IStoryCommandFactory
@@ -888,7 +888,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class ClearNamespacedMessageCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ClearNamespacedMessageCommand cmd = new ClearNamespacedMessageCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -896,13 +896,13 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             string[] arglist = new string[m_MsgIds.Count];
             string _namespace = instance.Namespace;
@@ -934,7 +934,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class WaitLocalNamespacedMessageCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             WaitLocalNamespacedMessageCommand cmd = new WaitLocalNamespacedMessageCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -953,20 +953,20 @@ namespace StorySystem.CommonCommands
             m_CurTime = 0;
             m_StartTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, iterator, args);
-                m_SetVal.Evaluate(instance, iterator, args);
-                m_TimeoutVal.Evaluate(instance, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+                m_SetVar.Evaluate(instance, handler, iterator, args);
+                m_SetVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_StartTime <= 0) {
                 long startTime = GameFramework.TimeUtility.GetLocalMilliseconds();
@@ -1051,10 +1051,10 @@ namespace StorySystem.CommonCommands
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue m_SetVal = new StoryValue();
         private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
         private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private IStoryValue m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
         private long m_StartTime = 0;
@@ -1064,7 +1064,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class WaitLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             WaitLocalNamespacedMessageHandlerCommand cmd = new WaitLocalNamespacedMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -1082,20 +1082,20 @@ namespace StorySystem.CommonCommands
         {
             m_CurTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, iterator, args);
-                m_SetVal.Evaluate(instance, iterator, args);
-                m_TimeoutVal.Evaluate(instance, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+                m_SetVar.Evaluate(instance, handler, iterator, args);
+                m_SetVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int ct = 0;
             string _namespace = instance.Namespace;
@@ -1168,10 +1168,10 @@ namespace StorySystem.CommonCommands
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue m_SetVal = new StoryValue();
         private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
         private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private IStoryValue m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
     }
@@ -1180,7 +1180,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class StoryWaitLocalNamespacedMessageCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             StoryWaitLocalNamespacedMessageCommand cmd = new StoryWaitLocalNamespacedMessageCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -1199,20 +1199,20 @@ namespace StorySystem.CommonCommands
             m_CurTime = 0;
             m_StartTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, iterator, args);
-                m_SetVal.Evaluate(instance, iterator, args);
-                m_TimeoutVal.Evaluate(instance, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+                m_SetVar.Evaluate(instance, handler, iterator, args);
+                m_SetVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_StartTime <= 0) {
                 long startTime = GameFramework.TimeUtility.GetLocalMilliseconds();
@@ -1298,10 +1298,10 @@ namespace StorySystem.CommonCommands
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue m_SetVal = new StoryValue();
         private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
         private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private IStoryValue m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
         private long m_StartTime = 0;
@@ -1311,7 +1311,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class StoryWaitLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             StoryWaitLocalNamespacedMessageHandlerCommand cmd = new StoryWaitLocalNamespacedMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -1329,20 +1329,20 @@ namespace StorySystem.CommonCommands
         {
             m_CurTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
             if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, iterator, args);
-                m_SetVal.Evaluate(instance, iterator, args);
-                m_TimeoutVal.Evaluate(instance, iterator, args);
-                m_TimeoutSetVar.Evaluate(instance, iterator, args);
-                m_TimeoutSetVal.Evaluate(instance, iterator, args);
+                m_SetVar.Evaluate(instance, handler, iterator, args);
+                m_SetVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutVal.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
+                m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int ct = 0;
             string _namespace = instance.Namespace;
@@ -1416,10 +1416,10 @@ namespace StorySystem.CommonCommands
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue<object> m_SetVal = new StoryValue();
+        private IStoryValue m_SetVal = new StoryValue();
         private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
         private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
-        private IStoryValue<object> m_TimeoutSetVal = new StoryValue();
+        private IStoryValue m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
     }
@@ -1428,7 +1428,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class PauseLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             PauseLocalNamespacedMessageHandlerCommand cmd = new PauseLocalNamespacedMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -1439,13 +1439,13 @@ namespace StorySystem.CommonCommands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             string _namespace = instance.Namespace;
             if (string.IsNullOrEmpty(_namespace)) {
@@ -1475,7 +1475,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class ResumeLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ResumeLocalNamespacedMessageHandlerCommand cmd = new ResumeLocalNamespacedMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
@@ -1486,13 +1486,13 @@ namespace StorySystem.CommonCommands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                m_MsgIds[i].Evaluate(instance, iterator, args);
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             string _namespace = instance.Namespace;
             if (string.IsNullOrEmpty(_namespace)) {

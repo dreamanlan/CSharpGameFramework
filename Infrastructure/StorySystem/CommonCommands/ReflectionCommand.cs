@@ -10,7 +10,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class DotnetExecCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             DotnetExecCommand cmd = new DotnetExecCommand();
             cmd.m_Object = m_Object.Clone();
@@ -20,15 +20,15 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Object.Evaluate(instance, iterator, args);
-            m_Method.Evaluate(instance, iterator, args);
+            m_Object.Evaluate(instance, handler, iterator, args);
+            m_Method.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_Args.Count; i++) {
-                m_Args[i].Evaluate(instance, iterator, args);
+                m_Args[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             object obj = m_Object.Value;
             object methodObj = m_Method.Value;
@@ -107,16 +107,16 @@ namespace StorySystem.CommonCommands
                 m_Args.Add(val);
             }
         }
-        private IStoryValue<object> m_Object = new StoryValue();
-        private IStoryValue<object> m_Method = new StoryValue();
-        private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
+        private IStoryValue m_Object = new StoryValue();
+        private IStoryValue m_Method = new StoryValue();
+        private List<IStoryValue> m_Args = new List<IStoryValue>();
     }
     /// <summary>
     /// dotnetset(obj,method,arg1,arg2,...);
     /// </summary>
     internal sealed class DotnetSetCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             DotnetSetCommand cmd = new DotnetSetCommand();
             cmd.m_Object = m_Object.Clone();
@@ -126,15 +126,15 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Object.Evaluate(instance, iterator, args);
-            m_Method.Evaluate(instance, iterator, args);
+            m_Object.Evaluate(instance, handler, iterator, args);
+            m_Method.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_Args.Count; i++) {
-                m_Args[i].Evaluate(instance, iterator, args);
+                m_Args[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             object obj = m_Object.Value;
             object methodObj = m_Method.Value;
@@ -202,29 +202,29 @@ namespace StorySystem.CommonCommands
                 m_Args.Add(val);
             }
         }
-        private IStoryValue<object> m_Object = new StoryValue();
-        private IStoryValue<object> m_Method = new StoryValue();
-        private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
+        private IStoryValue m_Object = new StoryValue();
+        private IStoryValue m_Method = new StoryValue();
+        private List<IStoryValue> m_Args = new List<IStoryValue>();
     }
     /// <summary>
     /// system(file,args);
     /// </summary>
     internal sealed class SystemCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             SystemCommand cmd = new SystemCommand();
             cmd.m_FileName = m_FileName.Clone();
             cmd.m_Arguments = m_Arguments.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_FileName.Evaluate(instance, iterator, args);
-            m_Arguments.Evaluate(instance, iterator, args);
+            m_FileName.Evaluate(instance, handler, iterator, args);
+            m_Arguments.Evaluate(instance, handler, iterator, args);
         
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             try {
                 Process.Start(m_FileName.Value, m_Arguments.Value);

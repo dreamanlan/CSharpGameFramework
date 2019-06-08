@@ -5,7 +5,7 @@ using GameFramework;
 
 namespace GameFramework.Story.Values
 {
-    internal sealed class GetUserInfoValue : IStoryValue<object>
+    internal sealed class GetUserInfoValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -14,7 +14,7 @@ namespace GameFramework.Story.Values
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             GetUserInfoValue val = new GetUserInfoValue();
             val.m_UserGuid = m_UserGuid.Clone();
@@ -22,10 +22,10 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;        
-            m_UserGuid.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
             TryUpdateValue(instance);
         }
         public bool HaveValue

@@ -13,7 +13,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class SendMailCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             SendMailCommand cmd = new SendMailCommand();
             cmd.m_Receiver = m_Receiver.Clone();
@@ -34,23 +34,23 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Receiver.Evaluate(instance, iterator, args);
-            m_Title.Evaluate(instance, iterator, args);
-            m_Content.Evaluate(instance, iterator, args);
-            m_Sender.Evaluate(instance, iterator, args);
-            m_LevelDemand.Evaluate(instance, iterator, args);
-            m_ValidPeriod.Evaluate(instance, iterator, args);
-            m_Money.Evaluate(instance, iterator, args);
-            m_Gold.Evaluate(instance, iterator, args);
+            m_Receiver.Evaluate(instance, handler, iterator, args);
+            m_Title.Evaluate(instance, handler, iterator, args);
+            m_Content.Evaluate(instance, handler, iterator, args);
+            m_Sender.Evaluate(instance, handler, iterator, args);
+            m_LevelDemand.Evaluate(instance, handler, iterator, args);
+            m_ValidPeriod.Evaluate(instance, handler, iterator, args);
+            m_Money.Evaluate(instance, handler, iterator, args);
+            m_Gold.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_MailItems.Count; ++i) {
                 IStoryValue<int> val = m_MailItems[i];
-                val.Evaluate(instance, iterator, args);
+                val.Evaluate(instance, handler, iterator, args);
             }
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -126,7 +126,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class ClearMembersCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ClearMembersCommand cmd = new ClearMembersCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -136,12 +136,12 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -169,7 +169,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class AddMemberCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             AddMemberCommand cmd = new AddMemberCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -181,14 +181,14 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
-            m_TableId.Evaluate(instance, iterator, args);
-            m_Level.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
+            m_TableId.Evaluate(instance, handler, iterator, args);
+            m_Level.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -226,7 +226,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class RemoveMemberCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             RemoveMemberCommand cmd = new RemoveMemberCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -237,13 +237,13 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
-            m_MemberId.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
+            m_MemberId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -287,14 +287,14 @@ namespace GameFramework.Story.Commands
         }
 
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryValue<object> m_MemberId = new StoryValue();
+        private IStoryValue m_MemberId = new StoryValue();
     }
     /// <summary>
     /// syncmembers(guid);
     /// </summary>
     internal class SyncMembersCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             SyncMembersCommand cmd = new SyncMembersCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -304,12 +304,12 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -334,7 +334,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class ClearItemsCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ClearItemsCommand cmd = new ClearItemsCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -344,12 +344,12 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -377,7 +377,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class AddItemCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             AddItemCommand cmd = new AddItemCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -389,14 +389,14 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
-            m_ItemId.Evaluate(instance, iterator, args);
-            m_ItemNum.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
+            m_ItemId.Evaluate(instance, handler, iterator, args);
+            m_ItemNum.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -430,7 +430,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class ReduceItemCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ReduceItemCommand cmd = new ReduceItemCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -442,14 +442,14 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
-            m_ItemId.Evaluate(instance, iterator, args);
-            m_ItemNum.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
+            m_ItemId.Evaluate(instance, handler, iterator, args);
+            m_ItemNum.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -483,7 +483,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class RemoveItemCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             RemoveItemCommand cmd = new RemoveItemCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -494,13 +494,13 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
-            m_ItemId.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
+            m_ItemId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -534,14 +534,14 @@ namespace GameFramework.Story.Commands
         }
 
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryValue<object> m_ItemId = new StoryValue();
+        private IStoryValue m_ItemId = new StoryValue();
     }
     /// <summary>
     /// syncitems(guid);
     /// </summary>
     internal class SyncItemsCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             SyncItemsCommand cmd = new SyncItemsCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -551,12 +551,12 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -581,7 +581,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class ClearUserDatasCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ClearUserDatasCommand cmd = new ClearUserDatasCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -591,12 +591,12 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -626,7 +626,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class AddUserDataCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             AddUserDataCommand cmd = new AddUserDataCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -638,14 +638,14 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
-            m_Key.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
+            m_Key.Evaluate(instance, handler, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -692,14 +692,14 @@ namespace GameFramework.Story.Commands
 
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private IStoryValue<string> m_Key = new StoryValue<string>();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// removeuserdata(guid, key, type);
     /// </summary>
     internal class RemoveUserDataCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             RemoveUserDataCommand cmd = new RemoveUserDataCommand();
             cmd.m_UserGuid = m_UserGuid.Clone();
@@ -711,14 +711,14 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_UserGuid.Evaluate(instance, iterator, args);
-            m_Key.Evaluate(instance, iterator, args);
-            m_Type.Evaluate(instance, iterator, args);
+            m_UserGuid.Evaluate(instance, handler, iterator, args);
+            m_Key.Evaluate(instance, handler, iterator, args);
+            m_Type.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -758,7 +758,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class ClearGlobalDatasCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ClearGlobalDatasCommand cmd = new ClearGlobalDatasCommand();
             return cmd;
@@ -767,12 +767,12 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
         
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -793,7 +793,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class AddGlobalDataCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             AddGlobalDataCommand cmd = new AddGlobalDataCommand();
             cmd.m_Key = m_Key.Clone();
@@ -804,13 +804,13 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Key.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
+            m_Key.Evaluate(instance, handler, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
@@ -842,14 +842,14 @@ namespace GameFramework.Story.Commands
         }
 
         private IStoryValue<string> m_Key = new StoryValue<string>();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// removeglobaldata(key, type);
     /// </summary>
     internal class RemoveGlobalDataCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             RemoveGlobalDataCommand cmd = new RemoveGlobalDataCommand();
             cmd.m_Key = m_Key.Clone();
@@ -860,13 +860,13 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Key.Evaluate(instance, iterator, args);
-            m_Type.Evaluate(instance, iterator, args);
+            m_Key.Evaluate(instance, handler, iterator, args);
+            m_Type.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {

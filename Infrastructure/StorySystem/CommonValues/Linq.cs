@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace StorySystem.CommonValues
 {
-    internal sealed class LinqValue : IStoryValue<object>
+    internal sealed class LinqValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -24,7 +24,7 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             LinqValue val = new LinqValue();
             val.m_Object = m_Object.Clone();
@@ -36,11 +36,11 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            m_Object.Evaluate(instance, iterator, args);
-            m_Method.Evaluate(instance, iterator, args);
+            m_Object.Evaluate(instance, handler, iterator, args);
+            m_Method.Evaluate(instance, handler, iterator, args);
             
             bool canCalc = true;
             if (!m_Object.HaveValue || !m_Method.HaveValue) {
@@ -56,7 +56,7 @@ namespace StorySystem.CommonValues
                     if (null != list) {
                         if (method == "orderby" || method == "orderbydesc") {
                             bool desc = method == "orderbydesc";
-                            List<object> results = new List<object>();
+                            ObjList results = new ObjList();
                             IEnumerator enumer = list.GetEnumerator();
                             while (enumer.MoveNext()) {
                                 object val = enumer.Current;
@@ -65,12 +65,12 @@ namespace StorySystem.CommonValues
                             results.Sort((object o1, object o2) => {
                                 object r1 = null;
                                 for (int i = 0; i < m_Args.Count; i++) {
-                                    m_Args[i].Evaluate(instance, o1, args);
+                                    m_Args[i].Evaluate(instance, handler, o1, args);
                                     r1 = m_Args[i].Value;
                                 }
                                 object r2 = null;
                                 for (int i = 0; i < m_Args.Count; i++) {
-                                    m_Args[i].Evaluate(instance, o2, args);
+                                    m_Args[i].Evaluate(instance, handler, o2, args);
                                     r2 = m_Args[i].Value;
                                 }
                                 string rs1 = r1 as string;
@@ -89,14 +89,14 @@ namespace StorySystem.CommonValues
                             });
                             v = results;
                         } else if (method == "where") {
-                            List<object> results = new List<object>();
+                            ObjList results = new ObjList();
                             IEnumerator enumer = list.GetEnumerator();
                             while (enumer.MoveNext()) {
                                 object val = enumer.Current;
 
                                 object r = null;
                                 for (int i = 0; i < m_Args.Count; i++) {
-                                    m_Args[i].Evaluate(instance, val, args);
+                                    m_Args[i].Evaluate(instance, handler, val, args);
                                     r = m_Args[i].Value;
                                 }
                                 if (StoryValueHelper.CastTo<int>(r) != 0) {
@@ -107,11 +107,11 @@ namespace StorySystem.CommonValues
                         } else if (method == "top") {
                             object r = null;
                             for (int i = 0; i < m_Args.Count; i++) {
-                                m_Args[i].Evaluate(instance, iterator, args);
+                                m_Args[i].Evaluate(instance, handler, iterator, args);
                                 r = m_Args[i].Value;
                             }
                             int ct = StoryValueHelper.CastTo<int>(r);
-                            List<object> results = new List<object>();
+                            ObjList results = new ObjList();
                             IEnumerator enumer = list.GetEnumerator();
                             while (enumer.MoveNext()) {
                                 object val = enumer.Current;
@@ -130,7 +130,7 @@ namespace StorySystem.CommonValues
             }
 
             for (int i = 0; i < m_Args.Count; i++) {
-                m_Args[i].Evaluate(instance, iterator, args);
+                m_Args[i].Evaluate(instance, handler, iterator, args);
             }
         }
         public bool HaveValue
@@ -148,9 +148,9 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private IStoryValue<object> m_Object = new StoryValue();
+        private IStoryValue m_Object = new StoryValue();
         private IStoryValue<string> m_Method = new StoryValue<string>();
-        private List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
+        private List<IStoryValue> m_Args = new List<IStoryValue>();
         private bool m_HaveValue;
         private object m_Value;
     }

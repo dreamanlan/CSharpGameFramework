@@ -7,16 +7,24 @@ using System.Diagnostics;
 namespace StorySystem.CommonValues
 {
     /// <summary>
-    /// name(arg1,arg2,...);
+    /// name(arg1,arg2,...)
+    /// [{
+    ///     name1(val1);
+    ///     name2(val2);
+    ///     ...
+    /// }];
     /// </summary>
     /// <remarks>
-    /// 这里的Name、ArgNames、ReturnName与InitialCommands为同一value定义的各个调用共享。
+    /// 这里的Name、ArgNames、OptArgs、ReturnName与InitialCommands为同一value定义的各个调用共享。
     /// 由于解析时需要处理交叉引用，先克隆后InitFromDsl。
     /// 这里的自定义函数支持递归(性能较低，仅处理小规模问题)，不支持基于时间的wait命令，亦即不支持挂起-恢复执行。
-    /// 注意：所有依赖InitialCommands等共享数据的其它成员，初始化需要写成lazy的样式，不要在Clone与InitFromDsl里初始化，因为
+    /// 注意：
+    /// 1、所有依赖InitialCommands等共享数据的其它成员，初始化需要写成lazy的样式，不要在Clone与InitFromDsl里初始化，因为
     /// 此时共享数据可能还不完整！
+    /// 2、因为自定义的命令与值在使用时有函数调用语义，需要可以访问传递的参数。而Evaluate接口只有一组参数，这限制了自定义
+    /// 命令与值的形式至多是Function样式而不应支持Statement样式。
     /// </remarks>
-    internal sealed class CompositeValue : IStoryValue<object>
+    internal sealed class CompositeValue : IStoryValue
     {
         public string Name
         {
@@ -32,6 +40,10 @@ namespace StorySystem.CommonValues
             get { return m_ReturnName; }
             set { m_ReturnName = value; }
         }
+        public IDictionary<string, Dsl.ISyntaxComponent> OptArgs
+        {
+            get { return m_OptArgs; }
+        }
         public IList<StorySystem.IStoryCommand> InitialCommands
         {
             get { return m_InitialCommands; }
@@ -39,182 +51,173 @@ namespace StorySystem.CommonValues
         public void InitSharedData()
         {
             m_ArgNames = new List<string>();
+            m_OptArgs = new Dictionary<string, Dsl.ISyntaxComponent>();
             m_InitialCommands = new List<IStoryCommand>();
         }
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            m_LoadedArgs = new List<IStoryValue<object>>();
+            m_LoadedArgs = new List<IStoryValue>();
             Dsl.CallData callData = param as Dsl.CallData;
             if (null != callData) {
-                int num = callData.GetParamNum();
-                for (int i = 0; i < num; ++i) {
-                    StoryValue val = new StoryValue();
-                    val.InitFromDsl(callData.GetParam(i));
-                    m_LoadedArgs.Add(val);
+                Load(callData);
+            } else {
+                Dsl.FunctionData funcData = param as Dsl.FunctionData;
+                if (null != funcData) {
+                    Load(funcData);
                 }
             }
         }
-        public IStoryValue<object> Clone()
+        public IStoryValue Clone()
         {
             CompositeValue val = new CompositeValue();
             val.m_LoadedArgs = m_LoadedArgs;
+            val.m_LoadedOptArgs = m_LoadedOptArgs;
             val.m_Name = m_Name;
             val.m_ArgNames = m_ArgNames;
             val.m_ReturnName = m_ReturnName;
+            val.m_OptArgs = m_OptArgs;
             val.m_InitialCommands = m_InitialCommands;
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, object iterator, object[] args)
-		{
-			StackElementInfo stackInfo = NewStackElementInfo();
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            var stackInfo = StoryLocalInfo.New();
+            var runtime = StoryRuntime.New();
             //调用实参部分需要在栈建立之前运算，结果需要记录在栈上
-			for (int i = 0; i < m_LoadedArgs.Count; ++i) {
-                stackInfo.m_Args.Add(m_LoadedArgs[i].Clone());
-			}
-			for (int i = 0; i < stackInfo.m_Args.Count; i++) {
-				stackInfo.m_Args[i].Evaluate(instance, iterator, args);
-			}
+            for (int i = 0; i < m_LoadedArgs.Count; ++i) {
+                stackInfo.Args.Add(m_LoadedArgs[i].Clone());
+            }
+            foreach (var pair in m_LoadedOptArgs) {
+                stackInfo.OptArgs.Add(pair.Key, pair.Value.Clone());
+            }
+            runtime.Arguments = new object[stackInfo.Args.Count];
+            for (int i = 0; i < stackInfo.Args.Count; i++) {
+                stackInfo.Args[i].Evaluate(instance, handler, iterator, args);
+                runtime.Arguments[i] = stackInfo.Args[i].Value;
+            }
+            runtime.Iterator = stackInfo.Args.Count;
+            foreach (var pair in stackInfo.OptArgs) {
+                pair.Value.Evaluate(instance, handler, iterator, args);
+            }
             //实参处理完，进入函数体执行，创建新的栈
-            PushStack(instance, stackInfo);
+            PushStack(instance, handler, stackInfo, runtime);
             try {
                 for (int i = 0; i < m_ArgNames.Count; ++i) {
-                    if (i < stackInfo.m_Args.Count) {
-                        instance.SetVariable(m_ArgNames[i], stackInfo.m_Args[i].Value);
+                    if (i < stackInfo.Args.Count) {
+                        instance.SetVariable(m_ArgNames[i], stackInfo.Args[i].Value);
                     } else {
                         instance.SetVariable(m_ArgNames[i], null);
                     }
                 }
-                Prepare(stackInfo);
-                stackInfo.m_HaveValue = true;
-                for (int i = 0; i < stackInfo.m_Commands.Count; ++i) {
-                    //函数调用命令需要忽略其中的wait指令（从而不会出现“挂起-恢复”行为），所以这里传的delta值是一个很大的值，目的是为了让wait直接结束
-                    stackInfo.m_Commands[i].Execute(instance, StoryValueHelper.c_MaxWaitCommandTime, iterator, args);
+                foreach (var pair in stackInfo.OptArgs) {
+                    instance.SetVariable(pair.Key, pair.Value.Value);
                 }
-                instance.TryGetVariable(m_ReturnName, out stackInfo.m_Value);
+                Prepare(runtime);
+                stackInfo.HaveValue = true;
+                runtime.Tick(instance, handler, long.MaxValue);
+                object val;
+                instance.TryGetVariable(m_ReturnName, out val);
+                stackInfo.Value = val;
             } finally {
-                PopStack(instance);
+                PopStack(instance, handler);
             }
         }
         public bool HaveValue
         {
-            get
-            {
-                if (m_Stack.Count > 0) {
-                    return m_Stack.Peek().m_HaveValue;
-                } else {
-                    return m_HaveValue;
-                }
+            get {
+                return m_HaveValue;
             }
         }
         public object Value
         {
-            get
-            {
-                if (m_Stack.Count > 0) {
-                    return m_Stack.Peek().m_Value;
-                } else {
-                    return m_Value;
-                }
+            get {
+                return m_Value;
             }
         }
 
-        private void Prepare(StackElementInfo stackInfo)
+        private void Load(Dsl.CallData callData)
         {
-            if (null != m_InitialCommands && m_FirstStackCommands.Count <= 0) {
-                for (int i = 0; i < m_InitialCommands.Count; ++i) {
-                    IStoryCommand cmd = m_InitialCommands[i].Clone();
-                    m_FirstStackCommands.Add(cmd);
-                }
+            m_LoadedOptArgs = new Dictionary<string, IStoryValue>();
+            foreach (var pair in m_OptArgs) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(pair.Value);
+                m_LoadedOptArgs.Add(pair.Key, val);
             }
-            if (m_Stack.Count <= 1) {
-                for (int i = 0; i < m_FirstStackCommands.Count; ++i) {
-                    IStoryCommand cmd = m_FirstStackCommands[i];
-                    if (null != cmd.LeadCommand)
-                        stackInfo.m_Commands.Add(cmd.LeadCommand);
-                    stackInfo.m_Commands.Add(cmd);
-                }
-            } else if (null != m_InitialCommands) {
-                for (int i = 0; i < m_InitialCommands.Count; ++i) {
-                    IStoryCommand cmd = m_InitialCommands[i].Clone();
-                    if (null != cmd.LeadCommand)
-                        stackInfo.m_Commands.Add(cmd.LeadCommand);
-                    stackInfo.m_Commands.Add(cmd);
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_LoadedArgs.Add(val);
+            }
+        }
+        private void Load(Dsl.FunctionData funcData)
+        {
+            var cd = funcData.Call;
+            Load(cd);
+            foreach (var comp in funcData.Statements) {
+                var fcd = comp as Dsl.CallData;
+                if (null != fcd) {
+                    var key = fcd.GetId();
+                    StoryValue val = new StoryValue();
+                    val.InitFromDsl(fcd.GetParam(0));
+                    m_LoadedOptArgs[key] = val;
                 }
             }
         }
-        private StackElementInfo NewStackElementInfo()
+        private void Prepare(StoryRuntime runtime)
         {
-            if (m_Stack.Count <= 0) {
-                m_FirstStackInfo.Reset();
-                return m_FirstStackInfo;
+            if (null != m_InitialCommands) {
+                for (int i = 0; i < m_InitialCommands.Count; ++i) {
+                    IStoryCommand cmd = m_InitialCommands[i].Clone();
+                    if (null != cmd.PrologueCommand)
+                        runtime.CommandQueue.Enqueue(cmd.PrologueCommand);
+                    runtime.CommandQueue.Enqueue(cmd);
+                    if (null != cmd.EpilogueCommand)
+                        runtime.CommandQueue.Enqueue(cmd.EpilogueCommand);
+                }
+            }
+        }
+        private void PushStack(StoryInstance instance, StoryMessageHandler handler, StoryLocalInfo info, StoryRuntime runtime)
+        {
+            handler.PushLocalInfo(info);
+            handler.PushRuntime(runtime);
+            instance.StackVariables = info.StackVariables;
+        }
+        private void PopStack(StoryInstance instance, StoryMessageHandler handler)
+        {
+            handler.PopRuntime();
+            var old = handler.PeekLocalInfo();
+            bool haveVal = old.HaveValue;
+            object val = old.Value;
+            handler.PopLocalInfo();
+            if (handler.LocalInfoStack.Count > 0) {
+                var info = handler.PeekLocalInfo();
+                instance.StackVariables = info.StackVariables;
+                m_HaveValue = haveVal;
+                m_Value = val;
             } else {
-                return new StackElementInfo();
+                instance.StackVariables = handler.StackVariables;
+                m_HaveValue = haveVal;
+                m_Value = val;
             }
         }
-		private void PushStack(StoryInstance instance, StackElementInfo info)
-        {
-            if (m_Stack.Count <= 0) {
-                m_TopStack = instance.StackVariables;
-            }
-            m_Stack.Push(info);
-            instance.StackVariables = info.m_StackVariables;
-        }
-        private void PopStack(StoryInstance instance)
-        {
-            if (m_Stack.Count > 0) {
-                StackElementInfo old = m_Stack.Peek();
-                bool haveVal = old.m_HaveValue;
-                object val = old.m_Value;
-                m_Stack.Pop();
-                if (m_Stack.Count > 0) {
-                    StackElementInfo info = m_Stack.Peek();
-                    instance.StackVariables = info.m_StackVariables;
-                } else {
-                    instance.StackVariables = m_TopStack;
-                    m_HaveValue = haveVal;
-                    m_Value = val;
-                }
-            }
-        }
-
-        private class StackElementInfo
-        {
-            internal List<IStoryValue<object>> m_Args = new List<IStoryValue<object>>();
-            internal List<IStoryCommand> m_Commands = new List<IStoryCommand>();
-            internal bool m_HaveValue;
-            internal object m_Value;
-            internal Dictionary<string, object> m_StackVariables = new Dictionary<string, object>();
-
-            internal void Reset()
-            {
-                m_Args.Clear();
-                m_Commands.Clear();
-                m_HaveValue = false;
-                m_Value = null;
-                m_StackVariables.Clear();
-            }
-        }
-
-        private StackElementInfo m_FirstStackInfo = new StackElementInfo();
-        private List<IStoryCommand> m_FirstStackCommands = new List<IStoryCommand>();
-
-        private Dictionary<string, object> m_TopStack = null;
-        private Stack<StackElementInfo> m_Stack = new Stack<StackElementInfo>();
 
         private bool m_HaveValue;
         private object m_Value;
-        private List<IStoryValue<object>> m_LoadedArgs = null;
+        private List<IStoryValue> m_LoadedArgs = null;
+        private Dictionary<string, IStoryValue> m_LoadedOptArgs = null;
 
         private string m_Name = string.Empty;
         private List<string> m_ArgNames = null;
         private string m_ReturnName = string.Empty;
+        private Dictionary<string, Dsl.ISyntaxComponent> m_OptArgs = null;
         private List<IStoryCommand> m_InitialCommands = null;
     }
     internal sealed class CompositeValueFactory : IStoryValueFactory
     {
-        public IStoryValue<object> Build()
+        public IStoryValue Build()
         {
             return m_Val.Clone();
         }

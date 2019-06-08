@@ -8,7 +8,7 @@ using SLua;
 
 internal class NativeStoryValueFactory : IStoryValueFactory
 {
-    public IStoryValue<object> Build()
+    public IStoryValue Build()
     {
         return new NativeStoryValue(m_ClassName);
     }
@@ -22,7 +22,7 @@ internal class NativeStoryValueFactory : IStoryValueFactory
 
 internal class LuaStoryValueFactory : IStoryValueFactory
 {
-    public IStoryValue<object> Build()
+    public IStoryValue Build()
     {
         return new LuaStoryValue(m_ClassName);
     }
@@ -70,7 +70,7 @@ internal class NativeStoryValue : IStoryValue
             }
         }
     }
-    public IStoryValue<object> Clone()
+    public IStoryValue Clone()
     {
         var newObj = new NativeStoryValue(m_ClassName, false);
         newObj.m_Proxy = m_Proxy.Clone();
@@ -82,10 +82,10 @@ internal class NativeStoryValue : IStoryValue
         }
         return newObj;
     }    
-    public void Evaluate(StoryInstance instance, object iterator, object[] args)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
     {
         if (null != m_Plugin) {
-            m_Plugin.Evaluate(instance, iterator, args);
+            m_Plugin.Evaluate(instance, handler, iterator, args);
         }
     }
     public bool HaveValue
@@ -169,7 +169,7 @@ internal class LuaStoryValue : IStoryValue
             }
         }
     }
-    public IStoryValue<object> Clone()
+    public IStoryValue Clone()
     {
         var newObj = new LuaStoryValue(m_ClassName, false);
         newObj.m_Proxy = m_Proxy.Clone();
@@ -185,7 +185,7 @@ internal class LuaStoryValue : IStoryValue
         }
         return newObj;
     }
-    public void Evaluate(StoryInstance instance, object iterator, object[] args)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
     {
         if (null != m_Evaluate) {
             m_Evaluate.call(m_Self, instance, iterator, args);

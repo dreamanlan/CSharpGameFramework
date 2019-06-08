@@ -21,12 +21,13 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class IfElseCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             IfElseCommand retCmd = new IfElseCommand();
-            retCmd.m_Conditions = new List<IStoryValue<int>>();
-            for (int i = 0; i < m_Conditions.Count; ++i) {
-                retCmd.m_Conditions.Add(m_Conditions[i].Clone());
+            retCmd.m_LocalInfoIndex = m_LocalInfoIndex;
+            retCmd.m_LoadedConditions = new List<IStoryValue<int>>();
+            for (int i = 0; i < m_LoadedConditions.Count; ++i) {
+                retCmd.m_LoadedConditions.Add(m_LoadedConditions[i].Clone());
             }
             for (int i = 0; i < m_LoadedIfCommands.Count; i++) {
                 List<IStoryCommand> cmds = new List<IStoryCommand>();
@@ -43,77 +44,70 @@ namespace StorySystem.CommonCommands
         }
         protected override void ResetState()
         {
-            m_AlreadyExecute = false;
-            foreach (IStoryCommand cmd in m_IfCommandQueue) {
-                cmd.Reset();
-            }
-            m_IfCommandQueue.Clear();
-            foreach (IStoryCommand cmd in m_ElseCommandQueue) {
-                cmd.Reset();
-            }
-            m_ElseCommandQueue.Clear();
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            if (!m_AlreadyExecute) {
-                for (int i = 0; i < m_Conditions.Count; ++i) {
-                    m_Conditions[i].Evaluate(instance, iterator, args);
-                }
+            var localInfos = handler.LocalInfoStack.Peek();
+            var conditions = localInfos.GetLocalInfo(m_LocalInfoIndex) as List<IStoryValue<int>>;
+            for (int i = 0; i < conditions.Count; ++i) {
+                conditions[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta, object iterator, object[] args)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
         {
+            var runtime = handler.PeekRuntime();
+            if (runtime.CompositeReentry)
+                return false;
             bool ret = false;
-            if (m_IfCommandQueue.Count == 0 && m_ElseCommandQueue.Count == 0 && !m_AlreadyExecute) {
-                Evaluate(instance, iterator, args);
-                bool isElse = true;
-                for (int i = 0; i < m_Conditions.Count; ++i) {
-                    if (m_Conditions[i].Value != 0) {
-                        PrepareIf(i);
-                        isElse = false;
-                        break;
-                    }
+            var localInfos = handler.LocalInfoStack.Peek();
+            var conditions = localInfos.GetLocalInfo(m_LocalInfoIndex) as List<IStoryValue<int>>;
+            if (null == conditions) {
+                conditions = new List<IStoryValue<int>>();
+                for (int i = 0; i < m_LoadedConditions.Count; ++i) {
+                    conditions.Add(m_LoadedConditions[i].Clone());
                 }
-                if (isElse) {
-                    PrepareElse();
-                }
-                m_AlreadyExecute = true;
+                localInfos.SetLocalInfo(m_LocalInfoIndex, conditions);
             }
-            if (m_IfCommandQueue.Count > 0) {
-                while (m_IfCommandQueue.Count > 0) {
-                    IStoryCommand cmd = m_IfCommandQueue.Peek();
-                    if (cmd.Execute(instance, delta, iterator, args)) {
-                        ret = true;
-                        break;
-                    } else {
-                        cmd.Reset();
-                        m_IfCommandQueue.Dequeue();
-                    }
+            Evaluate(instance, handler, iterator, args);
+            bool isElse = true;
+            for (int i = 0; i < conditions.Count; ++i) {
+                if (conditions[i].Value != 0) {
+                    PrepareIf(i, handler);
+                    runtime = handler.PeekRuntime();
+                    runtime.Iterator = iterator;
+                    runtime.Arguments = args;
+                    isElse = false;
+                    break;
                 }
             }
-            if (m_ElseCommandQueue.Count > 0) {
-                while (m_ElseCommandQueue.Count > 0) {
-                    IStoryCommand cmd = m_ElseCommandQueue.Peek();
-                    if (cmd.Execute(instance, delta, iterator, args)) {
-                        ret = true;
-                        break;
-                    } else {
-                        cmd.Reset();
-                        m_ElseCommandQueue.Dequeue();
-                    }
-                }
+            if (isElse) {
+                PrepareElse(handler);
+                runtime = handler.PeekRuntime();
+                runtime.Iterator = iterator;
+                runtime.Arguments = args;
+            }
+            //没有wait之类命令直接执行
+            runtime = handler.PeekRuntime();
+            runtime.Tick(instance, handler, delta);
+            if (runtime.CommandQueue.Count == 0) {
+                handler.PopRuntime();
+                ret = false;
+            } else {
+                //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
+                ret = true;
             }
             return ret;
         }
         protected override void Load(Dsl.FunctionData functionData)
         {
+            m_LocalInfoIndex = StoryCommandManager.Instance.AllocLocalInfoIndex();
             Dsl.CallData callData = functionData.Call;
             if (null != callData) {
                 if (callData.GetParamNum() > 0) {
                     Dsl.ISyntaxComponent param = callData.GetParam(0);
                     StoryValue<int> cond = new StoryValue<int>();
                     cond.InitFromDsl(param);
-                    m_Conditions.Add(cond);
+                    m_LoadedConditions.Add(cond);
                 }
                 List<IStoryCommand> cmds = new List<IStoryCommand>();
                 for (int i = 0; i < functionData.Statements.Count; i++) {
@@ -147,16 +141,18 @@ namespace StorySystem.CommonCommands
                             string err = string.Format("[StoryDsl] else must be the last function !!! line:{0}", functionData.GetLine());
                             throw new Exception(err);
 #else
-              GameFramework.LogSystem.Error("[StoryDsl] else must be the last function !!!");
+              CsLibrary.LogSystem.Error("[StoryDsl] else must be the last function !!!");
 #endif
                         }
                     }
                 }
             }
         }
-        private void PrepareIf(int ix)
+        private void PrepareIf(int ix, StoryMessageHandler handler)
         {
-            Queue<IStoryCommand> queue = m_IfCommandQueue;
+            var runtime = StoryRuntime.New();
+            handler.PushRuntime(runtime);
+            var queue = handler.PeekRuntime().CommandQueue;
             foreach (IStoryCommand cmd in queue) {
                 cmd.Reset();
             }
@@ -164,30 +160,35 @@ namespace StorySystem.CommonCommands
             List<IStoryCommand> cmds = m_LoadedIfCommands[ix];
             for (int i = 0; i < cmds.Count; ++i) {
                 IStoryCommand cmd = cmds[i];
-                if (null != cmd.LeadCommand)
-                    queue.Enqueue(cmd.LeadCommand);
+                if (null != cmd.PrologueCommand)
+                    queue.Enqueue(cmd.PrologueCommand);
                 queue.Enqueue(cmd);
+                if (null != cmd.EpilogueCommand)
+                    queue.Enqueue(cmd.EpilogueCommand);
             }
         }
-        private void PrepareElse()
+        private void PrepareElse(StoryMessageHandler handler)
         {
-            foreach (IStoryCommand cmd in m_ElseCommandQueue) {
+            var runtime = StoryRuntime.New();
+            handler.PushRuntime(runtime);
+            var queue = handler.PeekRuntime().CommandQueue;
+            foreach (IStoryCommand cmd in queue) {
                 cmd.Reset();
             }
-            m_ElseCommandQueue.Clear();
+            queue.Clear();
             for (int i = 0; i < m_LoadedElseCommands.Count; ++i) {
                 IStoryCommand cmd = m_LoadedElseCommands[i];
-                if (null != cmd.LeadCommand)
-                    m_ElseCommandQueue.Enqueue(cmd.LeadCommand);
-                m_ElseCommandQueue.Enqueue(cmd);
+                if (null != cmd.PrologueCommand)
+                    queue.Enqueue(cmd.PrologueCommand);
+                queue.Enqueue(cmd);
+                if (null != cmd.EpilogueCommand)
+                    queue.Enqueue(cmd.EpilogueCommand);
             }
         }
 
-        private List<IStoryValue<int>> m_Conditions = new List<IStoryValue<int>>();
-        private Queue<IStoryCommand> m_IfCommandQueue = new Queue<IStoryCommand>();
-        private Queue<IStoryCommand> m_ElseCommandQueue = new Queue<IStoryCommand>();
+        private int m_LocalInfoIndex;
+        private List<IStoryValue<int>> m_LoadedConditions = new List<IStoryValue<int>>();
         private List<List<IStoryCommand>> m_LoadedIfCommands = new List<List<IStoryCommand>>();
         private List<IStoryCommand> m_LoadedElseCommands = new List<IStoryCommand>();
-        private bool m_AlreadyExecute = false;
     }
 }

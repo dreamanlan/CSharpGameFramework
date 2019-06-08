@@ -13,18 +13,18 @@ namespace GameFramework.Story.Commands
     /// </summary>
     public class BlackboardClearCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             BlackboardClearCommand cmd = new BlackboardClearCommand();
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
         
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
@@ -42,7 +42,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     public class BlackboardSetCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             BlackboardSetCommand cmd = new BlackboardSetCommand();
             cmd.m_AttrName = m_AttrName.Clone();
@@ -50,13 +50,13 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_AttrName.Evaluate(instance, iterator, args);
-            m_Value.Evaluate(instance, iterator, args);
+            m_AttrName.Evaluate(instance, handler, iterator, args);
+            m_Value.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
@@ -77,14 +77,14 @@ namespace GameFramework.Story.Commands
         }
 
         private IStoryValue<string> m_AttrName = new StoryValue<string>();
-        private IStoryValue<object> m_Value = new StoryValue();
+        private IStoryValue m_Value = new StoryValue();
     }
     /// <summary>
     /// camerafollow(npc_unit_id1,npc_unit_id2,...)[touser(userid)];
     /// </summary>
     public class CameraFollowCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             CameraFollowCommand cmd = new CameraFollowCommand();
             cmd.m_HaveUserId = m_HaveUserId;
@@ -99,16 +99,16 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             if (m_HaveUserId)
-                m_UserId.Evaluate(instance, iterator, args);
+                m_UserId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_UnitIds.Count; i++) {
-                m_UnitIds[i].Evaluate(instance, iterator, args);
+                m_UnitIds[i].Evaluate(instance, handler, iterator, args);
             }
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
@@ -183,7 +183,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     public class CameraFollowRangeCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             CameraFollowRangeCommand cmd = new CameraFollowRangeCommand();
             cmd.m_HaveUserId = m_HaveUserId;
@@ -197,15 +197,15 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             if (m_HaveUserId)
-                m_UserId.Evaluate(instance, iterator, args);
-            m_BeginUnitId.Evaluate(instance, iterator, args);
-            m_EndUnitId.Evaluate(instance, iterator, args);
+                m_UserId.Evaluate(instance, handler, iterator, args);
+            m_BeginUnitId.Evaluate(instance, handler, iterator, args);
+            m_EndUnitId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
@@ -283,7 +283,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     public class CameraLookCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             CameraLookCommand cmd = new CameraLookCommand();
             cmd.m_HaveUserId = m_HaveUserId;
@@ -296,14 +296,14 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             if (m_HaveUserId)
-                m_UserId.Evaluate(instance, iterator, args);
-            m_Arg.Evaluate(instance, iterator, args);
+                m_UserId.Evaluate(instance, handler, iterator, args);
+            m_Arg.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
@@ -405,14 +405,14 @@ namespace GameFramework.Story.Commands
 
         private bool m_HaveUserId = false;
         private IStoryValue<int> m_UserId = new StoryValue<int>();
-        private IStoryValue<object> m_Arg = new StoryValue();
+        private IStoryValue m_Arg = new StoryValue();
     }
     /// <summary>
     /// camerafollowpath()[touser(userid)];
     /// </summary>
     public class CameraFollowPathCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             CameraFollowPathCommand cmd = new CameraFollowPathCommand();
             cmd.m_HaveUserId = m_HaveUserId;
@@ -424,13 +424,13 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             if (m_HaveUserId)
-                m_UserId.Evaluate(instance, iterator, args);
+                m_UserId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
@@ -488,7 +488,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     public class LockFrameCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             LockFrameCommand cmd = new LockFrameCommand();
             cmd.m_HaveUserId = m_HaveUserId;
@@ -501,14 +501,14 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             if (m_HaveUserId)
-                m_UserId.Evaluate(instance, iterator, args);
-            m_Scale.Evaluate(instance, iterator, args);
+                m_UserId.Evaluate(instance, handler, iterator, args);
+            m_Scale.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
@@ -570,7 +570,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     public class SetLeaderIdCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             SetLeaderIdCommand cmd = new SetLeaderIdCommand();
             cmd.m_ParamNum = m_ParamNum;
@@ -583,15 +583,15 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             if (m_ParamNum > 1) {
-                m_ObjId.Evaluate(instance, iterator, args);
+                m_ObjId.Evaluate(instance, handler, iterator, args);
             }
-            m_LeaderId.Evaluate(instance, iterator, args);
+            m_LeaderId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
@@ -627,7 +627,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     public class ShowDlgCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             ShowDlgCommand cmd = new ShowDlgCommand();
             cmd.m_HaveUserId = m_HaveUserId;
@@ -640,14 +640,14 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             if (m_HaveUserId)
-                m_UserId.Evaluate(instance, iterator, args);
-            m_StoryDlgId.Evaluate(instance, iterator, args);
+                m_UserId.Evaluate(instance, handler, iterator, args);
+            m_StoryDlgId.Evaluate(instance, handler, iterator, args);
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
@@ -706,7 +706,7 @@ namespace GameFramework.Story.Commands
     /// </summary>
     public class AreaDetectCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             AreaDetectCommand cmd = new AreaDetectCommand();
             cmd.m_Pos = m_Pos.Clone();
@@ -724,20 +724,20 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Pos.Evaluate(instance, iterator, args);
-            m_Radius.Evaluate(instance, iterator, args);
-            m_Type.Evaluate(instance, iterator, args);
-            m_EventName.Evaluate(instance, iterator, args);
+            m_Pos.Evaluate(instance, handler, iterator, args);
+            m_Radius.Evaluate(instance, handler, iterator, args);
+            m_Type.Evaluate(instance, handler, iterator, args);
+            m_EventName.Evaluate(instance, handler, iterator, args);
             if (m_HaveSet) {
-                m_SetVar.Evaluate(instance, iterator, args);
-                m_SetVal.Evaluate(instance, iterator, args);
-                m_ElseSetVal.Evaluate(instance, iterator, args);
+                m_SetVar.Evaluate(instance, handler, iterator, args);
+                m_SetVal.Evaluate(instance, handler, iterator, args);
+                m_ElseSetVal.Evaluate(instance, handler, iterator, args);
             }
         }
 
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
@@ -817,8 +817,8 @@ namespace GameFramework.Story.Commands
         private IStoryValue<string> m_Type = new StoryValue<string>();
         private IStoryValue<string> m_EventName = new StoryValue<string>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue<object> m_SetVal = new StoryValue();
-        private IStoryValue<object> m_ElseSetVal = new StoryValue();
+        private IStoryValue m_SetVal = new StoryValue();
+        private IStoryValue m_ElseSetVal = new StoryValue();
         private bool m_HaveSet = false;
     }
 }

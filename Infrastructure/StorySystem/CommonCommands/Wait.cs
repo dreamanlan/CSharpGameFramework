@@ -7,7 +7,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class SleepCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             SleepCommand cmd = new SleepCommand();
             cmd.m_Time = m_Time.Clone();
@@ -19,13 +19,13 @@ namespace StorySystem.CommonCommands
         {
             m_CurTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Time.Evaluate(instance, iterator, args);
+            m_Time.Evaluate(instance, handler, iterator, args);
             if (m_HaveCondition)
-                m_Condition.Evaluate(instance, iterator, args);
+                m_Condition.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_HaveCondition && m_Condition.HaveValue && m_Condition.Value == 0) {
                 return false;
@@ -74,7 +74,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class RealTimeSleepCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             RealTimeSleepCommand cmd = new RealTimeSleepCommand();
             cmd.m_Time = m_Time.Clone();
@@ -86,13 +86,13 @@ namespace StorySystem.CommonCommands
         {
             m_RealStartTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Time.Evaluate(instance, iterator, args);
+            m_Time.Evaluate(instance, handler, iterator, args);
             if (m_HaveCondition)
-                m_Condition.Evaluate(instance, iterator, args);
+                m_Condition.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_HaveCondition && m_Condition.HaveValue && m_Condition.Value == 0) {
                 return false;
@@ -143,7 +143,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class StorySleepCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             StorySleepCommand cmd = new StorySleepCommand();
             cmd.m_Time = m_Time.Clone();
@@ -155,18 +155,18 @@ namespace StorySystem.CommonCommands
         {
             m_CurTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Time.Evaluate(instance, iterator, args);
+            m_Time.Evaluate(instance, handler, iterator, args);
             if (m_HaveCondition)
-                m_Condition.Evaluate(instance, iterator, args);
+                m_Condition.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_HaveCondition && m_Condition.HaveValue && m_Condition.Value == 0) {
                 return false;
             }
-            if (GameFramework.GlobalVariables.Instance.IsStorySkipped && m_CurTime > 0) {
+            if (GameFramework.GlobalVariables.Instance.IsStorySkipped) {
                 return false;
             }
             int curTime = m_CurTime;
@@ -213,7 +213,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class StoryRealTimeSleepCommand : AbstractStoryCommand
     {
-        public override IStoryCommand Clone()
+        protected override IStoryCommand CloneCommand()
         {
             StoryRealTimeSleepCommand cmd = new StoryRealTimeSleepCommand();
             cmd.m_Time = m_Time.Clone();
@@ -225,18 +225,18 @@ namespace StorySystem.CommonCommands
         {
             m_RealStartTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
-            m_Time.Evaluate(instance, iterator, args);
+            m_Time.Evaluate(instance, handler, iterator, args);
             if (m_HaveCondition)
-                m_Condition.Evaluate(instance, iterator, args);
+                m_Condition.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, long delta)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_HaveCondition && m_Condition.HaveValue && m_Condition.Value == 0) {
                 return false;
             }
-            if (GameFramework.GlobalVariables.Instance.IsStorySkipped && m_RealStartTime > 0) {
+            if (GameFramework.GlobalVariables.Instance.IsStorySkipped) {
                 return false;
             }
             if (m_RealStartTime <= 0) {

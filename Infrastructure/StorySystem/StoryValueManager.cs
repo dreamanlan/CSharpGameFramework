@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using ScriptRuntime;
 using GameFramework;
 using LitJson;
+
 namespace StorySystem
 {
     public interface IStoryValueFactory
     {
-        IStoryValue<object> Build();
+        IStoryValue Build();
     }
-    public sealed class StoryValueFactoryHelper<C> : IStoryValueFactory where C : IStoryValue<object>, new()
+    public sealed class StoryValueFactoryHelper<C> : IStoryValueFactory where C : IStoryValue, new()
     {
-        public IStoryValue<object> Build()
+        public IStoryValue Build()
         {
             C c = new C();
             return c;
@@ -79,135 +80,129 @@ namespace StorySystem
             }
             return factory;
         }
-        public IStoryValue<object> CalcValue(Dsl.ISyntaxComponent param)
+        public IStoryValue CalcValue(Dsl.ISyntaxComponent param)
         {
             lock (m_Lock) {
-                if (param.IsValid() && param.GetId().Length == 0) {
-                    //处理括弧
-                    Dsl.CallData callData = param as Dsl.CallData;
-                    if (null != callData) {
-                        switch (callData.GetParamClass()) {
-                            case (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS:
-                                if (callData.GetParamNum() > 0) {
-                                    int ct = callData.GetParamNum();
-                                    return CalcValue(callData.GetParam(ct - 1));
-                                } else {
-                                    //不支持的语法
-                                    return null;
-                                }
-                            case (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET: {
-                                    IStoryValue<object> ret = null;
-                                    IStoryValueFactory factory = GetFactory("jsonarray");
-                                    if (null != factory) {
-                                        try {
-                                            ret = factory.Build();
-                                            ret.InitFromDsl(param);
-                                        } catch (Exception ex) {
-                                            GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
-                                            throw ex;
-                                        }
-                                    }
-                                    return ret;
-                                }
-                            default:
+                Dsl.CallData callData = param as Dsl.CallData;
+                if (null != callData && callData.IsValid() && callData.GetId().Length == 0 && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS || callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET)) {
+                    //处理圆括弧与方括弧
+                    switch (callData.GetParamClass()) {
+                        case (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS:
+                            if (callData.GetParamNum() > 0) {
+                                int ct = callData.GetParamNum();
+                                return CalcValue(callData.GetParam(ct - 1));
+                            } else {
                                 return null;
-                        }
-                    } else {
-                        Dsl.FunctionData funcData = param as Dsl.FunctionData;
-                        if (null != funcData && funcData.HaveStatement()) {
-                            callData = funcData.Call;
-                            if (null == callData || !callData.HaveParam()) {
-                                IStoryValue<object> ret = null;
-                                IStoryValueFactory factory = GetFactory("jsonobject");
+                            }
+                        case (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET: {
+                                IStoryValue ret = null;
+                                IStoryValueFactory factory = GetFactory("list");
                                 if (null != factory) {
                                     try {
                                         ret = factory.Build();
                                         ret.InitFromDsl(param);
                                     } catch (Exception ex) {
-                                        GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
+                                        GameFramework.LogSystem.Error("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
                                         throw ex;
                                     }
                                 }
                                 return ret;
-                            } else {
-                                //不支持的语法
-                                return null;
                             }
+                        default:
+                            return null;
+                    }
+                } else {
+                    Dsl.FunctionData funcData = param as Dsl.FunctionData;
+                    if (null != funcData && funcData.HaveStatement()) {
+                        //处理大括弧
+                        callData = funcData.Call;
+                        if (null == callData || !callData.HaveParam()) {
+                            IStoryValue ret = null;
+                            IStoryValueFactory factory = GetFactory("hashtable");
+                            if (null != factory) {
+                                try {
+                                    ret = factory.Build();
+                                    ret.InitFromDsl(param);
+                                } catch (Exception ex) {
+                                    GameFramework.LogSystem.Error("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
+                                    throw ex;
+                                }
+                            }
+                            return ret;
                         } else {
                             //不支持的语法
                             return null;
                         }
-                    }
-                } else {
-                    Dsl.CallData callData = param as Dsl.CallData;
-                    if (null != callData) {
-                        Dsl.CallData innerCall = callData.Call;
-                        if (callData.IsHighOrder && callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS && (
-                          innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                          innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                          innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                          innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                          innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS
-                          )) {
-                            //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> dotnetcall(obj,member,a,b,...)
-                            string method = innerCall.GetParamId(0);
-                            string apiName;
-                            if (method == "orderby" || method == "orderbydesc" || method == "where" || method == "top") {
-                                apiName = "linq";
-                            } else {
-                                apiName = "dotnetcall";
-                            }
-                            Dsl.CallData newCall = new Dsl.CallData();
-                            newCall.Name = new Dsl.ValueData(apiName, Dsl.ValueData.ID_TOKEN);
-                            newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
-                            if (innerCall.IsHighOrder) {
-                                newCall.Params.Add(innerCall.Call);
-                                newCall.Params.Add(innerCall.GetParam(0));
-                                for (int i = 0; i < callData.GetParamNum(); ++i) {
-                                    Dsl.ISyntaxComponent p = callData.Params[i];
-                                    newCall.Params.Add(p);
+                    } else {
+                        if (null != callData) {
+                            Dsl.CallData innerCall = callData.Call;
+                            if (callData.IsHighOrder && callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS && (
+                                innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                                innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                                innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                                innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                                innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS
+                                )) {
+                                //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> dotnetcall(obj,member,a,b,...)
+                                string method = innerCall.GetParamId(0);
+                                string apiName;
+                                if (method == "orderby" || method == "orderbydesc" || method == "where" || method == "top") {
+                                    apiName = "linq";
+                                } else {
+                                    apiName = "dotnetcall";
                                 }
-                            } else {
-                                newCall.Params.Add(innerCall.Name);
-                                newCall.Params.Add(innerCall.GetParam(0));
-                                for (int i = 0; i < callData.GetParamNum(); ++i) {
-                                    Dsl.ISyntaxComponent p = callData.Params[i];
-                                    newCall.Params.Add(p);
+                                Dsl.CallData newCall = new Dsl.CallData();
+                                newCall.Name = new Dsl.ValueData(apiName, Dsl.ValueData.ID_TOKEN);
+                                newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                                if (innerCall.IsHighOrder) {
+                                    newCall.Params.Add(innerCall.Call);
+                                    newCall.Params.Add(innerCall.GetParam(0));
+                                    for (int i = 0; i < callData.GetParamNum(); ++i) {
+                                        Dsl.ISyntaxComponent p = callData.Params[i];
+                                        newCall.Params.Add(p);
+                                    }
+                                } else {
+                                    newCall.Params.Add(innerCall.Name);
+                                    newCall.Params.Add(innerCall.GetParam(0));
+                                    for (int i = 0; i < callData.GetParamNum(); ++i) {
+                                        Dsl.ISyntaxComponent p = callData.Params[i];
+                                        newCall.Params.Add(p);
+                                    }
                                 }
+                                return CalcValue(newCall);
+                            } else if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                                callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                                callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                                callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                                callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
+                                //obj.property or obj[property] or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
+                                Dsl.CallData newCall = new Dsl.CallData();
+                                newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
+                                newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                                if (callData.IsHighOrder) {
+                                    newCall.Params.Add(callData.Call);
+                                    newCall.Params.Add(callData.GetParam(0));
+                                } else {
+                                    newCall.Params.Add(callData.Name);
+                                    newCall.Params.Add(callData.GetParam(0));
+                                }
+                                return CalcValue(newCall);
                             }
-                            return CalcValue(newCall);
-                        } else if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                          callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                          callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                          callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                          callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
-                            //obj.property or obj[property] or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
-                            Dsl.CallData newCall = new Dsl.CallData();
-                            newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
-                            newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
-                            if (callData.IsHighOrder) {
-                                newCall.Params.Add(callData.Call);
-                                newCall.Params.Add(callData.GetParam(0));
-                            } else {
-                                newCall.Params.Add(callData.Name);
-                                newCall.Params.Add(callData.GetParam(0));
+                        }
+                        IStoryValue ret = null;
+                        string id = param.GetId();
+                        IStoryValueFactory factory = GetFactory(id);
+                        if (null != factory) {
+                            try {
+                                ret = factory.Build();
+                                ret.InitFromDsl(param);
+                            } catch (Exception ex) {
+                                GameFramework.LogSystem.Error("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
+                                throw ex;
                             }
-                            return CalcValue(newCall);
                         }
+                        return ret;
                     }
-                    IStoryValue<object> ret = null;
-                    string id = param.GetId();
-                    IStoryValueFactory factory = GetFactory(id);
-                    if (null != factory) {
-                        try {
-                            ret = factory.Build();
-                            ret.InitFromDsl(param);
-                        } catch (Exception ex) {
-                            GameFramework.LogSystem.Error("value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
-                            throw ex;
-                        }
-                    }
-                    return ret;
                 }
             }
         }

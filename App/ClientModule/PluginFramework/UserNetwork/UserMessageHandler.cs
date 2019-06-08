@@ -321,7 +321,7 @@ namespace GameFramework.Network
         {
             GameFrameworkMessage.GmCode protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.GmCode;
             if (null != protoMsg) {
-                PluginFramework.Instance.ExecCode(protoMsg.m_Content);
+                //PluginFramework.Instance.ExecCode(protoMsg.m_Content);
             }
         }
         private void HandleNewMail(NodeMessage lobbyMsg)

@@ -1,11 +1,12 @@
-﻿<Properties StartupItem="Assembly-CSharp.csproj">
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="..\App\ClientModule\PluginFramework\GameObjects\EntityViewModel_Npc.cs">
+﻿<Properties StartupConfiguration="{34909AA4-4165-362D-6B5E-173C570EDB48}|">
+  <MonoDevelop.Ide.ItemProperties.Unity3d PreferredExecutionTarget="Unity.Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Cs2Lua/Cs2LuaStartup.cs">
     <Files>
-      <File FileName="..\App\ClientModule\PluginFramework\RoomNetWork\MsgHandler.cs" Line="137" Column="4" />
-      <File FileName="..\App\ClientModule\PluginFramework\GameObjects\EntityViewModel_Npc.cs" Line="201" Column="1" />
+      <File FileName="Assets/Scripts/Cs2Lua/Cs2LuaStartup.cs" Line="31" Column="9" />
+      <File FileName="Assets/Scripts/Cs2Lua/Cs2LuaAssembly.cs" Line="33" Column="34" />
     </Files>
   </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
       <Breakpoint file="E:\work\OpenSource\CSharpGameFramework_local\App\ClientModule\ClientModule_Config.cs" line="17" column="1" />
@@ -16,4 +17,5 @@
   <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="d:\work\Client\CsLibrary\App\ClientModule\Common\Message.cs" line="12185" offsetX="396" offsetY="194944" expression="desc" liveUpdate="False" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+  <MultiItemStartupConfigurations />
 </Properties>

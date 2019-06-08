@@ -28,7 +28,7 @@ public class Cs2LuaStartup : MonoBehaviour
         } else {
 #endif
         csObject = PluginManager.Instance.CreateStartup(className);
-            csObject.Start(gameObject, this);
+        csObject.Start(gameObject, this);
 #if !CS2LUA_DEBUG
         }
 #endif

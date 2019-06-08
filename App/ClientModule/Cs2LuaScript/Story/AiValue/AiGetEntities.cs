@@ -19,7 +19,7 @@ public class AiGetEntities : ISimpleStoryValuePlugin
     {
         return new AiGetEntities();
     }
-    public void Evaluate(StoryInstance instance, StoryValueParams _params)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
         m_Proxy.Value = PluginFramework.Instance.EntityManager.Entities.Values;
     }
