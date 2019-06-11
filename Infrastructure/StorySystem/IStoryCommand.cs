@@ -31,6 +31,8 @@ namespace StorySystem
         }
         public string GetId()
         {
+            if (null == m_Config)
+                return string.Empty;
             return m_Config.GetId();
         }
         public Dsl.ISyntaxComponent GetConfig()

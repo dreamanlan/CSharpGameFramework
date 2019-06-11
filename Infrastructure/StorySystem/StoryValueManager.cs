@@ -191,14 +191,16 @@ namespace StorySystem
                         }
                         IStoryValue ret = null;
                         string id = param.GetId();
-                        IStoryValueFactory factory = GetFactory(id);
-                        if (null != factory) {
-                            try {
-                                ret = factory.Build();
-                                ret.InitFromDsl(param);
-                            } catch (Exception ex) {
-                                GameFramework.LogSystem.Error("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
-                                throw ex;
+                        if (param.GetIdType() == Dsl.ValueData.ID_TOKEN) {
+	                        IStoryValueFactory factory = GetFactory(id);
+	                        if (null != factory) {
+	                            try {
+	                                ret = factory.Build();
+	                                ret.InitFromDsl(param);
+	                            } catch (Exception ex) {
+	                                GameFramework.LogSystem.Error("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
+	                                throw ex;
+                                }
                             }
                         }
                         return ret;

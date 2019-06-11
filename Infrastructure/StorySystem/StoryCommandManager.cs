@@ -134,34 +134,36 @@ namespace StorySystem
             }
             IStoryCommand command = null;
             string type = commandConfig.GetId();
-            IStoryCommandFactory factory = GetFactory(type);
-            if (null != factory) {
-                try {
-                    command = factory.Create();
-                    if (!command.Init(commandConfig)) {
-                        GameFramework.LogSystem.Error("[LoadStory] command:{0} line:{1} failed.", commandConfig.ToScriptString(false), commandConfig.GetLine());
-                    }
-                } catch (Exception ex) {
-                    GameFramework.LogSystem.Error("[LoadStory] command:{0} line:{1} failed.", commandConfig.ToScriptString(false), commandConfig.GetLine());
-                    throw ex;
+            if (commandConfig.GetIdType() == Dsl.ValueData.ID_TOKEN) {
+	            IStoryCommandFactory factory = GetFactory(type);
+	            if (null != factory) {
+	                try {
+	                    command = factory.Create();
+	                    if (!command.Init(commandConfig)) {
+	                        GameFramework.LogSystem.Error("[LoadStory] command:{0} line:{1} failed.", commandConfig.ToScriptString(false), commandConfig.GetLine());
+	                    }
+	                } catch (Exception ex) {
+	                    GameFramework.LogSystem.Error("[LoadStory] command:{0} line:{1} failed.", commandConfig.ToScriptString(false), commandConfig.GetLine());
+	                    throw ex;
+	                }
+	            } else {
+#if DEBUG
+	                string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString(false));
+	                throw new Exception(err);
+#else
+                	CsLibrary.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
+#endif
+	            }
+	            if (null != command) {
+	                //CsLibrary.LogSystem.Debug("[LoadStory] CreateCommand, type:{0} command:{1}", type, command.GetType().Name);
+	            } else {
+#if DEBUG
+	                string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString(false));
+	                throw new Exception(err);
+#else
+                	CsLibrary.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
+#endif
                 }
-            } else {
-#if DEBUG
-                string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString(false));
-                throw new Exception(err);
-#else
-                CsLibrary.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
-#endif
-            }
-            if (null != command) {
-                //CsLibrary.LogSystem.Debug("[LoadStory] CreateCommand, type:{0} command:{1}", type, command.GetType().Name);
-            } else {
-#if DEBUG
-                string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString(false));
-                throw new Exception(err);
-#else
-                CsLibrary.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
-#endif
             }
             return command;
         }
