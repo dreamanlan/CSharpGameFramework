@@ -1,0 +1,11 @@
+skill(1)
+{
+  section(100)
+  {
+    animation("Stand");
+  };
+  onstop
+  {
+  	bornfinish();
+  };
+};

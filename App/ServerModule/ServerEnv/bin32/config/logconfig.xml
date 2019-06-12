@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LOGS>
+	<item>
+		<id>0</id>
+		<name>debug</name>
+		<type>0</type>
+	</item>
+	<item>
+		<id>1</id>
+		<name>info</name>
+		<type>0</type>
+	</item>
+	<item>
+		<id>2</id>
+		<name>error</name>
+		<type>1</type>
+	</item>
+	<item>
+		<id>3</id>
+		<name>warn</name>
+		<type>0</type>
+	</item>
+	<item>
+		<id>4</id>
+		<name>monitor</name>
+		<type>1</type>
+	</item>
+</LOGS>
+

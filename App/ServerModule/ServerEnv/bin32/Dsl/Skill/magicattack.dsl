@@ -1,0 +1,33 @@
+skill(5)
+{
+	section(10)
+	{
+    hiteffect(hitEffect, "eyes", 0, 1000, "Stand", 100);
+	};
+  section(1000)
+  {
+    animation("Attack");
+    adjustsectionduration("anim",100);
+    selfeffect(selfEffect,1000,"eyes",0)
+    {
+      transform(vector3(0,1,0));
+    };
+    emiteffect(emitEffect,"eyes",0,10,0);
+  };
+  emitskill
+  {
+    section(10000)
+    {
+    	track(hit,false,200);
+    };
+  };
+	hitskill
+	{
+		section(1000)
+		{
+	    animation(Hit)adjustduration();
+	    selfeffect(hitEffect, 1000, hit, 0);
+	    damage(0);
+		};
+	};
+};
