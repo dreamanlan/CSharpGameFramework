@@ -562,7 +562,12 @@ namespace StorySystem
                 ret = true;
                 Dsl.CallData callData = story.Call;
                 if (null != callData && callData.HaveParam()) {
-                    m_StoryId = callData.GetParamId(0);
+                    int paramNum = callData.GetParamNum();
+                    string[] args = new string[paramNum];
+                    for (int i = 0; i < paramNum; ++i) {
+                        args[i] = callData.GetParamId(i);
+                    }
+                    m_StoryId = string.Join(":", args);
                 }
                 for (int i = 0; i < story.Statements.Count; i++) {
                     if (story.Statements[i].GetId() == "local") {

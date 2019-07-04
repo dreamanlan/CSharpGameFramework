@@ -37,6 +37,16 @@ namespace GameFramework
             get { return m_IsIphone4S; }
             set { m_IsIphone4S = value; }
         }
+        public bool StoryEditorOpen
+        {
+            get { return m_StoryEditorOpen; }
+            set { m_StoryEditorOpen = value; }
+        }
+        public bool StoryEditorContinue
+        {
+            get { return m_StoryEditorContinue; }
+            set { m_StoryEditorContinue = value; }
+        }
 
         public Dictionary<string, string> EncodeTable
         {
@@ -113,6 +123,8 @@ namespace GameFramework
         private bool m_IsPublish = false;
         private bool m_IsIphone4S = false;
 
+        private bool m_StoryEditorOpen = false;
+        private bool m_StoryEditorContinue = false;
         private Dictionary<string, string> m_EncodeTable = new Dictionary<string, string>();
         private Dictionary<string, string> m_DecodeTable = new Dictionary<string, string>();
 

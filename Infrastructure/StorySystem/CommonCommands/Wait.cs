@@ -280,4 +280,47 @@ namespace StorySystem.CommonCommands
         private bool m_HaveCondition = false;
         private int m_RealStartTime = 0;
     }
+    internal sealed class StoryBreakCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            StoryBreakCommand cmd = new StoryBreakCommand();
+            cmd.m_Condition = m_Condition.Clone();
+            cmd.m_HaveCondition = m_HaveCondition;
+            return cmd;
+        }
+        protected override void ResetState()
+        {
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            if (m_HaveCondition)
+                m_Condition.Evaluate(instance, handler, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            if (m_HaveCondition && m_Condition.HaveValue && m_Condition.Value == 0) {
+                return false;
+            }
+            if (GameFramework.GlobalVariables.Instance.IsStorySkipped) {
+                return false;
+            }
+            if (GameFramework.GlobalVariables.Instance.StoryEditorOpen && GameFramework.GlobalVariables.Instance.StoryEditorContinue) {
+                GameFramework.GlobalVariables.Instance.StoryEditorContinue = false;
+                return false;
+            }
+            return true;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_HaveCondition = true;
+                m_Condition.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private IStoryValue<int> m_Condition = new StoryValue<int>();
+        private bool m_HaveCondition = false;
+    }
 }

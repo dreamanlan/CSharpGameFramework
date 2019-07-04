@@ -230,7 +230,7 @@ namespace StorySystem
                 string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
                 throw new Exception(err);
 #else
-        CsLibrary.LogSystem.Error("Unknown value, id:{0}", param.GetId());
+        GameFramework.LogSystem.Error("Unknown value, id:{0}", param.GetId());
 #endif
             }
         }
@@ -453,7 +453,7 @@ namespace StorySystem
                 string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
                 throw new Exception(err);
 #else
-        CsLibrary.LogSystem.Error("Unknown value, id:{0}", param.GetId());
+        GameFramework.LogSystem.Error("Unknown value, id:{0}", param.GetId());
 #endif
             }
         }

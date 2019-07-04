@@ -30,7 +30,11 @@ namespace StorySystem
                     try {
                         dataFile.LoadBinaryFile(file);
                         Load(dataFile, sceneId, _namespace, file);
-                    } catch {
+                    } catch (Exception ex) {
+                        while (null != ex.InnerException) {
+                            ex = ex.InnerException;
+                        }
+                        LogSystem.Error("[LoadStory] LoadStoryText text:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
                     }
                 } else {
                     try {
@@ -40,7 +44,10 @@ namespace StorySystem
                             LogSystem.Error("[LoadStory] LoadStory file:{0} scene:{1} failed", file, sceneId);
                         }
                     } catch (Exception ex) {
-                        LogSystem.Error("[LoadStory] LoadStory file:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
+                        while (null != ex.InnerException) {
+                            ex = ex.InnerException;
+                        }
+                        LogSystem.Error("[LoadStory] LoadStoryText text:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
                     }
                 }
             }
@@ -52,7 +59,11 @@ namespace StorySystem
                     Dsl.DslFile dataFile = new Dsl.DslFile();
                     dataFile.LoadBinaryCode(bytes);
                     Load(dataFile, sceneId, _namespace, file);
-                } catch {
+                } catch (Exception ex) {
+                    while (null != ex.InnerException) {
+                        ex = ex.InnerException;
+                    }
+                    LogSystem.Error("[LoadStory] LoadStoryText text:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
                 }
             } else {
                 try {
@@ -64,6 +75,9 @@ namespace StorySystem
                         LogSystem.Error("[LoadStory] LoadStoryText text:{0} scene:{1} failed", file, sceneId);
                     }
                 } catch (Exception ex) {
+                    while (null != ex.InnerException) {
+                        ex = ex.InnerException;
+                    }
                     LogSystem.Error("[LoadStory] LoadStoryText text:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
                 }
             }

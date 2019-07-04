@@ -135,33 +135,35 @@ namespace StorySystem
             IStoryCommand command = null;
             string type = commandConfig.GetId();
             if (commandConfig.GetIdType() == Dsl.ValueData.ID_TOKEN) {
-	            IStoryCommandFactory factory = GetFactory(type);
-	            if (null != factory) {
-	                try {
-	                    command = factory.Create();
-	                    if (!command.Init(commandConfig)) {
-	                        GameFramework.LogSystem.Error("[LoadStory] command:{0} line:{1} failed.", commandConfig.ToScriptString(false), commandConfig.GetLine());
-	                    }
-	                } catch (Exception ex) {
-	                    GameFramework.LogSystem.Error("[LoadStory] command:{0} line:{1} failed.", commandConfig.ToScriptString(false), commandConfig.GetLine());
-	                    throw ex;
-	                }
-	            } else {
+                IStoryCommandFactory factory = GetFactory(type);
+                if (null != factory) {
+                    try {
+                        command = factory.Create();
+                        if (!command.Init(commandConfig)) {
+                            GameFramework.LogSystem.Error("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
+                        }
+                    } catch (Exception ex) {
+                        GameFramework.LogSystem.Error("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
+                        throw ex;
+                    }
+                } else {
 #if DEBUG
-	                string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString(false));
-	                throw new Exception(err);
+                    string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false));
+                    GameFramework.LogSystem.Error("{0}", err);
+                    throw new Exception(err);
 #else
-                	CsLibrary.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
+                GameFramework.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
 #endif
-	            }
-	            if (null != command) {
-	                //CsLibrary.LogSystem.Debug("[LoadStory] CreateCommand, type:{0} command:{1}", type, command.GetType().Name);
-	            } else {
+                }
+                if (null != command) {
+                    //GameFramework.LogSystem.Debug("[LoadStory] CreateCommand, type:{0} command:{1}", type, command.GetType().Name);
+                } else {
 #if DEBUG
-	                string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}", commandConfig.GetLine(), commandConfig.ToScriptString(false));
-	                throw new Exception(err);
+                    string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false));
+                    GameFramework.LogSystem.Error("{0}", err);
+                    throw new Exception(err);
 #else
-                	CsLibrary.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
+                GameFramework.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
 #endif
                 }
             }
@@ -204,6 +206,7 @@ namespace StorySystem
             RegisterCommandFactory("storysleep", new StoryCommandFactoryHelper<CommonCommands.StorySleepCommand>());
             RegisterCommandFactory("storyrealtimewait", new StoryCommandFactoryHelper<CommonCommands.StoryRealTimeSleepCommand>());
             RegisterCommandFactory("storyrealtimesleep", new StoryCommandFactoryHelper<CommonCommands.StoryRealTimeSleepCommand>());
+            RegisterCommandFactory("storybreak", new StoryCommandFactoryHelper<CommonCommands.StoryBreakCommand>());
             RegisterCommandFactory("terminate", new StoryCommandFactoryHelper<CommonCommands.TerminateCommand>());
             RegisterCommandFactory("pause", new StoryCommandFactoryHelper<CommonCommands.PauseCommand>());
             RegisterCommandFactory("localmessage", new CommonCommands.LocalMessageCommandFactory());
@@ -242,10 +245,10 @@ namespace StorySystem
             RegisterCommandFactory("system", new StoryCommandFactoryHelper<CommonCommands.SystemCommand>());
             RegisterCommandFactory("writealllines", new StoryCommandFactoryHelper<CommonCommands.WriteAllLinesCommand>());
             RegisterCommandFactory("writefile", new StoryCommandFactoryHelper<CommonCommands.WriteFileCommand>());
-            RegisterCommandFactory("Hashtableadd", new StoryCommandFactoryHelper<CommonCommands.HashtableAddCommand>());
-            RegisterCommandFactory("Hashtableset", new StoryCommandFactoryHelper<CommonCommands.HashtableSetCommand>());
-            RegisterCommandFactory("Hashtableremove", new StoryCommandFactoryHelper<CommonCommands.HashtableRemoveCommand>());
-            RegisterCommandFactory("Hashtableclear", new StoryCommandFactoryHelper<CommonCommands.HashtableClearCommand>());
+            RegisterCommandFactory("hashtableadd", new StoryCommandFactoryHelper<CommonCommands.HashtableAddCommand>());
+            RegisterCommandFactory("hashtableset", new StoryCommandFactoryHelper<CommonCommands.HashtableSetCommand>());
+            RegisterCommandFactory("hashtableremove", new StoryCommandFactoryHelper<CommonCommands.HashtableRemoveCommand>());
+            RegisterCommandFactory("hashtableclear", new StoryCommandFactoryHelper<CommonCommands.HashtableClearCommand>());
             //注册通用值与内部函数
             //object
             StoryValueManager.Instance.RegisterValueFactory("namespace", new StoryValueFactoryHelper<CommonValues.NamespaceValue>());

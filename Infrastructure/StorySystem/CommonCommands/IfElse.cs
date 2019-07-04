@@ -141,7 +141,7 @@ namespace StorySystem.CommonCommands
                             string err = string.Format("[StoryDsl] else must be the last function !!! line:{0}", functionData.GetLine());
                             throw new Exception(err);
 #else
-              CsLibrary.LogSystem.Error("[StoryDsl] else must be the last function !!!");
+              GameFramework.LogSystem.Error("[StoryDsl] else must be the last function !!!");
 #endif
                         }
                     }
