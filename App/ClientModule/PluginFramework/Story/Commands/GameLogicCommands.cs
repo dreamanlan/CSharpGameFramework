@@ -1647,7 +1647,7 @@ namespace GameFramework.Story.Commands
             string prefab = m_Prefab.Value;
             string dslfile = m_DslFile.Value;
             int dontDestroyOld = m_DontDestroyOld.Value;
-            GfxStorySystem.Instance.PreloadNamespacedStory(name, dslfile);
+            GfxStorySystem.Instance.LoadStory(name, dslfile);
             UnityEngine.GameObject asset = UiResourceSystem.Instance.GetUiResource(prefab) as UnityEngine.GameObject;
             if (null != asset) {
                 if (dontDestroyOld <= 0) {

@@ -37,7 +37,7 @@ namespace GameFramework
 
             ServerStorySystem.ThreadInitMask();
             m_StorySystem.ClearStoryInstancePool();
-            m_StorySystem.PreloadSceneStories();
+            m_StorySystem.LoadSceneStories();
             m_StorySystem.StartStory("local_main");
             m_StorySystem.StartStory("story_main");
         }

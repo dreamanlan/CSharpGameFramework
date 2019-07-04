@@ -41,7 +41,7 @@ namespace GameFramework
                 GfxStorySystem.Instance.ClearStoryInstancePool();
                 StorySystem.StoryConfigManager.Instance.Clear();
                 GfxStorySystem.Instance.SceneId = m_SceneId;
-                GfxStorySystem.Instance.PreloadSceneStories();
+                GfxStorySystem.Instance.LoadSceneStories();
                 GfxStorySystem.Instance.StartStory("local_main");
                 if (IsMainUiScene) {
                     GfxStorySystem.Instance.StartStory("story_main");
@@ -193,7 +193,7 @@ namespace GameFramework
         }
         public void Preload()
         {
-            GfxStorySystem.Instance.PreloadSceneStories();
+            GfxStorySystem.Instance.LoadSceneStories();
             GfxStorySystem.Instance.StartStory("local_main");
             if (IsMainUiScene) {
                 GfxStorySystem.Instance.StartStory("story_main");
@@ -308,7 +308,7 @@ namespace GameFramework
             m_IsBattleState = true;
 
             m_BattleSceneId = lvl.id;
-            GfxStorySystem.Instance.PreloadBattleStories(lvl.id);
+            GfxStorySystem.Instance.LoadBattleStories(lvl.id);
             GfxStorySystem.Instance.StartStory("battle_main");
 
             if (lvl.type == (int)SceneTypeEnum.Battle) {
@@ -851,7 +851,7 @@ namespace GameFramework
                     TableConfig.UI ui = TableConfig.UIProvider.Instance.GetUI(uiId);
                     if (null != ui) {
                         if (!string.IsNullOrEmpty(ui.dsl) && !string.IsNullOrEmpty(ui.name)) {
-                            GfxStorySystem.Instance.PreloadNamespacedStory(ui.name, ui.dsl);
+                            GfxStorySystem.Instance.LoadStory(ui.name, ui.dsl);
                         }
                     }
                 }

@@ -189,7 +189,7 @@ namespace GameFramework
                         }
                         StorySystem.StoryConfigManager.Instance.Clear();
                         scene.StorySystem.ClearStoryInstancePool();
-                        scene.StorySystem.PreloadSceneStories();
+                        scene.StorySystem.LoadSceneStories();
                         scene.StorySystem.StartStory("local_main");
                         scene.StorySystem.StartStory("story_main");
                         break;

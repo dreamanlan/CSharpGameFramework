@@ -251,7 +251,7 @@ namespace GameFramework.Story
             }
             m_StoryLogicInfos.Clear();
         }
-        public void PreloadSceneStories()
+        public void LoadSceneStories()
         {
             TableConfig.Level cfg = TableConfig.LevelProvider.Instance.GetLevel(m_SceneId);
             if (null != cfg) {
@@ -274,7 +274,7 @@ namespace GameFramework.Story
                 }
             }
         }
-        public void PreloadBattleStories(int sceneId)
+        public void LoadBattleStories(int sceneId)
         {
             TableConfig.Level cfg = TableConfig.LevelProvider.Instance.GetLevel(sceneId);
             if (null != cfg) {
@@ -297,7 +297,7 @@ namespace GameFramework.Story
                 }
             }
         }
-        public void PreloadNamespacedStory(string _namespace, string file)
+        public void LoadStory(string _namespace, string file)
         {
             string filePath = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + file);
             StoryConfigManager.Instance.LoadStories(0, _namespace, filePath);
@@ -308,7 +308,7 @@ namespace GameFramework.Story
                 }
             }
         }
-        public void PreloadAiStory(string _namespace, string file)
+        public void LoadAiStory(string _namespace, string file)
         {
             string filePath = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + file);
             StoryConfigManager.Instance.LoadStories(0, _namespace, filePath);
@@ -328,13 +328,49 @@ namespace GameFramework.Story
             m_AiStoryInstancePool.Clear();
         }
 
-        public AiStoryInstanceInfo NewAiStoryInstance(string storyId)
+        public AiStoryInstanceInfo NewAiStoryInstance(string storyId, string _namespace, params string[] aiFiles)
         {
-            return NewAiStoryInstance(storyId, string.Empty);
-        }
-        public AiStoryInstanceInfo NewAiStoryInstance(string storyId, string _namespace, params string[] overloadFiles)
-        {
-            return NewAiStoryInstance(storyId, _namespace, true, overloadFiles);
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }
+            AiStoryInstanceInfo instInfo = GetUnusedAiStoryInstanceInfoFromPool(storyId);
+            if (null == instInfo) {
+                int ct;
+                string[] filePath;
+                ct = aiFiles.Length;
+                filePath = new string[ct];
+                for (int i = 0; i < ct; i++) {
+                    filePath[i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + aiFiles[i]);
+                }
+                StoryConfigManager.Instance.LoadStories(0, _namespace, filePath);
+                StoryInstance instance = StoryConfigManager.Instance.NewStoryInstance(storyId, 0);
+                if (instance == null) {
+                    LogSystem.Error("Can't load story config, story:{0} scene:{1} !", storyId, m_SceneId);
+                    return null;
+                }
+                for (int ix = 0; ix < filePath.Length; ++ix) {
+                    Dictionary<string, StoryInstance> stories = StoryConfigManager.Instance.GetStories(filePath[ix]);
+                    if (null != stories) {
+                        foreach (KeyValuePair<string, StoryInstance> pair in stories) {
+                            if (pair.Key != storyId) {
+                                AiStoryInstanceInfo info = new AiStoryInstanceInfo();
+                                info.m_StoryInstance = pair.Value.Clone();
+                                info.m_IsUsed = false;
+                                AddAiStoryInstanceInfoToPool(pair.Key, info);
+                            }
+                        }
+                    }
+                }
+                AiStoryInstanceInfo res = new AiStoryInstanceInfo();
+                res.m_StoryInstance = instance;
+                res.m_IsUsed = true;
+
+                AddAiStoryInstanceInfoToPool(storyId, res);
+                return res;
+            } else {
+                instInfo.m_IsUsed = true;
+                return instInfo;
+            }
         }
         public void RecycleAiStoryInstance(AiStoryInstanceInfo info)
         {
@@ -364,13 +400,107 @@ namespace GameFramework.Story
             }
             return GetStoryInstance(storyId);
         }
+        public void StartStories(string storyId)
+        {
+            StartStories(storyId, string.Empty);
+        }
+        public void StartStories(string storyId, string _namespace)
+        {
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }            
+            int ct = m_StoryLogicInfos.Count;
+            for(int i = ct - 1; i >= 0; --i) {
+                var info = m_StoryLogicInfos[i];
+                if (IsMatch(info.StoryId, storyId)) {
+                    info.Context = null;
+                    info.GlobalVariables = m_GlobalVariables;
+                    info.Start();
+
+                    LogSystem.Info("StartStory {0} scene {1}", info.StoryId, m_SceneId);
+                }
+            }
+        }
+        public void PauseStories(string storyId, bool pause)
+        {
+            PauseStories(storyId, string.Empty, pause);
+        }
+        public void PauseStories(string storyId, string _namespace, bool pause)
+        {
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }
+            int count = m_StoryLogicInfos.Count;
+            for (int index = count - 1; index >= 0; --index) {
+                StoryInstance info = m_StoryLogicInfos[index];
+                if (IsMatch(info.StoryId, storyId)) {
+                    info.IsPaused = pause;
+                }
+            }
+        }
+        public void StopStories(string storyId)
+        {
+            StopStories(storyId, string.Empty);
+        }
+        public void StopStories(string storyId, string _namespace)
+        {
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }
+            int count = m_StoryLogicInfos.Count;
+            for (int index = count - 1; index >= 0; --index) {
+                StoryInstance info = m_StoryLogicInfos[index];
+                if (IsMatch(info.StoryId, storyId)) {
+                    m_StoryLogicInfos.RemoveAt(index);
+                }
+            }
+        }
+        public int CountStories(string storyId)
+        {
+            return CountStories(storyId, string.Empty);
+        }
+        public int CountStories(string storyId, string _namespace)
+        {
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }
+            int ct = 0;
+            int count = m_StoryLogicInfos.Count;
+            for (int index = count - 1; index >= 0; --index) {
+                StoryInstance info = m_StoryLogicInfos[index];
+                if (null != info && IsMatch(info.StoryId, storyId) && !info.IsInTick) {
+                    ++ct;
+                }
+            }
+            return ct;
+        }
+        public void MarkStoriesTerminated(string storyId)
+        {
+            MarkStoriesTerminated(storyId, string.Empty);
+        }
+        public void MarkStoriesTerminated(string storyId, string _namespace)
+        {
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }
+            int count = m_StoryLogicInfos.Count;
+            for (int index = count - 1; index >= 0; --index) {
+                StoryInstance info = m_StoryLogicInfos[index];
+                if (IsMatch(info.StoryId, storyId)) {
+                    info.IsTerminated = true;
+                }
+            }
+        }
         public void StartStory(string storyId)
         {
             StartStory(storyId, string.Empty);
         }
         public void StartStory(string storyId, string _namespace, params string[] overloadFiles)
         {
-            StoryInstance inst = NewStoryInstance(storyId, _namespace, true, overloadFiles);
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }
+            StoryInstance inst = GetStoryInstance(storyId);
             if (null != inst) {
                 m_StoryLogicInfos.Add(inst);
                 inst.Context = null;
@@ -378,6 +508,8 @@ namespace GameFramework.Story
                 inst.Start();
 
                 LogSystem.Info("StartStory {0}", storyId);
+            } else {
+                LogSystem.Error("Can't load story, story:{0} scene:{1} !", storyId, m_SceneId);
             }
         }
         public void PauseStory(string storyId, bool pause)
@@ -533,60 +665,6 @@ namespace GameFramework.Story
             }
         }
 
-        private StoryInstance NewStoryInstance(string storyId, string _namespace, bool logIfNotFound, params string[] overloadFiles)
-        {
-            if (!string.IsNullOrEmpty(_namespace)) {
-                storyId = string.Format("{0}:{1}", _namespace, storyId);
-            }
-            StoryInstance instance = GetStoryInstance(storyId);
-            if (null == instance) {
-                TableConfig.Level cfg = TableConfig.LevelProvider.Instance.GetLevel(m_SceneId);
-                if (null != cfg) {
-                    string[] filePath;
-                    if (overloadFiles.Length <= 0) {
-                        int ct1 = cfg.SceneDslFile.Count;
-                        int ct2 = cfg.ClientDslFile.Count;
-                        filePath = new string[ct1 + ct2];
-                        for (int i = 0; i < ct1; i++) {
-                            filePath[i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + cfg.SceneDslFile[i]);
-                        }
-                        for (int i = 0; i < ct2; i++) {
-                            filePath[ct1 + i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + cfg.ClientDslFile[i]);
-                        }
-                    } else {
-                        int ct = overloadFiles.Length;
-                        filePath = new string[ct];
-                        for (int i = 0; i < ct; i++) {
-                            filePath[i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + overloadFiles[i]);
-                        }
-                    }
-                    StoryConfigManager.Instance.LoadStories(0, _namespace, filePath);
-                    instance = StoryConfigManager.Instance.NewStoryInstance(storyId, 0);
-                    if (instance == null) {
-                        if (logIfNotFound)
-                            LogSystem.Error("Can't load story config, story:{0} scene:{1} !", storyId, m_SceneId);
-                        return null;
-                    }
-                    for (int ix = 0; ix < filePath.Length; ++ix) {
-                        Dictionary<string, StoryInstance> stories = StoryConfigManager.Instance.GetStories(filePath[ix]);
-                        if (null != stories) {
-                            foreach (KeyValuePair<string, StoryInstance> pair in stories) {
-                                if (pair.Key != storyId)
-                                    AddStoryInstance(pair.Key, pair.Value.Clone());
-                            }
-                        }
-                    }
-                    AddStoryInstance(storyId, instance);
-                    return instance;
-                } else {
-                    if (logIfNotFound)
-                        LogSystem.Error("Can't find story config, story:{0} scene:{1} !", storyId, m_SceneId);
-                    return null;
-                }
-            } else {
-                return instance;
-            }
-        }
         private void AddStoryInstance(string storyId, StoryInstance info)
         {
             if (!m_StoryInstancePool.ContainsKey(storyId)) {
@@ -610,51 +688,6 @@ namespace GameFramework.Story
             Dsl.DslFile file2 = CustomCommandValueParser.LoadStory(valFile);
             CustomCommandValueParser.FirstParse(file1, file2);
             CustomCommandValueParser.FinalParse(file1, file2);
-        }
-        private AiStoryInstanceInfo NewAiStoryInstance(string storyId, string _namespace, bool logIfNotFound, params string[] overloadFiles)
-        {
-            if (!string.IsNullOrEmpty(_namespace)) {
-                storyId = string.Format("{0}:{1}", _namespace, storyId);
-            }
-            AiStoryInstanceInfo instInfo = GetUnusedAiStoryInstanceInfoFromPool(storyId);
-            if (null == instInfo) {
-                int ct;
-                string[] filePath;
-                ct = overloadFiles.Length;
-                filePath = new string[ct];
-                for (int i = 0; i < ct; i++) {
-                    filePath[i] = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + overloadFiles[i]);
-                }
-                StoryConfigManager.Instance.LoadStories(0, _namespace, filePath);
-                StoryInstance instance = StoryConfigManager.Instance.NewStoryInstance(storyId, 0);
-                if (instance == null) {
-                    if (logIfNotFound)
-                        LogSystem.Error("Can't load story config, story:{0} scene:{1} !", storyId, m_SceneId);
-                    return null;
-                }
-                for (int ix = 0; ix < filePath.Length; ++ix) {
-                    Dictionary<string, StoryInstance> stories = StoryConfigManager.Instance.GetStories(filePath[ix]);
-                    if (null != stories) {
-                        foreach (KeyValuePair<string, StoryInstance> pair in stories) {
-                            if (pair.Key != storyId) {
-                                AiStoryInstanceInfo info = new AiStoryInstanceInfo();
-                                info.m_StoryInstance = pair.Value.Clone();
-                                info.m_IsUsed = false;
-                                AddAiStoryInstanceInfoToPool(pair.Key, info);
-                            }
-                        }
-                    }
-                }
-                AiStoryInstanceInfo res = new AiStoryInstanceInfo();
-                res.m_StoryInstance = instance;
-                res.m_IsUsed = true;
-
-                AddAiStoryInstanceInfoToPool(storyId, res);
-                return res;
-            } else {
-                instInfo.m_IsUsed = true;
-                return instInfo;
-            }
         }
         private void AddAiStoryInstanceInfoToPool(string storyId, AiStoryInstanceInfo info)
         {
@@ -681,6 +714,12 @@ namespace GameFramework.Story
                 }
             }
             return info;
+        }
+        private bool IsMatch(string realId, string prefixId)
+        {
+            if (realId == prefixId || realId.Length > prefixId.Length && realId.StartsWith(prefixId) && realId[prefixId.Length] == ':')
+                return true;
+            return false;
         }
 
         private GfxStorySystem() { }
