@@ -27,47 +27,6 @@ namespace SLua
     
     public class CustomExport
     {
-        public static void OnAddCustomServerClass(LuaCodeGen.ExportGenericDelegate add)
-        {
-            add(typeof(System.Func<int>), null);
-            add(typeof(System.Action<int, string>), null);
-            add(typeof(System.Action<int, Dictionary<int, object>>), null);
-            add(typeof(string), "System.String");
-            add(typeof(System.Array), "System.Array");
-            add(typeof(System.Collections.ArrayList), "System.ArrayList");
-            add(typeof(System.Collections.Hashtable), "System.Collections.Hashtable");
-            add(typeof(System.SByte), "System.SByte");
-            add(typeof(System.Byte), "System.Byte");
-            add(typeof(System.Int16), "System.Int16");
-            add(typeof(System.UInt16), "System.UInt16");
-            add(typeof(System.Int32), "System.Int32");
-            add(typeof(System.UInt32), "System.UInt32");
-            add(typeof(System.Int64), "System.Int64");
-            add(typeof(System.UInt64), "System.UInt64");
-            add(typeof(System.Single), "System.Single");
-            add(typeof(System.Double), "System.Double");
-            add(typeof(System.Convert), "System.Convert");
-            add(typeof(System.TypeCode), "System.TypeCode");
-            add(typeof(System.Type), "System.Type");
-            add(typeof(System.IO.File), "System.IO.File");
-            add(typeof(System.IO.Path), "System.IO.Path");
-            add(typeof(System.DateTime), "System.DateTime");
-            add(typeof(System.TimeSpan), "System.TimeSpan");
-            add(typeof(System.Math), "System.Math");
-
-            // add your custom class here
-            // add( type, typename)
-            // type is what you want to export
-            // typename used for simplify generic type name or rename, like List<int> named to "ListInt", if not a generic type keep typename as null or rename as new type name
-        }
-
-        public static void OnAddCustomServerAssembly(ref List<string> list)
-        {
-            // add your custom assembly here
-            // you can build a dll for 3rd library like ngui titled assembly name "NGUI", put it in Assets folder
-            // add its name into list, slua will generate all exported interface automatically for you
-
-        }
 
         public static void OnGetAssemblyToGenerateExtensionMethod(out List<string> list) {
             list = new List<string> {
@@ -108,6 +67,12 @@ namespace SLua
             // type is what you want to export
             // typename used for simplify generic type name or rename, like List<int> named to "ListInt", if not a generic type keep typename as null or rename as new type name
         }
+        public static HashSet<string> OnAddCustomNamespace()
+        {
+            return new HashSet<string> {
+                //"NLuaTest.Mock"
+            };
+        }
 
         public static void OnAddCustomAssembly(ref List<string> list)
         {
@@ -126,28 +91,27 @@ namespace SLua
             list.Add("SkillSystem");
             list.Add("StorySystem");
         }
-
-        public static HashSet<string> OnAddCustomNamespace()
-        {
-            return new HashSet<string>
-            {
-                //"NLuaTest.Mock"
-            };
-        }
-
-        // if uselist return a white list, don't check noUseList(black list) again
-        public static void OnGetUseList(out List<string> list)
+        
+        public static void OnGetCustomAssemblyNoUseList(out List<string> list)
         {
             list = new List<string>
             {
-                //"UnityEngine.GameObject",
             };
         }
 
         public static List<string> FunctionFilterList = new List<string>()
         {
-            "UIWidget.showHandles",
-            "UIWidget.showHandlesWithMoveTool",
+            "System.Single.IsFinite",
+            "System.Double.IsFinite",
+			"System.Type.IsSZArray",
+            "System.IO.Stream.CopyToAsync",
+            "System.IO.Stream.FlushAsync",
+            "System.IO.Stream.ReadAsync",
+            "System.IO.Stream.BeginRead",
+            "System.IO.Stream.EndRead",
+            "System.IO.Stream.WriteAsync",
+            "System.IO.Stream.BeginWrite",
+            "System.IO.Stream.EndWrite",
         };
         // black list if white list not given
         public static void OnGetNoUseList(out List<string> list)
@@ -241,6 +205,7 @@ namespace SLua
                 "Raycast2DCallback",
                 "Raycast3DCallback",
                 "DeallocateDelegate",
+                "Unsafe",
             };
         }
     }

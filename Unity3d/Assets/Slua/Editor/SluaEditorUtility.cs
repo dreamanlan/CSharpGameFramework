@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using LuaInterface;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -81,7 +80,7 @@ namespace SLua
 
                     if (_instance_slua_setting == null) {
                         _instance_slua_setting = SLuaSetting.CreateInstance<SLuaSetting>();
-                        AssetDatabase.CreateAsset(_instance_slua_setting, "Assets/Slua/Resources/setting.asset");
+                        AssetDatabase.CreateAsset(_instance_slua_setting, "Assets/Slua/Meta/Resources/setting.asset");
                     }
                 }
 #endif

@@ -63,10 +63,19 @@ namespace SLua
 
 			#if !SLUA_STANDALONE
 			#if !USE_STATIC_BINDER
-			Assembly[] ams = AppDomain.CurrentDomain.GetAssemblies();
+            var ams = new List<Assembly>();
+            ams.AddRange(AppDomain.CurrentDomain.GetAssemblies());
+            
+            /*
+            var assemblyName = "SluaExport";
+            if (null == ams.Find(a => a.FullName.Contains(assemblyName))) {
+                Assembly assembly = Assembly.Load(assemblyName);
+                ams.Add(assembly);
+            }
+            */
 
 			List<Type> bindlist = new List<Type>();
-			for (int n = 0; n < ams.Length;n++ )
+			for (int n = 0; n < ams.Count;n++ )
 			{
 				Assembly a = ams[n];
 				Type[] ts = null;

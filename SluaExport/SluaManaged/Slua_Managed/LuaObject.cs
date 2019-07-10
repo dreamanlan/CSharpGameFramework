@@ -919,77 +919,101 @@ return index
 			return matchType(l, p, t, t1);
 		}
 
-		public static bool matchType(IntPtr l, int total, int from, Type t1)
+		public static bool matchType(IntPtr l, string signature, int total, int from, Type t1)
 		{
-			if (total - from + 1 != 1)
+			if (total - from != 1)
 				return false;
-
-			return matchType(l, from, t1);
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
+            return matchType(l, from, t1);
 		}
 
-		public static bool matchType(IntPtr l, int total, int from, Type t1, Type t2)
+		public static bool matchType(IntPtr l, string signature, int total, int from, Type t1, Type t2)
 		{
-			if (total - from + 1 != 2)
+			if (total - from != 2)
 				return false;
-
-			return matchType(l, from, t1) && matchType(l, from + 1, t2);
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
+            return matchType(l, from, t1) && matchType(l, from + 1, t2);
 		}
 
-		public static bool matchType(IntPtr l, int total, int from, Type t1, Type t2, Type t3)
+		public static bool matchType(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3)
 		{
-			if (total - from + 1 != 3)
+			if (total - from != 3)
 				return false;
-
-			return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3);
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
+            return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3);
 		}
 
-		public static bool matchType(IntPtr l, int total, int from, Type t1, Type t2, Type t3, Type t4)
+		public static bool matchType(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4)
 		{
-			if (total - from + 1 != 4)
+			if (total - from != 4)
 				return false;
-
-			return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4);
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
+            return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4);
 		}
 
-		public static bool matchType(IntPtr l, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5)
+		public static bool matchType(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5)
 		{
-			if (total - from + 1 != 5)
+			if (total - from != 5)
 				return false;
-
-			return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
+            return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
 				&& matchType(l, from + 4, t5);
 		}
 
 		public static bool matchType
-			(IntPtr l, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6)
+			(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6)
 		{
-			if (total - from + 1 != 6)
+			if (total - from != 6)
 				return false;
-
-			return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
+            return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
 				&& matchType(l, from + 4, t5)
 				&& matchType(l, from + 5, t6);
 		}
 
 		public static bool matchType
-			(IntPtr l, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7)
+			(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7)
 		{
-			if (total - from + 1 != 7)
+			if (total - from != 7)
 				return false;
-
-			return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
+            return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
 				&& matchType(l, from + 4, t5)
 				&& matchType(l, from + 5, t6)
 				&& matchType(l, from + 6, t7);
 		}
 
 		public static bool matchType
-			(IntPtr l, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7,Type t8)
+			(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7,Type t8)
 		{
-			if (total - from + 1 != 8)
+			if (total - from != 8)
 				return false;
-
-			return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
+            return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
 				&& matchType(l, from + 4, t5)
 				&& matchType(l, from + 5, t6)
 				&& matchType(l, from + 6, t7)
@@ -998,12 +1022,15 @@ return index
 
 
 		public static bool matchType
-			(IntPtr l, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7,Type t8,Type t9)
+			(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7,Type t8,Type t9)
 		{
-			if (total - from + 1 != 9)
+			if (total - from != 9)
 				return false;
-
-			return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
+            return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
 				&& matchType(l, from + 4, t5)
 				&& matchType(l, from + 5, t6)
 				&& matchType(l, from + 6, t7)
@@ -1012,12 +1039,15 @@ return index
 		}
 
 		public static bool matchType
-			(IntPtr l, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7,Type t8,Type t9,Type t10)
+			(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7,Type t8,Type t9,Type t10)
 		{
-			if (total - from + 1 != 10)
+			if (total - from != 10)
 				return false;
-			
-			return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
+            return matchType(l, from, t1) && matchType(l, from + 1, t2) && matchType(l, from + 2, t3) && matchType(l, from + 3, t4)
 				&& matchType(l, from + 4, t5)
 					&& matchType(l, from + 5, t6)
 					&& matchType(l, from + 6, t7)
@@ -1026,11 +1056,14 @@ return index
 					&& matchType(l, from + 9, t10);
 		}
 
-        public static bool matchType(IntPtr l, int total, int from, params Type[] t)
+        public static bool matchType(IntPtr l, string signature, int total, int from, params Type[] t)
         {
-            if (total - from + 1 != t.Length)
+            if (total - from != t.Length)
                 return false;
-
+            string sig;
+            if (!checkType(l, from, out sig) || sig != signature)
+                return false;
+            ++from;
             for (int i = 0; i < t.Length; ++i)
             {
                 if (!matchType(l, from + i, t[i]))
@@ -1064,7 +1097,7 @@ return index
 		{
 			LuaState state = LuaState.get(l);
 
-			LuaDLL.lua_pushvalue(l, p); // push function
+            LuaDLL.lua_pushvalue(l, p); // push function
 
 			int fref = LuaDLL.luaL_ref(l, LuaIndexes.LUA_REGISTRYINDEX); // new ref function
 			LuaDelegate f = new LuaDelegate(l, fref);
@@ -1094,7 +1127,16 @@ return index
 		{
 			if (LuaDLL.lua_type(l, p) == LuaTypes.LUA_TTABLE)
 			{
-				int n = LuaDLL.lua_rawlen(l, p);
+				int n;
+                int r = LuaDLL.lua_getmetatable(l, p);
+                if (r != 0) {
+                    LuaDLL.lua_pushstring(l, "__count");
+                    LuaDLL.lua_gettable(l, -2);
+                    n = LuaDLL.lua_tointeger(l, -1);
+                    LuaDLL.lua_pop(l, 2);
+                } else {
+                    n = LuaDLL.lua_rawlen(l, p);
+                }
 				ta = new T[n];
 				for (int k = 0; k < n; k++)
 				{
@@ -1106,18 +1148,28 @@ return index
 			}
 			else
 			{
-				Array array = checkObj(l, p) as Array;
-				if (array == null)
+                var obj = checkObj(l, p);
+				Array array = obj as Array;
+                if (null != obj && null == array)
 					throw new ArgumentException ("expect array");
 				ta = array as T[];
-				return ta!=null;
+                return ta != null;
 			}
 		}
 
         static public bool checkArray<T>(IntPtr l, int p, out T[][] ta)
         {
             if (LuaDLL.lua_type(l, p) == LuaTypes.LUA_TTABLE) {
-                int n = LuaDLL.lua_rawlen(l, p);
+                int n;
+                int r = LuaDLL.lua_getmetatable(l, p);
+                if (r != 0) {
+                    LuaDLL.lua_pushstring(l, "__count");
+                    LuaDLL.lua_gettable(l, -2);
+                    n = LuaDLL.lua_tointeger(l, -1);
+                    LuaDLL.lua_pop(l, 2);
+                } else {
+                    n = LuaDLL.lua_rawlen(l, p);
+                }
                 ta = new T[n][];
                 for (int k = 0; k < n; k++) {
                     LuaDLL.lua_rawgeti(l, p, k + 1);
@@ -1456,13 +1508,20 @@ return index
 
 					LuaDLL.lua_rawgeti(l, p, 1);
 					LuaDLL.lua_pushstring(l, "+=");
-					if (LuaDLL.lua_rawequal(l, -1, -2) == 1)
-						op = 1;
-					else
-						op = 2;
+					LuaDLL.lua_pushstring(l, "-=");
+                    if (LuaDLL.lua_rawequal(l, -2, -3) == 1)
+                        op = 1;
+                    else if (LuaDLL.lua_rawequal(l, -1, -3) == 1)
+                        op = 2;
+                    else
+                        op = 0;
 
-					LuaDLL.lua_pop(l, 2);
-					LuaDLL.lua_rawgeti(l, p, 2);
+					LuaDLL.lua_pop(l, 3);
+                    if (op == 0) {
+                        LuaDLL.lua_rawgeti(l, p, 1);
+                    } else {
+                        LuaDLL.lua_rawgeti(l, p, 2);
+                    }
 					break;
 				case LuaTypes.LUA_TFUNCTION:
 					LuaDLL.lua_pushvalue(l, p);

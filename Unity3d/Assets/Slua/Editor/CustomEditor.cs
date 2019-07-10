@@ -2,7 +2,6 @@
 using UnityEditor;
 using UnityEngine;
 using SLua;
-using LuaInterface;
 
 namespace SLua
 {
