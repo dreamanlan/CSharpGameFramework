@@ -190,6 +190,10 @@ namespace StorySystem
     }
     public sealed class StoryMessageHandler
     {
+        public string StoryId
+        {
+            get { return m_StoryId; }
+        }
         public string MessageId
         {
             get { return m_MessageId; }
@@ -265,8 +269,9 @@ namespace StorySystem
             handler.m_ArgumentNames = m_ArgumentNames;
             return handler;
         }
-        public void Load(Dsl.FunctionData messageHandlerData)
+        public void Load(Dsl.FunctionData messageHandlerData, string storyId)
         {
+            m_StoryId = storyId;
             Dsl.CallData callData = messageHandlerData.Call;
             if (null != callData && callData.HaveParam()) {
                 int paramNum = callData.GetParamNum();
@@ -278,11 +283,11 @@ namespace StorySystem
             }
             RefreshCommands(messageHandlerData);
         }
-        public void Load(Dsl.StatementData messageHandlerData)
+        public void Load(Dsl.StatementData messageHandlerData, string storyId)
         {
+            m_StoryId = storyId;
             Dsl.CallData first = messageHandlerData.First.Call;
-            Dsl.FunctionData func = messageHandlerData.Second;
-            Dsl.CallData second = func.Call;
+            Dsl.FunctionData lastFunc = messageHandlerData.Last;
             if (null != first && first.HaveParam()) {
                 int paramNum = first.GetParamNum();
                 string[] args = new string[paramNum];
@@ -291,16 +296,31 @@ namespace StorySystem
                 }
                 m_MessageId = string.Join(":", args);
             }
-            if (null != second && second.GetId() == "args" && second.HaveParam()) {
-                int paramNum = second.GetParamNum();
-                if (paramNum > 0) {
-                    m_ArgumentNames = new string[paramNum];
-                    for (int i = 0; i < paramNum; ++i) {
-                        m_ArgumentNames[i] = second.GetParamId(i);
+            for(int ix = 1; ix < messageHandlerData.GetFunctionNum(); ++ix) {
+                var funcData = messageHandlerData.Functions[ix];
+                var id = funcData.GetId();
+                if (id == "args") {
+                    var callData = funcData.Call;
+                    if (null != callData && callData.HaveParam()) {
+                        int paramNum = callData.GetParamNum();
+                        if (paramNum > 0) {
+                            m_ArgumentNames = new string[paramNum];
+                            for (int i = 0; i < paramNum; ++i) {
+                                m_ArgumentNames[i] = callData.GetParamId(i);
+                            }
+                        }
                     }
+                } else if (id == "opts" || id == "body") {
+                } else {
+                    LogSystem.Error("Story {0} MessageHandler {1}, part '{2}' error !", storyId, m_MessageId, id);
                 }
             }
-            RefreshCommands(func);
+            var lastId = lastFunc.GetId();
+            if (lastId != "opts") {
+                RefreshCommands(lastFunc);
+            } else {
+                LogSystem.Error("Story {0} MessageHandler {1}, part '{2}' error !", storyId, m_MessageId, lastId);
+            }
         }
         public void Reset()
         {
@@ -380,7 +400,8 @@ namespace StorySystem
                 }
             }
         }
-        private string m_MessageId = "";
+        private string m_StoryId = string.Empty;
+        private string m_MessageId = string.Empty;
         private bool m_IsTriggered = false;
         private bool m_IsPaused = false;
         private bool m_IsInTick = false;
@@ -601,12 +622,12 @@ namespace StorySystem
                         Dsl.StatementData msgData = story.Statements[i] as Dsl.StatementData;
                         if (null != msgData) {
                             handler = new StoryMessageHandler();
-                            handler.Load(msgData);
+                            handler.Load(msgData, m_StoryId);
                         } else {
                             Dsl.FunctionData sectionData = story.Statements[i] as Dsl.FunctionData;
                             if (null != sectionData) {
                                 handler = new StoryMessageHandler();
-                                handler.Load(sectionData);
+                                handler.Load(sectionData, m_StoryId);
                             }
                         }
                         if (null != handler) {

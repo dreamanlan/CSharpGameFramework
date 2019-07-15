@@ -114,6 +114,9 @@ namespace StorySystem
                                 cmd.OptArgs.Add(fcd.GetId(), fcd.GetParam(0));
                             }
                         }
+                    } else if (fid == "body") {
+                    } else {
+                        LogSystem.Error("Command {0} unknown part '{1}'", cmd.Name, fid);
                     }
                 }
                 //注册
@@ -141,6 +144,9 @@ namespace StorySystem
                                 val.OptArgs.Add(fcd.GetId(), fcd.GetParam(0));
                             }
                         }
+                    } else if (fid == "body") {
+                    } else {
+                        LogSystem.Error("Value {0} unknown part '{1}'", val.Name, fid);
                     }
                 }
                 //注册
@@ -161,17 +167,17 @@ namespace StorySystem
 
                     Dsl.FunctionData last = dslInfo.Last;
                     var bodyId = last.GetId();
-                    if (bodyId == "body" || bodyId != "opts") {
+                    if (bodyId != "opts") {
                         for (int ix = 0; ix < last.GetStatementNum(); ++ix) {
                             Dsl.ISyntaxComponent syntaxComp = last.GetStatement(ix);
                             IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
                             cmd.InitialCommands.Add(sub);
                         }
                     } else {
-                        LogSystem.Error("Can't find command body '{0}'", name);
+                        LogSystem.Error("Can't find command {0}'s body", name);
                     }
                 } else {
-                    LogSystem.Error("Can't find command factory '{0}'", name);
+                    LogSystem.Error("Can't find command {0}'s factory", name);
                 }
             } else if (id == "value") {
                 Dsl.FunctionData first = dslInfo.First;
@@ -183,17 +189,17 @@ namespace StorySystem
 
                     Dsl.FunctionData last = dslInfo.Last;
                     var bodyId = last.GetId();
-                    if (bodyId == "body" || bodyId != "opts") {
+                    if (bodyId != "opts") {
                         for (int ix = 0; ix < last.GetStatementNum(); ++ix) {
                             Dsl.ISyntaxComponent syntaxComp = last.GetStatement(ix);
                             IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
                             val.InitialCommands.Add(sub);
                         }
                     } else {
-                        LogSystem.Error("Can't find value body '{0}'", name);
+                        LogSystem.Error("Can't find value {0}'s body", name);
                     }
                 } else {
-                    LogSystem.Error("Can't find value factory '{0}'", name);
+                    LogSystem.Error("Can't find value {0}'s factory", name);
                 }
             }
         }       
