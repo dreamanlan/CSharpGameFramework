@@ -198,19 +198,19 @@ internal static class TerrainEditUtility
             calc.Register("getcache", new Expression.ExpressionFactoryHelper<GetCacheExp>());
             calc.Register("setcache", new Expression.ExpressionFactoryHelper<SetCacheExp>());
             calc.Register("addtree", new Expression.ExpressionFactoryHelper<AddTreeExp>());
-            calc.NamedVariables.Add("samplers", samplers);
-            calc.NamedVariables.Add("caches", caches);
-            calc.NamedVariables.Add("trees", trees);
-            calc.NamedVariables.Add("heightscalex", terrainData.heightmapScale.x);
-            calc.NamedVariables.Add("heightscaley", terrainData.heightmapScale.y);
-            calc.NamedVariables.Add("heightscalez", terrainData.heightmapScale.z);
-            calc.NamedVariables.Add("heights", datas);
-            calc.NamedVariables.Add("alphamaps", alphamaps);
-            calc.NamedVariables.Add("alphanum", alphanum);
-            calc.NamedVariables.Add("details", details);
-            calc.NamedVariables.Add("height", 0.0f);
-            calc.NamedVariables.Add("alphas", new float[alphanum]);
-            calc.NamedVariables.Add("detail", 0);
+            calc.SetGlobalVariable("samplers", samplers);
+            calc.SetGlobalVariable("caches", caches);
+            calc.SetGlobalVariable("trees", trees);
+            calc.SetGlobalVariable("heightscalex", terrainData.heightmapScale.x);
+            calc.SetGlobalVariable("heightscaley", terrainData.heightmapScale.y);
+            calc.SetGlobalVariable("heightscalez", terrainData.heightmapScale.z);
+            calc.SetGlobalVariable("heights", datas);
+            calc.SetGlobalVariable("alphamaps", alphamaps);
+            calc.SetGlobalVariable("alphanum", alphanum);
+            calc.SetGlobalVariable("details", details);
+            calc.SetGlobalVariable("height", 0.0f);
+            calc.SetGlobalVariable("alphas", new float[alphanum]);
+            calc.SetGlobalVariable("detail", 0);
             bool resetTrees = false;
             bool canContinue = true;
             foreach (var info in file.DslInfos) {
@@ -239,7 +239,7 @@ internal static class TerrainEditUtility
                 int ix = 0;
                 foreach (var info in file.DslInfos) {
                     for (int i = 1; i < info.GetFunctionNum(); ++i) {
-                        calc.Load(ix.ToString(), info.GetFunction(i));
+                        calc.LoadDsl(ix.ToString(), info.GetFunction(i));
                         ++ix;
                     }
                 }
@@ -344,9 +344,9 @@ internal static class TerrainEditUtility
             for (int iy = 0; iy < h; ++iy) {
                 int xi = x + ix;
                 int yi = y + iy;
-                calc.NamedVariables["height"] = datas[yi, xi];
+                calc.SetVariable("height", datas[yi, xi]);
                 calc.Calc(proc, xi, yi);
-                datas[yi, xi] = (float)Convert.ChangeType(calc.NamedVariables["height"], typeof(float));
+                datas[yi, xi] = (float)Convert.ChangeType(calc.GetVariable("height"), typeof(float));
             }
         }
     }
@@ -364,9 +364,9 @@ internal static class TerrainEditUtility
                 int dx = xi - cx;
                 int dy = yi - cy;
                 if (dx * dx + dy * dy <= r2) {
-                    calc.NamedVariables["height"] = datas[yi, xi];
+                    calc.SetVariable("height", datas[yi, xi]);
                     calc.Calc(proc, xi, yi);
-                    datas[yi, xi] = (float)Convert.ChangeType(calc.NamedVariables["height"], typeof(float));
+                    datas[yi, xi] = (float)Convert.ChangeType(calc.GetVariable("height"), typeof(float));
                 }
             }
         }
@@ -378,7 +378,7 @@ internal static class TerrainEditUtility
             for (int iy = 0; iy < h; ++iy) {
                 int xi = x + ix;
                 int yi = y + iy;
-                float[] alphas = calc.NamedVariables["alphas"] as float[];
+                float[] alphas = calc.GetVariable("alphas") as float[];
                 for (int i = 0; i < alphanum; ++i) {
                     alphas[i] = alphamaps[xi, yi, i];
                 }
@@ -404,7 +404,7 @@ internal static class TerrainEditUtility
                 int dx = xi - cx;
                 int dy = yi - cy;
                 if (dx * dx + dy * dy <= r2) {
-                    float[] alphas = calc.NamedVariables["alphas"] as float[];
+                    float[] alphas = calc.GetVariable("alphas") as float[];
                     for (int i = 0; i < alphanum; ++i) {
                         alphas[i] = alphamaps[xi, yi, i];
                     }
@@ -425,9 +425,9 @@ internal static class TerrainEditUtility
                 foreach (var pair in details) {
                     int layer = pair.Key;
                     var detail = pair.Value[xi, yi];
-                    calc.NamedVariables["detail"] = detail;
+                    calc.SetVariable("detail", detail);
                     calc.Calc(proc, xi, yi, layer);
-                    pair.Value[xi, yi] = (int)Convert.ChangeType(calc.NamedVariables["detail"], typeof(int));
+                    pair.Value[xi, yi] = (int)Convert.ChangeType(calc.GetVariable("detail"), typeof(int));
                 }
             }
         }
@@ -449,9 +449,9 @@ internal static class TerrainEditUtility
                     foreach (var pair in details) {
                         int layer = pair.Key;
                         var detail = pair.Value[xi, yi];
-                        calc.NamedVariables["detail"] = detail;
+                        calc.SetVariable("detail", detail);
                         calc.Calc(proc, xi, yi, layer);
-                        pair.Value[xi, yi] = (int)Convert.ChangeType(calc.NamedVariables["detail"], typeof(int));
+                        pair.Value[xi, yi] = (int)Convert.ChangeType(calc.GetVariable("detail"), typeof(int));
                     }
                 }
             }
@@ -583,11 +583,11 @@ internal static class TerrainEditUtility
 
 internal class GetHeightExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = null;
         if (operands.Count >= 2) {
-            var datas = Calculator.NamedVariables["heights"] as float[,];
+            var datas = Calculator.GetVariable("heights") as float[,];
             var x = ToLong(operands[0]);
             var y = ToLong(operands[1]);
             r = datas[y, x];
@@ -597,11 +597,11 @@ internal class GetHeightExp : Expression.SimpleExpressionBase
 }
 internal class GetAlphamapExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = null;
         if (operands.Count >= 3) {
-            var datas = Calculator.NamedVariables["alphamaps"] as float[, ,];
+            var datas = Calculator.GetVariable("alphamaps") as float[, ,];
             var x = ToLong(operands[0]);
             var y = ToLong(operands[1]);
             var ix = ToLong(operands[2]);
@@ -612,11 +612,11 @@ internal class GetAlphamapExp : Expression.SimpleExpressionBase
 }
 internal class GetAlphaExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = null;
         if (operands.Count >= 1) {
-            var datas = Calculator.NamedVariables["alphas"] as float[];
+            var datas = Calculator.GetVariable("alphas") as float[];
             var ix = ToLong(operands[0]);
             r = datas[ix];
         }
@@ -625,11 +625,11 @@ internal class GetAlphaExp : Expression.SimpleExpressionBase
 }
 internal class SetAlphaExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = null;
         if (operands.Count >= 2) {
-            var datas = Calculator.NamedVariables["alphas"] as float[];
+            var datas = Calculator.GetVariable("alphas") as float[];
             var ix = ToLong(operands[0]);
             var v = ToDouble(operands[1]);
             datas[ix] = (float)v;
@@ -640,11 +640,11 @@ internal class SetAlphaExp : Expression.SimpleExpressionBase
 }
 internal class GetDetailExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = null;
         if (operands.Count >= 3) {
-            var datas = Calculator.NamedVariables["details"] as Dictionary<int, int[,]>;
+            var datas = Calculator.GetVariable("details") as Dictionary<int, int[,]>;
             var x = ToLong(operands[0]);
             var y = ToLong(operands[1]);
             var ix = ToLong(operands[2]);
@@ -658,11 +658,11 @@ internal class GetDetailExp : Expression.SimpleExpressionBase
 }
 internal class SampleRedExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.NamedVariables["samplers"] as Dictionary<string, Color32[,]>;
+            var datas = Calculator.GetVariable("samplers") as Dictionary<string, Color32[,]>;
             var key = operands[0] as string;
             var x = ToLong(operands[1]);
             var y = ToLong(operands[2]);
@@ -680,11 +680,11 @@ internal class SampleRedExp : Expression.SimpleExpressionBase
 }
 internal class SampleGreenExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.NamedVariables["samplers"] as Dictionary<string, Color32[,]>;
+            var datas = Calculator.GetVariable("samplers") as Dictionary<string, Color32[,]>;
             var key = operands[0] as string;
             var x = ToLong(operands[1]);
             var y = ToLong(operands[2]);
@@ -702,11 +702,11 @@ internal class SampleGreenExp : Expression.SimpleExpressionBase
 }
 internal class SampleBlueExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.NamedVariables["samplers"] as Dictionary<string, Color32[,]>;
+            var datas = Calculator.GetVariable("samplers") as Dictionary<string, Color32[,]>;
             var key = operands[0] as string;
             var x = ToLong(operands[1]);
             var y = ToLong(operands[2]);
@@ -724,11 +724,11 @@ internal class SampleBlueExp : Expression.SimpleExpressionBase
 }
 internal class SampleAlphaExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.NamedVariables["samplers"] as Dictionary<string, Color32[,]>;
+            var datas = Calculator.GetVariable("samplers") as Dictionary<string, Color32[,]>;
             var key = operands[0] as string;
             var x = ToLong(operands[1]);
             var y = ToLong(operands[2]);
@@ -746,11 +746,11 @@ internal class SampleAlphaExp : Expression.SimpleExpressionBase
 }
 internal class GetCacheExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.NamedVariables["caches"] as Dictionary<string, int[,]>;
+            var datas = Calculator.GetVariable("caches") as Dictionary<string, int[,]>;
             var key = operands[0] as string;
             var x = ToLong(operands[1]);
             var y = ToLong(operands[2]);
@@ -768,11 +768,11 @@ internal class GetCacheExp : Expression.SimpleExpressionBase
 }
 internal class SetCacheExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = 0;
         if (operands.Count >= 4) {
-            var datas = Calculator.NamedVariables["caches"] as Dictionary<string, int[,]>;
+            var datas = Calculator.GetVariable("caches") as Dictionary<string, int[,]>;
             var key = operands[0] as string;
             var x = ToLong(operands[1]);
             var y = ToLong(operands[2]);
@@ -792,11 +792,11 @@ internal class SetCacheExp : Expression.SimpleExpressionBase
 }
 internal class AddTreeExp : Expression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands, object[] args)
+    protected override object OnCalc(IList<object> operands)
     {
         object r = 0;
         if (operands.Count >= 9) {
-            var trees = Calculator.NamedVariables["trees"] as List<TreeInstance>;
+            var trees = Calculator.GetVariable("trees") as List<TreeInstance>;
             var ix = ToLong(operands[0]);
             var x = ToDouble(operands[1]);
             var y = ToDouble(operands[2]);

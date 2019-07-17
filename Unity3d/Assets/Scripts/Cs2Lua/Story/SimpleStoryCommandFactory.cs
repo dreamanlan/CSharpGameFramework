@@ -45,15 +45,13 @@ internal class NativeSimpleStoryCommand : IStoryCommand
             m_Plugin = module as ISimpleStoryCommandPlugin;
         }
     }
-    public bool Init(Dsl.ISyntaxComponent config)
-    {
-        m_Params.InitFromDsl(config, 0);
-        m_Config = config;
-        return true;
-    }
     public string GetId()
     {
         return m_Config.GetId();
+    }
+    public Dsl.FunctionData GetComments()
+    {
+        return m_Comments;
     }
     public Dsl.ISyntaxComponent GetConfig()
     {
@@ -61,22 +59,31 @@ internal class NativeSimpleStoryCommand : IStoryCommand
     }
     public void ShareConfig(IStoryCommand cloner)
     {
+        m_Comments = cloner.GetComments();
         m_Config = cloner.GetConfig();
+    }
+    public bool Init(Dsl.ISyntaxComponent config)
+    {
+        m_Comments = m_Params.InitFromDsl(config, 0, true);
+        m_Config = config;
+        return true;
     }
     public IStoryCommand Clone()
     {
         NativeSimpleStoryCommand newObj = new NativeSimpleStoryCommand(m_ClassName, false);
         newObj.m_Params = m_Params.Clone() as StoryValueParams;
+        newObj.m_Comments = m_Comments;
+        newObj.m_Config = m_Config;
         if (null != m_Plugin) {
             newObj.m_Plugin = m_Plugin.Clone();
         }
         return newObj;
     }
-    public IStoryCommand PrologueCommand
+    public virtual IStoryCommand PrologueCommand
     {
         get { return null; }
     }
-    public IStoryCommand EpilogueCommand
+    public virtual IStoryCommand EpilogueCommand
     {
         get { return null; }
     }
@@ -115,6 +122,7 @@ internal class NativeSimpleStoryCommand : IStoryCommand
 
     private bool m_LastExecResult = false;
     private StoryValueParams m_Params = new StoryValueParams();
+    private Dsl.FunctionData m_Comments;
     private Dsl.ISyntaxComponent m_Config;
     
     private string m_ClassName;
@@ -132,22 +140,18 @@ internal class LuaSimpleStoryCommand : IStoryCommand
         m_FileName = m_ClassName.Replace(".", "__");
 
         if (callLua) {
-            m_Svr = Cs2LuaAssembly.Instance.LuaSvr;
-            m_Svr.luaState.doFile(m_FileName);
-            m_ClassObj = (LuaTable)m_Svr.luaState[m_ClassName];
-            m_Self = (LuaTable)((LuaFunction)m_ClassObj["__new_object"]).call();
-            BindLuaInterface();
+            m_Plugin = new Cs2LuaSimpleStoryCommandPlugin();
+            m_Plugin.LoadLua(m_FileName);
         }
     }
-    public bool Init(Dsl.ISyntaxComponent config)
-    {
-        m_Params.InitFromDsl(config, 0);
-        m_Config = config;
-        return true;
-    }
+
     public string GetId()
     {
         return m_Config.GetId();
+    }
+    public Dsl.FunctionData GetComments()
+    {
+        return m_Comments;
     }
     public Dsl.ISyntaxComponent GetConfig()
     {
@@ -155,26 +159,33 @@ internal class LuaSimpleStoryCommand : IStoryCommand
     }
     public void ShareConfig(IStoryCommand cloner)
     {
+        m_Comments = cloner.GetComments();
         m_Config = cloner.GetConfig();
+    }
+    public bool Init(Dsl.ISyntaxComponent config)
+    {
+        m_Comments = m_Params.InitFromDsl(config, 0, true);
+        m_Config = config;
+        return true;
     }
     public IStoryCommand Clone()
     {
         LuaSimpleStoryCommand newObj = new LuaSimpleStoryCommand(m_ClassName, false);
         newObj.m_Params = m_Params.Clone() as StoryValueParams;
-        if (null != m_Clone) {
-            var ret = m_Clone.call(m_Self);
-            newObj.m_Svr = m_Svr;
-            newObj.m_ClassObj = m_ClassObj;
-            newObj.m_Self = (LuaTable)ret;
-            newObj.BindLuaInterface();
+        newObj.m_Comments = m_Comments;
+        newObj.m_Config = m_Config;
+        if (null != m_Plugin) {
+            var ret = m_Plugin.Clone();
+            newObj.m_Plugin = new Cs2LuaSimpleStoryCommandPlugin();
+            newObj.m_Plugin.InitLua((LuaTable)ret, m_FileName);
         }
         return newObj;
     }
-    public IStoryCommand PrologueCommand
+    public virtual IStoryCommand PrologueCommand
     {
         get { return null; }
     }
-    public IStoryCommand EpilogueCommand
+    public virtual IStoryCommand EpilogueCommand
     {
         get { return null; }
     }
@@ -199,41 +210,27 @@ internal class LuaSimpleStoryCommand : IStoryCommand
 
     private void ResetState()
     {
-        if (null != m_ResetState) {
-            m_ResetState.call(m_Self);
+        if (null != m_Plugin) {
+            m_Plugin.ResetState();
         }
     }
     private bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params, long delta)
     {
-        if (null != m_ExecCommand) {
-            var ret = m_ExecCommand.call(m_Self, instance, handler, _params, delta);
-            if (null != ret) {
-                return (bool)ret;
+        if (null != m_Plugin) {
+            var ret = m_Plugin.ExecCommand(instance, handler, _params, delta);
+            if (ret) {
+                return ret;
             }
         }
         return false;
     }
     
-    private void BindLuaInterface()
-    {
-        if (null != m_Self) {
-            m_Clone = (LuaFunction)m_Self["Clone"];
-            m_ResetState = (LuaFunction)m_Self["ResetState"];
-            m_ExecCommand = (LuaFunction)m_Self["ExecCommand"];
-        }
-    }
-    
     private bool m_LastExecResult = false;
     private StoryValueParams m_Params = new StoryValueParams();
+    private Dsl.FunctionData m_Comments;
     private Dsl.ISyntaxComponent m_Config;
 
     private string m_FileName;
     private string m_ClassName;
-
-    private LuaSvr m_Svr;
-    private LuaTable m_ClassObj;
-    private LuaTable m_Self;
-    private LuaFunction m_Clone;
-    private LuaFunction m_ResetState;
-    private LuaFunction m_ExecCommand;
+    private Cs2LuaSimpleStoryCommandPlugin m_Plugin;
 }

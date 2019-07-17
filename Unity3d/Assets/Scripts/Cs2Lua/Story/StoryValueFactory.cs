@@ -138,13 +138,10 @@ internal class LuaStoryValue : IStoryValue
         m_FileName = m_ClassName.Replace(".", "__");
 
         if (callLua) {
-            m_Svr = Cs2LuaAssembly.Instance.LuaSvr;
-            m_Svr.luaState.doFile(m_FileName);
-            m_ClassObj = (LuaTable)m_Svr.luaState[m_ClassName];
-            m_Self = (LuaTable)((LuaFunction)m_ClassObj["__new_object"]).call();
-            BindLuaInterface();
-            if (null != m_SetProxy) {
-                m_SetProxy.call(m_Self, m_Proxy);
+            m_Plugin = new Cs2LuaStoryValuePlugin();
+            m_Plugin.LoadLua(m_FileName);
+            if (null != m_Plugin) {
+                m_Plugin.SetProxy(m_Proxy);
             }
         }
     }
@@ -173,22 +170,20 @@ internal class LuaStoryValue : IStoryValue
     {
         var newObj = new LuaStoryValue(m_ClassName, false);
         newObj.m_Proxy = m_Proxy.Clone();
-        if (null != m_Clone) {
-            var ret = m_Clone.call(m_Self);
-            newObj.m_Svr = m_Svr;
-            newObj.m_ClassObj = m_ClassObj;
-            newObj.m_Self = (LuaTable)ret;
-            newObj.BindLuaInterface();
-            if (null != newObj.m_SetProxy) {
-                newObj.m_SetProxy.call(newObj.m_Self, newObj.m_Proxy);
+        if (null != m_Plugin) {
+            var ret = m_Plugin.Clone();
+            newObj.m_Plugin = new Cs2LuaStoryValuePlugin();
+            newObj.m_Plugin.InitLua((LuaTable)ret, m_FileName);
+            if (null != newObj.m_Plugin) {
+                newObj.m_Plugin.SetProxy(newObj.m_Proxy);
             }
         }
         return newObj;
     }
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
     {
-        if (null != m_Evaluate) {
-            m_Evaluate.call(m_Self, instance, iterator, args);
+        if (null != m_Plugin) {
+            m_Plugin.Evaluate(instance, handler, iterator, args);
         }
     }
     public bool HaveValue
@@ -208,46 +203,25 @@ internal class LuaStoryValue : IStoryValue
 
     private void Load(Dsl.CallData callData)
     {
-        if (null != m_Load1) {
-            m_Load1.call(m_Self, callData);
+        if (null != m_Plugin) {
+            m_Plugin.LoadCallData(callData);
         }
     }
     private void Load(Dsl.FunctionData funcData)
     {
-        if (null != m_Load2) {
-            m_Load2.call(m_Self, funcData);
+        if (null != m_Plugin) {
+            m_Plugin.LoadFuncData(funcData);
         }
     }
     private void Load(Dsl.StatementData statementData)
     {
-        if (null != m_Load3) {
-            m_Load3.call(m_Self, statementData);
-        }
-    }
-
-    private void BindLuaInterface()
-    {
-        if (null != m_Self) {
-            m_SetProxy = (LuaFunction)m_Self["SetProxy"];
-            m_Clone = (LuaFunction)m_Self["Clone"];
-            m_Evaluate = (LuaFunction)m_Self["Evaluate"];
-            m_Load1 = (LuaFunction)m_Self["LoadCallData"];
-            m_Load2 = (LuaFunction)m_Self["LoadFuncData"];
-            m_Load3 = (LuaFunction)m_Self["LoadStatementData"];
+        if (null != m_Plugin) {
+            m_Plugin.LoadStatementData(statementData);
         }
     }
 
     private string m_FileName;
     private string m_ClassName;
     private StoryValueResult m_Proxy = new StoryValueResult();
-
-    private LuaSvr m_Svr;
-    private LuaTable m_ClassObj;
-    private LuaTable m_Self;
-    private LuaFunction m_SetProxy;
-    private LuaFunction m_Clone;
-    private LuaFunction m_Evaluate;
-    private LuaFunction m_Load1;
-    private LuaFunction m_Load2;
-    private LuaFunction m_Load3;
+    private Cs2LuaStoryValuePlugin m_Plugin;
 }

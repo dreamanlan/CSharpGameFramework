@@ -1,100 +1,57 @@
-23-27-31-070:======GameLog Start (Saturday, 08 June 2019, 23:27:31)======
-23-27-31-105:[Debug]:table config root = /Users/lanxiang/Documents/GitHub/CSharpGameFramework/Unity3d/Assets/StreamingAssets/Tables/
-23-27-31-113:[Info]:binary load 3617 parse 1860, file Tables/Public/Level.dat
-23-27-31-116:[Info]:binary load 145 parse 619, file Tables/Public/LevelMonster.dat
-23-27-31-118:[Info]:binary load 149 parse 688, file Tables/Public/Const.dat
-23-27-31-120:[Info]:binary load 225 parse 463, file Tables/Public/AttrDefine.dat
-23-27-31-122:[Info]:binary load 185 parse 1177, file Tables/Public/Actor.dat
-23-27-31-123:[Info]:binary load 125 parse 754, file Tables/Public/Skill.dat
-23-27-31-124:[Info]:binary load 111 parse 316, file Tables/Public/SkillResources.dat
-23-27-31-126:[Info]:binary load 124 parse 705, file Tables/Public/SkillData.dat
-23-27-31-127:[Info]:binary load 107 parse 587, file Tables/Public/ImpactData.dat
-23-27-31-128:[Info]:binary load 84 parse 514, file Tables/Public/SkillEvent.dat
-23-27-31-135:[Info]:binary load 159 parse 402, file Tables/Client/StoryDlg.dat
-23-27-31-138:[Info]:binary load 163 parse 1225, file Tables/Client/StrDictionary.dat
-23-27-31-139:[Info]:binary load 120 parse 373, file Tables/Client/UI.dat
-23-27-31-141:[Info]:binary load 319 parse 1118, file Tables/Public/Formation.dat
-23-27-31-299:[Info]:SendMessage GameRoot LoadScene TableConfig.Level False
-23-27-32-543:[Debug]:StoryInstance.Init message handler num:6 True
-23-27-32-543:[Info]:ParseStory story_main 0
-23-27-32-547:[Debug]:StoryInstance.Init message handler num:4 True
-23-27-32-547:[Info]:ParseStory local_main 0
-23-27-32-563:[Debug]:StoryInstance.Init message handler num:5 True
-23-27-32-563:[Info]:ParseStory skill_main 0
-23-27-32-564:[Debug]:StoryInstance.Init message handler num:1 True
-23-27-32-564:[Info]:ParseStory auto_story 0
-23-27-32-566:[Info]:StartStory local_main
-23-27-32-566:[Info]:StartStory story_main
-23-27-32-573:[Debug]:StoryInstance.Init message handler num:3 True
-23-27-32-573:[Info]:ParseStory LoginDlg:main 0
-23-27-32-576:[Debug]:StoryInstance.Init message handler num:3 True
-23-27-32-576:[Info]:ParseStory NicknameDlg:main 0
-23-27-32-583:[Debug]:StoryInstance.Init message handler num:4 True
-23-27-32-583:[Info]:ParseStory StoryDlg:main 0
-23-27-32-590:[Debug]:SkillInstance.Init section num:0 True skill 2110000000
-23-27-32-591:[Debug]:ParseSkill 2110000000
-23-27-32-591:[Debug]:SkillInstance.Init section num:0 True skill 2120000000
-23-27-32-591:[Debug]:ParseSkill 2120000000
-23-27-32-618:[Info]:StartStory main
-23-27-32-620:[Info]:StartStory main
-23-27-32-635:[Info]:StartStory main
-23-27-32-635:[Info]:SendMessage GameRoot OnLoadMainUiComplete 1 False
-23-27-32-655:[Warn]:NicknameDlg start
-23-27-32-657:[Warn]:LoginDlg start
-23-27-32-657:[Info]:Publish loading_complete ui
-23-27-32-658:[Info]:Publish ge_select_server lobby
-23-27-32-671:[Warn]:StoryInstance queue message show_login
-23-27-32-677:[Debug]:QueueActionWithDelegation, Void StartStory(System.String) GameFramework.Story.GfxStorySystem, action count 1
-23-27-32-677:[Debug]:QueueActionWithDelegation, Void StartStory(System.String) GameFramework.Story.GfxStorySystem, action count 2
-23-27-32-731:[Info]:StartStory skill_main
-23-27-32-732:[Info]:StartStory auto_story
-23-27-32-732:[Info]:Publish ui_hide ui
-23-27-42-287:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
-23-27-45-534:[Warn]:StoryInstance queue message LoginDlg:on_click
-23-27-45-535:[Warn]:LoginDlg on click
-23-27-45-540:[Warn]:StoryInstance queue message do_login
-23-27-45-541:[Info]:Publish ge_account_login lobby
-23-27-45-541:[Info]:ConnectIfNotOpen at time:13247 ServerAddress:ws://127.0.0.1:9001
-23-27-45-552:[Debug]:QueueActionWithDelegation, Void OnError(System.Exception) GameFramework.Network.UserNetworkSystem, action count 1
-23-27-45-553:[Debug]:QueueActionWithDelegation, Void OnClosed() GameFramework.Network.UserNetworkSystem, action count 2
-23-27-45-557:[Error]:LobbyNetworkSystem.OnError Exception:Connection refused
-  at System.Net.Sockets.Socket.Connect (System.Net.EndPoint remoteEP, Boolean requireSocketPolicy) [0x00000] in <filename unknown>:0 
-  at System.Net.Sockets.Socket.Connect (System.Net.EndPoint remoteEP) [0x00000] in <filename unknown>:0 
-  at SuperSocket.ClientEngine.TcpClientSession.DoConnect () [0x00000] in <filename unknown>:0 
-23-27-45-558:[Info]:Disconnect(False). CurTime 13271 LastConnectTime 13247
-23-27-45-559:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 2
-23-27-45-560:[Error]:LobbyNetworkSystem.OnClosed
-23-27-45-560:[Info]:LobbyNetworkSystem.OnLog:Close: CloseImmediately False statusCode 1000 m_StateCode 3
-23-27-48-559:[Info]:IsConnected == false. CurTime 16275 LastConnectTime 6271
-23-27-48-559:[Info]:Disconnect(True). CurTime 16275 LastConnectTime 6271
-23-27-48-559:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-23-27-48-559:[Info]:ConnectIfNotOpen at time:16275 ServerAddress:ws://127.0.0.1:9001
-23-27-48-559:[Info]:LobbyNetworkSystem.OnLog:Close: CloseImmediately True statusCode 1000 m_StateCode 3
-23-27-48-559:[Debug]:QueueActionWithDelegation, Void OnError(System.Exception) GameFramework.Network.UserNetworkSystem, action count 1
-23-27-48-559:[Debug]:QueueActionWithDelegation, Void OnClosed() GameFramework.Network.UserNetworkSystem, action count 2
-23-27-48-565:[Error]:LobbyNetworkSystem.OnError Exception:Connection refused
-  at System.Net.Sockets.Socket.Connect (System.Net.EndPoint remoteEP, Boolean requireSocketPolicy) [0x00000] in <filename unknown>:0 
-  at System.Net.Sockets.Socket.Connect (System.Net.EndPoint remoteEP) [0x00000] in <filename unknown>:0 
-  at SuperSocket.ClientEngine.TcpClientSession.DoConnect () [0x00000] in <filename unknown>:0 
-23-27-48-565:[Info]:Disconnect(False). CurTime 16279 LastConnectTime 16275
-23-27-48-565:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 2
-23-27-48-566:[Error]:LobbyNetworkSystem.OnClosed
-23-27-48-566:[Info]:LobbyNetworkSystem.OnLog:Close: CloseImmediately False statusCode 1000 m_StateCode 3
-23-27-51-567:[Info]:IsConnected == false. CurTime 19283 LastConnectTime 9279
-23-27-51-567:[Info]:Disconnect(True). CurTime 19283 LastConnectTime 9279
-23-27-51-567:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-23-27-51-567:[Info]:ConnectIfNotOpen at time:19283 ServerAddress:ws://127.0.0.1:9001
-23-27-51-567:[Info]:LobbyNetworkSystem.OnLog:Close: CloseImmediately True statusCode 1000 m_StateCode 3
-23-27-51-567:[Debug]:QueueActionWithDelegation, Void OnError(System.Exception) GameFramework.Network.UserNetworkSystem, action count 1
-23-27-51-567:[Debug]:QueueActionWithDelegation, Void OnClosed() GameFramework.Network.UserNetworkSystem, action count 2
-23-27-51-572:[Error]:LobbyNetworkSystem.OnError Exception:Connection refused
-  at System.Net.Sockets.Socket.Connect (System.Net.EndPoint remoteEP, Boolean requireSocketPolicy) [0x00000] in <filename unknown>:0 
-  at System.Net.Sockets.Socket.Connect (System.Net.EndPoint remoteEP) [0x00000] in <filename unknown>:0 
-  at SuperSocket.ClientEngine.TcpClientSession.DoConnect () [0x00000] in <filename unknown>:0 
-23-27-51-572:[Info]:Disconnect(False). CurTime 19287 LastConnectTime 19283
-23-27-51-572:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 2
-23-27-51-574:[Error]:LobbyNetworkSystem.OnClosed
-23-27-51-574:[Info]:LobbyNetworkSystem.OnLog:Close: CloseImmediately False statusCode 1000 m_StateCode 3
-23-27-51-964:[Info]:SendToLobby:6 BgAGAAoEZ2FtZQ==
-23-27-51-964:[Info]:Disconnect(False). CurTime 19647 LastConnectTime 12287
-23-27-51-964:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+23-41-25-829:======GameLog Start (2019年7月17日, 23:41:25)======
+23-41-25-860:[Debug]:table config root = E:/OpenSource/CSharpGameFramework/Unity3d/Assets/StreamingAssets/Tables/
+23-41-25-867:[Info]:binary load 2767 parse 1672, file Tables/Public/Level.dat
+23-41-25-869:[Info]:binary load 379 parse 623, file Tables/Public/LevelMonster.dat
+23-41-25-872:[Info]:binary load 380 parse 641, file Tables/Public/Const.dat
+23-41-25-874:[Info]:binary load 454 parse 418, file Tables/Public/AttrDefine.dat
+23-41-25-876:[Info]:binary load 417 parse 712, file Tables/Public/Actor.dat
+23-41-25-878:[Info]:binary load 350 parse 630, file Tables/Public/Skill.dat
+23-41-25-880:[Info]:binary load 342 parse 402, file Tables/Public/SkillResources.dat
+23-41-25-882:[Info]:binary load 347 parse 557, file Tables/Public/SkillData.dat
+23-41-25-883:[Info]:binary load 346 parse 470, file Tables/Public/ImpactData.dat
+23-41-25-885:[Info]:binary load 328 parse 543, file Tables/Public/SkillEvent.dat
+23-41-25-892:[Info]:binary load 376 parse 362, file Tables/Client/StoryDlg.dat
+23-41-25-895:[Info]:binary load 440 parse 1225, file Tables/Client/StrDictionary.dat
+23-41-25-897:[Info]:binary load 351 parse 349, file Tables/Client/UI.dat
+23-41-25-899:[Info]:binary load 482 parse 877, file Tables/Public/Formation.dat
+23-41-26-021:[Info]:SendMessage GameRoot LoadScene TableConfig.Level False
+23-41-26-573:[Debug]:StoryInstance.Init message handler num:6 True
+23-41-26-574:[Info]:ParseStory story_main 0
+23-41-26-578:[Debug]:StoryInstance.Init message handler num:4 True
+23-41-26-578:[Info]:ParseStory local_main 0
+23-41-26-595:[Debug]:StoryInstance.Init message handler num:5 True
+23-41-26-595:[Info]:ParseStory skill_main 0
+23-41-26-596:[Debug]:StoryInstance.Init message handler num:1 True
+23-41-26-596:[Info]:ParseStory auto_story 0
+23-41-26-598:[Info]:StartStory local_main
+23-41-26-598:[Info]:StartStory story_main
+23-41-26-605:[Debug]:StoryInstance.Init message handler num:3 True
+23-41-26-605:[Info]:ParseStory LoginDlg:main 0
+23-41-26-609:[Debug]:StoryInstance.Init message handler num:3 True
+23-41-26-609:[Info]:ParseStory NicknameDlg:main 0
+23-41-26-616:[Debug]:StoryInstance.Init message handler num:4 True
+23-41-26-616:[Info]:ParseStory StoryDlg:main 0
+23-41-26-623:[Debug]:SkillInstance.Init section num:0 True skill 2110000000
+23-41-26-624:[Debug]:ParseSkill 2110000000
+23-41-26-624:[Debug]:SkillInstance.Init section num:0 True skill 2120000000
+23-41-26-624:[Debug]:ParseSkill 2120000000
+23-41-26-641:[Info]:StartStory LoginDlg:main
+23-41-26-738:[Info]:StartStory NicknameDlg:main
+23-41-26-749:[Info]:StartStory StoryDlg:main
+23-41-26-749:[Info]:SendMessage GameRoot OnLoadMainUiComplete 1 False
+23-41-26-765:[Warn]:NicknameDlg start
+23-41-26-767:[Warn]:LoginDlg start
+23-41-26-768:[Info]:Publish loading_complete ui
+23-41-26-769:[Info]:Publish ge_select_server lobby
+23-41-26-791:[Warn]:StoryInstance queue message show_login
+23-41-26-796:[Debug]:QueueActionWithDelegation, Void StartStory(System.String) GameFramework.Story.GfxStorySystem, action count 1
+23-41-26-796:[Debug]:QueueActionWithDelegation, Void StartStory(System.String) GameFramework.Story.GfxStorySystem, action count 2
+23-41-26-844:[Info]:StartStory skill_main
+23-41-26-844:[Info]:StartStory auto_story
+23-41-26-844:[Info]:Publish ui_hide ui
+23-41-31-490:[Warn]:StoryInstance queue message LoginDlg:on_click
+23-41-31-491:[Warn]:LoginDlg on click
+23-41-31-494:[Info]:Publish ui_highlight_prompt ui
+23-41-33-243:[Info]:SendToLobby:6 BgAAAA==
+23-41-33-243:[Info]:Disconnect(False). CurTime 6809 LastConnectTime 0
+23-41-33-244:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1

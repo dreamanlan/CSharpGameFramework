@@ -11,7 +11,7 @@ namespace StorySystem
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            m_Params.InitFromDsl(param, 0);
+            m_Params.InitFromDsl(param, 0, false);
         }
         public IStoryValue Clone()
         {
@@ -62,7 +62,7 @@ namespace StorySystem
     {
         public bool Init(Dsl.ISyntaxComponent config)
         {
-            m_Params.InitFromDsl(config, 0);
+            m_Comments = m_Params.InitFromDsl(config, 0, true);
             m_Config = config;
             return config is Dsl.CallData;
         }
@@ -87,12 +87,17 @@ namespace StorySystem
                 return string.Empty;
             return m_Config.GetId();
         }
+        public Dsl.FunctionData GetComments()
+        {
+            return m_Comments;
+        }
         public Dsl.ISyntaxComponent GetConfig()
         {
             return m_Config;
         }
         public void ShareConfig(IStoryCommand cloner)
         {
+            m_Comments = cloner.GetComments();
             m_Config = cloner.GetConfig();
         }
         public void Reset()
@@ -135,6 +140,7 @@ namespace StorySystem
         }
         private bool m_LastExecResult = false;
         private IStoryValueParam m_Params = new ValueParamType();
+        private Dsl.FunctionData m_Comments;
         private Dsl.ISyntaxComponent m_Config;
     }
 }

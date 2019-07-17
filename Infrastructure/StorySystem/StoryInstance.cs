@@ -199,6 +199,12 @@ namespace StorySystem
             get { return m_MessageId; }
             set { m_MessageId = value; }
         }
+        public Dsl.FunctionData Comments
+        {
+            get {
+                return m_Comments;
+            }
+        }
         public bool IsTriggered
         {
             get { return m_IsTriggered; }
@@ -267,6 +273,7 @@ namespace StorySystem
             }
             handler.m_MessageId = m_MessageId;
             handler.m_ArgumentNames = m_ArgumentNames;
+            handler.m_Comments = m_Comments;
             return handler;
         }
         public void Load(Dsl.FunctionData messageHandlerData, string storyId)
@@ -286,13 +293,12 @@ namespace StorySystem
         public void Load(Dsl.StatementData messageHandlerData, string storyId)
         {
             m_StoryId = storyId;
-            Dsl.CallData first = messageHandlerData.First.Call;
-            Dsl.FunctionData lastFunc = messageHandlerData.Last;
-            if (null != first && first.HaveParam()) {
-                int paramNum = first.GetParamNum();
+            Dsl.CallData msgCallData = messageHandlerData.First.Call;
+            if (null != msgCallData && msgCallData.HaveParam()) {
+                int paramNum = msgCallData.GetParamNum();
                 string[] args = new string[paramNum];
                 for (int i = 0; i < paramNum; ++i) {
-                    args[i] = first.GetParamId(i);
+                    args[i] = msgCallData.GetParamId(i);
                 }
                 m_MessageId = string.Join(":", args);
             }
@@ -310,16 +316,25 @@ namespace StorySystem
                             }
                         }
                     }
-                } else if (id == "opts" || id == "body") {
+                } else if (id == "comment" || id == "comments") {
+                    m_Comments = funcData;
+                } else if (id == "body") {
                 } else {
                     LogSystem.Error("Story {0} MessageHandler {1}, part '{2}' error !", storyId, m_MessageId, id);
                 }
             }
-            var lastId = lastFunc.GetId();
-            if (lastId != "opts") {
-                RefreshCommands(lastFunc);
+            Dsl.FunctionData bodyFunc = null;
+            for (int ix = 0; ix < messageHandlerData.GetFunctionNum(); ++ix) {
+                var funcData = messageHandlerData.Functions[ix];
+                var id = funcData.GetId();
+                if (funcData.HaveStatement() && id != "comment" && id != "comments") {
+                    bodyFunc = funcData;
+                }
+            }
+            if (null != bodyFunc) {
+                RefreshCommands(bodyFunc);
             } else {
-                LogSystem.Error("Story {0} MessageHandler {1}, part '{2}' error !", storyId, m_MessageId, lastId);
+                LogSystem.Error("Story {0} MessageHandler {1}, no body !", storyId, m_MessageId);
             }
         }
         public void Reset()
@@ -412,6 +427,7 @@ namespace StorySystem
         private StoryLocalInfoStack m_LocalInfoStack = new StoryLocalInfoStack();
         private StoryRuntimeStack m_RuntimeStack = new StoryRuntimeStack();
         private List<IStoryCommand> m_LoadedCommands = new List<IStoryCommand>();
+        private Dsl.FunctionData m_Comments = null;
     }
     public sealed class StoryMessageHandlerList : List<StoryMessageHandler>
     {

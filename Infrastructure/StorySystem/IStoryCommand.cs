@@ -10,6 +10,7 @@ namespace StorySystem
     {
         bool Init(Dsl.ISyntaxComponent config);//从DSL语言初始化命令实例
         string GetId();//获取命令id
+        Dsl.FunctionData GetComments();//获取命令注解dsl
         Dsl.ISyntaxComponent GetConfig();//获取命令配置dsl
         void ShareConfig(IStoryCommand cloner);
         IStoryCommand Clone();//克隆一个新实例，每个命令只从DSL语言初始化一次，之后的实例由克隆产生，提升性能
@@ -35,12 +36,17 @@ namespace StorySystem
                 return string.Empty;
             return m_Config.GetId();
         }
+        public Dsl.FunctionData GetComments()
+        {
+            return m_Comments;
+        }
         public Dsl.ISyntaxComponent GetConfig()
         {
             return m_Config;
         }
         public void ShareConfig(IStoryCommand cloner)
         {
+            m_Comments = cloner.GetComments();
             m_Config = cloner.GetConfig();
         }
         public bool Init(Dsl.ISyntaxComponent config)
@@ -57,8 +63,25 @@ namespace StorySystem
                 } else {
                     Dsl.StatementData statementData = config as Dsl.StatementData;
                     if (null != statementData) {
-                        //是否支持语句类型的命令语法？
-                        Load(statementData);
+                        int funcNum = statementData.GetFunctionNum();
+                        var lastFunc = statementData.Last;
+                        var id = lastFunc.GetId();
+                        if (funcNum >= 2 && id == "comment" || id == "comments") {
+                            m_Comments = lastFunc;
+                            statementData.Functions.RemoveAt(funcNum - 1);
+                            if (statementData.GetFunctionNum() == 1) {
+                                funcData = statementData.GetFunction(0);
+                                if (funcData.HaveStatement()) {
+                                    Load(funcData);
+                                } else {
+                                    Load(funcData.Call);
+                                }
+                            } else {
+                                Load(statementData);
+                            }
+                        } else {
+                            Load(statementData);
+                        }
                     } else {
                         //error
                     }
@@ -158,6 +181,7 @@ namespace StorySystem
             m_LoadSuccess = v;
         }
 
+        private Dsl.FunctionData m_Comments;
         private Dsl.ISyntaxComponent m_Config;
         private bool m_LoadSuccess = true;
         private bool m_LastExecResult = false;

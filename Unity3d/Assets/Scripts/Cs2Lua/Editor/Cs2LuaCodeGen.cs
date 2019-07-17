@@ -38,7 +38,7 @@ internal sealed class Cs2LuaMethodInfo
                 ExistReturnParam = true;
                 break;
             }
-        }        
+        }
     }
 
     private static string CalcMethodMangling(MethodInfo mi)
@@ -253,6 +253,10 @@ public static class Cs2LuaCodeGen
         sb.AppendLine();
         sb.AppendFormat("{0}using GameFramework.Plugin;", GetIndentString());
         sb.AppendLine();
+        if (!string.IsNullOrEmpty(type.Namespace) && type.Namespace != "GameFramework" && type.Namespace != "GameFramework.Plugin") {
+            sb.AppendFormat("{0}using {1};", GetIndentString(), type.Namespace);
+            sb.AppendLine();
+        }
         sb.AppendLine();
         bool useSpecClone = false;
         foreach (var method in type.GetMethods(c_BindingFlags)) {

@@ -53,7 +53,7 @@ internal class NativeSimpleStoryValue : IStoryValue
 
     public void InitFromDsl(Dsl.ISyntaxComponent param)
     {
-        m_Params.InitFromDsl(param, 0);
+        m_Params.InitFromDsl(param, 0, false);
     }
     public IStoryValue Clone()
     {
@@ -111,45 +111,40 @@ internal class LuaSimpleStoryValue : IStoryValue
         m_FileName = m_ClassName.Replace(".", "__");
 
         if (callLua) {
-            m_Svr = Cs2LuaAssembly.Instance.LuaSvr;
-            m_Svr.luaState.doFile(m_FileName);
-            m_ClassObj = (LuaTable)m_Svr.luaState[m_ClassName];
-            m_Self = (LuaTable)((LuaFunction)m_ClassObj["__new_object"]).call();
-            BindLuaInterface();
-            if (null != m_SetProxy) {
-                m_SetProxy.call(m_Self, m_Proxy);
+            m_Plugin = new Cs2LuaSimpleStoryValuePlugin();
+            m_Plugin.LoadLua(m_FileName);
+            if (null != m_Plugin) {
+                m_Plugin.SetProxy(m_Proxy);
             }
         }
     }
 
     public void InitFromDsl(Dsl.ISyntaxComponent param)
     {
-        m_Params.InitFromDsl(param, 0);
+        m_Params.InitFromDsl(param, 0, false);
     }
     public IStoryValue Clone()
     {
         var newObj = new LuaSimpleStoryValue(m_ClassName, false);
         newObj.m_Params = m_Params.Clone() as StoryValueParams;
         newObj.m_Proxy = m_Proxy.Clone();
-        if (null != m_Clone) {
-            var ret = m_Clone.call(m_Self);
-            newObj.m_Svr = m_Svr;
-            newObj.m_ClassObj = m_ClassObj;
-            newObj.m_Self = (LuaTable)ret;
-            newObj.BindLuaInterface();
-            if (null != newObj.m_SetProxy) {
-                newObj.m_SetProxy.call(newObj.m_Self, newObj.m_Proxy);
+        if (null != m_Plugin) {
+            var ret = m_Plugin.Clone();
+            newObj.m_Plugin = new Cs2LuaSimpleStoryValuePlugin();
+            newObj.m_Plugin.InitLua((LuaTable)ret, m_FileName);
+            if (null != newObj.m_Plugin) {
+                newObj.m_Plugin.SetProxy(newObj.m_Proxy);
             }
         }
         return newObj;
     }
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
     {
-        if (null != m_Evaluate) {
+        if (null != m_Plugin) {
             m_Proxy.HaveValue = false;
             m_Params.Evaluate(instance, handler, iterator, args);
             if (m_Params.HaveValue) {
-                m_Evaluate.call(m_Self, instance, m_Params);
+                m_Plugin.Evaluate(instance, handler, m_Params);
             }
         }
     }
@@ -168,25 +163,10 @@ internal class LuaSimpleStoryValue : IStoryValue
         }
     }
 
-    private void BindLuaInterface()
-    {
-        if (null != m_Self) {
-            m_SetProxy = (LuaFunction)m_Self["SetProxy"];
-            m_Clone = (LuaFunction)m_Self["Clone"];
-            m_Evaluate = (LuaFunction)m_Self["Evaluate"];
-        }
-    }
-
     private StoryValueParams m_Params = new StoryValueParams();
     private StoryValueResult m_Proxy = new StoryValueResult();
 
     private string m_FileName;
     private string m_ClassName;
-
-    private LuaSvr m_Svr;
-    private LuaTable m_ClassObj;
-    private LuaTable m_Self;
-    private LuaFunction m_SetProxy;
-    private LuaFunction m_Clone;
-    private LuaFunction m_Evaluate;
+    private Cs2LuaSimpleStoryValuePlugin m_Plugin;
 }

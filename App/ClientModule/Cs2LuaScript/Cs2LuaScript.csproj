@@ -36,8 +36,8 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Cs2LuaUtility">
-      <HintPath>..\..\..\ExternalLibrary\Cs2LuaUtility.dll</HintPath>
+    <Reference Include="Cs2DslUtility">
+      <HintPath>..\..\..\ExternalLibrary\Cs2DslUtility.dll</HintPath>
     </Reference>
     <Reference Include="Dsl">
       <HintPath>..\..\..\ExternalLibrary\Dsl.dll</HintPath>

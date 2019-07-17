@@ -127,7 +127,7 @@ public class ScenePhoto : EditorWindow {
 
       PhotoCamera.orthographic = true;
       PhotoCamera.aspect = 1.0f;
-      PhotoCamera.hdr = IsHDR;
+      PhotoCamera.allowHDR = IsHDR;
       PhotoCamera.orthographicSize = Mathf.Max(tSceneSize.x, tSceneSize.y) / 2;
       //PhotoCamera.rect = new Rect(0, 0, tSceneSize.x, tSceneSize.z);
       PhotoCamera.transform.position = tSceneCenter + new Vector3(0, 512.0f, 0);

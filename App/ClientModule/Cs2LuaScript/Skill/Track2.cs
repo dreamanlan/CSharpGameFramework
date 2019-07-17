@@ -207,12 +207,12 @@ public class Track2Trigger : ISkillTriggerPlugin
         }
     }
 
-    [Cs2Lua.Ignore]
+    [Cs2Dsl.Ignore]
     public void LoadFuncData(Dsl.FunctionData funcData, SkillInstance instance)
     {
     }
 
-    [Cs2Lua.Ignore]
+    [Cs2Dsl.Ignore]
     public void LoadStatementData(Dsl.StatementData statementData, SkillInstance instance)
     {
     }

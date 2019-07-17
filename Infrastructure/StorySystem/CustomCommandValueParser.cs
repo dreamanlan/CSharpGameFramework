@@ -165,11 +165,17 @@ namespace StorySystem
                     StorySystem.CommonCommands.CompositeCommand cmd = factory.Create() as StorySystem.CommonCommands.CompositeCommand;
                     cmd.InitialCommands.Clear();
 
-                    Dsl.FunctionData last = dslInfo.Last;
-                    var bodyId = last.GetId();
-                    if (bodyId != "opts") {
-                        for (int ix = 0; ix < last.GetStatementNum(); ++ix) {
-                            Dsl.ISyntaxComponent syntaxComp = last.GetStatement(ix);
+                    Dsl.FunctionData bodyFunc = null;
+                    for (int i = 0; i < dslInfo.GetFunctionNum(); ++i) {
+                        var funcData = dslInfo.GetFunction(i);
+                        var fid = funcData.GetId();
+                        if (funcData.HaveStatement() && fid != "opts") {
+                            bodyFunc = funcData;
+                        }
+                    }
+                    if (null != bodyFunc) {
+                        for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
+                            Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
                             IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
                             cmd.InitialCommands.Add(sub);
                         }
@@ -187,11 +193,17 @@ namespace StorySystem
                     StorySystem.CommonValues.CompositeValue val = factory.Build() as StorySystem.CommonValues.CompositeValue;
                     val.InitialCommands.Clear();
 
-                    Dsl.FunctionData last = dslInfo.Last;
-                    var bodyId = last.GetId();
-                    if (bodyId != "opts") {
-                        for (int ix = 0; ix < last.GetStatementNum(); ++ix) {
-                            Dsl.ISyntaxComponent syntaxComp = last.GetStatement(ix);
+                    Dsl.FunctionData bodyFunc = null;
+                    for (int i = 0; i < dslInfo.GetFunctionNum(); ++i) {
+                        var funcData = dslInfo.GetFunction(i);
+                        var fid = funcData.GetId();
+                        if (funcData.HaveStatement() && fid != "opts") {
+                            bodyFunc = funcData;
+                        }
+                    }
+                    if (null != bodyFunc) {
+                        for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
+                            Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
                             IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
                             val.InitialCommands.Add(sub);
                         }
