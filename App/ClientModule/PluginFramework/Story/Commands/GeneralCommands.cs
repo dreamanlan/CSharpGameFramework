@@ -82,23 +82,29 @@ namespace GameFramework.Story.Commands
         {
             StartStoryCommand cmd = new StartStoryCommand();
             cmd.m_StoryId = m_StoryId.Clone();
+            cmd.m_Multiple = m_Multiple.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         { }
-
         protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_StoryId.Evaluate(instance, handler, iterator, args);
+            m_Multiple.Evaluate(instance, handler, iterator, args);
+        
         }
-
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            PluginFramework.Instance.QueueAction(GfxStorySystem.Instance.StartStory, m_StoryId.Value);
+            var storyId = m_StoryId.Value;
+            var multiple = m_Multiple.Value;
+            PluginFramework.Instance.QueueAction(() => {
+                if (multiple == 0)
+                    GfxStorySystem.Instance.StartStory(storyId);
+                else
+                    GfxStorySystem.Instance.StartStories(storyId);
+            });
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -106,8 +112,22 @@ namespace GameFramework.Story.Commands
                 m_StoryId.InitFromDsl(callData.GetParam(0));
             }
         }
-
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            if (statementData.GetFunctionNum() == 2) {
+                var first = statementData.First;
+                var second = statementData.Second;
+                if (!first.HaveStatement() && !second.HaveStatement()) {
+                    Load(first.Call);
+                    var call = second.Call;
+                    if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
+                        m_Multiple.InitFromDsl(call.GetParam(0));
+                    }
+                }
+            }
+        }
         private IStoryValue<string> m_StoryId = new StoryValue<string>();
+        private IStoryValue<int> m_Multiple = new StoryValue<int>();
     }
     /// <summary>
     /// stopstory(story_id);
@@ -118,23 +138,25 @@ namespace GameFramework.Story.Commands
         {
             StopStoryCommand cmd = new StopStoryCommand();
             cmd.m_StoryId = m_StoryId.Clone();
+            cmd.m_Multiple = m_Multiple.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         { }
-
         protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_StoryId.Evaluate(instance, handler, iterator, args);
+            m_Multiple.Evaluate(instance, handler, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            GfxStorySystem.Instance.MarkStoryTerminated(m_StoryId.Value);
+            var multiple = m_Multiple.Value;
+            if (multiple == 0)
+                GfxStorySystem.Instance.MarkStoryTerminated(m_StoryId.Value);
+            else
+                GfxStorySystem.Instance.MarkStoriesTerminated(m_StoryId.Value);
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -142,8 +164,22 @@ namespace GameFramework.Story.Commands
                 m_StoryId.InitFromDsl(callData.GetParam(0));
             }
         }
-
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            if (statementData.GetFunctionNum() == 2) {
+                var first = statementData.First;
+                var second = statementData.Second;
+                if (!first.HaveStatement() && !second.HaveStatement()) {
+                    Load(first.Call);
+                    var call = second.Call;
+                    if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
+                        m_Multiple.InitFromDsl(call.GetParam(0));
+                    }
+                }
+            }
+        }
         private IStoryValue<string> m_StoryId = new StoryValue<string>();
+        private IStoryValue<int> m_Multiple = new StoryValue<int>();
     }
     /// <summary>
     /// waitstory(storyid1,storyid2,...)[set(var,val)timeoutset(timeout,var,val)];
@@ -161,15 +197,15 @@ namespace GameFramework.Story.Commands
             cmd.m_TimeoutVal = m_TimeoutVal.Clone();
             cmd.m_TimeoutSetVar = m_TimeoutSetVar.Clone();
             cmd.m_TimeoutSetVal = m_TimeoutSetVal.Clone();
+            cmd.m_Multiple = m_Multiple.Clone();
             cmd.m_HaveSet = m_HaveSet;
+            cmd.m_HaveMultiple = m_HaveMultiple;
             return cmd;
         }
-
         protected override void ResetState()
         {
             m_CurTime = 0;
         }
-
         protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_StoryIds.Count; i++) {
@@ -182,8 +218,10 @@ namespace GameFramework.Story.Commands
                 m_TimeoutSetVar.Evaluate(instance, handler, iterator, args);
                 m_TimeoutSetVal.Evaluate(instance, handler, iterator, args);
             }
+            if (m_HaveMultiple) {
+                m_Multiple.Evaluate(instance, handler, iterator, args);
+            }
         }
-
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int ct = 0;
@@ -191,17 +229,20 @@ namespace GameFramework.Story.Commands
                 ct += GfxStorySystem.Instance.CountStory(m_StoryIds[i].Value);
             }
             bool ret = false;
+            int multiple = m_Multiple.Value;
             if (ct <= 0) {
-                string varName = m_SetVar.Value;
-                object varVal = m_SetVal.Value;
-                instance.SetVariable(varName, varVal);
+                if (m_HaveSet) {
+                    string varName = m_SetVar.Value;
+                    object varVal = m_SetVal.Value;
+                    instance.SetVariable(varName, varVal);
+                }
             } else {
                 int timeout = m_TimeoutVal.Value;
                 int curTime = m_CurTime;
                 m_CurTime += (int)delta;
                 if (timeout <= 0 || curTime <= timeout) {
                     ret = true;
-                } else {
+                } else if (m_HaveSet) {
                     string varName = m_TimeoutSetVar.Value;
                     object varVal = m_TimeoutSetVal.Value;
                     instance.SetVariable(varName, varVal);
@@ -209,7 +250,6 @@ namespace GameFramework.Story.Commands
             }
             return ret;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -219,48 +259,69 @@ namespace GameFramework.Story.Commands
                 m_StoryIds.Add(val);
             }
         }
-
         protected override void Load(Dsl.StatementData statementData)
         {
-            if (statementData.Functions.Count >= 3) {
-                Dsl.CallData first = statementData.Functions[0].Call;
-                Dsl.CallData second = statementData.Functions[1].Call;
-                Dsl.CallData third = statementData.Functions[2].Call;
-                if (null != first && null != second && null != third) {
-                    m_HaveSet = true;
-
-                    Load(first);
-                    LoadSet(second);
-                    LoadTimeoutSet(third);
+            int ct = statementData.Functions.Count;
+            if (statementData.Functions.Count >= 2) {
+                var first = statementData.First.Call;
+                var second = statementData.Second.Call;
+                if (ct == 2) {
+                    m_HaveMultiple = true;
+                    LoadMultiple(second);
+                } else if (ct == 3) {
+                    var third = statementData.Third.Call;
+                    if (null != first && null != second && null != third) {
+                        m_HaveSet = true;
+                        Load(first);
+                        LoadSet(second);
+                        LoadTimeoutSet(third);
+                    }
+                } else if (ct == 4) {
+                    var third = statementData.Third.Call;
+                    var last = statementData.Last.Call;
+                    if (null != first && null != second && null != third && null != last) {
+                        m_HaveSet = true;
+                        Load(first);
+                        LoadSet(second);
+                        LoadTimeoutSet(third);
+                        m_HaveMultiple = true;
+                        LoadMultiple(last);
+                    }
                 }
             }
         }
-
+        private void LoadMultiple(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num >= 1 && callData.GetId() == "multiple") {
+                m_Multiple.InitFromDsl(callData.GetParam(0));
+            }
+        }
         private void LoadSet(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num >= 2) {
+            if (num >= 2 && callData.GetId() == "set") {
                 m_SetVar.InitFromDsl(callData.GetParam(0));
                 m_SetVal.InitFromDsl(callData.GetParam(1));
             }
         }
-
         private void LoadTimeoutSet(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
-            if (num >= 3) {
+            if (num >= 3 && callData.GetId() == "timeoutset") {
                 m_TimeoutVal.InitFromDsl(callData.GetParam(0));
                 m_TimeoutSetVar.InitFromDsl(callData.GetParam(1));
                 m_TimeoutSetVal.InitFromDsl(callData.GetParam(2));
             }
         }
-
         private List<IStoryValue<string>> m_StoryIds = new List<IStoryValue<string>>();
         private IStoryValue<string> m_SetVar = new StoryValue<string>();
         private IStoryValue m_SetVal = new StoryValue();
         private IStoryValue<int> m_TimeoutVal = new StoryValue<int>();
         private IStoryValue<string> m_TimeoutSetVar = new StoryValue<string>();
         private IStoryValue m_TimeoutSetVal = new StoryValue();
+        private IStoryValue<int> m_Multiple = new StoryValue<int>();
+        private bool m_HaveMultiple = false;
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
     }
@@ -275,28 +336,33 @@ namespace GameFramework.Story.Commands
             for (int i = 0; i < m_StoryIds.Count; i++) {
                 cmd.m_StoryIds.Add(m_StoryIds[i].Clone());
             }
+            cmd.m_Multiple = m_Multiple.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_StoryIds.Count; i++) {
                 m_StoryIds[i].Evaluate(instance, handler, iterator, args);
             }
+            m_Multiple.Evaluate(instance, handler, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            for (int i = 0; i < m_StoryIds.Count; i++) {
-                GfxStorySystem.Instance.PauseStory(m_StoryIds[i].Value, true);
+            var multiple = m_Multiple.Value;
+            if (multiple == 0) {
+                for (int i = 0; i < m_StoryIds.Count; i++) {
+                    GfxStorySystem.Instance.PauseStory(m_StoryIds[i].Value, true);
+                }
+            } else {
+                for (int i = 0; i < m_StoryIds.Count; i++) {
+                    GfxStorySystem.Instance.PauseStories(m_StoryIds[i].Value, true);
+                }
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -306,8 +372,22 @@ namespace GameFramework.Story.Commands
                 m_StoryIds.Add(val);
             }
         }
-
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            if (statementData.GetFunctionNum() == 2) {
+                var first = statementData.First;
+                var second = statementData.Second;
+                if (!first.HaveStatement() && !second.HaveStatement()) {
+                    Load(first.Call);
+                    var call = second.Call;
+                    if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
+                        m_Multiple.InitFromDsl(call.GetParam(0));
+                    }
+                }
+            }
+        }
         private List<IStoryValue<string>> m_StoryIds = new List<IStoryValue<string>>();
+        private IStoryValue<int> m_Multiple = new StoryValue<int>();
     }
     /// <summary>
     /// resumestory(storyid1,storyid2,...);
@@ -320,28 +400,33 @@ namespace GameFramework.Story.Commands
             for (int i = 0; i < m_StoryIds.Count; i++) {
                 cmd.m_StoryIds.Add(m_StoryIds[i].Clone());
             }
+            cmd.m_Multiple = m_Multiple.Clone();
             return cmd;
         }
-
         protected override void ResetState()
         {
         }
-
         protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             for (int i = 0; i < m_StoryIds.Count; i++) {
                 m_StoryIds[i].Evaluate(instance, handler, iterator, args);
             }
+            m_Multiple.Evaluate(instance, handler, iterator, args);
         }
-
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            for (int i = 0; i < m_StoryIds.Count; i++) {
-                GfxStorySystem.Instance.PauseStory(m_StoryIds[i].Value, false);
+            var multiple = m_Multiple.Value;
+            if (multiple == 0) {
+                for (int i = 0; i < m_StoryIds.Count; i++) {
+                    GfxStorySystem.Instance.PauseStory(m_StoryIds[i].Value, false);
+                }
+            } else {
+                for (int i = 0; i < m_StoryIds.Count; i++) {
+                    GfxStorySystem.Instance.PauseStories(m_StoryIds[i].Value, false);
+                }
             }
             return false;
         }
-
         protected override void Load(Dsl.CallData callData)
         {
             int num = callData.GetParamNum();
@@ -351,8 +436,22 @@ namespace GameFramework.Story.Commands
                 m_StoryIds.Add(val);
             }
         }
-
+        protected override void Load(Dsl.StatementData statementData)
+        {
+            if (statementData.GetFunctionNum() == 2) {
+                var first = statementData.First;
+                var second = statementData.Second;
+                if (!first.HaveStatement() && !second.HaveStatement()) {
+                    Load(first.Call);
+                    var call = second.Call;
+                    if (call.GetId() == "multiple" && call.GetParamNum() > 0) {
+                        m_Multiple.InitFromDsl(call.GetParam(0));
+                    }
+                }
+            }
+        }
         private List<IStoryValue<string>> m_StoryIds = new List<IStoryValue<string>>();
+        private IStoryValue<int> m_Multiple = new StoryValue<int>();
     }
     /// <summary>
     /// firemessage(msgid,arg1,arg2,...);

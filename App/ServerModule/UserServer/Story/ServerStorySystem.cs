@@ -81,12 +81,16 @@ namespace GameFramework
         {
             if (!string.IsNullOrEmpty(_namespace)) {
                 storyId = string.Format("{0}:{1}", _namespace, storyId);
-            }            
-            int ct = m_StoryLogicInfos.Count;
-            for(int i = ct - 1; i >= 0; --i) {
-                var info = m_StoryLogicInfos[i];
+            }
+            foreach(var pair in m_StoryInstancePool) {
+                var info = pair.Value;
                 if (IsMatch(info.StoryId, storyId)) {
-                    info.Context = null;
+                    if (IsStoryStarted(info.StoryId)) {
+                        info.Reset();
+                    } else {
+                        m_StoryLogicInfos.Add(info);
+                    }
+                    info.Context = m_UserThread;
                     info.GlobalVariables = m_GlobalVariables;
                     info.Start();
 
@@ -164,18 +168,42 @@ namespace GameFramework
                 }
             }
         }
+        public bool IsStoryStarted(string storyId)
+        {
+            return IsStoryStarted(storyId, string.Empty);
+        }
+        public bool IsStoryStarted(string storyId, string _namespace)
+        {
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }
+            bool ret = false;
+            int count = m_StoryLogicInfos.Count;
+            for (int index = count - 1; index >= 0; --index) {
+                StoryInstance info = m_StoryLogicInfos[index];
+                if (null != info && info.StoryId == storyId) {
+                    ret = true;
+                    break;
+                }
+            }
+            return ret;
+        }
         public void StartStory(string storyId)
         {
             StartStory(storyId, string.Empty);
         }
-        public void StartStory(string storyId, string _namespace, params string[] overloadFiles)
+        public void StartStory(string storyId, string _namespace)
         {
             if (!string.IsNullOrEmpty(_namespace)) {
                 storyId = string.Format("{0}:{1}", _namespace, storyId);
             }
             StoryInstance inst = GetStoryInstance(storyId);
             if (null != inst) {
-                m_StoryLogicInfos.Add(inst);
+                if (IsStoryStarted(storyId)) {
+                    inst.Reset();
+                } else {
+                    m_StoryLogicInfos.Add(inst);
+                }
                 inst.Context = m_UserThread;
                 inst.GlobalVariables = m_GlobalVariables;
                 inst.Start();
@@ -183,6 +211,23 @@ namespace GameFramework
                 LogSystem.Info("StartStory {0}", storyId);
             } else {
                 LogSystem.Error("Can't find story, story:{0} !", storyId);
+            }
+        }
+        public void PauseStory(string storyId, bool pause)
+        {
+            PauseStory(storyId, string.Empty, pause);
+        }
+        public void PauseStory(string storyId, string _namespace, bool pause)
+        {
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }
+            int count = m_StoryLogicInfos.Count;
+            for (int index = count - 1; index >= 0; --index) {
+                StoryInstance info = m_StoryLogicInfos[index];
+                if (info.StoryId == storyId) {
+                    info.IsPaused = pause;
+                }
             }
         }
         public void StopStory(string storyId)
