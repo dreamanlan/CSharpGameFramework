@@ -569,7 +569,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<int> m_FormationIndex = new StoryValue<int>();
     }
     /// <summary>
-    /// npcenableai(npc_unit_id,true_or_false);
+    /// npcenableai(npc_unit_id,1_or_0);
     /// </summary>
     internal class NpcEnableAiCommand : AbstractStoryCommand
     {
@@ -595,7 +595,7 @@ namespace GameFramework.Story.Commands
         {
             EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(m_UnitId.Value);
             if (null != obj) {
-                obj.SetAIEnable(m_Enable.Value != "false");
+                obj.SetAIEnable(m_Enable.Value != 0);
             }
             EntityViewModel viewModel = EntityController.Instance.GetEntityViewByUnitId(m_UnitId.Value);
             if (null != viewModel) {
@@ -614,7 +614,7 @@ namespace GameFramework.Story.Commands
         }
 
         private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<string> m_Enable = new StoryValue<string>();
+        private IStoryValue<int> m_Enable = new StoryValue<int>();
     }
     /// <summary>
     /// npcsetai(unitid,ai_logic_id,stringlist("param1 param2 param3 ..."));

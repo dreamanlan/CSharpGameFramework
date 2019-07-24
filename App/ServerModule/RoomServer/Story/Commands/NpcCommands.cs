@@ -576,7 +576,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<int> m_FormationIndex = new StoryValue<int>();
     }
     /// <summary>
-    /// enableai(npc_unit_id,true_or_false);
+    /// enableai(npc_unit_id,1_or_0);
     /// </summary>
     public class NpcEnableAiCommand : AbstractStoryCommand
     {
@@ -604,7 +604,7 @@ namespace GameFramework.Story.Commands
             if (null != scene) {
                 EntityInfo obj = scene.SceneContext.GetEntityByUnitId(m_UnitId.Value);
                 if (null != obj) {
-                    obj.SetAIEnable(m_Enable.Value != "false");
+                    obj.SetAIEnable(m_Enable.Value != 0);
                 }
             }
             return false;
@@ -620,7 +620,7 @@ namespace GameFramework.Story.Commands
         }
 
         private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<string> m_Enable = new StoryValue<string>();
+        private IStoryValue<int> m_Enable = new StoryValue<int>();
     }
     /// <summary>
     /// setai(unitid,ai_logic_id,stringlist("param1 param2 param3 ..."));

@@ -347,7 +347,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<int> m_FormationIndex = new StoryValue<int>();
     }
     /// <summary>
-    /// objenableai(obj_id, true_or_false);
+    /// objenableai(obj_id, 1_or_0);
     /// </summary>
     internal class ObjEnableAiCommand : AbstractStoryCommand
     {
@@ -372,10 +372,9 @@ namespace GameFramework.Story.Commands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             int objId = m_ObjId.Value;
-            string enable = m_Enable.Value;
             EntityInfo obj = PluginFramework.Instance.GetEntityById(objId);
             if (null != obj) {
-                obj.SetAIEnable(m_Enable.Value != "false");
+                obj.SetAIEnable(m_Enable.Value != 0);
             }
             EntityViewModel viewModel = EntityController.Instance.GetEntityViewById(objId);
             if (null != viewModel) {
@@ -394,7 +393,7 @@ namespace GameFramework.Story.Commands
         }
 
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
-        private IStoryValue<string> m_Enable = new StoryValue<string>();
+        private IStoryValue<int> m_Enable = new StoryValue<int>();
     }
     /// <summary>
     /// objsetai(objid,ai_logic_id,stringlist("param1 param2 param3 ..."));
