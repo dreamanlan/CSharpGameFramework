@@ -169,6 +169,9 @@ namespace StorySystem.CommonCommands
             if (GameFramework.GlobalVariables.Instance.IsStorySkipped) {
                 return false;
             }
+            if (GameFramework.GlobalVariables.Instance.IsStorySpeedup) {
+                return false;
+            }
             int curTime = m_CurTime;
             m_CurTime += (int)delta;
             int val = m_Time.Value;
@@ -239,6 +242,9 @@ namespace StorySystem.CommonCommands
             if (GameFramework.GlobalVariables.Instance.IsStorySkipped) {
                 return false;
             }
+            if (GameFramework.GlobalVariables.Instance.IsStorySpeedup) {
+                return false;
+            }
             if (m_RealStartTime <= 0) {
                 m_RealStartTime = (int)GameFramework.TimeUtility.GetLocalRealMilliseconds();
             }
@@ -303,6 +309,9 @@ namespace StorySystem.CommonCommands
                 return false;
             }
             if (GameFramework.GlobalVariables.Instance.IsStorySkipped) {
+                return false;
+            }
+            if (GameFramework.GlobalVariables.Instance.IsStorySpeedup) {
                 return false;
             }
             if (GameFramework.GlobalVariables.Instance.StoryEditorOpen && GameFramework.GlobalVariables.Instance.StoryEditorContinue) {

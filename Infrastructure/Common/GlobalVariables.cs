@@ -61,6 +61,11 @@ namespace GameFramework
             get { return m_IsStorySkipped; }
             set { m_IsStorySkipped = value; }
         }
+        public bool IsStorySpeedup
+        {
+            get { return m_IsStorySpeedup; }
+            set { m_IsStorySpeedup = value; }
+        }        
 
         private static void AddCrypto(string s, string d, Dictionary<string, string> encodeTable, Dictionary<string, string> decodeTable)
         {
@@ -129,6 +134,7 @@ namespace GameFramework
         private Dictionary<string, string> m_DecodeTable = new Dictionary<string, string>();
 
         private bool m_IsStorySkipped = false;
+        private bool m_IsStorySpeedup = false;
         public static bool s_EnableCalculatorLog = false;
         public static bool s_EnableCalculatorDetailLog = false;
         public static bool s_EnableCalculatorOperatorLog = false;
