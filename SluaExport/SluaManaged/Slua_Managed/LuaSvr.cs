@@ -45,7 +45,7 @@ namespace SLua
 	public class LuaSvr 
 	{
 		public LuaState luaState;
-		#if !SLUA_STANDALONE
+#if !SLUA_STANDALONE
 		protected static LuaSvrGameObject lgo;
 		#endif
 		int errorReported = 0;
@@ -184,7 +184,6 @@ namespace SLua
             }
 #endif
             Helper.reg(L);
-            LuaValueType.reg(L);
 
             if ((flag & LuaSvrFlag.LSF_EXTLIB) != 0)
                 LuaDLL.luaS_openextlibs(L);

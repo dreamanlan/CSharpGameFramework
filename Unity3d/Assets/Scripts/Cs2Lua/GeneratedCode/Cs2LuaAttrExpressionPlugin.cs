@@ -7,39 +7,116 @@ using GameFramework.Plugin;
 
 public class Cs2LuaAttrExpressionPlugin : LuaClassProxyBase, IAttrExpressionPlugin
 {
-    public void SetCalculator(GameFramework.AttrCalc.DslCalculator calc)
+	public void SetCalculator(GameFramework.AttrCalc.DslCalculator calc)
 	{
-		base.CallFunction(m_Cs2Lua_SetCalculator, false, Self, calc);
+		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_SetCalculator);
+		LuaFunctionHelper.PushValue(Self);
+		LuaFunctionHelper.PushValue(calc);
+		var end_call_res = LuaFunctionHelper.EndCall(err);
+		if (end_call_res) {
+			LuaFunctionHelper.BeginGetResult(err);
+			LuaFunctionHelper.EndGetResult();
+		} else {
+		}
 	}
-    public System.Int64 Calc(GameFramework.SceneContextInfo context, GameFramework.CharacterProperty source, GameFramework.CharacterProperty target, params System.Int64[] args)
+	public System.Int64 Calc(GameFramework.SceneContextInfo context, GameFramework.CharacterProperty source, GameFramework.CharacterProperty target, params System.Int64[] args)
 	{
-		var __cs2lua_ret = base.CallFunction(m_Cs2Lua_Calc, true, Self, context, source, target, args);
-		return base.CastTo<System.Int64>(__cs2lua_ret);
+		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_Calc);
+		LuaFunctionHelper.PushValue(Self);
+		LuaFunctionHelper.PushValue(context);
+		LuaFunctionHelper.PushValue(source);
+		LuaFunctionHelper.PushValue(target);
+		LuaFunctionHelper.PushParams(args);
+		var end_call_res = LuaFunctionHelper.EndCall(err);
+		if (end_call_res) {
+			LuaFunctionHelper.BeginGetResult(err);
+			System.Int64 __cs2lua_ret;
+			LuaFunctionHelper.GetResult(out __cs2lua_ret);
+			LuaFunctionHelper.EndGetResult();
+			return __cs2lua_ret;
+		} else {
+			return (System.Int64)0;
+		}
 	}
 	public bool LoadValue(Dsl.ValueData valData)
 	{
-		var __cs2lua_ret = base.CallFunction(m_Cs2Lua_LoadValue, false, Self, valData);
-		return base.CastTo<bool>(__cs2lua_ret);
+		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_LoadValue);
+		LuaFunctionHelper.PushValue(Self);
+		LuaFunctionHelper.PushValue(valData);
+		var end_call_res = LuaFunctionHelper.EndCall(err);
+		if (end_call_res) {
+			LuaFunctionHelper.BeginGetResult(err);
+			bool __cs2lua_ret;
+			LuaFunctionHelper.GetResult(out __cs2lua_ret);
+			LuaFunctionHelper.EndGetResult();
+			return __cs2lua_ret;
+		} else {
+			return false;
+		}
 	}
 	public bool LoadCallData(Dsl.CallData callData)
 	{
-		var __cs2lua_ret = base.CallFunction(m_Cs2Lua_LoadCallData, false, Self, callData);
-		return base.CastTo<bool>(__cs2lua_ret);
+		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_LoadCallData);
+		LuaFunctionHelper.PushValue(Self);
+		LuaFunctionHelper.PushValue(callData);
+		var end_call_res = LuaFunctionHelper.EndCall(err);
+		if (end_call_res) {
+			LuaFunctionHelper.BeginGetResult(err);
+			bool __cs2lua_ret;
+			LuaFunctionHelper.GetResult(out __cs2lua_ret);
+			LuaFunctionHelper.EndGetResult();
+			return __cs2lua_ret;
+		} else {
+			return false;
+		}
 	}
-    public bool LoadExpressions(GameFramework.AttrCalc.AttrExpressionList exps)
+	public bool LoadExpressions(GameFramework.AttrCalc.AttrExpressionList exps)
 	{
-		var __cs2lua_ret = base.CallFunction(m_Cs2Lua_LoadExpressions, false, Self, exps);
-		return base.CastTo<bool>(__cs2lua_ret);
+		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_LoadExpressions);
+		LuaFunctionHelper.PushValue(Self);
+		LuaFunctionHelper.PushValue(exps);
+		var end_call_res = LuaFunctionHelper.EndCall(err);
+		if (end_call_res) {
+			LuaFunctionHelper.BeginGetResult(err);
+			bool __cs2lua_ret;
+			LuaFunctionHelper.GetResult(out __cs2lua_ret);
+			LuaFunctionHelper.EndGetResult();
+			return __cs2lua_ret;
+		} else {
+			return false;
+		}
 	}
 	public bool LoadFuncData(Dsl.FunctionData funcData)
 	{
-		var __cs2lua_ret = base.CallFunction(m_Cs2Lua_LoadFuncData, false, Self, funcData);
-		return base.CastTo<bool>(__cs2lua_ret);
+		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_LoadFuncData);
+		LuaFunctionHelper.PushValue(Self);
+		LuaFunctionHelper.PushValue(funcData);
+		var end_call_res = LuaFunctionHelper.EndCall(err);
+		if (end_call_res) {
+			LuaFunctionHelper.BeginGetResult(err);
+			bool __cs2lua_ret;
+			LuaFunctionHelper.GetResult(out __cs2lua_ret);
+			LuaFunctionHelper.EndGetResult();
+			return __cs2lua_ret;
+		} else {
+			return false;
+		}
 	}
 	public bool LoadStatementData(Dsl.StatementData statementData)
 	{
-		var __cs2lua_ret = base.CallFunction(m_Cs2Lua_LoadStatementData, false, Self, statementData);
-		return base.CastTo<bool>(__cs2lua_ret);
+		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_LoadStatementData);
+		LuaFunctionHelper.PushValue(Self);
+		LuaFunctionHelper.PushValue(statementData);
+		var end_call_res = LuaFunctionHelper.EndCall(err);
+		if (end_call_res) {
+			LuaFunctionHelper.BeginGetResult(err);
+			bool __cs2lua_ret;
+			LuaFunctionHelper.GetResult(out __cs2lua_ret);
+			LuaFunctionHelper.EndGetResult();
+			return __cs2lua_ret;
+		} else {
+			return false;
+		}
 	}
 
 	protected override void PrepareMembers()

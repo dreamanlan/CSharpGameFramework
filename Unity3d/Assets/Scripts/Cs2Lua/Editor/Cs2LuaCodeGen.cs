@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Reflection;
 using GameFramework;
+using GameFramework.Plugin;
 
 internal sealed class Cs2LuaMethodInfo
 {
@@ -141,6 +142,7 @@ public static class Cs2LuaCodeGen
     [MenuItem("工具/Build/GenCs2LuaProxy", false, 600)]
     public static void GenProxies()
     {
+        GenLuaProxyCode(typeof(IAttrExpressionPlugin), "Cs2LuaAttrExpressionPlugin");
     }
 
     private static void GenInterfaceCode(System.Type type, string name)

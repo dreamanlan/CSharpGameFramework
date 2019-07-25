@@ -1,7 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
-using LuaInterface;
+
 
 namespace SLua
 {

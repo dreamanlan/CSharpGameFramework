@@ -1,5 +1,5 @@
 ﻿using System;
-using LuaInterface;
+
 using SLua;
 using System.Collections.Generic;
 public class Lua_ProtoBuf_Meta_BasicList : LuaObject {

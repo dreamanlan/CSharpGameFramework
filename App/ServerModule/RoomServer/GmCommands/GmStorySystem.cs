@@ -61,9 +61,9 @@ namespace GameFramework.GmCommands
         }
         public void StartStory(string storyId)
         {
-            StopStory(storyId);
             StoryInstance inst = NewStoryInstance(storyId);
             if (null != inst) {
+                StopStory(storyId);
                 m_StoryLogicInfos.Add(inst);
                 inst.Context = m_CurScene;
                 inst.GlobalVariables = m_GlobalVariables;

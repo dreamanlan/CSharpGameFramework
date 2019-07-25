@@ -62,10 +62,10 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="UnityEngine">
-      <HintPath>..\..\CsLibrary\ExternLibrary\UnityEngine.dll</HintPath>
+      <HintPath>..\..\ExternalLibrary\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>..\..\CsLibrary\ExternLibrary\UnityEngine.UI.dll</HintPath>
+      <HintPath>..\..\ExternalLibrary\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -86,7 +86,6 @@
     <Compile Include="Slua_Managed\LuaState.cs" />
     <Compile Include="Slua_Managed\LuaSvr.cs" />
     <Compile Include="Slua_Managed\LuaSvrGameObject.cs" />
-    <Compile Include="Slua_Managed\LuaValueType.cs" />
     <Compile Include="Slua_Managed\LuaVarObject.cs" />
     <Compile Include="Slua_Managed\ObjectCache.cs" />
     <Compile Include="Slua_Managed\SLuaSetting.cs" />

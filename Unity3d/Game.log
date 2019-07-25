@@ -1,57 +1,72 @@
-23-41-25-829:======GameLog Start (2019年7月17日, 23:41:25)======
-23-41-25-860:[Debug]:table config root = E:/OpenSource/CSharpGameFramework/Unity3d/Assets/StreamingAssets/Tables/
-23-41-25-867:[Info]:binary load 2767 parse 1672, file Tables/Public/Level.dat
-23-41-25-869:[Info]:binary load 379 parse 623, file Tables/Public/LevelMonster.dat
-23-41-25-872:[Info]:binary load 380 parse 641, file Tables/Public/Const.dat
-23-41-25-874:[Info]:binary load 454 parse 418, file Tables/Public/AttrDefine.dat
-23-41-25-876:[Info]:binary load 417 parse 712, file Tables/Public/Actor.dat
-23-41-25-878:[Info]:binary load 350 parse 630, file Tables/Public/Skill.dat
-23-41-25-880:[Info]:binary load 342 parse 402, file Tables/Public/SkillResources.dat
-23-41-25-882:[Info]:binary load 347 parse 557, file Tables/Public/SkillData.dat
-23-41-25-883:[Info]:binary load 346 parse 470, file Tables/Public/ImpactData.dat
-23-41-25-885:[Info]:binary load 328 parse 543, file Tables/Public/SkillEvent.dat
-23-41-25-892:[Info]:binary load 376 parse 362, file Tables/Client/StoryDlg.dat
-23-41-25-895:[Info]:binary load 440 parse 1225, file Tables/Client/StrDictionary.dat
-23-41-25-897:[Info]:binary load 351 parse 349, file Tables/Client/UI.dat
-23-41-25-899:[Info]:binary load 482 parse 877, file Tables/Public/Formation.dat
-23-41-26-021:[Info]:SendMessage GameRoot LoadScene TableConfig.Level False
-23-41-26-573:[Debug]:StoryInstance.Init message handler num:6 True
-23-41-26-574:[Info]:ParseStory story_main 0
-23-41-26-578:[Debug]:StoryInstance.Init message handler num:4 True
-23-41-26-578:[Info]:ParseStory local_main 0
-23-41-26-595:[Debug]:StoryInstance.Init message handler num:5 True
-23-41-26-595:[Info]:ParseStory skill_main 0
-23-41-26-596:[Debug]:StoryInstance.Init message handler num:1 True
-23-41-26-596:[Info]:ParseStory auto_story 0
-23-41-26-598:[Info]:StartStory local_main
-23-41-26-598:[Info]:StartStory story_main
-23-41-26-605:[Debug]:StoryInstance.Init message handler num:3 True
-23-41-26-605:[Info]:ParseStory LoginDlg:main 0
-23-41-26-609:[Debug]:StoryInstance.Init message handler num:3 True
-23-41-26-609:[Info]:ParseStory NicknameDlg:main 0
-23-41-26-616:[Debug]:StoryInstance.Init message handler num:4 True
-23-41-26-616:[Info]:ParseStory StoryDlg:main 0
-23-41-26-623:[Debug]:SkillInstance.Init section num:0 True skill 2110000000
-23-41-26-624:[Debug]:ParseSkill 2110000000
-23-41-26-624:[Debug]:SkillInstance.Init section num:0 True skill 2120000000
-23-41-26-624:[Debug]:ParseSkill 2120000000
-23-41-26-641:[Info]:StartStory LoginDlg:main
-23-41-26-738:[Info]:StartStory NicknameDlg:main
-23-41-26-749:[Info]:StartStory StoryDlg:main
-23-41-26-749:[Info]:SendMessage GameRoot OnLoadMainUiComplete 1 False
-23-41-26-765:[Warn]:NicknameDlg start
-23-41-26-767:[Warn]:LoginDlg start
-23-41-26-768:[Info]:Publish loading_complete ui
-23-41-26-769:[Info]:Publish ge_select_server lobby
-23-41-26-791:[Warn]:StoryInstance queue message show_login
-23-41-26-796:[Debug]:QueueActionWithDelegation, Void StartStory(System.String) GameFramework.Story.GfxStorySystem, action count 1
-23-41-26-796:[Debug]:QueueActionWithDelegation, Void StartStory(System.String) GameFramework.Story.GfxStorySystem, action count 2
-23-41-26-844:[Info]:StartStory skill_main
-23-41-26-844:[Info]:StartStory auto_story
-23-41-26-844:[Info]:Publish ui_hide ui
-23-41-31-490:[Warn]:StoryInstance queue message LoginDlg:on_click
-23-41-31-491:[Warn]:LoginDlg on click
-23-41-31-494:[Info]:Publish ui_highlight_prompt ui
-23-41-33-243:[Info]:SendToLobby:6 BgAAAA==
-23-41-33-243:[Info]:Disconnect(False). CurTime 6809 LastConnectTime 0
-23-41-33-244:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+21-41-55-571:======GameLog Start (2019年7月25日, 21:41:55)======
+21-41-55-632:[Error]:DslCalculator error, 1+attr(1003) line 4
+21-41-55-635:[Error]:DslCalculator error, 1+attr(1008) line 5
+21-41-55-639:[Error]:DslCalculator error, 1+attr(1013) line 6
+21-41-55-642:[Error]:DslCalculator error, 1+attr(1018) line 7
+21-41-55-645:[Error]:DslCalculator error, 1+attr(2003) line 8
+21-41-55-649:[Error]:DslCalculator error, 1+attr(2009) line 9
+21-41-55-656:[Error]:DslCalculator error, 1000-value(4) line 19
+21-41-55-661:[Error]:DslCalculator error, 1000-value(7) line 24
+21-41-55-668:[Error]:DslCalculator error, 1000+attr(1039) line 30
+21-41-55-674:[Error]:DslCalculator error, 1000+attr(1033) line 30
+21-41-55-678:[Error]:DslCalculator error, 1000+attr(1035) line 31
+21-41-55-685:[Error]:DslCalculator error, 1000-attr2(1038) line 32
+21-41-55-691:[Error]:DslCalculator error, 1000+attr(1040) line 39
+21-41-55-700:[Error]:DslCalculator error, 1000+attr(1033) line 39
+21-41-55-706:[Error]:DslCalculator error, 1000+attr(1035) line 40
+21-41-55-713:[Error]:DslCalculator error, 1000-attr2(1038) line 41
+21-41-55-718:[Debug]:table config root = E:/OpenSource/CSharpGameFramework/Unity3d/Assets/StreamingAssets/Tables/
+21-41-55-739:[Info]:binary load 4102 parse 2072, file Tables/Public/Level.dat
+21-41-55-742:[Info]:binary load 468 parse 722, file Tables/Public/LevelMonster.dat
+21-41-55-745:[Info]:binary load 614 parse 886, file Tables/Public/Const.dat
+21-41-55-755:[Info]:binary load 662 parse 590, file Tables/Public/AttrDefine.dat
+21-41-55-758:[Info]:binary load 602 parse 909, file Tables/Public/Actor.dat
+21-41-55-761:[Info]:binary load 498 parse 1251, file Tables/Public/Skill.dat
+21-41-55-764:[Info]:binary load 472 parse 545, file Tables/Public/SkillResources.dat
+21-41-55-767:[Info]:binary load 516 parse 901, file Tables/Public/SkillData.dat
+21-41-55-770:[Info]:binary load 464 parse 582, file Tables/Public/ImpactData.dat
+21-41-55-772:[Info]:binary load 503 parse 713, file Tables/Public/SkillEvent.dat
+21-41-55-793:[Info]:binary load 6093 parse 642, file Tables/Client/StoryDlg.dat
+21-41-55-799:[Info]:binary load 589 parse 1641, file Tables/Client/StrDictionary.dat
+21-41-55-801:[Info]:binary load 412 parse 438, file Tables/Client/UI.dat
+21-41-55-805:[Info]:binary load 841 parse 1655, file Tables/Public/Formation.dat
+21-41-56-083:[Info]:SendMessage GameRoot LoadScene TableConfig.Level False
+21-41-56-943:[Debug]:StoryInstance.Init message handler num:6 True
+21-41-56-944:[Info]:ParseStory story_main 0
+21-41-56-956:[Debug]:StoryInstance.Init message handler num:4 True
+21-41-56-956:[Info]:ParseStory local_main 0
+21-41-56-981:[Debug]:StoryInstance.Init message handler num:5 True
+21-41-56-981:[Info]:ParseStory skill_main 0
+21-41-56-982:[Debug]:StoryInstance.Init message handler num:1 True
+21-41-56-982:[Info]:ParseStory auto_story 0
+21-41-56-984:[Info]:StartStory local_main
+21-41-56-984:[Info]:StartStory story_main
+21-41-56-991:[Debug]:StoryInstance.Init message handler num:3 True
+21-41-56-991:[Info]:ParseStory LoginDlg:main 0
+21-41-57-000:[Debug]:StoryInstance.Init message handler num:3 True
+21-41-57-000:[Info]:ParseStory NicknameDlg:main 0
+21-41-57-021:[Debug]:StoryInstance.Init message handler num:4 True
+21-41-57-022:[Info]:ParseStory StoryDlg:main 0
+21-41-57-027:[Debug]:SkillInstance.Init section num:0 True skill 2110000000
+21-41-57-028:[Debug]:ParseSkill 2110000000
+21-41-57-028:[Debug]:SkillInstance.Init section num:0 True skill 2120000000
+21-41-57-028:[Debug]:ParseSkill 2120000000
+21-41-57-057:[Info]:StartStory LoginDlg:main
+21-41-57-090:[Info]:StartStory NicknameDlg:main
+21-41-57-119:[Info]:StartStory StoryDlg:main
+21-41-57-119:[Info]:SendMessage GameRoot OnLoadMainUiComplete 1 False
+21-41-57-134:[Warn]:NicknameDlg start
+21-41-57-136:[Warn]:LoginDlg start
+21-41-57-137:[Info]:Publish loading_complete ui
+21-41-57-138:[Info]:Publish ge_select_server lobby
+21-41-57-153:[Warn]:StoryInstance queue message show_login
+21-41-57-196:[Info]:StartStory skill_main
+21-41-57-196:[Info]:StartStory auto_story
+21-41-57-196:[Info]:Publish ui_hide ui
+21-42-06-729:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+21-42-16-728:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+21-42-26-728:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+21-42-36-736:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+21-42-41-292:[Info]:SendToLobby:6 BgAAAA==
+21-42-41-293:[Info]:Disconnect(False). CurTime 44520 LastConnectTime 0
+21-42-41-293:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1

@@ -1,5 +1,5 @@
 ﻿using System;
-using LuaInterface;
+
 using SLua;
 using System.Collections.Generic;
 public class Lua_GameFrameworkMessage_Msg_CR_DlgClosed : LuaObject {
