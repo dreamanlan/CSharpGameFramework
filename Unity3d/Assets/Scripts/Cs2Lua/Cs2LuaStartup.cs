@@ -52,7 +52,13 @@ public class Cs2LuaStartup : MonoBehaviour
     private void DoStartupLua(string className)
     {
         svr = Cs2LuaAssembly.Instance.LuaSvr;
-        svr.luaState.doFile(LuaClassFileName);
+		string fileName = LuaClassFileName.ToLower();
+        var sb = new System.Text.StringBuilder();
+        sb.Append("require ");
+        sb.Append('"');
+        sb.Append(fileName);
+        sb.Append('"');
+        svr.luaState.doString(sb.ToString());
         classObj = (LuaTable)svr.luaState[className];
         self = (LuaTable)((LuaFunction)classObj["__new_object"]).call();
         start = (LuaFunction)self["Start"];
