@@ -32,7 +32,7 @@ namespace SkillSystem
                 }
 #else
         try {
-          dataFile.LoadBinaryFile(file, GlobalVariables.Instance.DecodeTable);
+          dataFile.LoadBinaryFile(file);
           Load(id, dataFile);
         } catch {
         }
@@ -54,7 +54,7 @@ namespace SkillSystem
             }
 #else
       try {
-        dataFile.LoadBinaryCode(text, GlobalVariables.Instance.DecodeTable);
+        dataFile.LoadBinaryCode(System.Text.Encoding.UTF8.GetBytes(text));
         Load(id, dataFile);
       } catch {
       }

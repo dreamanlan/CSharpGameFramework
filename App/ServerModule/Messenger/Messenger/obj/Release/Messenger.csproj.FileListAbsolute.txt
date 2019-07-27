@@ -1,0 +1,12 @@
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Release\Messenger.dll
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Release\Messenger.pdb
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Release\CSharpCenterClient.dll
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Release\protobuf-net.dll
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Release\ServerProtoBuf.dll
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Release\ServerProtobufSerializer.dll
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Release\ServerProtoBuf.pdb
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Release\Messenger.csprojAssemblyReference.cache
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Release\Messenger.csproj.CoreCompileInputs.cache
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Release\Messenger.csproj.CopyComplete
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Release\Messenger.dll
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Release\Messenger.pdb

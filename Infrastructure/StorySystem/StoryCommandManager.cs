@@ -256,6 +256,8 @@ namespace StorySystem
             //注册通用值与内部函数
             //object
             StoryValueManager.Instance.RegisterValueFactory("namespace", new StoryValueFactoryHelper<CommonValues.NamespaceValue>());
+            StoryValueManager.Instance.RegisterValueFactory("storyid", new StoryValueFactoryHelper<CommonValues.StoryIdValue>());
+            StoryValueManager.Instance.RegisterValueFactory("messageid", new StoryValueFactoryHelper<CommonValues.MessageIdValue>());
             StoryValueManager.Instance.RegisterValueFactory("propget", new StoryValueFactoryHelper<CommonValues.PropGetValue>());
             StoryValueManager.Instance.RegisterValueFactory("rndint", new StoryValueFactoryHelper<CommonValues.RandomIntValue>());
             StoryValueManager.Instance.RegisterValueFactory("rndfloat", new StoryValueFactoryHelper<CommonValues.RandomFloatValue>());

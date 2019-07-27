@@ -214,7 +214,7 @@ namespace StorySystem
                 string id = param.GetId();
                 int idType = param.GetIdType();
                 if (idType == Dsl.ValueData.NUM_TOKEN) {
-                    if (id.IndexOf('.') >= 0)
+                    if (id.IndexOf('.') >= 0 || id.IndexOf('e') > 0 || id.IndexOf('E') > 0)
                         SetValue(float.Parse(id, System.Globalization.NumberStyles.Float));
                     else if (id.StartsWith("0x"))
                         SetValue(uint.Parse(id.Substring(2), System.Globalization.NumberStyles.HexNumber));
@@ -437,7 +437,7 @@ namespace StorySystem
                 string id = param.GetId();
                 int idType = param.GetIdType();
                 if (idType == Dsl.ValueData.NUM_TOKEN) {
-                    if (id.IndexOf('.') >= 0)
+                    if (id.IndexOf('.') >= 0 || id.IndexOf('e') > 0 || id.IndexOf('E') > 0)
                         SetValue(StoryValueHelper.CastTo<T>(float.Parse(id, System.Globalization.NumberStyles.Float)));
                     else if (id.StartsWith("0x"))
                         SetValue(StoryValueHelper.CastTo<T>(uint.Parse(id.Substring(2), System.Globalization.NumberStyles.HexNumber)));

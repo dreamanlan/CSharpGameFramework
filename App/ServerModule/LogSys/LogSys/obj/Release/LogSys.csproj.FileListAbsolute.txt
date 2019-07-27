@@ -1,0 +1,6 @@
+E:\OpenSource\CSharpGameFramework\App\ServerModule\LogSys\LogSys\bin\Release\LogSys.dll
+E:\OpenSource\CSharpGameFramework\App\ServerModule\LogSys\LogSys\bin\Release\LogSys.pdb
+E:\OpenSource\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Release\LogSys.csprojAssemblyReference.cache
+E:\OpenSource\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Release\LogSys.csproj.CoreCompileInputs.cache
+E:\OpenSource\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Release\LogSys.dll
+E:\OpenSource\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Release\LogSys.pdb
