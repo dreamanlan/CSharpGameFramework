@@ -792,11 +792,11 @@ namespace GameFramework.Story.Commands
     /// <summary>
     /// pauseallmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal class PauseAllMessageHandlerCommand : AbstractStoryCommand
+    internal class SuspendAllMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
-            PauseAllMessageHandlerCommand cmd = new PauseAllMessageHandlerCommand();
+            SuspendAllMessageHandlerCommand cmd = new SuspendAllMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
                 cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
             }
@@ -817,7 +817,7 @@ namespace GameFramework.Story.Commands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                GfxStorySystem.Instance.PauseMessageHandler(m_MsgIds[i].Value, true);
+                GfxStorySystem.Instance.SuspendMessageHandler(m_MsgIds[i].Value, true);
             }
             return false;
         }
@@ -862,7 +862,7 @@ namespace GameFramework.Story.Commands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                GfxStorySystem.Instance.PauseMessageHandler(m_MsgIds[i].Value, false);
+                GfxStorySystem.Instance.SuspendMessageHandler(m_MsgIds[i].Value, false);
             }
             return false;
         }

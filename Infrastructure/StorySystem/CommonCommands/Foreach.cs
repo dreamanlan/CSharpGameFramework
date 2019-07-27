@@ -43,6 +43,10 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
         {
+            var runtime = handler.PeekRuntime();
+            if (runtime.TryBreakLoop()) {
+                return false;
+            }
             var localInfos = handler.LocalInfoStack.Peek();
             var localInfo = localInfos.GetLocalInfo(m_LocalInfoIndex) as LocalInfo;
             if (null == localInfo) {
@@ -59,7 +63,7 @@ namespace StorySystem.CommonCommands
             while (ret) {
                 if (localInfo.Iterators.Count > 0) {
                     Prepare(handler);
-                    var runtime = handler.PeekRuntime();
+                    runtime = handler.PeekRuntime();
                     runtime.Iterator = localInfo.Iterators.Dequeue();
                     runtime.Arguments = args;
                     ret = true;
@@ -67,6 +71,10 @@ namespace StorySystem.CommonCommands
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
                         handler.PopRuntime();
+                        if (runtime.TryBreakLoop()) {
+                            ret = false;
+                            break;
+                        }
                     } else {
                         //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
                         break;
@@ -161,6 +169,10 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
         {
+            var runtime = handler.PeekRuntime();
+            if (runtime.TryBreakLoop()) {
+                return false;
+            }
             var localInfos = handler.LocalInfoStack.Peek();
             var localInfo = localInfos.GetLocalInfo(m_LocalInfoIndex) as LocalInfo;
             if (null == localInfo) {
@@ -174,7 +186,7 @@ namespace StorySystem.CommonCommands
             while (ret) {
                 if (localInfo.Iterators.Count > 0) {
                     Prepare(handler);
-                    var runtime = handler.PeekRuntime();
+                    runtime = handler.PeekRuntime();
                     runtime.Iterator = localInfo.Iterators.Dequeue();
                     runtime.Arguments = args;
                     ret = true;
@@ -182,6 +194,10 @@ namespace StorySystem.CommonCommands
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
                         handler.PopRuntime();
+                        if (runtime.TryBreakLoop()) {
+                            ret = false;
+                            break;
+                        }
                     } else {
                         //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
                         break;
@@ -268,6 +284,10 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
         {
+            var runtime = handler.PeekRuntime();
+            if (runtime.TryBreakLoop()) {
+                return false;
+            }
             var localInfos = handler.LocalInfoStack.Peek();
             var localInfo = localInfos.GetLocalInfo(m_LocalInfoIndex) as LocalInfo;
             if (null == localInfo) {
@@ -281,7 +301,7 @@ namespace StorySystem.CommonCommands
             while (ret) {
                 if (localInfo.CurCount < localInfo.Count.Value) {
                     Prepare(handler);
-                    var runtime = handler.PeekRuntime();
+                    runtime = handler.PeekRuntime();
                     runtime.Iterator = localInfo.CurCount;
                     runtime.Arguments = args;
                     ++localInfo.CurCount;
@@ -290,6 +310,10 @@ namespace StorySystem.CommonCommands
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
                         handler.PopRuntime();
+                        if (runtime.TryBreakLoop()) {
+                            ret = false;
+                            break;
+                        }
                     } else {
                         //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
                         break;

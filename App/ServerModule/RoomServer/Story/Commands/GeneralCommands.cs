@@ -742,11 +742,11 @@ namespace GameFramework.Story.Commands
     /// <summary>
     /// pauseallmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    public class PauseAllMessageHandlerCommand : AbstractStoryCommand
+    public class SuspendAllMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
-            PauseAllMessageHandlerCommand cmd = new PauseAllMessageHandlerCommand();
+            SuspendAllMessageHandlerCommand cmd = new SuspendAllMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
                 cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
             }
@@ -769,7 +769,7 @@ namespace GameFramework.Story.Commands
             Scene scene = instance.Context as Scene;
             if (null != scene) {
                 for (int i = 0; i < m_MsgIds.Count; i++) {
-                    scene.StorySystem.PauseMessageHandler(m_MsgIds[i].Value, true);
+                    scene.StorySystem.SuspendMessageHandler(m_MsgIds[i].Value, true);
                 }
             }
             return false;
@@ -817,7 +817,7 @@ namespace GameFramework.Story.Commands
             Scene scene = instance.Context as Scene;
             if (null != scene) {
                 for (int i = 0; i < m_MsgIds.Count; i++) {
-                    scene.StorySystem.PauseMessageHandler(m_MsgIds[i].Value, false);
+                    scene.StorySystem.SuspendMessageHandler(m_MsgIds[i].Value, false);
                 }
             }
             return false;

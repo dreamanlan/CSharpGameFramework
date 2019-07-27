@@ -33,6 +33,10 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
         {
+            var runtime = handler.PeekRuntime();
+            if (runtime.TryBreakLoop()) {
+                return false;
+            }
             bool ret = true;
             var localInfos = handler.LocalInfoStack.Peek();
             var condition = localInfos.GetLocalInfo(m_LocalInfoIndex) as IStoryValue<int>;
@@ -44,7 +48,7 @@ namespace StorySystem.CommonCommands
                 Evaluate(instance, handler, iterator, args);
                 if (condition.Value != 0) {
                     Prepare(handler);
-                    var runtime = handler.PeekRuntime();
+                    runtime = handler.PeekRuntime();
                     runtime.Iterator = iterator;
                     runtime.Arguments = args;
                     ret = true;
@@ -52,6 +56,10 @@ namespace StorySystem.CommonCommands
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
                         handler.PopRuntime();
+                        if (runtime.TryBreakLoop()) {
+                            ret = false;
+                            break;
+                        }
                     } else {
                         //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
                         break;

@@ -83,7 +83,7 @@ namespace StorySystem
                             Load(statementData);
                         }
                     } else {
-                        //error
+                        //keyword
                     }
                 }
             }

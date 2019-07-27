@@ -100,6 +100,90 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private object m_Value;
     }
+    internal sealed class StoryValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+            }
+        }
+        public IStoryValue Clone()
+        {
+            StoryValue val = new StoryValue();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            m_HaveValue = true;
+            m_Value = instance.StoryId;
+        }
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class MessageValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+            }
+        }
+        public IStoryValue Clone()
+        {
+            MessageValue val = new MessageValue();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+
+            TryUpdateValue(instance, handler);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance, StoryMessageHandler handler)
+        {
+            m_HaveValue = true;
+            m_Value = handler.MessageId;
+        }
+        private bool m_HaveValue;
+        private object m_Value;
+    }
     internal sealed class PropGetValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)

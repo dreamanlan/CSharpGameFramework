@@ -117,15 +117,42 @@ namespace StorySystem
             get { return m_CompositeReentry; }
             set { m_CompositeReentry = value; }
         }
+        public bool IsBreak
+        {
+            get { return m_IsBreak; }
+            set { m_IsBreak = value; }
+        }
+        public bool IsContinue
+        {
+            get { return m_IsContinue; }
+            set { m_IsContinue = value; }
+        }
+        public bool IsReturn
+        {
+            get { return m_IsReturn; }
+            set { m_IsReturn = value; }
+        }
         public void Reset()
         {
             m_Iterator = null;
             m_Arguments = null;
-            foreach (IStoryCommand cmd in m_CommandQueue) {
-                cmd.Reset();
-            }
-            m_CommandQueue.Clear();
+            ResetCommandQueue();
             m_CompositeReentry = false;
+            m_IsBreak = false;
+            m_IsContinue = false;
+            m_IsReturn = false;
+        }
+        public bool TryBreakLoop()
+        {
+            bool needBreak = false;
+            if(m_IsBreak || m_IsReturn) {
+                needBreak = true;
+            }
+            if (m_IsBreak)
+                m_IsBreak = false;
+            if (m_IsContinue)
+                m_IsContinue = false;
+            return needBreak;
         }
         public void Tick(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
@@ -133,19 +160,37 @@ namespace StorySystem
                 IStoryCommand cmd = m_CommandQueue.Peek();
                 if (cmd.Execute(instance, handler, delta, m_Iterator, m_Arguments)) {
                     m_CompositeReentry = false;
+                    if(m_IsBreak || m_IsContinue || m_IsReturn) {
+                        ResetCommandQueue();
+                    }
                     break;
                 } else {
                     m_CompositeReentry = false;
                     cmd.Reset();
                     m_CommandQueue.Dequeue();
+                    if (m_IsBreak || m_IsContinue || m_IsReturn) {
+                        ResetCommandQueue();
+                        break;
+                    }
                 }
             }
+        }
+
+        private void ResetCommandQueue()
+        {
+            foreach (IStoryCommand cmd in m_CommandQueue) {
+                cmd.Reset();
+            }
+            m_CommandQueue.Clear();
         }
 
         private object m_Iterator;
         private object[] m_Arguments;
         private StoryCommandQueue m_CommandQueue = new StoryCommandQueue();
         private bool m_CompositeReentry;
+        private bool m_IsBreak;
+        private bool m_IsContinue;
+        private bool m_IsReturn;
 
         public static StoryRuntime New()
         {
@@ -210,10 +255,10 @@ namespace StorySystem
             get { return m_IsTriggered; }
             set { m_IsTriggered = value; }
         }
-        public bool IsPaused
+        public bool IsSuspended
         {
-            get { return m_IsPaused; }
-            set { m_IsPaused = value; }
+            get { return m_IsSuspended; }
+            set { m_IsSuspended = value; }
         }
         public bool IsInTick
         {
@@ -260,6 +305,10 @@ namespace StorySystem
         {
             var runtime = m_RuntimeStack.Pop();
             if (m_RuntimeStack.Count > 0) {
+                var newRuntime = m_RuntimeStack.Peek();
+                newRuntime.IsBreak = runtime.IsBreak;
+                newRuntime.IsContinue = runtime.IsContinue;
+                newRuntime.IsReturn = runtime.IsReturn;
                 StoryRuntime.Recycle(runtime);
             } else {
                 runtime.Reset();
@@ -344,7 +393,7 @@ namespace StorySystem
                 Helper.LogCallStack(true);
             }
             m_IsTriggered = false;
-            m_IsPaused = false;
+            m_IsSuspended = false;
             while (LocalInfoStack.Count > 0) {
                 PopLocalInfo();
             }
@@ -368,20 +417,21 @@ namespace StorySystem
         }
         public void Tick(StoryInstance instance, long delta)
         {
-            if (m_IsPaused) {
+            if (m_IsSuspended) {
                 return;
             }
             try {
                 m_IsInTick = true;
                 var runtime = RuntimeStack.Peek();
                 runtime.Tick(instance, this, delta);
+                bool isReturn = runtime.IsReturn;
                 if (runtime.CommandQueue.Count == 0) {
-                    RuntimeStack.Pop();
+                    PopRuntime();
                     if (RuntimeStack.Count > 0) {
                         RuntimeStack.Peek().CompositeReentry = true;
                     }
                 }
-                if (RuntimeStack.Count <= 0) {
+                if (RuntimeStack.Count <= 0 || isReturn) {
                     m_IsTriggered = false;
                 }
             } finally {
@@ -418,7 +468,7 @@ namespace StorySystem
         private string m_StoryId = string.Empty;
         private string m_MessageId = string.Empty;
         private bool m_IsTriggered = false;
-        private bool m_IsPaused = false;
+        private bool m_IsSuspended = false;
         private bool m_IsInTick = false;
         private StoryLocalInfo m_LocalInfo = new StoryLocalInfo();
         private StoryRuntime m_Runtime = new StoryRuntime();
@@ -830,19 +880,19 @@ namespace StorySystem
                 }
             }
         }
-        public void PauseMessageHandler(string msgId, bool pause)
+        public void SuspendMessageHandler(string msgId, bool suspend)
         {
             for (int i = 0; i < m_MessageHandlers.Count; ++i) {
                 StoryMessageHandler handler = m_MessageHandlers[i];
                 if (handler.IsTriggered && !handler.IsInTick && handler.MessageId == msgId) {
-                    handler.IsPaused = pause;
+                    handler.IsSuspended = suspend;
                     break;
                 }
             }
             for (int i = 0; i < m_ConcurrentMessageHandlers.Count; ++i) {
                 StoryMessageHandler handler = m_ConcurrentMessageHandlers[i];
                 if (handler.IsTriggered && !handler.IsInTick && handler.MessageId == msgId) {
-                    handler.IsPaused = pause;
+                    handler.IsSuspended = suspend;
                     break;
                 }
             }

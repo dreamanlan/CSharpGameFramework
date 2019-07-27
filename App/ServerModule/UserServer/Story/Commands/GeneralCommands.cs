@@ -408,9 +408,13 @@ namespace GameFramework.Story.Commands
     /// </summary>
     internal class FireMessageCommand : AbstractStoryCommand
     {
+        public FireMessageCommand(bool isConcurrent)
+        {
+            m_IsConcurrent = isConcurrent;
+        }
         protected override IStoryCommand CloneCommand()
         {
-            FireMessageCommand cmd = new FireMessageCommand();
+            FireMessageCommand cmd = new FireMessageCommand(m_IsConcurrent);
             cmd.m_MsgId = m_MsgId.Clone();
             for (int i = 0; i < m_MsgArgs.Count; ++i) {
                 IStoryValue val = m_MsgArgs[i];
@@ -442,7 +446,10 @@ namespace GameFramework.Story.Commands
                     arglist.Add(val.Value);
                 }
                 object[] args = arglist.ToArray();
-                userThread.StorySystem.SendMessage(msgId, args);
+                if (m_IsConcurrent)
+                    userThread.StorySystem.SendConcurrentMessage(msgId, args);
+                else
+                    userThread.StorySystem.SendMessage(msgId, args);
             }
             return false;
         }
@@ -462,6 +469,21 @@ namespace GameFramework.Story.Commands
 
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
         private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
+        private bool m_IsConcurrent = false;
+    }
+    internal sealed class FireMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new FireMessageCommand(false);
+        }
+    }
+    internal sealed class FireConcurrentMessageCommandFactory : IStoryCommandFactory
+    {
+        public IStoryCommand Create()
+        {
+            return new FireMessageCommand(true);
+        }
     }
     /// <summary>
     /// waitallmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
@@ -714,6 +736,102 @@ namespace GameFramework.Story.Commands
         private IStoryValue m_TimeoutSetVal = new StoryValue();
         private bool m_HaveSet = false;
         private int m_CurTime = 0;
+    }
+    /// <summary>
+    /// pauseallmessagehandler(msgid1,msgid2,...);
+    /// </summary>
+    public class SuspendAllMessageHandlerCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            SuspendAllMessageHandlerCommand cmd = new SuspendAllMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            UserThread userThread = instance.Context as UserThread;
+            if (null != userThread) {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    userThread.StorySystem.SuspendMessageHandler(m_MsgIds[i].Value, true);
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
+    }
+    /// <summary>
+    /// resumeallmessagehandler(msgid1,msgid2,...);
+    /// </summary>
+    public class ResumeAllMessageHandlerCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            ResumeAllMessageHandlerCommand cmd = new ResumeAllMessageHandlerCommand();
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
+            }
+            return cmd;
+        }
+
+        protected override void ResetState()
+        {
+        }
+
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            for (int i = 0; i < m_MsgIds.Count; i++) {
+                m_MsgIds[i].Evaluate(instance, handler, iterator, args);
+            }
+        }
+
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            UserThread userThread = instance.Context as UserThread;
+            if (null != userThread) {
+                for (int i = 0; i < m_MsgIds.Count; i++) {
+                    userThread.StorySystem.SuspendMessageHandler(m_MsgIds[i].Value, false);
+                }
+            }
+            return false;
+        }
+
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            for (int i = 0; i < num; ++i) {
+                IStoryValue<string> val = new StoryValue<string>();
+                val.InitFromDsl(callData.GetParam(i));
+                m_MsgIds.Add(val);
+            }
+        }
+
+        private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
     /// <summary>
     /// sendserverstorymessage(msg,arg1,arg2,...)[touser(userid)];

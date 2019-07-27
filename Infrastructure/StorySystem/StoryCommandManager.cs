@@ -207,6 +207,10 @@ namespace StorySystem
             RegisterCommandFactory("storyrealtimewait", new StoryCommandFactoryHelper<CommonCommands.StoryRealTimeSleepCommand>());
             RegisterCommandFactory("storyrealtimesleep", new StoryCommandFactoryHelper<CommonCommands.StoryRealTimeSleepCommand>());
             RegisterCommandFactory("storybreak", new StoryCommandFactoryHelper<CommonCommands.StoryBreakCommand>());
+            RegisterCommandFactory("break", new StoryCommandFactoryHelper<CommonCommands.BreakCommand>());
+            RegisterCommandFactory("continue", new StoryCommandFactoryHelper<CommonCommands.ContinueCommand>());
+            RegisterCommandFactory("return", new StoryCommandFactoryHelper<CommonCommands.ReturnCommand>());
+            RegisterCommandFactory("suspend", new StoryCommandFactoryHelper<CommonCommands.SuspendCommand>());
             RegisterCommandFactory("terminate", new StoryCommandFactoryHelper<CommonCommands.TerminateCommand>());
             RegisterCommandFactory("pause", new StoryCommandFactoryHelper<CommonCommands.PauseCommand>());
             RegisterCommandFactory("localmessage", new CommonCommands.LocalMessageCommandFactory());
@@ -218,7 +222,7 @@ namespace StorySystem
             RegisterCommandFactory("waitlocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.WaitLocalMessageHandlerCommand>());
             RegisterCommandFactory("storywaitlocalmessage", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalMessageCommand>());
             RegisterCommandFactory("storywaitlocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalMessageHandlerCommand>());
-            RegisterCommandFactory("pauselocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.PauseLocalMessageHandlerCommand>());
+            RegisterCommandFactory("suspendlocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.SuspendLocalMessageHandlerCommand>());
             RegisterCommandFactory("resumelocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.ResumeLocalMessageHandlerCommand>());
             RegisterCommandFactory("localnamespacedmessage", new CommonCommands.LocalNamespacedMessageCommandFactory());
             RegisterCommandFactory("localconcurrentnamespacedmessage", new CommonCommands.LocalConcurrentNamespacedMessageCommandFactory());
@@ -229,7 +233,7 @@ namespace StorySystem
             RegisterCommandFactory("waitlocalnamespacedmessagehandler", new StoryCommandFactoryHelper<CommonCommands.WaitLocalNamespacedMessageHandlerCommand>());
             RegisterCommandFactory("storywaitlocalnamespacedmessage", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalNamespacedMessageCommand>());
             RegisterCommandFactory("storywaitlocalnamespacedmessagehandler", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalNamespacedMessageHandlerCommand>());
-            RegisterCommandFactory("pauselocalnamespacedmessagehandler", new StoryCommandFactoryHelper<CommonCommands.PauseLocalNamespacedMessageHandlerCommand>());
+            RegisterCommandFactory("suspendlocalnamespacedmessagehandler", new StoryCommandFactoryHelper<CommonCommands.SuspendLocalNamespacedMessageHandlerCommand>());
             RegisterCommandFactory("resumelocalnamespacedmessagehandler", new StoryCommandFactoryHelper<CommonCommands.ResumeLocalNamespacedMessageHandlerCommand>());
             RegisterCommandFactory("while", new StoryCommandFactoryHelper<CommonCommands.WhileCommand>());
             RegisterCommandFactory("if", new StoryCommandFactoryHelper<CommonCommands.IfElseCommand>());

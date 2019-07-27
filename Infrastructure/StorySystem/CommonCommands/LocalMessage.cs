@@ -655,13 +655,13 @@ namespace StorySystem.CommonCommands
         private int m_CurTime = 0;
     }
     /// <summary>
-    /// pauselocalmessagehandler(msgid1,msgid2,...);
+    /// suspendlocalmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal sealed class PauseLocalMessageHandlerCommand : AbstractStoryCommand
+    internal sealed class SuspendLocalMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
-            PauseLocalMessageHandlerCommand cmd = new PauseLocalMessageHandlerCommand();
+            SuspendLocalMessageHandlerCommand cmd = new SuspendLocalMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
                 cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
             }
@@ -679,7 +679,7 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                instance.PauseMessageHandler(m_MsgIds[i].Value, true);
+                instance.SuspendMessageHandler(m_MsgIds[i].Value, true);
             }
             return false;
         }
@@ -719,7 +719,7 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
-                instance.PauseMessageHandler(m_MsgIds[i].Value, false);
+                instance.SuspendMessageHandler(m_MsgIds[i].Value, false);
             }
             return false;
         }
@@ -1424,13 +1424,13 @@ namespace StorySystem.CommonCommands
         private int m_CurTime = 0;
     }
     /// <summary>
-    /// pauselocalnamespacedmessagehandler(msgid1,msgid2,...);
+    /// suspendlocalnamespacedmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal sealed class PauseLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    internal sealed class SuspendLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
-            PauseLocalNamespacedMessageHandlerCommand cmd = new PauseLocalNamespacedMessageHandlerCommand();
+            SuspendLocalNamespacedMessageHandlerCommand cmd = new SuspendLocalNamespacedMessageHandlerCommand();
             for (int i = 0; i < m_MsgIds.Count; i++) {
                 cmd.m_MsgIds.Add(m_MsgIds[i].Clone());
             }
@@ -1450,11 +1450,11 @@ namespace StorySystem.CommonCommands
             string _namespace = instance.Namespace;
             if (string.IsNullOrEmpty(_namespace)) {
                 for (int i = 0; i < m_MsgIds.Count; i++) {
-                    instance.PauseMessageHandler(m_MsgIds[i].Value, true);
+                    instance.SuspendMessageHandler(m_MsgIds[i].Value, true);
                 }
             } else {
                 for (int i = 0; i < m_MsgIds.Count; i++) {
-                    instance.PauseMessageHandler(string.Format("{0}:{1}", _namespace, m_MsgIds[i].Value), true);
+                    instance.SuspendMessageHandler(string.Format("{0}:{1}", _namespace, m_MsgIds[i].Value), true);
                 }
             }
             return false;
@@ -1497,11 +1497,11 @@ namespace StorySystem.CommonCommands
             string _namespace = instance.Namespace;
             if (string.IsNullOrEmpty(_namespace)) {
                 for (int i = 0; i < m_MsgIds.Count; i++) {
-                    instance.PauseMessageHandler(m_MsgIds[i].Value, false);
+                    instance.SuspendMessageHandler(m_MsgIds[i].Value, false);
                 }
             } else {
                 for (int i = 0; i < m_MsgIds.Count; i++) {
-                    instance.PauseMessageHandler(string.Format("{0}:{1}", _namespace, m_MsgIds[i].Value), false);
+                    instance.SuspendMessageHandler(string.Format("{0}:{1}", _namespace, m_MsgIds[i].Value), false);
                 }
             }
             return false;

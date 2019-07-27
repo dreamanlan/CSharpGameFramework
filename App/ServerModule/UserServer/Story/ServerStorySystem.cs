@@ -277,6 +277,14 @@ namespace GameFramework
                 info.SendMessage(msgId, args);
             }
         }
+        public void SendConcurrentMessage(string msgId, params object[] args)
+        {
+            int ct = m_StoryLogicInfos.Count;
+            for (int ix = ct - 1; ix >= 0; --ix) {
+                StoryInstance info = m_StoryLogicInfos[ix];
+                info.SendConcurrentMessage(msgId, args);
+            }
+        }
         public int CountMessage(string msgId)
         {
             int sum = 0;
@@ -286,6 +294,14 @@ namespace GameFramework
                 sum += info.CountMessage(msgId);
             }
             return sum;
+        }
+        public void SuspendMessageHandler(string msgId, bool suspend)
+        {
+            int ct = m_StoryLogicInfos.Count;
+            for (int ix = ct - 1; ix >= 0; --ix) {
+                StoryInstance info = m_StoryLogicInfos[ix];
+                info.SuspendMessageHandler(msgId, suspend);
+            }
         }
 
         private void AddStoryInstance(string storyId, StoryInstance info)
@@ -331,9 +347,14 @@ namespace GameFramework
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "startstory", new StoryCommandFactoryHelper<Story.Commands.StartStoryCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "stopstory", new StoryCommandFactoryHelper<Story.Commands.StopStoryCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "waitstory", new StoryCommandFactoryHelper<Story.Commands.WaitStoryCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "firemessage", new StoryCommandFactoryHelper<Story.Commands.FireMessageCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "pausestory", new StoryCommandFactoryHelper<Story.Commands.PauseStoryCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "resumestory", new StoryCommandFactoryHelper<Story.Commands.ResumeStoryCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "firemessage", new Story.Commands.FireMessageCommandFactory());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "fireconcurrentmessage", new Story.Commands.FireConcurrentMessageCommandFactory());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "waitallmessage", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "waitallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageHandlerCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "suspendallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.SuspendAllMessageHandlerCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "resumeallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.ResumeAllMessageHandlerCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendserverstorymessage", new StoryCommandFactoryHelper<Story.Commands.SendServerStoryMessageCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendclientstorymessage", new StoryCommandFactoryHelper<Story.Commands.SendClientStoryMessageCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "publishgfxevent", new StoryCommandFactoryHelper<Story.Commands.PublishGfxEventCommand>());
