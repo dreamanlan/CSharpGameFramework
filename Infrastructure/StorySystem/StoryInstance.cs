@@ -388,7 +388,11 @@ namespace StorySystem
         }
         public void Reset()
         {
-            if (m_IsTriggered) {
+            Reset(true);
+        }
+        public void Reset(bool logIfTriggered)
+        {
+            if (logIfTriggered && m_IsTriggered) {
                 LogSystem.Error("Reset a running message handler !");
                 Helper.LogCallStack(true);
             }
@@ -422,6 +426,7 @@ namespace StorySystem
             }
             try {
                 m_IsInTick = true;
+                instance.StackVariables = PeekLocalInfo().StackVariables;
                 var runtime = RuntimeStack.Peek();
                 runtime.Tick(instance, this, delta);
                 bool isReturn = runtime.IsReturn;
@@ -748,17 +753,21 @@ namespace StorySystem
         }
         public void Reset()
         {
+            Reset(true);
+        }
+        public void Reset(bool logIfTriggered)
+        {
             m_IsTerminated = false;
             m_IsPaused = false;
             int ct = m_MessageHandlers.Count;
             for (int i = ct - 1; i >= 0; --i) {
                 StoryMessageHandler handler = m_MessageHandlers[i];
-                handler.Reset();
+                handler.Reset(logIfTriggered);
             }
             ct = m_ConcurrentMessageHandlers.Count;
             for (int i = ct - 1; i >= 0; --i) {
                 StoryMessageHandler handler = m_ConcurrentMessageHandlers[i];
-                RecycleConcurrentMessageHandler(handler);
+                RecycleConcurrentMessageHandler(handler, logIfTriggered);
             }
             foreach (KeyValuePair<string, Queue<MessageInfo>> pair in m_MessageQueues) {
                 Queue<MessageInfo> queue = pair.Value;
@@ -960,7 +969,7 @@ namespace StorySystem
                                 if (handler.IsTriggered) {
                                     m_ConcurrentMessageHandlers.Add(handler);
                                 } else {
-                                    RecycleConcurrentMessageHandler(handler);
+                                    RecycleConcurrentMessageHandler(handler, true);
                                 }
                             }
                         }
@@ -975,7 +984,7 @@ namespace StorySystem
                     }
                     if (!handler.IsTriggered) {
                         m_ConcurrentMessageHandlers.RemoveAt(ix);
-                        RecycleConcurrentMessageHandler(handler);
+                        RecycleConcurrentMessageHandler(handler, true);
                     }
                 }
                 m_TriggeredHandlerCount = curTriggerdCount + m_ConcurrentMessageHandlers.Count;
@@ -1050,12 +1059,12 @@ namespace StorySystem
             }
             return NewMessageHandler(msgId);
         }
-        private void RecycleConcurrentMessageHandler(StoryMessageHandler handler)
+        private void RecycleConcurrentMessageHandler(StoryMessageHandler handler, bool logIfTriggered)
         {
             string msgId = handler.MessageId;
             Queue<StoryMessageHandler> queue;
             if (m_ConcurrentMessageHandlerPool.TryGetValue(msgId, out queue)) {
-                handler.Reset();
+                handler.Reset(logIfTriggered);
                 queue.Enqueue(handler);
             }
         }

@@ -153,9 +153,9 @@ namespace GameFramework
             m_BuildStack.Push(m_ObjectNum);
             m_BuildStack.Push(0);
             while (m_BuildStack.Count >= 3) {
-                int begin = m_BuildStack.Pop();
-                int end = m_BuildStack.Pop();
-                int node = m_BuildStack.Pop();
+                int begin = m_BuildStack.Pop(); //待分类数据对象开始位置
+                int end = m_BuildStack.Pop();   //待分类数据对象结束位置的后一个位置
+                int node = m_BuildStack.Pop();  //kdtree上用来构造新结点的位置
 
                 KdTreeObject obj0 = m_Objects[begin];
                 float minX = obj0.MinX;
@@ -179,7 +179,7 @@ namespace GameFramework
                 m_KdTree[node].m_MaxZ = maxZ;
 
                 if (end - begin > c_MaxLeafSize) {
-
+                    //kdtree上2个子结点的位置预留
                     m_KdTree[node].m_Left = nextUnusedNode;
                     ++nextUnusedNode;
                     m_KdTree[node].m_Right = nextUnusedNode;
@@ -192,14 +192,23 @@ namespace GameFramework
                     int left = begin;
                     int right = end;
 
+                    //接下来，变量涵义如下：
+                    //begin0为当前结点上挂的数据对象的起始位置
+                    //begin为当前结点上挂的数据对象的结束位置的后一个位置，同时也是左子树的数据对象的起始位置
+                    //left为左子树的数据对象的结束位置的后一个位置，也是待分类数据对象的起始位置
+                    //right为当前已确定的右子树数据对象的起始位置
+                    //end为右子树数据对象结束位置的后一个位置
+
                     bool canSplit = false;
                     while (left < right) {
                         while (left < right) {
                             KdTreeObject obj = m_Objects[left];
                             if ((isVertical ? obj.MaxX : obj.MaxZ) < splitValue) {
+                                //obj为左子树上的数据对象,标记要拆分子树
                                 ++left;
                                 canSplit = true;
-                            } else if ((isVertical ? obj.MinX : obj.MinZ) < splitValue) {
+                            } else if ((isVertical ? obj.MinX : obj.MinZ) <= splitValue) {
+                                //obj为当前结点上的数据对象，后续要调整begin的数据与begin位置
                                 obj.Indexed = true;
                                 break;
                             } else {
@@ -208,9 +217,11 @@ namespace GameFramework
                         }
                         while (left < right) {
                             KdTreeObject obj = m_Objects[right - 1];
-                            if ((isVertical ? obj.MinX : obj.MinZ) >= splitValue) {
+                            if ((isVertical ? obj.MinX : obj.MinZ) > splitValue) {
+                                //obj为右子树上的数据对象，这里不需要标记拆分
                                 --right;
                             } else if ((isVertical ? obj.MaxX : obj.MaxZ) >= splitValue) {
+                                //obj为当前结点上的数据对象，后续要调整begin的数据与begin位置
                                 obj.Indexed = true;
                                 break;
                             } else {
@@ -227,17 +238,19 @@ namespace GameFramework
                                     ++begin;
                                     ++left;
                                     canSplit = true;
+                                    //将数据对象挂到当前结点上(数据交换到begin位置)，begin后移一个位置，left也后移一个位置
                                 }
                                 if (left < right && m_Objects[right - 1].Indexed) {
                                     KdTreeObject tmp = m_Objects[begin];
                                     m_Objects[begin] = m_Objects[right - 1];
-                                    m_Objects[right - 1] = tmp;
+                                    m_Objects[right - 1] = m_Objects[left];
+                                    m_Objects[left] = tmp;
                                     ++begin;
-                                    if (begin >= left) {
-                                        ++left;
-                                        canSplit = true;
-                                    }
+                                    ++left;
+                                    canSplit = true;
+                                    //将数据对象挂到当前结点上(数据交换到begin位置)，left位置的数据对象放到right-1（继续处理），begin后移一个位置，left也后移一个位置
                                 }
+                                //处理完要挂接的数据后，继续处理（可能left或right-1位置有一处是不合分类标准的数据）
                             } else {
                                 KdTreeObject tmp = m_Objects[left];
                                 m_Objects[left] = m_Objects[right - 1];
@@ -245,6 +258,7 @@ namespace GameFramework
                                 ++left;
                                 --right;
                                 canSplit = true;
+                                //left与right-1位置都是不符合分类标准的数据，交换数据后继续处理
                             }
                         }
                     }
@@ -314,7 +328,7 @@ namespace GameFramework
                 if ((isVertical ? pos.X + range : pos.Z + range) < splitValue) {
                     if (left > 0)
                         m_QueryStack.Push(left);
-                } else if ((isVertical ? pos.X - range : pos.Z - range) < splitValue) {
+                } else if ((isVertical ? pos.X - range : pos.Z - range) <= splitValue) {
                     if (left > 0)
                         m_QueryStack.Push(left);
                     if (right > 0)
