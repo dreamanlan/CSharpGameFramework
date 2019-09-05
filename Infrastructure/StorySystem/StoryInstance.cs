@@ -521,6 +521,10 @@ namespace StorySystem
             get { return m_Namespace; }
             set { m_Namespace = value; }
         }
+        public Dsl.DslInfo Config
+        {
+            get { return m_Config; }
+        }
         public bool IsDebug
         {
             get { return m_IsDebug; }
@@ -642,6 +646,7 @@ namespace StorySystem
             }
             instance.m_StoryId = m_StoryId;
             instance.m_Namespace = m_Namespace;
+            instance.m_Config = m_Config;
             return instance;
         }
         public bool Init(Dsl.DslInfo config)
@@ -649,6 +654,7 @@ namespace StorySystem
             if (null == config || null == config.First)
                 return false;
             bool ret = false;
+            m_Config = config;
             Dsl.FunctionData story = config.First;
             if (story.GetId() == "story" || story.GetId() == "script") {
                 ret = true;
@@ -806,9 +812,8 @@ namespace StorySystem
             msgInfo.m_Args = args;
             Queue<MessageInfo> queue;
             if (m_MessageQueues.TryGetValue(msgId, out queue)) {
-                if (msgId != "start" && msgId != "PlayerStart" && !msgId.StartsWith("common_")) {
-                    LogSystem.Warn("StoryInstance queue message {0}", msgId);
-                }
+                LogSystem.Warn("StoryInstance queue message {0}", msgId);
+
                 queue.Enqueue(msgInfo);
                 ++m_MessageCount;
             } else {
@@ -1106,5 +1111,7 @@ namespace StorySystem
         private Dictionary<string, Queue<StoryMessageHandler>> m_ConcurrentMessageHandlerPool = new Dictionary<string, Queue<StoryMessageHandler>>();
         private StrObjDict m_PreInitedLocalVariables = new StrObjDict();
         private Dictionary<string, StoryMessageHandler> m_LoadedMessageHandlers = new Dictionary<string, StoryMessageHandler>();
+
+        private Dsl.DslInfo m_Config = null;
     }
 }

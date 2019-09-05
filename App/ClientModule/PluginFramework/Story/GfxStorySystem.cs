@@ -385,6 +385,10 @@ namespace GameFramework.Story
                 return m_StoryLogicInfos.Count;
             }
         }
+        public IList<StoryInstance> ActiveStories
+        {
+            get { return m_StoryLogicInfos; }
+        }
         public Dictionary<string, object> GlobalVariables
         {
             get { return m_GlobalVariables; }
