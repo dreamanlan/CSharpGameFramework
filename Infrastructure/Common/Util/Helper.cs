@@ -169,7 +169,15 @@ namespace GameFramework
             if (useErrorLog)
                 LogSystem.Error("LogCallStack:\n{0}\n", Environment.StackTrace);
             else
-                LogSystem.Info("LogCallStack:\n{0}\n", Environment.StackTrace);
+                LogSystem.Warn("LogCallStack:\n{0}\n", Environment.StackTrace);
+        }
+        public static void LogInnerException(Exception ex, StringBuilder sb)
+        {
+            while (null != ex.InnerException) {
+                ex = ex.InnerException;
+                sb.AppendFormat("\t=> exception:{0} stack:{1}", ex.Message, ex.StackTrace);
+                sb.AppendLine();
+            }
         }
 
         public sealed class Random

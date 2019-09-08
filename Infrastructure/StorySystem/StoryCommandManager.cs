@@ -143,8 +143,8 @@ namespace StorySystem
                             GameFramework.LogSystem.Error("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
                         }
                     } catch (Exception ex) {
-                        GameFramework.LogSystem.Error("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
-                        throw ex;
+                        var msg = string.Format("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
+                        throw new Exception(msg, ex);
                     }
                 } else {
 #if DEBUG

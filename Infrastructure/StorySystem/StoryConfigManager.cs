@@ -31,10 +31,11 @@ namespace StorySystem
                         dataFile.LoadBinaryFile(file);
                         Load(dataFile, sceneId, _namespace, file);
                     } catch (Exception ex) {
-                        while (null != ex.InnerException) {
-                            ex = ex.InnerException;
-                        }
-                        LogSystem.Error("[LoadStory] LoadStoryText text:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
+                        var sb = new System.Text.StringBuilder();
+                        sb.AppendFormat("[LoadStory] LoadStory file:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
+                        sb.AppendLine();
+                        Helper.LogInnerException(ex, sb);
+                        LogSystem.Error("{0}", sb.ToString());
                     }
                 } else {
                     try {
@@ -44,10 +45,11 @@ namespace StorySystem
                             LogSystem.Error("[LoadStory] LoadStory file:{0} scene:{1} failed", file, sceneId);
                         }
                     } catch (Exception ex) {
-                        while (null != ex.InnerException) {
-                            ex = ex.InnerException;
-                        }
-                        LogSystem.Error("[LoadStory] LoadStoryText text:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
+                        var sb = new System.Text.StringBuilder();
+                        sb.AppendFormat("[LoadStory] LoadStory file:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
+                        sb.AppendLine();
+                        Helper.LogInnerException(ex, sb);
+                        LogSystem.Error("{0}", sb.ToString());
                     }
                 }
             }
@@ -60,10 +62,11 @@ namespace StorySystem
                     dataFile.LoadBinaryCode(bytes);
                     Load(dataFile, sceneId, _namespace, file);
                 } catch (Exception ex) {
-                    while (null != ex.InnerException) {
-                        ex = ex.InnerException;
-                    }
-                    LogSystem.Error("[LoadStory] LoadStoryText text:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendFormat("[LoadStory] LoadStoryText file:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
+                    sb.AppendLine();
+                    Helper.LogInnerException(ex, sb);
+                    LogSystem.Error("{0}", sb.ToString());
                 }
             } else {
                 try {
@@ -72,13 +75,14 @@ namespace StorySystem
                     if (dataFile.LoadFromString(text, file, LogSystem.Log)) {
                         Load(dataFile, sceneId, _namespace, file);
                     } else {
-                        LogSystem.Error("[LoadStory] LoadStoryText text:{0} scene:{1} failed", file, sceneId);
+                        LogSystem.Error("[LoadStory] LoadStoryText file:{0} scene:{1} failed", file, sceneId);
                     }
                 } catch (Exception ex) {
-                    while (null != ex.InnerException) {
-                        ex = ex.InnerException;
-                    }
-                    LogSystem.Error("[LoadStory] LoadStoryText text:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendFormat("[LoadStory] LoadStoryText file:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
+                    sb.AppendLine();
+                    Helper.LogInnerException(ex, sb);
+                    LogSystem.Error("{0}", sb.ToString());
                 }
             }
         }

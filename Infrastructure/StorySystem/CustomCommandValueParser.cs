@@ -21,7 +21,13 @@ namespace StorySystem
                     try {
                         dataFile.LoadBinaryFile(file);
                         return dataFile;
-                    } catch {
+                    }
+                    catch (Exception ex) {
+                        var sb = new System.Text.StringBuilder();
+                        sb.AppendFormat("[LoadStory] LoadStory file:{0} Exception:{1}\n{2}", file, ex.Message, ex.StackTrace);
+                        sb.AppendLine();
+                        Helper.LogInnerException(ex, sb);
+                        LogSystem.Error("{0}", sb.ToString());
                     }
                 } else {
                     try {
@@ -31,7 +37,11 @@ namespace StorySystem
                             LogSystem.Error("LoadStory file:{0} failed", file);
                         }
                     } catch (Exception ex) {
-                        LogSystem.Error("LoadStory file:{0} Exception:{1}\n{2}", file, ex.Message, ex.StackTrace);
+                        var sb = new System.Text.StringBuilder();
+                        sb.AppendFormat("[LoadStory] LoadStory file:{0} Exception:{1}\n{2}", file, ex.Message, ex.StackTrace);
+                        sb.AppendLine();
+                        Helper.LogInnerException(ex, sb);
+                        LogSystem.Error("{0}", sb.ToString());
                     }
                 }
             }
@@ -44,8 +54,13 @@ namespace StorySystem
                     Dsl.DslFile dataFile = new Dsl.DslFile();
                     dataFile.LoadBinaryCode(bytes);
                     return dataFile;
-                } catch {
-                    return null;
+                }
+                catch (Exception ex) {
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendFormat("[LoadStory] LoadStoryText file:{0} Exception:{1}\n{2}", file, ex.Message, ex.StackTrace);
+                    sb.AppendLine();
+                    Helper.LogInnerException(ex, sb);
+                    LogSystem.Error("{0}", sb.ToString());
                 }
             } else {
                 string text = Converter.FileContent2Utf8String(bytes);
@@ -54,13 +69,17 @@ namespace StorySystem
                     if (dataFile.LoadFromString(text, file, LogSystem.Log)) {
                         return dataFile;
                     } else {
-                        LogSystem.Error("LoadStoryText text:{0} failed", file);
+                        LogSystem.Error("LoadStoryText file:{0} failed", file);
                     }
                 } catch (Exception ex) {
-                    LogSystem.Error("LoadStoryText text:{0} Exception:{1}\n{2}", text, ex.Message, ex.StackTrace);
+                    var sb = new System.Text.StringBuilder();
+                    sb.AppendFormat("[LoadStory] LoadStoryText file:{0} Exception:{1}\n{2}", file, ex.Message, ex.StackTrace);
+                    sb.AppendLine();
+                    Helper.LogInnerException(ex, sb);
+                    LogSystem.Error("{0}", sb.ToString());
                 }
-                return null;
             }
+            return null;
         }
         public static void FirstParse(params Dsl.DslFile[] dataFiles)
         {
