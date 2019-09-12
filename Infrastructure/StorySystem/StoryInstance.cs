@@ -320,6 +320,7 @@ namespace StorySystem
             for (int i = 0; i < m_LoadedCommands.Count; i++) {
                 handler.m_LoadedCommands.Add(m_LoadedCommands[i].Clone());
             }
+            handler.m_StoryId = m_StoryId;
             handler.m_MessageId = m_MessageId;
             handler.m_ArgumentNames = m_ArgumentNames;
             handler.m_Comments = m_Comments;
