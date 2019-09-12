@@ -157,6 +157,9 @@ namespace StorySystem
         public void Tick(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             while (m_CommandQueue.Count > 0) {
+                if (GlobalVariables.Instance.IsStorySkipped && handler.IsVisualStory) {
+                    break;
+                }
                 IStoryCommand cmd = m_CommandQueue.Peek();
                 if (cmd.Execute(instance, handler, delta, m_Iterator, m_Arguments)) {
                     m_CompositeReentry = false;
@@ -172,9 +175,6 @@ namespace StorySystem
                         ResetCommandQueue();
                         break;
                     }
-                }
-                if (GlobalVariables.Instance.IsStorySkipped && handler.IsVisualStory) {
-                    break;
                 }
             }
         }
