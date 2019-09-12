@@ -173,6 +173,9 @@ namespace StorySystem
                         break;
                     }
                 }
+                if (GlobalVariables.Instance.IsStorySkipped && handler.IsVisualStory) {
+                    break;
+                }
             }
         }
 
@@ -248,6 +251,12 @@ namespace StorySystem
         {
             get {
                 return m_Comments;
+            }
+        }
+        public bool IsVisualStory
+        {
+            get {
+                return m_StoryId.IndexOf(s_VisualStoryPrefixTag) == 0;
             }
         }
         public bool IsTriggered
@@ -437,7 +446,7 @@ namespace StorySystem
                         RuntimeStack.Peek().CompositeReentry = true;
                     }
                 }
-                if (RuntimeStack.Count <= 0 || isReturn) {
+                if (RuntimeStack.Count <= 0 || isReturn || GlobalVariables.Instance.IsStorySkipped && IsVisualStory) {
                     m_IsTriggered = false;
                 }
             } finally {
@@ -484,6 +493,8 @@ namespace StorySystem
         private StoryRuntimeStack m_RuntimeStack = new StoryRuntimeStack();
         private List<IStoryCommand> m_LoadedCommands = new List<IStoryCommand>();
         private Dsl.FunctionData m_Comments = null;
+
+        private static string s_VisualStoryPrefixTag = "visual_main:";
     }
     public sealed class StoryMessageHandlerList : List<StoryMessageHandler>
     {
