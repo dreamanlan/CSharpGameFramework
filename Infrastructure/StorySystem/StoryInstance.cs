@@ -157,7 +157,7 @@ namespace StorySystem
         public void Tick(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             while (m_CommandQueue.Count > 0) {
-                if (GlobalVariables.Instance.IsStorySkipped && handler.IsVisualStory) {
+                if (handler.IsSuspended || handler.CanSkip && GlobalVariables.Instance.IsStorySkipped) {
                     break;
                 }
                 IStoryCommand cmd = m_CommandQueue.Peek();
@@ -253,11 +253,10 @@ namespace StorySystem
                 return m_Comments;
             }
         }
-        public bool IsVisualStory
+        public bool CanSkip
         {
-            get {
-                return m_StoryId.IndexOf(s_VisualStoryPrefixTag) == 0;
-            }
+            get { return m_CanSkip; }
+            set { m_CanSkip = value; }
         }
         public bool IsTriggered
         {
@@ -406,8 +405,10 @@ namespace StorySystem
                 LogSystem.Error("Reset a running message handler !");
                 Helper.LogCallStack(true);
             }
+            m_CanSkip = false;
             m_IsTriggered = false;
             m_IsSuspended = false;
+            m_IsInTick = false;
             while (LocalInfoStack.Count > 0) {
                 PopLocalInfo();
             }
@@ -446,7 +447,7 @@ namespace StorySystem
                         RuntimeStack.Peek().CompositeReentry = true;
                     }
                 }
-                if (RuntimeStack.Count <= 0 || isReturn || GlobalVariables.Instance.IsStorySkipped && IsVisualStory) {
+                if (RuntimeStack.Count <= 0 || isReturn || m_CanSkip && GlobalVariables.Instance.IsStorySkipped) {
                     m_IsTriggered = false;
                 }
             } finally {
@@ -482,6 +483,7 @@ namespace StorySystem
         }
         private string m_StoryId = string.Empty;
         private string m_MessageId = string.Empty;
+        private bool m_CanSkip = false;
         private bool m_IsTriggered = false;
         private bool m_IsSuspended = false;
         private bool m_IsInTick = false;
@@ -493,8 +495,6 @@ namespace StorySystem
         private StoryRuntimeStack m_RuntimeStack = new StoryRuntimeStack();
         private List<IStoryCommand> m_LoadedCommands = new List<IStoryCommand>();
         private Dsl.FunctionData m_Comments = null;
-
-        private static string s_VisualStoryPrefixTag = "visual_main:";
     }
     public sealed class StoryMessageHandlerList : List<StoryMessageHandler>
     {

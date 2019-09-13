@@ -496,6 +496,36 @@ namespace GameFramework.Story
                 }
             }
         }
+        public void SkipCurMessageHandlers(string storyId)
+        {
+            SkipCurMessageHandlers(storyId, string.Empty);
+        }
+        public void SkipCurMessageHandlers(string storyId, string _namespace)
+        {
+            if (!string.IsNullOrEmpty(_namespace)) {
+                storyId = string.Format("{0}:{1}", _namespace, storyId);
+            }
+            int count = m_StoryLogicInfos.Count;
+            for (int index = count - 1; index >= 0; --index) {
+                StoryInstance info = m_StoryLogicInfos[index];
+                if (IsMatch(info.StoryId, storyId)) {
+                    var enumer = info.GetMessageHandlerEnumerator();
+                    while (enumer.MoveNext()) {
+                        var handler = enumer.Current;
+                        if (handler.IsTriggered) {
+                            handler.CanSkip = true;
+                        }
+                    }
+                    var cenumer = info.GetConcurrentMessageHandlerEnumerator();
+                    while (cenumer.MoveNext()) {
+                        var handler = cenumer.Current;
+                        if (handler.IsTriggered) {
+                            handler.CanSkip = true;
+                        }
+                    }
+                }
+            }
+        }
         public void StartStory(string storyId)
         {
             StartStory(storyId, string.Empty);
