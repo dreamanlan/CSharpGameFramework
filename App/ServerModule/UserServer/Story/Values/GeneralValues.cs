@@ -10,7 +10,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getuserinfo" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetParamNum() == 1) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
             }
         }

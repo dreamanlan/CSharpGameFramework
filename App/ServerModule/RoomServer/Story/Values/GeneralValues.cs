@@ -10,7 +10,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "gettime") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -60,7 +60,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "gettimescale") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -110,7 +110,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getentityinfo" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetParamNum() == 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
             }
         }

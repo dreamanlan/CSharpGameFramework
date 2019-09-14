@@ -12,7 +12,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "blackboardget") {
+            if (null != callData) {
                 m_ParamNum = callData.GetParamNum();
                 if (m_ParamNum > 0) {
                     m_AttrName.InitFromDsl(callData.GetParam(0));
@@ -82,7 +82,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "offsetspline" && callData.GetParamNum() == 2) {
+            if (null != callData && callData.GetParamNum() == 2) {
                 m_Spline.InitFromDsl(callData.GetParam(0));
                 m_Offset.InitFromDsl(callData.GetParam(1));
             }
@@ -160,7 +160,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "offsetvector3" && (callData.GetParamNum() == 2 || callData.GetParamNum() == 3)) {
+            if (null != callData && (callData.GetParamNum() == 2 || callData.GetParamNum() == 3)) {
                 m_ParamNum = callData.GetParamNum();
                 m_Pt.InitFromDsl(callData.GetParam(0));
                 if (m_ParamNum == 3) {
@@ -233,7 +233,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getdialogitem") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_DlgId.InitFromDsl(callData.GetParam(0));
@@ -298,7 +298,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getmonsterinfo") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_CampId.InitFromDsl(callData.GetParam(0));
@@ -368,7 +368,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getaidata") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_ObjId.InitFromDsl(callData.GetParam(0));
@@ -430,7 +430,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getactoricon") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_Index.InitFromDsl(callData.GetParam(0));
@@ -489,7 +489,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getactor") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjId.InitFromDsl(callData.GetParam(0));
@@ -544,7 +544,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getplayerid") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -588,7 +588,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getplayerunitid") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -632,7 +632,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getleaderid") {
+            if (null != callData) {
                 m_ParamNum = callData.GetParamNum();
                 if (m_ParamNum > 0) {
                     m_ObjId.InitFromDsl(callData.GetParam(0));
@@ -696,7 +696,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getleadertableid") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -740,7 +740,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getmembercount") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -785,7 +785,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "isclient") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -829,7 +829,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getsceneid") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -873,7 +873,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getmembertableid") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_Index.InitFromDsl(callData.GetParam(0));
@@ -931,7 +931,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getmemberlevel") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_Index.InitFromDsl(callData.GetParam(0));
@@ -989,7 +989,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "dictget") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_DictId.InitFromDsl(callData.GetParam(0));
@@ -1042,7 +1042,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "dictformat") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_DictId.InitFromDsl(callData.GetParam(0));

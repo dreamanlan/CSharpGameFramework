@@ -10,7 +10,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "gettime") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -58,7 +58,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "gettimescale") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -106,7 +106,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "isactive") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
@@ -182,7 +182,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "isreallyactive") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
@@ -258,7 +258,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "isvisible") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
@@ -333,7 +333,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "isnavmeshagentenabled") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
@@ -408,7 +408,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getcomponent") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
@@ -487,22 +487,24 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private object m_Value;
     }
-    internal sealed class GetGameObjectValue : IStoryValue
+    internal sealed class GetComponentInParentValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getgameobject") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
-                if (num > 0) {
+                if (num > 1) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
+                    m_ComponentType.InitFromDsl(callData.GetParam(1));
                 }
             }
         }
         public IStoryValue Clone()
         {
-            GetGameObjectValue val = new GetGameObjectValue();
+            GetComponentInParentValue val = new GetComponentInParentValue();
             val.m_ObjPath = m_ObjPath.Clone();
+            val.m_ComponentType = m_ComponentType.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -511,6 +513,527 @@ namespace GameFramework.Story.Values
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
+            m_ComponentType.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
+                m_HaveValue = true;
+                object objPath = m_ObjPath.Value;
+                object componentType = m_ComponentType.Value;
+                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                if (null == obj) {
+                    string path = objPath as string;
+                    if (null != path) {
+                        obj = UnityEngine.GameObject.Find(path);
+                    }
+                    else {
+                        try {
+                            int objId = (int)objPath;
+                            obj = PluginFramework.Instance.GetGameObject(objId);
+                        }
+                        catch {
+                            obj = null;
+                        }
+                    }
+                }
+                if (null != obj) {
+                    Type t = componentType as Type;
+                    if (null != t) {
+                        UnityEngine.Component component = obj.GetComponentInParent(t);
+                        m_Value = component;
+                    }
+                    else {
+                        string name = componentType as string;
+                        if (null != name) {
+                            t = Type.GetType("UnityEngine." + name);
+                            if (null != t) {
+                                UnityEngine.Component component = obj.GetComponentInParent(t);
+                                m_Value = component;
+                            } else {
+                                m_Value = null;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private IStoryValue m_ObjPath = new StoryValue();
+        private IStoryValue m_ComponentType = new StoryValue();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class GetComponentInChildrenValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+                m_ParamNum = callData.GetParamNum();
+                if (m_ParamNum > 1) {
+                    m_ObjPath.InitFromDsl(callData.GetParam(0));
+                    m_ComponentType.InitFromDsl(callData.GetParam(1));
+                }
+                if (m_ParamNum > 2) {
+                    m_IncludeInactive.InitFromDsl(callData.GetParam(2));
+                }
+            }
+        }
+        public IStoryValue Clone()
+        {
+            GetComponentInChildrenValue val = new GetComponentInChildrenValue();
+            val.m_ParamNum = m_ParamNum;
+            val.m_ObjPath = m_ObjPath.Clone();
+            val.m_ComponentType = m_ComponentType.Clone();
+            val.m_IncludeInactive = m_IncludeInactive.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_ObjPath.Evaluate(instance, handler, iterator, args);
+            m_ComponentType.Evaluate(instance, handler, iterator, args);
+            if (m_ParamNum > 2) {
+                m_IncludeInactive.Evaluate(instance, handler, iterator, args);
+            }
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
+                m_HaveValue = true;
+                object objPath = m_ObjPath.Value;
+                object componentType = m_ComponentType.Value;
+                int includeInactive = 1;
+                if (m_ParamNum > 2) {
+                    includeInactive = m_IncludeInactive.Value;
+                }
+                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                if (null == obj) {
+                    string path = objPath as string;
+                    if (null != path) {
+                        obj = UnityEngine.GameObject.Find(path);
+                    }
+                    else {
+                        try {
+                            int objId = (int)objPath;
+                            obj = PluginFramework.Instance.GetGameObject(objId);
+                        }
+                        catch {
+                            obj = null;
+                        }
+                    }
+                }
+                if (null != obj) {
+                    Type t = componentType as Type;
+                    if (null != t) {
+                        UnityEngine.Component component = obj.GetComponentInChildren(t, includeInactive != 0);
+                        m_Value = component;
+                    }
+                    else {
+                        string name = componentType as string;
+                        if (null != name) {
+                            t = Type.GetType("UnityEngine." + name);
+                            if (null != t) {
+                                UnityEngine.Component component = obj.GetComponentInChildren(t, includeInactive != 0);
+                                m_Value = component;
+                            } else {
+                                m_Value = null;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private int m_ParamNum = 0;
+        private IStoryValue m_ObjPath = new StoryValue();
+        private IStoryValue m_ComponentType = new StoryValue();
+        private IStoryValue<int> m_IncludeInactive = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class GetComponentsValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+                int num = callData.GetParamNum();
+                if (num > 1) {
+                    m_ObjPath.InitFromDsl(callData.GetParam(0));
+                    m_ComponentType.InitFromDsl(callData.GetParam(1));
+                }
+            }
+        }
+        public IStoryValue Clone()
+        {
+            GetComponentsValue val = new GetComponentsValue();
+            val.m_ObjPath = m_ObjPath.Clone();
+            val.m_ComponentType = m_ComponentType.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_ObjPath.Evaluate(instance, handler, iterator, args);
+            m_ComponentType.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
+                m_HaveValue = true;
+                object objPath = m_ObjPath.Value;
+                object componentType = m_ComponentType.Value;
+                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                if (null == obj) {
+                    string path = objPath as string;
+                    if (null != path) {
+                        obj = UnityEngine.GameObject.Find(path);
+                    }
+                    else {
+                        try {
+                            int objId = (int)objPath;
+                            obj = PluginFramework.Instance.GetGameObject(objId);
+                        }
+                        catch {
+                            obj = null;
+                        }
+                    }
+                }
+                if (null != obj) {
+                    Type t = componentType as Type;
+                    if (null != t) {
+                        var comps = obj.GetComponents(t);
+                        if (null != comps)
+                            m_Value = comps;
+                        else
+                            m_Value = new List<UnityEngine.Component>();
+                    }
+                    else {
+                        string name = componentType as string;
+                        if (null != name) {
+                            t = Type.GetType("UnityEngine." + name);
+                            if (null != t) {
+                                var comps = obj.GetComponents(t);
+                                if (null != comps)
+                                    m_Value = comps;
+                                else
+                                    m_Value = new List<UnityEngine.Component>();
+                            } else {
+                                m_Value = new List<UnityEngine.Component>();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private IStoryValue m_ObjPath = new StoryValue();
+        private IStoryValue m_ComponentType = new StoryValue();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class GetComponentsInParentValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+                m_ParamNum = callData.GetParamNum();
+                if (m_ParamNum > 1) {
+                    m_ObjPath.InitFromDsl(callData.GetParam(0));
+                    m_ComponentType.InitFromDsl(callData.GetParam(1));
+                }
+                if (m_ParamNum > 2) {
+                    m_IncludeInactive.InitFromDsl(callData.GetParam(2));
+                }
+            }
+        }
+        public IStoryValue Clone()
+        {
+            GetComponentsInParentValue val = new GetComponentsInParentValue();
+            val.m_ParamNum = m_ParamNum;
+            val.m_ObjPath = m_ObjPath.Clone();
+            val.m_ComponentType = m_ComponentType.Clone();
+            val.m_IncludeInactive = m_IncludeInactive.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_ObjPath.Evaluate(instance, handler, iterator, args);
+            m_ComponentType.Evaluate(instance, handler, iterator, args);
+            if (m_ParamNum > 2) {
+                m_IncludeInactive.Evaluate(instance, handler, iterator, args);
+            }
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
+                m_HaveValue = true;
+                object objPath = m_ObjPath.Value;
+                object componentType = m_ComponentType.Value;
+                int includeInactive = 1;
+                if (m_ParamNum > 2) {
+                    includeInactive = m_IncludeInactive.Value;
+                }
+                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                if (null == obj) {
+                    string path = objPath as string;
+                    if (null != path) {
+                        obj = UnityEngine.GameObject.Find(path);
+                    }
+                    else {
+                        try {
+                            int objId = (int)objPath;
+                            obj = PluginFramework.Instance.GetGameObject(objId);
+                        }
+                        catch {
+                            obj = null;
+                        }
+                    }
+                }
+                if (null != obj) {
+                    Type t = componentType as Type;
+                    if (null != t) {
+                        var comps = obj.GetComponentsInParent(t, includeInactive != 0);
+                        if (null != comps)
+                            m_Value = comps;
+                        else
+                            m_Value = new List<UnityEngine.Component>();
+                    }
+                    else {
+                        string name = componentType as string;
+                        if (null != name) {
+                            t = Type.GetType("UnityEngine." + name);
+                            if (null != t) {
+                                var comps = obj.GetComponentsInParent(t, includeInactive != 0);
+                                if (null != comps)
+                                    m_Value = comps;
+                                else
+                                    m_Value = new List<UnityEngine.Component>();
+                            }
+                            else {
+                                m_Value = new List<UnityEngine.Component>();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private int m_ParamNum = 0;
+        private IStoryValue m_ObjPath = new StoryValue();
+        private IStoryValue m_ComponentType = new StoryValue();
+        private IStoryValue<int> m_IncludeInactive = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class GetComponentsInChildrenValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+                m_ParamNum = callData.GetParamNum();
+                if (m_ParamNum > 1) {
+                    m_ObjPath.InitFromDsl(callData.GetParam(0));
+                    m_ComponentType.InitFromDsl(callData.GetParam(1));
+                }
+                if (m_ParamNum > 2) {
+                    m_IncludeInactive.InitFromDsl(callData.GetParam(2));
+                }
+            }
+        }
+        public IStoryValue Clone()
+        {
+            GetComponentsInChildrenValue val = new GetComponentsInChildrenValue();
+            val.m_ParamNum = m_ParamNum;
+            val.m_ObjPath = m_ObjPath.Clone();
+            val.m_ComponentType = m_ComponentType.Clone();
+            val.m_IncludeInactive = m_IncludeInactive.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_ObjPath.Evaluate(instance, handler, iterator, args);
+            m_ComponentType.Evaluate(instance, handler, iterator, args);
+            if (m_ParamNum > 2) {
+                m_IncludeInactive.Evaluate(instance, handler, iterator, args);
+            }
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
+                m_HaveValue = true;
+                object objPath = m_ObjPath.Value;
+                object componentType = m_ComponentType.Value;
+                int includeInactive = 1;
+                if (m_ParamNum > 2) {
+                    includeInactive = m_IncludeInactive.Value;
+                }
+                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                if (null == obj) {
+                    string path = objPath as string;
+                    if (null != path) {
+                        obj = UnityEngine.GameObject.Find(path);
+                    }
+                    else {
+                        try {
+                            int objId = (int)objPath;
+                            obj = PluginFramework.Instance.GetGameObject(objId);
+                        }
+                        catch {
+                            obj = null;
+                        }
+                    }
+                }
+                if (null != obj) {
+                    Type t = componentType as Type;
+                    if (null != t) {
+                        var comps = obj.GetComponentsInChildren(t, includeInactive != 0);
+                        if (null != comps)
+                            m_Value = comps;
+                        else
+                            m_Value = new List<UnityEngine.Component>();
+                    }
+                    else {
+                        string name = componentType as string;
+                        if (null != name) {
+                            t = Type.GetType("UnityEngine." + name);
+                            if (null != t) {
+                                var comps = obj.GetComponentsInChildren(t, includeInactive != 0);
+                                if (null != comps)
+                                    m_Value = comps;
+                                else
+                                    m_Value = new List<UnityEngine.Component>();
+                            }
+                            else {
+                                m_Value = new List<UnityEngine.Component>();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private int m_ParamNum = 0;
+        private IStoryValue m_ObjPath = new StoryValue();
+        private IStoryValue m_ComponentType = new StoryValue();
+        private IStoryValue<int> m_IncludeInactive = new StoryValue<int>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class GetGameObjectValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+                Load(callData);
+            }
+            Dsl.FunctionData funcData = param as Dsl.FunctionData;
+            if (null != funcData) {
+                Load(funcData);
+            }
+        }
+        public IStoryValue Clone()
+        {
+            GetGameObjectValue val = new GetGameObjectValue();
+            val.m_ObjPath = m_ObjPath.Clone();
+            for (int i = 0; i < m_DisableComponents.Count; ++i) {
+                val.m_DisableComponents.Add(m_DisableComponents[i].Clone());
+            }
+            for (int i = 0; i < m_RemoveComponents.Count; ++i) {
+                val.m_RemoveComponents.Add(m_RemoveComponents[i].Clone());
+            }
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_ObjPath.Evaluate(instance, handler, iterator, args);
+            for (int i = 0; i < m_DisableComponents.Count; ++i) {
+                m_DisableComponents[i].Evaluate(instance, handler, iterator, args);
+            }
+            for (int i = 0; i < m_RemoveComponents.Count; ++i) {
+                m_RemoveComponents[i].Evaluate(instance, handler, iterator, args);
+            }
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -534,8 +1057,18 @@ namespace GameFramework.Story.Values
                 m_HaveValue = true;
                 object o = m_ObjPath.Value;
                 string objPath = o as string;
+
+                StrList disables = new StrList();
+                for (int i = 0; i < m_DisableComponents.Count; ++i) {
+                    disables.Add(m_DisableComponents[i].Value);
+                }
+                StrList removes = new StrList();
+                for (int i = 0; i < m_RemoveComponents.Count; ++i) {
+                    removes.Add(m_RemoveComponents[i].Value);
+                }
+                UnityEngine.GameObject obj = null;
                 if (null != objPath) {
-                    UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
+                    obj = UnityEngine.GameObject.Find(objPath);
                     if (null != obj) {
                         m_Value = obj;
                     } else {
@@ -544,14 +1077,75 @@ namespace GameFramework.Story.Values
                 } else {
                     try {
                         int objId = (int)o;
-                        m_Value = EntityController.Instance.GetGameObject(objId);
+                        obj = PluginFramework.Instance.GetGameObject(objId);
+                        m_Value = obj;
                     } catch {
                         m_Value = null;
                     }
                 }
+                if (null != obj) {
+                    foreach (string disable in disables) {
+                        var type = Utility.GetType(disable);
+                        if (null != type) {
+                            var comps = obj.GetComponentsInChildren(type);
+                            for (int i = 0; i < comps.Length; ++i) {
+                                var t = comps[i].GetType();
+                                t.InvokeMember("enabled", System.Reflection.BindingFlags.SetProperty | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic, null, comps[i], new object[] { false });
+                            }
+                        }
+                    }
+                    foreach (string remove in removes) {
+                        var type = Utility.GetType(remove);
+                        if (null != type) {
+                            var comps = obj.GetComponentsInChildren(type);
+                            for (int i = 0; i < comps.Length; ++i) {
+                                Utility.DestroyObject(comps[i]);
+                            }
+                        }
+                    }
+                }
             }
         }
+        private void Load(Dsl.CallData callData)
+        {
+            if (callData.GetId() == "getgameobject") {
+                int num = callData.GetParamNum();
+                if (num > 0) {
+                    m_ObjPath.InitFromDsl(callData.GetParam(0));
+                }
+            }
+        }
+        private void Load(Dsl.FunctionData funcData)
+        {
+            Load(funcData.Call);
+            foreach (var comp in funcData.Statements) {
+                var cd = comp as Dsl.CallData;
+                if (null != cd) {
+                    LoadOptional(cd);
+                }
+            }
+        }
+        private void LoadOptional(Dsl.CallData callData)
+        {
+            string id = callData.GetId();
+            if (id == "disable") {
+                for (int i = 0; i < callData.GetParamNum(); ++i) {
+                    var p = new StoryValue<string>();
+                    p.InitFromDsl(callData.GetParam(i));
+                    m_DisableComponents.Add(p);
+                }
+            } else if (id == "remove") {
+                for (int i = 0; i < callData.GetParamNum(); ++i) {
+                    var p = new StoryValue<string>();
+                    p.InitFromDsl(callData.GetParam(i));
+                    m_RemoveComponents.Add(p);
+                }
+            }
+        }
+
         private IStoryValue m_ObjPath = new StoryValue();
+        private List<IStoryValue<string>> m_DisableComponents = new List<IStoryValue<string>>();
+        private List<IStoryValue<string>> m_RemoveComponents = new List<IStoryValue<string>>();
         private bool m_HaveValue;
         private object m_Value;
     }
@@ -560,7 +1154,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getparent") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
@@ -639,7 +1233,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "findchild") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
@@ -720,7 +1314,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getchildcount") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
@@ -791,7 +1385,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getchild") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
@@ -872,7 +1466,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getunitytype") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_TypeName.InitFromDsl(callData.GetParam(0));
@@ -938,7 +1532,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getunityuitype") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_TypeName.InitFromDsl(callData.GetParam(0));
@@ -1003,7 +1597,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getscripttype") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_TypeName.InitFromDsl(callData.GetParam(0));
@@ -1065,7 +1659,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getentityinfo" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetParamNum() == 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
             }
         }
@@ -1116,7 +1710,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getentityview" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetParamNum() == 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
             }
         }
@@ -1167,7 +1761,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getglobal") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -1210,7 +1804,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "clientmodule") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()

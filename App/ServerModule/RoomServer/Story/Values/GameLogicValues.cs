@@ -11,7 +11,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "blackboardget") {
+            if (null != callData) {
                 m_ParamNum = callData.GetParamNum();
                 if (m_ParamNum > 0) {
                     m_AttrName.InitFromDsl(callData.GetParam(0));
@@ -83,7 +83,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getdialogitem") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_DlgId.InitFromDsl(callData.GetParam(0));
@@ -151,7 +151,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getactoricon") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_Index.InitFromDsl(callData.GetParam(0));
@@ -208,7 +208,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getmonsterinfo") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_CampId.InitFromDsl(callData.GetParam(0));
@@ -281,7 +281,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getaidata") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
                     m_ObjId.InitFromDsl(callData.GetParam(0));
@@ -346,7 +346,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getleaderid") {
+            if (null != callData) {
                 m_ParamNum = callData.GetParamNum();
                 if (m_ParamNum > 0) {
                     m_ObjId.InitFromDsl(callData.GetParam(0));
@@ -412,7 +412,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getleadertableid") {
+            if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
                     m_ObjId.InitFromDsl(callData.GetParam(0));
@@ -480,7 +480,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "isclient") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -524,7 +524,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getroomid") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -571,7 +571,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "getsceneid") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()

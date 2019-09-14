@@ -238,6 +238,29 @@ namespace GameFramework
                 }
             }
         }
+        public static Type GetType(string type)
+        {
+            Type ret = null;
+            try {
+                ret = Type.GetType("UnityEngine." + type + ", UnityEngine");
+                if (null == ret) {
+                    ret = Type.GetType("UnityEngine.UI." + type + ", UnityEngine.UI");
+                }
+                if (null == ret) {
+                    ret = Type.GetType(type + ", Assembly-CSharp");
+                }
+                if (null == ret) {
+                    ret = Type.GetType(type);
+                }
+                if (null == ret) {
+                    LogSystem.Warn("null == Type.GetType({0})", type);
+                }
+            }
+            catch (Exception ex) {
+                LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            }
+            return ret;
+        }
 
         private static void SendMessageImpl(string objname, string msg, object arg, bool needReceiver)
         {

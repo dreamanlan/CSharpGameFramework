@@ -11,7 +11,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "npcidlist") {
+            if (null != callData) {
             }
         }
         public IStoryValue Clone()
@@ -65,7 +65,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "combatnpccount") {
+            if (null != callData) {
                 m_ParamNum = callData.GetParamNum();
                 if (m_ParamNum > 0) {
                     m_CampId.InitFromDsl(callData.GetParam(0));
@@ -126,7 +126,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "npcgetformation" && 1 == callData.GetParamNum()) {
+            if (null != callData && 1 == callData.GetParamNum()) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
@@ -180,7 +180,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "npcgetnpctype" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetParamNum() == 1) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
@@ -238,7 +238,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "npcgetsummonerid" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetParamNum() == 1) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
@@ -296,7 +296,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "npcgetsummonskillid" && callData.GetParamNum() == 1) {
+            if (null != callData && callData.GetParamNum() == 1) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
@@ -354,7 +354,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "npcfindimpactseqbyid" && 2 == callData.GetParamNum()) {
+            if (null != callData && 2 == callData.GetParamNum()) {
                 m_UnitId.InitFromDsl(callData.GetParam(0));
                 m_ImpactId.InitFromDsl(callData.GetParam(1));
             }
@@ -418,7 +418,7 @@ namespace GameFramework.Story.Values
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData && callData.GetId() == "npccount" && 2 == callData.GetParamNum()) {
+            if (null != callData && 2 == callData.GetParamNum()) {
                 m_StartUnitId.InitFromDsl(callData.GetParam(0));
                 m_EndUnitId.InitFromDsl(callData.GetParam(1));
             }
