@@ -33,7 +33,6 @@ public class BatchResourceProcessWindow : EditorWindow
         int deleteIndex = -1;
         EditorGUILayout.BeginHorizontal();
         ResourceEditUtility.EnableSaveAndReimport = EditorGUILayout.Toggle("允许SaveAndReimport", ResourceEditUtility.EnableSaveAndReimport);
-        ResourceEditUtility.UseSpecificSettingDB = EditorGUILayout.Toggle("使用特殊设置DB数据", ResourceEditUtility.UseSpecificSettingDB);
         ResourceEditUtility.ForceSaveAndReimport = EditorGUILayout.Toggle("强制SaveAndReimport", ResourceEditUtility.ForceSaveAndReimport);
         EditorGUILayout.EndHorizontal();
         var rt = EditorGUILayout.BeginHorizontal();

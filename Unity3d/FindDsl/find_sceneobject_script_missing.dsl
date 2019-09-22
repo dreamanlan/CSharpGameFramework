@@ -2,6 +2,8 @@ input("Transform")
 {
 	string("filter", "");
 	feature("source", "sceneobjects");
+	feature("menu", "3.Current Scene Objects/Missing Script");
+	feature("description", "just so so");
 }
 filter
 {   

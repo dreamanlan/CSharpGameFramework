@@ -1,6 +1,9 @@
 input("*.controller")
 {
 	string("filter", "");
+	feature("source", "project");
+	feature("menu", "1.Project Resources/Animation Controller");
+	feature("description", "just so so");
 }
 filter
 {

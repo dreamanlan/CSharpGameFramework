@@ -1,6 +1,9 @@
 input("*.prefab")
 {
 	string("filter", "");
+	feature("source", "project");
+	feature("menu", "1.Project Resources/Missing Script");
+	feature("description", "just so so");
 }
 filter
 {

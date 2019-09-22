@@ -4,6 +4,8 @@ input("Animator")
   int("minClipCount", 0);
 	string("filter", "");
 	feature("source", "sceneobjects");
+	feature("menu", "3.Current Scene Objects/Animators");
+	feature("description", "just so so");
 }
 filter
 { 

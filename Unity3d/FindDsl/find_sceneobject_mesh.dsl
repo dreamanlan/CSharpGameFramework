@@ -3,6 +3,8 @@ input("MeshRenderer")
   int("maxTriangleCount", 1000);
 	string("filter", "");
 	feature("source", "sceneobjects");
+	feature("menu", "3.Current Scene Objects/Meshes");
+	feature("description", "just so so");
 }
 filter
 { 

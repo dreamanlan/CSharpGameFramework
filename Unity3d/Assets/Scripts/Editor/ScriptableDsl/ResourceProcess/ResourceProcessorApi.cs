@@ -939,11 +939,6 @@ internal static class ResourceEditUtility
         get { return s_ForceSaveAndReimport; }
         set { s_ForceSaveAndReimport = value; }
     }
-    internal static bool UseSpecificSettingDB
-    {
-        get { return s_UseSpecificSettingDB; }
-        set { s_UseSpecificSettingDB = value; }
-    }
     internal static bool UseFastCrawler
     {
         get { return s_UseFastCrawler; }
@@ -999,7 +994,6 @@ internal static class ResourceEditUtility
 
     private static bool s_EnableSaveAndReimport = true;
     private static bool s_ForceSaveAndReimport = false;
-    private static bool s_UseSpecificSettingDB = true;
     private static bool s_UseFastCrawler = true;
 
     private static Dictionary<string, Regex> s_Regexes = new Dictionary<string, Regex>();

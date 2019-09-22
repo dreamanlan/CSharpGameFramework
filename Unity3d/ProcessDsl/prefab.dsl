@@ -1,4 +1,9 @@
 input("*.prefab")
+{
+	feature("source", "project");
+	feature("menu", "Project Resources/Prefab Setting");
+	feature("description", "just so so");	
+}
 filter
 {
 	object = loadasset(assetpath);
@@ -13,5 +18,8 @@ process
 {
 	looplist(getcomponentsinchildren(object,"SkinnedMeshRenderer")){
 		$$.skinnedMotionVectors=false;
+	};	
+	looplist(getcomponentsinchildren(object,"Playables.PlayableDirector")){
+		$$.playOnAwake=false;
 	};
 };

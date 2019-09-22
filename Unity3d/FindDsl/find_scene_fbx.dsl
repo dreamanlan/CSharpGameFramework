@@ -4,6 +4,8 @@ input("*.fbx")
   bool("hasAnimation", false);
 	string("filter", "");
 	feature("source", "sceneassets");
+	feature("menu", "2.Current Scene Resources/Fbx");
+	feature("description", "just so so");
 }
 filter
 {

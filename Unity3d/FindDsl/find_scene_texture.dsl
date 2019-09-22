@@ -8,6 +8,8 @@ input("*.tga","*.png","*.jpg","*.exr")
 	};
 	string("filter", "");
 	feature("source", "sceneassets");
+	feature("menu", "2.Current Scene Resources/Textures");
+	feature("description", "just so so");
 }
 filter
 {
@@ -19,7 +21,7 @@ filter
 		var(2) = var(0).height;
 		var(3) = importer.isReadable;
 		var(4) = importer.mipmapEnabled;
-		unloadasset(var(0));
+		//unloadasset(var(0));
 		order = var(1) < var(2) ? var(2) : var(1);
 		if((var(1) > maxSize || var(2) > maxSize) && assetpath.Contains(filter) && (prop.Contains("1") && var(3) || !prop.Contains("1")) && (prop.Contains("2") && var(4) || !prop.Contains("2"))){
 			info = format("size:{0},{1} readable:{2} mipmap:{3}", var(1), var(2), var(3), var(4));

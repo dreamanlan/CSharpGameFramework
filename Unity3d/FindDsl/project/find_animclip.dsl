@@ -1,6 +1,9 @@
 input("*.anim")
 {
 	string("filter", "");
+	feature("source", "project");
+	feature("menu", "1.Project Resources/Animation Clip");
+	feature("description", "just so so");
 }
 filter
 {

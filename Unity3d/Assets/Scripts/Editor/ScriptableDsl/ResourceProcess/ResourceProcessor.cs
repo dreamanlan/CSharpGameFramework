@@ -129,7 +129,6 @@ internal sealed class ResourceEditWindow : EditorWindow
 
         EditorGUILayout.BeginHorizontal();
         ResourceEditUtility.EnableSaveAndReimport = EditorGUILayout.Toggle("允许SaveAndReimport", ResourceEditUtility.EnableSaveAndReimport);
-        ResourceEditUtility.UseSpecificSettingDB = EditorGUILayout.Toggle("跳过特殊设置DB数据里的资源", ResourceEditUtility.UseSpecificSettingDB);
         ResourceEditUtility.ForceSaveAndReimport = EditorGUILayout.Toggle("强制SaveAndReimport", ResourceEditUtility.ForceSaveAndReimport);
         ResourceEditUtility.UseFastCrawler = EditorGUILayout.Toggle("FastCrawler", ResourceEditUtility.UseFastCrawler);
         EditorGUILayout.EndHorizontal();

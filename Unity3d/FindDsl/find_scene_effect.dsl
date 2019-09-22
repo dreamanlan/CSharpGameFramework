@@ -2,6 +2,8 @@ input("*.prefab")
 {
 	string("filter", "");
 	feature("source", "sceneassets");
+	feature("menu", "2.Current Scene Resources/Effects");
+	feature("description", "just so so");
 }
 filter
 {

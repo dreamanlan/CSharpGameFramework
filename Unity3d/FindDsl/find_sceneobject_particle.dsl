@@ -2,6 +2,8 @@ input("ParticleSystem")
 {
 	string("filter", "");
 	feature("source", "sceneobjects");
+	feature("menu", "3.Current Scene Objects/Particles");
+	feature("description", "just so so");
 }
 filter
 {

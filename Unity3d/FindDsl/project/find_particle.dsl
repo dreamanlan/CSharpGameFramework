@@ -2,6 +2,9 @@ input("*.prefab")
 {
 	int("maxSize",10);
 	string("filter", "");
+	feature("source", "project");
+	feature("menu", "1.Project Resources/Particle Systems");
+	feature("description", "just so so");
 }
 filter
 {
