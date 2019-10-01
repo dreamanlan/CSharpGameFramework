@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.IO;
+using System.Security.Cryptography;
 using System.Linq;
 using UnityEngine;
 #if UNITY_EDITOR
@@ -4711,6 +4712,38 @@ namespace Expression
 #endif
         }
     }
+    internal class CalcMd5Exp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var file = operands[0] as string;
+                if (null != file) {
+                    r = CalcMD5(file);
+                }
+            }
+            return r;
+        }
+        public string CalcMD5(string file)
+        {
+            byte[] array = null;
+            using(var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.ReadWrite)) {
+                MD5 md5 = MD5.Create();
+                array = md5.ComputeHash(stream);
+                stream.Close();
+            }
+            if (null != array) {
+                StringBuilder stringBuilder = new StringBuilder();
+                for (int i = 0; i < array.Length; i++) {
+                    stringBuilder.Append(array[i].ToString("x2"));
+                }
+                return stringBuilder.ToString();
+            } else {
+                return string.Empty;
+            }
+        }
+    }
 #if QINSHI
     internal class DebugValueExp : SimpleExpressionBase
     {
@@ -5057,6 +5090,7 @@ namespace Expression
             Register("savefilepanelinproject", new ExpressionFactoryHelper<SaveFilePanelInProjectExp>());
             Register("savefolderpanel", new ExpressionFactoryHelper<SaveFolderPanelExp>());
             Register("displaydialog", new ExpressionFactoryHelper<DisplayDialogExp>());
+            Register("calcmd5", new ExpressionFactoryHelper<CalcMd5Exp>());
 #if QINSHI
             Register("debugvalue", new ExpressionFactoryHelper<DebugValueExp>());
             Register("storyvar", new ExpressionFactoryHelper<StoryVarExp>());
