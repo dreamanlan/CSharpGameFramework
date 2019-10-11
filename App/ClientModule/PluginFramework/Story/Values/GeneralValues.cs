@@ -559,7 +559,7 @@ namespace GameFramework.Story.Values
                     else {
                         string name = componentType as string;
                         if (null != name) {
-                            t = Type.GetType("UnityEngine." + name);
+                            t = Type.GetType("UnityEngine." + name + ", UnityEngine");
                             if (null != t) {
                                 UnityEngine.Component component = obj.GetComponentInParent(t);
                                 m_Value = component;
@@ -660,7 +660,7 @@ namespace GameFramework.Story.Values
                     else {
                         string name = componentType as string;
                         if (null != name) {
-                            t = Type.GetType("UnityEngine." + name);
+                            t = Type.GetType("UnityEngine." + name + ", UnityEngine");
                             if (null != t) {
                                 UnityEngine.Component component = obj.GetComponentInChildren(t, includeInactive != 0);
                                 m_Value = component;
@@ -755,7 +755,7 @@ namespace GameFramework.Story.Values
                     else {
                         string name = componentType as string;
                         if (null != name) {
-                            t = Type.GetType("UnityEngine." + name);
+                            t = Type.GetType("UnityEngine." + name + ", UnityEngine");
                             if (null != t) {
                                 var comps = obj.GetComponents(t);
                                 if (null != comps)
@@ -862,7 +862,7 @@ namespace GameFramework.Story.Values
                     else {
                         string name = componentType as string;
                         if (null != name) {
-                            t = Type.GetType("UnityEngine." + name);
+                            t = Type.GetType("UnityEngine." + name + ", UnityEngine");
                             if (null != t) {
                                 var comps = obj.GetComponentsInParent(t, includeInactive != 0);
                                 if (null != comps)
@@ -973,7 +973,7 @@ namespace GameFramework.Story.Values
                     else {
                         string name = componentType as string;
                         if (null != name) {
-                            t = Type.GetType("UnityEngine." + name);
+                            t = Type.GetType("UnityEngine." + name + ", UnityEngine");
                             if (null != t) {
                                 var comps = obj.GetComponentsInChildren(t, includeInactive != 0);
                                 if (null != comps)
