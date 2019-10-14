@@ -271,6 +271,8 @@ namespace StorySystem
             StoryValueManager.Instance.RegisterValueFactory("floatlist", new StoryValueFactoryHelper<CommonValues.FloatListValue>());
             StoryValueManager.Instance.RegisterValueFactory("vector2list", new StoryValueFactoryHelper<CommonValues.Vector2ListValue>());
             StoryValueManager.Instance.RegisterValueFactory("vector3list", new StoryValueFactoryHelper<CommonValues.Vector3ListValue>());
+            StoryValueManager.Instance.RegisterValueFactory("array", new StoryValueFactoryHelper<CommonValues.ArrayValue>());
+            StoryValueManager.Instance.RegisterValueFactory("toarray", new StoryValueFactoryHelper<CommonValues.ToArrayValue>());
             StoryValueManager.Instance.RegisterValueFactory("list", new StoryValueFactoryHelper<CommonValues.ListValue>());
             StoryValueManager.Instance.RegisterValueFactory("rndfromlist", new StoryValueFactoryHelper<CommonValues.RandomFromListValue>());
             StoryValueManager.Instance.RegisterValueFactory("listget", new StoryValueFactoryHelper<CommonValues.ListGetValue>());

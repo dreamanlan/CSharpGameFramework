@@ -3022,6 +3022,38 @@ namespace Expression
             return r;
         }
     }
+    internal class ArrayExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object[] r = new object[operands.Count];
+            for (int i = 0; i < operands.Count; ++i) {
+                r[i] = operands[i];
+            }
+            return r;
+        }
+    }
+    internal class ToArrayExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var list = operands[0];
+                IEnumerable obj = list as IEnumerable;
+                if (null != obj) {
+                    ArrayList al = new ArrayList();
+                    IEnumerator enumer = obj.GetEnumerator();
+                    while (enumer.MoveNext()) {
+                        object val = enumer.Current;
+                        al.Add(val);
+                    }
+                    r = al.ToArray();
+                }
+            }
+            return r;
+        }
+    }
     internal class ListSizeExp : SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
@@ -5823,6 +5855,8 @@ namespace Expression
             Register("str2float", new ExpressionFactoryHelper<Str2FloatExp>());
             Register("hex2int", new ExpressionFactoryHelper<Hex2IntExp>());
             Register("isnullorempty", new ExpressionFactoryHelper<IsNullOrEmptyExp>());
+            Register("array", new ExpressionFactoryHelper<ArrayExp>());
+            Register("toarray", new ExpressionFactoryHelper<ToArrayExp>());
             Register("listsize", new ExpressionFactoryHelper<ListSizeExp>());
             Register("list", new ExpressionFactoryHelper<ListExp>());
             Register("listget", new ExpressionFactoryHelper<ListGetExp>());
@@ -6259,7 +6293,7 @@ namespace Expression
                                     return exp;
                                 }
                             case (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET: {
-                                    ListExp exp = new ListExp();
+                                    ArrayExp exp = new ArrayExp();
                                     exp.Load(comp, this);
                                     return exp;
                                 }

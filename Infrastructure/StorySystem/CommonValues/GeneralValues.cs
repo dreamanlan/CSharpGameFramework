@@ -1176,6 +1176,135 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private ObjList m_Value;
     }
+    internal sealed class ArrayValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+
+                for (int i = 0; i < callData.GetParamNum(); ++i) {
+                    Dsl.ISyntaxComponent arg = callData.GetParam(i);
+                    StoryValue val = new StoryValue();
+                    val.InitFromDsl(arg);
+                    m_List.Add(val);
+                }
+                TryUpdateValue();
+            }
+        }
+        public IStoryValue Clone()
+        {
+            ArrayValue val = new ArrayValue();
+            for (int i = 0; i < m_List.Count; i++) {
+                val.m_List.Add(m_List[i]);
+            }
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            for (int i = 0; i < m_List.Count; i++) {
+                m_List[i].Evaluate(instance, handler, iterator, args);
+            }
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue()
+        {
+            bool canCalc = true;
+            for (int i = 0; i < m_List.Count; i++) {
+                if (!m_List[i].HaveValue) {
+                    canCalc = false;
+                    break;
+                }
+            }
+            if (canCalc) {
+                m_HaveValue = true;
+                var list = new ObjList();
+                for (int i = 0; i < m_List.Count; i++) {
+                    list.Add(m_List[i].Value);
+                }
+                m_Value = list.ToArray();
+            }
+        }
+        private List<IStoryValue> m_List = new List<IStoryValue>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class ToArrayValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetParamNum() == 1) {
+                m_ListValue.InitFromDsl(callData.GetParam(0));
+                TryUpdateValue();
+            }
+        }
+        public IStoryValue Clone()
+        {
+            ToArrayValue val = new ToArrayValue();
+            val.m_ListValue = m_ListValue.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_ListValue.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue()
+        {
+            if (m_ListValue.HaveValue) {
+                m_HaveValue = true;
+                object list = m_ListValue.Value;
+                IEnumerable obj = list as IEnumerable;
+                if (null != obj) {
+                    ArrayList al = new ArrayList();
+                    IEnumerator enumer = obj.GetEnumerator();
+                    while (enumer.MoveNext()) {
+                        object val = enumer.Current;
+                        al.Add(val);
+                    }
+                    m_Value = al.ToArray();
+                } else {
+                    m_Value = null;
+                }
+            }
+        }
+        private IStoryValue m_ListValue = new StoryValue();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
     internal sealed class ListValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)

@@ -96,7 +96,7 @@ namespace StorySystem
                             }
                         case (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET: {
                                 IStoryValue ret = null;
-                                IStoryValueFactory factory = GetFactory("list");
+                                IStoryValueFactory factory = GetFactory("array");
                                 if (null != factory) {
                                     try {
                                         ret = factory.Build();
