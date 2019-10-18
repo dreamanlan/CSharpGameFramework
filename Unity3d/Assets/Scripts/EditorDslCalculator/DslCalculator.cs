@@ -106,26 +106,38 @@ namespace Expression
 
         protected static double ToDouble(object v)
         {
+            if (null == v)
+                return 0;
             return (double)Convert.ChangeType(v, typeof(double));
         }
         protected static long ToLong(object v)
         {
+            if (null == v)
+                return 0;
             return (long)Convert.ChangeType(v, typeof(long));
         }
         protected static float ToFloat(object v)
         {
+            if (null == v)
+                return 0;
             return (float)Convert.ChangeType(v, typeof(float));
         }
         protected static int ToInt(object v)
         {
+            if (null == v)
+                return 0;
             return (int)Convert.ChangeType(v, typeof(int));
         }
         protected static string ToString(object v)
         {
+            if (null == v)
+                return string.Empty;
             return v.ToString();
         }
         protected static T CastTo<T>(object obj)
         {
+            if (null == obj)
+                return default(T);
             if (obj is T) {
                 return (T)obj;
             }
