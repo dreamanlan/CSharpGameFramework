@@ -156,14 +156,14 @@ namespace StorySystem
                                 newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                 if (innerCall.IsHighOrder) {
                                     newCall.Params.Add(innerCall.Call);
-                                    newCall.Params.Add(innerCall.GetParam(0));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
                                     for (int i = 0; i < callData.GetParamNum(); ++i) {
                                         Dsl.ISyntaxComponent p = callData.Params[i];
                                         newCall.Params.Add(p);
                                     }
                                 } else {
                                     newCall.Params.Add(innerCall.Name);
-                                    newCall.Params.Add(innerCall.GetParam(0));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
                                     for (int i = 0; i < callData.GetParamNum(); ++i) {
                                         Dsl.ISyntaxComponent p = callData.Params[i];
                                         newCall.Params.Add(p);
@@ -181,10 +181,10 @@ namespace StorySystem
                                 newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                 if (callData.IsHighOrder) {
                                     newCall.Params.Add(callData.Call);
-                                    newCall.Params.Add(callData.GetParam(0));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0)));
                                 } else {
                                     newCall.Params.Add(callData.Name);
-                                    newCall.Params.Add(callData.GetParam(0));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0)));
                                 }
                                 return CalcValue(newCall);
                             }

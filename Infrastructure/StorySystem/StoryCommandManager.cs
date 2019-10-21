@@ -91,14 +91,14 @@ namespace StorySystem
                             newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                             if (innerCall.IsHighOrder) {
                                 newCall.Params.Add(innerCall.Call);
-                                newCall.Params.Add(innerCall.GetParam(0));
+                                newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
                                 for (int i = 0; i < callData.GetParamNum(); ++i) {
                                     Dsl.ISyntaxComponent p = callData.Params[i];
                                     newCall.Params.Add(p);
                                 }
                             } else {
                                 newCall.Params.Add(innerCall.Name);
-                                newCall.Params.Add(innerCall.GetParam(0));
+                                newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
                                 for (int i = 0; i < callData.GetParamNum(); ++i) {
                                     Dsl.ISyntaxComponent p = callData.Params[i];
                                     newCall.Params.Add(p);
@@ -121,11 +121,11 @@ namespace StorySystem
                         newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                         if (innerCall.IsHighOrder) {
                             newCall.Params.Add(innerCall.Call);
-                            newCall.Params.Add(innerCall.GetParam(0));
+                            newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
                             newCall.Params.Add(callData.GetParam(1));
                         } else {
                             newCall.Params.Add(innerCall.Name);
-                            newCall.Params.Add(innerCall.GetParam(0));
+                            newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
                             newCall.Params.Add(callData.GetParam(1));
                         }
                         return CreateCommand(newCall);
@@ -356,5 +356,19 @@ namespace StorySystem
             get { return s_Instance; }
         }
         private static StoryCommandManager s_Instance = new StoryCommandManager();
+    }
+    internal static class ObjectMemberConverter
+    {
+        internal static Dsl.ISyntaxComponent Convert(Dsl.ISyntaxComponent p)
+        {
+            var pvd = p as Dsl.ValueData;
+            if (null != pvd && pvd.IsId()) {
+                pvd.SetType(Dsl.ValueData.STRING_TOKEN);
+                return pvd;
+            }
+            else {
+                return p;
+            }
+        }
     }
 }

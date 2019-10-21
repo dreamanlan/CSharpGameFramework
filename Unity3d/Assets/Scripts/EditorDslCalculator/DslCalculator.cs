@@ -6340,12 +6340,12 @@ namespace Expression
                                     newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                     if (innerCall.IsHighOrder) {
                                         newCall.Params.Add(innerCall.Call);
-                                        newCall.Params.Add(innerCall.GetParam(0));
+                                        newCall.Params.Add(ConvertMember(innerCall.GetParam(0)));
                                         newCall.Params.Add(callData.GetParam(1));
                                     }
                                     else {
                                         newCall.Params.Add(innerCall.Name);
-                                        newCall.Params.Add(innerCall.GetParam(0));
+                                        newCall.Params.Add(ConvertMember(innerCall.GetParam(0)));
                                         newCall.Params.Add(callData.GetParam(1));
                                     }
 
@@ -6395,7 +6395,7 @@ namespace Expression
                                     newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                     if (innerCall.IsHighOrder) {
                                         newCall.Params.Add(innerCall.Call);
-                                        newCall.Params.Add(innerCall.GetParam(0));
+                                        newCall.Params.Add(ConvertMember(innerCall.GetParam(0)));
                                         for (int i = 0; i < callData.GetParamNum(); ++i) {
                                             Dsl.ISyntaxComponent p = callData.Params[i];
                                             newCall.Params.Add(p);
@@ -6403,7 +6403,7 @@ namespace Expression
                                     }
                                     else {
                                         newCall.Params.Add(innerCall.Name);
-                                        newCall.Params.Add(innerCall.GetParam(0));
+                                        newCall.Params.Add(ConvertMember(innerCall.GetParam(0)));
                                         for (int i = 0; i < callData.GetParamNum(); ++i) {
                                             Dsl.ISyntaxComponent p = callData.Params[i];
                                             newCall.Params.Add(p);
@@ -6433,11 +6433,11 @@ namespace Expression
                                 newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                 if (callData.IsHighOrder) {
                                     newCall.Params.Add(callData.Call);
-                                    newCall.Params.Add(callData.GetParam(0));
+                                    newCall.Params.Add(ConvertMember(callData.GetParam(0)));
                                 }
                                 else {
                                     newCall.Params.Add(callData.Name);
-                                    newCall.Params.Add(callData.GetParam(0));
+                                    newCall.Params.Add(ConvertMember(callData.GetParam(0)));
                                 }
 
                                 var getExp = new DotnetGetExp();
@@ -6484,6 +6484,17 @@ namespace Expression
                 Debug.LogErrorFormat("DslCalculator error, {0} line {1}", comp.ToScriptString(false), comp.GetLine());
             }
             return ret;
+        }
+        private Dsl.ISyntaxComponent ConvertMember(Dsl.ISyntaxComponent p)
+        {
+            var pvd = p as Dsl.ValueData;
+            if (null != pvd && pvd.IsId()) {
+                pvd.SetType(Dsl.ValueData.STRING_TOKEN);
+                return pvd;
+            }
+            else {
+                return p;
+            }
         }
 
         private IExpression Create(string name)
