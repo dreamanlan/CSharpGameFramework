@@ -33,9 +33,11 @@ namespace StorySystem
             lock (m_Lock) {
                 if (!m_ValueFactories.ContainsKey(name)) {
                     m_ValueFactories.Add(name, factory);
-                } else if (replace) {
+                }
+                else if (replace) {
                     m_ValueFactories[name] = factory;
-                } else {
+                }
+                else {
                     //error
                 }
             }
@@ -52,9 +54,11 @@ namespace StorySystem
                     Dictionary<string, IStoryValueFactory> handlers = m_GroupedValueFactories[ix];
                     if (!handlers.ContainsKey(name)) {
                         handlers.Add(name, factory);
-                    } else if (replace) {
+                    }
+                    else if (replace) {
                         handlers[name] = factory;
-                    } else {
+                    }
+                    else {
                         //error
                     }
                 }
@@ -91,7 +95,8 @@ namespace StorySystem
                             if (callData.GetParamNum() > 0) {
                                 int ct = callData.GetParamNum();
                                 return CalcValue(callData.GetParam(ct - 1));
-                            } else {
+                            }
+                            else {
                                 return null;
                             }
                         case (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET: {
@@ -101,7 +106,8 @@ namespace StorySystem
                                     try {
                                         ret = factory.Build();
                                         ret.InitFromDsl(param);
-                                    } catch (Exception ex) {
+                                    }
+                                    catch (Exception ex) {
                                         var msg = string.Format("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
                                         throw new Exception(msg, ex);
                                     }
@@ -111,7 +117,8 @@ namespace StorySystem
                         default:
                             return null;
                     }
-                } else {
+                }
+                else {
                     Dsl.FunctionData funcData = param as Dsl.FunctionData;
                     if (null != funcData && funcData.HaveStatement()) {
                         //处理大括弧
@@ -123,17 +130,20 @@ namespace StorySystem
                                 try {
                                     ret = factory.Build();
                                     ret.InitFromDsl(param);
-                                } catch (Exception ex) {
+                                }
+                                catch (Exception ex) {
                                     var msg = string.Format("[LoadStory] value:{0} line:{1} failed.", param.ToScriptString(false), param.GetLine());
                                     throw new Exception(msg, ex);
                                 }
                             }
                             return ret;
-                        } else {
+                        }
+                        else {
                             //不支持的语法
                             return null;
                         }
-                    } else {
+                    }
+                    else {
                         if (null != callData) {
                             Dsl.CallData innerCall = callData.Call;
                             if (callData.IsHighOrder && callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS && (
@@ -148,7 +158,8 @@ namespace StorySystem
                                 string apiName;
                                 if (method == "orderby" || method == "orderbydesc" || method == "where" || method == "top") {
                                     apiName = "linq";
-                                } else {
+                                }
+                                else {
                                     apiName = "dotnetcall";
                                 }
                                 Dsl.CallData newCall = new Dsl.CallData();
@@ -156,35 +167,38 @@ namespace StorySystem
                                 newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                 if (innerCall.IsHighOrder) {
                                     newCall.Params.Add(innerCall.Call);
-                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
                                     for (int i = 0; i < callData.GetParamNum(); ++i) {
                                         Dsl.ISyntaxComponent p = callData.Params[i];
                                         newCall.Params.Add(p);
                                     }
-                                } else {
+                                }
+                                else {
                                     newCall.Params.Add(innerCall.Name);
-                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
                                     for (int i = 0; i < callData.GetParamNum(); ++i) {
                                         Dsl.ISyntaxComponent p = callData.Params[i];
                                         newCall.Params.Add(p);
                                     }
                                 }
                                 return CalcValue(newCall);
-                            } else if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                                callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                                callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                                callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                                callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
+                            }
+                            else if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                              callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                              callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                              callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                              callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
                                 //obj.property or obj[property] or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
                                 Dsl.CallData newCall = new Dsl.CallData();
                                 newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
                                 newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                 if (callData.IsHighOrder) {
                                     newCall.Params.Add(callData.Call);
-                                    newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0)));
-                                } else {
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0), callData.GetParamClass()));
+                                }
+                                else {
                                     newCall.Params.Add(callData.Name);
-                                    newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0)));
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0), callData.GetParamClass()));
                                 }
                                 return CalcValue(newCall);
                             }
@@ -197,11 +211,13 @@ namespace StorySystem
                                 try {
                                     ret = factory.Build();
                                     ret.InitFromDsl(param);
-                                } catch (Exception ex) {
+                                }
+                                catch (Exception ex) {
                                     var msg = string.Format("[LoadStory] value:{0}[{1}] line:{2} failed.", id, param.ToScriptString(false), param.GetLine());
                                     throw new Exception(msg, ex);
                                 }
-                            } else {
+                            }
+                            else {
 #if DEBUG
                                 string err = string.Format("[LoadStory] value:{0}[{1}] line:{2} failed.", id, param.ToScriptString(false), param.GetLine());
                                 GameFramework.LogSystem.Error("{0}", err);
@@ -249,8 +265,7 @@ namespace StorySystem
         private static ulong s_ThreadValueGroupsMask = 0;
         public static StoryValueManager Instance
         {
-            get
-            {
+            get {
                 return s_Instance;
             }
         }

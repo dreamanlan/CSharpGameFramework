@@ -26,9 +26,11 @@ namespace StorySystem
             lock (m_Lock) {
                 if (!m_StoryCommandFactories.ContainsKey(type)) {
                     m_StoryCommandFactories.Add(type, factory);
-                } else if (replace) {
+                }
+                else if (replace) {
                     m_StoryCommandFactories[type] = factory;
-                } else {
+                }
+                else {
                     //error
                 }
             }
@@ -45,9 +47,11 @@ namespace StorySystem
                     Dictionary<string, IStoryCommandFactory> factories = m_GroupedCommandFactories[ix];
                     if (!factories.ContainsKey(type)) {
                         factories.Add(type, factory);
-                    } else if (replace) {
+                    }
+                    else if (replace) {
                         factories[type] = factory;
-                    } else {
+                    }
+                    else {
                         //error
                     }
                 }
@@ -91,14 +95,15 @@ namespace StorySystem
                             newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                             if (innerCall.IsHighOrder) {
                                 newCall.Params.Add(innerCall.Call);
-                                newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
+                                newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
                                 for (int i = 0; i < callData.GetParamNum(); ++i) {
                                     Dsl.ISyntaxComponent p = callData.Params[i];
                                     newCall.Params.Add(p);
                                 }
-                            } else {
+                            }
+                            else {
                                 newCall.Params.Add(innerCall.Name);
-                                newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
+                                newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
                                 for (int i = 0; i < callData.GetParamNum(); ++i) {
                                     Dsl.ISyntaxComponent p = callData.Params[i];
                                     newCall.Params.Add(p);
@@ -107,12 +112,13 @@ namespace StorySystem
                             return CreateCommand(newCall);
                         }
                     }
-                } else if ((callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_OPERATOR ||
-                        callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                        callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                        callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                        callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) &&
-                        callData.GetId() == "=") {
+                }
+                else if ((callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_OPERATOR ||
+                      callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                      callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                      callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                      callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) &&
+                      callData.GetId() == "=") {
                     Dsl.CallData innerCall = callData.GetParam(0) as Dsl.CallData;
                     if (null != innerCall) {
                         //obj.property = val  or obj[property] = val or obj.(property) = val or obj.[property] = val or obj.{property} = val -> setinstance(obj,property,val)
@@ -121,11 +127,12 @@ namespace StorySystem
                         newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                         if (innerCall.IsHighOrder) {
                             newCall.Params.Add(innerCall.Call);
-                            newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
+                            newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
                             newCall.Params.Add(callData.GetParam(1));
-                        } else {
+                        }
+                        else {
                             newCall.Params.Add(innerCall.Name);
-                            newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0)));
+                            newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
                             newCall.Params.Add(callData.GetParam(1));
                         }
                         return CreateCommand(newCall);
@@ -142,11 +149,13 @@ namespace StorySystem
                         if (!command.Init(commandConfig)) {
                             GameFramework.LogSystem.Error("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
                         }
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex) {
                         var msg = string.Format("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
                         throw new Exception(msg, ex);
                     }
-                } else {
+                }
+                else {
 #if DEBUG
                     string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false));
                     GameFramework.LogSystem.Error("{0}", err);
@@ -157,7 +166,8 @@ namespace StorySystem
                 }
                 if (null != command) {
                     //GameFramework.LogSystem.Debug("[LoadStory] CreateCommand, type:{0} command:{1}", type, command.GetType().Name);
-                } else {
+                }
+                else {
 #if DEBUG
                     string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false));
                     GameFramework.LogSystem.Error("{0}", err);
@@ -359,10 +369,12 @@ namespace StorySystem
     }
     internal static class ObjectMemberConverter
     {
-        internal static Dsl.ISyntaxComponent Convert(Dsl.ISyntaxComponent p)
+        internal static Dsl.ISyntaxComponent Convert(Dsl.ISyntaxComponent p, int paramClass)
         {
             var pvd = p as Dsl.ValueData;
-            if (null != pvd && pvd.IsId()) {
+            if (null != pvd && pvd.IsId() && (paramClass == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD
+                || paramClass == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_POINTER
+                || paramClass == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_QUESTION_PERIOD)) {
                 pvd.SetType(Dsl.ValueData.STRING_TOKEN);
                 return pvd;
             }
