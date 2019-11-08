@@ -2483,6 +2483,38 @@ namespace Expression
 
         private List<IExpression> m_Expressions = new List<IExpression>();
     }
+    internal class AssetPath2GUIDExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = string.Empty;
+#if UNITY_EDITOR
+            if (operands.Count >= 1) {
+                var assetPath = operands[0] as string;
+                if (null != assetPath) {
+                    r = AssetDatabase.AssetPathToGUID(assetPath);
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class GUID2AssetPathExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = string.Empty;
+#if UNITY_EDITOR
+            if (operands.Count >= 1) {
+                var guid = operands[0] as string;
+                if (null != guid) {
+                    r = AssetDatabase.GUIDToAssetPath(guid);
+                }
+            }
+#endif
+            return r;
+        }
+    }
     internal class GetAssetPathExp : SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
@@ -2492,7 +2524,7 @@ namespace Expression
             if (operands.Count >= 1) {
                 var obj = operands[0] as UnityEngine.Object;
                 if (null != obj) {
-                    var pobj = PrefabUtility.GetPrefabParent(obj);
+                    var pobj = PrefabUtility.GetCorrespondingObjectFromSource(obj);
                     if (null != pobj)
                         r = AssetDatabase.GetAssetPath(pobj);
                     else
@@ -3019,6 +3051,52 @@ namespace Expression
                     r = v;
                 }
             }
+            return r;
+        }
+    }
+    internal class DatetimeStrExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var fmt = operands[0] as string;
+                r = DateTime.Now.ToString(fmt);
+            } else {
+                r = DateTime.Now.ToString();
+            }
+            return r;
+        }
+    }
+    internal class LongDateStrExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = DateTime.Now.ToLongDateString();
+            return r;
+        }
+    }
+    internal class LongTimeStrExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = DateTime.Now.ToShortDateString();
+            return r;
+        }
+    }
+    internal class ShortDateStrExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = DateTime.Now.ToShortDateString();
+            return r;
+        }
+    }
+    internal class ShortTimeStrExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = DateTime.Now.ToShortTimeString();
             return r;
         }
     }
@@ -4730,6 +4808,9 @@ namespace Expression
                             else if (type == "error") {
                                 cmd.m_Error = exp;
                             }
+                            else if (type == "redirecttoconsole") {
+                                cmd.m_RedirectToConsole = exp;
+                            }
                             else if (type == "nowait") {
                                 cmd.m_NoWait = exp;
                             }
@@ -4910,6 +4991,7 @@ namespace Expression
                     Debug.LogFormat("input {0} failed:{1}", v, ex.Message);
                 }
             }
+            bool redirectToConsole = false;
             StringBuilder outputBuilder = null;
             StringBuilder errorBuilder = null;
             object output = null;
@@ -4938,8 +5020,13 @@ namespace Expression
                 }
                 errorBuilder = new StringBuilder();
             }
-
-            int exitCode = DslCalculator.NewProcess(noWait, fileName, args, option, istream, ostream, input, outputBuilder, errorBuilder, encoding);
+            if (null != cfg.m_RedirectToConsole) {
+                var v = cfg.m_RedirectToConsole.Calc();
+                if (null != v) {
+                    redirectToConsole = (bool)Convert.ChangeType(v, typeof(bool));
+                }
+            }
+            int exitCode = DslCalculator.NewProcess(noWait, fileName, args, option, istream, ostream, input, outputBuilder, errorBuilder, redirectToConsole, encoding);
             Debug.LogFormat("new process:{0} {1}, exit code:{2}", fileName, args, exitCode);
 
             if (null != outputBuilder && null != output) {
@@ -5090,6 +5177,7 @@ namespace Expression
                         Debug.LogFormat("input {0} failed:{1}", v, ex.Message);
                     }
                 }
+                bool redirectToConsole = false;
                 StringBuilder outputBuilder = null;
                 StringBuilder errorBuilder = null;
                 object output = null;
@@ -5118,6 +5206,12 @@ namespace Expression
                     }
                     errorBuilder = new StringBuilder();
                 }
+                if (null != cfg.m_RedirectToConsole) {
+                    var v = cfg.m_RedirectToConsole.Calc();
+                    if (null != v) {
+                        redirectToConsole = (bool)Convert.ChangeType(v, typeof(bool));
+                    }
+                }
 
                 cmd = cmd.Trim();
                 var lines = cmd.Split(new char[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
@@ -5134,7 +5228,7 @@ namespace Expression
                     fileName = Environment.ExpandEnvironmentVariables(fileName);
                     args = Environment.ExpandEnvironmentVariables(args);
 
-                    exitCode = DslCalculator.NewProcess(noWait, fileName, args, option, istream, ostream, input, outputBuilder, errorBuilder, encoding);
+                    exitCode = DslCalculator.NewProcess(noWait, fileName, args, option, istream, ostream, input, outputBuilder, errorBuilder, redirectToConsole, encoding);
                     Debug.LogFormat("new process:{0} {1}, exit code:{2}", fileName, args, exitCode);
 
                     if (null != outputBuilder && null != output) {
@@ -5204,6 +5298,7 @@ namespace Expression
             internal IExpression m_Input = null;
             internal IExpression m_Output = null;
             internal IExpression m_Error = null;
+            internal IExpression m_RedirectToConsole = null;
         }
 
         private List<CommandConfig> m_CommandConfigs = new List<CommandConfig>();
@@ -5836,6 +5931,8 @@ namespace Expression
             Register("dotnetget", new ExpressionFactoryHelper<DotnetGetExp>());
             Register("linq", new ExpressionFactoryHelper<LinqExp>());
             Register("isnull", new ExpressionFactoryHelper<IsNullExp>());
+            Register("assetpath2guid", new ExpressionFactoryHelper<AssetPath2GUIDExp>());
+            Register("guid2assetpath", new ExpressionFactoryHelper<GUID2AssetPathExp>());
             Register("getassetpath", new ExpressionFactoryHelper<GetAssetPathExp>());
             Register("getdependencies", new ExpressionFactoryHelper<GetDependenciesExp>());
             Register("getassetimporter", new ExpressionFactoryHelper<GetAssetImporterExp>());
@@ -5866,6 +5963,11 @@ namespace Expression
             Register("str2int", new ExpressionFactoryHelper<Str2IntExp>());
             Register("str2float", new ExpressionFactoryHelper<Str2FloatExp>());
             Register("hex2int", new ExpressionFactoryHelper<Hex2IntExp>());
+            Register("datetimestr", new ExpressionFactoryHelper<DatetimeStrExp>());
+            Register("longdatestr", new ExpressionFactoryHelper<LongDateStrExp>());
+            Register("longtimestr", new ExpressionFactoryHelper<LongTimeStrExp>());
+            Register("shortdatestr", new ExpressionFactoryHelper<ShortDateStrExp>());
+            Register("shorttimestr", new ExpressionFactoryHelper<ShortTimeStrExp>());
             Register("isnullorempty", new ExpressionFactoryHelper<IsNullOrEmptyExp>());
             Register("array", new ExpressionFactoryHelper<ArrayExp>());
             Register("toarray", new ExpressionFactoryHelper<ToArrayExp>());
@@ -6554,10 +6656,10 @@ namespace Expression
         {
             get { return s_Tasks; }
         }
-        internal static int NewProcess(bool noWait, string fileName, string args, ProcessStartOption option, Stream istream, Stream ostream, IList<string> input, StringBuilder output, StringBuilder error, Encoding encoding)
+        internal static int NewProcess(bool noWait, string fileName, string args, ProcessStartOption option, Stream istream, Stream ostream, IList<string> input, StringBuilder output, StringBuilder error, bool redirectToConsole, Encoding encoding)
         {
             if (noWait) {
-                var task = Task.Run<int>(() => NewProcessTask(fileName, args, option, istream, ostream, input, output, error, encoding));
+                var task = Task.Run<int>(() => NewProcessTask(fileName, args, option, istream, ostream, input, output, error, redirectToConsole, encoding));
                 s_Tasks.Add(task);
                 while (task.Status == TaskStatus.Created || task.Status == TaskStatus.WaitingForActivation || task.Status == TaskStatus.WaitingToRun) {
                     Debug.LogFormat("wait {0}[{1}] start", Path.GetFileName(fileName), task.Status);
@@ -6566,14 +6668,15 @@ namespace Expression
                 return 0;
             }
             else {
-                return NewProcessTask(fileName, args, option, istream, ostream, input, output, error, encoding);
+                return NewProcessTask(fileName, args, option, istream, ostream, input, output, error, redirectToConsole, encoding);
             }
         }
-        private static int NewProcessTask(string fileName, string args, ProcessStartOption option, Stream istream, Stream ostream, IList<string> input, StringBuilder output, StringBuilder error, Encoding encoding)
+        private static int NewProcessTask(string fileName, string args, ProcessStartOption option, Stream istream, Stream ostream, IList<string> input, StringBuilder output, StringBuilder error, bool redirectToConsole, Encoding encoding)
         {
             //考虑到跨平台兼容性，不使用特定进程环境变量
             try {
-                var psi = new System.Diagnostics.ProcessStartInfo();
+                System.Diagnostics.Process p = new System.Diagnostics.Process();
+                var psi = p.StartInfo;
                 psi.FileName = fileName;
                 psi.Arguments = args;
                 psi.UseShellExecute = option.UseShellExecute;
@@ -6605,16 +6708,17 @@ namespace Expression
                 if (null != istream || null != input) {
                     psi.RedirectStandardInput = true;
                 }
-                if (null != ostream || null != output) {
+                if (null != ostream || null != output || redirectToConsole) {
                     psi.RedirectStandardOutput = true;
                     psi.StandardOutputEncoding = encoding;
+                    p.OutputDataReceived += (sender, e) => OnOutputDataReceived(sender, e, ostream, output, redirectToConsole, encoding);
                 }
-                if (null != error) {
+                if (null != error || redirectToConsole) {
                     psi.RedirectStandardError = true;
                     psi.StandardErrorEncoding = encoding;
+                    p.ErrorDataReceived += (sender, e) => OnErrorDataReceived(sender, e, ostream, error, redirectToConsole, encoding);
                 }
-                var p = System.Diagnostics.Process.Start(psi);
-                if (null != p) {
+                if (p.Start()) {
                     if (psi.RedirectStandardInput) {
                         if (null != istream) {
                             istream.Seek(0, SeekOrigin.Begin);
@@ -6635,28 +6739,22 @@ namespace Expression
                             p.StandardInput.Close();
                         }
                     }
+                    if (null != ostream) {
+                        ostream.Seek(0, SeekOrigin.Begin);
+                        ostream.SetLength(0);
+                    }
+                    if (psi.RedirectStandardOutput)
+                        p.BeginOutputReadLine();
+                    if (psi.RedirectStandardError)
+                        p.BeginErrorReadLine();
                     p.WaitForExit();
                     if (psi.RedirectStandardOutput) {
-                        string txt = p.StandardOutput.ReadToEnd();
+                        p.CancelOutputRead();
                         p.StandardOutput.Close();
-                        if (null != ostream) {
-                            ostream.Seek(0, SeekOrigin.Begin);
-                            ostream.SetLength(0);
-                            var bytes = encoding.GetBytes(txt);
-                            ostream.Write(bytes, 0, bytes.Length);
-                        }
-                        if (null != output) {
-                            output.Clear();
-                            output.Append(txt);
-                        }
                     }
                     if (psi.RedirectStandardError) {
-                        string txt = p.StandardError.ReadToEnd();
+                        p.CancelErrorRead();
                         p.StandardError.Close();
-                        if (null != error) {
-                            error.Clear();
-                            error.Append(txt);
-                        }
                     }
                     int r = p.ExitCode;
                     p.Close();
@@ -6674,6 +6772,36 @@ namespace Expression
                     Debug.LogFormat("\t=> exception:{0} stack:{1}", ex.Message, ex.StackTrace);
                 }
                 return -1;
+            }
+        }
+
+        private static void OnOutputDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e, Stream ostream, StringBuilder output, bool redirectToConsole, Encoding encoding)
+        {
+            var p = sender as System.Diagnostics.Process;
+            if (p.StartInfo.RedirectStandardOutput) {
+                var txt = e.Data;
+                if (null != ostream) {
+                    var bytes = encoding.GetBytes(txt);
+                    ostream.Write(bytes, 0, bytes.Length);
+                }
+                if (null != output) {
+                    output.Append(txt);
+                }
+            }
+        }
+
+        private static void OnErrorDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e, Stream ostream, StringBuilder error, bool redirectToConsole, Encoding encoding)
+        {
+            var p = sender as System.Diagnostics.Process;
+            if (p.StartInfo.RedirectStandardError) {
+                var txt = e.Data;
+                if (null != ostream) {
+                    var bytes = encoding.GetBytes(txt);
+                    ostream.Write(bytes, 0, bytes.Length);
+                }
+                if (null != error) {
+                    error.Append(txt);
+                }
             }
         }
 
