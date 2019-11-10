@@ -29,6 +29,7 @@ internal static class ResourceEditUtility
         internal string Name;
         internal Type Type;
         internal object Value;
+        internal string Encoding;
         internal object MinValue;
         internal object MaxValue;
         internal List<string> OptionNames = new List<string>();
@@ -123,7 +124,7 @@ internal static class ResourceEditUtility
 
                 var sb = new StringBuilder();
                 sb.AppendFormat("{0}=>Sum:{1},Max:{2},Min:{3},Avg:{4},Count:{5}", Group, Sum, Max, Min, Avg, Count);
-                for(int i = 0; i < Items.Count; ++i) {
+                for (int i = 0; i < Items.Count; ++i) {
                     sb.Append(",");
                     sb.Append(Items[i].Info);
                 }
@@ -249,7 +250,7 @@ internal static class ResourceEditUtility
             }
             var strs = new string[colIndexes.Count];
             int curIx = 0;
-            foreach(var ix in colIndexes) {
+            foreach (var ix in colIndexes) {
                 if (ix >= skipCols) {
                     strs[curIx++] = m_Fields[ix];
                 }
@@ -331,6 +332,7 @@ internal static class ResourceEditUtility
         calc.Register("istexturenoalphasource", new Expression.ExpressionFactoryHelper<ResourceEditApi.IsTextureNoAlphaSourceExp>());
         calc.Register("doestexturehavealpha", new Expression.ExpressionFactoryHelper<ResourceEditApi.DoesTextureHaveAlphaExp>());
         calc.Register("correctnonealphatexture", new Expression.ExpressionFactoryHelper<ResourceEditApi.CorrectNoneAlphaTextureExp>());
+        calc.Register("setnonealphatexture", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetNoneAlphaTextureExp>());
         calc.Register("gettexturecompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetTextureCompressionExp>());
         calc.Register("settexturecompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetTextureCompressionExp>());
         calc.Register("getmeshcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetMeshCompressionExp>());
@@ -340,6 +342,7 @@ internal static class ResourceEditUtility
         calc.Register("closemeshanimationifnoanimation", new Expression.ExpressionFactoryHelper<ResourceEditApi.CloseMeshAnimationIfNoAnimationExp>());
         calc.Register("collectmeshinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectMeshInfoExp>());
         calc.Register("collectanimatorcontrollerinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectAnimatorControllerInfoExp>());
+        calc.Register("collectprefabinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectPrefabInfoExp>());
         calc.Register("getanimationclipinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationClipInfoExp>());
         calc.Register("getanimationcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationCompressionExp>());
         calc.Register("setanimationcompression", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetAnimationCompressionExp>());
@@ -349,7 +352,6 @@ internal static class ResourceEditUtility
         calc.Register("clearanimationscalecurve", new Expression.ExpressionFactoryHelper<ResourceEditApi.ClearAnimationScaleCurveExp>());
         calc.Register("getaudiosetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetAudioSettingExp>());
         calc.Register("setaudiosetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetAudioSettingExp>());
-        calc.Register("splitanimationreference", new Expression.ExpressionFactoryHelper<ResourceEditApi.SplitAnimationReferenceExp>());
         calc.Register("calcmeshtexratio", new Expression.ExpressionFactoryHelper<ResourceEditApi.CalcMeshTexRatioExp>());
         calc.Register("calcassetmd5", new Expression.ExpressionFactoryHelper<ResourceEditApi.CalcAssetMd5Exp>());
         calc.Register("calcassetsize", new Expression.ExpressionFactoryHelper<ResourceEditApi.CalcAssetSizeExp>());
@@ -359,7 +361,6 @@ internal static class ResourceEditUtility
         calc.Register("getshaderpropertynames", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetShaderPropertyNamesExp>());
         calc.Register("getshadervariants", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetShaderVariantsExp>());
         calc.Register("addshadertocollection", new Expression.ExpressionFactoryHelper<ResourceEditApi.AddShaderToCollectionExp>());
-        calc.Register("buildassetstringlist", new Expression.ExpressionFactoryHelper<ResourceEditApi.BuildAssetStringListExp>());
         calc.Register("findrowindex", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindRowIndexExp>());
         calc.Register("findrowindexes", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindRowIndexesExp>());
         calc.Register("findcellindex", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindCellIndexExp>());
@@ -388,7 +389,7 @@ internal static class ResourceEditUtility
                 calc.SetGlobalVariable("refdict", refDict);
                 calc.SetGlobalVariable("refbydict", refByDict);
                 if (null != addVars) {
-                    foreach(var pair in addVars) {
+                    foreach (var pair in addVars) {
                         calc.SetGlobalVariable(pair.Key, pair.Value);
                     }
                 }
@@ -450,11 +451,12 @@ internal static class ResourceEditUtility
                     var list = v as IList;
                     if (null != list) {
                         var strList = new List<string>();
-                        foreach(var str in list) {
+                        foreach (var str in list) {
                             strList.Add(str.ToString());
                         }
                         item.ExtraList = strList;
-                    } else {
+                    }
+                    else {
                         item.ExtraList = null;
                     }
                 }
@@ -465,7 +467,8 @@ internal static class ResourceEditUtility
                     string scp = v as string;
                     if (!string.IsNullOrEmpty(scp)) {
                         item.ExtraListBuildScript = scp;
-                    } else {
+                    }
+                    else {
                         item.ExtraListBuildScript = string.Empty;
                     }
                 }
@@ -473,7 +476,8 @@ internal static class ResourceEditUtility
                     string scp = v as string;
                     if (!string.IsNullOrEmpty(scp)) {
                         item.ExtraListClickScript = scp;
-                    } else {
+                    }
+                    else {
                         item.ExtraListClickScript = string.Empty;
                     }
                 }
@@ -498,12 +502,14 @@ internal static class ResourceEditUtility
 
                 if (results.Count <= 0) {
                     results.Add(item);
-                } else {
+                }
+                else {
                     ret = results.Count;
                 }
             }
             return ret;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Debug.LogErrorFormat("filter {0} exception:{1}\n{2}", item.AssetPath, ex.Message, ex.StackTrace);
             return null;
         }
@@ -534,7 +540,8 @@ internal static class ResourceEditUtility
                 }
             }
             return ret;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Debug.LogErrorFormat("process {0} exception:{1}\n{2}", item.AssetPath, ex.Message, ex.StackTrace);
             return null;
         }
@@ -605,7 +612,8 @@ internal static class ResourceEditUtility
                             strList.Add(str.ToString());
                         }
                         item.ExtraList = strList;
-                    } else {
+                    }
+                    else {
                         item.ExtraList = null;
                     }
                 }
@@ -616,7 +624,8 @@ internal static class ResourceEditUtility
                     string scp = v as string;
                     if (!string.IsNullOrEmpty(scp)) {
                         item.ExtraListBuildScript = scp;
-                    } else {
+                    }
+                    else {
                         item.ExtraListBuildScript = string.Empty;
                     }
                 }
@@ -624,7 +633,8 @@ internal static class ResourceEditUtility
                     string scp = v as string;
                     if (!string.IsNullOrEmpty(scp)) {
                         item.ExtraListClickScript = scp;
-                    } else {
+                    }
+                    else {
                         item.ExtraListClickScript = string.Empty;
                     }
                 }
@@ -648,7 +658,8 @@ internal static class ResourceEditUtility
                 }
             }
             return ret;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Debug.LogErrorFormat("group {0} exception:{1}\n{2}", item.AssetPath, ex.Message, ex.StackTrace);
             return null;
         }
@@ -684,7 +695,8 @@ internal static class ResourceEditUtility
                 }
             }
             return ret;
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Debug.LogErrorFormat("group process {0} exception:{1}\n{2}", item.AssetPath, ex.Message, ex.StackTrace);
             return null;
         }
@@ -710,14 +722,16 @@ internal static class ResourceEditUtility
     {
         if (string.IsNullOrEmpty(path)) {
             path = obj.name;
-        } else {
+        }
+        else {
             path = path + "/" + obj.name;
         }
         bool ret = false;
         if (obj.name == name) {
             if (type == "GameObject") {
                 ret = true;
-            } else if (type == "ParticleSystem") {
+            }
+            else if (type == "ParticleSystem") {
                 var comp = obj.GetComponent<ParticleSystem>();
                 if (null != comp) {
                     ret = true;
@@ -755,11 +769,11 @@ internal static class ResourceEditUtility
         }
         return ret;
     }
-    
+
     internal static Regex GetRegex(string str)
     {
         Regex regex;
-        if(!s_Regexes.TryGetValue(str, out regex)) {
+        if (!s_Regexes.TryGetValue(str, out regex)) {
             regex = new Regex(str, RegexOptions.Compiled);
         }
         return regex;
@@ -848,7 +862,8 @@ internal static class ResourceEditUtility
         Transform t = parent.Find(boneName);
         if (null != t) {
             return t;
-        } else {
+        }
+        else {
             int ct = parent.childCount;
             for (int i = 0; i < ct; ++i) {
                 t = FindChildRecursive(parent.GetChild(i), boneName);
@@ -862,10 +877,10 @@ internal static class ResourceEditUtility
     internal static bool IsPathMatch(string path, string filter)
     {
         string ext = Path.GetExtension(path);
-        if (ext==".meta") {
+        if (ext == ".meta") {
             return false;
         }
-        List<string> infos; 
+        List<string> infos;
         if (!s_PathMatchInfos.TryGetValue(filter, out infos)) {
             string[] filters = filter.Split(new char[] { '*' }, StringSplitOptions.RemoveEmptyEntries);
             infos = new List<string>(filters);
@@ -874,12 +889,13 @@ internal static class ResourceEditUtility
         string fileName = Path.GetFileName(path);
         bool match = true;
         int startIx = 0;
-        for(int i = 0; i < infos.Count; ++i) {
+        for (int i = 0; i < infos.Count; ++i) {
             var info = infos[i];
             var ix = fileName.IndexOf(info, startIx, StringComparison.CurrentCultureIgnoreCase);
             if (ix >= 0) {
                 startIx = ix + info.Length;
-            } else {
+            }
+            else {
                 match = false;
                 break;
             }
@@ -892,7 +908,8 @@ internal static class ResourceEditUtility
         path = path.Replace('\\', '/');
         if (path.StartsWith(rootPath)) {
             return true;
-        } else {
+        }
+        else {
             return false;
         }
     }
@@ -1017,12 +1034,103 @@ namespace ResourceEditApi
         public int boneCount;
         public int materialCount;
         public int clipCount;
+        public int maxTexWidth;
+        public int maxTexHeight;
+        public string maxTexName;
+        public string maxTexPropName;
         public int maxKeyFrameCount;
         public string maxKeyFrameCurveName = string.Empty;
         public string maxKeyFrameClipName = string.Empty;
         public int updateWhenOffscreenCount = 0;
+        public int animatorCount = 0;
         public int alwaysAnimateCount = 0;
+        public List<MaterialInfo> materials = new List<MaterialInfo>();
         public List<AnimationClipInfo> clips = new List<AnimationClipInfo>();
+
+        public void CollectMaterials(IList<Material> mats)
+        {
+            foreach (var mat in mats) {
+                if (null != mat) {
+                    var matInfo = new MaterialInfo();
+                    matInfo.name = mat.name;
+                    matInfo.shaderName = null == mat.shader ? string.Empty : mat.shader.name;
+                    matInfo.maxTexWidth = 0;
+                    matInfo.maxTexHeight = 0;
+                    matInfo.maxTexName = string.Empty;
+                    matInfo.maxTexPropName = string.Empty;
+                    foreach (var prop in mat.GetTexturePropertyNames()) {
+                        var tex = mat.GetTexture(prop);
+                        if (null != tex) {
+                            var texInfo = new TextureInfo();
+                            texInfo.propName = prop;
+                            texInfo.texName = tex.name;
+                            texInfo.width = tex.width;
+                            texInfo.height = tex.height;
+                            matInfo.texs.Add(texInfo);
+
+                            if (texInfo.width * texInfo.height > matInfo.maxTexWidth * matInfo.maxTexHeight) {
+                                matInfo.maxTexWidth = texInfo.width;
+                                matInfo.maxTexHeight = texInfo.height;
+                                matInfo.maxTexName = texInfo.texName;
+                                matInfo.maxTexPropName = texInfo.propName;
+
+                                if (texInfo.width * texInfo.height > maxTexWidth * maxTexHeight) {
+                                    maxTexWidth = texInfo.width;
+                                    maxTexHeight = texInfo.height;
+                                    maxTexName = texInfo.texName;
+                                    maxTexPropName = texInfo.propName;
+                                }
+                            }
+                        }
+                    }
+
+                    materials.Add(matInfo);
+                }
+            }
+        }
+        public void CollectClip(AnimationClip clip)
+        {
+            var clipInfo = new AnimationClipInfo();
+            clipInfo.clipName = clip.name;
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            int maxKfc = 0;
+            string curveName = string.Empty;
+            foreach (var binding in bindings) {
+                var curve = AnimationUtility.GetEditorCurve(clip, binding);
+                int kfc = curve.keys.Length;
+                clipInfo.curves.Add(new KeyFrameCurveInfo { curveName = binding.propertyName, curvePath = binding.path, keyFrameCount = kfc });
+                if (maxKfc < kfc) {
+                    maxKfc = kfc;
+                    curveName = binding.path + "/" + binding.propertyName;
+                }
+            }
+            clipInfo.maxKeyFrameCount = maxKfc;
+            clipInfo.maxKeyFrameCurveName = curveName;
+            clips.Add(clipInfo);
+
+            if (maxKeyFrameCount < maxKfc) {
+                maxKeyFrameCount = maxKfc;
+                maxKeyFrameCurveName = curveName;
+                maxKeyFrameClipName = clip.name;
+            }
+        }
+    }
+    internal class TextureInfo
+    {
+        public string propName;
+        public string texName;
+        public int width;
+        public int height;
+    }
+    internal class MaterialInfo
+    {
+        public string name;
+        public string shaderName;
+        public int maxTexWidth;
+        public int maxTexHeight;
+        public string maxTexName;
+        public string maxTexPropName;
+        public List<TextureInfo> texs = new List<TextureInfo>();
     }
     internal class KeyFrameCurveInfo
     {
@@ -1043,10 +1151,37 @@ namespace ResourceEditApi
         public int paramCount;
         public int stateCount;
         public int subStateMachineCount;
+        public int clipCount;
         public int maxKeyFrameCount;
         public string maxKeyFrameCurveName = string.Empty;
         public string maxKeyFrameClipName = string.Empty;
         public List<AnimationClipInfo> clips = new List<AnimationClipInfo>();
+        public void CollectClip(AnimationClip clip)
+        {
+            var clipInfo = new AnimationClipInfo();
+            clipInfo.clipName = clip.name;
+            var bindings = AnimationUtility.GetCurveBindings(clip);
+            int maxKfc = 0;
+            string curveName = string.Empty;
+            foreach (var binding in bindings) {
+                var curve = AnimationUtility.GetEditorCurve(clip, binding);
+                int kfc = curve.keys.Length;
+                clipInfo.curves.Add(new KeyFrameCurveInfo { curveName = binding.propertyName, curvePath = binding.path, keyFrameCount = kfc });
+                if (maxKfc < kfc) {
+                    maxKfc = kfc;
+                    curveName = binding.path + "/" + binding.propertyName;
+                }
+            }
+            clipInfo.maxKeyFrameCount = maxKfc;
+            clipInfo.maxKeyFrameCurveName = curveName;
+            clips.Add(clipInfo);
+
+            if (maxKeyFrameCount < maxKfc) {
+                maxKeyFrameCount = maxKfc;
+                maxKeyFrameCurveName = curveName;
+                maxKeyFrameClipName = clip.name;
+            }
+        }
     }
     internal class CallScriptExp : Expression.SimpleExpressionBase
     {
@@ -1118,7 +1253,8 @@ namespace ResourceEditApi
                     HashSet<string> refbyset;
                     if (dict.TryGetValue(path, out refbyset)) {
                         r = refbyset.ToArray();
-                    } else {
+                    }
+                    else {
                         r = new List<string>();
                     }
                 }
@@ -1138,7 +1274,8 @@ namespace ResourceEditApi
                     HashSet<string> refbyset;
                     if (dict.TryGetValue(path, out refbyset)) {
                         r = refbyset.ToArray();
-                    } else {
+                    }
+                    else {
                         r = new List<string>();
                     }
                 }
@@ -1158,7 +1295,8 @@ namespace ResourceEditApi
                     HashSet<string> hash;
                     if (refDict.TryGetValue(file, out hash)) {
                         r = hash.Count;
-                    } else {
+                    }
+                    else {
                         r = 0;
                     }
                 }
@@ -1178,7 +1316,8 @@ namespace ResourceEditApi
                     HashSet<string> hash;
                     if (refByDict.TryGetValue(file, out hash)) {
                         r = hash.Count;
-                    } else {
+                    }
+                    else {
                         r = 0;
                     }
                 }
@@ -1213,26 +1352,38 @@ namespace ResourceEditApi
                     if (!handled) {
                         bool result = ResourceEditUtility.FindSceneObject(asset, type, ref assetPath, ref scenePath, ref sceneObj);
                         if (result) {
-                        } else if (type == "Texture2D") {
+                        }
+                        else if (type == "Texture2D") {
                             if (sceneDeps.name2paths.TryGetValue(asset + ".png", out assetPath)) {
-                            } else if (sceneDeps.name2paths.TryGetValue(asset + ".tga", out assetPath)) {
-                            } else if (sceneDeps.name2paths.TryGetValue(asset + ".jpg", out assetPath)) {
-                            } else if (sceneDeps.name2paths.TryGetValue(asset + ".exr", out assetPath)) {
-                            } else if (sceneDeps.name2paths.TryGetValue(asset + ".hdr", out assetPath)) {
                             }
-                        } else if (type == "Mesh") {
+                            else if (sceneDeps.name2paths.TryGetValue(asset + ".tga", out assetPath)) {
+                            }
+                            else if (sceneDeps.name2paths.TryGetValue(asset + ".jpg", out assetPath)) {
+                            }
+                            else if (sceneDeps.name2paths.TryGetValue(asset + ".exr", out assetPath)) {
+                            }
+                            else if (sceneDeps.name2paths.TryGetValue(asset + ".hdr", out assetPath)) {
+                            }
+                        }
+                        else if (type == "Mesh") {
                             sceneDeps.name2paths.TryGetValue(asset + ".fbx", out assetPath);
-                        } else if (type == "AnimationClip") {
+                        }
+                        else if (type == "AnimationClip") {
                             if (sceneDeps.name2paths.TryGetValue(asset + ".clip", out assetPath)) {
-                            } else if (sceneDeps.name2paths.TryGetValue(asset + ".fbx", out assetPath)) {
                             }
-                        } else if (type == "Material") {
+                            else if (sceneDeps.name2paths.TryGetValue(asset + ".fbx", out assetPath)) {
+                            }
+                        }
+                        else if (type == "Material") {
                             sceneDeps.name2paths.TryGetValue(asset + ".mat", out assetPath);
-                        } else if (type == "Shader") {
+                        }
+                        else if (type == "Shader") {
                             sceneDeps.name2paths.TryGetValue(asset + ".shader", out assetPath);
-                        } else {
+                        }
+                        else {
                             if (sceneDeps.name2paths.TryGetValue(asset + ".prefab", out assetPath)) {
-                            } else if (sceneDeps.name2paths.TryGetValue(asset + ".asset", out assetPath)) {
+                            }
+                            else if (sceneDeps.name2paths.TryGetValue(asset + ".asset", out assetPath)) {
                             }
                         }
                     }
@@ -1374,7 +1525,8 @@ namespace ResourceEditApi
                                 ret = setting.format == TextureImporterFormat.ASTC_RGB_8x8;
                                 break;
                         }
-                    } else {
+                    }
+                    else {
                         switch (sizeAlpha) {
                             case 4:
                                 ret = setting.format == TextureImporterFormat.ASTC_RGBA_4x4;
@@ -1447,7 +1599,8 @@ namespace ResourceEditApi
                                 setting.format = TextureImporterFormat.ASTC_RGB_8x8;
                                 break;
                         }
-                    } else {
+                    }
+                    else {
                         switch (sizeAlpha) {
                             case 4:
                                 setting.format = TextureImporterFormat.ASTC_RGBA_4x4;
@@ -1513,6 +1666,21 @@ namespace ResourceEditApi
             if (operands.Count >= 0) {
                 var importer = Calculator.GetVariable("importer") as TextureImporter;
                 if (null != importer && !importer.DoesSourceTextureHaveAlpha()) {
+                    importer.alphaSource = TextureImporterAlphaSource.None;
+                    r = true;
+                }
+            }
+            return r;
+        }
+    }
+    internal class SetNoneAlphaTextureExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = false;
+            if (operands.Count >= 0) {
+                var importer = Calculator.GetVariable("importer") as TextureImporter;
+                if (null != importer) {
                     importer.alphaSource = TextureImporterAlphaSource.None;
                     r = true;
                 }
@@ -1682,6 +1850,13 @@ namespace ResourceEditApi
                     importer = operands[1] as ModelImporter;
                 if (null != obj) {
                     var info = new MeshInfo();
+                    info.maxTexWidth = 0;
+                    info.maxTexHeight = 0;
+                    info.maxTexName = string.Empty;
+                    info.maxTexPropName = string.Empty;
+                    info.maxKeyFrameCount = 0;
+                    info.maxKeyFrameCurveName = string.Empty;
+                    info.maxKeyFrameClipName = string.Empty;
                     int vc = 0;
                     int tc = 0;
                     int bc = 0;
@@ -1692,80 +1867,44 @@ namespace ResourceEditApi
                     foreach (var renderer in skinnedrenderers) {
                         if (null != renderer.sharedMesh) {
                             vc += renderer.sharedMesh.vertexCount;
-                            tc += renderer.sharedMesh.triangles.Length / 3;
+                            tc += renderer.sharedMesh.triangles.Length;
                         }
                         bc += renderer.bones.Length;
                         mc += renderer.sharedMaterials.Length;
                         offscreenct += renderer.updateWhenOffscreen ? 1 : 0;
+
+                        info.CollectMaterials(renderer.sharedMaterials);
                     }
                     var filters = obj.GetComponentsInChildren<MeshFilter>();
                     info.meshFilterCount = filters.Length;
                     foreach (var filter in filters) {
                         if (null != filter.sharedMesh) {
                             vc += filter.sharedMesh.vertexCount;
-                            tc += filter.sharedMesh.triangles.Length / 3;
+                            tc += filter.sharedMesh.triangles.Length;
                         }
                     }
                     var meshrenderers = obj.GetComponentsInChildren<MeshRenderer>();
                     foreach (var renderer in meshrenderers) {
                         mc += renderer.sharedMaterials.Length;
+
+                        info.CollectMaterials(renderer.sharedMaterials);
                     }
                     info.vertexCount = vc;
-                    info.triangleCount = tc;
+                    info.triangleCount = tc / 3;
                     info.boneCount = bc;
                     info.materialCount = mc;
                     info.updateWhenOffscreenCount = offscreenct;
                     int alwaysct = 0;
                     var animators = obj.GetComponentsInChildren<Animator>();
-                    foreach(var anim in animators) {
+                    info.animatorCount = animators.Length;
+                    foreach (var anim in animators) {
                         alwaysct += anim.cullingMode == AnimatorCullingMode.AlwaysAnimate ? 1 : 0;
                     }
                     info.alwaysAnimateCount = alwaysct;
-                    var animator = obj.GetComponentInChildren<Animator>();
-                    if (null != animator) {
-                        var ctrl = animator.runtimeAnimatorController;
-                        if (null != ctrl) {
-                            info.clipCount = ctrl.animationClips.Length;
-                            int gMaxKfc = 0;
-                            string gCurveName = string.Empty;
-                            string gClipName = string.Empty;
-                            foreach (var clip in ctrl.animationClips) {
-                                var clipInfo = new AnimationClipInfo();
-                                clipInfo.clipName = clip.name;
-                                var bindings = AnimationUtility.GetCurveBindings(clip);
-                                int maxKfc = 0;
-                                string curveName = string.Empty;
-                                foreach (var binding in bindings) {
-                                    var curve = AnimationUtility.GetEditorCurve(clip, binding);
-                                    int kfc = curve.keys.Length;
-                                    clipInfo.curves.Add(new KeyFrameCurveInfo { curveName = binding.propertyName, curvePath = binding.path, keyFrameCount = kfc });
-                                    if (maxKfc < kfc) {
-                                        maxKfc = kfc;
-                                        curveName = binding.path + "/" + binding.propertyName;
-                                    }
-                                }
-                                clipInfo.maxKeyFrameCount = maxKfc;
-                                clipInfo.maxKeyFrameCurveName = curveName;
-                                info.clips.Add(clipInfo);
-
-                                if (gMaxKfc < maxKfc) {
-                                    gMaxKfc = maxKfc;
-                                    gCurveName = curveName;
-                                    gClipName = clip.name;
-                                }
-                            }
-                            info.maxKeyFrameCount = gMaxKfc;
-                            info.maxKeyFrameCurveName = gCurveName;
-                            info.maxKeyFrameClipName = gClipName;
-                        }
-                    }
                     if (null != importer && info.clipCount <= 0) {
                         info.clipCount = importer.clipAnimations.Length;
                         if (info.clipCount <= 0)
                             info.clipCount = importer.defaultClipAnimations.Length;
-                        int gMaxKfc = 0;
-                        string gCurveName = string.Empty;
-                        string gClipName = string.Empty;
                         var objs = AssetDatabase.LoadAllAssetsAtPath(importer.assetPath);
                         foreach (var clipObj in objs) {
                             var clip = clipObj as AnimationClip;
@@ -1781,34 +1920,9 @@ namespace ResourceEditApi
                                     if (isDefault)
                                         continue;
                                 }
-                                var clipInfo = new AnimationClipInfo();
-                                clipInfo.clipName = clip.name;
-                                var bindings = AnimationUtility.GetCurveBindings(clip);
-                                int maxKfc = 0;
-                                string curveName = string.Empty;
-                                foreach (var binding in bindings) {
-                                    var curve = AnimationUtility.GetEditorCurve(clip, binding);
-                                    int kfc = curve.keys.Length;
-                                    clipInfo.curves.Add(new KeyFrameCurveInfo { curveName = binding.propertyName, curvePath = binding.path, keyFrameCount = kfc });
-                                    if (maxKfc < kfc) {
-                                        maxKfc = kfc;
-                                        curveName = binding.path + "/" + binding.propertyName;
-                                    }
-                                }
-                                clipInfo.maxKeyFrameCount = maxKfc;
-                                clipInfo.maxKeyFrameCurveName = curveName;
-                                info.clips.Add(clipInfo);
-
-                                if (gMaxKfc < maxKfc) {
-                                    gMaxKfc = maxKfc;
-                                    gCurveName = curveName;
-                                    gClipName = clip.name;
-                                }
+                                info.CollectClip(clip);
                             }
                         }
-                        info.maxKeyFrameCount = gMaxKfc;
-                        info.maxKeyFrameCurveName = gCurveName;
-                        info.maxKeyFrameClipName = gClipName;
                     }
                     r = info;
                 }
@@ -1825,6 +1939,9 @@ namespace ResourceEditApi
                 var ctrl = operands[0] as RuntimeAnimatorController;
                 if (null != ctrl) {
                     var info = new AnimatorControllerInfo();
+                    info.maxKeyFrameCount = 0;
+                    info.maxKeyFrameCurveName = string.Empty;
+                    info.maxKeyFrameClipName = string.Empty;
                     var editorCtrl = ctrl as UnityEditor.Animations.AnimatorController;
                     if (null == editorCtrl) {
                         var overrideCtrl = ctrl as AnimatorOverrideController;
@@ -1844,37 +1961,12 @@ namespace ResourceEditApi
                         info.stateCount = sc;
                         info.subStateMachineCount = smc;
                     }
-                    int gMaxKfc = 0;
-                    string gCurveName = string.Empty;
-                    string gClipName = string.Empty;
+                    info.clipCount = ctrl.animationClips.Length;
                     foreach (var clip in ctrl.animationClips) {
-                        var clipInfo = new AnimationClipInfo();
-                        clipInfo.clipName = clip.name;
-                        var bindings = AnimationUtility.GetCurveBindings(clip);
-                        int maxKfc = 0;
-                        string curveName = string.Empty;
-                        foreach (var binding in bindings) {
-                            var curve = AnimationUtility.GetEditorCurve(clip, binding);
-                            int kfc = curve.keys.Length;
-                            clipInfo.curves.Add(new KeyFrameCurveInfo { curveName = binding.propertyName, curvePath = binding.path, keyFrameCount = kfc });
-                            if (maxKfc < kfc) {
-                                maxKfc = kfc;
-                                curveName = binding.path + "/" + binding.propertyName;
-                            }
-                        }
-                        clipInfo.maxKeyFrameCount = maxKfc;
-                        clipInfo.maxKeyFrameCurveName = curveName;
-                        info.clips.Add(clipInfo);
-
-                        if (gMaxKfc < maxKfc) {
-                            gMaxKfc = maxKfc;
-                            gCurveName = curveName;
-                            gClipName = clip.name;
+                        if (null != clip) {
+                            info.CollectClip(clip);
                         }
                     }
-                    info.maxKeyFrameCount = gMaxKfc;
-                    info.maxKeyFrameCurveName = gCurveName;
-                    info.maxKeyFrameClipName = gClipName;
                     r = info;
                 }
             }
@@ -1897,6 +1989,85 @@ namespace ResourceEditApi
                 ct += CalcSubStateMachineCount(ssm.stateMachine);
             }
             return ct;
+        }
+    }
+    internal class CollectPrefabInfoExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var obj = operands[0] as UnityEngine.GameObject;
+                if (null != obj) {
+                    var info = new MeshInfo();
+                    info.maxTexWidth = 0;
+                    info.maxTexHeight = 0;
+                    info.maxTexName = string.Empty;
+                    info.maxTexPropName = string.Empty;
+                    info.maxKeyFrameCount = 0;
+                    info.maxKeyFrameCurveName = string.Empty;
+                    info.maxKeyFrameClipName = string.Empty;
+                    int vc = 0;
+                    int tc = 0;
+                    int bc = 0;
+                    int mc = 0;
+                    int offscreenct = 0;
+                    var skinnedrenderers = obj.GetComponentsInChildren<SkinnedMeshRenderer>();
+                    info.skinnedMeshCount = skinnedrenderers.Length;
+                    foreach (var renderer in skinnedrenderers) {
+                        if (null != renderer.sharedMesh) {
+                            vc += renderer.sharedMesh.vertexCount;
+                            tc += renderer.sharedMesh.triangles.Length;
+                        }
+                        bc += renderer.bones.Length;
+                        mc += renderer.sharedMaterials.Length;
+                        offscreenct += renderer.updateWhenOffscreen ? 1 : 0;
+
+                        info.CollectMaterials(renderer.sharedMaterials);
+                    }
+                    var filters = obj.GetComponentsInChildren<MeshFilter>();
+                    info.meshFilterCount = filters.Length;
+                    foreach (var filter in filters) {
+                        if (null != filter.sharedMesh) {
+                            vc += filter.sharedMesh.vertexCount;
+                            tc += filter.sharedMesh.triangles.Length;
+                        }
+                    }
+                    var meshrenderers = obj.GetComponentsInChildren<MeshRenderer>();
+                    foreach (var renderer in meshrenderers) {
+                        mc += renderer.sharedMaterials.Length;
+
+                        info.CollectMaterials(renderer.sharedMaterials);
+                    }
+                    info.vertexCount = vc;
+                    info.triangleCount = tc / 3;
+                    info.boneCount = bc;
+                    info.materialCount = mc;
+                    info.updateWhenOffscreenCount = offscreenct;
+                    int alwaysct = 0;
+                    var animators = obj.GetComponentsInChildren<Animator>();
+                    info.animatorCount = animators.Length;
+                    foreach (var anim in animators) {
+                        alwaysct += anim.cullingMode == AnimatorCullingMode.AlwaysAnimate ? 1 : 0;
+                    }
+                    info.alwaysAnimateCount = alwaysct;
+                    int clipCount = 0;
+                    foreach (var anim in animators) {
+                        var ctrl = anim.runtimeAnimatorController;
+                        if (null != ctrl) {
+                            clipCount += ctrl.animationClips.Length;
+                            foreach (var clip in ctrl.animationClips) {
+                                if (null != clip) {
+                                    info.CollectClip(clip);
+                                }
+                            }
+                        }
+                    }
+                    info.clipCount = clipCount;
+                    r = info;
+                }
+            }
+            return r;
         }
     }
     internal class GetAnimationClipInfoExp : Expression.SimpleExpressionBase
@@ -2046,16 +2217,17 @@ namespace ResourceEditApi
                 var obj = operands[0] as UnityEngine.GameObject;
                 if (null != importer && null != obj) {
                     List<string> paths = new List<string>();
-                    for(int i = 1; i < operands.Count; ++i) {
+                    for (int i = 1; i < operands.Count; ++i) {
                         var name = operands[i] as string;
                         if (!string.IsNullOrEmpty(name)) {
                             if (name == "*") {
                                 var boneListPath = ResourceEditUtility.AssetPathToPath("Assets/StreamingAssets/BoneList.txt");
                                 var lines = File.ReadAllLines(boneListPath);
-                                foreach(var line in lines) {
+                                foreach (var line in lines) {
                                     AddBonePath(paths, obj.transform, line.Trim());
                                 }
-                            } else {
+                            }
+                            else {
                                 AddBonePath(paths, obj.transform, name);
                             }
                         }
@@ -2145,82 +2317,6 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SplitAnimationReferenceExp : Expression.SimpleExpressionBase
-    {
-        protected override object OnCalc(IList<object> operands)
-        {
-            object r = null;
-#if QINSHI
-            if (operands.Count >= 1) {
-                var path = Calculator.GetVariable("assetpath") as string;
-                var reference = AssetDatabase.LoadAssetAtPath<AnimationReference>(path);
-                if (null != reference && reference.split) {
-                    HashSet<string> hashset = new HashSet<string>();
-                    foreach (var item in reference.items) {
-                        hashset.Add(item.name);
-                    }
-                    int lastIndex = operands.Count;
-                    for (int i = 0; i < operands.Count; ++i) {
-                        var list = operands[i] as IList;
-                        if (null != list) {
-                            SplitFile(reference, hashset, list, path, i);
-                        } else {
-                            var key = operands[i] as string;
-                            if (!string.IsNullOrEmpty(key) && key=="*") {
-                                lastIndex = i;
-                            }
-                        }
-                    }
-                    SplitFile(reference, hashset, hashset, path, lastIndex);
-                }
-            }
-#endif
-            return r;
-        }
-#if QINSHI
-        private static void SplitFile(AnimationReference refs, HashSet<string> hashset, IEnumerable coll, string path, int ix)
-        {
-            var split = UnityEngine.ScriptableObject.CreateInstance<AnimationReference>();
-            split.animator = refs.animator;
-            foreach (var obj in coll) {
-                var name = obj as string;
-                if (name.Contains(".*")) {
-                    AddMatchedItems(refs, hashset, name, split);
-                } else {
-                    if (coll != hashset) {
-                        hashset.Remove(name);
-                    }
-                    var item = refs.FindByName(name);
-                    split.items.Add(item);
-                }
-            }
-            var newPath = GenFilePath(path, ix);
-            var filePath = ResourceEditUtility.AssetPathToPath(newPath);
-            if (File.Exists(filePath)) {
-                AssetDatabase.DeleteAsset(newPath);
-            }
-            AssetDatabase.CreateAsset(split, newPath);
-        }
-        private static void AddMatchedItems(AnimationReference refs, HashSet<string> hashset, string regex, AnimationReference split)
-        {
-            var regexObj = ResourceEditUtility.GetRegex(regex);
-            var items = refs.items;
-            for(int i = 0; i < items.Count; ++i) {
-                var item = items[i];
-                if (regexObj.IsMatch(item.name)) {
-                    hashset.Remove(item.name);
-                    split.items.Add(item);
-                }
-            }
-        }
-        private static string GenFilePath(string path, int ix)
-        {
-            var dir = Path.GetDirectoryName(path);
-            var fileName = Path.GetFileNameWithoutExtension(path);
-            return Path.Combine(dir, fileName + "_" + ix + "_split" + ".asset").Replace('\\', '/');
-        }
-#endif
-    }
     internal class CalcMeshTexRatioExp : Expression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
@@ -2236,10 +2332,11 @@ namespace ResourceEditApi
                     List<GameObject> list = new List<GameObject>();
                     if (includeChildren) {
                         var comps = obj0.GetComponentsInChildren<Renderer>();
-                        foreach(var comp in comps) {
+                        foreach (var comp in comps) {
                             list.Add(comp.gameObject);
                         }
-                    } else {
+                    }
+                    else {
                         list.Add(obj0);
                     }
                     List<string> uvRatios = new List<string>();
@@ -2258,13 +2355,15 @@ namespace ResourceEditApi
                                 var area = areas[i];
                                 if (area < Geometry.c_FloatPrecision) {
                                     uvRatios.Add("0");
-                                } else {
+                                }
+                                else {
                                     float r = uvs[i] / areas[i];
                                     if (i < texSizes.Count) {
                                         var v = texSizes[i];
                                         r *= v.x * v.y;
                                         lastSize = v;
-                                    } else {
+                                    }
+                                    else {
                                         r *= lastSize.x * lastSize.y;
                                     }
                                     if (maxVal < r) {
@@ -2283,13 +2382,15 @@ namespace ResourceEditApi
                                 var area = areas[i];
                                 if (area < Geometry.c_FloatPrecision) {
                                     uvTiledRatios.Add("0");
-                                } else {
+                                }
+                                else {
                                     float r = tiledUvs[i] / areas[i];
                                     if (i < texSizes.Count) {
                                         var v = texSizes[i];
                                         r *= v.x * v.y;
                                         lastSize = v;
-                                    } else {
+                                    }
+                                    else {
                                         r *= lastSize.x * lastSize.y;
                                     }
                                     if (maxVal < r) {
@@ -2389,7 +2490,8 @@ namespace ResourceEditApi
                             }
                         }
                         r = count;
-                    } else {
+                    }
+                    else {
                         r = ShaderUtil.GetPropertyCount(shader);
                     }
                 }
@@ -2411,7 +2513,7 @@ namespace ResourceEditApi
                 if (null != shader) {
                     List<string> list = new List<string>();
                     int ct = ShaderUtil.GetPropertyCount(shader);
-                    for(int i = 0; i < ct; ++i) {
+                    for (int i = 0; i < ct; ++i) {
                         var t = ShaderUtil.GetPropertyType(shader, i);
                         if ((int)t == type) {
                             var name = ShaderUtil.GetPropertyName(shader, i);
@@ -2459,8 +2561,9 @@ namespace ResourceEditApi
                 ShaderVariantCollection coll = null;
                 if (operands.Count >= 2) {
                     coll = operands[1] as ShaderVariantCollection;
-                } else {
-                    if(null == s_DefaultShaderVariants) {
+                }
+                else {
+                    if (null == s_DefaultShaderVariants) {
                         s_DefaultShaderVariants = AssetDatabase.LoadAssetAtPath("Assets/ResourceAB/ShaderVariants/ShaderVariants.shadervariants", typeof(UnityEngine.Object)) as ShaderVariantCollection;
                     }
                     coll = s_DefaultShaderVariants;
@@ -2477,132 +2580,6 @@ namespace ResourceEditApi
 
         private static ShaderVariantCollection s_DefaultShaderVariants = null;
     }
-    internal class BuildAssetStringListExp : Expression.SimpleExpressionBase
-    {
-        protected override object OnCalc(IList<object> operands)
-        {
-            var list = new List<string>();
-            for (int i = 0; i < operands.Count; ++i) {
-                var file = operands[i] as string;
-                if (!string.IsNullOrEmpty(file) && File.Exists(file)) {
-                    list.Add(file);
-                }
-            }
-            HashSet<string> strSet = new HashSet<string>();
-            int curCt = 0;
-            int totalCt = list.Count;
-            foreach (var file in list) {
-                ++curCt;
-                if (EditorUtility.DisplayCancelableProgressBar("收集程序代码资源字符串", string.Format("{0}/{1} {2}", curCt, totalCt, file), curCt * 1.0f / totalCt))
-                    break;
-                var lines = File.ReadAllLines(file);
-                foreach (var line in lines) {
-                    if (MaybePathString(line)) {
-                        if (!strSet.Contains(line))
-                            strSet.Add(line);
-                    }
-                }
-            }
-            EditorUtility.ClearProgressBar();
-            ReadPlayableString(strSet);
-            ReadDisplayString(strSet);
-            var dict = ReadTableList();
-            curCt = 0;
-            totalCt = dict.Count;
-            foreach (var pair in dict) {
-                ++curCt;
-                if (EditorUtility.DisplayCancelableProgressBar("收集策划表资源字符串", string.Format("{0}/{1} {2}", curCt, totalCt, pair.Key), curCt * 1.0f / totalCt))
-                    break;
-                ReadTableString(pair.Key, pair.Value, strSet);
-            }
-            EditorUtility.ClearProgressBar();
-            return strSet.ToArray();
-        }
-        private static void ReadPlayableString(HashSet<string> strSet)
-        {
-#if QINSHI
-
-#endif
-        }
-        private static void ReadDisplayString(HashSet<string> strSet)
-        {
-#if QINSHI
-            SkillDisplayer.Displayer.LoadAllConfigs();
-            var dicts = SkillDisplayer.Displayer.GetAllConfigs();
-            int curCt = 0;
-            int totalCt = dicts.Count;
-            foreach (var pair in dicts) {
-                ++curCt;
-                if (EditorUtility.DisplayCancelableProgressBar("收集表现组资源字符串", string.Format("{0}/{1} {2}", curCt, totalCt, pair.Key), curCt * 1.0f / totalCt))
-                    break;
-                var displayer = pair.Value;
-                var list = displayer.GetDependParticlePathes();
-                foreach(var str in list) {
-                    if (!strSet.Contains(str))
-                        strSet.Add(str);
-                }
-            }
-            EditorUtility.ClearProgressBar();
-#endif
-        }
-        private static void ReadTableString(string file, string encode, HashSet<string> strSet)
-        {
-            var lines = File.ReadAllLines("../../Product/Table/" + file, Encoding.GetEncoding(encode));
-            var types = lines[0].Split('\t');
-            for (int i = 2; i < lines.Length; ++i) {
-                var line = lines[i];
-                if (line.StartsWith("//"))
-                    continue;
-                var fields = line.Split('\t');
-                for (int j = 0; j < fields.Length && j < types.Length; ++j) {
-                    var type = types[j];
-                    if (type == "string") {
-                        var field = fields[j];
-                        if (MaybePathString(field)) {
-                            if (!strSet.Contains(field))
-                                strSet.Add(field);
-                        }
-                    } else if (type == "string[]") {
-                        var field = fields[j];
-                        var vals = field.Split(new char[] { ',', ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
-                        foreach (var val in vals) {
-                            if (MaybePathString(val)) {
-                                if (!strSet.Contains(val))
-                                    strSet.Add(val);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        private static Dictionary<string, string> ReadTableList()
-        {
-            Dictionary<string, string> dict = new Dictionary<string, string>();
-            var lines = File.ReadAllLines("../../Product/Table/Config.txt");
-            for (int i = 1; i < lines.Length; ++i) {
-                var line = lines[i];
-                var fields = line.Split('\t');
-                string file = fields[0];
-                string type = fields[1];
-                string encode = fields[2];
-                dict.Add(file, encode);
-            }
-            return dict;
-        }
-        private static bool MaybePathString(string str)
-        {
-            if (!string.IsNullOrEmpty(str)) {
-                foreach (var c in str) {
-                    if (char.IsWhiteSpace(c) || char.IsControl(c))
-                        return false;
-                    if (!char.IsPunctuation(c) && !char.IsDigit(c) && !(c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z'))
-                        return false;
-                }
-                return true;
-            }
-            return false;
-        }
-    }
     internal class FindRowIndexExp : Expression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
@@ -2611,7 +2588,7 @@ namespace ResourceEditApi
             if (operands.Count >= 3) {
                 var sheet = operands[0] as NPOI.SS.UserModel.ISheet;
                 var dict = new Dictionary<int, string>();
-                for(int ix = 1; ix < operands.Count - 1; ix += 2) {
+                for (int ix = 1; ix < operands.Count - 1; ix += 2) {
                     var index = ToInt(operands[ix]);
                     var val = operands[ix + 1].ToString();
                     dict.Add(index, val);
@@ -2620,7 +2597,7 @@ namespace ResourceEditApi
                     for (int i = sheet.FirstRowNum; i <= sheet.LastRowNum; ++i) {
                         var row = sheet.GetRow(i);
                         bool find = true;
-                        foreach(var pair in dict) {
+                        foreach (var pair in dict) {
                             var ix = pair.Key;
                             var val = pair.Value;
                             var cell = row.GetCell(ix);
@@ -2634,7 +2611,8 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                } else {
+                }
+                else {
                     var tb = operands[0] as ResourceEditUtility.DataTable;
                     if (null != tb) {
                         for (int i = 0; i < tb.RowCount; ++i) {
@@ -2689,7 +2667,8 @@ namespace ResourceEditApi
                             list.Add(i);
                         }
                     }
-                } else {
+                }
+                else {
                     var tb = operands[0] as ResourceEditUtility.DataTable;
                     if (null != tb) {
                         for (int i = 0; i < tb.RowCount; ++i) {
@@ -2730,10 +2709,11 @@ namespace ResourceEditApi
                                 break;
                             }
                         }
-                    } else {
+                    }
+                    else {
                         var trow = operands[0] as ResourceEditUtility.DataRow;
                         if (null != trow) {
-                            for(int i = 0; i < trow.CellCount; ++i) {
+                            for (int i = 0; i < trow.CellCount; ++i) {
                                 var val = trow.GetCell(i);
                                 if (val == name) {
                                     r = i;
@@ -2770,7 +2750,7 @@ namespace ResourceEditApi
                 List<string> names = null;
                 if (null != nameObjs) {
                     names = new List<string>();
-                    foreach(var nameObj in nameObjs) {
+                    foreach (var nameObj in nameObjs) {
                         names.Add(nameObj.ToString());
                     }
                 }
@@ -2787,7 +2767,8 @@ namespace ResourceEditApi
                                     break;
                             }
                         }
-                    } else {
+                    }
+                    else {
                         var trow = operands[0] as ResourceEditUtility.DataRow;
                         if (null != trow) {
                             r = new List<int>();
@@ -2803,7 +2784,8 @@ namespace ResourceEditApi
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     //选择所有有效的列
                     if (null != row) {
                         r = new List<int>();
@@ -2813,7 +2795,8 @@ namespace ResourceEditApi
                                 r.Add(i);
                             }
                         }
-                    } else {
+                    }
+                    else {
                         var trow = operands[0] as ResourceEditUtility.DataRow;
                         if (null != trow) {
                             r = new List<int>();
@@ -2894,7 +2877,8 @@ namespace ResourceEditApi
                                     break;
                             }
                         }
-                    } else {
+                    }
+                    else {
                         var trow = operands[0] as ResourceEditUtility.DataRow;
                         if (null != trow) {
                             r = trow.GetCell(ix);
@@ -2917,7 +2901,8 @@ namespace ResourceEditApi
                     if (null != row) {
                         var cell = row.GetCell(ix);
                         r = ResourceEditUtility.CellToString(cell);
-                    } else {
+                    }
+                    else {
                         var trow = operands[0] as ResourceEditUtility.DataRow;
                         if (null != trow) {
                             r = trow.GetCell(ix);
@@ -2940,7 +2925,8 @@ namespace ResourceEditApi
                     if (null != row) {
                         var cell = row.GetCell(ix);
                         r = ResourceEditUtility.CellToNumeric(cell);
-                    } else {
+                    }
+                    else {
                         var trow = operands[0] as ResourceEditUtility.DataRow;
                         if (null != trow) {
                             var v = trow.GetCell(ix);
@@ -2968,7 +2954,7 @@ namespace ResourceEditApi
                     var colObjs = operands[2] as IList;
                     if (null != colObjs) {
                         colIndexes = new List<int>();
-                        foreach(var colObj in colObjs) {
+                        foreach (var colObj in colObjs) {
                             colIndexes.Add(ToInt(colObj));
                         }
                     }
@@ -2984,16 +2970,18 @@ namespace ResourceEditApi
                             }
                             r = string.Join(",", cols);
                         }
-                    } else {
+                    }
+                    else {
                         cols = new string[colIndexes.Count];
                         int i = 0;
-                        foreach(var ix in colIndexes) {
+                        foreach (var ix in colIndexes) {
                             var cell = row.GetCell(ix);
                             cols[i++] = ResourceEditUtility.CellToString(cell);
                         }
                         r = string.Join(",", cols);
                     }
-                } else {
+                }
+                else {
                     var trow = operands[0] as ResourceEditUtility.DataRow;
                     if (null != trow) {
                         r = trow.GetLine(skipCols, colIndexes);
@@ -3002,7 +2990,7 @@ namespace ResourceEditApi
             }
             return r;
         }
-    }    
+    }
 }
 #endregion
 
@@ -3036,10 +3024,12 @@ internal static class MeshAreaHelper
                         var tex = m.mainTexture;
                         if (null != tex) {
                             textureSize.Add(new Vector2(tex.width, tex.height));
-                        } else {
+                        }
+                        else {
                             textureSize.Add(Vector2.one);
                         }
-                    } else {
+                    }
+                    else {
                         textureSize.Add(Vector2.one);
                     }
                 }
@@ -3194,11 +3184,13 @@ internal static class MeshAreaHelper
         var mf = go.GetComponent<MeshFilter>();
         if (mf != null) {
             return mf.sharedMesh;
-        } else {
+        }
+        else {
             var skin = go.GetComponent<SkinnedMeshRenderer>();
             if (null != skin) {
                 return skin.sharedMesh;
-            } else {
+            }
+            else {
                 return null;
             }
         }
@@ -3223,10 +3215,12 @@ internal class MemoryObjectDrawer
             if (managedObject.typeDescription.name == "System.String") {
                 sb.AppendLine("--string--");
                 sb.AppendLine(ReadString(managedObject.address));
-            } else if (managedObject.typeDescription.isArray) {
+            }
+            else if (managedObject.typeDescription.isArray) {
                 sb.AppendLine("--array--");
                 sb.AppendLine(DrawArray(managedObject));
-            } else {
+            }
+            else {
                 sb.AppendLine("--fields--");
                 sb.AppendLine(DrawFields(managedObject));
             }
@@ -3306,7 +3300,7 @@ internal class MemoryObjectDrawer
             sb.AppendLine(DrawValueFor(field, bytesAndOffset.Add(field.offset), field.name));
         }
         return sb.ToString();
-    }    
+    }
     private string DrawValueFor(FieldDescription field, MemoryProfilerWindowForExtension.BytesAndOffset bytesAndOffset, string name)
     {
         StringBuilder sb = new StringBuilder();
@@ -3360,21 +3354,24 @@ internal class MemoryObjectDrawer
                         var mobj = item as MemoryProfilerWindowForExtension.ManagedObject;
                         if (null != mobj && mobj.typeDescription.name == "System.String") {
                             sb.Append(ReadString(mobj.address));
-                        } else {
+                        }
+                        else {
                             sb.Append(item.caption);
                         }
-                    } else {
+                    }
+                    else {
                         sb.AppendLine("{");
                         sb.AppendLine(DrawFields(typeDescription, bytesAndOffset));
                         sb.Append("}");
                     }
                     break;
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Debug.LogFormat("<bad_entry> type: {0}, len: {1}, offset: {2}, ex: {3}", typeDescription.name, bytesAndOffset.bytes.Length, bytesAndOffset.offset, ex.GetType().Name);
         }
         return sb.ToString();
-    }    
+    }
     private void DrawLinks(StringBuilder sb, IEnumerable<UInt64> pointers)
     {
         DrawLinks(sb, pointers.Select(p => GetThingAt(p)));

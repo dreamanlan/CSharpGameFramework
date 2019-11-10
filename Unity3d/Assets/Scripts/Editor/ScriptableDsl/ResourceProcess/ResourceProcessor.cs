@@ -92,7 +92,8 @@ internal sealed class ResourceEditWindow : EditorWindow
             if (ProfilerDriver.connectedProfiler != -1) {
                 string id = ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler);
                 m_ActiveProfilerIsEditor = id == "Editor";
-            } else {
+            }
+            else {
                 m_ActiveProfilerIsEditor = true;
             }
             DeferAction(obj => { MemorySnapshot.RequestNewSnapshot(); });
@@ -114,7 +115,8 @@ internal sealed class ResourceEditWindow : EditorWindow
             if (GUILayout.Button("停止", EditorStyles.toolbarButton)) {
                 m_Record = false;
             }
-        } else {
+        }
+        else {
             if (GUILayout.Button("记录", EditorStyles.toolbarButton)) {
                 m_Record = true;
             }
@@ -151,7 +153,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                 if (ResourceProcessor.ReadMenuAndDescription(file, out name, out desc)) {
                     try {
                         dslFiles.Add(string.Format("1.Find/{0}", name), file);
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex) {
                         Debug.LogFormat("Add 'Find' menu {0} desc {1} exception:{2}", name, desc, ex.Message);
                     }
                 }
@@ -162,7 +165,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                 if (ResourceProcessor.ReadMenuAndDescription(file, out name, out desc)) {
                     try {
                         dslFiles.Add(string.Format("2.Process/{0}", name), file);
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex) {
                         Debug.LogFormat("Add 'Process' menu {0} desc {1} exception:{2}", name, desc, ex.Message);
                     }
                 }
@@ -176,13 +180,14 @@ internal sealed class ResourceEditWindow : EditorWindow
             string file = m_Files[m_SelectedIndex];
             if (!string.IsNullOrEmpty(file)) {
                 DeferAction(obj => { ResourceProcessor.Instance.SelectDsl(file); obj.CopyCollectResult(); });
-            } else {
+            }
+            else {
                 DeferAction(obj => { ResourceProcessor.Instance.ClearDsl(); obj.CopyCollectResult(); });
             }
         }
 
         if (GUILayout.Button("收集资源", EditorStyles.toolbarButton)) {
-            DeferAction(obj => { ResourceProcessor.Instance.Collect();obj.CopyCollectResult(); });
+            DeferAction(obj => { ResourceProcessor.Instance.Collect(); obj.CopyCollectResult(); });
         }
         if (GUILayout.Button("处理选中资源", EditorStyles.toolbarButton)) {
             DeferAction(obj => { ResourceProcessor.Instance.Process(); });
@@ -227,7 +232,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                     string newVal = oldVal;
                     if (info.OptionStyle == "excel_sheets") {
                         DoPopup(info, oldVal, ref newVal);
-                    } else if (info.OptionStyle == "managed_memory_group") {
+                    }
+                    else if (info.OptionStyle == "managed_memory_group") {
                         if (info.OptionNames.Count != ResourceProcessor.Instance.ClassifiedManagedMemoryInfos.Count) {
                             info.PopupOptionNames = null;
                             info.OptionNames.Clear();
@@ -238,7 +244,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                             }
                         }
                         DoPopup(info, oldVal, ref newVal);
-                    } else if (info.OptionStyle == "native_memory_group") {
+                    }
+                    else if (info.OptionStyle == "native_memory_group") {
                         if (info.OptionNames.Count != ResourceProcessor.Instance.ClassifiedNativeMemoryInfos.Count) {
                             info.PopupOptionNames = null;
                             info.OptionNames.Clear();
@@ -249,49 +256,60 @@ internal sealed class ResourceEditWindow : EditorWindow
                             }
                         }
                         DoPopup(info, oldVal, ref newVal);
-                    } else if (info.Options.Count > 0) {
+                    }
+                    else if (info.Options.Count > 0) {
                         if (info.OptionStyle == "toggle") {
                             DoToggle(info, oldVal, ref newVal);
-                        } else if (info.OptionStyle == "multiple") {
+                        }
+                        else if (info.OptionStyle == "multiple") {
                             DoMultiple(info, oldVal, ref newVal);
-                        } else {
+                        }
+                        else {
                             DoPopup(info, oldVal, ref newVal);
                         }
-                    } else if (info.Type == typeof(bool)) {
+                    }
+                    else if (info.Type == typeof(bool)) {
                         bool v = EditorGUILayout.Toggle((bool)info.Value);
                         newVal = v ? "true" : "false";
-                    } else if (info.Type == typeof(int)) {
+                    }
+                    else if (info.Type == typeof(int)) {
                         if (null != info.MinValue && null != info.MaxValue) {
                             int min = (int)info.MinValue;
                             int max = (int)info.MaxValue;
                             int v = EditorGUILayout.IntSlider((int)info.Value, min, max, GUILayout.MaxWidth(1024));
                             newVal = v.ToString();
-                        } else {
+                        }
+                        else {
                             int v = EditorGUILayout.IntField((int)info.Value, GUILayout.MaxWidth(1024));
                             newVal = v.ToString();
                         }
-                    } else if (info.Type == typeof(float)) {
+                    }
+                    else if (info.Type == typeof(float)) {
                         if (null != info.MinValue && null != info.MaxValue) {
                             float min = (float)info.MinValue;
                             float max = (float)info.MaxValue;
                             float v = EditorGUILayout.Slider((float)info.Value, min, max, GUILayout.MaxWidth(1024));
                             newVal = v.ToString();
-                        } else {
+                        }
+                        else {
                             float v = EditorGUILayout.FloatField((float)info.Value, GUILayout.MaxWidth(1024));
                             newVal = v.ToString();
                         }
-                    } else if(info.Type == typeof(UnityEngine.GUIElement)) {
+                    }
+                    else if (info.Type == typeof(UnityEngine.GUIElement)) {
                         if (GUILayout.Button(new GUIContent(string.Format("Return [{0}]", oldVal), oldVal))) {
                             var redirectDsl = oldVal;
                             var redirectArgs = info.Options;
                             QueueProcess(redirectDsl, redirectArgs);
                         }
-                    } else if (!string.IsNullOrEmpty(info.FileExts)) {
+                    }
+                    else if (!string.IsNullOrEmpty(info.FileExts)) {
                         newVal = EditorGUILayout.TextField(oldVal, GUILayout.MaxWidth(1024));
                         if (GUILayout.Button("选择")) {
                             newVal = EditorUtility.OpenFilePanel("选择文件", info.FileInitDir, info.FileExts);
                         }
-                    } else {
+                    }
+                    else {
                         newVal = EditorGUILayout.TextField(oldVal, GUILayout.MaxWidth(1024));
                     }
                     EditorGUILayout.EndHorizontal();
@@ -313,7 +331,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                                     using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)) {
                                         if (ext == ".xls") {
                                             book = new NPOI.HSSF.UserModel.HSSFWorkbook(stream);
-                                        } else {
+                                        }
+                                        else {
                                             book = new NPOI.XSSF.UserModel.XSSFWorkbook(stream);
                                         }
                                         for (int i = 0; i < book.NumberOfSheets; ++i) {
@@ -344,7 +363,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                                 if (v > max) v = max;
                             }
                             val.Value = v;
-                        } else if (val.Type == typeof(float)) {
+                        }
+                        else if (val.Type == typeof(float)) {
                             float v = float.Parse(pair.Value);
                             if (null != val.MinValue && null != val.MaxValue) {
                                 float min = (float)val.MinValue;
@@ -353,7 +373,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                                 if (v > max) v = max;
                             }
                             val.Value = v;
-                        } else if (val.Type == typeof(string)) {
+                        }
+                        else if (val.Type == typeof(string)) {
                             string v = pair.Value;
                             if (null != val.MinValue && null != val.MaxValue) {
                                 string min = (string)val.MinValue;
@@ -362,7 +383,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                                 if (v.CompareTo(min) > 0) v = max;
                             }
                             val.Value = v;
-                        } else if (val.Type == typeof(bool)) {
+                        }
+                        else if (val.Type == typeof(bool)) {
                             bool v = bool.Parse(pair.Value);
                             if (null != val.MinValue && null != val.MaxValue) {
                                 bool min = (bool)val.MinValue;
@@ -384,7 +406,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                 EditorGUILayout.TextArea(text);
                 EditorGUILayout.EndScrollView();
             }
-        } else {
+        }
+        else {
             if (!string.IsNullOrEmpty(text)) {
                 EditorGUILayout.TextArea(text, GUILayout.MaxHeight(70));
             }
@@ -393,10 +416,12 @@ internal sealed class ResourceEditWindow : EditorWindow
                     if (GUILayout.Button("Refresh")) {
                         DeferAction(obj => { ResourceProcessor.Instance.Refresh(); obj.CopyCollectResult(); });
                     }
-                } else {
+                }
+                else {
                     if (m_UnfilteredGroupCount <= 0) {
                         ListItem();
-                    } else {
+                    }
+                    else {
                         ListGroupedItem();
                     }
                 }
@@ -419,7 +444,8 @@ internal sealed class ResourceEditWindow : EditorWindow
             if (info.Options.TryGetValue(key, out val)) {
                 if (changed) {
                     EditorGUILayout.Toggle(key, false);
-                } else {
+                }
+                else {
                     bool toggle = val == oldVal;
                     if (EditorGUILayout.Toggle(key, toggle)) {
                         if (!toggle) {
@@ -436,7 +462,8 @@ internal sealed class ResourceEditWindow : EditorWindow
         if (null == info.MultipleOldValues) {
             info.MultipleOldValues = oldVal.Split('|');
             info.MultipleNewValues = new List<string>();
-        } else {
+        }
+        else {
             info.MultipleNewValues.Clear();
         }
         bool changed = false;
@@ -448,7 +475,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                     info.MultipleNewValues.Add(val);
                     if (!toggle)
                         changed = true;
-                } else if (toggle) {
+                }
+                else if (toggle) {
                     changed = true;
                 }
             }
@@ -496,7 +524,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                     action(this);
                 }
             }
-        } finally {
+        }
+        finally {
             m_InActions = false;
         }
     }
@@ -516,7 +545,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                     action(this);
                 }
             }
-        } finally {
+        }
+        finally {
             m_InBatchActions = false;
         }
     }
@@ -548,18 +578,21 @@ internal sealed class ResourceEditWindow : EditorWindow
         ResourceProcessor.Instance.CollectPath = string.Empty;
         var paramNames = ResourceProcessor.Instance.ParamNames;
         var paramInfos = ResourceProcessor.Instance.Params;
-        foreach(var pair in args) {
+        foreach (var pair in args) {
             var name = pair.Key;
             var val = pair.Value;
             ResourceEditUtility.ParamInfo info;
-            if(paramInfos.TryGetValue(name, out info)) {
-                if(info.Type == typeof(bool)) {
+            if (paramInfos.TryGetValue(name, out info)) {
+                if (info.Type == typeof(bool)) {
                     info.Value = bool.Parse(val);
-                } else if(info.Type == typeof(int)) {
+                }
+                else if (info.Type == typeof(int)) {
                     info.Value = int.Parse(val);
-                } else if (info.Type == typeof(float)) {
+                }
+                else if (info.Type == typeof(float)) {
                     info.Value = float.Parse(val);
-                } else {
+                }
+                else {
                     info.Value = val;
                 }
             }
@@ -578,7 +611,8 @@ internal sealed class ResourceEditWindow : EditorWindow
             m_GroupList.Clear();
             m_GroupList.AddRange(ResourceProcessor.Instance.GroupList);
             m_TotalItemValue = ResourceProcessor.Instance.TotalItemValue;
-        } finally {
+        }
+        finally {
             m_IsReady = true;
         }
     }
@@ -597,7 +631,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                     break;
                 }
             }
-        } else {
+        }
+        else {
             sb.AppendLine("asset_path\tscene_path\tinfo\torder\tvalue");
             int curCount = 0;
             int totalCount = m_ItemList.Count;
@@ -614,7 +649,7 @@ internal sealed class ResourceEditWindow : EditorWindow
 
         GUIUtility.systemCopyBuffer = sb.ToString();
     }
-    
+
     private void Sort(bool asc)
     {
         m_ItemList.Sort((a, b) => {
@@ -732,14 +767,16 @@ internal sealed class ResourceEditWindow : EditorWindow
                             if (!string.IsNullOrEmpty(item.AssetPath)) {
                                 SelectProjectObject(item.AssetPath);
                                 obj.m_SelectedAssetPath = item.AssetPath;
-                            } else {
+                            }
+                            else {
                                 obj.m_SelectedAssetPath = string.Empty;
                             }
                             obj.m_SelectedItem = item;
                         });
                     }
                     GUI.skin.button.alignment = oldAlignment;
-                } else {
+                }
+                else {
                     Texture icon = AssetDatabase.GetCachedIcon(item.AssetPath);
                     var oldAlignment = GUI.skin.button.alignment;
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
@@ -755,7 +792,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                     }
                     GUI.skin.button.alignment = oldAlignment;
                 }
-            } else {
+            }
+            else {
                 EditorGUILayout.LabelField(string.Empty, GUILayout.Width(0));
             }
             EditorGUILayout.TextArea(item.Info, GUILayout.MaxHeight(72), GUILayout.MinWidth(80), GUILayout.MaxWidth(windowWidth - rightWidth));
@@ -912,14 +950,16 @@ internal sealed class ResourceEditWindow : EditorWindow
                             if (!string.IsNullOrEmpty(item.AssetPath)) {
                                 SelectProjectObject(item.AssetPath);
                                 obj.m_SelectedAssetPath = item.AssetPath;
-                            } else {
+                            }
+                            else {
                                 obj.m_SelectedAssetPath = string.Empty;
                             }
                             obj.m_SelectedGroup = item;
                         });
                     }
                     GUI.skin.button.alignment = oldAlignment;
-                } else {
+                }
+                else {
                     Texture icon = AssetDatabase.GetCachedIcon(item.AssetPath);
                     var oldAlignment = GUI.skin.button.alignment;
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
@@ -932,7 +972,8 @@ internal sealed class ResourceEditWindow : EditorWindow
                     }
                     GUI.skin.button.alignment = oldAlignment;
                 }
-            } else {
+            }
+            else {
                 EditorGUILayout.LabelField(string.Empty, GUILayout.Width(0));
             }
             EditorGUILayout.TextArea(item.Info, GUILayout.MaxHeight(72), GUILayout.MinWidth(80), GUILayout.MaxWidth(windowWidth - rightWidth));
@@ -1005,7 +1046,7 @@ internal sealed class ResourceEditWindow : EditorWindow
         }
         EditorGUILayout.EndHorizontal();
     }
-        
+
     private static void SelectProjectObject(string assetPath)
     {
         if (assetPath.IndexOfAny(new char[] { '/', '\\' }) < 0) {
@@ -1015,7 +1056,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                 for (int i = 0; i < guids.Length; ++i) {
                     var temp = AssetDatabase.GUIDToAssetPath(guids[0]);
                     var name = Path.GetFileNameWithoutExtension(temp);
-                    if(string.Compare(name, assetPath, true) == 0) {
+                    if (string.Compare(name, assetPath, true) == 0) {
                         ++ct;
                         if (ct == 1) {
                             assetPath = temp;
@@ -1195,10 +1236,12 @@ internal sealed class ResourceProcessor
                 if (m_SearchSource == "sceneobjects" || m_SearchSource == "scenecomponents") {
                     if (null != item.Object)
                         list.Add(item.Object);
-                } else {
+                }
+                else {
                     if (null != item.Object) {
                         list.Add(item.Object);
-                    } else {
+                    }
+                    else {
                         var obj = AssetDatabase.LoadMainAssetAtPath(item.AssetPath);
                         if (null != obj) {
                             list.Add(obj);
@@ -1303,7 +1346,7 @@ internal sealed class ResourceProcessor
                         goto L_EndSaveDep;
                     }
                 }
-                L_EndSaveDep:
+            L_EndSaveDep:
                 sw.Close();
                 EditorUtility.ClearProgressBar();
             }
@@ -1332,7 +1375,8 @@ internal sealed class ResourceProcessor
 
                     if (one == "unused_asset_tag") {
                         m_UnusedAssets.Add(two);
-                    } else {
+                    }
+                    else {
                         HashSet<string> refSet;
                         if (!m_ReferenceAssets.TryGetValue(one, out refSet)) {
                             refSet = new HashSet<string>();
@@ -1354,7 +1398,8 @@ internal sealed class ResourceProcessor
                         break;
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 EditorUtility.DisplayDialog("异常", string.Format("line {0} exception {1}\n{2}", i, ex.Message, ex.StackTrace), "ok");
             }
             EditorUtility.ClearProgressBar();
@@ -1372,7 +1417,7 @@ internal sealed class ResourceProcessor
     {
         var packedCrawl = s_PackedCrawler;
         if (null == packedCrawl) {
-            if(ResourceEditUtility.UseFastCrawler)
+            if (ResourceEditUtility.UseFastCrawler)
                 packedCrawl = new MemoryProfilerWindowForExtension.FastCrawler().Crawl(s_Snapshot);
             else
                 packedCrawl = new MemoryProfilerWindowForExtension.Crawler().Crawl(s_Snapshot);
@@ -1386,7 +1431,7 @@ internal sealed class ResourceProcessor
         m_ClassifiedManagedMemoryInfos.Clear();
         int curCount = 0;
         int totalCount = s_UnpackedCrawl.nativeObjects.Length;
-        foreach(var obj in s_UnpackedCrawl.nativeObjects) {
+        foreach (var obj in s_UnpackedCrawl.nativeObjects) {
             var memory = new ResourceEditUtility.MemoryInfo();
             memory.instanceId = (ulong)obj.instanceID;
             memory.name = obj.name;
@@ -1395,7 +1440,7 @@ internal sealed class ResourceProcessor
             memory.refCount = obj.referencedBy.Length;
             memory.refOtherCount = obj.references.Length;
             memory.memoryObject = obj;
-                        
+
             ResourceEditUtility.MemoryGroupInfo groupInfo = null;
             if (!m_ClassifiedNativeMemoryInfos.TryGetValue(memory.className, out groupInfo)) {
                 groupInfo = new ResourceEditUtility.MemoryGroupInfo();
@@ -1456,7 +1501,8 @@ internal sealed class ResourceProcessor
             string reason;
             s_ShortestPathToRootFinder.IsRoot(refbys.Last(), out reason);
             list.Add("This is a root because:" + reason);
-        } else {
+        }
+        else {
             list.Add("No root is keeping this object alive.It will be collected next UnloadUnusedAssets() or scene load");
         }
 
@@ -1470,7 +1516,7 @@ internal sealed class ResourceProcessor
         if (managedObject == null) {
             list.Add(string.Empty);
             list.Add("=References=");
-            foreach(var thing in obj.references) {
+            foreach (var thing in obj.references) {
                 list.Add(thing.caption);
             }
         }
@@ -1485,7 +1531,8 @@ internal sealed class ResourceProcessor
     {
         if (null != s_PackedCrawler) {
             PackedMemorySnapshotUtility.SaveCrawlerDataToFile(s_PackedCrawler);
-        } else if (null != s_Snapshot) {
+        }
+        else if (null != s_Snapshot) {
             PackedMemorySnapshotUtility.SaveToFile(s_Snapshot);
         }
     }
@@ -1496,7 +1543,8 @@ internal sealed class ResourceProcessor
             s_Snapshot = s_PackedCrawler.packedMemorySnapshot;
             s_ShortestPathToRootFinder = null;
             AnalyseSnapshot();
-        } else {
+        }
+        else {
             s_Snapshot = PackedMemorySnapshotUtility.LoadFromFile();
             if (null != s_Snapshot) {
                 s_ShortestPathToRootFinder = null;
@@ -1534,7 +1582,8 @@ internal sealed class ResourceProcessor
                 if (lowerLabel == "batches") {
                     float maxVal;
                     ProfilerDriver.GetStatisticsValues(id, firstIndex, 1.0f, batches, out maxVal);
-                } else if (lowerLabel == "triangles") {
+                }
+                else if (lowerLabel == "triangles") {
                     float maxVal;
                     ProfilerDriver.GetStatisticsValues(id, firstIndex, 1.0f, triangles, out maxVal);
                 }
@@ -1626,12 +1675,13 @@ internal sealed class ResourceProcessor
                             }
                         }
                     }
-                    L_EndSaveIns:
+                L_EndSaveIns:
                     sw.Close();
                     EditorUtility.ClearProgressBar();
                 }
             }
-        } else {
+        }
+        else {
             EditorUtility.DisplayDialog("错误", "没有记录耗时信息，请先记录！", "ok");
         }
     }
@@ -1687,7 +1737,8 @@ internal sealed class ResourceProcessor
                         m_InstrumentInfos[index] = info;
                         m_LastFrame = frame;
                         m_RecordIndex = index + 1;
-                    } else {
+                    }
+                    else {
                         ResourceEditUtility.InstrumentInfo info;
                         if (m_InstrumentInfos.TryGetValue(index, out info)) {
                             var record = new ResourceEditUtility.InstrumentRecord();
@@ -1713,7 +1764,8 @@ internal sealed class ResourceProcessor
                         break;
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 EditorUtility.DisplayDialog("异常", string.Format("line {0} exception {1}\n{2}", i, ex.Message, ex.StackTrace), "ok");
             }
             EditorUtility.ClearProgressBar();
@@ -1721,7 +1773,7 @@ internal sealed class ResourceProcessor
     }
     internal void SaveResult()
     {
-        if (m_GroupList.Count>0 || m_ItemList.Count>0) {
+        if (m_GroupList.Count > 0 || m_ItemList.Count > 0) {
             string fullpath = EditorPrefs.GetString(c_pref_key_save_result);
             bool noPath = string.IsNullOrEmpty(fullpath);
             string dir = noPath ? Application.dataPath : Path.GetDirectoryName(fullpath);
@@ -1746,7 +1798,8 @@ internal sealed class ResourceProcessor
                             }
                         }
                         sw.Close();
-                    } else {
+                    }
+                    else {
                         sw.WriteLine("asset_path\tscene_path\tinfo\torder\tvalue");
                         int curCount = 0;
                         int totalCount = m_ItemList.Count;
@@ -1762,7 +1815,8 @@ internal sealed class ResourceProcessor
                     EditorUtility.ClearProgressBar();
                 }
             }
-        } else {
+        }
+        else {
             EditorUtility.DisplayDialog("错误", "没有分析结果信息，请先采集分析结果！", "ok");
         }
     }
@@ -1796,7 +1850,8 @@ internal sealed class ResourceProcessor
                         break;
                     }
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 EditorUtility.DisplayDialog("异常", string.Format("line {0} exception {1}\n{2}", i, ex.Message, ex.StackTrace), "ok");
             }
             EditorUtility.ClearProgressBar();
@@ -1856,24 +1911,28 @@ internal sealed class ResourceProcessor
                             check = true;
                             m_ScriptCalculator.LoadDsl(info);
                         }
-                    } else if (num == 2) {
+                    }
+                    else if (num == 2) {
                         string firstId = info.First.GetId();
                         string secondId = info.Second.GetId();
                         if (firstId == "script" && secondId == "args") {
                             check = true;
                             m_ScriptCalculator.LoadDsl(info);
-                        } else if (firstId == "input" && (secondId == "filter" || secondId == "process")) {
+                        }
+                        else if (firstId == "input" && (secondId == "filter" || secondId == "process")) {
                             check = true;
 
                             if (secondId == "filter") {
                                 m_FilterCalculator.LoadDsl(m_NextFilterIndex.ToString(), info.Second);
                                 ++m_NextFilterIndex;
-                            } else if (secondId == "process") {
+                            }
+                            else if (secondId == "process") {
                                 m_ProcessCalculator.LoadDsl(m_NextProcessIndex.ToString(), info.Second);
                                 ++m_NextProcessIndex;
                             }
                         }
-                    } else if (num == 3) {
+                    }
+                    else if (num == 3) {
                         string firstId = info.First.GetId();
                         string secondId = info.Second.GetId();
                         string thirdId = info.Last.GetId();
@@ -1885,12 +1944,14 @@ internal sealed class ResourceProcessor
                             if (thirdId == "group") {
                                 m_GroupCalculator.LoadDsl(m_NextGroupIndex.ToString(), info.Last);
                                 ++m_NextGroupIndex;
-                            } else if (thirdId == "process") {
+                            }
+                            else if (thirdId == "process") {
                                 m_ProcessCalculator.LoadDsl(m_NextProcessIndex.ToString(), info.Last);
                                 ++m_NextProcessIndex;
                             }
                         }
-                    } else if (num == 4) {
+                    }
+                    else if (num == 4) {
                         string firstId = info.First.GetId();
                         string secondId = info.Second.GetId();
                         string thirdId = info.Functions[2].GetId();
@@ -1929,7 +1990,8 @@ internal sealed class ResourceProcessor
                             if (id == "script") {
                                 continue;
                             }
-                        } else if (num == 2) {
+                        }
+                        else if (num == 2) {
                             string firstId = info.First.GetId();
                             string secondId = info.Second.GetId();
                             if (firstId == "script" && secondId == "args") {
@@ -1946,7 +2008,8 @@ internal sealed class ResourceProcessor
                             var callData = comp as Dsl.CallData;
                             if (null != callData) {
                                 ParseCallData(callData);
-                            } else {
+                            }
+                            else {
                                 var funcData = comp as Dsl.FunctionData;
                                 ParseFunctionData(funcData);
                             }
@@ -1954,7 +2017,8 @@ internal sealed class ResourceProcessor
                     }
                     m_Text = File.ReadAllText(path);
                     RestoreParams();
-                } else {
+                }
+                else {
                     m_DslFile = null;
                     m_SearchSource = string.Empty;
                     m_TypeOrExtList.Clear();
@@ -1982,32 +2046,69 @@ internal sealed class ResourceProcessor
             int v = int.Parse(val);
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(int), Value = v };
             m_ParamNames.Add(key);
-        } else if (id == "float") {
+        }
+        else if (id == "float") {
             //float(name, val);
             float v = float.Parse(val);
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(float), Value = v };
             m_ParamNames.Add(key);
-        } else if (id == "string") {
+        }
+        else if (id == "string") {
             //string(name, val);
             string v = val;
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(string), Value = v };
             m_ParamNames.Add(key);
-        } else if (id == "bool") {
+        }
+        else if (id == "intlist") {
+            //intlist(name, val);
+            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var list = new List<int>();
+            foreach (var str in v) {
+                int iv;
+                int.TryParse(str, out iv);
+                list.Add(iv);
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<int>), Value = list };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "floatlist") {
+            //floatlist(name, val);
+            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var list = new List<float>();
+            foreach (var str in v) {
+                float fv;
+                float.TryParse(str, out fv);
+                list.Add(fv);
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<float>), Value = list };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "stringlist") {
+            //stringlist(name, val);
+            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<string>), Value = v };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "bool") {
             //bool(name, val);
             bool v = bool.Parse(val);
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(bool), Value = v };
             m_ParamNames.Add(key);
-        } else if (id == "button") {
+        }
+        else if (id == "button") {
             //button(name, val);
             string v = val;
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(UnityEngine.GUIElement), Value = v };
             m_ParamNames.Add(key);
-        } else if (id == "feature") {
+        }
+        else if (id == "feature") {
             if (key == "menu") {
                 m_DslMenu = val;
-            } else if (key == "description") {
+            }
+            else if (key == "description") {
                 m_DslDescription = val;
-            } else if (key == "source") {
+            }
+            else if (key == "source") {
                 //feature("source", "list" or "excel" or "table" or "project" or "sceneobjects" or "scenecomponents" or "sceneassets" or "allassets" or "unusedassets" or "assetbundle");
                 m_SearchSource = val;
             }
@@ -2034,7 +2135,8 @@ internal sealed class ResourceProcessor
                             var p2 = cd.GetParamId(0);
                             info.FileInitDir = p2;
                         }
-                    } else if (id == "range") {
+                    }
+                    else if (id == "range") {
                         int num = cd.GetParamNum();
                         var p1 = cd.GetParam(0);
                         var p2 = cd.GetParam(1);
@@ -2047,21 +2149,26 @@ internal sealed class ResourceProcessor
                             if (info.Type == typeof(int)) {
                                 info.MinValue = int.Parse(min);
                                 info.MaxValue = int.Parse(max);
-                            } else if (info.Type == typeof(float)) {
+                            }
+                            else if (info.Type == typeof(float)) {
                                 info.MinValue = float.Parse(min);
                                 info.MaxValue = float.Parse(max);
-                            } else if (info.Type == typeof(string)) {
+                            }
+                            else if (info.Type == typeof(string)) {
                                 info.MinValue = min;
                                 info.MaxValue = max;
-                            } else if (info.Type == typeof(bool)) {
+                            }
+                            else if (info.Type == typeof(bool)) {
                                 info.MinValue = bool.Parse(min);
                                 info.MaxValue = bool.Parse(max);
                             }
                         }
-                    } else if (id == "popup" || id == "toggle" || id == "multiple" || id=="param") {
+                    }
+                    else if (id == "popup" || id == "toggle" || id == "multiple" || id == "param") {
                         if (string.IsNullOrEmpty(info.OptionStyle)) {
                             info.OptionStyle = id;
-                        } else if (info.OptionStyle != id) {
+                        }
+                        else if (info.OptionStyle != id) {
                             EditorUtility.DisplayDialog("错误", string.Format("param's option must use same style, {0} will use {1} style (dont use {2}) !", info.Name, info.OptionStyle, id), "ok");
                         }
 
@@ -2076,7 +2183,8 @@ internal sealed class ResourceProcessor
                             string val = pvd2.GetId();
                             info.Options[key] = val;
                             info.OptionNames.Add(key);
-                        } else {
+                        }
+                        else {
                             var pcd1 = p1 as Dsl.CallData;
                             var pcd2 = p2 as Dsl.CallData;
                             if (1 == num && null != pcd1) {
@@ -2090,7 +2198,8 @@ internal sealed class ResourceProcessor
                                         info.Options[kStr] = vStr;
                                         info.OptionNames.Add(kStr);
                                     }
-                                } else if (pcd1.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd1.HaveId()) {
+                                }
+                                else if (pcd1.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd1.HaveId()) {
                                     //xxx([v1,v2,v3,v4,v5]);
                                     for (int i = 0; i < pcd1.GetParamNum(); ++i) {
                                         var vStr = pcd1.GetParamId(i);
@@ -2098,7 +2207,8 @@ internal sealed class ResourceProcessor
                                         info.OptionNames.Add(vStr);
                                     }
                                 }
-                            } else if (2 == num) {
+                            }
+                            else if (2 == num) {
                                 if (null != pcd1 && null != pcd2) {
                                     if (pcd1.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd1.HaveId() && pcd2.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd2.HaveId()) {
                                         //xxx([k1,k2,k3,k4,k5],[v1,v2,v3,v4,v5]);
@@ -2116,7 +2226,8 @@ internal sealed class ResourceProcessor
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     var vd = comp as Dsl.ValueData;
                     if (null != vd) {
                         //用于支持标签属性
@@ -2141,7 +2252,8 @@ internal sealed class ResourceProcessor
                 }
             }
             return ret;
-        } else {
+        }
+        else {
             return null;
         }
     }
@@ -2164,7 +2276,8 @@ internal sealed class ResourceProcessor
                 SearchList();
                 EditorUtility.ClearProgressBar();
             }
-        } else if (m_SearchSource == "sceneobjects") {
+        }
+        else if (m_SearchSource == "sceneobjects") {
             m_ItemList.Clear();
             m_CurSearchCount = 0;
             m_TotalSearchCount = CountSceneObjects();
@@ -2172,7 +2285,8 @@ internal sealed class ResourceProcessor
                 SearchSceneObjects();
                 EditorUtility.ClearProgressBar();
             }
-        } else if (m_SearchSource == "scenecomponents") {
+        }
+        else if (m_SearchSource == "scenecomponents") {
             m_ItemList.Clear();
             m_CurSearchCount = 0;
             m_TotalSearchCount = CountSceneObjects();
@@ -2180,7 +2294,8 @@ internal sealed class ResourceProcessor
                 SearchSceneComponents();
                 EditorUtility.ClearProgressBar();
             }
-        } else if (m_SearchSource == "sceneassets") {
+        }
+        else if (m_SearchSource == "sceneassets") {
             m_ItemList.Clear();
             m_CurSearchCount = 0;
             m_TotalSearchCount = 0;
@@ -2189,7 +2304,8 @@ internal sealed class ResourceProcessor
                 SearchSceneAssets();
                 EditorUtility.ClearProgressBar();
             }
-        } else if (m_SearchSource == "allassets") {
+        }
+        else if (m_SearchSource == "allassets") {
             m_ItemList.Clear();
             m_CurSearchCount = 0;
             m_TotalSearchCount = 0;
@@ -2198,7 +2314,8 @@ internal sealed class ResourceProcessor
                 SearchAllAssets();
                 EditorUtility.ClearProgressBar();
             }
-        } else if (m_SearchSource == "excel") {
+        }
+        else if (m_SearchSource == "excel") {
             m_ItemList.Clear();
             m_CurSearchCount = 0;
             m_TotalSearchCount = 0;
@@ -2207,7 +2324,8 @@ internal sealed class ResourceProcessor
                 SearchExcelRecords();
                 EditorUtility.ClearProgressBar();
             }
-        } else if (m_SearchSource == "table") {
+        }
+        else if (m_SearchSource == "table") {
             m_ItemList.Clear();
             m_CurSearchCount = 0;
             m_TotalSearchCount = 0;
@@ -2216,7 +2334,8 @@ internal sealed class ResourceProcessor
                 SearchTableRecords();
                 EditorUtility.ClearProgressBar();
             }
-        } else if (m_SearchSource == "unusedassets") {
+        }
+        else if (m_SearchSource == "unusedassets") {
             if (m_ReferenceAssets.Count <= 0 && m_ReferenceByAssets.Count <= 0 && m_UnusedAssets.Count <= 0) {
                 if (!isBatch)
                     EditorUtility.DisplayDialog("错误", "未找到资源依赖信息，请先执行资源依赖‘分析’或‘加载’！", "ok");
@@ -2230,10 +2349,12 @@ internal sealed class ResourceProcessor
                 SearchUnusedAssets();
                 EditorUtility.ClearProgressBar();
             }
-        } else if (m_SearchSource == "snapshot") {
+        }
+        else if (m_SearchSource == "snapshot") {
             SearchSnapshot(isBatch);
             EditorUtility.ClearProgressBar();
-        } else if (m_SearchSource == "instruments") {
+        }
+        else if (m_SearchSource == "instruments") {
             if (m_InstrumentInfos.Count <= 0) {
                 if (!isBatch)
                     EditorUtility.DisplayDialog("错误", "未找到耗时信息，请先执行耗时‘记录’或‘加载’！", "ok");
@@ -2244,7 +2365,8 @@ internal sealed class ResourceProcessor
             m_TotalSearchCount = 0;
             SearchInstruments();
             EditorUtility.ClearProgressBar();
-        } else {
+        }
+        else {
             if (string.IsNullOrEmpty(m_CollectPath)) {
                 string fullpath = EditorPrefs.GetString(c_pref_key_open_asset_folder);
                 bool noPath = string.IsNullOrEmpty(fullpath);
@@ -2255,7 +2377,8 @@ internal sealed class ResourceProcessor
                     if (IsAssetPath(path)) {
                         EditorPrefs.SetString(c_pref_key_open_asset_folder, path);
                         m_CollectPath = path;
-                    } else {
+                    }
+                    else {
                         if (!isBatch)
                             EditorUtility.DisplayDialog("错误", "必须选择本unity工程的资源路径！", "确定");
                     }
@@ -2283,7 +2406,8 @@ internal sealed class ResourceProcessor
             string str = paramInfo.Value as string;
             if (str == "itemlist") {
                 m_IsItemListGroupStyle = true;
-            } else if (str == "grouplist") {
+            }
+            else if (str == "grouplist") {
                 m_IsItemListGroupStyle = false;
             }
         }
@@ -2299,7 +2423,8 @@ internal sealed class ResourceProcessor
                         groupInfo.Max = item.Value;
                     if (groupInfo.Min > item.Value)
                         groupInfo.Min = item.Value;
-                } else {
+                }
+                else {
                     groupInfo = new ResourceEditUtility.GroupInfo();
                     groupInfo.Group = group;
                     groupInfo.Items.Add(item);
@@ -2309,7 +2434,8 @@ internal sealed class ResourceProcessor
                     groupInfo.Selected = false;
                     groups.Add(group, groupInfo);
                 }
-            } else {
+            }
+            else {
                 groups.Clear();
                 break;
             }
@@ -2340,7 +2466,8 @@ internal sealed class ResourceProcessor
                         m_GroupList.Add(itemGroup);
                     }
                 }
-            } else {
+            }
+            else {
                 var ret = ResourceEditUtility.Group(group, m_GroupCalculator, m_NextGroupIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
                 if (m_NextGroupIndex <= 0 || null != ret && (int)ret > 0) {
                     m_GroupList.Add(group);
@@ -2359,7 +2486,8 @@ internal sealed class ResourceProcessor
             foreach (var item in m_ItemList) {
                 m_TotalItemValue += item.Value;
             }
-        } else {
+        }
+        else {
             foreach (var item in m_GroupList) {
                 m_TotalItemValue += item.Value;
             }
@@ -2371,7 +2499,8 @@ internal sealed class ResourceProcessor
             foreach (var item in m_ItemList) {
                 item.Selected = true;
             }
-        } else {
+        }
+        else {
             foreach (var item in m_GroupList) {
                 item.Selected = true;
             }
@@ -2411,7 +2540,7 @@ internal sealed class ResourceProcessor
                 foreach (var item in m_ItemList) {
                     if (item.Selected) {
                         if (!m_ProcessedAssets.Contains(item.AssetPath)) {
-                            if(!string.IsNullOrEmpty(item.AssetPath))
+                            if (!string.IsNullOrEmpty(item.AssetPath))
                                 m_ProcessedAssets.Add(item.AssetPath);
                             ResourceEditUtility.Process(item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
                         }
@@ -2421,7 +2550,8 @@ internal sealed class ResourceProcessor
                         }
                     }
                 }
-            } else {
+            }
+            else {
                 foreach (var item in m_GroupList) {
                     if (item.Selected) {
                         ++totalSelectedCount;
@@ -2441,7 +2571,8 @@ internal sealed class ResourceProcessor
                     }
                 }
             }
-        } finally {
+        }
+        finally {
             AssetDatabase.StopAssetEditing();
             if (m_SearchSource == "sceneobjects" || m_SearchSource == "scenecomponents") {
                 EditorSceneManager.SaveOpenScenes();
@@ -2464,27 +2595,28 @@ internal sealed class ResourceProcessor
     {
         if (!string.IsNullOrEmpty(m_DslPath) && null != m_Params) {
             Dictionary<string, ResourceEditUtility.ParamInfo> paramInfos;
-            if(!m_DslParamCaches.TryGetValue(m_DslPath, out paramInfos)) {
+            if (!m_DslParamCaches.TryGetValue(m_DslPath, out paramInfos)) {
                 paramInfos = new Dictionary<string, ResourceEditUtility.ParamInfo>();
                 m_DslParamCaches.Add(m_DslPath, paramInfos);
-            } else {
+            }
+            else {
                 paramInfos.Clear();
             }
-            foreach(var pair in m_Params) {
+            foreach (var pair in m_Params) {
                 paramInfos.Add(pair.Key, pair.Value);
             }
         }
     }
     private void RestoreParams()
     {
-        if(!string.IsNullOrEmpty(m_DslPath) && null != m_Params) {
+        if (!string.IsNullOrEmpty(m_DslPath) && null != m_Params) {
             Dictionary<string, ResourceEditUtility.ParamInfo> paramInfos;
             if (m_DslParamCaches.TryGetValue(m_DslPath, out paramInfos)) {
-                foreach(var pair in m_Params) {
+                foreach (var pair in m_Params) {
                     var key = pair.Key;
                     var val = pair.Value;
                     ResourceEditUtility.ParamInfo info;
-                    if(paramInfos.TryGetValue(key, out info) && val.Type == info.Type) {
+                    if (paramInfos.TryGetValue(key, out info) && val.Type == info.Type) {
                         val.Value = info.Value;
                     }
                 }
@@ -2700,7 +2832,8 @@ internal sealed class ResourceProcessor
         bool canceled = false;
         if (string.IsNullOrEmpty(path)) {
             path = obj.name;
-        } else {
+        }
+        else {
             path = path + "/" + obj.name;
         }
         ++m_CurSearchCount;
@@ -2713,7 +2846,8 @@ internal sealed class ResourceProcessor
                     AssetImporter importer = null;
                     if (string.IsNullOrEmpty(assetPath)) {
                         assetPath = string.Empty;
-                    } else {
+                    }
+                    else {
                         importer = AssetImporter.GetAtPath(assetPath);
                     }
                     var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = path, Importer = importer, Object = comp, Info = key, Order = m_ItemList.Count, Group = key, Selected = false };
@@ -2755,7 +2889,8 @@ internal sealed class ResourceProcessor
         bool canceled = false;
         if (string.IsNullOrEmpty(path)) {
             path = obj.name;
-        } else {
+        }
+        else {
             path = path + "/" + obj.name;
         }
         ++m_CurSearchCount;
@@ -2764,7 +2899,8 @@ internal sealed class ResourceProcessor
             AssetImporter importer = null;
             if (string.IsNullOrEmpty(assetPath)) {
                 assetPath = string.Empty;
-            } else {
+            }
+            else {
                 importer = AssetImporter.GetAtPath(assetPath);
             }
             var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = path, Importer = importer, Object = obj, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
@@ -2809,7 +2945,8 @@ internal sealed class ResourceProcessor
                     return true;
             }
             return false;
-        } else {
+        }
+        else {
             return true;
         }
     }
@@ -2870,7 +3007,8 @@ internal sealed class ResourceProcessor
                 using (var stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read)) {
                     if (ext == ".xls") {
                         book = new NPOI.HSSF.UserModel.HSSFWorkbook(stream);
-                    } else {
+                    }
+                    else {
                         book = new NPOI.XSSF.UserModel.XSSFWorkbook(stream);
                     }
                     int ct = 0;
@@ -2921,7 +3059,7 @@ internal sealed class ResourceProcessor
                 }
             }
         }
-        L_EndExcel:
+    L_EndExcel:
         EditorUtility.ClearProgressBar();
     }
     private void CountTableRecords()
@@ -2979,7 +3117,7 @@ internal sealed class ResourceProcessor
                 }
             }
         }
-        L_EndTable:
+    L_EndTable:
         EditorUtility.ClearProgressBar();
     }
     private void SearchList()
@@ -2994,10 +3132,12 @@ internal sealed class ResourceProcessor
                 assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetPrefabParent(obj));
                 if (string.IsNullOrEmpty(assetPath)) {
                     assetPath = string.Empty;
-                } else {
+                }
+                else {
                     importer = AssetImporter.GetAtPath(assetPath);
                 }
-            } else {
+            }
+            else {
                 assetPath = path;
                 importer = AssetImporter.GetAtPath(assetPath);
             }
@@ -3008,7 +3148,7 @@ internal sealed class ResourceProcessor
             }
         }
     }
-    
+
     private void SearchSnapshot(bool isBatch)
     {
         string category = string.Empty;
@@ -3021,7 +3161,7 @@ internal sealed class ResourceProcessor
         if (m_Params.TryGetValue("class", out classParamInfo)) {
             _class = classParamInfo.Value as string;
         }
-        if ((category=="mgroup" || category=="managed") && m_ClassifiedManagedMemoryInfos.Count <= 0 ||
+        if ((category == "mgroup" || category == "managed") && m_ClassifiedManagedMemoryInfos.Count <= 0 ||
             (category == "ngroup" || category == "native") && m_ClassifiedNativeMemoryInfos.Count <= 0) {
             if (!isBatch)
                 EditorUtility.DisplayDialog("错误", "未找到内存对象信息，请先执行内存‘捕获’或‘加载’！", "ok");
@@ -3043,7 +3183,8 @@ internal sealed class ResourceProcessor
                     goto L_EndSnapshot;
                 }
             }
-        } else if (category == "ngroup") {
+        }
+        else if (category == "ngroup") {
             var infos = m_ClassifiedNativeMemoryInfos;
             int curCount = 0;
             int totalCount = 0;
@@ -3055,7 +3196,8 @@ internal sealed class ResourceProcessor
                     goto L_EndSnapshot;
                 }
             }
-        } else {
+        }
+        else {
             IDictionary<string, ResourceEditUtility.MemoryGroupInfo> infos = null;
             if (category == "managed")
                 infos = m_ClassifiedManagedMemoryInfos;
@@ -3094,7 +3236,7 @@ internal sealed class ResourceProcessor
                 }
             }
         }
-        L_EndSnapshot:
+    L_EndSnapshot:
         EditorUtility.ClearProgressBar();
     }
     private void DoFilterMemoryInfo(ResourceEditUtility.MemoryInfo memory, ResourceEditUtility.MemoryGroupInfo groupInfo, IDictionary<string, ResourceEditUtility.MemoryGroupInfo> infos)
@@ -3233,7 +3375,8 @@ internal sealed class ResourceProcessor
                 return float.Parse(val.Substring(0, ix).Trim()) / 1024.0f;
             }
             return float.Parse(val.Trim());
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             Debug.LogErrorFormat("InstrumentString2Float {0} throw exception:{1}\n{2}", val, ex.Message, ex.StackTrace);
             return 0;
         }
@@ -3251,7 +3394,8 @@ internal sealed class ResourceProcessor
             if (curCount % 10 == 0) {
                 EditorUtility.DisplayProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
             }
-        } else {
+        }
+        else {
             EditorUtility.DisplayProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
         }
     }
@@ -3268,7 +3412,8 @@ internal sealed class ResourceProcessor
             if (curCount % 10 == 0) {
                 EditorUtility.DisplayProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
             }
-        } else {
+        }
+        else {
             EditorUtility.DisplayProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
         }
     }
@@ -3285,7 +3430,8 @@ internal sealed class ResourceProcessor
             if (curCount % 10 == 0) {
                 return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
             }
-        } else {
+        }
+        else {
             return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
         }
         return false;
@@ -3303,12 +3449,13 @@ internal sealed class ResourceProcessor
             if (curCount % 10 == 0) {
                 return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
             }
-        } else {
+        }
+        else {
             return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
         }
         return false;
     }
-    
+
     private void RefreshSceneDeps()
     {
         m_SceneDeps.Clear();
@@ -3331,7 +3478,8 @@ internal sealed class ResourceProcessor
         HashSet<string> list;
         if (m_ReferenceAssets.TryGetValue(path, out list)) {
             return list;
-        } else {
+        }
+        else {
             return AssetDatabase.GetDependencies(path);
         }
     }
@@ -3378,7 +3526,7 @@ internal sealed class ResourceProcessor
     private int m_NextFilterIndex = 0;
     private int m_NextGroupIndex = 0;
     private int m_NextProcessIndex = 0;
-    
+
     private bool m_CanRefresh = false;
     private string m_Text = string.Empty;
     private string m_CollectPath = string.Empty;
@@ -3407,7 +3555,7 @@ internal sealed class ResourceProcessor
     private SortedList<int, ResourceEditUtility.InstrumentInfo> m_InstrumentInfos = new SortedList<int, ResourceEditUtility.InstrumentInfo>();
     private int m_RecordIndex = 0;
     private int m_LastFrame = -1;
-    
+
     internal static bool ReadMenuAndDescription(string path, out string menu, out string desc)
     {
         bool ret = false;
@@ -3432,10 +3580,12 @@ internal sealed class ResourceProcessor
                                 if (key == "source") {
                                     source = val;
                                     readSource = true;
-                                } else if (key == "menu") {
+                                }
+                                else if (key == "menu") {
                                     menu = val;
                                     readMenu = true;
-                                } else if (key == "description") {
+                                }
+                                else if (key == "description") {
                                     desc = val;
                                     readDesc = true;
                                 }
@@ -3445,7 +3595,8 @@ internal sealed class ResourceProcessor
                             }
                         }
                     }
-                } else {
+                }
+                else {
                     Debug.LogErrorFormat("'{0}' no any DSL info !", path);
                 }
             }
@@ -3497,7 +3648,7 @@ internal sealed class ResourceProcessor
     private static MemoryObjectDrawer s_MemoryObjectDrawer = null;
     private static readonly HashSet<string> s_IgnoredDirs = new HashSet<string> { "plugins", "streamingassets" };
     private static readonly List<string> s_IgnoreDirKeys = new List<string> { "assets/fgui/", "assets/plugins/", "assets/streamingassets/", "/editor default resources/", "assets/thirdparty/" };
-    
+
     private const string c_pref_key_open_asset_folder = "ResourceProcessor_OpenAssetFolder";
     private const string c_pref_key_load_dependencies = "ResourceProcessor_LoadDependencies";
     private const string c_pref_key_save_dependencies = "ResourceProcessor_SaveDependencies";
