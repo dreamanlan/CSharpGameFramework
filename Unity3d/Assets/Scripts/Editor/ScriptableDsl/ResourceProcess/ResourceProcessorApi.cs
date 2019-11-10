@@ -29,6 +29,7 @@ internal static class ResourceEditUtility
         internal string Name;
         internal Type Type;
         internal object Value;
+        internal string StringValue = string.Empty;
         internal string Encoding;
         internal object MinValue;
         internal object MaxValue;

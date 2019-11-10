@@ -228,7 +228,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                 if (paramInfos.TryGetValue(name, out info)) {
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField(info.Name, GUILayout.Width(160));
-                    string oldVal = info.Value.ToString();
+                    string oldVal = info.StringValue;
                     string newVal = oldVal;
                     if (info.OptionStyle == "excel_sheets") {
                         DoPopup(info, oldVal, ref newVal);
@@ -354,6 +354,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                 foreach (var pair in m_EditedParams) {
                     ResourceEditUtility.ParamInfo val;
                     if (paramInfos.TryGetValue(pair.Key, out val)) {
+                        val.StringValue = pair.Value;
                         if (val.Type == typeof(int)) {
                             int v = int.Parse(pair.Value);
                             if (null != val.MinValue && null != val.MaxValue) {
@@ -392,6 +393,30 @@ internal sealed class ResourceEditWindow : EditorWindow
                                 if (v.CompareTo(min) < 0) v = min;
                                 if (v.CompareTo(min) > 0) v = max;
                             }
+                            val.Value = v;
+                        }
+                        else if (val.Type == typeof(List<int>)) {
+                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var list = new List<int>();
+                            foreach (var str in v) {
+                                int iv;
+                                int.TryParse(str, out iv);
+                                list.Add(iv);
+                            }
+                            val.Value = list;
+                        }
+                        else if (val.Type == typeof(List<float>)) {
+                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var list = new List<float>();
+                            foreach (var str in v) {
+                                float fv;
+                                float.TryParse(str, out fv);
+                                list.Add(fv);
+                            }
+                            val.Value = list;
+                        }
+                        else if (val.Type == typeof(List<string>)) {
+                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             val.Value = v;
                         }
                     }
@@ -2044,19 +2069,19 @@ internal sealed class ResourceProcessor
         if (id == "int") {
             //int(name, val);
             int v = int.Parse(val);
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(int), Value = v };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(int), Value = v, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "float") {
             //float(name, val);
             float v = float.Parse(val);
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(float), Value = v };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(float), Value = v, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "string") {
             //string(name, val);
             string v = val;
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(string), Value = v };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(string), Value = v, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "intlist") {
@@ -2068,7 +2093,7 @@ internal sealed class ResourceProcessor
                 int.TryParse(str, out iv);
                 list.Add(iv);
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<int>), Value = list };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<int>), Value = list, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "floatlist") {
@@ -2080,25 +2105,25 @@ internal sealed class ResourceProcessor
                 float.TryParse(str, out fv);
                 list.Add(fv);
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<float>), Value = list };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<float>), Value = list, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "stringlist") {
             //stringlist(name, val);
             var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<string>), Value = v };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<string>), Value = v, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "bool") {
             //bool(name, val);
             bool v = bool.Parse(val);
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(bool), Value = v };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(bool), Value = v, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "button") {
             //button(name, val);
             string v = val;
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(UnityEngine.GUIElement), Value = v };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(UnityEngine.GUIElement), Value = v, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "feature") {
@@ -2135,6 +2160,9 @@ internal sealed class ResourceProcessor
                             var p2 = cd.GetParamId(0);
                             info.FileInitDir = p2;
                         }
+                    }
+                    else if (id == "encoding") {
+                        info.Encoding = cd.GetParamId(0);
                     }
                     else if (id == "range") {
                         int num = cd.GetParamNum();
