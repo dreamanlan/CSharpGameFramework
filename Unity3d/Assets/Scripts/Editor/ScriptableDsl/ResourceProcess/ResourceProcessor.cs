@@ -225,12 +225,18 @@ internal sealed class ResourceEditWindow : EditorWindow
         if (paramNames.Count > 0) {
             foreach (var name in paramNames) {
                 ResourceEditUtility.ParamInfo info;
-                if (paramInfos.TryGetValue(name, out info)) {
+                if (paramInfos.TryGetValue(name, out info) && info.Type != typeof(ResourceEditUtility.DataTable) && info.Type != typeof(NPOI.SS.UserModel.IWorkbook)) {
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField(info.Name, GUILayout.Width(160));
                     string oldVal = info.StringValue;
                     string newVal = oldVal;
-                    if (info.OptionStyle == "excel_sheets") {
+                    if(!string.IsNullOrEmpty(info.Script)) {
+                        var r = ResourceProcessor.Instance.CallScript(null, info.Script, info);
+                        if (null != r && (bool)Convert.ChangeType(r, typeof(bool))) {
+                            info.Script = string.Empty;
+                        }
+                    }
+                    else if (info.OptionStyle == "excel_sheets") {
                         DoPopup(info, oldVal, ref newVal);
                     }
                     else if (info.OptionStyle == "managed_memory_group") {
@@ -2126,6 +2132,24 @@ internal sealed class ResourceProcessor
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(UnityEngine.GUIElement), Value = v, StringValue = val };
             m_ParamNames.Add(key);
         }
+        else if (id == "table") {
+            //table(name, val);
+            string v = val;
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(ResourceEditUtility.DataTable), Value = v, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "excel") {
+            //excel(name, val);
+            string v = val;
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(NPOI.SS.UserModel.IWorkbook), Value = v, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "script") {
+            //script(name, val);
+            string v = val;
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(object), Value = v, StringValue = val };
+            m_ParamNames.Add(key);
+        }
         else if (id == "feature") {
             if (key == "menu") {
                 m_DslMenu = val;
@@ -2134,7 +2158,7 @@ internal sealed class ResourceProcessor
                 m_DslDescription = val;
             }
             else if (key == "source") {
-                //feature("source", "list" or "excel" or "table" or "project" or "sceneobjects" or "scenecomponents" or "sceneassets" or "allassets" or "unusedassets" or "assetbundle");
+                //feature("source", "script" or "list" or "excel" or "table" or "project" or "sceneobjects" or "scenecomponents" or "sceneassets" or "allassets" or "unusedassets" or "assetbundle");
                 m_SearchSource = val;
             }
         }
@@ -2150,7 +2174,10 @@ internal sealed class ResourceProcessor
                 var id = comp.GetId();
                 var cd = comp as Dsl.CallData;
                 if (null != cd) {
-                    if (id == "file") {
+                    if (id == "script") {
+                        info.Script = cd.GetParamId(0);
+                    }
+                    else if (id == "file") {
                         int num = cd.GetParamNum();
                         if (num > 0) {
                             var p1 = cd.GetParamId(0);
@@ -2272,6 +2299,10 @@ internal sealed class ResourceProcessor
                 foreach (var pair in calc.NamedGlobalVariables) {
                     m_ScriptCalculator.SetGlobalVariable(pair.Key, pair.Value);
                 }
+            } else {
+                foreach(var pair in m_Params) {
+                    m_ScriptCalculator.SetGlobalVariable(pair.Key, pair.Value);
+                }
             }
             var ret = m_ScriptCalculator.Calc(name, args);
             if (null != calc) {
@@ -2298,7 +2329,40 @@ internal sealed class ResourceProcessor
     }
     internal void Refresh(bool isBatch)
     {
-        if (m_SearchSource == "list") {
+        foreach(var pair in m_Params) {
+            var paramInfo = pair.Value;
+            if (paramInfo.Type == typeof(ResourceEditUtility.DataTable) && paramInfo.Value is string) {
+                var file = paramInfo.Value as string;
+                var ext = Path.GetExtension(file);
+                var table = new ResourceEditUtility.DataTable();
+                table.Load(file, Encoding.GetEncoding(paramInfo.Encoding), ext == ".csv" ? ',' : '\t');
+                paramInfo.Value = table;
+            }
+            else if (paramInfo.Type == typeof(NPOI.SS.UserModel.IWorkbook) && paramInfo.Value is string) {
+                var file = paramInfo.Value as string;
+                var ext = Path.GetExtension(file);
+                NPOI.SS.UserModel.IWorkbook book = null;
+                using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read)) {
+                    if (ext == ".xls") {
+                        book = new NPOI.HSSF.UserModel.HSSFWorkbook(stream);
+                    }
+                    else {
+                        book = new NPOI.XSSF.UserModel.XSSFWorkbook(stream);
+                    }
+                }
+                paramInfo.Value = book;
+            }
+            else if (paramInfo.Type == typeof(object)) {
+                var funcName = paramInfo.StringValue as string;
+                paramInfo.Value = CallScript(null, funcName, paramInfo);
+            }
+        }
+        if (m_SearchSource == "script") {
+            m_ItemList.Clear();
+            SearchScriptResult();
+            EditorUtility.ClearProgressBar();
+        }
+        else if (m_SearchSource == "list") {
             m_ItemList.Clear();
             if (m_TypeOrExtList.Count > 0) {
                 SearchList();
@@ -2870,7 +2934,7 @@ internal sealed class ResourceProcessor
             foreach (var comp in comps) {
                 if (null != comp) {
                     var key = comp.GetType().Name;
-                    string assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetPrefabParent(obj));
+                    string assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
                     AssetImporter importer = null;
                     if (string.IsNullOrEmpty(assetPath)) {
                         assetPath = string.Empty;
@@ -2923,7 +2987,7 @@ internal sealed class ResourceProcessor
         }
         ++m_CurSearchCount;
         if (IsMatchedObject(obj)) {
-            string assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetPrefabParent(obj));
+            string assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
             AssetImporter importer = null;
             if (string.IsNullOrEmpty(assetPath)) {
                 assetPath = string.Empty;
@@ -3148,6 +3212,47 @@ internal sealed class ResourceProcessor
     L_EndTable:
         EditorUtility.ClearProgressBar();
     }
+    private void SearchScriptResult()
+    {
+        m_TotalSearchCount = 0;
+        ResourceEditUtility.ParamInfo info;
+        if (m_Params.TryGetValue("script", out info)) {
+            var funcName = info.Value as string;
+            if (!string.IsNullOrEmpty(funcName)) {
+                var list = CallScript(null, funcName, info) as IList;
+                if (null != list) {
+                    foreach (var pathObj in list) {
+                        var path = pathObj as string;
+                        if (!string.IsNullOrEmpty(path)) {
+                            var obj = GameObject.Find(path);
+                            string assetPath = string.Empty;
+                            string scenePath = string.Empty;
+                            AssetImporter importer = null;
+                            if (null != obj) {
+                                scenePath = path;
+                                assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
+                                if (string.IsNullOrEmpty(assetPath)) {
+                                    assetPath = string.Empty;
+                                }
+                                else {
+                                    importer = AssetImporter.GetAtPath(assetPath);
+                                }
+                            }
+                            else {
+                                assetPath = path;
+                                importer = AssetImporter.GetAtPath(assetPath);
+                            }
+                            var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = scenePath, Importer = importer, Object = obj, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
+                            var ret = ResourceEditUtility.Filter(item, null, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+                            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+                                m_ItemList.AddRange(m_Results);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
     private void SearchList()
     {
         foreach (var path in m_TypeOrExtList) {
@@ -3157,7 +3262,7 @@ internal sealed class ResourceProcessor
             AssetImporter importer = null;
             if (null != obj) {
                 scenePath = path;
-                assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetPrefabParent(obj));
+                assetPath = AssetDatabase.GetAssetPath(PrefabUtility.GetCorrespondingObjectFromSource(obj));
                 if (string.IsNullOrEmpty(assetPath)) {
                     assetPath = string.Empty;
                 }

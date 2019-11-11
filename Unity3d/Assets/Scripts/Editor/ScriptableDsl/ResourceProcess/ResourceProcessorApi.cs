@@ -38,6 +38,7 @@ internal static class ResourceEditUtility
         internal string OptionStyle = string.Empty;
         internal string FileExts = string.Empty;
         internal string FileInitDir = string.Empty;
+        internal string Script = string.Empty;
         //temp
         internal string[] PopupOptionNames = null;
         internal IList<string> MultipleOldValues = null;
