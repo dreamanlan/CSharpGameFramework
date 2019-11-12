@@ -41,7 +41,7 @@ internal static class ResourceEditUtility
         internal string Script = string.Empty;
         //temp
         internal string[] PopupOptionNames = null;
-        internal IList<string> MultipleOldValues = null;
+        internal List<string> MultipleOldValues = null;
         internal List<string> MultipleNewValues = null;
     }
     internal class ItemInfo

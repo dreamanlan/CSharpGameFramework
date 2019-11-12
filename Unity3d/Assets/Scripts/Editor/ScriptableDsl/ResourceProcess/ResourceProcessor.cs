@@ -491,7 +491,7 @@ internal sealed class ResourceEditWindow : EditorWindow
     private void DoMultiple(ResourceEditUtility.ParamInfo info, string oldVal, ref string newVal)
     {
         if (null == info.MultipleOldValues) {
-            info.MultipleOldValues = oldVal.Split('|');
+            info.MultipleOldValues = new List<string>(oldVal.Split('|'));
             info.MultipleNewValues = new List<string>();
         }
         else {
@@ -514,7 +514,8 @@ internal sealed class ResourceEditWindow : EditorWindow
         }
         if (changed) {
             newVal = string.Join("|", info.MultipleNewValues.ToArray());
-            info.MultipleOldValues = info.MultipleNewValues;
+            info.MultipleOldValues.Clear();
+            info.MultipleOldValues.AddRange(info.MultipleNewValues);
         }
     }
     private void DoPopup(ResourceEditUtility.ParamInfo info, string oldVal, ref string newVal)
