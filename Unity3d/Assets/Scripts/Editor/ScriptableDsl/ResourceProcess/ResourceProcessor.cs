@@ -192,8 +192,11 @@ internal sealed class ResourceEditWindow : EditorWindow
         if (GUILayout.Button("处理选中资源", EditorStyles.toolbarButton)) {
             DeferAction(obj => { ResourceProcessor.Instance.Process(); });
         }
-        if (GUILayout.Button("同步选择u3d资源或场景", EditorStyles.toolbarButton)) {
+        if (GUILayout.Button("编辑器同步选中", EditorStyles.toolbarButton)) {
             DeferAction(obj => { ResourceProcessor.Instance.SelectAssetsOrObjects(); });
+        }
+        if (GUILayout.Button("创建场景", EditorStyles.toolbarButton)) {
+            DeferAction(obj => { ResourceProcessor.Instance.GenerateScene(); });
         }
         GUILayout.Space(20);
         if (GUILayout.Button("保存", EditorStyles.toolbarButton)) {
@@ -1283,6 +1286,33 @@ internal sealed class ResourceProcessor
             }
         }
         Selection.objects = list.ToArray();
+        if (!(m_SearchSource == "sceneobjects" || m_SearchSource == "scenecomponents")) {
+            Type.GetType("UnityEditor.ProjectBrowser,UnityEditor").InvokeMember("ShowSelectedObjectsInLastInteractedProjectBrowser", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, null, null);
+        }
+    }
+    internal void GenerateScene()
+    {
+        var scene = EditorSceneManager.NewScene(NewSceneSetup.DefaultGameObjects, NewSceneMode.Single);
+        int size = 10;
+        int ct = 32;
+        int ix = 1;
+        int iy = 1;
+        foreach (var item in m_ItemList) {
+            if (item.Selected) {
+                var obj = AssetDatabase.LoadMainAssetAtPath(item.AssetPath) as GameObject;
+                if (null != obj) {
+                    var newObj = PrefabUtility.InstantiatePrefab(obj, scene) as GameObject;
+                    if (null != newObj) {
+                        newObj.transform.position = new Vector3(ix * size, 0, iy * size);
+                        ++ix;
+                        if (ix >= ct) {
+                            ix = 1;
+                            ++iy;
+                        }
+                    }
+                }
+            }
+        }
     }
     internal void AnalyseAssets()
     {
