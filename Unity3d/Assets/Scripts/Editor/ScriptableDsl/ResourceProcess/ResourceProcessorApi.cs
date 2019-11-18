@@ -39,6 +39,7 @@ internal static class ResourceEditUtility
         internal string FileExts = string.Empty;
         internal string FileInitDir = string.Empty;
         internal string Script = string.Empty;
+        internal double NextRunScriptTime = 0;
         //temp
         internal string[] PopupOptionNames = null;
         internal List<string> MultipleOldValues = null;

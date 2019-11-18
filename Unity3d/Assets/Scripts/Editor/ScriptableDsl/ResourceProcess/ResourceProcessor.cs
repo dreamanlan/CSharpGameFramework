@@ -228,15 +228,18 @@ internal sealed class ResourceEditWindow : EditorWindow
         if (paramNames.Count > 0) {
             foreach (var name in paramNames) {
                 ResourceEditUtility.ParamInfo info;
-                if (paramInfos.TryGetValue(name, out info) && info.Type != typeof(ResourceEditUtility.DataTable) && info.Type != typeof(NPOI.SS.UserModel.IWorkbook)) {
+                if (paramInfos.TryGetValue(name, out info)) {
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField(info.Name, GUILayout.Width(160));
                     string oldVal = info.StringValue;
                     string newVal = oldVal;
                     if(!string.IsNullOrEmpty(info.Script)) {
-                        var r = ResourceProcessor.Instance.CallScript(null, info.Script, info);
-                        if (null != r && (bool)Convert.ChangeType(r, typeof(bool))) {
-                            info.Script = string.Empty;
+                        double curTime = EditorApplication.timeSinceStartup;
+                        if (info.NextRunScriptTime <= curTime) {
+                            var r = ResourceProcessor.Instance.CallScript(null, info.Script, info);
+                            if (null != r) {
+                                info.NextRunScriptTime = curTime + (double)Convert.ChangeType(r, typeof(double));
+                            }
                         }
                     }
                     else if (info.OptionStyle == "excel_sheets") {
@@ -427,6 +430,15 @@ internal sealed class ResourceEditWindow : EditorWindow
                         else if (val.Type == typeof(List<string>)) {
                             var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             val.Value = v;
+                        }
+                        else if (val.Type == typeof(ResourceEditUtility.DataTable)) {
+                            val.Value = pair.Value;
+                        }
+                        else if(val.Type == typeof(NPOI.SS.UserModel.IWorkbook)) {
+                            val.Value = pair.Value;
+                        }
+                        else if (val.Type == typeof(object)) {
+                            val.Value = pair.Value;
                         }
                     }
                 }
@@ -2384,7 +2396,7 @@ internal sealed class ResourceProcessor
                 paramInfo.Value = book;
             }
             else if (paramInfo.Type == typeof(object)) {
-                var funcName = paramInfo.StringValue as string;
+                var funcName = paramInfo.StringValue;
                 paramInfo.Value = CallScript(null, funcName, paramInfo);
             }
         }
