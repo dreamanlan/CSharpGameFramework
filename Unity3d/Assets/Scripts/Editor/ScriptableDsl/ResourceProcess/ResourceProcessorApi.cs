@@ -343,6 +343,7 @@ internal static class ResourceEditUtility
         calc.Register("setmeshimportexternalmaterials", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetMeshImportExternalMaterialsExp>());
         calc.Register("setmeshimportinprefabmaterials", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetMeshImportInPrefabMaterialsExp>());
         calc.Register("closemeshanimationifnoanimation", new Expression.ExpressionFactoryHelper<ResourceEditApi.CloseMeshAnimationIfNoAnimationExp>());
+        calc.Register("collectmeshes", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectMeshesExp>());
         calc.Register("collectmeshinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectMeshInfoExp>());
         calc.Register("collectanimatorcontrollerinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectAnimatorControllerInfoExp>());
         calc.Register("collectprefabinfo", new Expression.ExpressionFactoryHelper<ResourceEditApi.CollectPrefabInfoExp>());
@@ -372,6 +373,8 @@ internal static class ResourceEditUtility
         calc.Register("getcellstring", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetCellStringExp>());
         calc.Register("getcellnumeric", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetCellNumericExp>());
         calc.Register("rowtoline", new Expression.ExpressionFactoryHelper<ResourceEditApi.RowToLineExp>());
+        calc.Register("tabletohashtable", new Expression.ExpressionFactoryHelper<ResourceEditApi.TableToHashtableExp>());
+        calc.Register("findrowfromhashtable", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindRowFromHashtableExp>());
     }
     internal static object Filter(ItemInfo item, Dictionary<string, object> addVars, List<ItemInfo> results, Expression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
@@ -396,6 +399,7 @@ internal static class ResourceEditUtility
                         calc.SetGlobalVariable(pair.Key, pair.Value);
                     }
                 }
+                calc.SetGlobalVariable("params", args);
                 foreach (var pair in args) {
                     var p = pair.Value;
                     calc.SetGlobalVariable(p.Name, p.Value);
@@ -533,6 +537,7 @@ internal static class ResourceEditUtility
                 calc.SetGlobalVariable("scenedeps", sceneDeps);
                 calc.SetGlobalVariable("refdict", refDict);
                 calc.SetGlobalVariable("refbydict", refByDict);
+                calc.SetGlobalVariable("params", args);
                 foreach (var pair in args) {
                     var p = pair.Value;
                     calc.SetGlobalVariable(p.Name, p.Value);
@@ -570,6 +575,7 @@ internal static class ResourceEditUtility
                 calc.SetGlobalVariable("scenedeps", sceneDeps);
                 calc.SetGlobalVariable("refdict", refDict);
                 calc.SetGlobalVariable("refbydict", refByDict);
+                calc.SetGlobalVariable("params", args);
                 foreach (var pair in args) {
                     var p = pair.Value;
                     calc.SetGlobalVariable(p.Name, p.Value);
@@ -688,6 +694,7 @@ internal static class ResourceEditUtility
                 calc.SetGlobalVariable("scenedeps", sceneDeps);
                 calc.SetGlobalVariable("refdict", refDict);
                 calc.SetGlobalVariable("refbydict", refByDict);
+                calc.SetGlobalVariable("params", args);
                 foreach (var pair in args) {
                     var p = pair.Value;
                     calc.SetGlobalVariable(p.Name, p.Value);
@@ -1841,6 +1848,51 @@ namespace ResourceEditApi
             return r;
         }
     }
+    internal class CollectMeshesExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            if (operands.Count >= 1) {
+                var obj0 = operands[0] as GameObject;
+                bool includeChildren = false;
+                if (operands.Count >= 2) {
+                    includeChildren = (bool)Convert.ChangeType(operands[1], typeof(bool));
+                }
+                if (null != obj0) {
+                    List<GameObject> list = new List<GameObject>();
+                    if (includeChildren) {
+                        var comps = obj0.GetComponentsInChildren<Renderer>();
+                        foreach (var comp in comps) {
+                            list.Add(comp.gameObject);
+                        }
+                    }
+                    else {
+                        list.Add(obj0);
+                    }
+                    List<Mesh> results = new List<Mesh>();
+                    foreach (var obj in list) {
+                        string objName = obj.name;
+                        var filters = obj.GetComponents<MeshFilter>();
+                        foreach (var filter in filters) {
+                            if (null != filter && null != filter.sharedMesh) {
+                                var mesh = filter.sharedMesh;
+                                results.Add(mesh);
+                            }
+                        }
+                        var renderers = obj.GetComponents<SkinnedMeshRenderer>();
+                        foreach (var renderer in renderers) {
+                            if (null != renderer && null != renderer.sharedMesh) {
+                                var mesh = renderer.sharedMesh;
+                                results.Add(mesh);
+                            }
+                        }
+                    }
+                    return results;
+                }
+            }
+            return new List<Mesh>();
+        }
+    }
     internal class CollectMeshInfoExp : Expression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
@@ -2988,6 +3040,116 @@ namespace ResourceEditApi
                     var trow = operands[0] as ResourceEditUtility.DataRow;
                     if (null != trow) {
                         r = trow.GetLine(skipCols, colIndexes);
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class TableToHashtableExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 3) {
+                var sheet = operands[0] as NPOI.SS.UserModel.ISheet;
+                int skipRows = ToInt(operands[1]);
+                List<int> colIndexes = new List<int>();
+                var colObjs = operands[2] as IList;
+                if (null != colObjs) {
+                    foreach (var colObj in colObjs) {
+                        colIndexes.Add(ToInt(colObj));
+                    }
+                }
+                if (colIndexes.Count > 0) {
+                    if (null != sheet) {
+                        var dict = new Dictionary<string, object>();
+                        for (int i = sheet.FirstRowNum + skipRows; i <= sheet.LastRowNum; ++i) {
+                            var temp = dict;
+                            var row = sheet.GetRow(i);
+                            foreach (var ix in colIndexes) {
+                                var cell = row.GetCell(ix);
+                                var key = ResourceEditUtility.CellToString(cell);
+                                object tempObj;
+                                Dictionary<string, object> temp2 = null;
+                                if (!temp.TryGetValue(key, out tempObj)) {
+                                    temp2 = new Dictionary<string, object>();
+                                    temp.Add(key, temp2);
+                                }
+                                else {
+                                    temp2 = tempObj as Dictionary<string, object>;
+                                }
+                                temp = temp2;
+                            }
+                            temp.Add(i.ToString(), row);
+                        }
+                        r = dict;
+                    }
+                    else {
+                        var table = operands[0] as ResourceEditUtility.DataTable;
+                        if (null != table) {
+                            var dict = new Dictionary<string, object>();
+                            for (int i = skipRows; i < table.RowCount; ++i) {
+                                var temp = dict;
+                                var row = table.GetRow(i);
+                                foreach (var ix in colIndexes) {
+                                    var key = row.GetCell(ix);
+                                    object tempObj;
+                                    Dictionary<string, object> temp2 = null;
+                                    if (!temp.TryGetValue(key, out tempObj)) {
+                                        temp2 = new Dictionary<string, object>();
+                                        temp.Add(key, temp2);
+                                    }
+                                    else {
+                                        temp2 = tempObj as Dictionary<string, object>;
+                                    }
+                                    temp = temp2;
+                                }
+                                temp.Add(i.ToString(), row);
+                            }
+                            r = dict;
+                        }
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class FindRowFromHashtableExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var hash = operands[0] as Dictionary<string, object>;
+                List<string> keys = new List<string>();
+                var keyObjs = operands[1] as IList;
+                if (null != keyObjs) {
+                    foreach (var keyObj in keyObjs) {
+                        var str = keyObj as string;
+                        keys.Add(str);
+                    }
+                }
+                if (null != hash && keys.Count > 0) {
+                    var temp = hash;
+                    foreach (var key in keys) {
+                        object tempObj;
+                        if (temp.TryGetValue(key, out tempObj)) {
+                            temp = tempObj as Dictionary<string, object>;
+                        }
+                        else {
+                            temp = null;
+                            break;
+                        }
+                    }
+                    if (null != temp) {
+                        foreach (var pair in temp) {
+                            r = pair.Value;
+                            break;
+                        }
+                    }
+                    else {
+                        r = null;
                     }
                 }
             }

@@ -2343,8 +2343,9 @@ internal sealed class ResourceProcessor
                     m_ScriptCalculator.SetGlobalVariable(pair.Key, pair.Value);
                 }
             } else {
+                m_ScriptCalculator.SetGlobalVariable("params", m_Params);
                 foreach(var pair in m_Params) {
-                    m_ScriptCalculator.SetGlobalVariable(pair.Key, pair.Value);
+                    m_ScriptCalculator.SetGlobalVariable(pair.Key, pair.Value.Value);
                 }
             }
             var ret = m_ScriptCalculator.Calc(name, args);
