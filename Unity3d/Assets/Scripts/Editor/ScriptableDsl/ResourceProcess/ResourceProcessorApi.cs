@@ -55,7 +55,7 @@ internal static class ResourceEditUtility
         internal double Order;
         internal double Value;
         internal string Group;
-        internal IList<string> ExtraList = null;
+        internal IList<KeyValuePair<string, object>> ExtraList = null;
         internal object ExtraObject = null;
         internal string ExtraListBuildScript = string.Empty;
         internal string ExtraListClickScript = string.Empty;
@@ -88,7 +88,7 @@ internal static class ResourceEditUtility
         internal string AssetPath;
         internal string ScenePath;
         internal string Info;
-        internal IList<string> ExtraList = null;
+        internal IList<KeyValuePair<string, object>> ExtraList = null;
         internal object ExtraObject = null;
         internal string ExtraListBuildScript = string.Empty;
         internal string ExtraListClickScript = string.Empty;
@@ -158,6 +158,7 @@ internal static class ResourceEditUtility
         internal long size;
         internal int refCount;
         internal int refOtherCount;
+        internal ulong address;
         internal MemoryProfilerWindowForExtension.ThingInMemory memoryObject;
     }
     internal class MemoryGroupInfo
@@ -198,6 +199,40 @@ internal static class ResourceEditUtility
         internal float batch;
         internal float triangle;
         internal List<InstrumentRecord> records = new List<InstrumentRecord>();
+    }
+    internal class MapsInfo
+    {
+        internal ulong vm_start = 0;
+        internal ulong vm_end = 0;
+        internal ulong size = 0;
+        internal string flags = string.Empty;
+        internal string offset = string.Empty;
+        internal string file1 = string.Empty;
+        internal string file2 = string.Empty;
+        internal string module = string.Empty;
+    }
+    internal class SmapsInfo
+    {
+        internal ulong vm_start = 0;
+        internal ulong vm_end = 0;
+        internal ulong size = 0;
+        internal string flags = string.Empty;
+        internal string offset = string.Empty;
+        internal string file1 = string.Empty;
+        internal string file2 = string.Empty;
+        internal string module = string.Empty;
+
+        internal ulong sizeKB = 0;
+        internal ulong rss = 0;
+        internal ulong pss = 0;
+        internal ulong shared_clean = 0;
+        internal ulong shared_dirty = 0;
+        internal ulong private_clean = 0;
+        internal ulong private_dirty = 0;
+        internal ulong referenced = 0;
+        internal ulong anonymous = 0;
+        internal ulong swap = 0;
+        internal ulong swappss = 0;
     }
     internal class DataRow
     {
@@ -325,6 +360,7 @@ internal static class ResourceEditUtility
         calc.Register("calcrefbycount", new Expression.ExpressionFactoryHelper<ResourceEditApi.CalcRefByCountExp>());
         calc.Register("findasset", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindAssetExp>());
         calc.Register("findshortestpathtoroot", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindShortestPathToRootExp>());
+        calc.Register("drawthing", new Expression.ExpressionFactoryHelper<ResourceEditApi.DrawThingExp>());
         calc.Register("saveandreimport", new Expression.ExpressionFactoryHelper<ResourceEditApi.SaveAndReimportExp>());
         calc.Register("setdirty", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetDirtyExp>());
         calc.Register("getdefaulttexturesetting", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetDefaultTextureSettingExp>());
@@ -375,6 +411,10 @@ internal static class ResourceEditUtility
         calc.Register("rowtoline", new Expression.ExpressionFactoryHelper<ResourceEditApi.RowToLineExp>());
         calc.Register("tabletohashtable", new Expression.ExpressionFactoryHelper<ResourceEditApi.TableToHashtableExp>());
         calc.Register("findrowfromhashtable", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindRowFromHashtableExp>());
+        calc.Register("loadmaps", new Expression.ExpressionFactoryHelper<ResourceEditApi.LoadMapsExp>());
+        calc.Register("findmaps", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindMapsExp>());
+        calc.Register("loadsmaps", new Expression.ExpressionFactoryHelper<ResourceEditApi.LoadSmapsExp>());
+        calc.Register("findsmaps", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindSmapsExp>());
     }
     internal static object Filter(ItemInfo item, Dictionary<string, object> addVars, List<ItemInfo> results, Expression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
@@ -457,11 +497,12 @@ internal static class ResourceEditUtility
                 if (calc.TryGetGlobalVariable("extralist", out v)) {
                     var list = v as IList;
                     if (null != list) {
-                        var strList = new List<string>();
-                        foreach (var str in list) {
-                            strList.Add(str.ToString());
+                        var pairList = new List<KeyValuePair<string, object>>();
+                        foreach (var pair in list) {
+                            var keyObj = (KeyValuePair<string, object>)pair;
+                            pairList.Add(keyObj);
                         }
-                        item.ExtraList = strList;
+                        item.ExtraList = pairList;
                     }
                     else {
                         item.ExtraList = null;
@@ -616,11 +657,12 @@ internal static class ResourceEditUtility
                 if (calc.TryGetGlobalVariable("extralist", out v)) {
                     var list = v as IList;
                     if (null != list) {
-                        var strList = new List<string>();
-                        foreach (var str in list) {
-                            strList.Add(str.ToString());
+                        var pairList = new List<KeyValuePair<string, object>>();
+                        foreach (var pair in list) {
+                            var keyObj = (KeyValuePair<string, object>)pair;
+                            pairList.Add(keyObj);
                         }
-                        item.ExtraList = strList;
+                        item.ExtraList = pairList;
                     }
                     else {
                         item.ExtraList = null;
@@ -710,6 +752,60 @@ internal static class ResourceEditUtility
             Debug.LogErrorFormat("group process {0} exception:{1}\n{2}", item.AssetPath, ex.Message, ex.StackTrace);
             return null;
         }
+    }
+    internal static void ResetResourceParamsCalculator()
+    {
+        s_ResourceParamsCalculator = null;
+    }
+    internal static bool SetParamsToResource(string proc, ResourceParams resParams, UnityEngine.Object obj)
+    {
+        bool ret = false;
+        var calc = GetResourceParamsCalculator();
+        if (null != calc) {
+            object r = calc.Calc(proc, resParams, obj);
+            if (null != r) {
+                ret = (bool)Convert.ChangeType(r, typeof(bool));
+            }
+        }
+        return ret;
+    }
+    internal static bool GetParamsFromResource(string proc, ResourceParams resParams, UnityEngine.Object obj)
+    {
+        bool ret = false;
+        var calc = GetResourceParamsCalculator();
+        if (null != calc) {
+            object r = calc.Calc(proc, resParams, obj);
+            if (null != r) {
+                ret = (bool)Convert.ChangeType(r, typeof(bool));
+            }
+        }
+        return ret;
+    }
+    internal static void ResetCommandCalculator()
+    {
+        s_CommandCalculator = null;
+    }
+    internal static object EvalScript(string code, Dictionary<string, ParamInfo> args, object obj, object item, Dictionary<string, object> addVars)
+    {
+        object r = null;
+        string procCode = string.Format("script{{ {0}; }};", code);
+        var file = new Dsl.DslFile();
+        if (file.LoadFromString(procCode, "command", msg => { Console.WriteLine("{0}", msg); })) {
+            var calc = GetCommandCalculator();
+            calc.SetGlobalVariable("params", args);
+            foreach (var pair in args) {
+                var p = pair.Value;
+                calc.SetGlobalVariable(p.Name, p.Value);
+            }
+            if (null != addVars) {
+                foreach (var pair in addVars) {
+                    calc.SetGlobalVariable(pair.Key, pair.Value);
+                }
+            }
+            calc.LoadDsl("main", new string[] { "$item", "$obj" }, file.DslInfos[0].First);
+            r = calc.Calc("main", item, obj);
+        }
+        return r;
     }
 
     internal static bool FindSceneObject(string name, string type, ref string assetPath, ref string scenePath, ref UnityEngine.Object sceneObj)
@@ -1000,6 +1096,14 @@ internal static class ResourceEditUtility
         }
         return s_ResourceParamsCalculator;
     }
+    private static Expression.DslCalculator GetCommandCalculator()
+    {
+        if (null == s_CommandCalculator) {
+            s_CommandCalculator = new Expression.DslCalculator();
+            InitCalculator(s_CommandCalculator);
+        }
+        return s_CommandCalculator;
+    }
 
     private static void AppendLine(StringBuilder sb, string format, params object[] args)
     {
@@ -1029,6 +1133,7 @@ internal static class ResourceEditUtility
     private const string c_IndentString = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
 
     private static Expression.DslCalculator s_ResourceParamsCalculator = null;
+    private static Expression.DslCalculator s_CommandCalculator = null;
     private static string s_ResourceParamsDslFile = "resourceparams.dsl";
 }
 
@@ -1166,6 +1271,7 @@ namespace ResourceEditApi
         public string maxKeyFrameCurveName = string.Empty;
         public string maxKeyFrameClipName = string.Empty;
         public List<AnimationClipInfo> clips = new List<AnimationClipInfo>();
+
         public void CollectClip(AnimationClip clip)
         {
             var clipInfo = new AnimationClipInfo();
@@ -1407,11 +1513,25 @@ namespace ResourceEditApi
     {
         protected override object OnCalc(IList<object> operands)
         {
-            object r = string.Empty;
+            object r = null;
             if (operands.Count >= 1) {
                 var obj = operands[0] as MemoryProfilerWindowForExtension.ThingInMemory;
                 if (null != obj) {
                     r = ResourceProcessor.Instance.FindShortestPathToRoot(obj);
+                }
+            }
+            return r;
+        }
+    }
+    internal class DrawThingExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = string.Empty;
+            if (operands.Count >= 1) {
+                var obj = operands[0] as MemoryProfilerWindowForExtension.ThingInMemory;
+                if (null != obj) {
+                    r = ResourceProcessor.Instance.DrawThing(obj);
                 }
             }
             return r;
@@ -3150,6 +3270,218 @@ namespace ResourceEditApi
                     }
                     else {
                         r = null;
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class LoadMapsExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var file = operands[0] as string;
+                var list = new List<ResourceEditUtility.MapsInfo>();
+                var lines = File.ReadAllLines(file);
+                foreach (var line in lines) {
+                    var mapsInfo = new ResourceEditUtility.MapsInfo();
+                    var fields = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    var se = fields[0].Split('-');
+                    ulong start = ulong.Parse(se[0], System.Globalization.NumberStyles.AllowHexSpecifier);
+                    ulong end = ulong.Parse(se[1], System.Globalization.NumberStyles.AllowHexSpecifier);
+                    mapsInfo.vm_start = start;
+                    mapsInfo.vm_end = end;
+                    for (int i = 0; i < fields.Length; ++i) {
+                        switch (i) {
+                            case 1:
+                                mapsInfo.flags = fields[i];
+                                break;
+                            case 2:
+                                mapsInfo.offset = fields[i];
+                                break;
+                            case 3:
+                                mapsInfo.file1 = fields[i];
+                                break;
+                            case 4:
+                                mapsInfo.file2 = fields[i];
+                                break;
+                            case 5:
+                                mapsInfo.module = fields[i];
+                                break;
+                        }
+                    }
+                    mapsInfo.size += mapsInfo.vm_end - mapsInfo.vm_start;
+                    list.Add(mapsInfo);
+                }
+                list.Sort((a, b) => {
+                    if (a.vm_start < b.vm_start)
+                        return -1;
+                    else if (a.vm_start > b.vm_start)
+                        return 1;
+                    else if (a.vm_end < b.vm_end)
+                        return -1;
+                    else if (a.vm_end > b.vm_end)
+                        return 1;
+                    else
+                        return 0;
+                });
+                r = list;
+            }
+            return r;
+        }
+    }
+    internal class FindMapsExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var list = operands[0] as List<ResourceEditUtility.MapsInfo>;
+                var addr = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
+                if(null!=list && addr > 0) {
+                    var low = 0;
+                    var high = list.Count - 1;
+                    while (low <= high) {
+                        var cur = (low + high) / 2;
+                        var vs = list[cur].vm_start;
+                        var ve = list[cur].vm_end;
+                        if (addr < vs)
+                            high = cur - 1;
+                        else if (addr >= ve)
+                            low = cur + 1;
+                        else {
+                            r = list[cur];
+                            break;
+                        }
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class LoadSmapsExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var file = operands[0] as string;
+                var list = new List<ResourceEditUtility.SmapsInfo>();
+                ResourceEditUtility.SmapsInfo curInfo = null;
+                var lines = File.ReadAllLines(file);
+                foreach (var line in lines) {
+                    var mapsInfo = new ResourceEditUtility.SmapsInfo();
+                    var fields = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (fields[0].IndexOf('-') > 0) {
+                        var se = fields[0].Split('-');
+                        ulong start = ulong.Parse(se[0], System.Globalization.NumberStyles.AllowHexSpecifier);
+                        ulong end = ulong.Parse(se[1], System.Globalization.NumberStyles.AllowHexSpecifier);
+                        mapsInfo.vm_start = start;
+                        mapsInfo.vm_end = end;
+                        for (int i = 0; i < fields.Length; ++i) {
+                            switch (i) {
+                                case 1:
+                                    mapsInfo.flags = fields[i];
+                                    break;
+                                case 2:
+                                    mapsInfo.offset = fields[i];
+                                    break;
+                                case 3:
+                                    mapsInfo.file1 = fields[i];
+                                    break;
+                                case 4:
+                                    mapsInfo.file2 = fields[i];
+                                    break;
+                                case 5:
+                                    mapsInfo.module = fields[i];
+                                    break;
+                            }
+                        }
+                        mapsInfo.size += mapsInfo.vm_end - mapsInfo.vm_start;
+
+                        curInfo = mapsInfo;
+                    }
+                    else {
+                        var key = fields[0];
+                        var val = fields[1];
+                        if (key == "Size:") {
+                            curInfo.sizeKB = ulong.Parse(val);
+                        }
+                        else if (key == "Rss:") {
+                            curInfo.rss = ulong.Parse(val);
+                        }
+                        else if (key == "Pss:") {
+                            curInfo.pss = ulong.Parse(val);
+                        }
+                        else if (key == "Shared_Clean:") {
+                            curInfo.shared_clean = ulong.Parse(val);
+                        }
+                        else if (key == "Shared_Dirty:") {
+                            curInfo.shared_dirty = ulong.Parse(val);
+                        }
+                        else if (key == "Private_Clean:") {
+                            curInfo.private_clean = ulong.Parse(val);
+                        }
+                        else if (key == "Private_Dirty:") {
+                            curInfo.private_dirty = ulong.Parse(val);
+                        }
+                        else if (key == "Referenced:") {
+                            curInfo.referenced = ulong.Parse(val);
+                        }
+                        else if (key == "Anonymous:") {
+                            curInfo.anonymous = ulong.Parse(val);
+                        }
+                        else if (key == "Swap:") {
+                            curInfo.swap = ulong.Parse(val);
+                        }
+                        else if (key == "SwapPss:") {
+                            curInfo.swappss = ulong.Parse(val);
+                        }
+                    }
+                    list.Add(mapsInfo);
+                }
+                list.Sort((a, b) => {
+                    if (a.vm_start < b.vm_start)
+                        return -1;
+                    else if (a.vm_start > b.vm_start)
+                        return 1;
+                    else if (a.vm_end < b.vm_end)
+                        return -1;
+                    else if (a.vm_end > b.vm_end)
+                        return 1;
+                    else
+                        return 0;
+                });
+                r = list;
+            }
+            return r;
+        }
+    }
+    internal class FindSmapsExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var list = operands[0] as List<ResourceEditUtility.SmapsInfo>;
+                var addr = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
+                if (null != list && addr > 0) {
+                    var low = 0;
+                    var high = list.Count - 1;
+                    while (low <= high) {
+                        var cur = (low + high) / 2;
+                        var vs = list[cur].vm_start;
+                        var ve = list[cur].vm_end;
+                        if (addr < vs)
+                            high = cur - 1;
+                        else if (addr >= ve)
+                            low = cur + 1;
+                        else {
+                            r = list[cur];
+                            break;
+                        }
                     }
                 }
             }

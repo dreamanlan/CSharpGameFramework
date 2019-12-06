@@ -56,6 +56,7 @@ namespace MemoryProfilerWindowForExtension
         public bool isDontDestroyOnLoad;
         public bool isManager;
         public HideFlags hideFlags;
+        public ulong address;
     }
 
     public class GCHandle : ThingInMemory

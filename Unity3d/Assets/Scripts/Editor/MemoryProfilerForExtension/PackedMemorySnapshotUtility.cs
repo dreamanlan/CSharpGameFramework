@@ -19,20 +19,19 @@ using Profiler = UnityEngine.Profiler;
 
 public static class PackedMemorySnapshotUtility
 {
-
     private static string previousDirectory = null;
 
     public static void SaveToFile(PackedMemorySnapshot snapshot)
     {
         var filePath = EditorUtility.SaveFilePanel("Save Snapshot", previousDirectory, "MemorySnapshot_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss"), "memsnap3");
-        if(string.IsNullOrEmpty(filePath))
+        if (string.IsNullOrEmpty(filePath))
             return;
 
         previousDirectory = Path.GetDirectoryName(filePath);
         SaveToFile(filePath, snapshot);
     }
 
-    static void SaveToFile(string filePath, PackedMemorySnapshot snapshot)
+    public static void SaveToFile(string filePath, PackedMemorySnapshot snapshot)
     {
         // Saving snapshots using JsonUtility, instead of BinaryFormatter, is significantly faster.
         // I cancelled saving a memory snapshot that is saving using BinaryFormatter after 24 hours.
@@ -49,10 +48,12 @@ public static class PackedMemorySnapshotUtility
             using (Stream stream = File.Open(filePath, FileMode.Create)) {
                 bf.Serialize(stream, snapshot);
             }
-        } else if (string.Equals(fileExtension, ".memsnap2", System.StringComparison.OrdinalIgnoreCase)) {
+        }
+        else if (string.Equals(fileExtension, ".memsnap2", System.StringComparison.OrdinalIgnoreCase)) {
             var json = JsonUtility.ToJson(snapshot);
             File.WriteAllText(filePath, json);
-        } else { // memsnap3 + default
+        }
+        else { // memsnap3 + default
             // Stream writing -- will not to exhaust memory (for large snapshots)
             using (TextWriter writer = File.CreateText(filePath)) {
                 var errors = new List<string>();
@@ -69,8 +70,8 @@ public static class PackedMemorySnapshotUtility
 
     public static PackedMemorySnapshot LoadFromFile()
     {
-        var filePath = EditorUtility.OpenFilePanelWithFilters("Load Snapshot", previousDirectory, new[] { "Snapshots", "memsnap3,memsnap2,memsnap" });
-        if(string.IsNullOrEmpty(filePath))
+        var filePath = EditorUtility.OpenFilePanelWithFilters("Load Snapshot", previousDirectory, new[] { "Snapshots", "memsnap3,memsnap2,memsnap,snap" });
+        if (string.IsNullOrEmpty(filePath))
             return null;
 
         previousDirectory = Path.GetDirectoryName(filePath);
@@ -80,7 +81,7 @@ public static class PackedMemorySnapshotUtility
         return packedSnapshot;
     }
 
-    static PackedMemorySnapshot LoadFromFile(string filePath)
+    public static PackedMemorySnapshot LoadFromFile(string filePath)
     {
         Debug.LogFormat("Loading...");
         System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
@@ -94,15 +95,14 @@ public static class PackedMemorySnapshotUtility
             using (TextReader reader = File.OpenText(filePath)) {
                 var errors = new List<string>();
                 var serializer = getSerializer(errors);
-                result = (PackedMemorySnapshot) serializer.Deserialize(reader, typeof(PackedMemorySnapshot));
+                result = (PackedMemorySnapshot)serializer.Deserialize(reader, typeof(PackedMemorySnapshot));
                 logErrors(errors);
             }
 
             stopwatch.Stop();
             Profiler.EndSample();
         }
-        else if(string.Equals(fileExtension, ".memsnap2", System.StringComparison.OrdinalIgnoreCase))
-        {
+        else if (string.Equals(fileExtension, ".memsnap2", System.StringComparison.OrdinalIgnoreCase)) {
             Profiler.BeginSample("PackedMemorySnapshotUtility.LoadFromFile(json)");
             stopwatch.Start();
 
@@ -112,22 +112,35 @@ public static class PackedMemorySnapshotUtility
             stopwatch.Stop();
             Profiler.EndSample();
         }
-        else if(string.Equals(fileExtension, ".memsnap", System.StringComparison.OrdinalIgnoreCase))
-        {
+        else if (string.Equals(fileExtension, ".memsnap", System.StringComparison.OrdinalIgnoreCase)) {
             Profiler.BeginSample("PackedMemorySnapshotUtility.LoadFromFile(binary)");
             stopwatch.Start();
 
             var binaryFormatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-            using(Stream stream = File.Open(filePath, FileMode.Open))
-            {
+            using (Stream stream = File.Open(filePath, FileMode.Open)) {
                 result = binaryFormatter.Deserialize(stream) as PackedMemorySnapshot;
             }
 
             stopwatch.Stop();
             Profiler.EndSample();
         }
-        else
-        {
+        else if (string.Equals(fileExtension, ".snap", System.StringComparison.OrdinalIgnoreCase)) {
+            Profiler.BeginSample("PackedMemorySnapshotUtility.LoadFromFile(raw)");
+            stopwatch.Start();
+
+            var rawSnapshot = UnityEditor.Profiling.Memory.Experimental.PackedMemorySnapshot.Load(filePath);
+            if (null != rawSnapshot) {
+                result = new PackedMemorySnapshot(rawSnapshot);
+            }
+            else {
+                Debug.LogErrorFormat("MemoryProfiler: Unrecognized memory snapshot format '{0}'.", filePath);
+                result = null;
+            }
+
+            stopwatch.Stop();
+            Profiler.EndSample();
+        }
+        else {
             Debug.LogErrorFormat("MemoryProfiler: Unrecognized memory snapshot format '{0}'.", filePath);
             result = null;
         }
@@ -135,7 +148,7 @@ public static class PackedMemorySnapshotUtility
         Debug.LogFormat("Loading took {0}ms", stopwatch.ElapsedMilliseconds);
         return result;
     }
-    
+
     internal static void SaveCrawlerDataToFile(PackedCrawlerData packedCrawled)
     {
         var filePath = EditorUtility.SaveFilePanel("Save CrawlerData", previousDirectory, "PackedCrawlerData_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss"), "datasnap3");
@@ -146,7 +159,7 @@ public static class PackedMemorySnapshotUtility
         SaveCrawlerDataToFile(filePath, packedCrawled);
     }
 
-    static void SaveCrawlerDataToFile(string filePath, PackedCrawlerData packedCrawled)
+    internal static void SaveCrawlerDataToFile(string filePath, PackedCrawlerData packedCrawled)
     {
         // Saving snapshots using JsonUtility, instead of BinaryFormatter, is significantly faster.
         // I cancelled saving a memory snapshot that is saving using BinaryFormatter after 24 hours.
@@ -163,10 +176,12 @@ public static class PackedMemorySnapshotUtility
             using (Stream stream = File.Open(filePath, FileMode.Create)) {
                 bf.Serialize(stream, packedCrawled);
             }
-        } else if (string.Equals(fileExtension, ".datasnap2", System.StringComparison.OrdinalIgnoreCase)) {
+        }
+        else if (string.Equals(fileExtension, ".datasnap2", System.StringComparison.OrdinalIgnoreCase)) {
             var json = JsonUtility.ToJson(packedCrawled);
             File.WriteAllText(filePath, json);
-        } else { // datasnap3 + default
+        }
+        else { // datasnap3 + default
             // Stream writing -- will not to exhaust memory (for large snapshots)
             using (TextWriter writer = File.CreateText(filePath)) {
                 var errors = new List<string>();
@@ -194,7 +209,7 @@ public static class PackedMemorySnapshotUtility
         return packedSnapshot;
     }
 
-    static PackedCrawlerData LoadCrawlerDataFromFile(string filePath)
+    internal static PackedCrawlerData LoadCrawlerDataFromFile(string filePath)
     {
         Debug.LogFormat("Loading...");
         System.Diagnostics.Stopwatch stopwatch = new System.Diagnostics.Stopwatch();
@@ -214,7 +229,8 @@ public static class PackedMemorySnapshotUtility
 
             stopwatch.Stop();
             Profiler.EndSample();
-        } else if (string.Equals(fileExtension, ".datasnap2", System.StringComparison.OrdinalIgnoreCase)) {
+        }
+        else if (string.Equals(fileExtension, ".datasnap2", System.StringComparison.OrdinalIgnoreCase)) {
             Profiler.BeginSample("PackedMemorySnapshotUtility.LoadFromFile(json)");
             stopwatch.Start();
 
@@ -223,7 +239,8 @@ public static class PackedMemorySnapshotUtility
 
             stopwatch.Stop();
             Profiler.EndSample();
-        } else if (string.Equals(fileExtension, ".datasnap", System.StringComparison.OrdinalIgnoreCase)) {
+        }
+        else if (string.Equals(fileExtension, ".datasnap", System.StringComparison.OrdinalIgnoreCase)) {
             Profiler.BeginSample("PackedMemorySnapshotUtility.LoadFromFile(binary)");
             stopwatch.Start();
 
@@ -234,7 +251,8 @@ public static class PackedMemorySnapshotUtility
 
             stopwatch.Stop();
             Profiler.EndSample();
-        } else {
+        }
+        else {
             Debug.LogErrorFormat("MemoryProfiler: Unrecognized CrawlerData format '{0}'.", filePath);
             result = null;
         }
@@ -243,7 +261,8 @@ public static class PackedMemorySnapshotUtility
         return result;
     }
 
-    private static JsonSerializer getSerializer(List<string> errors) {
+    private static JsonSerializer getSerializer(List<string> errors)
+    {
         JsonSerializer serializer = new JsonSerializer();
         serializer.ContractResolver = new MyContractResolver();
         serializer.ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor;
@@ -256,7 +275,8 @@ public static class PackedMemorySnapshotUtility
         return serializer;
     }
 
-    private static void logErrors(List<string> errors) {
+    private static void logErrors(List<string> errors)
+    {
         if (0 < errors.Count) {
             var last = Mathf.Min(20, errors.Count); // might be very large, just do the first 20
             var sb = new StringBuilder();
@@ -267,26 +287,31 @@ public static class PackedMemorySnapshotUtility
         }
     }
 
-    private sealed class MyContractResolver : Newtonsoft.Json.Serialization.DefaultContractResolver {
+    private sealed class MyContractResolver : Newtonsoft.Json.Serialization.DefaultContractResolver
+    {
 
-        public MyContractResolver() : base() {
+        public MyContractResolver() : base()
+        {
             IgnoreSerializableAttribute = false; // Use SerializableAttribute to determine what to serialize!
         }
 
     }
 
-    private class FilteringTraceLogWriter : Newtonsoft.Json.Serialization.ITraceWriter {
-
+    private class FilteringTraceLogWriter : Newtonsoft.Json.Serialization.ITraceWriter
+    {
         private readonly string pattern;
 
-        public FilteringTraceLogWriter() : this(null) {
+        public FilteringTraceLogWriter() : this(null)
+        {
         }
 
-        public FilteringTraceLogWriter(string pattern) {
+        public FilteringTraceLogWriter(string pattern)
+        {
             this.pattern = pattern;
         }
 
-        public System.Diagnostics.TraceLevel LevelFilter {
+        public System.Diagnostics.TraceLevel LevelFilter
+        {
             get { return System.Diagnostics.TraceLevel.Verbose; }
         }
 
@@ -298,19 +323,19 @@ public static class PackedMemorySnapshotUtility
             LogType.Log, // verbose
         };
 
-        public void Trace(System.Diagnostics.TraceLevel level, string message, Exception ex) {
+        public void Trace(System.Diagnostics.TraceLevel level, string message, Exception ex)
+        {
             if (System.Diagnostics.TraceLevel.Off == level || null != pattern) {
                 if (!message.Contains(pattern)) { // Skip if not pattern
                     return;
                 }
             }
 
-            UnityEngine.Debug.unityLogger.Log(logTypeFromTraceLevel[(int) level], message);
+            UnityEngine.Debug.unityLogger.Log(logTypeFromTraceLevel[(int)level], message);
             if (null != ex) {
                 UnityEngine.Debug.LogException(ex);
             }
         }
     }
-
 }
 

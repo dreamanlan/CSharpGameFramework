@@ -1,10 +1,10 @@
 input
 {
-  int("maxSize", 8);
-  int("minRefCount",1);
-  int("maxRefCount",128);
+  int("maxSize", 0);
+  int("minRefCount",0);
+  int("maxRefCount",1024);
   int("minRefOtherCount",0);
-  int("maxRefOtherCount",1);
+  int("maxRefOtherCount",1024);
   string("category", "managed");
   string("class", "System.String");  
 	string("filter", "");	

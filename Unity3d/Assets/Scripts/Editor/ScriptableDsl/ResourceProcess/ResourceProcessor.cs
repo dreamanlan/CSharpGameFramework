@@ -208,6 +208,9 @@ internal sealed class ResourceEditWindow : EditorWindow
         if (GUILayout.Button("拷贝", EditorStyles.toolbarButton)) {
             DeferAction(obj => { obj.CopyToClipboard(); });
         }
+        if (GUILayout.Button("命令", EditorStyles.toolbarButton)) {
+            DeferAction(obj => { ResourceCommandWindow.InitWindow(obj, string.Empty, null, null); });
+        }
         GUILayout.Space(20);
         if (GUILayout.Button("批处理", EditorStyles.toolbarButton)) {
             DeferAction(obj => { BatchResourceProcessWindow.InitWindow(obj); });
@@ -233,7 +236,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                     EditorGUILayout.LabelField(info.Name, GUILayout.Width(160));
                     string oldVal = info.StringValue;
                     string newVal = oldVal;
-                    if(!string.IsNullOrEmpty(info.Script)) {
+                    if (!string.IsNullOrEmpty(info.Script)) {
                         double curTime = EditorApplication.timeSinceStartup;
                         if (info.NextRunScriptTime <= curTime) {
                             var r = ResourceProcessor.Instance.CallScript(null, info.Script, info);
@@ -242,7 +245,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                             }
                         }
                     }
-                    else if (info.OptionStyle == "excel_sheets") {
+                    if (info.OptionStyle == "excel_sheets") {
                         DoPopup(info, oldVal, ref newVal);
                     }
                     else if (info.OptionStyle == "managed_memory_group") {
@@ -296,6 +299,42 @@ internal sealed class ResourceEditWindow : EditorWindow
                             newVal = v.ToString();
                         }
                     }
+                    else if (info.Type == typeof(uint)) {
+                        if (null != info.MinValue && null != info.MaxValue) {
+                            int min = (int)info.MinValue;
+                            int max = (int)info.MaxValue;
+                            int v = EditorGUILayout.IntSlider((int)info.Value, min, max, GUILayout.MaxWidth(1024));
+                            newVal = v.ToString();
+                        }
+                        else {
+                            uint v = (uint)EditorGUILayout.IntField((int)(uint)info.Value, GUILayout.MaxWidth(1024));
+                            newVal = v.ToString();
+                        }
+                    }
+                    else if (info.Type == typeof(long)) {
+                        if (null != info.MinValue && null != info.MaxValue) {
+                            int min = (int)info.MinValue;
+                            int max = (int)info.MaxValue;
+                            int v = EditorGUILayout.IntSlider((int)(long)info.Value, min, max, GUILayout.MaxWidth(1024));
+                            newVal = v.ToString();
+                        }
+                        else {
+                            long v = EditorGUILayout.LongField((long)info.Value, GUILayout.MaxWidth(1024));
+                            newVal = v.ToString();
+                        }
+                    }
+                    else if (info.Type == typeof(ulong)) {
+                        if (null != info.MinValue && null != info.MaxValue) {
+                            int min = (int)info.MinValue;
+                            int max = (int)info.MaxValue;
+                            int v = EditorGUILayout.IntSlider((int)(long)info.Value, min, max, GUILayout.MaxWidth(1024));
+                            newVal = v.ToString();
+                        }
+                        else {
+                            ulong v = (ulong)EditorGUILayout.LongField((long)(ulong)info.Value, GUILayout.MaxWidth(1024));
+                            newVal = v.ToString();
+                        }
+                    }
                     else if (info.Type == typeof(float)) {
                         if (null != info.MinValue && null != info.MaxValue) {
                             float min = (float)info.MinValue;
@@ -305,6 +344,18 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                         else {
                             float v = EditorGUILayout.FloatField((float)info.Value, GUILayout.MaxWidth(1024));
+                            newVal = v.ToString();
+                        }
+                    }
+                    else if (info.Type == typeof(double)) {
+                        if (null != info.MinValue && null != info.MaxValue) {
+                            float min = (float)info.MinValue;
+                            float max = (float)info.MaxValue;
+                            float v = EditorGUILayout.Slider((float)(double)info.Value, min, max, GUILayout.MaxWidth(1024));
+                            newVal = v.ToString();
+                        }
+                        else {
+                            double v = EditorGUILayout.DoubleField((double)info.Value, GUILayout.MaxWidth(1024));
                             newVal = v.ToString();
                         }
                     }
@@ -366,6 +417,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                 foreach (var pair in m_EditedParams) {
                     ResourceEditUtility.ParamInfo val;
                     if (paramInfos.TryGetValue(pair.Key, out val)) {
+                        val.NextRunScriptTime = 0;
                         val.StringValue = pair.Value;
                         if (val.Type == typeof(int)) {
                             int v = int.Parse(pair.Value);
@@ -377,8 +429,48 @@ internal sealed class ResourceEditWindow : EditorWindow
                             }
                             val.Value = v;
                         }
+                        if (val.Type == typeof(uint)) {
+                            uint v = uint.Parse(pair.Value);
+                            if (null != val.MinValue && null != val.MaxValue) {
+                                uint min = (uint)(int)val.MinValue;
+                                uint max = (uint)(int)val.MaxValue;
+                                if (v < min) v = min;
+                                if (v > max) v = max;
+                            }
+                            val.Value = v;
+                        }
+                        else if (val.Type == typeof(long)) {
+                            long v = long.Parse(pair.Value);
+                            if (null != val.MinValue && null != val.MaxValue) {
+                                int min = (int)val.MinValue;
+                                int max = (int)val.MaxValue;
+                                if (v < min) v = min;
+                                if (v > max) v = max;
+                            }
+                            val.Value = v;
+                        }
+                        else if (val.Type == typeof(ulong)) {
+                            ulong v = ulong.Parse(pair.Value);
+                            if (null != val.MinValue && null != val.MaxValue) {
+                                ulong min = (ulong)(int)val.MinValue;
+                                ulong max = (ulong)(int)val.MaxValue;
+                                if (v < min) v = min;
+                                if (v > max) v = max;
+                            }
+                            val.Value = v;
+                        }
                         else if (val.Type == typeof(float)) {
                             float v = float.Parse(pair.Value);
+                            if (null != val.MinValue && null != val.MaxValue) {
+                                float min = (float)val.MinValue;
+                                float max = (float)val.MaxValue;
+                                if (v < min) v = min;
+                                if (v > max) v = max;
+                            }
+                            val.Value = v;
+                        }
+                        else if (val.Type == typeof(double)) {
+                            double v = double.Parse(pair.Value);
                             if (null != val.MinValue && null != val.MaxValue) {
                                 float min = (float)val.MinValue;
                                 float max = (float)val.MaxValue;
@@ -417,12 +509,52 @@ internal sealed class ResourceEditWindow : EditorWindow
                             }
                             val.Value = list;
                         }
+                        else if (val.Type == typeof(List<uint>)) {
+                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var list = new List<uint>();
+                            foreach (var str in v) {
+                                uint iv;
+                                uint.TryParse(str, out iv);
+                                list.Add(iv);
+                            }
+                            val.Value = list;
+                        }
+                        else if (val.Type == typeof(List<long>)) {
+                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var list = new List<long>();
+                            foreach (var str in v) {
+                                long iv;
+                                long.TryParse(str, out iv);
+                                list.Add(iv);
+                            }
+                            val.Value = list;
+                        }
+                        else if (val.Type == typeof(List<ulong>)) {
+                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var list = new List<ulong>();
+                            foreach (var str in v) {
+                                ulong iv;
+                                ulong.TryParse(str, out iv);
+                                list.Add(iv);
+                            }
+                            val.Value = list;
+                        }
                         else if (val.Type == typeof(List<float>)) {
                             var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             var list = new List<float>();
                             foreach (var str in v) {
                                 float fv;
                                 float.TryParse(str, out fv);
+                                list.Add(fv);
+                            }
+                            val.Value = list;
+                        }
+                        else if (val.Type == typeof(List<double>)) {
+                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var list = new List<double>();
+                            foreach (var str in v) {
+                                double fv;
+                                double.TryParse(str, out fv);
                                 list.Add(fv);
                             }
                             val.Value = list;
@@ -434,7 +566,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         else if (val.Type == typeof(ResourceEditUtility.DataTable)) {
                             val.Value = pair.Value;
                         }
-                        else if(val.Type == typeof(NPOI.SS.UserModel.IWorkbook)) {
+                        else if (val.Type == typeof(NPOI.SS.UserModel.IWorkbook)) {
                             val.Value = pair.Value;
                         }
                         else if (val.Type == typeof(object)) {
@@ -464,6 +596,10 @@ internal sealed class ResourceEditWindow : EditorWindow
                     }
                 }
                 else {
+                    ResourceEditUtility.ParamInfo val;
+                    if (paramInfos.TryGetValue("pathwidth", out val)) {
+                        m_PathWidth = (float)Convert.ChangeType(val.Value, typeof(float));
+                    }
                     if (m_UnfilteredGroupCount <= 0) {
                         ListItem();
                     }
@@ -765,7 +901,7 @@ internal sealed class ResourceEditWindow : EditorWindow
         bool showReferences = false;
         float rightWidth = 0;
         if (null != m_SelectedItem && null == m_SelectedItem.ExtraList && !string.IsNullOrEmpty(m_SelectedItem.ExtraListBuildScript)) {
-            m_SelectedItem.ExtraList = ResourceProcessor.Instance.CallScript(null, m_SelectedItem.ExtraListBuildScript, m_SelectedItem) as IList<string>;
+            m_SelectedItem.ExtraList = ResourceProcessor.Instance.CallScript(null, m_SelectedItem.ExtraListBuildScript, m_SelectedItem) as IList<KeyValuePair<string, object>>;
         }
         if (!string.IsNullOrEmpty(m_SelectedAssetPath) && (ResourceProcessor.Instance.ReferenceAssets.Count > 0 || ResourceProcessor.Instance.ReferenceByAssets.Count > 0) ||
             null != m_SelectedItem && null != m_SelectedItem.ExtraList) {
@@ -801,7 +937,7 @@ internal sealed class ResourceEditWindow : EditorWindow
             }
             if (!string.IsNullOrEmpty(buttonName)) {
                 var minWidth = GUILayout.MinWidth(80);
-                var maxWidth = GUILayout.MaxWidth(windowWidth - rightWidth);
+                var maxWidth = GUILayout.MaxWidth(m_PathWidth);
                 if (ResourceProcessor.Instance.SearchSource == "sceneobjects" || ResourceProcessor.Instance.SearchSource == "scenecomponents") {
                     var oldAlignment = GUI.skin.button.alignment;
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
@@ -897,14 +1033,26 @@ internal sealed class ResourceEditWindow : EditorWindow
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("Extra List:");
                 EditorGUILayout.EndHorizontal();
-                foreach (string info in m_SelectedItem.ExtraList) {
+                foreach (var pair in m_SelectedItem.ExtraList) {
+                    var info = pair.Key;
                     EditorGUILayout.BeginHorizontal();
                     Texture icon = AssetDatabase.GetCachedIcon(info);
                     var oldAlignment = GUI.skin.button.alignment;
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     if (GUILayout.Button(new GUIContent(info, icon, info), GUILayout.MinWidth(80), GUILayout.MaxWidth(rightWidth))) {
                         if (!string.IsNullOrEmpty(m_SelectedItem.ExtraListClickScript)) {
-                            ResourceProcessor.Instance.CallScript(null, m_SelectedItem.ExtraListClickScript, info, m_SelectedItem);
+                            ResourceProcessor.Instance.CallScript(null, m_SelectedItem.ExtraListClickScript, pair, m_SelectedItem);
+                        }
+                        else {
+                            var thing = pair.Value as MemoryProfilerWindowForExtension.ThingInMemory;
+                            string content = string.Empty;
+                            if (null != thing) {
+                                content = ResourceProcessor.Instance.DrawThing(thing);
+                            }
+                            else {
+                                content = info;
+                            }
+                            ResourceCommandWindow.InitWindow(this, content, pair, m_SelectedGroup);
                         }
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -953,6 +1101,9 @@ internal sealed class ResourceEditWindow : EditorWindow
         m_Page = Mathf.Max(1, Mathf.Min(m_GroupList.Count / c_ItemsPerPage + 1, m_Page));
         bool showReferences = false;
         float rightWidth = 0;
+        if (null != m_SelectedGroup && null == m_SelectedGroup.ExtraList && !string.IsNullOrEmpty(m_SelectedGroup.ExtraListBuildScript)) {
+            m_SelectedGroup.ExtraList = ResourceProcessor.Instance.CallScript(null, m_SelectedGroup.ExtraListBuildScript, m_SelectedGroup) as IList<KeyValuePair<string, object>>;
+        }
         if (!string.IsNullOrEmpty(m_SelectedAssetPath) && (ResourceProcessor.Instance.ReferenceAssets.Count > 0 || ResourceProcessor.Instance.ReferenceByAssets.Count > 0) ||
             null != m_SelectedGroup && null != m_SelectedGroup.ExtraList) {
             showReferences = true;
@@ -987,7 +1138,7 @@ internal sealed class ResourceEditWindow : EditorWindow
             }
             if (!string.IsNullOrEmpty(buttonName)) {
                 var minWidth = GUILayout.MinWidth(80);
-                var maxWidth = GUILayout.MaxWidth(windowWidth - rightWidth);
+                var maxWidth = GUILayout.MaxWidth(m_PathWidth);
                 if (ResourceProcessor.Instance.SearchSource == "sceneobjects" || ResourceProcessor.Instance.SearchSource == "scenecomponents") {
                     var oldAlignment = GUI.skin.button.alignment;
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
@@ -1077,12 +1228,27 @@ internal sealed class ResourceEditWindow : EditorWindow
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("Extra List:");
                 EditorGUILayout.EndHorizontal();
-                foreach (string info in m_SelectedGroup.ExtraList) {
+                foreach (var pair in m_SelectedGroup.ExtraList) {
+                    var info = pair.Key;
                     EditorGUILayout.BeginHorizontal();
                     Texture icon = AssetDatabase.GetCachedIcon(info);
                     var oldAlignment = GUI.skin.button.alignment;
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     if (GUILayout.Button(new GUIContent(info, icon, info), GUILayout.MinWidth(80), GUILayout.MaxWidth(rightWidth))) {
+                        if (!string.IsNullOrEmpty(m_SelectedGroup.ExtraListClickScript)) {
+                            ResourceProcessor.Instance.CallScript(null, m_SelectedGroup.ExtraListClickScript, pair, m_SelectedGroup);
+                        }
+                        else {
+                            var thing = pair.Value as MemoryProfilerWindowForExtension.ThingInMemory;
+                            string content = string.Empty;
+                            if (null != thing) {
+                                content = ResourceProcessor.Instance.DrawThing(thing);
+                            }
+                            else {
+                                content = info;
+                            }
+                            ResourceCommandWindow.InitWindow(this, content, pair, m_SelectedGroup);
+                        }
                     }
                     GUI.skin.button.alignment = oldAlignment;
                     EditorGUILayout.EndHorizontal();
@@ -1154,6 +1320,7 @@ internal sealed class ResourceEditWindow : EditorWindow
 
     private Vector2 m_PanelPos = Vector2.zero;
     private Vector2 m_PanelPosRight = Vector2.zero;
+    private float m_PathWidth = 240;
     private float m_RightWidth = 240;
     private Dictionary<string, string> m_EditedParams = new Dictionary<string, string>();
     private int m_Page = 1;
@@ -1513,6 +1680,7 @@ internal sealed class ResourceProcessor
             memory.size = obj.size;
             memory.refCount = obj.referencedBy.Length;
             memory.refOtherCount = obj.references.Length;
+            memory.address = obj.address;
             memory.memoryObject = obj;
 
             ResourceEditUtility.MemoryGroupInfo groupInfo = null;
@@ -1542,6 +1710,7 @@ internal sealed class ResourceProcessor
             memory.size = obj.size;
             memory.refCount = obj.referencedBy.Length;
             memory.refOtherCount = obj.references.Length;
+            memory.address = obj.address;
             memory.memoryObject = obj;
 
             ResourceEditUtility.MemoryGroupInfo groupInfo = null;
@@ -1563,43 +1732,47 @@ internal sealed class ResourceProcessor
         }
         EditorUtility.ClearProgressBar();
     }
-    internal IList<string> FindShortestPathToRoot(MemoryProfilerWindowForExtension.ThingInMemory obj)
+    internal IList<KeyValuePair<string, object>> FindShortestPathToRoot(MemoryProfilerWindowForExtension.ThingInMemory obj)
     {
-        var list = new List<string>();
+        var list = new List<KeyValuePair<string, object>>();
         var refbys = s_ShortestPathToRootFinder.FindFor(obj);
         if (null != refbys) {
-            list.Add("=ShortestPathToRoot=");
+            list.Add(new KeyValuePair<string, object>("=ShortestPathToRoot=", null));
             foreach (var thing in refbys) {
-                list.Add(thing.caption);
+                list.Add(new KeyValuePair<string, object>(thing.caption, thing));
             }
             string reason;
             s_ShortestPathToRootFinder.IsRoot(refbys.Last(), out reason);
-            list.Add("This is a root because:" + reason);
+            list.Add(new KeyValuePair<string, object>("This is a root because:" + reason, null));
         }
         else {
-            list.Add("No root is keeping this object alive.It will be collected next UnloadUnusedAssets() or scene load");
+            list.Add(new KeyValuePair<string, object>("No root is keeping this object alive.It will be collected next UnloadUnusedAssets() or scene load", null));
         }
 
-        list.Add(string.Empty);
-        list.Add("=Referenced by=");
+        list.Add(new KeyValuePair<string, object>(string.Empty, null));
+        list.Add(new KeyValuePair<string, object>("=Referenced by=", null));
         foreach (var thing in obj.referencedBy) {
-            list.Add(thing.caption);
+            list.Add(new KeyValuePair<string, object>(thing.caption, thing));
         }
 
         var managedObject = obj as MemoryProfilerWindowForExtension.ManagedObject;
         if (managedObject == null) {
-            list.Add(string.Empty);
-            list.Add("=References=");
+            list.Add(new KeyValuePair<string, object>(string.Empty, null));
+            list.Add(new KeyValuePair<string, object>("=References=", null));
             foreach (var thing in obj.references) {
-                list.Add(thing.caption);
+                list.Add(new KeyValuePair<string, object>(thing.caption, thing));
             }
         }
 
-        list.Add(string.Empty);
-        list.Add("=Detail=");
-        list.Add(s_MemoryObjectDrawer.DrawThing(obj));
+        list.Add(new KeyValuePair<string, object>(string.Empty, null));
+        list.Add(new KeyValuePair<string, object>("=Detail=", null));
+        list.Add(new KeyValuePair<string, object>(s_MemoryObjectDrawer.DrawThing(obj), obj));
 
         return list;
+    }
+    internal string DrawThing(MemoryProfilerWindowForExtension.ThingInMemory thing)
+    {
+        return s_MemoryObjectDrawer.DrawThing(thing);
     }
     internal void SaveMemoryInfo()
     {
@@ -1651,7 +1824,7 @@ internal sealed class ResourceProcessor
             float[] triangles = new float[lastIndex - firstIndex + 1];
             var labels = ProfilerDriver.GetGraphStatisticsPropertiesForArea(ProfilerArea.Rendering);
             foreach (string l in labels) {
-                var id = ProfilerDriver.GetStatisticsIdentifier(l);
+                var id = ProfilerDriver.GetStatisticsIdentifierForArea(ProfilerArea.Rendering, l);
                 var lowerLabel = l.ToLower();
                 if (lowerLabel == "batches") {
                     float maxVal;
@@ -2121,10 +2294,34 @@ internal sealed class ResourceProcessor
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(int), Value = v, StringValue = val };
             m_ParamNames.Add(key);
         }
+        else if (id == "uint") {
+            //uint(name, val);
+            uint v = uint.Parse(val);
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(uint), Value = v, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "long") {
+            //long(name, val);
+            long v = long.Parse(val);
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(long), Value = v, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "ulong") {
+            //ulong(name, val);
+            ulong v = ulong.Parse(val);
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(ulong), Value = v, StringValue = val };
+            m_ParamNames.Add(key);
+        }
         else if (id == "float") {
             //float(name, val);
             float v = float.Parse(val);
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(float), Value = v, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "double") {
+            //double(name, val);
+            double v = double.Parse(val);
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(double), Value = v, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "string") {
@@ -2145,6 +2342,42 @@ internal sealed class ResourceProcessor
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<int>), Value = list, StringValue = val };
             m_ParamNames.Add(key);
         }
+        else if (id == "uintlist") {
+            //uintlist(name, val);
+            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var list = new List<uint>();
+            foreach (var str in v) {
+                uint iv;
+                uint.TryParse(str, out iv);
+                list.Add(iv);
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<uint>), Value = list, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "longlist") {
+            //longlist(name, val);
+            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var list = new List<long>();
+            foreach (var str in v) {
+                long iv;
+                long.TryParse(str, out iv);
+                list.Add(iv);
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<long>), Value = list, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "ulonglist") {
+            //ulonglist(name, val);
+            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var list = new List<ulong>();
+            foreach (var str in v) {
+                ulong iv;
+                ulong.TryParse(str, out iv);
+                list.Add(iv);
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<ulong>), Value = list, StringValue = val };
+            m_ParamNames.Add(key);
+        }
         else if (id == "floatlist") {
             //floatlist(name, val);
             var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -2155,6 +2388,18 @@ internal sealed class ResourceProcessor
                 list.Add(fv);
             }
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<float>), Value = list, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "doublelist") {
+            //doublelist(name, val);
+            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var list = new List<double>();
+            foreach (var str in v) {
+                double fv;
+                double.TryParse(str, out fv);
+                list.Add(fv);
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<double>), Value = list, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "stringlist") {
@@ -2244,11 +2489,11 @@ internal sealed class ResourceProcessor
                             //range(min,max);
                             string min = pvd1.GetId();
                             string max = pvd2.GetId();
-                            if (info.Type == typeof(int)) {
+                            if (info.Type == typeof(int) || info.Type == typeof(uint) || info.Type == typeof(long) || info.Type == typeof(ulong)) {
                                 info.MinValue = int.Parse(min);
                                 info.MaxValue = int.Parse(max);
                             }
-                            else if (info.Type == typeof(float)) {
+                            else if (info.Type == typeof(float) || info.Type == typeof(double)) {
                                 info.MinValue = float.Parse(min);
                                 info.MaxValue = float.Parse(max);
                             }
@@ -2342,9 +2587,10 @@ internal sealed class ResourceProcessor
                 foreach (var pair in calc.NamedGlobalVariables) {
                     m_ScriptCalculator.SetGlobalVariable(pair.Key, pair.Value);
                 }
-            } else {
+            }
+            else {
                 m_ScriptCalculator.SetGlobalVariable("params", m_Params);
-                foreach(var pair in m_Params) {
+                foreach (var pair in m_Params) {
                     m_ScriptCalculator.SetGlobalVariable(pair.Key, pair.Value.Value);
                 }
             }
@@ -2373,7 +2619,7 @@ internal sealed class ResourceProcessor
     }
     internal void Refresh(bool isBatch)
     {
-        foreach(var pair in m_Params) {
+        foreach (var pair in m_Params) {
             var paramInfo = pair.Value;
             if (paramInfo.Type == typeof(ResourceEditUtility.DataTable) && paramInfo.Value is string) {
                 var file = paramInfo.Value as string;
@@ -3339,7 +3585,8 @@ internal sealed class ResourceProcessor
             _class = classParamInfo.Value as string;
         }
         if ((category == "mgroup" || category == "managed") && m_ClassifiedManagedMemoryInfos.Count <= 0 ||
-            (category == "ngroup" || category == "native") && m_ClassifiedNativeMemoryInfos.Count <= 0) {
+            (category == "ngroup" || category == "native") && m_ClassifiedNativeMemoryInfos.Count <= 0 ||
+            m_ClassifiedManagedMemoryInfos.Count <= 0 && m_ClassifiedNativeMemoryInfos.Count <= 0) {
             if (!isBatch)
                 EditorUtility.DisplayDialog("错误", "未找到内存对象信息，请先执行内存‘捕获’或‘加载’！", "ok");
             return;
@@ -3378,12 +3625,14 @@ internal sealed class ResourceProcessor
             IDictionary<string, ResourceEditUtility.MemoryGroupInfo> infos = null;
             if (category == "managed")
                 infos = m_ClassifiedManagedMemoryInfos;
-            else
+            else if (category == "native")
                 infos = m_ClassifiedNativeMemoryInfos;
+            else
+                infos = null;
             int curCount = 0;
             int totalCount = 0;
             bool handled = false;
-            if (!string.IsNullOrEmpty(_class)) {
+            if (null != infos && !string.IsNullOrEmpty(_class)) {
                 ResourceEditUtility.MemoryGroupInfo groupInfo;
                 if (infos.TryGetValue(_class, out groupInfo)) {
                     totalCount = groupInfo.memories.Count;
@@ -3398,16 +3647,49 @@ internal sealed class ResourceProcessor
                 }
             }
             if (!handled) {
-                totalCount = 0;
-                foreach (var pair in infos) {
-                    totalCount += pair.Value.memories.Count;
+                if (null != infos) {
+                    totalCount = 0;
+                    foreach (var pair in infos) {
+                        totalCount += pair.Value.memories.Count;
+                    }
+                    foreach (var pair in infos) {
+                        foreach (var memory in pair.Value.memories) {
+                            DoFilterMemoryInfo(memory, pair.Value, infos);
+                            ++curCount;
+                            if (DisplayCancelableProgressBar("采集进度", m_ItemList.Count, curCount, totalCount)) {
+                                goto L_EndSnapshot;
+                            }
+                        }
+                    }
                 }
-                foreach (var pair in infos) {
-                    foreach (var memory in pair.Value.memories) {
-                        DoFilterMemoryInfo(memory, pair.Value, infos);
-                        ++curCount;
-                        if (DisplayCancelableProgressBar("采集进度", m_ItemList.Count, curCount, totalCount)) {
-                            goto L_EndSnapshot;
+                else {
+                    totalCount = 0;
+                    infos = m_ClassifiedManagedMemoryInfos;
+                    foreach (var pair in infos) {
+                        totalCount += pair.Value.memories.Count;
+                    }
+                    infos = m_ClassifiedNativeMemoryInfos;
+                    foreach (var pair in infos) {
+                        totalCount += pair.Value.memories.Count;
+                    }
+                    infos = m_ClassifiedManagedMemoryInfos;
+                    foreach (var pair in infos) {
+                        foreach (var memory in pair.Value.memories) {
+                            DoFilterMemoryInfo(memory, pair.Value, infos);
+                            ++curCount;
+                            if (DisplayCancelableProgressBar("采集进度", m_ItemList.Count, curCount, totalCount)) {
+                                goto L_EndSnapshot;
+                            }
+                        }
+                    }
+                    infos = m_ClassifiedNativeMemoryInfos;
+                    foreach (var pair in infos) {
+                        foreach (var memory in pair.Value.memories) {
+                            DoFilterMemoryInfo(memory, pair.Value, infos);
+                            ++curCount;
+                            if (DisplayCancelableProgressBar("采集进度", m_ItemList.Count, curCount, totalCount)) {
+                                goto L_EndSnapshot;
+                            }
                         }
                     }
                 }

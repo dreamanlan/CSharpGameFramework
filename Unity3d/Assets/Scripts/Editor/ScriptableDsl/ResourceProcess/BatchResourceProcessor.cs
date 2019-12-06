@@ -79,7 +79,7 @@ public class BatchResourceProcessWindow : EditorWindow
                     }
                     m_IsReady = true;
                 }
-                if (GUILayout.Button("删除", GUILayout.Width(40))) {
+                if (GUILayout.Button("删除", EditorStyles.toolbarButton, GUILayout.Width(40))) {
                     deleteIndex = i;
                 }
                 EditorGUILayout.EndHorizontal();
@@ -224,5 +224,117 @@ public class BatchResourceProcessWindow : EditorWindow
     private ResourceEditWindow m_ResourceEditWindow = null;
     private bool m_UseReimport = false;
     private List<ResourceEditUtility.BatchProcessInfo> m_List = new List<ResourceEditUtility.BatchProcessInfo>();
+    private Vector2 m_Pos = Vector2.zero;
+}
+
+public class ResourceCommandWindow : EditorWindow
+{
+    internal static void InitWindow(ResourceEditWindow resEdit, string content, object obj, object item)
+    {
+        ResourceCommandWindow window = (ResourceCommandWindow)EditorWindow.GetWindow(typeof(ResourceCommandWindow));
+        window.Init(resEdit, content, obj, item);
+        window.Show();
+    }
+
+    private void Init(ResourceEditWindow resEdit, string content, object obj, object item)
+    {
+        m_ResourceEditWindow = resEdit;
+        m_Content = content;
+        m_Object = obj;
+        m_Item = item;
+        m_IsReady = true;
+    }
+
+    private void OnGUI()
+    {
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.TextArea(m_Content, EditorStyles.textArea, GUILayout.MinHeight(160), GUILayout.MaxHeight(this.position.height - 60));
+        EditorGUILayout.EndHorizontal();
+        var rt = EditorGUILayout.BeginHorizontal();
+        m_Command = EditorGUILayout.TextField(m_Command, EditorStyles.toolbarTextField, GUILayout.MinWidth(200), GUILayout.MaxWidth(this.position.width - 52));
+        if (GUILayout.Button("run", EditorStyles.toolbarButton, GUILayout.Width(40))) {
+            DeferAction(w => Run());
+        }
+        EditorGUILayout.EndHorizontal();
+        if (m_IsReady) {
+            m_Pos = EditorGUILayout.BeginScrollView(m_Pos);
+            while (m_Results.Count > 20) {
+                m_Results.Dequeue();
+            }
+            foreach (var info in m_Results) {
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.TextArea(info, EditorStyles.textArea, GUILayout.MinWidth(200), GUILayout.MaxWidth(this.position.width), GUILayout.MinHeight(16), GUILayout.MaxHeight(32));
+                EditorGUILayout.EndHorizontal();
+            }
+            EditorGUILayout.EndScrollView();
+        }
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.EndHorizontal();
+
+        ExecuteDeferredActions();
+    }
+    private void Run()
+    {
+        m_ScriptableInfo.Content = m_Content;
+        m_ScriptableInfo.Results = m_Results;
+        m_ScriptableInfo.ResourceEditWindow = m_ResourceEditWindow;
+        m_ScriptableInfo.ResourceProcessor = ResourceProcessor.Instance;
+        m_ScriptableInfo.ResourceEditWindowType = typeof(ResourceEditWindow);
+        m_ScriptableInfo.ResourceProcessorType = typeof(ResourceProcessor);
+        m_ScriptableInfo.ResourceEditUtilityType = typeof(ResourceEditUtility);
+        var r = ResourceEditUtility.EvalScript(m_Command, ResourceProcessor.Instance.Params, m_Object, m_Item, new Dictionary<string, object> { { "@context", m_ScriptableInfo } });
+        if (null != r) {
+            m_Results.Enqueue(r.ToString());
+        }
+        else {
+            m_Results.Enqueue("no return value.");
+        }
+        m_Content = m_ScriptableInfo.Content;
+    }
+
+    private void ExecuteDeferredActions()
+    {
+        if (m_InActions)
+            return;
+        try {
+            m_InActions = true;
+            while (m_Actions.Count > 0) {
+                var action = m_Actions.Dequeue();
+                if (null != action) {
+                    action(this);
+                }
+            }
+        }
+        finally {
+            m_InActions = false;
+        }
+    }
+    private void DeferAction(Action<ResourceCommandWindow> action)
+    {
+        m_Actions.Enqueue(action);
+    }
+
+    internal class ScriptableInfo
+    {
+        internal string Content;
+        internal Queue<string> Results;
+        internal ResourceEditWindow ResourceEditWindow;
+        internal ResourceProcessor ResourceProcessor;
+        internal Type ResourceEditWindowType;
+        internal Type ResourceProcessorType;
+        internal Type ResourceEditUtilityType;
+    }
+    private ScriptableInfo m_ScriptableInfo = new ScriptableInfo();
+    
+    private bool m_IsReady = false;
+    private bool m_InActions = false;
+    private Queue<Action<ResourceCommandWindow>> m_Actions = new Queue<Action<ResourceCommandWindow>>();
+
+    private string m_Content = string.Empty;
+    private Queue<string> m_Results = new Queue<string>();
+    private string m_Command = string.Empty;
+    private object m_Object = null;
+    private object m_Item = null;
+    private ResourceEditWindow m_ResourceEditWindow = null;
     private Vector2 m_Pos = Vector2.zero;
 }

@@ -85,19 +85,19 @@ namespace MemoryProfilerWindowForExtension
 #endif
             var className = packedSnapshot.nativeTypes[classId].name;
 
-            return new NativeUnityEngineObject()
-                   {
-                       instanceID = packedNativeUnityEngineObject.instanceId,
-                       classID = classId,
-                       className = className,
-                       name = packedNativeUnityEngineObject.name,
-                       caption = packedNativeUnityEngineObject.name + "(" + className + ")",
-                       size = packedNativeUnityEngineObject.size,
-                       isPersistent = packedNativeUnityEngineObject.isPersistent,
-                       isDontDestroyOnLoad = packedNativeUnityEngineObject.isDontDestroyOnLoad,
-                       isManager = packedNativeUnityEngineObject.isManager,
-                       hideFlags = packedNativeUnityEngineObject.hideFlags
-                   };
+            return new NativeUnityEngineObject() {
+                instanceID = packedNativeUnityEngineObject.instanceId,
+                classID = classId,
+                className = className,
+                name = packedNativeUnityEngineObject.name,
+                caption = packedNativeUnityEngineObject.name + "(" + className + ")",
+                size = packedNativeUnityEngineObject.size,
+                isPersistent = packedNativeUnityEngineObject.isPersistent,
+                isDontDestroyOnLoad = packedNativeUnityEngineObject.isDontDestroyOnLoad,
+                isManager = packedNativeUnityEngineObject.isManager,
+                hideFlags = packedNativeUnityEngineObject.hideFlags,
+                address = (ulong)packedNativeUnityEngineObject.nativeObjectAddress
+            };
         }
     }
 

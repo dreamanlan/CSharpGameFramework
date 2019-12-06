@@ -499,38 +499,49 @@ namespace MemoryProfilerWindowForExtension
 
         private void CrawlRawObjectData(PackedMemorySnapshot packedMemorySnapshot, StartIndices startIndices, BytesAndOffset bytesAndOffset, TypeDescription typeDescription, bool useStaticFields, int indexOfFrom, List<Connection> out_connections, List<PackedManagedObject> out_managedObjects)
         {
-            foreach (var field in TypeTools.AllFieldsOf(typeDescription, _typeDescriptions, useStaticFields ? TypeTools.FieldFindOptions.OnlyStatic : TypeTools.FieldFindOptions.OnlyInstance)) {
-                if (field.typeIndex == typeDescription.typeIndex && typeDescription.isValueType) {
-                    //this happens in System.Single, which is a weird type that has a field of its own type.
-                    continue;
-                }
+            if (typeDescription.isArray)
+                return;
 
-                if (field.offset == -1) {
-                    //this is how we encode TLS fields. todo: actually treat TLS fields as roots
-                    continue;
-                }
+            if(!useStaticFields && typeDescription.baseOrElementTypeIndex != -1 && !typeDescription.isValueType) {
+                var baseTypeDescription = _typeDescriptions[typeDescription.baseOrElementTypeIndex];
+                CrawlRawObjectData(packedMemorySnapshot, startIndices, bytesAndOffset, baseTypeDescription, useStaticFields, indexOfFrom, out_connections, out_managedObjects);
+            }
 
-                var fieldType = packedMemorySnapshot.typeDescriptions[field.typeIndex];
+            foreach (var field in typeDescription.fields) {
+                if (field.isStatic == useStaticFields) {
+                    if (field.typeIndex == typeDescription.typeIndex && typeDescription.isValueType) {
+                        //this happens in System.Single, which is a weird type that has a field of its own type.
+                        continue;
+                    }
 
-                var fieldLocation = bytesAndOffset.Add(field.offset - (useStaticFields ? 0 : _virtualMachineInformation.objectHeaderSize));
+                    if (field.offset == -1) {
+                        //this is how we encode TLS fields. todo: actually treat TLS fields as roots
+                        continue;
+                    }
 
-                if (fieldType.isValueType) {
-                    CrawlRawObjectData(packedMemorySnapshot, startIndices, fieldLocation, fieldType, false, indexOfFrom, out_connections, out_managedObjects);
-                    continue;
-                }
+                    var fieldType = packedMemorySnapshot.typeDescriptions[field.typeIndex];
 
-                //temporary workaround for a bug in 5.3b4 and earlier where we would get literals returned as fields with offset 0. soon we'll be able to remove this code.
-                bool gotException = false;
-                try {
-                    fieldLocation.ReadPointer();
-                } catch (ArgumentException) {
-                    UnityEngine.Debug.LogWarningFormat("Skipping field {0} on type {1}", field.name, typeDescription.name);
-                    UnityEngine.Debug.LogWarningFormat("FieldType.name: {0}", fieldType.name);
-                    gotException = true;
-                }
+                    var fieldLocation = bytesAndOffset.Add(field.offset - (useStaticFields ? 0 : _virtualMachineInformation.objectHeaderSize));
 
-                if (!gotException) {
-                    CrawlPointer(packedMemorySnapshot, startIndices, fieldLocation.ReadPointer(), indexOfFrom, out_connections, out_managedObjects);
+                    if (fieldType.isValueType) {
+                        CrawlRawObjectData(packedMemorySnapshot, startIndices, fieldLocation, fieldType, false, indexOfFrom, out_connections, out_managedObjects);
+                        continue;
+                    }
+
+                    //temporary workaround for a bug in 5.3b4 and earlier where we would get literals returned as fields with offset 0. soon we'll be able to remove this code.
+                    bool gotException = false;
+                    try {
+                        fieldLocation.ReadPointer();
+                    }
+                    catch (ArgumentException) {
+                        UnityEngine.Debug.LogWarningFormat("Skipping field {0} on type {1}", field.name, typeDescription.name);
+                        UnityEngine.Debug.LogWarningFormat("FieldType.name: {0}", fieldType.name);
+                        gotException = true;
+                    }
+
+                    if (!gotException) {
+                        CrawlPointer(packedMemorySnapshot, startIndices, fieldLocation.ReadPointer(), indexOfFrom, out_connections, out_managedObjects);
+                    }
                 }
             }
         }
