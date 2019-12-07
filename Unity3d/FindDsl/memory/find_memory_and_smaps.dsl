@@ -9,7 +9,11 @@ input
 	stringlist("filter", "");
 	stringlist("classnotfilter", "");
 	stringlist("notfilter", "");
-	string("maps","E:\\work\\workdoc\\性能数据\\20191204\\内存数据与maps对应实验\\smaps0.txt"){
+	string("mheaps",""){
+	    file("csv");
+	    script("LoadManagedHeaps");
+	};
+	string("maps",""){
 	    file("txt");
 	    script("LoadMaps");
 	};
@@ -24,34 +28,41 @@ filter
 {
 	if(memory.size >= maxSize && stringcontains(memory.className, classfilter) && stringcontains(memory.name, filter) && stringnotcontains(memory.className, classnotfilter) && stringnotcontains(memory.name, notfilter)){
 		if(findasset){
-    		var(0) = findasset(memory.name, memory.className);
-    		assetpath = var(0)[0];
+    		assetpath = (findasset(memory.name, memory.className))[0];
 	    }else{
 		    assetpath = memory.name;
 		};
 		if(isnullorempty(assetpath)){
 			assetpath = memory.name;
 		};
-		var(1) = findsmaps(maps, memory.address);
-		if(isnull(var(1))){
+		var(0) = findsmaps(maps, memory.address);
+		var(1) = findmanagedheaps(mheaps, memory.address);
+		if(isnull(var(0))){
 		    var(2) = "unknown";
 		    var(3) = 0;  
 		    var(4) = 0;
 		    var(5) = 0;
 		    var(6) = 0;
 		}else{
-		    var(2) = var(1).module;
-		    var(3) = var(1).size;
-		    var(4) = var(1).vm_start;
-		    var(5) = var(1).rss;
-		    var(6) = var(1).pss;
+		    var(2) = var(0).module;
+		    var(3) = var(0).size;
+		    var(4) = var(0).vm_start;
+		    var(5) = var(0).rss;
+		    var(6) = var(0).pss;
+		};
+		if(isnull(var(1))){
+		    var(7) = 0;
+		    var(8) = 0;
+		}else{
+		    var(7) = var(1).size;
+		    var(8) = var(1).vm_start;
 		};
 		if(sectionAddr==0 || sectionAddr==var(4)){
     		scenepath = format("name:{0} class:{1} size:{2} addr:{3:X}",
     	        memory.name, memory.className, memory.size, memory.address
     	        );
-    		info = format("module:{0} section_size:{1} section_start:{2:X} rss:{3} pss:{4}",
-    	        var(2), var(3), var(4), var(5), var(6)
+    		info = format("module:{0} section_size:{1} section_start:{2:X} rss:{3} pss:{4} mheap_size:{5} mheap:{6:X}",
+    	        var(2), var(3), var(4), var(5), var(6), var(7), var(8)
     	        );
     	    order = var(4);
     	    value = memory.size;
@@ -67,6 +78,15 @@ filter
 	};
 };
 
+script(LoadManagedHeaps)args($paramInfo)
+{
+    if(!isnullorempty($paramInfo.Value)){
+        $paramInfo.Value = loadmanagedheaps($paramInfo.Value);
+        return(3600.0);
+    }else{
+        return(1.0);
+    };
+};
 script(LoadMaps)args($paramInfo)
 {
     if(!isnullorempty($paramInfo.Value)){

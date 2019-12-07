@@ -3375,8 +3375,8 @@ namespace ResourceEditApi
                     var mapsInfo = new ResourceEditUtility.SectionInfo();
                     var fields = line.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                     if (fields[0] == "Managed") {
-                        ulong size = ulong.Parse(fields[1], System.Globalization.NumberStyles.AllowHexSpecifier);
-                        ulong start = ulong.Parse(fields[2], System.Globalization.NumberStyles.AllowHexSpecifier);
+                        ulong size = ulong.Parse(fields[1]);
+                        ulong start = ulong.Parse(fields[2]);
                         mapsInfo.size = size;
                         mapsInfo.vm_start = start;
                         mapsInfo.vm_end = start + size;
