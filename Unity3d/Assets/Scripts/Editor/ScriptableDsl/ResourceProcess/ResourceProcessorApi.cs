@@ -200,6 +200,12 @@ internal static class ResourceEditUtility
         internal float triangle;
         internal List<InstrumentRecord> records = new List<InstrumentRecord>();
     }
+    internal class SectionInfo
+    {
+        internal ulong vm_start = 0;
+        internal ulong vm_end = 0;
+        internal ulong size = 0;
+    }
     internal class MapsInfo
     {
         internal ulong vm_start = 0;
@@ -414,6 +420,8 @@ internal static class ResourceEditUtility
         calc.Register("rowtoline", new Expression.ExpressionFactoryHelper<ResourceEditApi.RowToLineExp>());
         calc.Register("tabletohashtable", new Expression.ExpressionFactoryHelper<ResourceEditApi.TableToHashtableExp>());
         calc.Register("findrowfromhashtable", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindRowFromHashtableExp>());
+        calc.Register("loadmanagedheaps", new Expression.ExpressionFactoryHelper<ResourceEditApi.LoadManagedHeapsExp>());
+        calc.Register("findmanagedheaps", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindManagedHeapsExp>());
         calc.Register("loadmaps", new Expression.ExpressionFactoryHelper<ResourceEditApi.LoadMapsExp>());
         calc.Register("findmaps", new Expression.ExpressionFactoryHelper<ResourceEditApi.FindMapsExp>());
         calc.Register("loadsmaps", new Expression.ExpressionFactoryHelper<ResourceEditApi.LoadSmapsExp>());
@@ -3348,6 +3356,73 @@ namespace ResourceEditApi
                     }
                     else {
                         r = null;
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class LoadManagedHeapsExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var file = operands[0] as string;
+                var list = new List<ResourceEditUtility.SectionInfo>();
+                var lines = File.ReadAllLines(file);
+                foreach (var line in lines) {
+                    var mapsInfo = new ResourceEditUtility.SectionInfo();
+                    var fields = line.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (fields[0] == "Managed") {
+                        ulong size = ulong.Parse(fields[1], System.Globalization.NumberStyles.AllowHexSpecifier);
+                        ulong start = ulong.Parse(fields[2], System.Globalization.NumberStyles.AllowHexSpecifier);
+                        mapsInfo.size = size;
+                        mapsInfo.vm_start = start;
+                        mapsInfo.vm_end = start + size;
+                        list.Add(mapsInfo);
+                    }
+                }
+                list.Sort((a, b) => {
+                    if (a.vm_start < b.vm_start)
+                        return -1;
+                    else if (a.vm_start > b.vm_start)
+                        return 1;
+                    else if (a.vm_end < b.vm_end)
+                        return -1;
+                    else if (a.vm_end > b.vm_end)
+                        return 1;
+                    else
+                        return 0;
+                });
+                r = list;
+            }
+            return r;
+        }
+    }
+    internal class FindManagedHeapsExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var list = operands[0] as List<ResourceEditUtility.SectionInfo>;
+                var addr = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
+                if (null != list && addr > 0) {
+                    var low = 0;
+                    var high = list.Count - 1;
+                    while (low <= high) {
+                        var cur = (low + high) / 2;
+                        var vs = list[cur].vm_start;
+                        var ve = list[cur].vm_end;
+                        if (addr < vs)
+                            high = cur - 1;
+                        else if (addr >= ve)
+                            low = cur + 1;
+                        else {
+                            r = list[cur];
+                            break;
+                        }
                     }
                 }
             }
