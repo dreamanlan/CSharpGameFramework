@@ -354,6 +354,9 @@ internal static class ResourceEditUtility
         calc.Register("callscript", new Expression.ExpressionFactoryHelper<ResourceEditApi.CallScriptExp>());
         calc.Register("setredirect", new Expression.ExpressionFactoryHelper<ResourceEditApi.SetRedirectExp>());
         calc.Register("newitem", new Expression.ExpressionFactoryHelper<ResourceEditApi.NewItemExp>());
+        calc.Register("newextralist", new Expression.ExpressionFactoryHelper<ResourceEditApi.NewExtraListExp>());
+        calc.Register("extralistadd", new Expression.ExpressionFactoryHelper<ResourceEditApi.ExtraListAddExp>());
+        calc.Register("extralistclear", new Expression.ExpressionFactoryHelper<ResourceEditApi.ExtraListClearExp>());
         calc.Register("getreferenceassets", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetReferenceAssetsExp>());
         calc.Register("getreferencebyassets", new Expression.ExpressionFactoryHelper<ResourceEditApi.GetReferenceByAssetsExp>());
         calc.Register("calcrefcount", new Expression.ExpressionFactoryHelper<ResourceEditApi.CalcRefCountExp>());
@@ -1352,6 +1355,81 @@ namespace ResourceEditApi
                     item.PrepareShowInfo();
                     results.Add(item);
                     r = item;
+                }
+            }
+            return r;
+        }
+    }
+    internal class NewExtraListExp : Expression.AbstractExpression
+    {
+        protected override object DoCalc()
+        {
+            object r = null;
+            var list = new List<KeyValuePair<string, object>>();
+            for (int i = 0; i < m_Expressions.Count - 1; i += 2) {
+                var key = m_Expressions[i].Calc() as string;
+                var val = m_Expressions[i + 1].Calc();
+                if (null != key) {
+                    list.Add(new KeyValuePair<string, object>(key, val));
+                }
+            }
+            r = list;
+            return r;
+        }
+        protected override bool Load(Dsl.CallData callData)
+        {
+            for (int i = 0; i < callData.GetParamNum(); ++i) {
+                Dsl.CallData paramCallData = callData.GetParam(i) as Dsl.CallData;
+                if (null != paramCallData && paramCallData.GetParamNum() == 2) {
+                    var expKey = Calculator.Load(paramCallData.GetParam(0));
+                    m_Expressions.Add(expKey);
+                    var expVal = Calculator.Load(paramCallData.GetParam(1));
+                    m_Expressions.Add(expVal);
+                }
+            }
+            return true;
+        }
+        protected override bool Load(Dsl.FunctionData funcData)
+        {
+            for (int i = 0; i < funcData.GetStatementNum(); ++i) {
+                Dsl.CallData callData = funcData.GetStatement(i) as Dsl.CallData;
+                if (null != callData && callData.GetParamNum() == 2) {
+                    var expKey = Calculator.Load(callData.GetParam(0));
+                    m_Expressions.Add(expKey);
+                    var expVal = Calculator.Load(callData.GetParam(1));
+                    m_Expressions.Add(expVal);
+                }
+            }
+            return true;
+        }
+
+        private List<Expression.IExpression> m_Expressions = new List<Expression.IExpression>();
+    }
+    internal class ExtraListAddExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 3) {
+                var list = operands[0] as List<KeyValuePair<string, object>>;
+                string key = operands[1] as string;
+                object val = operands[2];
+                if (null != list && null != key) {
+                    list.Add(new KeyValuePair<string, object>(key, val));
+                }
+            }
+            return r;
+        }
+    }
+    internal class ExtraListClearExp : Expression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var list = operands[0] as List<KeyValuePair<string, object>>;
+                if (null != list) {
+                    list.Clear();
                 }
             }
             return r;

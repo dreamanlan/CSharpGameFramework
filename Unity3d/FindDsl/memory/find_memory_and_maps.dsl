@@ -14,6 +14,7 @@ input
 	    script("LoadMaps");
 	};
 	bool("ref", false);
+	bool("findasset", false);
 	float("pathwidth",240);
 	feature("source", "snapshot");
 	feature("menu", "6.Memory/slowly find memory and maps");
@@ -22,9 +23,12 @@ input
 filter
 {
 	if(memory.size >= maxSize && stringcontains(memory.className, classfilter) && stringcontains(memory.name, filter) && stringnotcontains(memory.className, classnotfilter) && stringnotcontains(memory.name, notfilter)){
-		//var(0) = findasset(memory.name, memory.className);
-		//assetpath = var(0)[0];
-		assetpath = memory.name;
+		if(findasset){
+    		var(0) = findasset(memory.name, memory.className);
+    		assetpath = var(0)[0];
+	    }else{
+		    assetpath = memory.name;
+		};
 		if(isnullorempty(assetpath)){
 			assetpath = memory.name;
 		};
