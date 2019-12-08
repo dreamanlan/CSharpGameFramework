@@ -3114,6 +3114,51 @@ namespace Expression
             return r;
         }
     }
+    internal class Str2UintExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var str = operands[0] as string;
+                uint v;
+                if (uint.TryParse(str, out v)) {
+                    r = v;
+                }
+            }
+            return r;
+        }
+    }
+    internal class Str2LongExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var str = operands[0] as string;
+                long v;
+                if (long.TryParse(str, out v)) {
+                    r = v;
+                }
+            }
+            return r;
+        }
+    }
+    internal class Str2UlongExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var str = operands[0] as string;
+                ulong v;
+                if (ulong.TryParse(str, out v)) {
+                    r = v;
+                }
+            }
+            return r;
+        }
+    }
     internal class Str2FloatExp : SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
@@ -3129,6 +3174,21 @@ namespace Expression
             return r;
         }
     }
+    internal class Str2DoubleExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var str = operands[0] as string;
+                double v;
+                if (double.TryParse(str, out v)) {
+                    r = v;
+                }
+            }
+            return r;
+        }
+    }
     internal class Hex2IntExp : SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
@@ -3138,6 +3198,51 @@ namespace Expression
                 var str = operands[0] as string;
                 int v;
                 if (int.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                    r = v;
+                }
+            }
+            return r;
+        }
+    }
+    internal class Hex2UintExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var str = operands[0] as string;
+                uint v;
+                if (uint.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                    r = v;
+                }
+            }
+            return r;
+        }
+    }
+    internal class Hex2LongExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var str = operands[0] as string;
+                long v;
+                if (long.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                    r = v;
+                }
+            }
+            return r;
+        }
+    }
+    internal class Hex2UlongExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var str = operands[0] as string;
+                ulong v;
+                if (ulong.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
                     r = v;
                 }
             }
@@ -6055,8 +6160,15 @@ namespace Expression
             Register("stringcontains", new ExpressionFactoryHelper<StringContainsExp>());
             Register("stringnotcontains", new ExpressionFactoryHelper<StringNotContainsExp>());
             Register("str2int", new ExpressionFactoryHelper<Str2IntExp>());
+            Register("str2uint", new ExpressionFactoryHelper<Str2UintExp>());
+            Register("str2long", new ExpressionFactoryHelper<Str2LongExp>());
+            Register("str2ulong", new ExpressionFactoryHelper<Str2UlongExp>());
             Register("str2float", new ExpressionFactoryHelper<Str2FloatExp>());
+            Register("str2double", new ExpressionFactoryHelper<Str2DoubleExp>());
             Register("hex2int", new ExpressionFactoryHelper<Hex2IntExp>());
+            Register("hex2uint", new ExpressionFactoryHelper<Hex2UintExp>());
+            Register("hex2long", new ExpressionFactoryHelper<Hex2LongExp>());
+            Register("hex2ulong", new ExpressionFactoryHelper<Hex2UlongExp>());
             Register("datetimestr", new ExpressionFactoryHelper<DatetimeStrExp>());
             Register("longdatestr", new ExpressionFactoryHelper<LongDateStrExp>());
             Register("longtimestr", new ExpressionFactoryHelper<LongTimeStrExp>());
