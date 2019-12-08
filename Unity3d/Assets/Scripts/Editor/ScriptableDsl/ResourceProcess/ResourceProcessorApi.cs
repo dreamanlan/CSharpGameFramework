@@ -1615,9 +1615,18 @@ namespace ResourceEditApi
         {
             object r = string.Empty;
             if (operands.Count >= 1) {
-                var obj = operands[0] as MemoryProfilerWindowForExtension.ThingInMemory;
-                if (null != obj) {
-                    r = ResourceProcessor.Instance.DrawThing(obj);
+                var obj = operands[0];
+                var thingObj = obj as MemoryProfilerWindowForExtension.ThingInMemory;
+                if (null != thingObj) {
+                    r = ResourceProcessor.Instance.DrawThing(thingObj);
+                }
+                else if (null != obj) {
+                    try {
+                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
+                        r = ResourceProcessor.Instance.DrawThing(addr);
+                    }
+                    catch {
+                    }
                 }
             }
             return r;
@@ -3862,6 +3871,14 @@ internal class MemoryObjectDrawer
         var managedObject = thing as MemoryProfilerWindowForExtension.ManagedObject;
         if (managedObject != null) {
             sb.AppendLine("[ManagedObject]");
+            sb.Append("class:");
+            sb.AppendLine(managedObject.typeDescription.name);
+            sb.Append("size:");
+            sb.Append(managedObject.size);
+            sb.AppendLine();
+            sb.Append("address:");
+            sb.AppendFormat("{0:X}", managedObject.address);
+            sb.AppendLine();
             if (managedObject.typeDescription.name == "System.String") {
                 sb.AppendLine("--string--");
                 sb.AppendLine(ReadString(managedObject.address));
@@ -3893,6 +3910,30 @@ internal class MemoryObjectDrawer
             sb.AppendLine();
             sb.AppendLine(DrawFields(staticFields.typeDescription, new MemoryProfilerWindowForExtension.BytesAndOffset() { bytes = staticFields.typeDescription.staticFieldBytes, offset = 0, pointerSize = s_UnpackedCrawl.virtualMachineInformation.pointerSize }, true));
         }
+
+        var nativeObject = thing as MemoryProfilerWindowForExtension.NativeUnityEngineObject;
+        if (nativeObject != null) {
+            sb.AppendLine("[NativeObject]");
+            sb.Append("caption:");
+            sb.AppendLine(nativeObject.caption);
+            sb.Append("class:");
+            sb.AppendLine(nativeObject.className);
+            sb.Append("size:");
+            sb.Append(nativeObject.size);
+            sb.AppendLine();
+            sb.Append("address:");
+            sb.AppendFormat("{0:X}", nativeObject.address);
+            sb.AppendLine();
+            sb.Append("hide flags:");
+            sb.AppendFormat("{0:X}",(int)nativeObject.hideFlags);
+            sb.AppendLine();
+            sb.Append("instance id:");
+            sb.Append(nativeObject.instanceID);
+            sb.AppendLine();
+            sb.Append("class id:");
+            sb.Append(nativeObject.classID);
+            sb.AppendLine();
+        }
         return sb.ToString();
     }
     internal MemoryProfilerWindowForExtension.ThingInMemory GetThingAt(ulong address)
@@ -3900,10 +3941,9 @@ internal class MemoryObjectDrawer
         if (!s_ObjectCache.ContainsKey(address)) {
             s_ObjectCache[address] = s_UnpackedCrawl.allObjects.OfType<MemoryProfilerWindowForExtension.ManagedObject>().FirstOrDefault(mo => mo.address == address);
         }
-
         return s_ObjectCache[address];
     }
-    internal string ReadString(ulong address)
+    private string ReadString(ulong address)
     {
         return MemoryProfilerWindowForExtension.StringTools.ReadString(MemoryProfilerWindowForExtension.ManagedHeapExtensions.Find(s_UnpackedCrawl.managedHeap, address, s_UnpackedCrawl.virtualMachineInformation), s_UnpackedCrawl.virtualMachineInformation);
     }
@@ -4001,12 +4041,22 @@ internal class MemoryObjectDrawer
                 default:
                     if (!typeDescription.isValueType) {
                         MemoryProfilerWindowForExtension.ThingInMemory item = GetThingAt(bytesAndOffset.ReadPointer());
-                        var mobj = item as MemoryProfilerWindowForExtension.ManagedObject;
-                        if (null != mobj && mobj.typeDescription.name == "System.String") {
-                            sb.Append(ReadString(mobj.address));
+                        if (null != item) {
+                            var mobj = item as MemoryProfilerWindowForExtension.ManagedObject;
+                            if (null != mobj) {
+                                if (mobj.typeDescription.name == "System.String") {
+                                    sb.Append(ReadString(mobj.address));
+                                }
+                                else {
+                                    sb.AppendFormat("[@context.Content = drawthing(0x{0:X});]", mobj.address);
+                                }
+                            }
+                            else {
+                                sb.Append(item.caption);
+                            }
                         }
                         else {
-                            sb.Append(item.caption);
+                            sb.AppendFormat("unknown({0:X})", bytesAndOffset.ReadPointer());
                         }
                     }
                     else {
@@ -4031,8 +4081,12 @@ internal class MemoryObjectDrawer
         foreach (var rb in thingInMemories) {
             var caption = rb == null ? "null" : rb.caption;
             var managedObject = rb as MemoryProfilerWindowForExtension.ManagedObject;
-            if (managedObject != null && managedObject.typeDescription.name == "System.String")
-                caption = ReadString(managedObject.address);
+            if (managedObject != null) {
+                if (managedObject.typeDescription.name == "System.String")
+                    caption = ReadString(managedObject.address);
+                else
+                    caption = string.Format("[@context.Content = drawthing(0x{0:X});]", managedObject.address);
+            }
             sb.AppendLine(caption);
         }
     }

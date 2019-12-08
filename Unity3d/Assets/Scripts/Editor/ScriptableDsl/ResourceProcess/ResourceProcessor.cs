@@ -1770,6 +1770,16 @@ internal sealed class ResourceProcessor
 
         return list;
     }
+    internal string DrawThing(ulong addr)
+    {
+        var thing = s_MemoryObjectDrawer.GetThingAt(addr);
+        if (null != thing) {
+            return s_MemoryObjectDrawer.DrawThing(thing);
+        }
+        else {
+            return string.Format("unknown({0:X})", addr);
+        }
+    }
     internal string DrawThing(MemoryProfilerWindowForExtension.ThingInMemory thing)
     {
         return s_MemoryObjectDrawer.DrawThing(thing);
