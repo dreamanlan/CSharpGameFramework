@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.Experimental.UIElements"
+    xmlns:editor="UnityEditor.Experimental.UIElements"
+    xmlns:upm="UnityEditor.PackageManager.UI"
+
+xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+xsi:schemaLocation="
+                        UnityEngine.Experimental.UIElements ../../../../UIElementsSchema/UnityEngine.Experimental.UIElements.xsd
+                        UnityEditor.Experimental.UIElements ../../../../UIElementsSchema/UnityEditor.Experimental.UIElements.xsd
+                        UnityEditor.PackageManager.UI ../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd
+"
+>
+  <engine:VisualElement name="snapshotListItem">
+
+    <engine:VisualElement name="previewImage">
+      <engine:Image name="previewImage" class="previewImage">
+        <engine:Image name="editorIcon" class="platformIcon"/>
+        <engine:Image name="platformIcon" class="platformIcon"/>
+      </engine:Image>
+    </engine:VisualElement>
+
+    <engine:VisualElement name="metaDataAndButtons">
+      <engine:VisualElement name="snapshotMetaData">
+        <engine:TextField name="snapshotName" class="snapshotMetaDataText snapshotMetaDataTextField hiddenFromLayout" text="MemoryCapture-63679245784"/>
+        <engine:Label name="snapshotName" class="snapshotMetaDataText notHiddenFromLayout" text="MemoryCapture-63679245784"/>
+        <engine:Label name="secondRowMetaData" class="snapshotMetaDataText" text="09/04/2018 18:05:15"/>
+      </engine:VisualElement>
+
+      <engine:VisualElement name="snapshotButtons">
+        <engine:Image name="optionButton" class="iconButton optionButtonIcon" tooltip="File Options"/>
+        <engine:Button name="openSnapshotButton" class="snapshotButton" text="Open" tooltip="Open snapshot in view."/>
+        <engine:Button name="closeSnapshotButton" class="snapshotButton" text="Close" tooltip="Close snapshot in view."/>
+      </engine:VisualElement>
+    </engine:VisualElement>
+  </engine:VisualElement>
+</engine:UXML>

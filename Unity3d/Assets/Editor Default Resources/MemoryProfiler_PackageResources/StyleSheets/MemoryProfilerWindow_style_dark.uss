@@ -1,0 +1,84 @@
+/**********************************************************************************************************************/
+/* Top-level UI                                                                                                       */
+/**********************************************************************************************************************/
+
+#backwardsInHistoryButton.historyButtonIcon{
+    background-image: resource("Icons/d_Profiler.PrevFrame.png");
+}
+
+#forwardsInHistoryButton.historyButtonIcon{
+    background-image: resource("Icons/d_Profiler.NextFrame.png");
+}
+
+/**********************************************************************************************************************/
+/* Toggle                                                                                                             */
+/**********************************************************************************************************************/
+
+Toggle.radioButton > #Checkmark {
+    background-image: resource("Builtin Skins/DarkSkin/Images/radio.png");
+}
+
+Toggle.radioButton:hover:active > #Checkmark {
+    background-image: resource("Builtin Skins/DarkSkin/Images/radio act.png");
+}
+
+Toggle.radioButton:focus > #Checkmark {
+    background-image: resource("Builtin Skins/DarkSkin/Images/radio.png"); /* would ideally be "radio focus.png" but that does not exist*/
+}
+
+Toggle.radioButton:checked > #Checkmark {
+    background-image: resource("Builtin Skins/DarkSkin/Images/radio on.png");
+}
+
+Toggle.radioButton:hover:active:checked > #Checkmark {
+    background-image: resource("Builtin Skins/DarkSkin/Images/radio on act.png");
+}
+
+Toggle.radioButton:focus:checked > #Checkmark {
+    background-image: resource("Builtin Skins/DarkSkin/Images/radio on.png"); /* would ideally be "radio on focus.png" but that does not exist*/
+}
+
+/**********************************************************************************************************************/
+/* Snapshot Items                                                                                                   */
+/**********************************************************************************************************************/
+
+#snapshotListItem.evenRow{
+    background-color: #313131;
+}
+
+#snapshotButtons.oddRow{
+    background-color: #383838;
+}
+
+#snapshotButtons.evenRow{
+    background-color: #313131;
+}
+
+#optionButton{
+    background-image: resource("Icons/d__Popup.png");
+}
+
+.previewImage{
+    background-color: #242424;
+}
+
+Button#diffOpenSnapshots.selectedSnapshot{
+    color: #F0F0F0;
+    background-image: resource("Builtin Skins/DarkSkin/Images/btn on.png");
+}
+
+Label.snapshotIsOpen{
+    color: rgba(255, 255, 255, 0.4)
+}
+
+Label.snapshotIsInView{
+    color: rgba(255, 255, 255, 0.4)
+}
+
+/**********************************************************************************************************************/
+/* Splitter                                                                                                           */
+/**********************************************************************************************************************/
+
+#splitterDraglineAnchor {
+    background-color: #212121;
+}

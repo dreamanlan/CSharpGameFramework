@@ -381,7 +381,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             }
         }
 
-        const string k_DefaultViewFilePath = "Packages/com.unity.memoryprofiler/Package Resources/MemView.xml";
+        const string k_DefaultViewFilePath = "Assets/Editor Default Resources/MemoryProfiler_PackageResources/MemView.xml";
 
         public History history = new History();
 

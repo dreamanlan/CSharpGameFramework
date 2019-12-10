@@ -1,0 +1,176 @@
+<ProfilerView name="default">
+    <View name="Alloc/ByNativeObject">
+
+        <Data type="select">
+          <SelectSet>
+            <Select name="alloc" table="RawNativeAllocation"/>
+            <Select name="obj" table="RawNativeObject">
+                <Where column="rootReferenceId" op="equal" value="alloc.rootReferenceId"/>
+            </Select>
+            <Select name="rr" table="RawRootReference">
+                <Where column="id" op="equal" value="alloc.rootReferenceId"/>
+            </Select>
+            <Select name="mr" table="RawNativeMemoryRegion">
+                <Where column="_row_index_" op="equal" value="alloc.memoryRegionIndex"/>
+            </Select>
+          </SelectSet>
+            <!--
+         Column statements add a column to the view and define its behaviour 
+           Attributes:
+             name: identifier for that column 
+             value: data to fill the cell with, can reference identifiers in the Select statments 
+             groupable: defined how this column can be grouped. 
+               Groups hierarchy is always from first defined groupable column as parents to last groupable columns as childrens
+               values: 
+                 duplicate: group values that are equal together 
+                 tree: group in a tree structure, parent/child relationship is define in a ParentGroup sub-statement 
+             merged: defined how this column's value is computed when another column is grouping 
+               values:
+                 sum: add all together 
+                 count: count the number of grouped entries 
+                 avg: compute the average of grouped entries' value
+                 ... many other algorithms here ... TBD 
+        -->
+            <Column name="index" value="_row_index_" width="42"/>
+            <Column name="ObjectName" value="obj.name" groupable="duplicate" defaultGrouped="1"/>
+            <Column name="AreaName" value="rr.areaName" groupable="duplicate" defaultGrouped="2"/>
+            <Column name="MemRegion" value="mr.name" groupable="duplicate" defaultGrouped="3">
+                <Link view="Alloc/ByMemRegion">
+                    <!-- When clicking on a cell of that column, the profiler view change to the linked one -->
+                    <!-- The UI shall implement ways to go back and forward between views -->
+                    <!-- Where statments indicate which entry to highlight in the target view -->
+                    <!-- Will highlight the first entry that match all the Where statements -->
+                    <Where column="Name" op="equal" value="mr.name"/>
+                </Link>
+            </Column>
+
+            <Column name="MemRegionIndex" value="alloc.memoryRegionIndex"/>
+            <Column name="Address" value="alloc.address" isKey="true"/>
+            <Column name="AllocCount" value="1" merged="count"/>
+            <Column name="Size" value="alloc.size" merged="sum"/>
+            <Column name="MinSize" value="alloc.size" merged="min"/>
+            <Column name="MaxSize" value="alloc.size" merged="max"/>
+            <Column name="AverageSize" value="alloc.size" merged="average"/>
+            <Column name="MedianSize" value="alloc.size" merged="median"/>
+            <Column name="Deviation" value="alloc.size" merged="deviation"/>
+        </Data>
+        <Filter>
+            <!-- default sort aplies to all group level-->
+            <DefaultSort>
+                <Level column="Size" order="des"/>
+            </DefaultSort>
+            <Group column="ObjectName">
+                <Group column="AreaName">
+                    <Group column="MemRegion">
+                    </Group>
+                </Group>
+            </Group>
+        </Filter>
+        <!--
+    This view will look like this:
+    
+    | ObjectName  | AreaName    | MemRegion     | AllocCount | Size | Min Size | Max Size | AverageSize | Median Size | Devication |
+    |[-] BoxCrate |             |               | 11         | 1004 | ##       | ##       | 91.27       | ##          | ##         |
+    |             |[-] MemPool  |               | 6          | 896  | ##       | ##       | 149.3       | ##          | ##         |
+    |             |             |[-] SmallPool0 | 4          | 512  | ##       | ##       | 128         | ##          | ##         |
+    |             |             |               |            | 128  | ##       | ##       |             | ##          | ##         |
+    |             |             |               |            | 256  | ##       | ##       |             | ##          | ##         |
+    |             |             |               |            | 64   | ##       | ##       |             | ##          | ##         |
+    |             |             |               |            | 64   | ##       | ##       |             | ##          | ##         |
+    |             |             |[-] SmallPool1 | 2          | 384  | ##       | ##       | 192         | ##          | ##         |
+    |             |             |               |            | 256  | ##       | ##       |             | ##          | ##         |
+    |             |             |               |            | 128  | ##       | ##       |             | ##          | ##         |
+    |             |[-] Manager  |               | 5          | 108  | ##       | ##       | 21.6        | ##          | ##         |
+    |             |             |[-] SmallPool0 | 3          | 36   | ##       | ##       | 12          | ##          | ##         |
+    |             |             |               |            | 12   | ##       | ##       |             | ##          | ##         |
+    |             |             |               |            | 12   | ##       | ##       |             | ##          | ##         |
+    |             |             |               |            | 12   | ##       | ##       |             | ##          | ##         |
+    |             |             |[-] SmallPool1 | 2          | 72   | ##       | ##       | 36          | ##          | ##         |
+    |             |             |               |            | 8    | ##       | ##       |             | ##          | ##         |
+    |             |             |               |            | 64   | ##       | ##       |             | ##          | ##         |
+    |[+] Barrel   |             |               | 12086      | 128k | ##       | ##       | 10.84       | ##          | ##         |
+    | ...         | ...         | ...           | ...        | ...  | ##       | ##       | ...         | ##          | ##         |
+    -->
+    </View>
+
+    <View name="Alloc/ByRoot">
+        <Data type="select">
+          <SelectSet>
+            <Select name="alloc" table="RawNativeAllocation"/>
+
+            <Select name="rr" table="RawRootReference">
+                <Where column="id" op="equal" value="alloc.rootReferenceId"/>
+            </Select>
+          </SelectSet>
+            <Column name="index" value="_row_index_" width="42"/>
+            <Column name="Area" value="rr.areaName" groupable="duplicate" defaultGrouped="1"/>
+            <Column name="Object" value="rr.objectName" groupable="duplicate"/>
+
+            <Column name="Address" value="alloc.address" isKey="true"/>
+            <Column name="AllocCount" value="1" merged="count"/>
+            <Column name="Size" value="alloc.size" groupable="duplicate" merged="sum"/>
+            <Column name="MinSize" value="alloc.size" merged="min"/>
+            <Column name="MaxSize" value="alloc.size" merged="max"/>
+            <Column name="AverageSize" value="alloc.size" merged="average"/>
+            <Column name="MedianSize" value="alloc.size" merged="median"/>
+            <Column name="Deviation" value="alloc.size" merged="deviation"/>
+        </Data>
+        <Filter>
+            <!-- default sort aplies to all group level-->
+            <DefaultSort>
+                <Level column="Size" order="des"/>
+            </DefaultSort>
+            <Group column="Area">
+            </Group>
+        </Filter>
+
+        <!--
+    This view will look like this:
+    
+    
+        | Area       | Object      | AllocCount | Size | Min Size | Max Size | AverageSize | Median Size | Devication |
+        |[-] MemPool |             | 7          | 548  | ##       | ##       | 78.28       | ##          | ##         |
+        |            | [-]RTTI     | 3          | 448  | ##       | ##       | 149.3       | ##          | ##         |
+        |            |             |            | 128  | ##       | ##       |             | ##          | ##         |
+        |            |             |            | 256  | ##       | ##       |             | ##          | ##         |
+        |            |             |            | 64   | ##       | ##       |             | ##          | ##         |
+        |            | [-]Profiler | 4          | 100  | ##       | ##       | 25          | ##          | ##         |
+        |            |             |            | 64   | ##       | ##       |             | ##          | ##         |
+        |            |             |            | 12   | ##       | ##       |             | ##          | ##         |
+        |            |             |            | 12   | ##       | ##       |             | ##          | ##         |
+        |            |             |            | 12   | ##       | ##       |             | ##          | ##         |
+        |[+] Manager |             | 4          | 456  | ##       | ##       | 65.14       | ##          | ##         |
+        | ...        | ...         | ...        | ...  | ...      | ...      | ...         | ...         | ...        |
+    -->
+    </View>
+    <View name="Alloc/ByMemRegion">
+        <Data type="select">
+          <SelectSet>
+            <Select name="alloc" table="RawNativeAllocation"/>
+            <Select name="mr" table="RawNativeMemoryRegion">
+                <Where column="_row_index_" op="equal" value="alloc.memoryRegionIndex"/>
+            </Select>
+          </SelectSet>
+            <Column name="Name" value="mr.name" groupable="duplicate" />
+
+
+            <Column name="index" value="_row_index_" width="42" isKey="true"/>
+            <Column name="AllocCount" value="1" merged="count"/>
+            <Column name="Size" value="alloc.size" merged="sum"/>
+            <Column name="MinSize" value="alloc.size" merged="min"/>
+            <Column name="MaxSize" value="alloc.size" merged="max"/>
+            <Column name="AverageSize" value="alloc.size" merged="average"/>
+            <Column name="MedianSize" value="alloc.size" merged="median"/>
+            <Column name="Deviation" value="alloc.size" merged="deviation"/>
+        </Data>
+        <Filter>
+            <!-- default sort aplies to all group level-->
+            <DefaultSort>
+                <Level column="Size" order="des"/>
+            </DefaultSort>
+            <Group column="Name">
+            </Group>
+        </Filter>
+    </View>
+
+</ProfilerView>

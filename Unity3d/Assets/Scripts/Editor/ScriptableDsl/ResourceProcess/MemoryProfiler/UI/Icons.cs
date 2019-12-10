@@ -9,7 +9,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
 {
     internal static class Icons
     {
-        public const string IconFolder = "Packages/com.unity.memoryprofiler/Package Resources/Icons/";
+        public const string IconFolder = "Assets/Editor Default Resources/MemoryProfiler_PackageResources/Icons/";
         public static Texture2D MemoryProfilerWindowTabIcon { get { return LoadIcon(IconFolder + "Memory Profiler.png"); } }
 
         static Texture2D LoadIcon(string resourcePath, bool autoScale = false)

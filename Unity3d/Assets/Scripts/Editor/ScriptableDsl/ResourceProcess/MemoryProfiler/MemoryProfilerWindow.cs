@@ -37,7 +37,6 @@ using UnityEngine.Experimental.Networking.PlayerConnection;
 
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using Unity.EditorCoroutines.Editor;
 using Unity.MemoryProfilerForExtension.Editor.UI;
 using Unity.MemoryProfilerForExtension.Editor.Legacy;
 using Unity.MemoryProfilerForExtension.Editor.Legacy.LegacyFormats;
@@ -118,7 +117,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
         const string k_RawCategoryName = "Raw";
         const string k_DiffRawCategoryName = "Diff Raw";
 
-        const string k_PackageResourcesPath = "Packages/com.unity.memoryprofiler/Package Resources/";
+        const string k_PackageResourcesPath = "Assets/Editor Default Resources/MemoryProfiler_PackageResources/";
 
         const string k_UxmlFilesPath = k_PackageResourcesPath + "UXML/";
         const string k_WindowUxmlPath = k_UxmlFilesPath + "MemoryProfilerWindow.uxml";

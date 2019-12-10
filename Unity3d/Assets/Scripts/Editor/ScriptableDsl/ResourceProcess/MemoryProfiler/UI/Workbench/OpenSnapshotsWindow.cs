@@ -41,9 +41,9 @@ namespace Unity.MemoryProfilerForExtension.Editor
         VisualElement m_SecondSnapshotHolder;
         VisualElement m_DiffButtonHolder;
 
-        const string k_UxmlPath = "Packages/com.unity.memoryprofiler/Package Resources/UXML/OpenSnapshotsWindow.uxml";
-        const string k_CommonStyleSheetPath = "Packages/com.unity.memoryprofiler/Package Resources/StyleSheets/OpenSnapshotsWindow_style.uss";
-        const string k_OpenSnapshotItemUxmlPath = "Packages/com.unity.memoryprofiler/Package Resources/UXML/OpenSnapshotItem.uxml";
+        const string k_UxmlPath = "Assets/Editor Default Resources/MemoryProfiler_PackageResources/UXML/OpenSnapshotsWindow.uxml";
+        const string k_CommonStyleSheetPath = "Assets/Editor Default Resources/MemoryProfiler_PackageResources/StyleSheets/OpenSnapshotsWindow_style.uss";
+        const string k_OpenSnapshotItemUxmlPath = "Assets/Editor Default Resources/MemoryProfiler_PackageResources/UXML/OpenSnapshotItem.uxml";
         const string k_SelectedSnapshotClassName = "selectedSnapshot";
 
         static readonly bool k_SplitWidthEvenly = true;

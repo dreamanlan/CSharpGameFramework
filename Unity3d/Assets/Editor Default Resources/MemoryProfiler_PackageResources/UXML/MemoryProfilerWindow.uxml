@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.Experimental.UIElements"
+    xmlns:editor="UnityEditor.Experimental.UIElements"
+    xmlns:upm="UnityEditor.PackageManager.UI"
+
+xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+xsi:schemaLocation="
+                        UnityEngine.Experimental.UIElements ../../../../UIElementsSchema/UnityEngine.Experimental.UIElements.xsd
+                        UnityEditor.Experimental.UIElements ../../../../UIElementsSchema/UnityEditor.Experimental.UIElements.xsd
+                        UnityEditor.PackageManager.UI ../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd
+"
+>
+    <engine:VisualElement name="sidebar">
+      <editor:Toolbar name="sidebarToolbar">
+        <editor:ToolbarSpacer class="toolbarSideBumper"/>
+        <engine:VisualElement name="attachToPlayerMenuPlaceholder"/>
+        <editor:ToolbarSpacer class="toolbarFlexSpacer"/>
+        <editor:ToolbarButton name="captureButton" text="Capture Player" tooltip="Captures a memory snapshot. Warning, this can take a moment."/>
+        <editor:ToolbarButton name="importButton" text="Import..." tooltip="Import capture information from a file."/>
+        <editor:ToolbarSpacer class="toolbarSideBumper"/>
+      </editor:Toolbar>
+      <engine:VisualElement name="sidebarContent">
+        <engine:Label name="emptyWorkbenchText" class="guidanceText" text="To start analyzing memory, import or capture a snapshot." />
+        <engine:ScrollView name="snapshotListSidebar" class="stretchContentWidth">
+        </engine:ScrollView>
+      </engine:VisualElement>
+    </engine:VisualElement>
+
+    <engine:VisualElement name="mainWindow">
+      <editor:Toolbar name="mainWindowToolbar">
+        <editor:ToolbarSpacer class="toolbarSideBumper"/>
+        <engine:VisualElement name="viewSelectorMenuPlaceholder"/>
+        <editor:ToolbarButton name="backwardsInHistoryButton" tooltip="Previous view" class="iconButton">
+          <engine:Image name="backwardsInHistoryButton" class="iconButton historyButtonIcon"/>
+        </editor:ToolbarButton>
+        <editor:ToolbarButton name="forwardsInHistoryButton" tooltip="Next view" class="iconButton">
+          <engine:Image name="forwardsInHistoryButton" class="iconButton historyButtonIcon"/>
+        </editor:ToolbarButton>
+        <engine:VisualElement class="toolbarFlexSpacer"/>
+        <editor:Toolbar name="ToolbarExtension">
+        </editor:Toolbar>
+        <editor:ToolbarSpacer class="toolbarSideBumper"/>
+      </editor:Toolbar>
+        <editor:VisualSplitter name="mainWindowContent" class="verticalSplitter">
+        </editor:VisualSplitter>
+    </engine:VisualElement>
+</engine:UXML>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.Experimental.UIElements"
+    xmlns:editor="UnityEditor.Experimental.UIElements"
+    xmlns:upm="UnityEditor.PackageManager.UI"
+
+xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+xsi:schemaLocation="
+                        UnityEngine.Experimental.UIElements ../../../../UIElementsSchema/UnityEngine.Experimental.UIElements.xsd
+                        UnityEditor.Experimental.UIElements ../../../../UIElementsSchema/UnityEditor.Experimental.UIElements.xsd
+                        UnityEditor.PackageManager.UI ../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd
+"
+>
+  <engine:VisualElement name="openSnapshotsWindow">
+    <editor:Toolbar name="openSnapshotsWindowToolbar">
+      <editor:ToolbarSpacer/>
+      <editor:ToolbarButton name="swapOpenSnapshots" text="Swap" tooltip="Swap left and right snapshots."/>
+      <editor:ToolbarSpacer/>
+    </editor:Toolbar>
+    <engine:VisualElement name="openSnapshotsWindowContent">
+      <engine:VisualElement name="openSnapshotsWindowFirstSnapshotHolder" class="openSnapshotItemHolder">
+
+      </engine:VisualElement>
+      <engine:VisualElement name="openSnapshotsWindowDiffSnapshotSpace">
+        <engine:Button name="diffOpenSnapshots" text="Diff" tooltip="Show the difference between the left and right snapshot"/>
+      </engine:VisualElement>
+      <engine:VisualElement name="openSnapshotsWindowSecondSnapshotHolder" class="openSnapshotItemHolder">
+
+      </engine:VisualElement>
+    </engine:VisualElement>
+  </engine:VisualElement>
+</engine:UXML>

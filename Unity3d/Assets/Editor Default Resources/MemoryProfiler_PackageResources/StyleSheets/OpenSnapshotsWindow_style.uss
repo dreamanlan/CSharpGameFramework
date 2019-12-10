@@ -1,0 +1,72 @@
+/**********************************************************************************************************************/
+/* OpenSnapshotsWindow                                                                                                */
+/**********************************************************************************************************************/
+#openSnapshotsWindowToolbar{
+    justify-content: flex-end;
+}
+#openSnapshotsWindowContent{
+    flex-direction: row;
+    overflow: hidden;
+}
+
+.openSnapshotItemHolder{
+    flex-direction: row;
+    align-items: center;
+    min-width: 96px;
+    flex-grow: 1;
+    margin-top: 5px;
+}
+
+#openSnapshotsWindowDiffSnapshotSpace{
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+}
+
+#openSnapshotItem{
+    align-items: center;
+    height: 114px;
+}
+
+Button#showSnapshotButton{
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#openSnapshotMetaDataContainer{
+    flex-direction: row;
+    flex-grow: 1;
+}
+
+#openSnapshotMetaData{
+    position: relative;
+    flex-grow: 1;
+    left: 0;
+    top: 0;
+}
+
+#openSnapshotMetaData Label{
+    flex-grow: 1;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    -unity-text-align: upper-center;
+}
+
+Image#previewImage.selectedSnapshot{
+    border-left-width: 2px;
+    border-top-width: 2px;
+    border-right-width: 2px;
+    border-bottom-width: 2px;
+    border-color: #3E7DE7;
+}

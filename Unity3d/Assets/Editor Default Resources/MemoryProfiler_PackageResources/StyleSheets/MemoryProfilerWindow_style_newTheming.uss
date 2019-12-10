@@ -1,0 +1,4 @@
+ToolbarSpacer.toolbarSideBumper{
+    visibility: hidden;
+    width: 0;
+}

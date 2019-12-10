@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<engine:UXML
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:engine="UnityEngine.Experimental.UIElements"
+    xmlns:editor="UnityEditor.Experimental.UIElements"
+    xmlns:upm="UnityEditor.PackageManager.UI"
+
+xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
+xsi:schemaLocation="
+                        UnityEngine.Experimental.UIElements ../../../../UIElementsSchema/UnityEngine.Experimental.UIElements.xsd
+                        UnityEditor.Experimental.UIElements ../../../../UIElementsSchema/UnityEditor.Experimental.UIElements.xsd
+                        UnityEditor.PackageManager.UI ../../../../UIElementsSchema/UnityEditor.PackageManager.UI.xsd
+"
+>
+  <engine:VisualElement name="openSnapshotItem">
+
+    <engine:VisualElement name="previewImage">
+      <engine:Image name="previewImage" class="previewImage">
+        <engine:Image name="editorIcon" class="platformIcon"/>
+        <engine:Image name="platformIcon" class="platformIcon"/>
+      </engine:Image>
+    </engine:VisualElement>
+
+    <engine:VisualElement name="openSnapshotMetaDataContainer">
+      <engine:VisualElement name="openSnapshotMetaData">
+        <engine:Label name="noDataLoaded" class="snapshotMetaDataText openSnapshotMetaDataText snapshotMetaDataName" text="No snapshot loaded"/>
+        <engine:Label name="snapshotName" class="snapshotMetaDataText openSnapshotMetaDataText snapshotMetaDataName" text=""/>
+        <engine:Label name="snapshotDate" class="snapshotMetaDataText openSnapshotMetaDataText snapshotMetaDataDate" text=""/>
+        <engine:Label name="snapshotAge" class="snapshotMetaDataText openSnapshotMetaDataText snapshotMetaDataAge" text=""/>
+      </engine:VisualElement>
+    </engine:VisualElement>
+  </engine:VisualElement>
+</engine:UXML>

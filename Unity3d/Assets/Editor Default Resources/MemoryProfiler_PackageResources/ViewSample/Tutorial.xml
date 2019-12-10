@@ -1,0 +1,162 @@
+<ProfilerView name="default">
+
+  <!-- 
+    Define a table with 1 column and 3 rows 
+  -->
+  <View name="Tutorial1DataNode">
+    <!-- Defines data to be of type 'node' which allows to enter data for each rows -->
+    <Data type="node">
+      <!-- a 'Node' will be a row into the table -->
+      
+      <!-- Define row 0 -->
+      <Node>
+        <!-- define the value for the column 'Name' for the current row -->
+        <Column name="Name" value="First Node" literal="true"/> <!-- when 'literal' is true, the 'value' is not parsed for identifiers -->
+      </Node>
+      
+      <!-- Define row 1 -->
+      <Node>
+        <Column name="Name" value="Second Node" literal="true"/>
+      </Node>
+      
+      <!-- Define row 2 -->
+      <Node>
+        <Column name="Name" value="Third Node" literal="true"/>
+      </Node>
+    </Data>
+  </View>
+  
+  <!-- 
+    Define a table with 1 column and 3 rows
+    the first row expand to 2 sub rows
+  -->
+  <View name="Tutorial2DataNodeNested">
+    <Data type="node">
+      <Node>
+        <Column name="Name" value="First Node" literal="true"/>
+        <!-- Data can be nested under any Node -->
+        <Data type="node">
+          <Node>
+            <Column name="Name" value="First Nested Node" literal="true"/>
+          </Node>
+          <Node>
+            <Column name="Name" value="Second Nested Node" literal="true"/>
+          </Node>
+        </Data>
+      </Node>
+      <Node>
+        <Column name="Name" value="Second Node" literal="true"/>
+      </Node>
+      <Node>
+        <Column name="Name" value="Third Node" literal="true"/>
+      </Node>
+    </Data>
+  </View>
+
+  <!-- 
+    Define a table with 3 columns ('Address', 'Size' and 'Root') filled with data from a snapshot's native allocations 
+  -->
+  <View name="Tutorial3DataSelect">
+    <!-- 
+      Define data to be of type 'select' which allows to retreive data from the database 
+      using select statement similar to SQL
+    -->
+    <Data type="select">
+
+      <!-- defines data input for this view -->
+      <SelectSet>
+        <!-- select all data from table 'RawNativeAllocation' -->
+        <Select name="alloc" table="RawNativeAllocation"/>
+      </SelectSet>
+
+      <!-- First column is called 'Root' and use the 'rootReferenceId' value from 'RawNativeAllocation' -->
+      <Column name="Root" value="alloc.rootReferenceId"/>
+      
+      <!-- Second column is called 'Address' and use the 'address' value from 'RawNativeAllocation' -->
+      <Column name="Address" value="alloc.address" isKey="true"/> <!-- 'isKey' sets the column as the primary key which is used when diffing 2 instances for this view-->
+
+      <!-- Third column is caleld 'Size' and use the 'size' value from 'RawNativeAllocation' -->
+      <Column name="Size" value="alloc.size"/>
+      
+    </Data>
+  </View>
+
+  <!-- 
+    Cross reference 2 tables to display allocation's root name instead of id
+  -->
+  <View name="Tutorial4CrossReference">
+    <Data type="select">
+      <SelectSet>
+        <Select name="alloc" table="RawNativeAllocation"/>
+        <!-- select data from RawRootReference that matches the allocation root id -->
+        <Select name="root" table="RawRootReference">
+          <Where column="id" op="equal" value="alloc.rootReferenceId"/>
+        </Select>
+      </SelectSet>
+
+      <!-- 'Root' column now uses the 'areaName' from the row in 'RawRootReference' with matching 'id' for each allocations -->
+      <Column name="Root" value="root.areaName"/>
+      <Column name="Address" value="alloc.address" isKey="true"/>
+      <Column name="Size" value="alloc.size"/>
+    </Data>
+  </View>
+
+
+  <!-- 
+    Create a link on the 'Root' column to the RawRootReference table. 
+    Clicking the link will open the RawRootReference.
+  -->
+  <View name="Tutorial5Link">
+    <Data type="select">
+      <SelectSet>
+        <Select name="alloc" table="RawNativeAllocation"/>
+        <Select name="root" table="RawRootReference">
+          <Where column="id" op="equal" value="alloc.rootReferenceId"/>
+        </Select>
+      </SelectSet>
+
+      <Column name="Address" value="alloc.address" isKey="true"/>
+      <Column name="Size" value="alloc.size"/>
+      <Column name="Root" value="root.areaName">
+        <!-- Add a link on this column to the 'RawRootReference' table-->
+        <Link view="RawRootReference">
+          <!-- when the link is click, the 'RawRootReference' table is open and the first row 
+               that satisfies the 'where' condition will be highlighted
+          -->
+          <Where column="id" op="equal" value="root.id"/>
+        </Link>
+      </Column>
+    </Data>
+  </View>
+
+  <!-- 
+    Create a link on the 'Root' column to the RawRootReference table. 
+    Clicking the link will open the RawRootReference.
+  -->
+  <View name="Tutorial6Filter">
+    <Data type="select">
+      <SelectSet>
+        <Select name="alloc" table="RawNativeAllocation"/>
+        <Select name="root" table="RawRootReference">
+          <Where column="id" op="equal" value="alloc.rootReferenceId"/>
+        </Select>
+      </SelectSet>
+
+      <Column name="Address" value="alloc.address" isKey="true"/>
+      <Column name="Size" value="alloc.size"/>
+      <!-- define the column 'Root' to be groupable using the 'duplicate' algorithm. -->
+      <Column name="Root" value="root.areaName" groupable="duplicate">
+        <Link view="RawRootReference">
+          <Where column="id" op="equal" value="root.id"/>
+        </Link>
+      </Column>
+    </Data>
+    
+    <!-- Define default filter applied on this view. -->
+    <Filter>
+      <!-- Group by column root -->
+      <Group column="Root"/>
+    </Filter>
+  </View>
+
+</ProfilerView>
