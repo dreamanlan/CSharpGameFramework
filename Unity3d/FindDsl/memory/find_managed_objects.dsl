@@ -23,7 +23,7 @@ filter
 	      memory.name, memory.className, memory.size, memory.refCount, memory.refOtherCount
 	    );
 	  value = memory.size;
-	  extraobject = memory.memoryObject;
+	  extraobject = memory.objectData;
 	  extralistbuild = "BuildExtraList";
 	  1;
 	}else{

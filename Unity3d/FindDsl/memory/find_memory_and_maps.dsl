@@ -17,7 +17,6 @@ input
 	    file("txt");
 	    script("LoadMaps");
 	};
-	bool("ref", false);
 	bool("findasset", false);
 	float("pathwidth",240);
 	feature("source", "snapshot");
@@ -62,9 +61,8 @@ filter
     	        );
     	    order = var(4);
     	    value = memory.size;
-    	    if(ref){
-        	    extralist = findshortestpathtoroot(memory.memoryObject);
-        	};
+        	extraobject = memory.objectData;
+        	extralistbuild = "BuildExtraList";
     	    1;
     	}else{
     	    0;
@@ -91,4 +89,9 @@ script(LoadMaps)args($paramInfo)
     }else{
         return(1.0);
     };
+};
+script(BuildExtraList)args($item)
+{
+	$r = findshortestpathtoroot($item.ExtraObject);
+	return($r);
 };

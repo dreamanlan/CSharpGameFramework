@@ -25,7 +25,7 @@ filter
 	      memory.name, memory.className, memory.size, memory.refCount, memory.refOtherCount
 	    );
 	  value = memory.size;
-	  extralist = findshortestpathtoroot(memory.memoryObject);
+	  extralist = findshortestpathtoroot(memory.objectData);
 	  1;
 	}else{
 	  0;

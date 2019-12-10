@@ -17,6 +17,12 @@ using System.Linq;
 using UnityEngine.Profiling;
 using UnityEditorInternal.Profiling;
 #endif
+using UnityEditor.Profiling.Memory.Experimental;
+using Unity.MemoryProfilerForExtension.Editor;
+using Unity.MemoryProfilerForExtension.Editor.UI;
+using Unity.MemoryProfilerForExtension.Editor.EnumerationUtilities;
+using Unity.MemoryProfilerForExtension.Editor.Database;
+using Unity.Profiling;
 using GameFramework;
 
 internal sealed class ResourceEditWindow : EditorWindow
@@ -28,16 +34,6 @@ internal sealed class ResourceEditWindow : EditorWindow
         window.Init();
         window.Show();
         EditorUtility.ClearProgressBar();
-        s_WindowShow = true;
-    }
-    internal static bool IsShow()
-    {
-        return s_WindowShow;
-    }
-
-    private void OnDestroy()
-    {
-        s_WindowShow = false;
     }
 
     internal void QueueProcessBegin()
@@ -62,10 +58,6 @@ internal sealed class ResourceEditWindow : EditorWindow
 
     private void Init()
     {
-        if (!s_SnapshotRegistered) {
-            MemorySnapshot.OnSnapshotReceived += IncomingSnapshot;
-            s_SnapshotRegistered = true;
-        }
         s_CurrentWindow = this;
     }
 
@@ -88,24 +80,11 @@ internal sealed class ResourceEditWindow : EditorWindow
             DeferAction(obj => { ResourceProcessor.Instance.LoadDependencies(); });
         }
         EditorGUILayout.LabelField("内存:", EditorStyles.toolbarTextField, GUILayout.Width(40));
-        if (GUILayout.Button("捕获", EditorStyles.toolbarButton)) {
-            if (ProfilerDriver.connectedProfiler != -1) {
-                string id = ProfilerDriver.GetConnectionIdentifier(ProfilerDriver.connectedProfiler);
-                m_ActiveProfilerIsEditor = id == "Editor";
-            }
-            else {
-                m_ActiveProfilerIsEditor = true;
-            }
-            DeferAction(obj => { MemorySnapshot.RequestNewSnapshot(); });
-        }
-        if (GUILayout.Button("保存", EditorStyles.toolbarButton)) {
-            DeferAction(obj => { ResourceProcessor.Instance.SaveMemoryInfo(); });
-        }
         if (GUILayout.Button("加载", EditorStyles.toolbarButton)) {
             DeferAction(obj => { ResourceProcessor.Instance.LoadMemoryInfo(); });
         }
-        if (GUILayout.Button("ReCrawl", EditorStyles.toolbarButton)) {
-            DeferAction(obj => { ResourceProcessor.Instance.ReCrawl(); });
+        if (GUILayout.Button("批量转换", EditorStyles.toolbarButton)) {
+            DeferAction(obj => { BatchLoadWindow.InitWindow(); });
         }
         EditorGUILayout.LabelField("耗时:", EditorStyles.toolbarTextField, GUILayout.Width(40));
         if (GUILayout.Button("清空", EditorStyles.toolbarButton)) {
@@ -127,12 +106,6 @@ internal sealed class ResourceEditWindow : EditorWindow
         if (GUILayout.Button("加载", EditorStyles.toolbarButton)) {
             DeferAction(obj => { ResourceProcessor.Instance.LoadInstrumentInfo(); });
         }
-        EditorGUILayout.EndHorizontal();
-
-        EditorGUILayout.BeginHorizontal();
-        ResourceEditUtility.EnableSaveAndReimport = EditorGUILayout.Toggle("允许SaveAndReimport", ResourceEditUtility.EnableSaveAndReimport);
-        ResourceEditUtility.ForceSaveAndReimport = EditorGUILayout.Toggle("强制SaveAndReimport", ResourceEditUtility.ForceSaveAndReimport);
-        ResourceEditUtility.UseFastCrawler = EditorGUILayout.Toggle("FastCrawler", ResourceEditUtility.UseFastCrawler);
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.BeginHorizontal();
@@ -216,15 +189,6 @@ internal sealed class ResourceEditWindow : EditorWindow
             DeferAction(obj => { BatchResourceProcessWindow.InitWindow(obj); });
         }
         EditorGUILayout.EndHorizontal();
-
-        if (s_NeedAnalyseSnapshot) {
-            s_NeedAnalyseSnapshot = false;
-            DeferAction(obj => {
-                ResourceProcessor.Instance.AnalyseSnapshot();
-                ResourceProcessor.Instance.CalcTotalValue();
-                m_TotalItemValue = ResourceProcessor.Instance.TotalItemValue;
-            });
-        }
 
         var paramNames = ResourceProcessor.Instance.ParamNames;
         var paramInfos = ResourceProcessor.Instance.Params;
@@ -1043,16 +1007,12 @@ internal sealed class ResourceEditWindow : EditorWindow
                         if (!string.IsNullOrEmpty(m_SelectedItem.ExtraListClickScript)) {
                             ResourceProcessor.Instance.CallScript(null, m_SelectedItem.ExtraListClickScript, pair, m_SelectedItem);
                         }
+                        else if (pair.Value is ObjectData) {
+                            var data = (ObjectData)pair.Value;
+                            ResourceProcessor.Instance.OpenLink(data);
+                        }
                         else {
-                            var thing = pair.Value as MemoryProfilerWindowForExtension.ThingInMemory;
-                            string content = string.Empty;
-                            if (null != thing) {
-                                content = ResourceProcessor.Instance.DrawThing(thing);
-                            }
-                            else {
-                                content = info;
-                            }
-                            ResourceCommandWindow.InitWindow(this, content, pair, m_SelectedGroup);
+                            ResourceCommandWindow.InitWindow(this, info, pair, m_SelectedItem);
                         }
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -1238,16 +1198,12 @@ internal sealed class ResourceEditWindow : EditorWindow
                         if (!string.IsNullOrEmpty(m_SelectedGroup.ExtraListClickScript)) {
                             ResourceProcessor.Instance.CallScript(null, m_SelectedGroup.ExtraListClickScript, pair, m_SelectedGroup);
                         }
+                        else if (pair.Value is ObjectData) {
+                            var data = (ObjectData)pair.Value;
+                            ResourceProcessor.Instance.OpenLink(data);
+                        }
                         else {
-                            var thing = pair.Value as MemoryProfilerWindowForExtension.ThingInMemory;
-                            string content = string.Empty;
-                            if (null != thing) {
-                                content = ResourceProcessor.Instance.DrawThing(thing);
-                            }
-                            else {
-                                content = info;
-                            }
-                            ResourceCommandWindow.InitWindow(this, content, pair, m_SelectedGroup);
+                            ResourceCommandWindow.InitWindow(this, info, pair, m_SelectedGroup);
                         }
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -1329,7 +1285,6 @@ internal sealed class ResourceEditWindow : EditorWindow
     private ResourceEditUtility.GroupInfo m_SelectedGroup = null;
 
     [NonSerialized]
-    private bool m_ActiveProfilerIsEditor = false;
     private bool m_Record = false;
 
     private bool m_IsReady = false;
@@ -1338,20 +1293,7 @@ internal sealed class ResourceEditWindow : EditorWindow
     private Queue<Action<ResourceEditWindow>> m_Actions = new Queue<Action<ResourceEditWindow>>();
     private Queue<Action<ResourceEditWindow>> m_BatchActions = new Queue<Action<ResourceEditWindow>>();
 
-    private static void IncomingSnapshot(PackedMemorySnapshot snapshot)
-    {
-        if (EditorWindow.focusedWindow != s_CurrentWindow)
-            return;
-
-        ResourceProcessor.Instance.SetMemorySnapshot(snapshot);
-        s_NeedAnalyseSnapshot = true;
-    }
-
-    private static UnityEditor.EditorWindow s_CurrentWindow = null;
-    private static bool s_NeedAnalyseSnapshot = false;
-    private static bool s_SnapshotRegistered = false;
-
-    private static bool s_WindowShow = false;
+    private static ResourceEditWindow s_CurrentWindow = null;
 
     private const int c_ItemsPerPage = 50;
 }
@@ -1646,42 +1588,38 @@ internal sealed class ResourceProcessor
             EditorUtility.ClearProgressBar();
         }
     }
-    internal void SetMemorySnapshot(PackedMemorySnapshot snapshot)
-    {
-        s_Snapshot = snapshot;
-        s_PackedCrawler = null;
-        s_UnpackedCrawl = null;
-        s_ShortestPathToRootFinder = null;
-        s_MemoryObjectDrawer = null;
-    }
     internal void AnalyseSnapshot()
     {
-        var packedCrawl = s_PackedCrawler;
-        if (null == packedCrawl) {
-            if (ResourceEditUtility.UseFastCrawler)
-                packedCrawl = new MemoryProfilerWindowForExtension.FastCrawler().Crawl(s_Snapshot);
-            else
-                packedCrawl = new MemoryProfilerWindowForExtension.Crawler().Crawl(s_Snapshot);
-            s_PackedCrawler = packedCrawl;
-        }
-        s_UnpackedCrawl = MemoryProfilerWindowForExtension.CrawlDataUnpacker.Unpack(packedCrawl);
-        s_ShortestPathToRootFinder = new MemoryProfilerWindowForExtension.ShortestPathToRootFinder(s_UnpackedCrawl);
-        s_MemoryObjectDrawer = new MemoryObjectDrawer(s_UnpackedCrawl);
-
         m_ClassifiedNativeMemoryInfos.Clear();
         m_ClassifiedManagedMemoryInfos.Clear();
         int curCount = 0;
-        int totalCount = s_UnpackedCrawl.nativeObjects.Length;
-        foreach (var obj in s_UnpackedCrawl.nativeObjects) {
+        int totalCount = s_CachedSnapshot.SortedNativeObjects.Count;
+        for (int i = 0; i < totalCount; ++i) {
+            var size = s_CachedSnapshot.SortedNativeObjects.Size(i);
+            var addr = s_CachedSnapshot.SortedNativeObjects.Address(i);
+            var name = s_CachedSnapshot.SortedNativeObjects.Name(i);
+            var refCount = s_CachedSnapshot.SortedNativeObjects.Refcount(i);
+            var instanceId = s_CachedSnapshot.SortedNativeObjects.InstanceId(i);
+            var nativeTypeIndex = s_CachedSnapshot.SortedNativeObjects.NativeTypeArrayIndex(i);
+            string typeName = string.Empty;
+            if (nativeTypeIndex >= 0 && nativeTypeIndex < s_CachedSnapshot.nativeTypes.Count) {
+                typeName = s_CachedSnapshot.nativeTypes.typeName[nativeTypeIndex];
+            }
+            int managedObjectIndex = s_CachedSnapshot.SortedNativeObjects.ManagedObjectIndex(i);
+
             var memory = new ResourceEditUtility.MemoryInfo();
-            memory.instanceId = (ulong)obj.instanceID;
-            memory.name = obj.name;
-            memory.className = obj.className;
-            memory.size = obj.size;
-            memory.refCount = obj.referencedBy.Length;
-            memory.refOtherCount = obj.references.Length;
-            memory.address = obj.address;
-            memory.memoryObject = obj;
+            memory.instanceId = (ulong)instanceId;
+            memory.name = name;
+            memory.className = typeName;
+            memory.size = (long)size;
+            memory.refCount = refCount;
+            memory.address = addr;
+            memory.isManaged = false;
+            memory.sortedObjectIndex = i;
+            int index;
+            if(s_CachedSnapshot.nativeObjects.instanceId2Index.TryGetValue(instanceId, out index)) {
+                memory.objectData = ObjectData.FromNativeObjectIndex(s_CachedSnapshot, index);
+            }
 
             ResourceEditUtility.MemoryGroupInfo groupInfo = null;
             if (!m_ClassifiedNativeMemoryInfos.TryGetValue(memory.className, out groupInfo)) {
@@ -1701,17 +1639,30 @@ internal sealed class ResourceProcessor
             }
         }
         curCount = 0;
-        totalCount = s_UnpackedCrawl.managedObjects.Length;
-        foreach (var obj in s_UnpackedCrawl.managedObjects) {
+        totalCount = s_CachedSnapshot.SortedManagedObjects.Count;
+        for (int i = 0; i < totalCount; ++i) {
+            var size = s_CachedSnapshot.SortedManagedObjects.Size(i);
+            var addr = s_CachedSnapshot.SortedManagedObjects.Address(i);
+            ManagedObjectInfo objInfo;
+            int refCount = 0;
+            string typeName = string.Empty;
+            if (s_CachedSnapshot.CrawledData.ManagedObjectByAddress.TryGetValue(addr, out objInfo)) {
+                refCount = objInfo.RefCount;
+                if (objInfo.ITypeDescription >= 0 && objInfo.ITypeDescription < s_CachedSnapshot.typeDescriptions.Count) {
+                    typeName = s_CachedSnapshot.typeDescriptions.typeDescriptionName[objInfo.ITypeDescription];
+                }
+            }
+
             var memory = new ResourceEditUtility.MemoryInfo();
-            memory.instanceId = obj.address;
-            memory.name = obj.caption;
-            memory.className = obj.typeDescription.name;
-            memory.size = obj.size;
-            memory.refCount = obj.referencedBy.Length;
-            memory.refOtherCount = obj.references.Length;
-            memory.address = obj.address;
-            memory.memoryObject = obj;
+            memory.instanceId = addr;
+            memory.name = typeName;
+            memory.className = typeName;
+            memory.size = (long)size;
+            memory.address = addr;
+            memory.refCount = refCount;
+            memory.isManaged = true;
+            memory.sortedObjectIndex = i;
+            memory.objectData= ObjectData.FromManagedObjectInfo(s_CachedSnapshot, objInfo);            
 
             ResourceEditUtility.MemoryGroupInfo groupInfo = null;
             if (!m_ClassifiedManagedMemoryInfos.TryGetValue(memory.className, out groupInfo)) {
@@ -1732,14 +1683,47 @@ internal sealed class ResourceProcessor
         }
         EditorUtility.ClearProgressBar();
     }
-    internal IList<KeyValuePair<string, object>> FindShortestPathToRoot(MemoryProfilerWindowForExtension.ThingInMemory obj)
+    internal IList<KeyValuePair<string, object>> FindShortestPathToRoot(ObjectData obj)
     {
         var list = new List<KeyValuePair<string, object>>();
         var refbys = s_ShortestPathToRootFinder.FindFor(obj);
         if (null != refbys) {
             list.Add(new KeyValuePair<string, object>("=ShortestPathToRoot=", null));
-            foreach (var thing in refbys) {
-                list.Add(new KeyValuePair<string, object>(thing.caption, thing));
+            foreach (var data in refbys) {
+                if (data.isManaged) {
+                    string name = string.Empty;
+                    if (data.managedTypeIndex >= 0 && data.managedTypeIndex < s_CachedSnapshot.typeDescriptions.Count) {
+                        name = s_CachedSnapshot.typeDescriptions.typeDescriptionName[data.managedTypeIndex];
+                    }
+                    list.Add(new KeyValuePair<string, object>(name, data));
+                }
+                else if (data.isNative) {
+                    string name = string.Empty;
+                    string type = string.Empty;
+                    if (data.nativeObjectIndex >= 0 && data.nativeObjectIndex < s_CachedSnapshot.nativeObjects.Count) {
+                        name = s_CachedSnapshot.nativeObjects.objectName[data.nativeObjectIndex];
+                        int typeIndex = s_CachedSnapshot.nativeObjects.nativeTypeArrayIndex[data.nativeObjectIndex];
+                        if (typeIndex >= 0 && typeIndex < s_CachedSnapshot.nativeTypes.Count) {
+                            type = s_CachedSnapshot.nativeTypes.typeName[typeIndex];
+                        }
+                    }
+                    list.Add(new KeyValuePair<string, object>(name + "(" + type + ")", data));
+                }
+                else if (data.IsField()) {
+                    list.Add(new KeyValuePair<string, object>(data.GetFieldName(s_CachedSnapshot), data));
+                }
+                else if (data.IsArrayItem()) {
+                    var arrInfo = data.GetArrayInfo(s_CachedSnapshot);
+                    string type = string.Empty;
+                    if (arrInfo.elementTypeDescription >= 0 && arrInfo.elementTypeDescription < s_CachedSnapshot.typeDescriptions.Count) {
+                        type = s_CachedSnapshot.typeDescriptions.typeDescriptionName[arrInfo.elementTypeDescription];
+                    }
+                    string rank = arrInfo.ArrayRankToString();
+                    list.Add(new KeyValuePair<string, object>(type + "[" + rank + "]", data));
+                }
+                else {
+                    list.Add(new KeyValuePair<string, object>(data.ToString(), data));
+                }
             }
             string reason;
             s_ShortestPathToRootFinder.IsRoot(refbys.Last(), out reason);
@@ -1750,73 +1734,90 @@ internal sealed class ResourceProcessor
         }
 
         list.Add(new KeyValuePair<string, object>(string.Empty, null));
-        list.Add(new KeyValuePair<string, object>("=Referenced by=", null));
-        foreach (var thing in obj.referencedBy) {
-            list.Add(new KeyValuePair<string, object>(thing.caption, thing));
-        }
-
-        var managedObject = obj as MemoryProfilerWindowForExtension.ManagedObject;
-        if (managedObject == null) {
-            list.Add(new KeyValuePair<string, object>(string.Empty, null));
-            list.Add(new KeyValuePair<string, object>("=References=", null));
-            foreach (var thing in obj.references) {
-                list.Add(new KeyValuePair<string, object>(thing.caption, thing));
-            }
-        }
-
-        list.Add(new KeyValuePair<string, object>(string.Empty, null));
-        list.Add(new KeyValuePair<string, object>("=Detail=", null));
-        list.Add(new KeyValuePair<string, object>(s_MemoryObjectDrawer.DrawThing(obj), obj));
-
+        list.Add(new KeyValuePair<string, object>("[goto self]", obj));
         return list;
     }
-    internal string DrawThing(ulong addr)
+    internal void OpenLink(ulong addr)
     {
-        var thing = s_MemoryObjectDrawer.GetThingAt(addr);
-        if (null != thing) {
-            return s_MemoryObjectDrawer.DrawThing(thing);
+        var data = ObjectData.FromManagedPointer(s_CachedSnapshot, addr);
+        if (data.IsValid) {
+            OpenLink(data);
         }
         else {
-            return string.Format("unknown({0:X})", addr);
+            int low = 0;
+            int high = s_CachedSnapshot.SortedNativeObjects.Count - 1;
+            while (low <= high) {
+                var ix = (low + high) / 2;
+                var lowAddr = s_CachedSnapshot.SortedNativeObjects.Address(low);
+                var highAddr = s_CachedSnapshot.SortedNativeObjects.Address(high);
+                var vaddr = s_CachedSnapshot.SortedNativeObjects.Address(ix);
+                if (vaddr < addr) {
+                    low = ix + 1;
+                }
+                else if (vaddr > addr) {
+                    high = ix + 1;
+                }
+                else {
+                    var instanceId = s_CachedSnapshot.SortedNativeObjects.InstanceId(ix);
+                    int nativeObjectIndex;
+                    if(s_CachedSnapshot.nativeObjects.instanceId2Index.TryGetValue(instanceId, out nativeObjectIndex)) {
+                        data = ObjectData.FromNativeObjectIndex(s_CachedSnapshot, nativeObjectIndex);
+                        if (data.IsValid) {
+                            OpenLink(data);
+                        }
+                    }
+                    break;
+                }
+            }
         }
     }
-    internal string DrawThing(MemoryProfilerWindowForExtension.ThingInMemory thing)
+    internal void OpenLink(ObjectData data)
     {
-        return s_MemoryObjectDrawer.DrawThing(thing);
-    }
-    internal void SaveMemoryInfo()
-    {
-        if (null != s_PackedCrawler) {
-            PackedMemorySnapshotUtility.SaveCrawlerDataToFile(s_PackedCrawler);
-        }
-        else if (null != s_Snapshot) {
-            PackedMemorySnapshotUtility.SaveToFile(s_Snapshot);
+        var schema = Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.GetCurSchema();
+        if (null != schema) {
+            if (data.isManaged) {
+                int index = data.GetManagedObjectIndex(s_CachedSnapshot);
+                if(index>=0 && index < s_CachedSnapshot.CrawledData.ManagedObjects.Count) {
+                    var obj = s_CachedSnapshot.CrawledData.ManagedObjects[index];
+
+                    var lr = new LinkRequestTable();
+                    lr.LinkToOpen = new TableLink();
+                    lr.LinkToOpen.TableName = ObjectTable.TableName;
+                    lr.SourceTable = null;
+                    lr.SourceColumn = null;
+                    lr.SourceRow = -1;
+                    lr.Parameters.AddValue(ObjectTable.ObjParamName, obj.PtrObject);
+                    lr.Parameters.AddValue(ObjectTable.TypeParamName, obj.ITypeDescription);
+
+                    Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.OpenTableLink(lr);
+                }
+            }
+            else if (data.isNative) {
+                int index = data.GetNativeObjectIndex(s_CachedSnapshot);
+                if(index>=0 && index < s_CachedSnapshot.nativeObjects.Count) {
+                    int instanceId = s_CachedSnapshot.nativeObjects.instanceId[index];
+
+                    var lr = new LinkRequestTable();
+                    lr.LinkToOpen = new TableLink();
+                    lr.LinkToOpen.TableName = ObjectAllNativeTable.TableName;
+                    var b = new Unity.MemoryProfilerForExtension.Editor.Database.View.Where.Builder("NativeInstanceId", 
+                        Unity.MemoryProfilerForExtension.Editor.Database.Operation.Operator.Equal, 
+                        new Unity.MemoryProfilerForExtension.Editor.Database.Operation.Expression.MetaExpression(instanceId.ToString(), true));
+                    lr.LinkToOpen.RowWhere = new List<Unity.MemoryProfilerForExtension.Editor.Database.View.Where.Builder>();
+                    lr.LinkToOpen.RowWhere.Add(b);
+                    lr.SourceTable = null;
+                    lr.SourceColumn = null;
+                    lr.SourceRow = -1;
+
+                    Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.OpenTableLink(lr);
+                }
+            }
         }
     }
     internal void LoadMemoryInfo()
     {
-        s_PackedCrawler = PackedMemorySnapshotUtility.LoadCrawlerDataFromFile();
-        if (null != s_PackedCrawler) {
-            s_Snapshot = s_PackedCrawler.packedMemorySnapshot;
-            s_ShortestPathToRootFinder = null;
-            AnalyseSnapshot();
-        }
-        else {
-            s_Snapshot = PackedMemorySnapshotUtility.LoadFromFile();
-            if (null != s_Snapshot) {
-                s_ShortestPathToRootFinder = null;
-                AnalyseSnapshot();
-            }
-        }
-    }
-    internal void ReCrawl()
-    {
-        if (null != s_PackedCrawler) {
-            s_PackedCrawler = null;
-        }
-        if (null != s_Snapshot) {
-            AnalyseSnapshot();
-        }
+        s_CachedSnapshot = null;
+        Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.ShowWindow();
     }
     internal void ClearInstrumentInfo()
     {
@@ -2148,10 +2149,10 @@ internal sealed class ResourceProcessor
                 m_NextFilterIndex = 0;
                 m_NextGroupIndex = 0;
                 m_NextProcessIndex = 0;
-                m_ScriptCalculator = new Expression.DslCalculator();
-                m_FilterCalculator = new Expression.DslCalculator();
-                m_GroupCalculator = new Expression.DslCalculator();
-                m_ProcessCalculator = new Expression.DslCalculator();
+                m_ScriptCalculator = new DslExpression.DslCalculator();
+                m_FilterCalculator = new DslExpression.DslCalculator();
+                m_GroupCalculator = new DslExpression.DslCalculator();
+                m_ProcessCalculator = new DslExpression.DslCalculator();
                 ResourceEditUtility.InitCalculator(m_ScriptCalculator);
                 ResourceEditUtility.InitCalculator(m_FilterCalculator);
                 ResourceEditUtility.InitCalculator(m_GroupCalculator);
@@ -2590,7 +2591,7 @@ internal sealed class ResourceProcessor
             }
         }
     }
-    internal object CallScript(Expression.DslCalculator calc, string name, params object[] args)
+    internal object CallScript(DslExpression.DslCalculator calc, string name, params object[] args)
     {
         if (null != m_ScriptCalculator) {
             if (null != calc) {
@@ -3594,12 +3595,24 @@ internal sealed class ResourceProcessor
         if (m_Params.TryGetValue("class", out classParamInfo)) {
             _class = classParamInfo.Value as string;
         }
+        if (null == s_CachedSnapshot) {
+            s_CachedSnapshot = Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.GetCurCachedSnapshot();
+            if (null != s_CachedSnapshot) {
+                s_RawSchema = new RawSchema();
+                s_RawSchema.SetupSchema(s_CachedSnapshot, new ObjectDataFormatter());
+                s_ShortestPathToRootFinder = new ShortestPathToRootObjectFinder(s_CachedSnapshot, s_RawSchema);
+            }
+        }
         if ((category == "mgroup" || category == "managed") && m_ClassifiedManagedMemoryInfos.Count <= 0 ||
             (category == "ngroup" || category == "native") && m_ClassifiedNativeMemoryInfos.Count <= 0 ||
             m_ClassifiedManagedMemoryInfos.Count <= 0 && m_ClassifiedNativeMemoryInfos.Count <= 0) {
-            if (!isBatch)
+            if (null != s_CachedSnapshot) {
+                AnalyseSnapshot();
+            }
+            else if (!isBatch) {
                 EditorUtility.DisplayDialog("错误", "未找到内存对象信息，请先执行内存‘捕获’或‘加载’！", "ok");
-            return;
+                return;
+            }
         }
         m_ItemList.Clear();
         m_CurSearchCount = 0;
@@ -3988,10 +4001,10 @@ internal sealed class ResourceProcessor
 
     private string m_DslPath = null;
     private Dsl.DslFile m_DslFile = null;
-    private Expression.DslCalculator m_ScriptCalculator = null;
-    private Expression.DslCalculator m_FilterCalculator = null;
-    private Expression.DslCalculator m_GroupCalculator = null;
-    private Expression.DslCalculator m_ProcessCalculator = null;
+    private DslExpression.DslCalculator m_ScriptCalculator = null;
+    private DslExpression.DslCalculator m_FilterCalculator = null;
+    private DslExpression.DslCalculator m_GroupCalculator = null;
+    private DslExpression.DslCalculator m_ProcessCalculator = null;
     private int m_NextFilterIndex = 0;
     private int m_NextGroupIndex = 0;
     private int m_NextProcessIndex = 0;
@@ -4110,11 +4123,10 @@ internal sealed class ResourceProcessor
         }
     }
 
-    private static PackedMemorySnapshot s_Snapshot = null;
-    private static MemoryProfilerWindowForExtension.PackedCrawlerData s_PackedCrawler = null;
-    private static MemoryProfilerWindowForExtension.CrawledMemorySnapshot s_UnpackedCrawl = null;
-    private static MemoryProfilerWindowForExtension.ShortestPathToRootFinder s_ShortestPathToRootFinder = null;
-    private static MemoryObjectDrawer s_MemoryObjectDrawer = null;
+    private static CachedSnapshot s_CachedSnapshot = null;
+    private static RawSchema s_RawSchema = null;
+    private static ProfilerMarker s_CrawlManagedData = new ProfilerMarker("CrawlManagedData");
+    private static ShortestPathToRootObjectFinder s_ShortestPathToRootFinder = null;
     private static readonly HashSet<string> s_IgnoredDirs = new HashSet<string> { "plugins", "streamingassets" };
     private static readonly List<string> s_IgnoreDirKeys = new List<string> { "assets/fgui/", "assets/plugins/", "assets/streamingassets/", "/editor default resources/", "assets/thirdparty/" };
 

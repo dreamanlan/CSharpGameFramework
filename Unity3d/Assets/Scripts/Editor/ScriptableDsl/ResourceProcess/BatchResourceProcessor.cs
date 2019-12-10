@@ -10,6 +10,12 @@ using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
 using UnityEditor.MemoryProfiler;
 using UnityEditorInternal;
+using UnityEditor.Profiling.Memory.Experimental;
+using Unity.MemoryProfilerForExtension.Editor;
+using Unity.MemoryProfilerForExtension.Editor.UI;
+using Unity.MemoryProfilerForExtension.Editor.EnumerationUtilities;
+using Unity.MemoryProfilerForExtension.Editor.Database;
+using Unity.Profiling;
 using GameFramework;
 
 public class BatchResourceProcessWindow : EditorWindow
@@ -126,7 +132,8 @@ public class BatchResourceProcessWindow : EditorWindow
                     action(this);
                 }
             }
-        } finally {
+        }
+        finally {
             m_InActions = false;
         }
     }
@@ -159,12 +166,14 @@ public class BatchResourceProcessWindow : EditorWindow
                         ++curCount;
                         EditorUtility.DisplayProgressBar("加载进度", string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     EditorUtility.DisplayDialog("异常", string.Format("line {0} exception {1}\n{2}", i, ex.Message, ex.StackTrace), "ok");
                 }
                 EditorUtility.ClearProgressBar();
             }
-        } finally {
+        }
+        finally {
             m_IsReady = true;
         }
     }
@@ -192,10 +201,12 @@ public class BatchResourceProcessWindow : EditorWindow
                         EditorUtility.ClearProgressBar();
                     }
                 }
-            } else {
+            }
+            else {
                 EditorUtility.DisplayDialog("错误", "没有要保存的数据！", "ok");
             }
-        } finally {
+        }
+        finally {
             m_IsReady = true;
         }
     }
@@ -225,6 +236,280 @@ public class BatchResourceProcessWindow : EditorWindow
     private bool m_UseReimport = false;
     private List<ResourceEditUtility.BatchProcessInfo> m_List = new List<ResourceEditUtility.BatchProcessInfo>();
     private Vector2 m_Pos = Vector2.zero;
+}
+
+
+public class BatchLoadWindow : EditorWindow
+{
+    internal static void InitWindow()
+    {
+        BatchLoadWindow window = (BatchLoadWindow)EditorWindow.GetWindow(typeof(BatchLoadWindow));
+        window.Init();
+        window.Show();
+    }
+
+    private void Init()
+    {
+        m_IsReady = true;
+    }
+
+    private void OnGUI()
+    {
+        bool handle = false;
+        int deleteIndex = -1;
+        var rt = EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("添加", EditorStyles.toolbarButton)) {
+            m_IsReady = false;
+            if (m_List.Count > 0) {
+                var last = m_List[m_List.Count - 1];
+                m_List.Add(string.Empty);
+            }
+            else {
+                m_List.Add(string.Empty);
+            }
+            m_IsReady = true;
+        }
+        EditorGUILayout.EndHorizontal();
+        if (m_IsReady) {
+            m_Pos = EditorGUILayout.BeginScrollView(m_Pos);
+            for (int i = 0; i < m_List.Count; ++i) {
+                EditorGUILayout.BeginHorizontal();
+                var info = m_List[i];
+                EditorGUILayout.LabelField("快照:", GUILayout.Width(40));
+                EditorGUILayout.LabelField(info);
+                if (GUILayout.Button("选择", EditorStyles.toolbarButton, GUILayout.Width(40))) {
+                    m_IsReady = false;
+                    string res = EditorUtility.OpenFilePanel("选择", string.Empty, "snap");
+                    if (!string.IsNullOrEmpty(res)) {
+                        m_List[i] = res;
+                    }
+                    m_IsReady = true;
+                }
+                if (GUILayout.Button("删除", EditorStyles.toolbarButton, GUILayout.Width(40))) {
+                    deleteIndex = i;
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            EditorGUILayout.EndScrollView();
+        }
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("加载", EditorStyles.toolbarButton)) {
+            handle = true;
+        }
+        EditorGUILayout.EndHorizontal();
+        if (deleteIndex >= 0) {
+            m_List.RemoveAt(deleteIndex);
+        }
+        if (handle) {
+            LoadAll();
+        }
+    }
+
+    private void LoadAll()
+    {
+        m_IsReady = false;
+        try {
+            foreach (var filePath in m_List) {
+                if (File.Exists(filePath)) {
+                    try {
+                        Debug.LogFormat("Loading \"{0}\"", filePath);
+                        var rawSnapshot = UnityEditor.Profiling.Memory.Experimental.PackedMemorySnapshot.Load(filePath);
+                        if (null == rawSnapshot) {
+                            Debug.LogErrorFormat("MemoryProfiler: Unrecognized memory snapshot format '{0}'.", filePath);
+                        }
+                        Debug.LogFormat("Completed loading \"{0}\"", filePath);
+
+                        Debug.LogFormat("Crawling \"{0}\"", filePath);
+                        ProgressBarDisplay.ShowBar(string.Format("Opening snapshot: {0}", System.IO.Path.GetFileNameWithoutExtension(rawSnapshot.filePath)));
+
+                        var cachedSnapshot = new CachedSnapshot(rawSnapshot);
+                        using (s_CrawlManagedData.Auto()) {
+                            var crawling = Crawler.Crawl(cachedSnapshot);
+                            crawling.MoveNext(); //start execution
+
+                            var status = crawling.Current as EnumerationStatus;
+                            float progressPerStep = 1.0f / status.StepCount;
+                            while (crawling.MoveNext()) {
+                                ProgressBarDisplay.UpdateProgress(status.CurrentStep * progressPerStep, status.StepStatus);
+                            }
+                        }
+                        ProgressBarDisplay.ClearBar();
+                        var rawSchema = new RawSchema();
+                        rawSchema.SetupSchema(cachedSnapshot, new ObjectDataFormatter());
+                        var managedObjcts = rawSchema.GetTableByName("AllManagedObjects") as ObjectListTable;
+                        var nativeObjects = rawSchema.GetTableByName("AllNativeObjects") as ObjectListTable;
+                        Debug.LogFormat("Completed crawling \"{0}\"", filePath);
+                        
+                        Debug.LogFormat("Saving \"{0}\"", filePath);
+                        var path = Path.GetDirectoryName(filePath);
+                        var snapName = Path.GetFileNameWithoutExtension(filePath);
+
+                        string exportPath1 = Path.Combine(path, snapName + "_MANAGEDHEAP_SnapshotExport_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss") + ".csv");
+                        if (!String.IsNullOrEmpty(exportPath1)) {
+                            System.IO.StreamWriter sw = new System.IO.StreamWriter(exportPath1);
+                            sw.WriteLine(" Managed Objects , Size , Address ");
+                            for (int i = 0; i < cachedSnapshot.SortedManagedHeapEntries.Count; i++) {
+                                var size = cachedSnapshot.SortedManagedHeapEntries.Size(i);
+                                var addr = cachedSnapshot.SortedManagedHeapEntries.Address(i);
+                                sw.WriteLine("Managed," + size + "," + addr);
+                            }
+                            sw.Flush();
+                            sw.Close();
+                        }
+
+                        string exportPath2 = Path.Combine(path, snapName + "_MANAGED_SnapshotExport_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss") + ".csv");
+                        if (!String.IsNullOrEmpty(exportPath2)) {
+                            m_ManagedGroups.Clear();
+                            System.IO.StreamWriter sw = new System.IO.StreamWriter(exportPath2);
+                            sw.WriteLine("Type,RefCount,Size,Address");
+
+                            for (int i = 0; i < cachedSnapshot.SortedManagedObjects.Count; i++) {
+                                var size = cachedSnapshot.SortedManagedObjects.Size(i);
+                                var addr = cachedSnapshot.SortedManagedObjects.Address(i);
+                                ManagedObjectInfo objInfo;
+                                int refCount = 0;
+                                string typeName = string.Empty;
+                                if (cachedSnapshot.CrawledData.ManagedObjectByAddress.TryGetValue(addr, out objInfo)) {
+                                    refCount = objInfo.RefCount;
+                                    if (objInfo.ITypeDescription >= 0 && objInfo.ITypeDescription < cachedSnapshot.typeDescriptions.Count) {
+                                        typeName = cachedSnapshot.typeDescriptions.typeDescriptionName[objInfo.ITypeDescription];
+                                    }
+                                }
+                                sw.WriteLine("\"" + typeName + "\"," + refCount + "," + size + "," + addr);
+
+                                ManagedGroupInfo info;
+                                if (m_ManagedGroups.TryGetValue(typeName, out info)) {
+                                    ++info.Count;
+                                    info.Size += size;
+                                }
+                                else {
+                                    string g = string.Empty;
+                                    int si = typeName.IndexOf('.');
+                                    if (si > 0) {
+                                        g = typeName.Substring(0, si);
+                                        if (!s_ManagedGroupNames.Contains(g)) {
+                                            g = string.Empty;
+                                        }
+                                    }
+                                    info = new ManagedGroupInfo { Group = g, Type = typeName, Count = 1, Size = size };
+                                    m_ManagedGroups.Add(typeName, info);
+                                }
+                            }
+                            sw.Flush();
+                            sw.Close();
+
+                            string dir = Path.GetDirectoryName(exportPath2);
+                            string fn = Path.GetFileNameWithoutExtension(exportPath2);
+                            string gpath = Path.Combine(dir, fn + "_groups.csv");
+                            var lastGroup = "A000000";
+                            using (var outsw = new StreamWriter(gpath)) {
+                                outsw.WriteLine("group,type,count,size");
+                                foreach (var pair in m_ManagedGroups) {
+                                    var info = pair.Value;
+                                    var g = info.Group;
+                                    if (!string.IsNullOrEmpty(lastGroup) && string.IsNullOrEmpty(info.Group))
+                                        g = lastGroup + "__";
+                                    if (!string.IsNullOrEmpty(info.Group))
+                                        lastGroup = info.Group;
+                                    outsw.WriteLine("\"{0}\",\"{1}\",{2},{3}", g, info.Type, info.Count, info.Size);
+                                }
+                            }
+                            string gpath2 = Path.Combine(dir, fn + "_groups_forcmp.csv");
+                            using (var outsw = new StreamWriter(gpath2)) {
+                                outsw.WriteLine("type,count,size");
+                                foreach (var pair in m_ManagedGroups) {
+                                    var info = pair.Value;
+                                    outsw.WriteLine("\"{0}\",{1},{2}", info.Type, info.Count, info.Size);
+                                }
+                            }
+                        }
+
+                        string exportPath = Path.Combine(path, snapName + "_NATIVE_SnapshotExport_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss") + ".csv");
+                        if (!String.IsNullOrEmpty(exportPath)) {
+                            m_NativeGroups.Clear();
+                            System.IO.StreamWriter sw = new System.IO.StreamWriter(exportPath);
+                            sw.WriteLine("Name,Type,RefCount,InstanceID,Size,Address");
+                            for (int i = 0; i < cachedSnapshot.SortedNativeObjects.Count; i++) {
+                                var size = cachedSnapshot.SortedNativeObjects.Size(i);
+                                var addr = cachedSnapshot.SortedNativeObjects.Address(i);
+                                var name = cachedSnapshot.SortedNativeObjects.Name(i);
+                                var refCount = cachedSnapshot.SortedNativeObjects.Refcount(i);
+                                var instanceId = cachedSnapshot.SortedNativeObjects.InstanceId(i);
+                                var nativeTypeIndex = cachedSnapshot.SortedNativeObjects.NativeTypeArrayIndex(i);
+                                string typeName = string.Empty;
+                                if (nativeTypeIndex >= 0 && nativeTypeIndex < cachedSnapshot.nativeTypes.Count) {
+                                    typeName = cachedSnapshot.nativeTypes.typeName[nativeTypeIndex];
+                                }
+
+                                sw.WriteLine("\"" + name + "\",\"" + typeName + "\"," + refCount + "," + instanceId + "," + size + "," + addr);
+
+                                NativeGroupInfo info;
+                                if (m_NativeGroups.TryGetValue(typeName, out info)) {
+                                    ++info.Count;
+                                    info.Size += size;
+                                }
+                                else {
+                                    info = new NativeGroupInfo { Type = typeName, Count = 1, Size = size };
+                                    m_NativeGroups.Add(typeName, info);
+                                }
+                            }
+                            sw.Flush();
+                            sw.Close();
+
+                            string dir = Path.GetDirectoryName(exportPath);
+                            string fn = Path.GetFileNameWithoutExtension(exportPath);
+                            string gpath = Path.Combine(dir, fn + "_groups.csv");
+                            using (var outsw = new StreamWriter(gpath)) {
+                                outsw.WriteLine("type,count,size");
+                                foreach (var pair in m_NativeGroups) {
+                                    var info = pair.Value;
+                                    outsw.WriteLine("\"{0}\",{1},{2}", info.Type, info.Count, info.Size);
+                                }
+                            }
+                        }
+
+                        Debug.LogFormat("Completed saving \"{0}\"", filePath);
+                    }
+                    catch (Exception ex) {
+                        UnityEngine.Debug.LogErrorFormat("file {0} exception {1}\n{2}", filePath, ex.Message, ex.StackTrace);
+                    }
+                }
+            }
+            EditorUtility.ClearProgressBar();
+        }
+        finally {
+            m_IsReady = true;
+        }
+    }
+
+    internal class ManagedGroupInfo
+    {
+        internal string Group;
+        internal string Type;
+        internal int Count;
+        internal ulong Size;
+    }
+    internal class NativeGroupInfo
+    {
+        internal string Type;
+        internal int Count;
+        internal ulong Size;
+    }
+
+    private SortedDictionary<string, ManagedGroupInfo> m_ManagedGroups = new SortedDictionary<string, ManagedGroupInfo>();
+    private SortedDictionary<string, NativeGroupInfo> m_NativeGroups = new SortedDictionary<string, NativeGroupInfo>();
+
+    private bool m_IsReady = false;
+    private List<string> m_List = new List<string>();
+    private Vector2 m_Pos = Vector2.zero;
+
+    private static HashSet<string> s_ManagedGroupNames = new HashSet<string> { "CsLibrary", "PluginFramework", "SkillDisplayer", "DisplayerConfigInDll", "TableConfig", "MessageDefine", "StorySystem", "Dsl", "WeTest", "PigeonCoopToolkit", "SLua", "Mono", "Wup", "Cinemachine", "Apollo", "FairyGUI", "UnityEngine", "FMOD", "SevenZip", "System" };
+    private static ProfilerMarker s_CrawlManagedData = new ProfilerMarker("CrawlManagedData");
+    
+    private static string CleanStrings(string text)
+    {
+        return text.Replace(",", " ");
+    }
 }
 
 public class ResourceCommandWindow : EditorWindow
