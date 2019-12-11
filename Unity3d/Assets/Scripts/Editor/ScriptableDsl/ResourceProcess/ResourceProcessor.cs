@@ -1798,6 +1798,7 @@ internal sealed class ResourceProcessor
     {
         if (null == s_CachedSnapshot)
             return;
+        data = data.displayObject;
         if (data.isManaged) {
             int index = data.GetManagedObjectIndex(s_CachedSnapshot);
             if(index>=0 && index < s_CachedSnapshot.CrawledData.ManagedObjects.Count) {
@@ -1836,53 +1837,48 @@ internal sealed class ResourceProcessor
             }
         }
     }
-    internal void OpenLinkInCurrentTable(ulong addr, int tableIndex, IList<string> nameValues)
+    internal void OpenReferenceLink(ulong addr)
     {
         var data = ObjectDataFromAddress(addr);
         if (data.IsValid) {
-            OpenLinkInCurrentTable(data, tableIndex, nameValues);
+            OpenReferenceLink(data);
         }
     }
-    internal void OpenLinkInCurrentTable(ObjectData data, int tableIndex, IList<string> nameValues)
+    internal void OpenReferenceLink(ObjectData data)
+    {
+        if (null == s_CachedSnapshot)
+            return;
+        data = data.displayObject;
+        int index = data.GetUnifiedObjectIndex(s_CachedSnapshot);
+        if (index >= 0) {
+            var lr = new LinkRequestTable();
+            lr.LinkToOpen = new TableLink();
+            lr.LinkToOpen.TableName = ObjectReferenceTable.kObjectReferenceTableName;
+            lr.SourceTable = null;
+            lr.SourceColumn = null;
+            lr.SourceRow = -1;
+            lr.Parameters.AddValue(ObjectTable.ObjParamName, index);
+
+            Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.OpenTableLink(lr);
+        }
+    }
+    internal void OpenLinkInCurrentTable(int tableIndex, IList<string> nameValues)
     {
         if (null == s_CachedSnapshot)
             return;
         var mode = Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.GetCurMode();
-        if (null != mode && tableIndex >= 0 && tableIndex < mode.TableNames.Length) {
+        if (null != mode && tableIndex >= 0 && tableIndex < mode.GetSchema().GetTableCount()) {
             var table = mode.GetTableByIndex(tableIndex);
             if (null != table) {
-                if (data.isManaged) {
-                    int index = data.GetManagedObjectIndex(s_CachedSnapshot);
-                    if (index >= 0 && index < s_CachedSnapshot.CrawledData.ManagedObjects.Count) {
-                        var obj = s_CachedSnapshot.CrawledData.ManagedObjects[index];
+                var lr = new LinkRequestTable();
+                lr.LinkToOpen = new TableLink();
+                lr.LinkToOpen.TableName = table.GetName();
+                lr.LinkToOpen.RowWhere = BuildViewWheres(nameValues);
+                lr.SourceTable = null;
+                lr.SourceColumn = null;
+                lr.SourceRow = -1;
 
-                        var lr = new LinkRequestTable();
-                        lr.LinkToOpen = new TableLink();
-                        lr.LinkToOpen.TableName = table.GetName();
-                        lr.LinkToOpen.RowWhere = BuildViewWheres(nameValues);
-                        lr.SourceTable = null;
-                        lr.SourceColumn = null;
-                        lr.SourceRow = -1;
-
-                        Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.OpenTableLink(lr);
-                    }
-                }
-                else if (data.isNative) {
-                    int index = data.GetNativeObjectIndex(s_CachedSnapshot);
-                    if (index >= 0 && index < s_CachedSnapshot.nativeObjects.Count) {
-                        ulong addr = s_CachedSnapshot.nativeObjects.nativeObjectAddress[index];
-
-                        var lr = new LinkRequestTable();
-                        lr.LinkToOpen = new TableLink();
-                        lr.LinkToOpen.TableName = table.GetName();
-                        lr.LinkToOpen.RowWhere = BuildViewWheres(nameValues);
-                        lr.SourceTable = null;
-                        lr.SourceColumn = null;
-                        lr.SourceRow = -1;
-
-                        Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.OpenTableLink(lr);
-                    }
-                }
+                Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.OpenTableLink(lr);
             }
         }
     }
@@ -1892,7 +1888,7 @@ internal sealed class ResourceProcessor
             return 0;
         var mode = Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.GetCurMode();
         if (null != mode) {
-            return mode.TableNames.Length;
+            return (int)mode.GetSchema().GetTableCount();
         }
         else {
             return 0;
@@ -1903,8 +1899,8 @@ internal sealed class ResourceProcessor
         if (null == s_CachedSnapshot)
             return string.Empty;
         var mode = Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.GetCurMode();
-        if (null != mode && tableIndex >= 0 && tableIndex < mode.TableNames.Length) {
-            return mode.TableNames[tableIndex];
+        if (null != mode && tableIndex >= 0 && tableIndex < mode.GetSchema().GetTableCount()) {
+            return mode.GetTableByIndex(tableIndex).GetName();
         }
         else {
             return string.Empty;
@@ -1915,7 +1911,7 @@ internal sealed class ResourceProcessor
         if (null == s_CachedSnapshot)
             return null;
         var mode = Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.GetCurMode();
-        if (null != mode && tableIndex >= 0 && tableIndex < mode.TableNames.Length) {
+        if (null != mode && tableIndex >= 0 && tableIndex < mode.GetSchema().GetTableCount()) {
             return mode.GetTableByIndex(tableIndex);
         }
         else {

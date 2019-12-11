@@ -372,18 +372,19 @@ internal static class ResourceEditUtility
         calc.Register("calcrefbycount", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcRefByCountExp>());
         calc.Register("findasset", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindAssetExp>());
         calc.Register("findshortestpathtoroot", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindShortestPathToRootExp>());
-        calc.Register("getobjectdatarefbyhash", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetObjectDataRefByHashExp>());
-        calc.Register("getobjectdatarefbylist", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetObjectDataRefByListExp>());
+        calc.Register("getobjdatarefbyhash", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetObjectDataRefByHashExp>());
+        calc.Register("getobjdatarefbylist", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetObjectDataRefByListExp>());
         calc.Register("openlink", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.OpenLinkExp>());
+        calc.Register("openreferencelink", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.OpenReferenceLinkExp>());
         calc.Register("openlinkincurrenttable", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.OpenLinkInCurrentTableExp>());
         calc.Register("getcurrenttablenames", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableNamesExp>());
         calc.Register("getcurrenttablecount", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableCountExp>());
         calc.Register("getcurrenttablename", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableNameExp>());
         calc.Register("getcurrenttable", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableExp>());
-        calc.Register("objectdatafromaddress", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromAddressExp>());
-        calc.Register("objectdatafromunifiedobjectindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromUnifiedObjectIndexExp>());
-        calc.Register("objectdatafromnativeobjectindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromNativeObjectIndexExp>());
-        calc.Register("objectdatafrommanagedobjectindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromManagedObjectIndexExp>());
+        calc.Register("objdatafromaddress", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromAddressExp>());
+        calc.Register("objdatafromunifiedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromUnifiedObjectIndexExp>());
+        calc.Register("objdatafromnativeindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromNativeObjectIndexExp>());
+        calc.Register("objdatafrommanagedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromManagedObjectIndexExp>());
         calc.Register("saveandreimport", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SaveAndReimportExp>());
         calc.Register("setdirty", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetDirtyExp>());
         calc.Register("getdefaulttexturesetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetDefaultTextureSettingExp>());
@@ -1663,31 +1664,42 @@ namespace ResourceEditApi
             return r;
         }
     }
+    internal class OpenReferenceLinkExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var obj = operands[0];
+                if (obj is ObjectData) {
+                    var data = (ObjectData)obj;
+                    ResourceProcessor.Instance.OpenReferenceLink(data);
+                }
+                else if (null != obj) {
+                    try {
+                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
+                        ResourceProcessor.Instance.OpenReferenceLink(addr);
+                    }
+                    catch {
+                    }
+                }
+            }
+            return r;
+        }
+    }
     internal class OpenLinkInCurrentTableExp : DslExpression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
         {
             object r = null;
-            if (operands.Count >= 2) {
-                var obj = operands[0];
-                var index = (int)Convert.ChangeType(operands[1], typeof(int));
+            if (operands.Count >= 1) {
+                var index = (int)Convert.ChangeType(operands[0], typeof(int));
                 List<string> list = new List<string>();
-                for(int i = 2; i < operands.Count; ++i) {
+                for(int i = 1; i < operands.Count; ++i) {
                     string str = operands[i] as string;
                     list.Add(str);
                 }
-                if (obj is ObjectData) {
-                    var data = (ObjectData)obj;
-                    ResourceProcessor.Instance.OpenLinkInCurrentTable(data, index, list);
-                }
-                else if (null != obj) {
-                    try {
-                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
-                        ResourceProcessor.Instance.OpenLinkInCurrentTable(addr, index, list);
-                    }
-                    catch {
-                    }
-                }
+                ResourceProcessor.Instance.OpenLinkInCurrentTable(index, list);
             }
             return r;
         }
