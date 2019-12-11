@@ -372,7 +372,18 @@ internal static class ResourceEditUtility
         calc.Register("calcrefbycount", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcRefByCountExp>());
         calc.Register("findasset", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindAssetExp>());
         calc.Register("findshortestpathtoroot", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindShortestPathToRootExp>());
+        calc.Register("getobjectdatarefbyhash", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetObjectDataRefByHashExp>());
+        calc.Register("getobjectdatarefbylist", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetObjectDataRefByListExp>());
         calc.Register("openlink", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.OpenLinkExp>());
+        calc.Register("openlinkincurrenttable", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.OpenLinkInCurrentTableExp>());
+        calc.Register("getcurrenttablenames", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableNamesExp>());
+        calc.Register("getcurrenttablecount", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableCountExp>());
+        calc.Register("getcurrenttablename", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableNameExp>());
+        calc.Register("getcurrenttable", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableExp>());
+        calc.Register("objectdatafromaddress", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromAddressExp>());
+        calc.Register("objectdatafromunifiedobjectindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromUnifiedObjectIndexExp>());
+        calc.Register("objectdatafromnativeobjectindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromNativeObjectIndexExp>());
+        calc.Register("objectdatafrommanagedobjectindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromManagedObjectIndexExp>());
         calc.Register("saveandreimport", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SaveAndReimportExp>());
         calc.Register("setdirty", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetDirtyExp>());
         calc.Register("getdefaulttexturesetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetDefaultTextureSettingExp>());
@@ -1566,8 +1577,65 @@ namespace ResourceEditApi
         {
             object r = null;
             if (operands.Count >= 1) {
-                var obj = (ObjectData)operands[0];
-                r = ResourceProcessor.Instance.FindShortestPathToRoot(obj);
+                var obj = operands[0];
+                if (obj is ObjectData) {
+                    var data = (ObjectData)obj;
+                    r = ResourceProcessor.Instance.FindShortestPathToRoot(data);
+                }
+                else if (null != obj) {
+                    try {
+                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
+                        r = ResourceProcessor.Instance.FindShortestPathToRoot(addr);
+                    }
+                    catch {
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class GetObjectDataRefByHashExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var obj = operands[0];
+                if (obj is ObjectData) {
+                    var data = (ObjectData)obj;
+                    r = ResourceProcessor.Instance.GetObjectDataRefByHash(data);
+                }
+                else if (null != obj) {
+                    try {
+                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
+                        r = ResourceProcessor.Instance.GetObjectDataRefByHash(addr);
+                    }
+                    catch {
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class GetObjectDataRefByListExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var obj = operands[0];
+                if (obj is ObjectData) {
+                    var data = (ObjectData)obj;
+                    r = ResourceProcessor.Instance.GetObjectDataRefByList(data);
+                }
+                else if (null != obj) {
+                    try {
+                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
+                        r = ResourceProcessor.Instance.GetObjectDataRefByList(addr);
+                    }
+                    catch {
+                    }
+                }
             }
             return r;
         }
@@ -1591,6 +1659,136 @@ namespace ResourceEditApi
                     catch {
                     }
                 }
+            }
+            return r;
+        }
+    }
+    internal class OpenLinkInCurrentTableExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var obj = operands[0];
+                var index = (int)Convert.ChangeType(operands[1], typeof(int));
+                List<string> list = new List<string>();
+                for(int i = 2; i < operands.Count; ++i) {
+                    string str = operands[i] as string;
+                    list.Add(str);
+                }
+                if (obj is ObjectData) {
+                    var data = (ObjectData)obj;
+                    ResourceProcessor.Instance.OpenLinkInCurrentTable(data, index, list);
+                }
+                else if (null != obj) {
+                    try {
+                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
+                        ResourceProcessor.Instance.OpenLinkInCurrentTable(addr, index, list);
+                    }
+                    catch {
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class GetCurrentTableNamesExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            var sb = new StringBuilder();
+            int ct = ResourceProcessor.Instance.GetCurrentTableCount();
+            for(int i = 0; i < ct; ++i) {
+                sb.Append(i);
+                sb.Append(':');
+                var name = ResourceProcessor.Instance.GetCurrentTableName(i);
+                sb.Append(name);
+                if (i < ct - 1)
+                    sb.Append(',');
+            }
+            return sb.ToString();
+        }
+    }
+    internal class GetCurrentTableCountExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = ResourceProcessor.Instance.GetCurrentTableCount();
+            return r;
+        }
+    }
+    internal class GetCurrentTableNameExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var index = (int)Convert.ChangeType(operands[0], typeof(int));
+                r = ResourceProcessor.Instance.GetCurrentTableName(index);
+            }
+            return r;
+        }
+    }
+    internal class GetCurrentTableExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var index = (int)Convert.ChangeType(operands[0], typeof(int));
+                r = ResourceProcessor.Instance.GetCurrentTable(index);
+            }
+            return r;
+        }
+    }
+    internal class ObjectDataFromAddressExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var obj = operands[0];
+                ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
+                r = ResourceProcessor.Instance.ObjectDataFromAddress(addr);
+            }
+            return r;
+        }
+    }
+    internal class ObjectDataFromUnifiedObjectIndexExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var obj = operands[0];
+                int index = (int)Convert.ChangeType(obj, typeof(int));
+                r = ResourceProcessor.Instance.ObjectDataFromUnifiedObjectIndex(index);
+            }
+            return r;
+        }
+    }
+    internal class ObjectDataFromNativeObjectIndexExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var obj = operands[0];
+                int index = (int)Convert.ChangeType(obj, typeof(int));
+                r = ResourceProcessor.Instance.ObjectDataFromNativeObjectIndex(index);
+            }
+            return r;
+        }
+    }
+    internal class ObjectDataFromManagedObjectIndexExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var obj = operands[0];
+                int index = (int)Convert.ChangeType(obj, typeof(int));
+                r = ResourceProcessor.Instance.ObjectDataFromManagedObjectIndex(index);
             }
             return r;
         }
@@ -3824,14 +4022,77 @@ internal static class MeshAreaHelper
 class ShortestPathToRootObjectFinder
 {
     private readonly CachedSnapshot _snapshot;
-    private readonly RawSchema _schema;
-    private readonly ObjectReferenceTable _refTable;
+    private Dictionary<int, HashSet<ObjectData>> _refbydict;
 
-    public ShortestPathToRootObjectFinder(CachedSnapshot snapshot, RawSchema rawSchema)
+    public ShortestPathToRootObjectFinder(CachedSnapshot snapshot)
     {
         _snapshot = snapshot;
-        _schema = rawSchema;
-        _refTable = _schema.GetTableByName(ObjectReferenceTable.kObjectReferenceTableName) as ObjectReferenceTable;
+        _refbydict = new Dictionary<int, HashSet<ObjectData>>();
+
+        int ct = snapshot.CrawledData.Connections.Count;
+        for (int i = 0; i < ct; ++i) {
+            var c = snapshot.CrawledData.Connections[i];
+            int objIndex = c.GetUnifiedIndexTo(snapshot);
+            ObjectData objData = ObjectData.invalid;
+            switch (c.connectionType) {
+                case ManagedConnection.ConnectionType.Global_To_ManagedObject:
+                    objData = ObjectData.global;
+                    break;
+                case ManagedConnection.ConnectionType.ManagedObject_To_ManagedObject:
+                    var objParent = ObjectData.FromManagedObjectIndex(snapshot, c.fromManagedObjectIndex);
+                    if (c.fieldFrom >= 0) {
+                        if (objParent.dataType == ObjectDataType.Array || objParent.dataType == ObjectDataType.ReferenceArray) {
+                            objData = objParent;
+                        }
+                        else {
+                            objData = objParent.GetInstanceFieldBySnapshotFieldIndex(snapshot, c.fieldFrom, false);
+                        }
+                    }
+                    else if (c.arrayIndexFrom >= 0) {
+                        objData = objParent.GetArrayElement(snapshot, c.arrayIndexFrom, false);
+                    }
+                    else {
+                        objData = objParent;
+                    }
+                    break;
+                case ManagedConnection.ConnectionType.ManagedType_To_ManagedObject:
+                    var objType = ObjectData.FromManagedType(snapshot, c.fromManagedType);
+                    if (c.fieldFrom >= 0) {
+                        objData = objType.GetInstanceFieldBySnapshotFieldIndex(snapshot, c.fieldFrom, false);
+                    }
+                    else if (c.arrayIndexFrom >= 0) {
+                        objData = objType.GetArrayElement(snapshot, c.arrayIndexFrom, false);
+                    }
+                    else {
+                        objData = objType;
+                    }
+                    break;
+                case ManagedConnection.ConnectionType.UnityEngineObject:
+                    objData = ObjectData.FromNativeObjectIndex(snapshot, c.UnityEngineNativeObjectIndex);
+                    break;
+            }
+            TryAddRefBy(objIndex, ref objData);
+            //考虑managed->native情形
+            if(c.connectionType== ManagedConnection.ConnectionType.UnityEngineObject) {
+                objIndex = _snapshot.NativeObjectIndexToUnifiedObjectIndex(c.UnityEngineNativeObjectIndex);
+                objData = ObjectData.FromManagedObjectIndex(snapshot, c.UnityEngineManagedObjectIndex);
+                TryAddRefBy(objIndex, ref objData);
+            }
+            if (i % 1000 == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("build reference by dictionary", i, ct)) {
+                break;
+            }
+        }
+        //从cache里检索一遍
+        ct = (int)snapshot.connections.Count;
+        for (int i = 0; i < ct; ++i) {
+            int objIndex = snapshot.connections.to[i];
+            var objData = ObjectData.FromUnifiedObjectIndex(snapshot, snapshot.connections.from[i]);
+            TryAddRefBy(objIndex, ref objData);
+            if (i % 1000 == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("build reference by dictionary", i, ct)) {
+                break;
+            }
+        }
+        EditorUtility.ClearProgressBar();
     }
 
     public ObjectData[] FindFor(ObjectData data)
@@ -3840,6 +4101,7 @@ class ShortestPathToRootObjectFinder
         var queue = new Queue<List<ObjectData>>();
         queue.Enqueue(new List<ObjectData> { data });
 
+        ObjectData[] ret = null;
         while (queue.Any()) {
             var pop = queue.Dequeue();
             var obj = pop.Last();
@@ -3847,14 +4109,15 @@ class ShortestPathToRootObjectFinder
 
             string reason;
             if (IsRoot(obj, out reason)) {
-                EditorUtility.ClearProgressBar();
-                return pop.ToArray();
+                ret = pop.ToArray();
+                break;
             }
 
-            var refBys = ObjectConnection.GetAllObjectConnectingTo(_snapshot, subObj);
-            if (null != refBys) {
+            //var refBys = ObjectConnection.GetAllObjectConnectingTo(_snapshot, subObj);
+            HashSet<ObjectData> refBys;
+            if(_refbydict.TryGetValue(subObj.GetUnifiedObjectIndex(_snapshot), out refBys)) {
                 foreach (var next in refBys) {
-                    if (!next.IsValid || seen.Contains(next))
+                    if (seen.Contains(next))
                         continue;
                     seen.Add(next);
                     var dupe = new List<ObjectData>(pop) { next };
@@ -3862,25 +4125,39 @@ class ShortestPathToRootObjectFinder
                 }
             }
             if (ResourceProcessor.Instance.DisplayCancelableProgressBar("find shortest path to root", queue.Count, 10000)) {
-                EditorUtility.ClearProgressBar();
-                return pop.ToArray();
+                ret = pop.ToArray();
+                break;
             }
         }
         EditorUtility.ClearProgressBar();
-        return null;
+        return ret;
     }
-
+    public HashSet<ObjectData> GetReferenceByHash(ObjectData data)
+    {
+        HashSet<ObjectData> hash;
+        int index = data.GetUnifiedObjectIndex(_snapshot);
+        _refbydict.TryGetValue(index, out hash);
+        return hash;
+    }
+    public ObjectData[] GetReferenceByList(ObjectData data)
+    {
+        return ObjectConnection.GetAllObjectConnectingTo(_snapshot, data);
+    }
     public bool IsRoot(ObjectData data, out string reason)
     {
         reason = null;
         if (data.IsValid) {
-            if (data.dataType == ObjectDataType.Global || data.dataType == ObjectDataType.Type) {
+            bool isStatic = false;
+            if (data.IsField()) {
+                if(data.fieldIndex>=0 && data.fieldIndex < _snapshot.fieldDescriptions.Count) {
+                    isStatic = _snapshot.fieldDescriptions.isStatic[data.fieldIndex];
+                }
+            }
+            if (isStatic || data.dataType == ObjectDataType.Global || data.dataType == ObjectDataType.Type) {
                 reason = "Static fields are global variables. Anything they reference will not be unloaded.";
                 return true;
             }
             if (data.isManaged)
-                return false;
-            if (!data.isNative)
                 return false;
 
             var classID = _snapshot.nativeObjects.nativeTypeArrayIndex[data.nativeObjectIndex];
@@ -3941,6 +4218,20 @@ class ShortestPathToRootObjectFinder
         var baseClassID = nativeBaseTypeArrayIndex;
 
         return baseClassID != -1 && IsComponent(baseClassID);
+    }
+
+    private void TryAddRefBy(int objIndex, ref ObjectData objData)
+    {
+        if (objIndex >= 0) {
+            HashSet<ObjectData> hash;
+            if (!_refbydict.TryGetValue(objIndex, out hash)) {
+                hash = new HashSet<ObjectData>();
+                _refbydict.Add(objIndex, hash);
+            }
+            if (!hash.Contains(objData)) {
+                hash.Add(objData);
+            }
+        }
     }
 }
 #endregion

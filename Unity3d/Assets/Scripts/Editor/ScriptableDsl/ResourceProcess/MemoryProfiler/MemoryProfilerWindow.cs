@@ -166,10 +166,10 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 return null;
             }
         }
-        public static Database.Schema GetCurSchema()
+        public static UIState.BaseMode GetCurMode()
         {
             if (null != s_MemoryProfilerWindow) {
-                return s_MemoryProfilerWindow.GetCurSchemaImpl();
+                return s_MemoryProfilerWindow.GetCurModeImpl();
             }
             else {
                 return null;
@@ -180,17 +180,31 @@ namespace Unity.MemoryProfilerForExtension.Editor
         {
             var curMode = UIState.CurrentMode;
             var snapshotMode = curMode as UIState.SnapshotMode;
+            var diffMode = curMode as UIState.DiffMode;
             if (null != snapshotMode) {
                 return snapshotMode.snapshot;
+            }
+            else if (null != diffMode) {
+                var firstSnapshotMode = diffMode.modeSecond as UIState.SnapshotMode;
+                var secondSnapshotMode = diffMode.modeSecond as UIState.SnapshotMode;
+                if (null != secondSnapshotMode && null != secondSnapshotMode.snapshot) {
+                    return secondSnapshotMode.snapshot;
+                }
+                else if (null != firstSnapshotMode && null != firstSnapshotMode.snapshot) {
+                    return firstSnapshotMode.snapshot;
+                }
+                else {
+                    return null;
+                }
             }
             else {
                 return null;
             }
         }
-        private Database.Schema GetCurSchemaImpl()
+        private UIState.BaseMode GetCurModeImpl()
         {
             var curMode = UIState.CurrentMode;
-            return curMode.GetSchema();
+            return curMode;
         }
 
         CaptureFlags m_CaptureFlags = CaptureFlags.ManagedObjects

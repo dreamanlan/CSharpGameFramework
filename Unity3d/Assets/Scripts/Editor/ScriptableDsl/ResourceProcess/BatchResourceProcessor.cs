@@ -347,7 +347,7 @@ public class BatchLoadWindow : EditorWindow
                         string exportPath1 = Path.Combine(path, snapName + "_MANAGEDHEAP_SnapshotExport_" + DateTime.Now.ToString("dd_MM_yyyy_hh_mm_ss") + ".csv");
                         if (!String.IsNullOrEmpty(exportPath1)) {
                             System.IO.StreamWriter sw = new System.IO.StreamWriter(exportPath1);
-                            sw.WriteLine(" Managed Objects , Size , Address ");
+                            sw.WriteLine("Managed_Objects,Size,Address");
                             for (int i = 0; i < cachedSnapshot.SortedManagedHeapEntries.Count; i++) {
                                 var size = cachedSnapshot.SortedManagedHeapEntries.Size(i);
                                 var addr = cachedSnapshot.SortedManagedHeapEntries.Address(i);
@@ -361,21 +361,23 @@ public class BatchLoadWindow : EditorWindow
                         if (!String.IsNullOrEmpty(exportPath2)) {
                             m_ManagedGroups.Clear();
                             System.IO.StreamWriter sw = new System.IO.StreamWriter(exportPath2);
-                            sw.WriteLine("Type,RefCount,Size,Address");
+                            sw.WriteLine("Index,Type,RefCount,Size,Address");
 
                             for (int i = 0; i < cachedSnapshot.SortedManagedObjects.Count; i++) {
                                 var size = cachedSnapshot.SortedManagedObjects.Size(i);
                                 var addr = cachedSnapshot.SortedManagedObjects.Address(i);
                                 ManagedObjectInfo objInfo;
+                                int index = -1;
                                 int refCount = 0;
                                 string typeName = string.Empty;
                                 if (cachedSnapshot.CrawledData.ManagedObjectByAddress.TryGetValue(addr, out objInfo)) {
+                                    index = objInfo.ManagedObjectIndex;
                                     refCount = objInfo.RefCount;
                                     if (objInfo.ITypeDescription >= 0 && objInfo.ITypeDescription < cachedSnapshot.typeDescriptions.Count) {
                                         typeName = cachedSnapshot.typeDescriptions.typeDescriptionName[objInfo.ITypeDescription];
                                     }
                                 }
-                                sw.WriteLine("\"" + typeName + "\"," + refCount + "," + size + "," + addr);
+                                sw.WriteLine("" + index + ",\"" + typeName + "\"," + refCount + "," + size + "," + addr);
 
                                 ManagedGroupInfo info;
                                 if (m_ManagedGroups.TryGetValue(typeName, out info)) {
@@ -428,20 +430,24 @@ public class BatchLoadWindow : EditorWindow
                         if (!String.IsNullOrEmpty(exportPath)) {
                             m_NativeGroups.Clear();
                             System.IO.StreamWriter sw = new System.IO.StreamWriter(exportPath);
-                            sw.WriteLine("Name,Type,RefCount,InstanceID,Size,Address");
+                            sw.WriteLine("Index,Name,Type,RefCount,InstanceID,Size,Address");
                             for (int i = 0; i < cachedSnapshot.SortedNativeObjects.Count; i++) {
                                 var size = cachedSnapshot.SortedNativeObjects.Size(i);
                                 var addr = cachedSnapshot.SortedNativeObjects.Address(i);
                                 var name = cachedSnapshot.SortedNativeObjects.Name(i);
                                 var refCount = cachedSnapshot.SortedNativeObjects.Refcount(i);
                                 var instanceId = cachedSnapshot.SortedNativeObjects.InstanceId(i);
+                                int index;
+                                if(!cachedSnapshot.nativeObjects.instanceId2Index.TryGetValue(instanceId, out index)) {
+                                    index = -1;
+                                }
                                 var nativeTypeIndex = cachedSnapshot.SortedNativeObjects.NativeTypeArrayIndex(i);
                                 string typeName = string.Empty;
                                 if (nativeTypeIndex >= 0 && nativeTypeIndex < cachedSnapshot.nativeTypes.Count) {
                                     typeName = cachedSnapshot.nativeTypes.typeName[nativeTypeIndex];
                                 }
 
-                                sw.WriteLine("\"" + name + "\",\"" + typeName + "\"," + refCount + "," + instanceId + "," + size + "," + addr);
+                                sw.WriteLine("" + index + ",\"" + name + "\",\"" + typeName + "\"," + refCount + "," + instanceId + "," + size + "," + addr);
 
                                 NativeGroupInfo info;
                                 if (m_NativeGroups.TryGetValue(typeName, out info)) {
