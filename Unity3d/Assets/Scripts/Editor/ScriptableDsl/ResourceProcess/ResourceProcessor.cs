@@ -1713,9 +1713,8 @@ internal sealed class ResourceProcessor
                                 type = s_CachedSnapshot.typeDescriptions.typeDescriptionName[arrInfo.elementTypeDescription];
                             }
                             string rank = arrInfo.ArrayRankToString();
-                            var len = arrInfo.length;
                             var indexStr = arrInfo.IndexToRankedString(data.arrayIndex);
-                            list.Add(new KeyValuePair<string, object>(string.Format("{0}(rank:{1} len:{2})[{3}]", type, rank, len, indexStr), data.displayObject));
+                            list.Add(new KeyValuePair<string, object>(string.Format("{0}(rank:{1})[{2}]", type, rank, indexStr), data.displayObject));
                         }
                         else {
                             string name = string.Empty;
