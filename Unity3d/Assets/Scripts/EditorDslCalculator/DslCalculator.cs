@@ -2677,7 +2677,23 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var obj = operands[0] as UnityEngine.Object;
                 if (null != obj) {
-                    r = PrefabUtility.GetPrefabType(obj);
+                    r = PrefabUtility.GetPrefabAssetType(obj);
+                }
+            }
+#endif
+            return r;
+        }
+    }
+    internal class GetPrefabStatusExp : SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+#if UNITY_EDITOR
+            if (operands.Count >= 1) {
+                var obj = operands[0] as UnityEngine.Object;
+                if (null != obj) {
+                    r = PrefabUtility.GetPrefabInstanceStatus(obj);
                 }
             }
 #endif
@@ -2693,7 +2709,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var obj = operands[0] as UnityEngine.Object;
                 if (null != obj) {
-                    r = PrefabUtility.GetPrefabObject(obj);
+                    r = PrefabUtility.GetPrefabInstanceHandle(obj);
                 }
             }
 #endif
@@ -2709,7 +2725,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var obj = operands[0] as UnityEngine.Object;
                 if (null != obj) {
-                    r = PrefabUtility.GetPrefabParent(obj);
+                    r = PrefabUtility.GetCorrespondingObjectFromSource(obj);
                 }
             }
 #endif
@@ -6160,6 +6176,7 @@ namespace DslExpression
             Register("loadasset", new ExpressionFactoryHelper<LoadAssetExp>());
             Register("unloadasset", new ExpressionFactoryHelper<UnloadAssetExp>());
             Register("getprefabtype", new ExpressionFactoryHelper<GetPrefabTypeExp>());
+            Register("getprefabstatus", new ExpressionFactoryHelper<GetPrefabStatusExp>());
             Register("getprefabobject", new ExpressionFactoryHelper<GetPrefabObjectExp>());
             Register("getprefabparent", new ExpressionFactoryHelper<GetPrefabParentExp>());
             Register("destroyobject", new ExpressionFactoryHelper<DestroyObjectExp>());
