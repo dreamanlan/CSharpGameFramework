@@ -348,10 +348,12 @@ public class BatchLoadWindow : EditorWindow
                         if (!String.IsNullOrEmpty(exportPath1)) {
                             System.IO.StreamWriter sw = new System.IO.StreamWriter(exportPath1);
                             sw.WriteLine("Managed_Objects,Size,Address");
-                            for (int i = 0; i < cachedSnapshot.SortedManagedHeapEntries.Count; i++) {
+                            int ct = cachedSnapshot.SortedManagedHeapEntries.Count;
+                            for (int i = 0; i < ct; i++) {
                                 var size = cachedSnapshot.SortedManagedHeapEntries.Size(i);
                                 var addr = cachedSnapshot.SortedManagedHeapEntries.Address(i);
                                 sw.WriteLine("Managed," + size + "," + addr);
+                                ResourceProcessor.Instance.DisplayProgressBar("write managed heap ...", i, ct);
                             }
                             sw.Flush();
                             sw.Close();
@@ -363,7 +365,8 @@ public class BatchLoadWindow : EditorWindow
                             System.IO.StreamWriter sw = new System.IO.StreamWriter(exportPath2);
                             sw.WriteLine("Index,Type,RefCount,Size,Address");
 
-                            for (int i = 0; i < cachedSnapshot.SortedManagedObjects.Count; i++) {
+                            int ct = cachedSnapshot.SortedManagedObjects.Count;
+                            for (int i = 0; i < ct; i++) {
                                 var size = cachedSnapshot.SortedManagedObjects.Size(i);
                                 var addr = cachedSnapshot.SortedManagedObjects.Address(i);
                                 ManagedObjectInfo objInfo;
@@ -396,6 +399,9 @@ public class BatchLoadWindow : EditorWindow
                                     info = new ManagedGroupInfo { Group = g, Type = typeName, Count = 1, Size = size };
                                     m_ManagedGroups.Add(typeName, info);
                                 }
+                                if (i % 1000 == 0) {
+                                    ResourceProcessor.Instance.DisplayProgressBar("write managed objects ...", i, ct);
+                                }
                             }
                             sw.Flush();
                             sw.Close();
@@ -406,6 +412,8 @@ public class BatchLoadWindow : EditorWindow
                             var lastGroup = "A000000";
                             using (var outsw = new StreamWriter(gpath)) {
                                 outsw.WriteLine("group,type,count,size");
+                                int curCt = 0;
+                                int totalCt = m_ManagedGroups.Count;
                                 foreach (var pair in m_ManagedGroups) {
                                     var info = pair.Value;
                                     var g = info.Group;
@@ -414,14 +422,24 @@ public class BatchLoadWindow : EditorWindow
                                     if (!string.IsNullOrEmpty(info.Group))
                                         lastGroup = info.Group;
                                     outsw.WriteLine("\"{0}\",\"{1}\",{2},{3}", g, info.Type, info.Count, info.Size);
+                                    if (curCt % 100 == 0) {
+                                        ResourceProcessor.Instance.DisplayProgressBar("write managed object group ...", curCt, totalCt);
+                                    }
+                                    ++curCt;
                                 }
                             }
                             string gpath2 = Path.Combine(dir, fn + "_groups_forcmp.csv");
                             using (var outsw = new StreamWriter(gpath2)) {
                                 outsw.WriteLine("type,count,size");
+                                int curCt = 0;
+                                int totalCt = m_ManagedGroups.Count;
                                 foreach (var pair in m_ManagedGroups) {
                                     var info = pair.Value;
                                     outsw.WriteLine("\"{0}\",{1},{2}", info.Type, info.Count, info.Size);
+                                    if (curCt % 100 == 0) {
+                                        ResourceProcessor.Instance.DisplayProgressBar("write managed object group for cmp ...", curCt, totalCt);
+                                    }
+                                    ++curCt;
                                 }
                             }
                         }
@@ -431,7 +449,8 @@ public class BatchLoadWindow : EditorWindow
                             m_NativeGroups.Clear();
                             System.IO.StreamWriter sw = new System.IO.StreamWriter(exportPath);
                             sw.WriteLine("Index,Name,Type,RefCount,InstanceID,Size,Address");
-                            for (int i = 0; i < cachedSnapshot.SortedNativeObjects.Count; i++) {
+                            int ct = cachedSnapshot.SortedNativeObjects.Count;
+                            for (int i = 0; i < ct; i++) {
                                 var size = cachedSnapshot.SortedNativeObjects.Size(i);
                                 var addr = cachedSnapshot.SortedNativeObjects.Address(i);
                                 var name = cachedSnapshot.SortedNativeObjects.Name(i);
@@ -458,6 +477,9 @@ public class BatchLoadWindow : EditorWindow
                                     info = new NativeGroupInfo { Type = typeName, Count = 1, Size = size };
                                     m_NativeGroups.Add(typeName, info);
                                 }
+                                if (i % 100 == 0) {
+                                    ResourceProcessor.Instance.DisplayProgressBar("write native objects ...", i, ct);
+                                }
                             }
                             sw.Flush();
                             sw.Close();
@@ -467,9 +489,13 @@ public class BatchLoadWindow : EditorWindow
                             string gpath = Path.Combine(dir, fn + "_groups.csv");
                             using (var outsw = new StreamWriter(gpath)) {
                                 outsw.WriteLine("type,count,size");
+                                int curCt = 0;
+                                int totalCt = m_NativeGroups.Count;
                                 foreach (var pair in m_NativeGroups) {
                                     var info = pair.Value;
                                     outsw.WriteLine("\"{0}\",{1},{2}", info.Type, info.Count, info.Size);
+                                    ResourceProcessor.Instance.DisplayProgressBar("write native object group ...", curCt, totalCt);
+                                    ++curCt;
                                 }
                             }
                         }

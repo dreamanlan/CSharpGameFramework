@@ -243,6 +243,11 @@ internal static class ResourceEditUtility
         internal ulong swap = 0;
         internal ulong swappss = 0;
     }
+    internal class SymbolInfo
+    {
+        internal ulong Addr;
+        internal string Name;
+    }
     internal class DataRow
     {
         internal int RowIndex
@@ -385,6 +390,8 @@ internal static class ResourceEditUtility
         calc.Register("objdatafromunifiedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromUnifiedObjectIndexExp>());
         calc.Register("objdatafromnativeindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromNativeObjectIndexExp>());
         calc.Register("objdatafrommanagedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromManagedObjectIndexExp>());
+        calc.Register("loadsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadSymbolsExp>());
+        calc.Register("mapsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapSymbolsExp>());
         calc.Register("saveandreimport", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SaveAndReimportExp>());
         calc.Register("setdirty", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetDirtyExp>());
         calc.Register("getdefaulttexturesetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetDefaultTextureSettingExp>());
@@ -1804,6 +1811,91 @@ namespace ResourceEditApi
             }
             return r;
         }
+    }
+    internal class LoadSymbolsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var file = operands[0] as string;
+                if (!string.IsNullOrEmpty(file)) {
+                    var symbols = new List<ResourceEditUtility.SymbolInfo>();
+                    using (var sr = new StreamReader(file)) {
+                        while (!sr.EndOfStream) {
+                            var line = sr.ReadLine();
+                            var m = s_Address.Match(line);
+                            if (m.Success) {
+                                var addr = m.Groups[1].Value;
+                                var name = m.Groups[2].Value;
+                                ulong v;
+                                ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v);
+                                symbols.Add(new ResourceEditUtility.SymbolInfo { Addr = v, Name = name });
+                            }
+                        }
+                    }
+                    r = symbols;
+                }
+            }
+            return r;
+        }
+        private static Regex s_Address = new Regex(@"^ [0-9a-fA-F]{4,4}:([0-9a-fA-F]{8,8})       (.*)$", RegexOptions.Compiled);
+    }
+    internal class MapSymbolsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = string.Empty;
+            if (operands.Count >= 3) {
+                var txt = operands[0] as string;
+                var symbols = operands[1] as IList<ResourceEditUtility.SymbolInfo>;
+                var key = operands[2] as string;
+                if (!string.IsNullOrEmpty(txt) && null != symbols && null != key) {
+                    var lines = txt.Split('\n');
+                    for (int i = 0; i < lines.Length; ++i) {
+                        lines[i] = lines[i].TrimEnd();
+                    }
+                    for (int ix = 0; ix < lines.Length; ++ix) {
+                        var line = lines[ix];
+                        var m = s_Address.Match(line);
+                        if (m.Success) {
+                            var addr = m.Groups[1].Value;
+                            var so = m.Groups[2].Value;
+                            if (so.Contains(key)) {
+                                ulong v;
+                                if (ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                                    int lo = 0;
+                                    int hi = symbols.Count - 2;
+                                    for (; lo < hi;) {
+                                        int i = (lo + hi) / 2;
+                                        var st = symbols[i].Addr;
+                                        var ed = symbols[i + 1].Addr;
+                                        var name = symbols[i].Name;
+                                        if (st > v) {
+                                            hi = i;
+                                        }
+                                        else if (ed <= v) {
+                                            lo = i;
+                                        }
+                                        else {
+                                            lines[ix] = line + " " + name;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    var sb = new StringBuilder();
+                    foreach(var line in lines) {
+                        sb.AppendLine(line);
+                    }
+                    r = sb.ToString();
+                }
+            }
+            return r;
+        }
+        private static Regex s_Address = new Regex(@"^[0-9]+ #[0-9]+ pc ([0-9a-fA-F]{8,8}) (\S+)", RegexOptions.Compiled);
     }
     internal class SaveAndReimportExp : DslExpression.SimpleExpressionBase
     {
