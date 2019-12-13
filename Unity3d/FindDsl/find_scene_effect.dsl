@@ -1,6 +1,7 @@
 input("*.prefab")
 {
 	string("filter", "");
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "sceneassets");
 	feature("menu", "2.Current Scene Resources/Effects");
 	feature("description", "just so so");

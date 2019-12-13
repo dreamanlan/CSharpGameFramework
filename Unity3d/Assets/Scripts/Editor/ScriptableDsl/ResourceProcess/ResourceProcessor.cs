@@ -908,11 +908,11 @@ internal sealed class ResourceEditWindow : EditorWindow
                     if (GUILayout.Button(new GUIContent(buttonName, buttonName), minWidth, maxWidth)) {
                         DeferAction(obj => {
                             if (null != item.Object)
-                                SelectObject(item.Object);
+                                ResourceEditUtility.SelectObject(item.Object);
                             else
-                                SelectSceneObject(item.ScenePath);
+                                ResourceEditUtility.SelectSceneObject(item.ScenePath);
                             if (!string.IsNullOrEmpty(item.AssetPath)) {
-                                SelectProjectObject(item.AssetPath);
+                                ResourceEditUtility.SelectProjectObject(item.AssetPath);
                                 obj.m_SelectedAssetPath = item.AssetPath;
                             }
                             else {
@@ -930,9 +930,9 @@ internal sealed class ResourceEditWindow : EditorWindow
                     if (GUILayout.Button(new GUIContent(buttonName, icon, buttonName), minWidth, maxWidth)) {
                         DeferAction(obj => {
                             if (null != item.Object)
-                                SelectObject(item.Object);
+                                ResourceEditUtility.SelectObject(item.Object);
                             else
-                                SelectProjectObject(item.AssetPath);
+                                ResourceEditUtility.SelectProjectObject(item.AssetPath);
                             obj.m_SelectedAssetPath = item.AssetPath;
                             obj.m_SelectedItem = item;
                         });
@@ -967,7 +967,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     if (GUILayout.Button(new GUIContent(assetPath, icon, assetPath), GUILayout.MinWidth(80), GUILayout.MaxWidth(rightWidth))) {
                         DeferAction(obj => {
-                            SelectProjectObject(assetPath);
+                            ResourceEditUtility.SelectProjectObject(assetPath);
                         });
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -986,7 +986,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     if (GUILayout.Button(new GUIContent(assetPath, icon, assetPath), GUILayout.MinWidth(80), GUILayout.MaxWidth(rightWidth))) {
                         DeferAction(obj => {
-                            SelectProjectObject(assetPath);
+                            ResourceEditUtility.SelectProjectObject(assetPath);
                         });
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -1104,9 +1104,9 @@ internal sealed class ResourceEditWindow : EditorWindow
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     if (GUILayout.Button(new GUIContent(buttonName, buttonName), minWidth, maxWidth)) {
                         DeferAction(obj => {
-                            SelectSceneObject(item.ScenePath);
+                            ResourceEditUtility.SelectSceneObject(item.ScenePath);
                             if (!string.IsNullOrEmpty(item.AssetPath)) {
-                                SelectProjectObject(item.AssetPath);
+                                ResourceEditUtility.SelectProjectObject(item.AssetPath);
                                 obj.m_SelectedAssetPath = item.AssetPath;
                             }
                             else {
@@ -1123,7 +1123,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     if (GUILayout.Button(new GUIContent(buttonName, icon, buttonName), minWidth, maxWidth)) {
                         DeferAction(obj => {
-                            SelectProjectObject(item.AssetPath);
+                            ResourceEditUtility.SelectProjectObject(item.AssetPath);
                             obj.m_SelectedAssetPath = item.AssetPath;
                             obj.m_SelectedGroup = item;
                         });
@@ -1158,7 +1158,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     if (GUILayout.Button(new GUIContent(assetPath, icon, assetPath), GUILayout.MinWidth(80), GUILayout.MaxWidth(rightWidth))) {
                         DeferAction(obj => {
-                            SelectProjectObject(assetPath);
+                            ResourceEditUtility.SelectProjectObject(assetPath);
                         });
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -1177,7 +1177,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     if (GUILayout.Button(new GUIContent(assetPath, icon, assetPath), GUILayout.MinWidth(80), GUILayout.MaxWidth(rightWidth))) {
                         DeferAction(obj => {
-                            SelectProjectObject(assetPath);
+                            ResourceEditUtility.SelectProjectObject(assetPath);
                         });
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -1214,55 +1214,6 @@ internal sealed class ResourceEditWindow : EditorWindow
             EditorGUILayout.EndVertical();
         }
         EditorGUILayout.EndHorizontal();
-    }
-
-    private static void SelectProjectObject(string assetPath)
-    {
-        if (assetPath.IndexOfAny(new char[] { '/', '\\' }) < 0) {
-            var guids = AssetDatabase.FindAssets(assetPath);
-            if (guids.Length >= 1) {
-                int ct = 0;
-                for (int i = 0; i < guids.Length; ++i) {
-                    var temp = AssetDatabase.GUIDToAssetPath(guids[0]);
-                    var name = Path.GetFileNameWithoutExtension(temp);
-                    if (string.Compare(name, assetPath, true) == 0) {
-                        ++ct;
-                        if (ct == 1) {
-                            assetPath = temp;
-                        }
-                    }
-                }
-                if (ct > 1) {
-                    EditorUtility.DisplayDialog("alert", string.Format("有{0}个同名的资源，仅选中其中一个:{1}", ct, assetPath), "ok");
-                }
-            }
-        }
-        var objLoaded = AssetDatabase.LoadMainAssetAtPath(assetPath);
-        if (objLoaded != null) {
-            if (Selection.activeObject != null && !(Selection.activeObject is GameObject)) {
-                Resources.UnloadAsset(Selection.activeObject);
-                Selection.activeObject = null;
-            }
-            Selection.activeObject = objLoaded;
-            //EditorGUIUtility.PingObject(Selection.activeObject);
-        }
-    }
-    private static void SelectObject(UnityEngine.Object obj)
-    {
-        Selection.activeObject = obj;
-        EditorGUIUtility.PingObject(Selection.activeObject);
-        //SceneView.lastActiveSceneView.FrameSelected(true);
-        SceneView.FrameLastActiveSceneView();
-    }
-    private static void SelectSceneObject(string path)
-    {
-        var obj = GameObject.Find(path);
-        if (null != obj) {
-            Selection.activeObject = obj;
-            EditorGUIUtility.PingObject(Selection.activeObject);
-            //SceneView.lastActiveSceneView.FrameSelected(true);
-            SceneView.FrameLastActiveSceneView();
-        }
     }
 
     private string[] m_Menus = null;
@@ -1935,7 +1886,7 @@ internal sealed class ResourceProcessor
                     low = ix + 1;
                 }
                 else if (vaddr > addr) {
-                    high = ix + 1;
+                    high = ix - 1;
                 }
                 else {
                     var instanceId = s_CachedSnapshot.SortedNativeObjects.InstanceId(ix);
@@ -1973,6 +1924,11 @@ internal sealed class ResourceProcessor
         m_ClassifiedNativeMemoryInfos.Clear();
         m_ClassifiedManagedMemoryInfos.Clear();
         Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.ShowWindow();
+        s_CachedSnapshot = Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.GetCurCachedSnapshot();
+        if (null != s_CachedSnapshot) {
+            s_ShortestPathToRootFinder = new ShortestPathToRootObjectFinder(s_CachedSnapshot);
+            AnalyseSnapshot();
+        }
     }
     internal void ClearInstrumentInfo()
     {

@@ -5,6 +5,7 @@ input("Transform")
 	string("style", "itemlist"){
 		popup(["itemlist", "grouplist"]);
 	};
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "scenecomponents");
 	feature("menu", "3.Current Scene Objects/Component Group");
 	feature("description", "just so so");

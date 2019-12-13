@@ -13,6 +13,7 @@ input
 	int("resultopt",1){
 		toggle(["all","onlyalone","onlynotalone"],[1,2,3]);
 	};
+	float("pathwidth",240){range(20,4096);};
     feature("source", "table");
     feature("menu", "9.Table/compare managed heap");
     feature("description", "just so so");

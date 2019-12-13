@@ -2,6 +2,7 @@ input("Renderer")
 {
 	string("matName","Default");
 	string("shaderName","Standard");
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "sceneobjects");
 	feature("menu", "3.Current Scene Objects/Materials");
 	feature("description", "just so so");

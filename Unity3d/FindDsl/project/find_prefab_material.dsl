@@ -2,6 +2,7 @@ input("*.prefab")
 {
 	string("matName","Default");
 	string("shaderName","Standard");
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "project");
 	feature("menu", "1.Project Resources/Prefab Material");
 	feature("description", "just so so");

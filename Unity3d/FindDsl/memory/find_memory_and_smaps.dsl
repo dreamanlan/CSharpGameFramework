@@ -18,7 +18,7 @@ input
 	    script("LoadMaps");
 	};
 	bool("findasset", false);
-	float("pathwidth",240);
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "snapshot");
 	feature("menu", "6.Memory/slowly find memory and smaps");
 	feature("description", "just so so");

@@ -4,7 +4,7 @@ input("*.tga","*.png","*.jpg","*.exr")
 	string("notfilter", "/Select/");
 	int("maxSize",1024);
 	feature("source", "project");
-	feature("menu", "Project Resources/Texture Size");
+	feature("menu", "1.Project Resources/Texture Size");
 	feature("description", "just so so");
 }
 filter
@@ -22,17 +22,26 @@ filter
 }
 process
 {
-	var(1) = gettexturesetting("iPhone");
-	var(1).overridden=true;
-	var(1).maxTextureSize = changetype(maxSize, "int");
-	setastctexture(var(1));
-	settexturesetting(var(1));
+	/*
+	var(0) = getdefaulttexturesetting();
+	var(0).maxTextureSize = changetype(maxSize, "int");
+	settexturesetting(var(0));
 	
-	var(2) = gettexturesetting("Android");
+	var(1) = gettexturesetting("Standalone");
+	var(1).maxTextureSize = changetype(maxSize, "int");
+	settexturesetting(var(1));
+	*/
+	var(2) = gettexturesetting("iPhone");
 	var(2).overridden=true;
 	var(2).maxTextureSize = changetype(maxSize, "int");
 	setastctexture(var(2));
 	settexturesetting(var(2));
 	
-    saveandreimport();
+	var(3) = gettexturesetting("Android");
+	var(3).overridden=true;
+	var(3).maxTextureSize = changetype(maxSize, "int");
+	setastctexture(var(3));
+	settexturesetting(var(3));
+	
+  saveandreimport();
 };

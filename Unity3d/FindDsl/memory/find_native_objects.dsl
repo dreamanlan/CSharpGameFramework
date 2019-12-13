@@ -10,6 +10,7 @@ input
         native_memory_group;
     };
 	string("filter", "");
+	float("pathwidth",240){range(20,4096);};
 	button("Return", "FindDsl/memory/find_ngroups.dsl");
 	feature("source", "snapshot");
 	feature("menu", "6.Memory/find native objects");

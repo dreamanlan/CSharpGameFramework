@@ -7,7 +7,8 @@ input
     int("maxRefOtherCount",1024);
     string("category", "managed");
     string("class", "System.String");  
-	string("filter", "");	
+	string("filter", "");
+	float("pathwidth",240){range(20,4096);};
 	button("Return", "FindDsl/memory/find_mgroups.dsl");
 	feature("source", "snapshot");
 	feature("menu", "6.Memory/find managed objects");

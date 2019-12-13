@@ -14,7 +14,7 @@ input
 	    script("LoadManagedHeaps");
 	};
 	bool("findasset", false);
-	float("pathwidth",240);
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "snapshot");
 	feature("menu", "6.Memory/slowly find memory and mheaps");
 	feature("description", "just so so");

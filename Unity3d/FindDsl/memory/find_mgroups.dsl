@@ -8,6 +8,7 @@ input
 	string("startswith", "");
 	string("endswith", "View");
 	int("mincount",2);
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "snapshot");
 	feature("menu", "6.Memory/find managed groups");
 	feature("description", "just so so");

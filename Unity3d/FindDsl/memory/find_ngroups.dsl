@@ -8,6 +8,7 @@ input
 	string("startswith", "");
 	string("endswith", "");
 	int("mincount",2);
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "snapshot");
 	feature("menu", "6.Memory/find native groups");
 	feature("description", "just so so");

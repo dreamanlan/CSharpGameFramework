@@ -392,6 +392,9 @@ internal static class ResourceEditUtility
         calc.Register("objdatafrommanagedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromManagedObjectIndexExp>());
         calc.Register("loadsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadSymbolsExp>());
         calc.Register("mapsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapSymbolsExp>());
+        calc.Register("selectobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectObjectExp>());
+        calc.Register("selectprojectobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectProjectObjectExp>());
+        calc.Register("selectsceneobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectSceneObjectExp>());
         calc.Register("saveandreimport", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SaveAndReimportExp>());
         calc.Register("setdirty", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetDirtyExp>());
         calc.Register("getdefaulttexturesetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetDefaultTextureSettingExp>());
@@ -419,7 +422,7 @@ internal static class ResourceEditUtility
         calc.Register("setanimationcompression", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetAnimationCompressionExp>());
         calc.Register("getanimationtype", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationTypeExp>());
         calc.Register("setanimationtype", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetAnimationTypeExp>());
-        calc.Register("setExtraExposedTransformPaths", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetExtraExposedTransformPathsExp>());
+        calc.Register("setextraexposedtransformpaths", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetExtraExposedTransformPathsExp>());
         calc.Register("clearanimationscalecurve", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ClearAnimationScaleCurveExp>());
         calc.Register("getaudiosetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetAudioSettingExp>());
         calc.Register("setaudiosetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetAudioSettingExp>());
@@ -807,8 +810,8 @@ internal static class ResourceEditUtility
                     calc.SetGlobalVariable(pair.Key, pair.Value);
                 }
             }
-            calc.LoadDsl("main", new string[] { "$item", "$obj" }, file.DslInfos[0].First);
-            r = calc.Calc("main", item, obj);
+            calc.LoadDsl("main", new string[] { "$obj", "$item" }, file.DslInfos[0].First);
+            r = calc.Calc("main", obj, item);
         }
         return r;
     }
@@ -1071,6 +1074,55 @@ internal static class ResourceEditUtility
     {
         get { return s_UseFastCrawler; }
         set { s_UseFastCrawler = value; }
+    }
+    
+    internal static void SelectObject(UnityEngine.Object obj)
+    {
+        Selection.activeObject = obj;
+        EditorGUIUtility.PingObject(Selection.activeObject);
+        //SceneView.lastActiveSceneView.FrameSelected(true);
+        SceneView.FrameLastActiveSceneView();
+    }
+    internal static void SelectProjectObject(string assetPath)
+    {
+        if (assetPath.IndexOfAny(new char[] { '/', '\\' }) < 0) {
+            var guids = AssetDatabase.FindAssets(assetPath);
+            if (guids.Length >= 1) {
+                int ct = 0;
+                for (int i = 0; i < guids.Length; ++i) {
+                    var temp = AssetDatabase.GUIDToAssetPath(guids[0]);
+                    var name = Path.GetFileNameWithoutExtension(temp);
+                    if (string.Compare(name, assetPath, true) == 0) {
+                        ++ct;
+                        if (ct == 1) {
+                            assetPath = temp;
+                        }
+                    }
+                }
+                if (ct > 1) {
+                    EditorUtility.DisplayDialog("alert", string.Format("有{0}个同名的资源，仅选中其中一个:{1}", ct, assetPath), "ok");
+                }
+            }
+        }
+        var objLoaded = AssetDatabase.LoadMainAssetAtPath(assetPath);
+        if (objLoaded != null) {
+            if (Selection.activeObject != null && !(Selection.activeObject is GameObject)) {
+                Resources.UnloadAsset(Selection.activeObject);
+                Selection.activeObject = null;
+            }
+            Selection.activeObject = objLoaded;
+            //EditorGUIUtility.PingObject(Selection.activeObject);
+        }
+    }
+    internal static void SelectSceneObject(string scenePath)
+    {
+        var obj = GameObject.Find(scenePath);
+        if (null != obj) {
+            Selection.activeObject = obj;
+            EditorGUIUtility.PingObject(Selection.activeObject);
+            //SceneView.lastActiveSceneView.FrameSelected(true);
+            SceneView.FrameLastActiveSceneView();
+        }
     }
 
     private static GameObject FindRoot(GameObject obj)
@@ -1897,6 +1949,51 @@ namespace ResourceEditApi
         }
         private static Regex s_Address = new Regex(@"^[0-9]+ #[0-9]+ pc ([0-9a-fA-F]{8,8}) (\S+)", RegexOptions.Compiled);
     }
+    internal class SelectObjectExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = false;
+            if (operands.Count >= 1) {
+                var obj = operands[0] as UnityEngine.Object;
+                if (null != obj) {
+                    ResourceEditUtility.SelectObject(obj);
+                    r = true;
+                }
+            }
+            return r;
+        }
+    }
+    internal class SelectProjectObjectExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = false;
+            if (operands.Count >= 1) {
+                var path = operands[0] as string;
+                if (!string.IsNullOrEmpty(path)) {
+                    ResourceEditUtility.SelectProjectObject(path);
+                    r = true;
+                }
+            }
+            return r;
+        }
+    }
+    internal class SelectSceneObjectExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = false;
+            if (operands.Count >= 1) {
+                var path = operands[0] as string;
+                if (!string.IsNullOrEmpty(path)) {
+                    ResourceEditUtility.SelectSceneObject(path);
+                    r = true;
+                }
+            }
+            return r;
+        }
+    }
     internal class SaveAndReimportExp : DslExpression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
@@ -2330,6 +2427,13 @@ namespace ResourceEditApi
     }
     internal class CollectMeshesExp : DslExpression.SimpleExpressionBase
     {
+        internal enum ScopeEnum : int
+        {
+            None = 0,
+            NonParticle = 1,
+            Particle = 2,
+            All = 3,
+        }
         protected override object OnCalc(IList<object> operands)
         {
             if (operands.Count >= 1) {
@@ -2337,6 +2441,10 @@ namespace ResourceEditApi
                 bool includeChildren = false;
                 if (operands.Count >= 2) {
                     includeChildren = (bool)Convert.ChangeType(operands[1], typeof(bool));
+                }
+                int scope = (int)ScopeEnum.All; //0--none 1--non particle 2--particle 3--all
+                if (operands.Count >= 3) {
+                    scope = (int)Convert.ChangeType(operands[2], typeof(int));
                 }
                 if (null != obj0) {
                     List<GameObject> list = new List<GameObject>();
@@ -2352,18 +2460,34 @@ namespace ResourceEditApi
                     List<Mesh> results = new List<Mesh>();
                     foreach (var obj in list) {
                         string objName = obj.name;
-                        var filters = obj.GetComponents<MeshFilter>();
-                        foreach (var filter in filters) {
-                            if (null != filter && null != filter.sharedMesh) {
-                                var mesh = filter.sharedMesh;
-                                results.Add(mesh);
+                        if ((scope & (int)ScopeEnum.NonParticle) > 0) {
+                            var filters = obj.GetComponents<MeshFilter>();
+                            foreach (var filter in filters) {
+                                if (null != filter && null != filter.sharedMesh) {
+                                    var mesh = filter.sharedMesh;
+                                    results.Add(mesh);
+                                }
+                            }
+                            var renderers = obj.GetComponents<SkinnedMeshRenderer>();
+                            foreach (var renderer in renderers) {
+                                if (null != renderer && null != renderer.sharedMesh) {
+                                    var mesh = renderer.sharedMesh;
+                                    results.Add(mesh);
+                                }
                             }
                         }
-                        var renderers = obj.GetComponents<SkinnedMeshRenderer>();
-                        foreach (var renderer in renderers) {
-                            if (null != renderer && null != renderer.sharedMesh) {
-                                var mesh = renderer.sharedMesh;
-                                results.Add(mesh);
+                        if ((scope & (int)ScopeEnum.Particle) > 0) {
+                            var pss = obj.GetComponents<ParticleSystem>();
+                            foreach (ParticleSystem ps in pss) {
+                                if (null != ps) {
+                                    ParticleSystemRenderer renderer = ps.GetComponent<ParticleSystemRenderer>();
+                                    if (null != renderer && renderer.renderMode == ParticleSystemRenderMode.Mesh) {
+                                        if (null != renderer.mesh) {
+                                            var mesh = renderer.mesh;
+                                            results.Add(mesh);
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -2573,6 +2697,23 @@ namespace ResourceEditApi
                         mc += renderer.sharedMaterials.Length;
 
                         info.CollectMaterials(renderer.sharedMaterials);
+                    }
+                    var pss = obj.GetComponentsInChildren<ParticleSystem>();
+                    foreach (ParticleSystem ps in pss) {
+                        if (null != ps) {
+                            int multiple = (int)(ps.emission.rateOverTime.constant * ps.main.startLifetime.constant);
+                            multiple = Mathf.Clamp(multiple, 1, ps.main.maxParticles);
+                            ParticleSystemRenderer renderer = ps.GetComponent<ParticleSystemRenderer>();
+                            if (null != renderer && renderer.renderMode == ParticleSystemRenderMode.Mesh) {
+                                if (null != renderer.mesh) {
+                                    vc += multiple * renderer.mesh.vertexCount;
+                                    tc += multiple * renderer.mesh.triangles.Length;
+                                }
+                                mc += renderer.sharedMaterials.Length;
+
+                                info.CollectMaterials(renderer.sharedMaterials);
+                            }
+                        }
                     }
                     info.vertexCount = vc;
                     info.triangleCount = tc / 3;

@@ -6,6 +6,7 @@ input
         native_memory_group;
     };
 	string("filter", "");
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "snapshot");
 	feature("menu", "6.Memory/slowly find memory assets");
 	feature("description", "just so so");

@@ -7,6 +7,7 @@ input("*.tga","*.png","*.jpg","*.exr")
 		multiple(["readable","mipmap"],[1,2]);
 	};
 	string("filter", "");
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "sceneassets");
 	feature("menu", "2.Current Scene Resources/Textures");
 	feature("description", "just so so");

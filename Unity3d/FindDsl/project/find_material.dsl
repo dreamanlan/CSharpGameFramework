@@ -1,6 +1,7 @@
 input("*.mat")
 {
   string("shaderName","Standard");
+	float("pathwidth",240){range(20,4096);};
 	feature("source", "project");
 	feature("menu", "1.Project Resources/Materials");
 	feature("description", "just so so");
