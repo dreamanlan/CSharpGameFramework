@@ -601,10 +601,10 @@ public class ResourceCommandWindow : EditorWindow
         m_ScriptableInfo.ResourceEditUtilityType = typeof(ResourceEditUtility);
         var r = ResourceEditUtility.EvalScript(m_Command, ResourceProcessor.Instance.Params, m_Object, m_Item, new Dictionary<string, object> { { "@context", m_ScriptableInfo } });
         if (null != r) {
-            m_Results.Enqueue(r.ToString());
+            m_Results.Enqueue(string.Format("cmd:{0} result:{1}", m_Command, r.ToString()));
         }
         else {
-            m_Results.Enqueue("no return value.");
+            m_Results.Enqueue(string.Format("cmd:{0} result:null", m_Command));
         }
         m_Content = m_ScriptableInfo.Content;
     }

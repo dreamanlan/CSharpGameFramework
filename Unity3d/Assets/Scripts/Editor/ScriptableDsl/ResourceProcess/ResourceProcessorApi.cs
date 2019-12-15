@@ -390,8 +390,11 @@ internal static class ResourceEditUtility
         calc.Register("objdatafromunifiedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromUnifiedObjectIndexExp>());
         calc.Register("objdatafromnativeindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromNativeObjectIndexExp>());
         calc.Register("objdatafrommanagedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromManagedObjectIndexExp>());
-        calc.Register("loadsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadSymbolsExp>());
-        calc.Register("mapsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapSymbolsExp>());
+        calc.Register("loadidaprosymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadIdaproSymbolsExp>());
+        calc.Register("mapsymbolsforbugly", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapSymbolsForBuglyExp>());
+        calc.Register("mapsymbolsformyhook", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapSymbolsForMyHookExp>());
+        calc.Register("setclipboard", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetClipboardExp>());
+        calc.Register("getclipboard", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetClipboardExp>());
         calc.Register("selectobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectObjectExp>());
         calc.Register("selectprojectobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectProjectObjectExp>());
         calc.Register("selectsceneobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectSceneObjectExp>());
@@ -1864,7 +1867,7 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class LoadSymbolsExp : DslExpression.SimpleExpressionBase
+    internal class LoadIdaproSymbolsExp : DslExpression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
         {
@@ -1872,8 +1875,11 @@ namespace ResourceEditApi
             if (operands.Count >= 1) {
                 var file = operands[0] as string;
                 if (!string.IsNullOrEmpty(file)) {
+                    var fileName = Path.GetFileName(file);
                     var symbols = new List<ResourceEditUtility.SymbolInfo>();
                     using (var sr = new StreamReader(file)) {
+                        int curCt = 0;
+                        int totalCt = 500000;
                         while (!sr.EndOfStream) {
                             var line = sr.ReadLine();
                             var m = s_Address.Match(line);
@@ -1882,18 +1888,27 @@ namespace ResourceEditApi
                                 var name = m.Groups[2].Value;
                                 ulong v;
                                 ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v);
-                                symbols.Add(new ResourceEditUtility.SymbolInfo { Addr = v, Name = name });
+                                if (name.IndexOf("loc_") < 0 && name.IndexOf("off_") < 0 && name.IndexOf("dword_") < 0) {
+                                    symbols.Add(new ResourceEditUtility.SymbolInfo { Addr = v, Name = name });
+                                }
+                            }
+                            ++curCt;
+                            if (curCt > totalCt)
+                                totalCt += 10000;
+                            if (curCt % 1000 == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("load symbols from " + fileName, curCt, totalCt)) {
+                                break;
                             }
                         }
                     }
                     r = symbols;
                 }
             }
+            EditorUtility.ClearProgressBar();
             return r;
         }
         private static Regex s_Address = new Regex(@"^ [0-9a-fA-F]{4,4}:([0-9a-fA-F]{8,8})       (.*)$", RegexOptions.Compiled);
     }
-    internal class MapSymbolsExp : DslExpression.SimpleExpressionBase
+    internal class MapSymbolsForBuglyExp : DslExpression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
         {
@@ -1907,7 +1922,8 @@ namespace ResourceEditApi
                     for (int i = 0; i < lines.Length; ++i) {
                         lines[i] = lines[i].TrimEnd();
                     }
-                    for (int ix = 0; ix < lines.Length; ++ix) {
+                    int ct = lines.Length;
+                    for (int ix = 0; ix < ct; ++ix) {
                         var line = lines[ix];
                         var m = s_Address.Match(line);
                         if (m.Success) {
@@ -1918,16 +1934,16 @@ namespace ResourceEditApi
                                 if (ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
                                     int lo = 0;
                                     int hi = symbols.Count - 2;
-                                    for (; lo < hi;) {
+                                    for (; lo <= hi;) {
                                         int i = (lo + hi) / 2;
                                         var st = symbols[i].Addr;
                                         var ed = symbols[i + 1].Addr;
                                         var name = symbols[i].Name;
                                         if (st > v) {
-                                            hi = i;
+                                            hi = i - 1;
                                         }
                                         else if (ed <= v) {
-                                            lo = i;
+                                            lo = i + 1;
                                         }
                                         else {
                                             lines[ix] = line + " " + name;
@@ -1937,6 +1953,9 @@ namespace ResourceEditApi
                                 }
                             }
                         }
+                        if (ResourceProcessor.Instance.DisplayCancelableProgressBar("map symbols ...", ix, ct)) {
+                            break;
+                        }
                     }
                     var sb = new StringBuilder();
                     foreach(var line in lines) {
@@ -1945,9 +1964,93 @@ namespace ResourceEditApi
                     r = sb.ToString();
                 }
             }
+            EditorUtility.ClearProgressBar();
             return r;
         }
         private static Regex s_Address = new Regex(@"^[0-9]+ #[0-9]+ pc ([0-9a-fA-F]{8,8}) (\S+)", RegexOptions.Compiled);
+    }
+    internal class MapSymbolsForMyHookExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = string.Empty;
+            if (operands.Count >= 4) {
+                var txt = operands[0] as string;
+                var section_start = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
+                var section_end = (ulong)Convert.ChangeType(operands[2], typeof(ulong));
+                var symbols = operands[3] as IList<ResourceEditUtility.SymbolInfo>;
+                if (!string.IsNullOrEmpty(txt) && null != symbols) {
+                    var lines = txt.Split('\n');
+                    for (int i = 0; i < lines.Length; ++i) {
+                        lines[i] = lines[i].TrimEnd();
+                    }
+                    int ct = lines.Length;
+                    for (int ix = 0; ix < ct; ++ix) {
+                        var line = lines[ix];
+                        var m = s_Address.Match(line);
+                        if (m.Success) {
+                            var addr = m.Groups[1].Value;
+                            ulong v;
+                            if (ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v) && v >= section_start && v < section_end) {
+                                v -= section_start;
+                                int lo = 0;
+                                int hi = symbols.Count - 2;
+                                for (; lo <= hi;) {
+                                    int i = (lo + hi) / 2;
+                                    var st = symbols[i].Addr;
+                                    var ed = symbols[i + 1].Addr;
+                                    var name = symbols[i].Name;
+                                    if (st > v) {
+                                        hi = i - 1;
+                                    }
+                                    else if (ed <= v) {
+                                        lo = i + 1;
+                                    }
+                                    else {
+                                        lines[ix] = line + " " + name;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (ResourceProcessor.Instance.DisplayCancelableProgressBar("map symbols ...", ix, ct)) {
+                            break;
+                        }
+                    }
+                    var sb = new StringBuilder();
+                    foreach (var line in lines) {
+                        sb.AppendLine(line);
+                    }
+                    r = sb.ToString();
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private static Regex s_Address = new Regex(@"#[0-9]+:0x([0-9a-f]+)", RegexOptions.Compiled);
+    }
+    internal class SetClipboardExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var str = operands[0] as string;
+                if (null != str) {
+                    GUIUtility.systemCopyBuffer = str;
+                    r = str;
+                }
+            }
+            return r;
+        }
+    }
+    internal class GetClipboardExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = GUIUtility.systemCopyBuffer;
+            return r;
+        }
     }
     internal class SelectObjectExp : DslExpression.SimpleExpressionBase
     {
