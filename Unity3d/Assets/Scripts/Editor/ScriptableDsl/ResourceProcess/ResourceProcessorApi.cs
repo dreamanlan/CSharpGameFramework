@@ -1979,7 +1979,10 @@ namespace ResourceEditApi
                 var section_start = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
                 var section_end = (ulong)Convert.ChangeType(operands[2], typeof(ulong));
                 var symbols = operands[3] as IList<ResourceEditUtility.SymbolInfo>;
-                if (!string.IsNullOrEmpty(txt) && null != symbols) {
+                var key = string.Empty;
+                if (operands.Count >= 5)
+                    key = operands[4] as string;
+                if (!string.IsNullOrEmpty(txt) && null != symbols && null != key) {
                     var lines = txt.Split('\n');
                     for (int i = 0; i < lines.Length; ++i) {
                         lines[i] = lines[i].TrimEnd();
@@ -1987,28 +1990,41 @@ namespace ResourceEditApi
                     int ct = lines.Length;
                     for (int ix = 0; ix < ct; ++ix) {
                         var line = lines[ix];
-                        var m = s_Address.Match(line);
+                        var m = s_Address1.Match(line);
                         if (m.Success) {
                             var addr = m.Groups[1].Value;
-                            ulong v;
-                            if (ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v) && v >= section_start && v < section_end) {
-                                v -= section_start;
-                                int lo = 0;
-                                int hi = symbols.Count - 2;
-                                for (; lo <= hi;) {
-                                    int i = (lo + hi) / 2;
-                                    var st = symbols[i].Addr;
-                                    var ed = symbols[i + 1].Addr;
-                                    var name = symbols[i].Name;
-                                    if (st > v) {
-                                        hi = i - 1;
-                                    }
-                                    else if (ed <= v) {
-                                        lo = i + 1;
-                                    }
-                                    else {
+                            var raddr = m.Groups[2].Value;
+                            var so = m.Groups[3].Value;
+                            if (!string.IsNullOrEmpty(key) && so.Contains(key)) {
+                                ulong v;
+                                if (ulong.TryParse(raddr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                                    string name = FindSymbol(v, symbols);
+                                    if (!string.IsNullOrEmpty(name)) {
                                         lines[ix] = line + " " + name;
-                                        break;
+                                    }
+                                }
+                            }
+                            else {
+                                ulong v;
+                                if (ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v) && v >= section_start && v < section_end) {
+                                    v -= section_start;
+                                    string name = FindSymbol(v, symbols);
+                                    if (!string.IsNullOrEmpty(name)) {
+                                        lines[ix] = line + " " + name;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            m = s_Address2.Match(line);
+                            if (m.Success) {
+                                var addr = m.Groups[1].Value;
+                                ulong v;
+                                if (ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v) && v >= section_start && v < section_end) {
+                                    v -= section_start;
+                                    string name = FindSymbol(v, symbols);
+                                    if (!string.IsNullOrEmpty(name)) {
+                                        lines[ix] = line + " " + name;
                                     }
                                 }
                             }
@@ -2027,7 +2043,30 @@ namespace ResourceEditApi
             EditorUtility.ClearProgressBar();
             return r;
         }
-        private static Regex s_Address = new Regex(@"#[0-9]+:0x([0-9a-f]+)", RegexOptions.Compiled);
+        private static string FindSymbol(ulong v, IList<ResourceEditUtility.SymbolInfo> symbols)
+        {
+            int lo = 0;
+            int hi = symbols.Count - 2;
+            for (; lo <= hi;) {
+                int i = (lo + hi) / 2;
+                var st = symbols[i].Addr;
+                var ed = symbols[i + 1].Addr;
+                var name = symbols[i].Name;
+                if (st > v) {
+                    hi = i - 1;
+                }
+                else if (ed <= v) {
+                    lo = i + 1;
+                }
+                else {
+                    return name;
+                }
+            }
+            return string.Empty;
+        }
+
+        private static Regex s_Address1 = new Regex(@"#[0-9]+:0x([0-9a-f]+) 0x([0-9a-f]+) (.*)", RegexOptions.Compiled);
+        private static Regex s_Address2 = new Regex(@"#[0-9]+:0x([0-9a-f]+)", RegexOptions.Compiled);
     }
     internal class SetClipboardExp : DslExpression.SimpleExpressionBase
     {
