@@ -391,8 +391,8 @@ internal static class ResourceEditUtility
         calc.Register("objdatafromnativeindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromNativeObjectIndexExp>());
         calc.Register("objdatafrommanagedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromManagedObjectIndexExp>());
         calc.Register("loadidaprosymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadIdaproSymbolsExp>());
-        calc.Register("mapsymbolsforbugly", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapSymbolsForBuglyExp>());
-        calc.Register("mapsymbolsformyhook", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapSymbolsForMyHookExp>());
+        calc.Register("mapbuglysymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapBuglySymbolsExp>());
+        calc.Register("mapmyhooksymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapMyhookSymbolsExp>());
         calc.Register("setclipboard", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetClipboardExp>());
         calc.Register("getclipboard", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetClipboardExp>());
         calc.Register("selectobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectObjectExp>());
@@ -1908,21 +1908,20 @@ namespace ResourceEditApi
         }
         private static Regex s_Address = new Regex(@"^ [0-9a-fA-F]{4,4}:([0-9a-fA-F]{8,8})       (.*)$", RegexOptions.Compiled);
     }
-    internal class MapSymbolsForBuglyExp : DslExpression.SimpleExpressionBase
+    internal class MapBuglySymbolsExp : DslExpression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
         {
-            object r = string.Empty;
+            object r = null;
             if (operands.Count >= 3) {
-                var txt = operands[0] as string;
+                var lines = operands[0] as IList<string>;
                 var symbols = operands[1] as IList<ResourceEditUtility.SymbolInfo>;
                 var key = operands[2] as string;
-                if (!string.IsNullOrEmpty(txt) && null != symbols && null != key) {
-                    var lines = txt.Split('\n');
-                    for (int i = 0; i < lines.Length; ++i) {
+                if (null!=lines && null != symbols && null != key) {
+                    for (int i = 0; i < lines.Count; ++i) {
                         lines[i] = lines[i].TrimEnd();
                     }
-                    int ct = lines.Length;
+                    int ct = lines.Count;
                     for (int ix = 0; ix < ct; ++ix) {
                         var line = lines[ix];
                         var m = s_Address.Match(line);
@@ -1957,11 +1956,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    var sb = new StringBuilder();
-                    foreach(var line in lines) {
-                        sb.AppendLine(line);
-                    }
-                    r = sb.ToString();
+                    r = lines;
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -1969,25 +1964,33 @@ namespace ResourceEditApi
         }
         private static Regex s_Address = new Regex(@"^[0-9]+ #[0-9]+ pc ([0-9a-fA-F]{8,8}) (\S+)", RegexOptions.Compiled);
     }
-    internal class MapSymbolsForMyHookExp : DslExpression.SimpleExpressionBase
+    internal class MapMyhookSymbolsExp : DslExpression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
         {
-            object r = string.Empty;
+            object r = null;
             if (operands.Count >= 4) {
-                var txt = operands[0] as string;
+                var lines = operands[0] as IList<string>;
                 var section_start = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
                 var section_end = (ulong)Convert.ChangeType(operands[2], typeof(ulong));
                 var symbols = operands[3] as IList<ResourceEditUtility.SymbolInfo>;
                 var key = string.Empty;
                 if (operands.Count >= 5)
                     key = operands[4] as string;
-                if (!string.IsNullOrEmpty(txt) && null != symbols && null != key) {
-                    var lines = txt.Split('\n');
-                    for (int i = 0; i < lines.Length; ++i) {
+                if (null != lines && null != symbols && null != key) {
+                    for (int i = 0; i < lines.Count; ++i) {
                         lines[i] = lines[i].TrimEnd();
                     }
-                    int ct = lines.Length;
+                    int ct = lines.Count;
+                    int delta = 1;
+                    if (ct > 100000)
+                        delta = 1000;
+                    else if (ct > 10000)
+                        delta = 100;
+                    else if (ct > 1000)
+                        delta = 10;
+                    else
+                        delta = 1;
                     for (int ix = 0; ix < ct; ++ix) {
                         var line = lines[ix];
                         var m = s_Address1.Match(line);
@@ -2029,15 +2032,11 @@ namespace ResourceEditApi
                                 }
                             }
                         }
-                        if (ResourceProcessor.Instance.DisplayCancelableProgressBar("map symbols ...", ix, ct)) {
+                        if (ix % delta == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("map symbols ...", ix, ct)) {
                             break;
                         }
                     }
-                    var sb = new StringBuilder();
-                    foreach (var line in lines) {
-                        sb.AppendLine(line);
-                    }
-                    r = sb.ToString();
+                    r = lines;
                 }
             }
             EditorUtility.ClearProgressBar();
