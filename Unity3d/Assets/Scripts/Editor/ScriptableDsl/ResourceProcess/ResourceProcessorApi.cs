@@ -1888,7 +1888,7 @@ namespace ResourceEditApi
                                 var name = m.Groups[2].Value;
                                 ulong v;
                                 ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v);
-                                if (name.IndexOf("loc_") < 0 && name.IndexOf("off_") < 0 && name.IndexOf("dword_") < 0) {
+                                if (name.IndexOf("loc_") != 0 && name.IndexOf("off_") != 0 && name.IndexOf("dword_") != 0) {
                                     symbols.Add(new ResourceEditUtility.SymbolInfo { Addr = v, Name = name });
                                 }
                             }
@@ -1906,7 +1906,7 @@ namespace ResourceEditApi
             EditorUtility.ClearProgressBar();
             return r;
         }
-        private static Regex s_Address = new Regex(@"^ [0-9a-fA-F]{4,4}:([0-9a-fA-F]{8,8})       (.*)$", RegexOptions.Compiled);
+        private static Regex s_Address = new Regex(@"^ [0-9a-fA-F]{4,4}:([0-9a-fA-F]{8,8})       (.*)", RegexOptions.Compiled);
     }
     internal class MapBuglySymbolsExp : DslExpression.SimpleExpressionBase
     {
