@@ -1,4 +1,4 @@
-using UnityEngine;
+锘縰sing UnityEngine;
 using UnityEditor;
 
 using System.Collections.Generic;
@@ -147,7 +147,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
         [SerializeField]
         Vector2 m_ViewDropdownSize;
 
-        [MenuItem("Dsl资源工具/Memory Profiler", false, 200)]
+        [MenuItem("Dsl璧勬簮宸ュ叿/Memory Profiler", false, 200)]
         public static void ShowWindow()
         {
             var win = GetWindow<MemoryProfilerWindow>(Content.Title.text);

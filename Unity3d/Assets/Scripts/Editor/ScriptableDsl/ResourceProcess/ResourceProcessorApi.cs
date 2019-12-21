@@ -405,6 +405,8 @@ internal static class ResourceEditUtility
         calc.Register("settexturesetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetTextureSettingExp>());
         calc.Register("isastctexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.IsAstcTextureExp>());
         calc.Register("setastctexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetAstcTextureExp>());
+        calc.Register("issceneastctexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.IsSceneAstcTextureExp>());
+        calc.Register("setsceneastctexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetSceneAstcTextureExp>());
         calc.Register("istexturenoalphasource", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.IsTextureNoAlphaSourceExp>());
         calc.Register("doestexturehavealpha", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.DoesTextureHaveAlphaExp>());
         calc.Register("correctnonealphatexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CorrectNoneAlphaTextureExp>());
@@ -2219,16 +2221,13 @@ namespace ResourceEditApi
                 var importer = Calculator.GetVariable("importer") as TextureImporter;
                 var setting = operands[0] as TextureImporterPlatformSettings;
                 var sizeNoAlpha = 8;
-                var sizeAlpha = 6;
-                if (operands.Count >= 2) {
-                    sizeNoAlpha = (int)Convert.ChangeType(operands[1], typeof(int));//4、5、6、8、10、12
-                    sizeAlpha = sizeNoAlpha;
-                }
-                if (operands.Count >= 3) {
-                    sizeAlpha = (int)Convert.ChangeType(operands[2], typeof(int));//4、5、6、8、10、12
-                }
+                var sizeAlpha = 8;
                 if (null != importer && null != setting) {
                     bool ret = false;
+                    if (importer.textureType == TextureImporterType.NormalMap && importer.maxTextureSize > 512) {
+                        sizeNoAlpha = 6;
+                        sizeAlpha = 6;
+                    }
                     if (importer.alphaSource == TextureImporterAlphaSource.None) {
                         switch (sizeNoAlpha) {
                             case 4:
@@ -2294,14 +2293,147 @@ namespace ResourceEditApi
                 var importer = Calculator.GetVariable("importer") as TextureImporter;
                 var setting = operands[0] as TextureImporterPlatformSettings;
                 var sizeNoAlpha = 8;
-                var sizeAlpha = 6;
-                if (operands.Count >= 2) {
-                    sizeNoAlpha = (int)Convert.ChangeType(operands[1], typeof(int));//4、5、6、8、10、12
-                    sizeAlpha = sizeNoAlpha;
+                var sizeAlpha = 8;
+                if (null != importer && null != setting) {
+                    if (importer.textureType == TextureImporterType.NormalMap && importer.maxTextureSize > 512) {
+                        sizeNoAlpha = 6;
+                        sizeAlpha = 6;
+                    }
+                    if (importer.alphaSource == TextureImporterAlphaSource.None) {
+                        switch (sizeNoAlpha) {
+                            case 4:
+                                setting.format = TextureImporterFormat.ASTC_RGB_4x4;
+                                break;
+                            case 5:
+                                setting.format = TextureImporterFormat.ASTC_RGB_5x5;
+                                break;
+                            case 6:
+                                setting.format = TextureImporterFormat.ASTC_RGB_6x6;
+                                break;
+                            case 8:
+                                setting.format = TextureImporterFormat.ASTC_RGB_8x8;
+                                break;
+                            case 10:
+                                setting.format = TextureImporterFormat.ASTC_RGB_10x10;
+                                break;
+                            case 12:
+                                setting.format = TextureImporterFormat.ASTC_RGB_12x12;
+                                break;
+                            default:
+                                setting.format = TextureImporterFormat.ASTC_RGB_8x8;
+                                break;
+                        }
+                    }
+                    else {
+                        switch (sizeAlpha) {
+                            case 4:
+                                setting.format = TextureImporterFormat.ASTC_RGBA_4x4;
+                                break;
+                            case 5:
+                                setting.format = TextureImporterFormat.ASTC_RGBA_5x5;
+                                break;
+                            case 6:
+                                setting.format = TextureImporterFormat.ASTC_RGBA_6x6;
+                                break;
+                            case 8:
+                                setting.format = TextureImporterFormat.ASTC_RGBA_8x8;
+                                break;
+                            case 10:
+                                setting.format = TextureImporterFormat.ASTC_RGBA_10x10;
+                                break;
+                            case 12:
+                                setting.format = TextureImporterFormat.ASTC_RGBA_12x12;
+                                break;
+                            default:
+                                setting.format = TextureImporterFormat.ASTC_RGBA_6x6;
+                                break;
+                        }
+                    }
                 }
-                if (operands.Count >= 3) {
-                    sizeAlpha = (int)Convert.ChangeType(operands[2], typeof(int));//4、5、6、8、10、12
+            }
+            return r;
+        }
+
+        private static int[] s_AstcSizes = new int[] { 4, 5, 6, 8, 10, 12 };
+    }
+    internal class IsSceneAstcTextureExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = 0;
+            if (operands.Count >= 1) {
+                var importer = Calculator.GetVariable("importer") as TextureImporter;
+                var setting = operands[0] as TextureImporterPlatformSettings;
+                var sizeNoAlpha = 8;
+                var sizeAlpha = 8;
+                if (null != importer && null != setting) {
+                    bool ret = false;
+                    if (importer.alphaSource == TextureImporterAlphaSource.None) {
+                        switch (sizeNoAlpha) {
+                            case 4:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGB_4x4;
+                                break;
+                            case 5:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGB_5x5;
+                                break;
+                            case 6:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGB_6x6;
+                                break;
+                            case 8:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGB_8x8;
+                                break;
+                            case 10:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGB_10x10;
+                                break;
+                            case 12:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGB_12x12;
+                                break;
+                            default:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGB_8x8;
+                                break;
+                        }
+                    }
+                    else {
+                        switch (sizeAlpha) {
+                            case 4:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGBA_4x4;
+                                break;
+                            case 5:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGBA_5x5;
+                                break;
+                            case 6:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGBA_6x6;
+                                break;
+                            case 8:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGBA_8x8;
+                                break;
+                            case 10:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGBA_10x10;
+                                break;
+                            case 12:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGBA_12x12;
+                                break;
+                            default:
+                                ret = setting.format == TextureImporterFormat.ASTC_RGBA_6x6;
+                                break;
+                        }
+                    }
+                    r = ret ? 1 : 0;
                 }
+            }
+            return r;
+        }
+    }
+    internal class SetSceneAstcTextureExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var importer = Calculator.GetVariable("importer") as TextureImporter;
+                var setting = operands[0] as TextureImporterPlatformSettings;
+                var sizeNoAlpha = 8;
+                var sizeAlpha = 8;
                 if (null != importer && null != setting) {
                     if (importer.alphaSource == TextureImporterAlphaSource.None) {
                         switch (sizeNoAlpha) {
@@ -2357,6 +2489,8 @@ namespace ResourceEditApi
             }
             return r;
         }
+
+        private static int[] s_AstcSizes = new int[] { 4, 5, 6, 8, 10, 12 };
     }
     internal class IsTextureNoAlphaSourceExp : DslExpression.SimpleExpressionBase
     {
