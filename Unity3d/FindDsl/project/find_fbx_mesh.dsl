@@ -4,6 +4,7 @@ input("*.fbx")
     int("componentCount", 3);
     stringlist("filter", "");
     stringlist("notfilter", "");
+    stringlist("uvfilter", "");
 	float("pathwidth",240){range(20,4096);};
     feature("source", "project");
     feature("menu", "1.Project Resources/Check Fbx Mesh");
@@ -21,7 +22,7 @@ filter
             looplist(var(2)){
                 $key = $$.Key;
                 $val = $$.Value;
-                if($val >= componentCount){                    
+                if($val >= componentCount && stringcontains($key, uvfilter)){                    
                     var(3) = newitem();
                     var(3).AssetPath = assetpath;
                     var(3).Info = format("skinned:{0},mesh:{1},vertex:{2},triangle:{3},vertex components:{4} {5}",
