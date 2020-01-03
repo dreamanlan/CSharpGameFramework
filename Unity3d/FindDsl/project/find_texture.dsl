@@ -29,7 +29,7 @@ filter
     		//unloadasset(var(0));
     		order = var(1) < var(2) ? var(2) : var(1);
     		if((var(1) > maxSize || var(2) > maxSize) && (var(5).maxTextureSize > maxSize || var(6).maxTextureSize > maxSize) && (prop.Contains("1") && var(3) || !prop.Contains("1")) && (prop.Contains("2") && var(4) || !prop.Contains("2"))){
-    			info = format("size:{0},{1} readable:{2} mipmap:{3}", var(1), var(2), var(3), var(4));
+    			info = format("size:{0},{1} readable:{2} mipmap:{3} refby_count:{4}", var(1), var(2), var(3), var(4), calcrefbycount(assetpath));
     			1;
     		} else {
     			0;

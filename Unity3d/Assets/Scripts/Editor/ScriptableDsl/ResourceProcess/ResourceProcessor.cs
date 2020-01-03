@@ -805,8 +805,20 @@ internal sealed class ResourceEditWindow : EditorWindow
                 v = -1;
             else if (a.Order > b.Order)
                 v = 1;
-            else
-                v = 0;
+            else {
+                if (!string.IsNullOrEmpty(a.AssetPath) && !string.IsNullOrEmpty(b.AssetPath)) {
+                    v = string.CompareOrdinal(a.AssetPath, b.AssetPath);
+                }
+                else if (!string.IsNullOrEmpty(a.ScenePath) && !string.IsNullOrEmpty(b.ScenePath)) {
+                    v = string.CompareOrdinal(a.ScenePath, b.ScenePath);
+                }
+                else if(!string.IsNullOrEmpty(a.Info) && !string.IsNullOrEmpty(b.Info)) {
+                    v = string.CompareOrdinal(a.Info, b.Info);
+                }
+                else {
+                    v = 0;
+                }
+            }
             if (!asc)
                 v = -v;
             return v;
@@ -820,8 +832,20 @@ internal sealed class ResourceEditWindow : EditorWindow
                 v = -1;
             else if (a.Order > b.Order)
                 v = 1;
-            else
-                v = 0;
+            else {
+                if (!string.IsNullOrEmpty(a.AssetPath) && !string.IsNullOrEmpty(b.AssetPath)) {
+                    v = string.CompareOrdinal(a.AssetPath, b.AssetPath);
+                }
+                else if (!string.IsNullOrEmpty(a.ScenePath) && !string.IsNullOrEmpty(b.ScenePath)) {
+                    v = string.CompareOrdinal(a.ScenePath, b.ScenePath);
+                }
+                else if (!string.IsNullOrEmpty(a.Info) && !string.IsNullOrEmpty(b.Info)) {
+                    v = string.CompareOrdinal(a.Info, b.Info);
+                }
+                else {
+                    v = 0;
+                }
+            }
             if (!asc)
                 v = -v;
             return v;

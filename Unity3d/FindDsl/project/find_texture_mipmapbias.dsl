@@ -20,7 +20,8 @@ filter
     	var(5) = gettexturesetting("Android");
     	//unloadasset(var(0));
     	if((var(1) > maxSize || var(2) > maxSize) && var(3)==bias && (var(4).maxTextureSize > maxSize || var(5).maxTextureSize > maxSize)){
-    		info = "size:" + var(1) + "," + var(2) + " bias:" + var(3);
+    		info = "size:" + var(1) + "," + var(2) + " bias:" + var(3) + " ios_size:"+var(4).maxTextureSize+" android_size:"+var(5).maxTextureSize;
+    		order = var(1)<var(2) ? var(2) : var(1);
     		value = var(3);
     		1;
     	} else {
