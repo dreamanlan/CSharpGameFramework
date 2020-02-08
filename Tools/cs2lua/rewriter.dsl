@@ -12,13 +12,10 @@ config(LegalGenericTypeList)
 };
 config(LegalGenericMethodList)
 {
-    method("");
+    method("UnityEngine.GameObject","GetComponentsInChildren");
 };
 config(LegalParameterGenericTypeList)
 {
-    type("System.Collections.Generic.List_T");
-	type("System.Collections.Generic.Dictionary_TKey_TValue");
-	type("System.Collections.Generic.HashSet_T");
 	type("System.Collections.Generic.LinkedListNode_T");
 	type("System.Collections.Generic.IEnumerable_T");
 	type("StorySystem.IStoryValue_T");
@@ -27,6 +24,15 @@ config(LegalParameterGenericTypeList)
 config(LegalExtensionList)
 {
     type("Vector3Extension");
+    type("DG.Tweening.TweenExtensions");
+    type("DG.Tweening.TweenSettingsExtensions");
+    type("DG.Tweening.ShortcutExtensions");
+    type("UnityEngine.Playables.PlayableExtensions");
+    type("UniGifExtension");
+};
+config(LegalConvertionList)
+{
+    convertion("","");
 };
 config(IllegalTypeList)
 {
@@ -34,13 +40,13 @@ config(IllegalTypeList)
 };
 config(IllegalMethodList)
 {
-    method("");
+    method("","");
 };
 config(IllegalPropertyList)
 {
-    property("");
+    property("","");
 };
 config(IllegalFieldList)
 {
-    field("");
+    field("","");
 };

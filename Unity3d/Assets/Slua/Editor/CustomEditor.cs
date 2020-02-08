@@ -10,7 +10,6 @@ namespace SLua
 	{
 		public override void OnInspectorGUI()
 		{
-            /*
 			LuaSvrGameObject myTarget = (LuaSvrGameObject)target;
 			int bytes = LuaDLL.lua_gc(myTarget.state.L, LuaGCOptions.LUA_GCCOUNT, 0);
 			EditorGUILayout.LabelField("Memory(Kb)", bytes.ToString());
@@ -18,7 +17,6 @@ namespace SLua
 			{
 				LuaDLL.lua_gc(myTarget.state.L, LuaGCOptions.LUA_GCCOLLECT, 0);
 			}
-            */
 		}
 	}
 }

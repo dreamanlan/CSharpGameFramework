@@ -35,9 +35,6 @@ namespace SLua
     using System.Text.RegularExpressions;
     using System.Runtime.CompilerServices;
 
-    public interface ICustomExportPost { }
-
-
     public class LuaCodeGen : MonoBehaviour
     {
         static public string GenPath = SLuaSetting.Instance.UnityEngineGeneratePath;
@@ -131,7 +128,7 @@ namespace SLua
         public static string[] unityModule = null;
 #endif
 
-        static bool filterType(Type t, List<string> noUseList)
+        static bool filterType(Type t, HashSet<string> useList, List<string> noUseList)
         {
             if (t.IsDefined(typeof(CompilerGeneratedAttribute), false)) {
                 Debug.Log(t.Name + " is filtered out");
@@ -143,10 +140,12 @@ namespace SLua
             }
 
             string fullName = t.FullName;
-            // check type not in nouselist
-            foreach (string str in noUseList) {
-                if (fullName.Contains(str)) {
-                    return false;
+            if (!useList.Contains(fullName)) {
+                // check type not in nouselist
+                foreach (string str in noUseList) {
+                    if (fullName.Contains(str)) {
+                        return false;
+                    }
                 }
             }
             return true;
@@ -211,24 +210,15 @@ namespace SLua
 
                 Type[] types = assembly.GetExportedTypes();
 
+                HashSet<string> useList;
                 List<string> noUseList;
 
+                CustomExport.OnGetUseList(out useList);
                 CustomExport.OnGetNoUseList(out noUseList);
-
-                // Get use and nouse list from custom export.
-                object[] aCustomExport = new object[1];
-                InvokeEditorMethod<ICustomExportPost>("OnGetNoUseList", ref aCustomExport);
-                if (null != aCustomExport[0]) {
-                    if ((null != noUseList)) {
-                        noUseList.AddRange((List<string>)aCustomExport[0]);
-                    } else {
-                        noUseList = (List<string>)aCustomExport[0];
-                    }
-                }
 
                 string path = GenPath + genAtPath;
                 foreach (Type t in types) {
-                    if (filterType(t, noUseList) && Generate(t, path))
+                    if (filterType(t, useList, noUseList) && Generate(t, path))
                         exports.Add(t);
                 }
                 Debug.Log("Generate interface finished: " + asemblyName);
@@ -294,15 +284,6 @@ namespace SLua
 
             HashSet<string> namespaces = CustomExport.OnAddCustomNamespace();
 
-            // Add custom namespaces.
-            object[] aCustomExport = null;
-            List<object> aCustomNs = LuaCodeGen.InvokeEditorMethod<ICustomExportPost>("OnAddCustomNamespace", ref aCustomExport);
-            foreach (object cNsSet in aCustomNs) {
-                foreach (string strNs in (HashSet<string>)cNsSet) {
-                    namespaces.Add(strNs);
-                }
-            }
-
             Assembly assembly;
             Type[] types;
 
@@ -327,11 +308,6 @@ namespace SLua
             }
 
             CustomExport.OnAddCustomClass(fun);
-
-            //detect interface ICustomExportPost,and call OnAddCustomClass
-            aCustomExport = new object[] { fun };
-            InvokeEditorMethod<ICustomExportPost>("OnAddCustomClass", ref aCustomExport);
-
             GenerateBind(exports, "BindCustom", 3, path);
 
             Debug.Log("Generate custom interface finished");
@@ -388,11 +364,9 @@ namespace SLua
             List<string> assemblyList = new List<string>();
             CustomExport.OnAddCustomAssembly(ref assemblyList);
 
-            //detect interface ICustomExportPost,and call OnAddCustomAssembly
-            object[] aCustomExport = new object[] { assemblyList };
-            InvokeEditorMethod<ICustomExportPost>("OnAddCustomAssembly", ref aCustomExport);
-
+            HashSet<string> useList;
             List<string> noUseList;
+            CustomExport.OnGetCustomAssemblyUseList(out useList);
             CustomExport.OnGetCustomAssemblyNoUseList(out noUseList);
 
             foreach (string assemblyItem in assemblyList) {
@@ -409,7 +383,7 @@ namespace SLua
                     Directory.CreateDirectory(path);
                 }
                 foreach (Type t in cust) {
-                    if (filterType(t, noUseList) && Generate(t, path))
+                    if (filterType(t, useList, noUseList) && Generate(t, path))
                         exports.Add(t);
                 }
                 GenerateBind(exports, "BindDll", 2, path);
@@ -534,17 +508,6 @@ namespace SLua
             overloadedClass = new Dictionary<Type, Type>();
             List<string> asems;
             CustomExport.OnGetAssemblyToGenerateExtensionMethod(out asems);
-
-            // Get list from custom export.
-            object[] aCustomExport = new object[1];
-            LuaCodeGen.InvokeEditorMethod<ICustomExportPost>("OnGetAssemblyToGenerateExtensionMethod", ref aCustomExport);
-            if (null != aCustomExport[0]) {
-                if (null != asems) {
-                    asems.AddRange((List<string>)aCustomExport[0]);
-                } else {
-                    asems = (List<string>)aCustomExport[0];
-                }
-            }
 
             foreach (string assstr in asems) {
                 Assembly assembly = Assembly.Load(assstr);
@@ -1133,7 +1096,8 @@ namespace SLua
                     if (mi.Name == "TryAdd" || 
                         mi.Name == "TryDequeue" || 
                         mi.Name == "TryPeek" || 
-                        mi.Name == "TryPop")
+                        mi.Name == "TryPop" ||
+                        mi.Name == "Deconstruct")
                         continue;
                 }
                 if (assemblyFullName.StartsWith("System")) {
@@ -1720,14 +1684,6 @@ namespace SLua
                 }
             }
 
-            // Check in custom export function filter list.
-            List<object> aFuncFilterList = LuaCodeGen.GetEditorField<ICustomExportPost>("FunctionFilterList");
-            foreach (object aFilterList in aFuncFilterList) {
-                if (((List<string>)aFilterList).Contains(methodString)) {
-                    return true;
-                }
-            }
-
             if (mi.IsDefined(typeof(DoNotToLuaAttribute), false))
                 return true;
 
@@ -1875,7 +1831,7 @@ namespace SLua
                     if (t.IsValueType) {
                         Write(file, "{0}(argc<={1}){{", first ? "if" : "else if", cons.Length > 0 ? 2 : 1);
                         //Write(file, "{0}(argc=={1}){{", first ? "if" : "else if", 0);
-                        Write(file, "o=new {0}();", FullName(t));
+                        Write(file, "o=new {0}();", TypeDecl(t));
                         Write(file, "pushValue(l,true);");
                         Write(file, "pushValue(l,o);");
                         Write(file, "return 2;");
@@ -1890,8 +1846,8 @@ namespace SLua
                 WriteFunctionAttr(file);
                 Write(file, "static public int constructor(IntPtr l) {");
                 WriteTry(file);
-                Write(file, "{0} o;", FullName(t));
-                Write(file, "o=new {0}();", FullName(t));
+                Write(file, "{0} o;", TypeDecl(t));
+                Write(file, "o=new {0}();", TypeDecl(t));
                 WriteReturn(file, "o");
                 WriteCatchExecption(file);
                 Write(file, "}");
@@ -2061,9 +2017,13 @@ namespace SLua
                 pis.Length == 1 && pis[0].ParameterType.Name.StartsWith("EventCallback")) {
                 return true;
             }
-            if (method.Name != "GetType" && method.Name != "GetHashCode" && method.Name != "Equals" &&
-                method.Name != "ToString" && /*method.Name != "Clone" &&*/
-                method.Name != "GetEnumerator" && /*method.Name != "CopyTo" &&*/
+            if (method.Name != "GetType" && 
+                method.Name != "GetHashCode" && 
+                method.Name != "Equals" &&
+                (method.Name != "ToString" || method.DeclaringType.Name == "Convert") && 
+                /*method.Name != "Clone" &&*/
+                method.Name != "GetEnumerator" && 
+                /*method.Name != "CopyTo" &&*/
                 method.Name != "op_Implicit" && method.Name != "op_Explicit" &&
                 !method.Name.StartsWith("get_", StringComparison.Ordinal) &&
                 !method.Name.StartsWith("set_", StringComparison.Ordinal) &&
