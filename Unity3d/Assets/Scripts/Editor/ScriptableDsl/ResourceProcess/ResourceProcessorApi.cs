@@ -1908,7 +1908,7 @@ namespace ResourceEditApi
             EditorUtility.ClearProgressBar();
             return r;
         }
-        private static Regex s_Address = new Regex(@"^ [0-9a-fA-F]{4,4}:([0-9a-fA-F]{8,8})       (.*)", RegexOptions.Compiled);
+        private static Regex s_Address = new Regex(@"^ [0-9a-fA-F]+:([0-9a-fA-F]+)       (.*)", RegexOptions.Compiled);
     }
     internal class MapBuglySymbolsExp : DslExpression.SimpleExpressionBase
     {
@@ -1964,7 +1964,7 @@ namespace ResourceEditApi
             EditorUtility.ClearProgressBar();
             return r;
         }
-        private static Regex s_Address = new Regex(@"^[0-9]+ #[0-9]+ pc ([0-9a-fA-F]{8,8}) (\S+)", RegexOptions.Compiled);
+        private static Regex s_Address = new Regex(@"^[0-9]+ #[0-9]+ pc ([0-9a-fA-F]+) (\S+)", RegexOptions.Compiled);
     }
     internal class MapMyhookSymbolsExp : DslExpression.SimpleExpressionBase
     {
@@ -2066,8 +2066,8 @@ namespace ResourceEditApi
             return string.Empty;
         }
 
-        private static Regex s_Address1 = new Regex(@"#[0-9]+:0x([0-9a-f]+) 0x([0-9a-f]+) (.*)", RegexOptions.Compiled);
-        private static Regex s_Address2 = new Regex(@"#[0-9]+:0x([0-9a-f]+)", RegexOptions.Compiled);
+        private static Regex s_Address1 = new Regex(@"#[0-9]+:0x([0-9a-fA-F]+) 0x([0-9a-fA-F]+) (.*)", RegexOptions.Compiled);
+        private static Regex s_Address2 = new Regex(@"#[0-9]+:0x([0-9a-fA-F]+)", RegexOptions.Compiled);
     }
     internal class SetClipboardExp : DslExpression.SimpleExpressionBase
     {
