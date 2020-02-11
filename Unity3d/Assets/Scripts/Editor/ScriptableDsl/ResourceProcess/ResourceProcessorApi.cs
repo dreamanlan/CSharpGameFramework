@@ -1947,7 +1947,7 @@ namespace ResourceEditApi
                                             lo = i + 1;
                                         }
                                         else {
-                                            lines[ix] = line + " " + name;
+                                            lines[ix] = s_Remove.Replace(line, string.Empty) + " " + name;
                                             break;
                                         }
                                     }
@@ -1965,6 +1965,7 @@ namespace ResourceEditApi
             return r;
         }
         private static Regex s_Address = new Regex(@"^[0-9]+ #[0-9]+ pc ([0-9a-fA-F]+) (\S+)", RegexOptions.Compiled);
+        private static Regex s_Remove = new Regex(@"/[^=]*==", RegexOptions.Compiled);
     }
     internal class MapMyhookSymbolsExp : DslExpression.SimpleExpressionBase
     {
@@ -2005,7 +2006,7 @@ namespace ResourceEditApi
                                 if (ulong.TryParse(raddr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
                                     string name = FindSymbol(v, symbols);
                                     if (!string.IsNullOrEmpty(name)) {
-                                        lines[ix] = line + " " + name;
+                                        lines[ix] = s_Remove.Replace(line, string.Empty) + " " + name;
                                     }
                                 }
                             }
@@ -2015,7 +2016,7 @@ namespace ResourceEditApi
                                     v -= section_start;
                                     string name = FindSymbol(v, symbols);
                                     if (!string.IsNullOrEmpty(name)) {
-                                        lines[ix] = line + " " + name;
+                                        lines[ix] = s_Remove.Replace(line, string.Empty) + " " + name;
                                     }
                                 }
                             }
@@ -2029,7 +2030,7 @@ namespace ResourceEditApi
                                     v -= section_start;
                                     string name = FindSymbol(v, symbols);
                                     if (!string.IsNullOrEmpty(name)) {
-                                        lines[ix] = line + " " + name;
+                                        lines[ix] = s_Remove.Replace(line, string.Empty) + " " + name;
                                     }
                                 }
                             }
@@ -2068,6 +2069,7 @@ namespace ResourceEditApi
 
         private static Regex s_Address1 = new Regex(@"#[0-9]+:0x([0-9a-fA-F]+) 0x([0-9a-fA-F]+) (.*)", RegexOptions.Compiled);
         private static Regex s_Address2 = new Regex(@"#[0-9]+:0x([0-9a-fA-F]+)", RegexOptions.Compiled);
+        private static Regex s_Remove = new Regex(@"|[^=]*==", RegexOptions.Compiled);
     }
     internal class SetClipboardExp : DslExpression.SimpleExpressionBase
     {
