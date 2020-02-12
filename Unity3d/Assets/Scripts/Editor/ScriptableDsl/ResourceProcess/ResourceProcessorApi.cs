@@ -393,6 +393,8 @@ internal static class ResourceEditUtility
         calc.Register("loadidaprosymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadIdaproSymbolsExp>());
         calc.Register("mapbuglysymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapBuglySymbolsExp>());
         calc.Register("mapmyhooksymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapMyhookSymbolsExp>());
+        calc.Register("grep", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GrepExp>());
+        calc.Register("subst", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SubstExp>());
         calc.Register("setclipboard", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetClipboardExp>());
         calc.Register("getclipboard", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetClipboardExp>());
         calc.Register("selectobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectObjectExp>());
@@ -2070,6 +2072,88 @@ namespace ResourceEditApi
         private static Regex s_Address1 = new Regex(@"#[0-9]+:0x([0-9a-fA-F]+) 0x([0-9a-fA-F]+) (.*)", RegexOptions.Compiled);
         private static Regex s_Address2 = new Regex(@"#[0-9]+:0x([0-9a-fA-F]+)", RegexOptions.Compiled);
         private static Regex s_Remove = new Regex(@"|[^=]*==", RegexOptions.Compiled);
+    }
+    internal class GrepExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var lines = operands[0] as IList<string>;
+                Regex regex = null;
+                if (operands.Count >= 2)
+                    regex = new Regex(operands[1] as string, RegexOptions.Compiled);
+                var outLines = new List<string>();
+                if (null != lines) {
+                    int ct = lines.Count;
+                    int delta = 1;
+                    if (ct > 100000)
+                        delta = 1000;
+                    else if (ct > 10000)
+                        delta = 100;
+                    else if (ct > 1000)
+                        delta = 10;
+                    else
+                        delta = 1;
+                    for (int i = 0; i < ct; ++i) {
+                        string lineStr = lines[i];
+                        if (null != regex) {
+                            if (regex.IsMatch(lineStr)) {
+                                outLines.Add(lineStr);
+                            }
+                        }
+                        else {
+                            outLines.Add(lineStr);
+                        }
+                        if (i % delta == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("grep ...", i, ct)) {
+                            break;
+                        }
+                    }
+                    r = outLines;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+    }
+    internal class SubstExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 3) {
+                var lines = operands[0] as IList<string>;
+                Regex regex = new Regex(operands[1] as string, RegexOptions.Compiled);
+                string subst = operands[2] as string;
+                int count = -1;
+                if (operands.Count >= 4)
+                    count = (int)Convert.ChangeType(operands[3], typeof(int));
+                var outLines = new List<string>();
+                if (null != lines && null != regex && null != subst) {
+                    int ct = lines.Count;
+                    int delta = 1;
+                    if (ct > 100000)
+                        delta = 1000;
+                    else if (ct > 10000)
+                        delta = 100;
+                    else if (ct > 1000)
+                        delta = 10;
+                    else
+                        delta = 1;
+                    for (int i = 0; i < ct; ++i) {
+                        string lineStr = lines[i];
+                        lineStr = regex.Replace(lineStr, subst, count);
+                        outLines.Add(lineStr);
+                        if (i % delta == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("subst ...", i, ct)) {
+                            break;
+                        }
+                    }
+                    r = outLines;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
     }
     internal class SetClipboardExp : DslExpression.SimpleExpressionBase
     {
