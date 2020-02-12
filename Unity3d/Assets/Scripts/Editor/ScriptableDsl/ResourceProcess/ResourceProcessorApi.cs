@@ -2071,7 +2071,7 @@ namespace ResourceEditApi
 
         private static Regex s_Address1 = new Regex(@"#[0-9]+:0x([0-9a-fA-F]+) 0x([0-9a-fA-F]+) (.*)", RegexOptions.Compiled);
         private static Regex s_Address2 = new Regex(@"#[0-9]+:0x([0-9a-fA-F]+)", RegexOptions.Compiled);
-        private static Regex s_Remove = new Regex(@"|[^=]*==", RegexOptions.Compiled);
+        private static Regex s_Remove = new Regex(@"\|[^=]*==", RegexOptions.Compiled);
     }
     internal class GrepExp : DslExpression.SimpleExpressionBase
     {
