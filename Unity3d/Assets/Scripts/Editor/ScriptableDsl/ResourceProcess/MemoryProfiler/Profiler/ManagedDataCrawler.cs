@@ -237,11 +237,30 @@ namespace Unity.MemoryProfilerForExtension.Editor
 
         public UInt64 ReadPointer()
         {
-            if (pointerSize == 4)
-                return BitConverter.ToUInt32(bytes, offset);
-            if (pointerSize == 8)
-                return BitConverter.ToUInt64(bytes, offset);
-            throw new ArgumentException("Unexpected pointer size: " + pointerSize);
+            if (offset >= 0) {
+                if (offset + pointerSize <= bytes.Length) {
+                    if (pointerSize == 4)
+                        return BitConverter.ToUInt32(bytes, offset);
+                    if (pointerSize == 8)
+                        return BitConverter.ToUInt64(bytes, offset);
+                    throw new ArgumentException("Unexpected pointer size: " + pointerSize);
+                }
+                else if (offset < bytes.Length) {
+                    ulong v = 0;
+                    for (int i = offset; i < offset + pointerSize && i < bytes.Length; ++i) {
+                        v *= 16;
+                        v += bytes[i];
+                    }
+                    Debug.LogWarningFormat("Incomplete pointer: 0x{0:X}", v);
+                    return 0;
+                }
+                else {
+                    return 0;
+                }
+            }
+            else {
+                return 0;
+            }
         }
 
         public byte ReadByte()
@@ -637,7 +656,9 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 bool gotException = false;
                 try
                 {
-                    fieldLocation.ReadPointer();
+                    ulong ptr = fieldLocation.ReadPointer();
+                    if (ptr == 0)
+                        gotException = true;
                 }
                 catch (ArgumentException)
                 {
