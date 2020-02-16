@@ -454,10 +454,17 @@ internal static class ResourceEditUtility
         calc.Register("findrowfromhashtable", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindRowFromHashtableExp>());
         calc.Register("loadmanagedheaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadManagedHeapsExp>());
         calc.Register("findmanagedheaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindManagedHeapsExp>());
+        calc.Register("matchmanagedheaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MatchManagedHeapsExp>());
+        calc.Register("calcmatchedmanagedheapsdiff", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMatchedManagedHeapsDiffExp>());
         calc.Register("loadmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadMapsExp>());
         calc.Register("findmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindMapsExp>());
+        calc.Register("matchmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MatchMapsExp>());
+        calc.Register("calcmatchedmapsdiff", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMatchedMapsDiffExp>());
         calc.Register("loadsmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadSmapsExp>());
         calc.Register("findsmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindSmapsExp>());
+        calc.Register("matchsmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MatchSmapsExp>());
+        calc.Register("calcmatchedsmapsdiff", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMatchedSmapsDiffExp>());
+        calc.Register("loadaddrs", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadAddrsExp>());
     }
     internal static object Filter(ItemInfo item, Dictionary<string, object> addVars, List<ItemInfo> results, DslExpression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
@@ -1077,11 +1084,6 @@ internal static class ResourceEditUtility
         get { return s_ForceSaveAndReimport; }
         set { s_ForceSaveAndReimport = value; }
     }
-    internal static bool UseFastCrawler
-    {
-        get { return s_UseFastCrawler; }
-        set { s_UseFastCrawler = value; }
-    }
     
     internal static void SelectObject(UnityEngine.Object obj)
     {
@@ -1180,7 +1182,6 @@ internal static class ResourceEditUtility
 
     private static bool s_EnableSaveAndReimport = true;
     private static bool s_ForceSaveAndReimport = false;
-    private static bool s_UseFastCrawler = true;
 
     private static Dictionary<string, Regex> s_Regexes = new Dictionary<string, Regex>();
     private static Dictionary<string, List<string>> s_PathMatchInfos = new Dictionary<string, List<string>>();
@@ -1761,7 +1762,7 @@ namespace ResourceEditApi
             if (operands.Count >= 1) {
                 var index = (int)Convert.ChangeType(operands[0], typeof(int));
                 List<string> list = new List<string>();
-                for(int i = 1; i < operands.Count; ++i) {
+                for (int i = 1; i < operands.Count; ++i) {
                     string str = operands[i] as string;
                     list.Add(str);
                 }
@@ -1776,7 +1777,7 @@ namespace ResourceEditApi
         {
             var sb = new StringBuilder();
             int ct = ResourceProcessor.Instance.GetCurrentTableCount();
-            for(int i = 0; i < ct; ++i) {
+            for (int i = 0; i < ct; ++i) {
                 sb.Append(i);
                 sb.Append(':');
                 var name = ResourceProcessor.Instance.GetCurrentTableName(i);
@@ -1921,7 +1922,7 @@ namespace ResourceEditApi
                 var lines = operands[0] as IList<string>;
                 var symbols = operands[1] as IList<ResourceEditUtility.SymbolInfo>;
                 var key = operands[2] as string;
-                if (null!=lines && null != symbols && null != key) {
+                if (null != lines && null != symbols && null != key) {
                     for (int i = 0; i < lines.Count; ++i) {
                         lines[i] = lines[i].TrimEnd();
                     }
@@ -4205,6 +4206,142 @@ namespace ResourceEditApi
             return r;
         }
     }
+    internal class MatchManagedHeapsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var list1 = operands[0] as List<ResourceEditUtility.SectionInfo>;
+                var list2 = operands[1] as List<ResourceEditUtility.SectionInfo>;
+                if (null != list1 && null != list2) {
+                    int ct = list1.Count + list2.Count;
+                    int delta = 1;
+                    if (ct > 100000)
+                        delta = 1000;
+                    else if (ct > 10000)
+                        delta = 100;
+                    else if (ct > 1000)
+                        delta = 10;
+                    else
+                        delta = 1;
+                    int left = -1;
+                    int right = -1;
+                    ResourceEditUtility.SectionInfo leftInfo = null;
+                    ResourceEditUtility.SectionInfo rightInfo = null;
+                    MoveNext(list1, ref left, ref leftInfo);
+                    MoveNext(list2, ref right, ref rightInfo);
+                    var list = new List<ResourceEditUtility.SectionInfo[]>();
+                    while (null != leftInfo || null != rightInfo) {
+                        if (null == leftInfo) {
+                            list.Add(new ResourceEditUtility.SectionInfo[] { null, rightInfo });
+                            MoveNext(list2, ref right, ref rightInfo);
+                        }
+                        else if (null == rightInfo) {
+                            list.Add(new ResourceEditUtility.SectionInfo[] { leftInfo, null });
+                            MoveNext(list1, ref left, ref leftInfo);
+                        }
+                        else {
+                            if (leftInfo.vm_start == rightInfo.vm_start && leftInfo.vm_end == rightInfo.vm_end) {//完全重叠
+                                list.Add(new ResourceEditUtility.SectionInfo[] { leftInfo, rightInfo });
+                                MoveNext(list1, ref left, ref leftInfo);
+                                MoveNext(list2, ref right, ref rightInfo);
+                            }
+                            else if (leftInfo.vm_end <= rightInfo.vm_start) {//左上、右下无重叠
+                                list.Add(new ResourceEditUtility.SectionInfo[] { leftInfo, null });
+                                MoveNext(list1, ref left, ref leftInfo);
+                            }
+                            else if (leftInfo.vm_start >= rightInfo.vm_end) {//左下、右上无重叠
+                                list.Add(new ResourceEditUtility.SectionInfo[] { null, rightInfo });
+                                MoveNext(list2, ref right, ref rightInfo);
+                            }
+                            else {//交叉
+                                list.Add(new ResourceEditUtility.SectionInfo[] { leftInfo, null });
+                                MoveNext(list1, ref left, ref leftInfo);
+                                list.Add(new ResourceEditUtility.SectionInfo[] { null, rightInfo });
+                                MoveNext(list2, ref right, ref rightInfo);
+                            }
+                        }
+                        int ix = left + right;
+                        if (ix % delta == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("match managed heaps ...", ix, ct)) {
+                            break;
+                        }
+                    }
+                    r = list;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private void MoveNext(List<ResourceEditUtility.SectionInfo> list, ref int index, ref ResourceEditUtility.SectionInfo info)
+        {
+            if (index < list.Count - 1) {
+                ++index;
+                info = list[index];
+            }
+            else {
+                info = null;
+            }
+        }
+    }
+    internal class CalcMatchedManagedHeapsDiffExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var list = operands[0] as List<ResourceEditUtility.SectionInfo[]>;
+                int index = (int)Convert.ChangeType(operands[1], typeof(int));
+                if (null != list && index >= 0) {
+                    int ct = list.Count;
+                    int delta = 1;
+                    if (ct > 100000)
+                        delta = 1000;
+                    else if (ct > 10000)
+                        delta = 100;
+                    else if (ct > 1000)
+                        delta = 10;
+                    else
+                        delta = 1;
+                    var results = new List<ResourceEditUtility.SectionInfo>();
+                    for (int i = 0; i < ct; ++i) {
+                        var infos = list[i];
+                        if (index < infos.Length) {
+                            var info = infos[index];
+                            if (null != info) {
+                                bool match = true;
+                                for (int ix = 0; ix < infos.Length; ++ix) {
+                                    if (ix != index && null != infos[ix]) {
+                                        match = false;
+                                        break;
+                                    }
+                                }
+                                if (match) {
+                                    results.Add(info);
+                                }
+                            }
+                        }
+                        if (i % delta == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("calc matched managed heaps diff ...", i, ct)) {
+                            break;
+                        }
+                    }
+                    r = results;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private void MoveNext(List<ResourceEditUtility.SectionInfo> list, ref int index, ref ResourceEditUtility.SectionInfo info)
+        {
+            if (index < list.Count - 1) {
+                ++index;
+                info = list[index];
+            }
+            else {
+                info = null;
+            }
+        }
+    }
     internal class LoadMapsExp : DslExpression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
@@ -4269,7 +4406,7 @@ namespace ResourceEditApi
             if (operands.Count >= 2) {
                 var list = operands[0] as List<ResourceEditUtility.MapsInfo>;
                 var addr = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
-                if(null!=list && addr > 0) {
+                if (null != list && addr > 0) {
                     var low = 0;
                     var high = list.Count - 1;
                     while (low <= high) {
@@ -4288,6 +4425,142 @@ namespace ResourceEditApi
                 }
             }
             return r;
+        }
+    }
+    internal class MatchMapsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var list1 = operands[0] as List<ResourceEditUtility.MapsInfo>;
+                var list2 = operands[1] as List<ResourceEditUtility.MapsInfo>;
+                if (null != list1 && null != list2) {
+                    int ct = list1.Count + list2.Count;
+                    int delta = 1;
+                    if (ct > 100000)
+                        delta = 1000;
+                    else if (ct > 10000)
+                        delta = 100;
+                    else if (ct > 1000)
+                        delta = 10;
+                    else
+                        delta = 1;
+                    int left = -1;
+                    int right = -1;
+                    ResourceEditUtility.MapsInfo leftInfo = null;
+                    ResourceEditUtility.MapsInfo rightInfo = null;
+                    MoveNext(list1, ref left, ref leftInfo);
+                    MoveNext(list2, ref right, ref rightInfo);
+                    var list = new List<ResourceEditUtility.MapsInfo[]>();
+                    while (null != leftInfo || null != rightInfo) {
+                        if (null == leftInfo) {
+                            list.Add(new ResourceEditUtility.MapsInfo[] { null, rightInfo });
+                            MoveNext(list2, ref right, ref rightInfo);
+                        }
+                        else if (null == rightInfo) {
+                            list.Add(new ResourceEditUtility.MapsInfo[] { leftInfo, null });
+                            MoveNext(list1, ref left, ref leftInfo);
+                        }
+                        else {
+                            if (leftInfo.vm_start == rightInfo.vm_start && leftInfo.vm_end == rightInfo.vm_end) {//完全重叠
+                                list.Add(new ResourceEditUtility.MapsInfo[] { leftInfo, rightInfo });
+                                MoveNext(list1, ref left, ref leftInfo);
+                                MoveNext(list2, ref right, ref rightInfo);
+                            }
+                            else if (leftInfo.vm_end <= rightInfo.vm_start) {//左上、右下无重叠
+                                list.Add(new ResourceEditUtility.MapsInfo[] { leftInfo, null });
+                                MoveNext(list1, ref left, ref leftInfo);
+                            }
+                            else if (leftInfo.vm_start >= rightInfo.vm_end) {//左下、右上无重叠
+                                list.Add(new ResourceEditUtility.MapsInfo[] { null, rightInfo });
+                                MoveNext(list2, ref right, ref rightInfo);
+                            }
+                            else {//交叉
+                                list.Add(new ResourceEditUtility.MapsInfo[] { leftInfo, null });
+                                MoveNext(list1, ref left, ref leftInfo);
+                                list.Add(new ResourceEditUtility.MapsInfo[] { null, rightInfo });
+                                MoveNext(list2, ref right, ref rightInfo);
+                            }
+                        }
+                        int ix = left + right;
+                        if (ix % delta == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("match maps ...", ix, ct)) {
+                            break;
+                        }
+                    }
+                    r = list;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private void MoveNext(List<ResourceEditUtility.MapsInfo> list, ref int index, ref ResourceEditUtility.MapsInfo info)
+        {
+            if (index < list.Count - 1) {
+                ++index;
+                info = list[index];
+            }
+            else {
+                info = null;
+            }
+        }
+    }
+    internal class CalcMatchedMapsDiffExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var list = operands[0] as List<ResourceEditUtility.MapsInfo[]>;
+                int index = (int)Convert.ChangeType(operands[1], typeof(int));
+                if (null != list && index >= 0) {
+                    int ct = list.Count;
+                    int delta = 1;
+                    if (ct > 100000)
+                        delta = 1000;
+                    else if (ct > 10000)
+                        delta = 100;
+                    else if (ct > 1000)
+                        delta = 10;
+                    else
+                        delta = 1;
+                    var results = new List<ResourceEditUtility.MapsInfo>();
+                    for (int i = 0; i < ct; ++i) {
+                        var infos = list[i];
+                        if (index < infos.Length) {
+                            var info = infos[index];
+                            if (null != info) {
+                                bool match = true;
+                                for (int ix = 0; ix < infos.Length; ++ix) {
+                                    if (ix != index && null != infos[ix]) {
+                                        match = false;
+                                        break;
+                                    }
+                                }
+                                if (match) {
+                                    results.Add(info);
+                                }
+                            }
+                        }
+                        if (i % delta == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("calc matched maps diff ...", i, ct)) {
+                            break;
+                        }
+                    }
+                    r = results;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private void MoveNext(List<ResourceEditUtility.MapsInfo> list, ref int index, ref ResourceEditUtility.MapsInfo info)
+        {
+            if (index < list.Count - 1) {
+                ++index;
+                info = list[index];
+            }
+            else {
+                info = null;
+            }
         }
     }
     internal class LoadSmapsExp : DslExpression.SimpleExpressionBase
@@ -4414,6 +4687,195 @@ namespace ResourceEditApi
                     }
                 }
             }
+            return r;
+        }
+    }
+    internal class MatchSmapsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var list1 = operands[0] as List<ResourceEditUtility.SmapsInfo>;
+                var list2 = operands[1] as List<ResourceEditUtility.SmapsInfo>;
+                if (null != list1 && null != list2) {
+                    int ct = list1.Count + list2.Count;
+                    int delta = 1;
+                    if (ct > 100000)
+                        delta = 1000;
+                    else if (ct > 10000)
+                        delta = 100;
+                    else if (ct > 1000)
+                        delta = 10;
+                    else
+                        delta = 1;
+                    int left = -1;
+                    int right = -1;
+                    ResourceEditUtility.SmapsInfo leftInfo = null;
+                    ResourceEditUtility.SmapsInfo rightInfo = null;
+                    MoveNext(list1, ref left, ref leftInfo);
+                    MoveNext(list2, ref right, ref rightInfo);
+                    var list = new List<ResourceEditUtility.SmapsInfo[]>();
+                    while (null != leftInfo || null != rightInfo) {
+                        if (null == leftInfo) {
+                            list.Add(new ResourceEditUtility.SmapsInfo[] { null, rightInfo });
+                            MoveNext(list2, ref right, ref rightInfo);
+                        }
+                        else if (null == rightInfo) {
+                            list.Add(new ResourceEditUtility.SmapsInfo[] { leftInfo, null });
+                            MoveNext(list1, ref left, ref leftInfo);
+                        }
+                        else {
+                            if (leftInfo.vm_start == rightInfo.vm_start && leftInfo.vm_end == rightInfo.vm_end) {//完全重叠
+                                list.Add(new ResourceEditUtility.SmapsInfo[] { leftInfo, rightInfo });
+                                MoveNext(list1, ref left, ref leftInfo);
+                                MoveNext(list2, ref right, ref rightInfo);
+                            }
+                            else if (leftInfo.vm_end <= rightInfo.vm_start) {//左上、右下无重叠
+                                list.Add(new ResourceEditUtility.SmapsInfo[] { leftInfo, null });
+                                MoveNext(list1, ref left, ref leftInfo);
+                            }
+                            else if (leftInfo.vm_start >= rightInfo.vm_end) {//左下、右上无重叠
+                                list.Add(new ResourceEditUtility.SmapsInfo[] { null, rightInfo });
+                                MoveNext(list2, ref right, ref rightInfo);
+                            }
+                            else {//交叉
+                                list.Add(new ResourceEditUtility.SmapsInfo[] { leftInfo, null });
+                                MoveNext(list1, ref left, ref leftInfo);
+                                list.Add(new ResourceEditUtility.SmapsInfo[] { null, rightInfo });
+                                MoveNext(list2, ref right, ref rightInfo);
+                            }
+                        }
+                        int ix = left + right;
+                        if (ix % delta == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("match maps ...", ix, ct)) {
+                            break;
+                        }
+                    }
+                    r = list;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private void MoveNext(List<ResourceEditUtility.SmapsInfo> list, ref int index, ref ResourceEditUtility.SmapsInfo info)
+        {
+            if (index < list.Count - 1) {
+                ++index;
+                info = list[index];
+            }
+            else {
+                info = null;
+            }
+        }
+    }
+    internal class CalcMatchedSmapsDiffExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 2) {
+                var list = operands[0] as List<ResourceEditUtility.SmapsInfo[]>;
+                int index = (int)Convert.ChangeType(operands[1], typeof(int));
+                if (null != list && index >= 0) {
+                    int ct = list.Count;
+                    int delta = 1;
+                    if (ct > 100000)
+                        delta = 1000;
+                    else if (ct > 10000)
+                        delta = 100;
+                    else if (ct > 1000)
+                        delta = 10;
+                    else
+                        delta = 1;
+                    var results = new List<ResourceEditUtility.SmapsInfo>();
+                    for (int i = 0; i < ct; ++i) {
+                        var infos = list[i];
+                        if (index < infos.Length) {
+                            var info = infos[index];
+                            if (null != info) {
+                                bool match = true;
+                                for (int ix = 0; ix < infos.Length; ++ix) {
+                                    if (ix != index && null != infos[ix]) {
+                                        match = false;
+                                        break;
+                                    }
+                                }
+                                if (match) {
+                                    results.Add(info);
+                                }
+                            }
+                        }
+                        if (i % delta == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("calc matched smaps diff ...", i, ct)) {
+                            break;
+                        }
+                    }
+                    r = results;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private void MoveNext(List<ResourceEditUtility.MapsInfo> list, ref int index, ref ResourceEditUtility.MapsInfo info)
+        {
+            if (index < list.Count - 1) {
+                ++index;
+                info = list[index];
+            }
+            else {
+                info = null;
+            }
+        }
+    }
+    internal class LoadAddrsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var file = operands[0] as string;
+                bool isHex = true;
+                Regex regex = null;
+                if (operands.Count >= 2) {
+                    isHex = (bool)Convert.ChangeType(operands[1], typeof(bool));
+                }
+                if (operands.Count >= 3) {
+                    var str = operands[2] as string;
+                    if (!string.IsNullOrEmpty(str)) {
+                        regex = new Regex(str, RegexOptions.Compiled);
+                    }
+                }
+                var list = new List<ulong>();
+                var lines = File.ReadAllLines(file);
+                int ct = lines.Length;
+                int delta = 1;
+                if (ct > 100000)
+                    delta = 1000;
+                else if (ct > 10000)
+                    delta = 100;
+                else if (ct > 1000)
+                    delta = 10;
+                else
+                    delta = 1;
+                for (int ix = 0; ix < ct; ++ix) {
+                    var addrStr = lines[ix];
+                    if (null != regex) {
+                        var m = regex.Match(addrStr);
+                        if (m.Success) {
+                            addrStr = m.Groups[0].Value;
+                        }
+                    }
+                    ulong addr;
+                    if (ulong.TryParse(addrStr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out addr)) {
+                        list.Add(addr);
+                    }
+                    if (ix % delta == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("load addrs ...", ix, ct)) {
+                        break;
+                    }
+                }
+                list.Sort();
+                r = list;
+            }
+            EditorUtility.ClearProgressBar();
             return r;
         }
     }
@@ -4679,7 +5141,7 @@ class ShortestPathToRootObjectFinder
             }
             TryAddRefBy(objIndex, ref objData);
             //考虑managed->native情形
-            if(c.connectionType== ManagedConnection.ConnectionType.UnityEngineObject) {
+            if (c.connectionType == ManagedConnection.ConnectionType.UnityEngineObject) {
                 objIndex = _snapshot.NativeObjectIndexToUnifiedObjectIndex(c.UnityEngineNativeObjectIndex);
                 objData = ObjectData.FromManagedObjectIndex(snapshot, c.UnityEngineManagedObjectIndex);
                 TryAddRefBy(objIndex, ref objData);
@@ -4721,7 +5183,7 @@ class ShortestPathToRootObjectFinder
 
             //var refBys = ObjectConnection.GetAllObjectConnectingTo(_snapshot, subObj);
             HashSet<ObjectData> refBys;
-            if(_refbydict.TryGetValue(subObj.GetUnifiedObjectIndex(_snapshot), out refBys)) {
+            if (_refbydict.TryGetValue(subObj.GetUnifiedObjectIndex(_snapshot), out refBys)) {
                 foreach (var next in refBys) {
                     if (seen.Contains(next))
                         continue;
@@ -4755,7 +5217,7 @@ class ShortestPathToRootObjectFinder
         if (data.IsValid) {
             bool isStatic = false;
             if (data.IsField()) {
-                if(data.fieldIndex>=0 && data.fieldIndex < _snapshot.fieldDescriptions.Count) {
+                if (data.fieldIndex >= 0 && data.fieldIndex < _snapshot.fieldDescriptions.Count) {
                     isStatic = _snapshot.fieldDescriptions.isStatic[data.fieldIndex];
                 }
             }
