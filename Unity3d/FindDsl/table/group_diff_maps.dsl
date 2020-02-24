@@ -7,12 +7,9 @@ input("dummy")
         file("txt");
     };
     string("encoding", "utf-8");
-	int("resultopt",1){
-		toggle(["all","onlyalone","onlynotalone"],[1,2,3]);
-	};
 	float("pathwidth",240){range(20,4096);};
     feature("source", "list");
-    feature("menu", "9.Table/compare maps");
+    feature("menu", "9.Table/group diff maps");
     feature("description", "just so so");
 }
 filter
@@ -24,7 +21,7 @@ filter
         $row = $$;
         $left = $row[0];
         $right = $row[1];
-        if(resultopt==1 || resultopt==2 && (isnull($left) || isnull($right)) || resultopt==3 && !isnull($left) && !isnull($right)){
+        if(isnull($left) || isnull($right)){
             $leftInfo = "";
             $rightInfo = "";
             $val = 0;
@@ -32,9 +29,7 @@ filter
             $item = newitem();
             if(!isnull($left)){
                 $leftInfo = format("{0:X}-{1:X}", $left.vm_start, $left.vm_end);
-                if(resultopt==2){
-                    $val = $val - $left.size;
-                };
+                $val = $val - $left.size;
                 $module=$left.module;
             };
             if(!isnull($right)){
@@ -47,7 +42,13 @@ filter
             $item.Info = $leftInfo + " <=> " + $rightInfo + " " + $val + " " + $module;
             $item.Order = $val;
             $item.Value = $val;
+            $item.Group = $module;
         };
     };
     0;
+}
+group
+{
+    order = sum;
+    1;
 };
