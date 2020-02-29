@@ -248,6 +248,39 @@ internal static class ResourceEditUtility
         internal ulong Addr;
         internal string Name;
     }
+    internal class StifHeader
+    {
+        internal int Tag1;
+        internal int Tag2;
+        internal int Tag3;
+        internal int Count;
+    }
+    internal class StifSymbolInfo
+    {
+        internal int Begin;
+        internal int End;
+        internal int NameOffset;
+
+        internal static int ReverseEndian(int value)
+        {
+            s_buffer[3] = (byte)value;
+            s_buffer[2] = (byte)(value >> 8);
+            s_buffer[1] = (byte)(value >> 16);
+            s_buffer[0] = (byte)(value >> 24);
+            return BitConverter.ToInt32(s_buffer, 0);
+        }
+        internal static uint ReverseEndian(uint value)
+        {
+            s_buffer[3] = (byte)value;
+            s_buffer[2] = (byte)(value >> 8);
+            s_buffer[1] = (byte)(value >> 16);
+            s_buffer[0] = (byte)(value >> 24);
+            return BitConverter.ToUInt32(s_buffer, 0);
+        }
+
+        private static byte[] s_buffer = new byte[c_max_buffer];
+        private const int c_max_buffer = 8;
+    }
     internal class DataRow
     {
         internal int RowIndex
@@ -469,6 +502,7 @@ internal static class ResourceEditUtility
         calc.Register("matchsmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MatchSmapsExp>());
         calc.Register("calcmatchedsmapsdiff", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMatchedSmapsDiffExp>());
         calc.Register("loadaddrs", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadAddrsExp>());
+        calc.Register("parseurlargs", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ParseUrlArgsExp>());
     }
     internal static object Filter(ItemInfo item, Dictionary<string, object> addVars, List<ItemInfo> results, DslExpression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
@@ -5127,6 +5161,68 @@ namespace ResourceEditApi
             EditorUtility.ClearProgressBar();
             return r;
         }
+    }
+    internal class ParseUrlArgsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var txt = operands[0] as string;
+                var kvSep = s_KeyValueSeperator;
+                if (operands.Count >= 2) {
+                    var str = operands[1] as string;
+                    if (!string.IsNullOrEmpty(str)) {
+                        kvSep = str;
+                    }
+                    else if (str == string.Empty) {
+                        kvSep = string.Empty;
+                    }
+                    else {
+                        kvSep = s_KeyValueSeperator;
+                    }
+                }
+                var sep = s_BuglySeperators;
+                if (operands.Count >= 3) {
+                    var list = new List<string>();
+                    for (int i = 2; i < operands.Count; ++i) {
+                        var str = operands[i] as string;
+                        if (!string.IsNullOrEmpty(str)) {
+                            list.Add(str);
+                        }
+                    }
+                    sep = list.ToArray();
+                }
+                var newTxt = UnityEngine.Networking.UnityWebRequest.UnEscapeURL(txt);
+                var fields = newTxt.Split(sep, StringSplitOptions.RemoveEmptyEntries);
+                if (!string.IsNullOrEmpty(kvSep)) {
+                    var hash = new Dictionary<string, string>();
+                    foreach (var field in fields) {
+                        string[] kv = field.Split(new string[] { kvSep }, StringSplitOptions.None);
+                        if (kv.Length == 1) {
+                            var key = kv[0].Trim();
+                            if (!string.IsNullOrEmpty(key) && !hash.ContainsKey(key)) {
+                                hash.Add(key, string.Empty);
+                            }
+                        }
+                        else {
+                            var key = kv[0].Trim();
+                            var val = kv[1].Trim();
+                            if (!string.IsNullOrEmpty(key) && !hash.ContainsKey(key)) {
+                                hash.Add(key, val);
+                            }
+                        }
+                    }
+                    r = hash;
+                }
+                else {
+                    r = fields;
+                }
+            }
+            return r;
+        }
+        private static string s_KeyValueSeperator = "=";
+        private static string[] s_BuglySeperators = new string[] { ";" };
     }
 }
 #endregion
