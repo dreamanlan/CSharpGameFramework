@@ -391,7 +391,11 @@ internal static class ResourceEditUtility
         calc.Register("objdatafromnativeindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromNativeObjectIndexExp>());
         calc.Register("objdatafrommanagedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromManagedObjectIndexExp>());
         calc.Register("loadidaprosymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadIdaproSymbolsExp>());
-        calc.Register("mapbuglysymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapBuglySymbolsExp>());
+        calc.Register("loadxcodesymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadXcodeSymbolsExp>());
+        calc.Register("loadbuglyandroidsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadBuglyAndroidSymbolsExp>());
+        calc.Register("loadbuglyiossymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadBuglyIosSymbolsExp>());
+        calc.Register("mapbuglyandroidsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapBuglyAndroidSymbolsExp>());
+        calc.Register("mapbuglyiossymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapBuglyIosSymbolsExp>());
         calc.Register("mapmyhooksymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapMyhookSymbolsExp>());
         calc.Register("grep", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GrepExp>());
         calc.Register("subst", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SubstExp>());
@@ -1913,7 +1917,196 @@ namespace ResourceEditApi
         }
         private static Regex s_Address = new Regex(@"^ [0-9a-fA-F]+:([0-9a-fA-F]+)       (.*)", RegexOptions.Compiled);
     }
-    internal class MapBuglySymbolsExp : DslExpression.SimpleExpressionBase
+    internal class LoadXcodeSymbolsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var file = operands[0] as string;
+                if (!string.IsNullOrEmpty(file)) {
+                    var fileName = Path.GetFileName(file);
+                    var symbols = new List<ResourceEditUtility.SymbolInfo>();
+                    var sections = new List<ulong[]>();
+                    using (var sr = new StreamReader(file)) {
+                        int curCt = 0;
+                        int totalCt = 1000000;
+                        while (!sr.EndOfStream) {
+                            var line = sr.ReadLine();
+                            var m = s_Section.Match(line);
+                            if (m.Success) {
+                                var addr = m.Groups[1].Value;
+                                var size = m.Groups[2].Value;
+                                ulong v, s;
+                                ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v);
+                                ulong.TryParse(size, System.Globalization.NumberStyles.AllowHexSpecifier, null, out s);
+                                sections.Add(new ulong[] { v, s });
+                            }
+                            else {
+                                m = s_Address.Match(line);
+                                if (m.Success) {
+                                    var addr = m.Groups[1].Value;
+                                    var size = m.Groups[2].Value;
+                                    var name = m.Groups[3].Value;
+                                    ulong v, s;
+                                    ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v);
+                                    ulong.TryParse(size, System.Globalization.NumberStyles.AllowHexSpecifier, null, out s);
+                                    if (s > 0x10 && name.IndexOf("_g_") != 0 && name.IndexOf("_s_") != 0 && name.IndexOf("literal string: ") != 0) {
+                                        var b = FindBaseAddr(sections, v);
+                                        symbols.Add(new ResourceEditUtility.SymbolInfo { Addr = v - b, Name = name });
+                                    }
+                                }
+                            }
+                            ++curCt;
+                            if (curCt > totalCt)
+                                totalCt += 10000;
+                            if (curCt % 1000 == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("load symbols from " + fileName, curCt, totalCt)) {
+                                break;
+                            }
+                        }
+                    }
+                    r = symbols;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private static ulong FindBaseAddr(IList<ulong[]> sections, ulong v)
+        {
+            int lo = 0;
+            int hi = sections.Count - 2;
+            for (; lo <= hi;) {
+                int i = (lo + hi) / 2;
+                var st = sections[i][0];
+                var ed = st + sections[i][1];
+                if (st > v) {
+                    hi = i - 1;
+                }
+                else if (ed <= v) {
+                    lo = i + 1;
+                }
+                else {
+                    return st;
+                }
+            }
+            return 0;
+        }
+
+        private static Regex s_Section = new Regex(@"^0x([0-9a-fA-F]+)	0x([0-9a-fA-F]+)	__TEXT	", RegexOptions.Compiled);
+        private static Regex s_Address = new Regex(@"^0x([0-9a-fA-F]+)	0x([0-9a-fA-F]+)	\[[0-9]+\] (.*)", RegexOptions.Compiled);
+    }
+    internal class LoadBuglyAndroidSymbolsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var file = operands[0] as string;
+                if (!string.IsNullOrEmpty(file)) {
+                    var fileName = Path.GetFileName(file);
+                    var symbols = new List<ResourceEditUtility.SymbolInfo>();
+                    using (var fs = new FileStream(file, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite)) {
+                        using (var br = new BinaryReader(fs)) {
+                            long fileLength = br.BaseStream.Length;
+                            if (fileLength > sizeof(int) * 4) {
+                                ResourceEditUtility.StifHeader header = new ResourceEditUtility.StifHeader();
+                                header.Tag1 = br.ReadInt32();
+                                header.Tag2 = br.ReadInt32();
+                                header.Tag3 = br.ReadInt32();
+                                header.Count = ResourceEditUtility.StifSymbolInfo.ReverseEndian(br.ReadInt32());
+
+                                int curCt = 0;
+                                int totalCt = header.Count;
+                                var stifSyms = new List<ResourceEditUtility.StifSymbolInfo>();
+                                if (fileLength > sizeof(int) * 4 + sizeof(int) * 3 * totalCt) {
+                                    for (int i = 0; i < totalCt; ++i) {
+                                        var stifSym = new ResourceEditUtility.StifSymbolInfo();
+                                        stifSym.Begin = ResourceEditUtility.StifSymbolInfo.ReverseEndian(br.ReadInt32());
+                                        stifSym.End = ResourceEditUtility.StifSymbolInfo.ReverseEndian(br.ReadInt32());
+                                        stifSym.NameOffset = ResourceEditUtility.StifSymbolInfo.ReverseEndian(br.ReadInt32());
+                                        stifSyms.Add(stifSym);
+
+                                        ++curCt;
+                                        if (curCt % 1000 == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("load symbols from " + fileName, curCt, totalCt)) {
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                foreach(var stifSym in stifSyms) {
+                                    long pos = br.BaseStream.Seek(stifSym.NameOffset, SeekOrigin.Begin);
+                                    for (int i = 0; i < c_max_name_length && pos + i < fileLength; ++i) {
+                                        byte b = br.ReadByte();
+                                        if (b != 0) {
+                                            s_NameBuffer[i] = b;
+                                        }
+                                        else {
+                                            var str = Encoding.ASCII.GetString(s_NameBuffer, 0, i);
+                                            var sym = new ResourceEditUtility.SymbolInfo { Addr = (ulong)stifSym.Begin, Name = str };
+                                            symbols.Add(sym);
+                                            break;
+                                        }
+                                    }
+
+                                    ++curCt;
+                                    if (curCt % 1000 == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("load symbols name from " + fileName, curCt, totalCt)) {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        fs.Close();
+                    }
+                    r = symbols;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+
+        private const int c_max_name_length = 1024;
+        private static byte[] s_NameBuffer = new byte[c_max_name_length];
+    }
+    internal class LoadBuglyIosSymbolsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var file = operands[0] as string;
+                if (!string.IsNullOrEmpty(file)) {
+                    var fileName = Path.GetFileName(file);
+                    var symbols = new List<ResourceEditUtility.SymbolInfo>();
+                    using (var sr = new StreamReader(file)) {
+                        int curCt = 0;
+                        int totalCt = 10000000;
+                        while (!sr.EndOfStream) {
+                            var line = sr.ReadLine();
+                            var m = s_Address.Match(line);
+                            if (m.Success) {
+                                var addr = m.Groups[1].Value;
+                                var name = m.Groups[2].Value;
+                                ulong v;
+                                ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v);
+                                symbols.Add(new ResourceEditUtility.SymbolInfo { Addr = v, Name = name });
+                            }
+                            ++curCt;
+                            if (curCt > totalCt)
+                                totalCt += 10000;
+                            if (curCt % 1000 == 0 && ResourceProcessor.Instance.DisplayCancelableProgressBar("load symbols from " + fileName, curCt, totalCt)) {
+                                break;
+                            }
+                        }
+                    }
+                    r = symbols;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private static Regex s_Address = new Regex(@"^([0-9a-fA-F]+)\s+[0-9a-fA-F]+\s+(.*)", RegexOptions.Compiled);
+    }
+    internal class MapBuglyAndroidSymbolsExp : DslExpression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
         {
@@ -1969,6 +2162,62 @@ namespace ResourceEditApi
         }
         private static Regex s_Address = new Regex(@"^[0-9]+ #[0-9]+ pc ([0-9a-fA-F]+) (\S+)", RegexOptions.Compiled);
         private static Regex s_Remove = new Regex(@"/[^=]*==", RegexOptions.Compiled);
+    }
+    internal class MapBuglyIosSymbolsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 3) {
+                var lines = operands[0] as IList<string>;
+                var symbols = operands[1] as IList<ResourceEditUtility.SymbolInfo>;
+                var key = operands[2] as string;
+                if (null != lines && null != symbols && null != key) {
+                    for (int i = 0; i < lines.Count; ++i) {
+                        lines[i] = lines[i].TrimEnd();
+                    }
+                    int ct = lines.Count;
+                    for (int ix = 0; ix < ct; ++ix) {
+                        var line = lines[ix];
+                        var m = s_Address.Match(line);
+                        if (m.Success) {
+                            var so = m.Groups[1].Value;
+                            var offset = m.Groups[2].Value;
+                            if (so.Contains(key)) {
+                                ulong v;
+                                if (ulong.TryParse(offset, System.Globalization.NumberStyles.Integer, null, out v)) {
+                                    int lo = 0;
+                                    int hi = symbols.Count - 2;
+                                    for (; lo <= hi;) {
+                                        int i = (lo + hi) / 2;
+                                        var st = symbols[i].Addr;
+                                        var ed = symbols[i + 1].Addr;
+                                        var name = symbols[i].Name;
+                                        if (st > v) {
+                                            hi = i - 1;
+                                        }
+                                        else if (ed <= v) {
+                                            lo = i + 1;
+                                        }
+                                        else {
+                                            lines[ix] = line + " " + name;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (ResourceProcessor.Instance.DisplayCancelableProgressBar("map symbols ...", ix, ct)) {
+                            break;
+                        }
+                    }
+                    r = lines;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private static Regex s_Address = new Regex(@"^[0-9]+\s+(\S+)\s+0x[0-9a-fA-F]+ 0x[0-9a-fA-F]+ \+ ([0-9]+)", RegexOptions.Compiled);
     }
     internal class MapMyhookSymbolsExp : DslExpression.SimpleExpressionBase
     {
