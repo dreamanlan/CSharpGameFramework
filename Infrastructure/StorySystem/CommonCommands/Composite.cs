@@ -268,4 +268,130 @@ namespace StorySystem.CommonCommands
         }
         private CompositeCommand m_Cmd = null;
     }
+    /// <summary>
+    /// substcmd(id, substId);
+    /// </summary>
+    internal sealed class SubstCmdCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            SubstCmdCommand cmd = new SubstCmdCommand();
+            cmd.m_Id = m_Id.Clone();
+            cmd.m_SubstId = m_SubstId.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_Id.Evaluate(instance, handler, iterator, args);
+            m_SubstId.Evaluate(instance, handler, iterator, args);
+
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            if (m_Id.HaveValue && m_SubstId.HaveValue) {
+                string id = m_Id.Value;
+                string substId = m_SubstId.Value;
+                if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(substId)) {
+                    StoryCommandManager.Instance.Substitute(id, substId);
+                }
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_Id.InitFromDsl(callData.GetParam(0));
+                m_SubstId.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        private IStoryValue<string> m_Id = new StoryValue<string>();
+        private IStoryValue<string> m_SubstId = new StoryValue<string>();
+    }
+    /// <summary>
+    /// clearcmdsubsts();
+    /// </summary>
+    internal sealed class ClearCmdSubstsCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            ClearCmdSubstsCommand cmd = new ClearCmdSubstsCommand();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            StoryCommandManager.Instance.ClearSubstitutes();
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+        }
+    }
+    /// <summary>
+    /// substval(id, substId);
+    /// </summary>
+    internal sealed class SubstValCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            SubstValCommand cmd = new SubstValCommand();
+            cmd.m_Id = m_Id.Clone();
+            cmd.m_SubstId = m_SubstId.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_Id.Evaluate(instance, handler, iterator, args);
+            m_SubstId.Evaluate(instance, handler, iterator, args);
+
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            if (m_Id.HaveValue && m_SubstId.HaveValue) {
+                string id = m_Id.Value;
+                string substId = m_SubstId.Value;
+                if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(substId)) {
+                    StoryValueManager.Instance.Substitute(id, substId);
+                }
+            }
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_Id.InitFromDsl(callData.GetParam(0));
+                m_SubstId.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        private IStoryValue<string> m_Id = new StoryValue<string>();
+        private IStoryValue<string> m_SubstId = new StoryValue<string>();
+    }
+    /// <summary>
+    /// clearvalsubsts();
+    /// </summary>
+    internal sealed class ClearValSubstsCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            ClearValSubstsCommand cmd = new ClearValSubstsCommand();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            StoryValueManager.Instance.ClearSubstitutes();
+            return false;
+        }
+        protected override void Load(Dsl.CallData callData)
+        {
+            int num = callData.GetParamNum();
+        }
+    }
 }

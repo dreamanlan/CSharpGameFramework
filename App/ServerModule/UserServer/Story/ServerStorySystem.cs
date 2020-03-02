@@ -428,11 +428,11 @@ namespace GameFramework
         
         private static void LoadCustomCommandsAndValues()
         {
-            string cmdFile = HomePath.GetAbsolutePath(FilePathDefine_Server.C_DslPath + "Story/Common/CustomCommands.dsl");
             string valFile = HomePath.GetAbsolutePath(FilePathDefine_Server.C_DslPath + "Story/Common/CustomValues.dsl");
+            string cmdFile = HomePath.GetAbsolutePath(FilePathDefine_Server.C_DslPath + "Story/Common/CustomCommands.dsl");
 
-            Dsl.DslFile file1 = CustomCommandValueParser.LoadStory(cmdFile);
-            Dsl.DslFile file2 = CustomCommandValueParser.LoadStory(valFile);
+            Dsl.DslFile file1 = CustomCommandValueParser.LoadStory(valFile);
+            Dsl.DslFile file2 = CustomCommandValueParser.LoadStory(cmdFile);
             CustomCommandValueParser.FirstParse(file1, file2);
             CustomCommandValueParser.FinalParse(file1, file2);
         }

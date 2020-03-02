@@ -179,10 +179,34 @@ namespace StorySystem
             }
             return command;
         }
+        public void Substitute(string id, string substId)
+        {
+            lock (m_Lock) {
+                m_Substitutes[id] = substId;
+            }
+        }
+        public bool TryGetSubstitute(string id, out string substId)
+        {
+            bool r = false;
+            lock (m_Lock) {
+                r = m_Substitutes.TryGetValue(id, out substId);
+            }
+            return r;
+        }
+        public void ClearSubstitutes()
+        {
+            lock (m_Lock) {
+                m_Substitutes.Clear();
+            }
+        }
         private IStoryCommandFactory GetFactory(string type)
         {
             IStoryCommandFactory factory;
             lock (m_Lock) {
+                string substType;
+                if (m_Substitutes.TryGetValue(type, out substType)) {
+                    type = substType;
+                }
                 if (!m_StoryCommandFactories.TryGetValue(type, out factory)) {
                     const ulong one = 1;
                     for (int ix = 0; ix < c_MaxCommandGroupNum; ++ix) {
@@ -263,6 +287,10 @@ namespace StorySystem
             RegisterCommandFactory("hashtableset", new StoryCommandFactoryHelper<CommonCommands.HashtableSetCommand>());
             RegisterCommandFactory("hashtableremove", new StoryCommandFactoryHelper<CommonCommands.HashtableRemoveCommand>());
             RegisterCommandFactory("hashtableclear", new StoryCommandFactoryHelper<CommonCommands.HashtableClearCommand>());
+            RegisterCommandFactory("substcmd", new StoryCommandFactoryHelper<CommonCommands.SubstCmdCommand>());
+            RegisterCommandFactory("clearcmdsubsts", new StoryCommandFactoryHelper<CommonCommands.ClearCmdSubstsCommand>());
+            RegisterCommandFactory("substval", new StoryCommandFactoryHelper<CommonCommands.SubstValCommand>());
+            RegisterCommandFactory("clearvalsubsts", new StoryCommandFactoryHelper<CommonCommands.ClearValSubstsCommand>());
             //注册通用值与内部函数
             //object
             StoryValueManager.Instance.RegisterValueFactory("namespace", new StoryValueFactoryHelper<CommonValues.NamespaceValue>());
@@ -355,11 +383,14 @@ namespace StorySystem
             StoryValueManager.Instance.RegisterValueFactory("hashtablesize", new StoryValueFactoryHelper<CommonValues.HashtableSizeValue>());
             StoryValueManager.Instance.RegisterValueFactory("hashtablekeys", new StoryValueFactoryHelper<CommonValues.HashtableKeysValue>());
             StoryValueManager.Instance.RegisterValueFactory("hashtablevalues", new StoryValueFactoryHelper<CommonValues.HashtableValuesValue>());
+            StoryValueManager.Instance.RegisterValueFactory("getcmdsubst", new StoryValueFactoryHelper<CommonValues.GetCmdSubstValue>());
+            StoryValueManager.Instance.RegisterValueFactory("getvalsubst", new StoryValueFactoryHelper<CommonValues.GetValSubstValue>());
         }
 
         private object m_Lock = new object();
         private Dictionary<string, IStoryCommandFactory> m_StoryCommandFactories = new Dictionary<string, IStoryCommandFactory>();
         private Dictionary<string, IStoryCommandFactory>[] m_GroupedCommandFactories = new Dictionary<string, IStoryCommandFactory>[c_MaxCommandGroupNum];
+        private Dictionary<string, string> m_Substitutes = new Dictionary<string, string>();
         private int m_NextLocalInfoIndex = 0;
 
         public static ulong ThreadCommandGroupsMask

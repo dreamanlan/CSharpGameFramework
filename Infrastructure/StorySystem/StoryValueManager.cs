@@ -232,10 +232,34 @@ namespace StorySystem
                 }
             }
         }
+        public void Substitute(string id, string substId)
+        {
+            lock (m_Lock) {
+                m_Substitutes[id] = substId;
+            }
+        }
+        public bool TryGetSubstitute(string id, out string substId)
+        {
+            bool r = false;
+            lock (m_Lock) {
+                r = m_Substitutes.TryGetValue(id, out substId);
+            }
+            return r;
+        }
+        public void ClearSubstitutes()
+        {
+            lock (m_Lock) {
+                m_Substitutes.Clear();
+            }
+        }
         private IStoryValueFactory GetFactory(string id)
         {
             IStoryValueFactory handler;
             lock (m_Lock) {
+                string substId;
+                if(m_Substitutes.TryGetValue(id, out substId)) {
+                    id = substId;
+                }
                 if (!m_ValueFactories.TryGetValue(id, out handler)) {
                     const ulong one = 1;
                     for (int ix = 0; ix < c_MaxValueGroupNum; ++ix) {
@@ -256,6 +280,7 @@ namespace StorySystem
         private object m_Lock = new object();
         private Dictionary<string, IStoryValueFactory> m_ValueFactories = new Dictionary<string, IStoryValueFactory>();
         private Dictionary<string, IStoryValueFactory>[] m_GroupedValueFactories = new Dictionary<string, IStoryValueFactory>[c_MaxValueGroupNum];
+        private Dictionary<string, string> m_Substitutes = new Dictionary<string, string>();
         public static ulong ThreadValueGroupsMask
         {
             get { return s_ThreadValueGroupsMask; }

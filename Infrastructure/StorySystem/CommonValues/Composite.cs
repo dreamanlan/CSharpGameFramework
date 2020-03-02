@@ -227,4 +227,114 @@ namespace StorySystem.CommonValues
         }
         private CompositeValue m_Val;
     }
+    internal sealed class GetCmdSubstValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetParamNum() > 0) {
+                m_Id.InitFromDsl(callData.GetParam(0));
+                TryUpdateValue();
+            }
+        }
+        public IStoryValue Clone()
+        {
+            GetCmdSubstValue val = new GetCmdSubstValue();
+            val.m_Id = m_Id.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_Id.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue()
+        {
+            if (m_Id.HaveValue) {
+                string id = m_Id.Value;
+                m_HaveValue = true;
+                string substId;
+                if(StoryCommandManager.Instance.TryGetSubstitute(id, out substId)) {
+                    m_Value = substId;
+                }
+                else {
+                    m_Value = null;
+                }
+            }
+        }
+
+        private IStoryValue<string> m_Id = new StoryValue<string>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class GetValSubstValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData && callData.GetParamNum() > 0) {
+                m_Id.InitFromDsl(callData.GetParam(0));
+                TryUpdateValue();
+            }
+        }
+        public IStoryValue Clone()
+        {
+            GetValSubstValue val = new GetValSubstValue();
+            val.m_Id = m_Id.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_Id.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue()
+        {
+            if (m_Id.HaveValue) {
+                string id = m_Id.Value;
+                m_HaveValue = true;
+                string substId;
+                if (StoryValueManager.Instance.TryGetSubstitute(id, out substId)) {
+                    m_Value = substId;
+                }
+                else {
+                    m_Value = null;
+                }
+            }
+        }
+
+        private IStoryValue<string> m_Id = new StoryValue<string>();
+        private bool m_HaveValue;
+        private object m_Value;
+    }
 }
