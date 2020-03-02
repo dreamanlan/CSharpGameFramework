@@ -82,6 +82,7 @@
     <Compile Include="Util\MyDictionary.cs" />
     <Compile Include="Util\ObjectPool.cs" />
     <Compile Include="Util\PoolAllocatedAction.cs" />
+    <Compile Include="Util\StringLower.cs" />
     <Compile Include="Util\TimeUtility.cs" />
     <Compile Include="Util\TypedDataCollection.cs" />
     <Compile Include="Util\SimpleObjectPool.cs" />

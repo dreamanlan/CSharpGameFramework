@@ -533,6 +533,206 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private object m_Value;
     }
+    internal sealed class StringToLowerValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+                if (callData.GetParamNum() > 0)
+                    m_StringVal.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        public IStoryValue Clone()
+        {
+            StringToLowerValue val = new StringToLowerValue();
+            val.m_StringVal = m_StringVal.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_StringVal.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_StringVal.HaveValue) {
+                m_HaveValue = true;
+                var str = m_StringVal.Value;
+                m_Value = str.ToLower();
+            }
+        }
+
+        private bool m_HaveValue;
+        private object m_Value;
+
+        private IStoryValue<string> m_StringVal = new StoryValue<string>();
+    }
+    internal sealed class StringToUpperValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+                if (callData.GetParamNum() > 0)
+                    m_StringVal.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        public IStoryValue Clone()
+        {
+            StringToUpperValue val = new StringToUpperValue();
+            val.m_StringVal = m_StringVal.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_StringVal.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_StringVal.HaveValue) {
+                m_HaveValue = true;
+                var str = m_StringVal.Value;
+                m_Value = str.ToUpper();
+            }
+        }
+
+        private bool m_HaveValue;
+        private object m_Value;
+
+        private IStoryValue<string> m_StringVal = new StoryValue<string>();
+    }
+    internal sealed class Str2LowerValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+                if (callData.GetParamNum() > 0)
+                    m_StringVal.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        public IStoryValue Clone()
+        {
+            Str2LowerValue val = new Str2LowerValue();
+            val.m_StringVal = m_StringVal.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_StringVal.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_StringVal.HaveValue) {
+                m_HaveValue = true;
+                var str = m_StringVal.Value;
+                m_Value = str.StrToLower();
+            }
+        }
+
+        private bool m_HaveValue;
+        private object m_Value;
+
+        private IStoryValue<string> m_StringVal = new StoryValue<string>();
+    }
+    internal sealed class Str2UpperValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.CallData callData = param as Dsl.CallData;
+            if (null != callData) {
+                if (callData.GetParamNum() > 0)
+                    m_StringVal.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        public IStoryValue Clone()
+        {
+            Str2UpperValue val = new Str2UpperValue();
+            val.m_StringVal = m_StringVal.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            m_StringVal.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_StringVal.HaveValue) {
+                m_HaveValue = true;
+                var str = m_StringVal.Value;
+                m_Value = str.StrToUpper();
+            }
+        }
+
+        private bool m_HaveValue;
+        private object m_Value;
+
+        private IStoryValue<string> m_StringVal = new StoryValue<string>();
+    }
     internal sealed class Str2IntValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
