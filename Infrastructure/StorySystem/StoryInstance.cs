@@ -170,7 +170,9 @@ namespace StorySystem
                 } else {
                     m_CompositeReentry = false;
                     cmd.Reset();
-                    m_CommandQueue.Dequeue();
+                    if (m_CommandQueue.Count > 0) {
+                        m_CommandQueue.Dequeue();
+                    }
                     if (m_IsBreak || m_IsContinue || m_IsReturn) {
                         ResetCommandQueue();
                         break;
