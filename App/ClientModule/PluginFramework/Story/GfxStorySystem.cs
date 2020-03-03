@@ -514,6 +514,7 @@ namespace GameFramework.Story
             for (int index = count - 1; index >= 0; --index) {
                 StoryInstance info = m_StoryLogicInfos[index];
                 if (IsMatch(info.StoryId, storyId)) {
+                    info.ClearMessage();
                     var enumer = info.GetMessageHandlerEnumerator();
                     while (enumer.MoveNext()) {
                         var handler = enumer.Current;
