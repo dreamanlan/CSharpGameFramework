@@ -464,7 +464,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                             val.Value = v;
                         }
                         else if (val.Type == typeof(List<int>)) {
-                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             var list = new List<int>();
                             foreach (var str in v) {
                                 int iv;
@@ -474,7 +474,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                             val.Value = list;
                         }
                         else if (val.Type == typeof(List<uint>)) {
-                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             var list = new List<uint>();
                             foreach (var str in v) {
                                 uint iv;
@@ -484,7 +484,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                             val.Value = list;
                         }
                         else if (val.Type == typeof(List<long>)) {
-                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             var list = new List<long>();
                             foreach (var str in v) {
                                 long iv;
@@ -494,7 +494,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                             val.Value = list;
                         }
                         else if (val.Type == typeof(List<ulong>)) {
-                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             var list = new List<ulong>();
                             foreach (var str in v) {
                                 ulong iv;
@@ -504,7 +504,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                             val.Value = list;
                         }
                         else if (val.Type == typeof(List<float>)) {
-                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             var list = new List<float>();
                             foreach (var str in v) {
                                 float fv;
@@ -514,7 +514,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                             val.Value = list;
                         }
                         else if (val.Type == typeof(List<double>)) {
-                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             var list = new List<double>();
                             foreach (var str in v) {
                                 double fv;
@@ -524,7 +524,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                             val.Value = list;
                         }
                         else if (val.Type == typeof(List<string>)) {
-                            var v = pair.Value.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             val.Value = v;
                         }
                         else if (val.Type == typeof(ResourceEditUtility.DataTable)) {
@@ -2479,7 +2479,7 @@ internal sealed class ResourceProcessor
         }
         else if (id == "intlist") {
             //intlist(name, val);
-            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<int>();
             foreach (var str in v) {
                 int iv;
@@ -2491,7 +2491,7 @@ internal sealed class ResourceProcessor
         }
         else if (id == "uintlist") {
             //uintlist(name, val);
-            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<uint>();
             foreach (var str in v) {
                 uint iv;
@@ -2503,7 +2503,7 @@ internal sealed class ResourceProcessor
         }
         else if (id == "longlist") {
             //longlist(name, val);
-            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<long>();
             foreach (var str in v) {
                 long iv;
@@ -2515,7 +2515,7 @@ internal sealed class ResourceProcessor
         }
         else if (id == "ulonglist") {
             //ulonglist(name, val);
-            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<ulong>();
             foreach (var str in v) {
                 ulong iv;
@@ -2527,7 +2527,7 @@ internal sealed class ResourceProcessor
         }
         else if (id == "floatlist") {
             //floatlist(name, val);
-            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<float>();
             foreach (var str in v) {
                 float fv;
@@ -2539,7 +2539,7 @@ internal sealed class ResourceProcessor
         }
         else if (id == "doublelist") {
             //doublelist(name, val);
-            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
             var list = new List<double>();
             foreach (var str in v) {
                 double fv;
@@ -2551,7 +2551,7 @@ internal sealed class ResourceProcessor
         }
         else if (id == "stringlist") {
             //stringlist(name, val);
-            var v = val.Split(new char[] { ';', ' ', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<string>), Value = v, StringValue = val };
             m_ParamNames.Add(key);
         }

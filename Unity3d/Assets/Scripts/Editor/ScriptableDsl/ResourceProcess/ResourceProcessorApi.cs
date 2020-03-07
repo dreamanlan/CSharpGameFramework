@@ -502,7 +502,10 @@ internal static class ResourceEditUtility
         calc.Register("matchsmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MatchSmapsExp>());
         calc.Register("calcmatchedsmapsdiff", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMatchedSmapsDiffExp>());
         calc.Register("loadaddrs", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadAddrsExp>());
+        calc.Register("escapeurl", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.EscapeUrlExp>());
+        calc.Register("unescapeurl", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.UnEscapeUrlExp>());
         calc.Register("parseurlargs", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ParseUrlArgsExp>());
+        calc.Register("parsebuglyinfo", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ParseBuglyInfoExp>());
     }
     internal static object Filter(ItemInfo item, Dictionary<string, object> addVars, List<ItemInfo> results, DslExpression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
@@ -2157,29 +2160,40 @@ namespace ResourceEditApi
                     for (int ix = 0; ix < ct; ++ix) {
                         var line = lines[ix];
                         var m = s_Address.Match(line);
+                        string addr = null, so = null;
+                        bool isMatch = false;
                         if (m.Success) {
-                            var addr = m.Groups[1].Value;
-                            var so = m.Groups[2].Value;
-                            if (so.Contains(key)) {
-                                ulong v;
-                                if (ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
-                                    int lo = 0;
-                                    int hi = symbols.Count - 2;
-                                    for (; lo <= hi;) {
-                                        int i = (lo + hi) / 2;
-                                        var st = symbols[i].Addr;
-                                        var ed = symbols[i + 1].Addr;
-                                        var name = symbols[i].Name;
-                                        if (st > v) {
-                                            hi = i - 1;
-                                        }
-                                        else if (ed <= v) {
-                                            lo = i + 1;
-                                        }
-                                        else {
-                                            lines[ix] = s_Remove.Replace(line, string.Empty) + " " + name;
-                                            break;
-                                        }
+                            addr = m.Groups[1].Value;
+                            so = m.Groups[2].Value;
+                            isMatch = true;
+                        }
+                        else {
+                            m = s_Address2.Match(line);
+                            if (m.Success) {
+                                so = m.Groups[1].Value;
+                                addr = m.Groups[2].Value;
+                                isMatch = true;
+                            }
+                        }
+                        if (isMatch && so.Contains(key)) {
+                            ulong v;
+                            if (ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                                int lo = 0;
+                                int hi = symbols.Count - 2;
+                                for (; lo <= hi;) {
+                                    int i = (lo + hi) / 2;
+                                    var st = symbols[i].Addr;
+                                    var ed = symbols[i + 1].Addr;
+                                    var name = symbols[i].Name;
+                                    if (st > v) {
+                                        hi = i - 1;
+                                    }
+                                    else if (ed <= v) {
+                                        lo = i + 1;
+                                    }
+                                    else {
+                                        lines[ix] = s_Remove.Replace(line, string.Empty) + " " + name;
+                                        break;
                                     }
                                 }
                             }
@@ -2194,7 +2208,8 @@ namespace ResourceEditApi
             EditorUtility.ClearProgressBar();
             return r;
         }
-        private static Regex s_Address = new Regex(@"^[0-9]+ #[0-9]+ pc ([0-9a-fA-F]+) (\S+)", RegexOptions.Compiled);
+        private static Regex s_Address = new Regex(@"^[0-9]+\s+#[0-9]+\s+pc\s+([0-9a-fA-F]+)\s+(\S+)", RegexOptions.Compiled);
+        private static Regex s_Address2 = new Regex(@"^[0-9]+\s+(\S+)\.([0-9a-fA-F]+).*", RegexOptions.Compiled);
         private static Regex s_Remove = new Regex(@"/[^=]*==", RegexOptions.Compiled);
     }
     internal class MapBuglyIosSymbolsExp : DslExpression.SimpleExpressionBase
@@ -5162,6 +5177,63 @@ namespace ResourceEditApi
             return r;
         }
     }
+    internal class EscapeUrlExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var txt = operands[0] as string;
+                var space = string.Empty;
+                if (operands.Count >= 2) {
+                    var str = operands[1] as string;
+                    if (!string.IsNullOrEmpty(str)) {
+                        space = str;
+                    }
+                }
+                if (string.IsNullOrEmpty(txt)) {
+                    if (!string.IsNullOrEmpty(space))
+                        txt = txt.Replace(" ", space);
+                    r = txt;
+                }
+                else {
+                    if (!string.IsNullOrEmpty(space))
+                        txt = txt.Replace(space, " ");
+                    r = UnityEngine.Networking.UnityWebRequest.EscapeURL(txt);
+                }
+            }
+            return r;
+        }
+    }
+    internal class UnEscapeUrlExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var txt = operands[0] as string;
+                var space = string.Empty;
+                if (operands.Count >= 2) {
+                    var str = operands[1] as string;
+                    if (!string.IsNullOrEmpty(str)) {
+                        space = str;
+                    }
+                }
+                if (string.IsNullOrEmpty(txt)) {
+                    if (!string.IsNullOrEmpty(space))
+                        txt = txt.Replace(space, " ");
+                    r = txt;
+                }
+                else {
+                    txt = UnityEngine.Networking.UnityWebRequest.UnEscapeURL(txt);
+                    if (!string.IsNullOrEmpty(space))
+                        txt = txt.Replace(space, " ");
+                    r = txt;
+                }
+            }
+            return r;
+        }
+    }
     internal class ParseUrlArgsExp : DslExpression.SimpleExpressionBase
     {
         protected override object OnCalc(IList<object> operands)
@@ -5169,9 +5241,16 @@ namespace ResourceEditApi
             object r = null;
             if (operands.Count >= 1) {
                 var txt = operands[0] as string;
-                var kvSep = s_KeyValueSeperator;
+                var space = string.Empty;
                 if (operands.Count >= 2) {
                     var str = operands[1] as string;
+                    if (!string.IsNullOrEmpty(str)) {
+                        space = str;
+                    }
+                }
+                var kvSep = s_KeyValueSeperator;
+                if (operands.Count >= 3) {
+                    var str = operands[2] as string;
                     if (!string.IsNullOrEmpty(str)) {
                         kvSep = str;
                     }
@@ -5183,9 +5262,9 @@ namespace ResourceEditApi
                     }
                 }
                 var sep = s_BuglySeperators;
-                if (operands.Count >= 3) {
+                if (operands.Count >= 4) {
                     var list = new List<string>();
-                    for (int i = 2; i < operands.Count; ++i) {
+                    for (int i = 3; i < operands.Count; ++i) {
                         var str = operands[i] as string;
                         if (!string.IsNullOrEmpty(str)) {
                             list.Add(str);
@@ -5194,6 +5273,8 @@ namespace ResourceEditApi
                     sep = list.ToArray();
                 }
                 var newTxt = UnityEngine.Networking.UnityWebRequest.UnEscapeURL(txt);
+                if (!string.IsNullOrEmpty(space))
+                    newTxt = newTxt.Replace(space, " ");
                 var fields = newTxt.Split(sep, StringSplitOptions.RemoveEmptyEntries);
                 if (!string.IsNullOrEmpty(kvSep)) {
                     var hash = new Dictionary<string, string>();
@@ -5223,6 +5304,41 @@ namespace ResourceEditApi
         }
         private static string s_KeyValueSeperator = "=";
         private static string[] s_BuglySeperators = new string[] { ";" };
+    }
+    internal class ParseBuglyInfoExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 1) {
+                var txt = operands[0] as string;
+                var space = string.Empty;
+                if (operands.Count >= 2) {
+                    var str = operands[1] as string;
+                    if (!string.IsNullOrEmpty(str)) {
+                        space = str;
+                    }
+                }
+                var sep = s_BuglySeperators;
+                if (operands.Count >= 3) {
+                    var list = new List<string>();
+                    for (int i = 2; i < operands.Count; ++i) {
+                        var str = operands[i] as string;
+                        if (!string.IsNullOrEmpty(str)) {
+                            list.Add(str);
+                        }
+                    }
+                    sep = list.ToArray();
+                }
+                var newTxt = UnityEngine.Networking.UnityWebRequest.UnEscapeURL(txt);
+                if (!string.IsNullOrEmpty(space))
+                    newTxt = newTxt.Replace(space, " ");
+                var fields = newTxt.Split(sep, StringSplitOptions.RemoveEmptyEntries);
+                r = fields;
+            }
+            return r;
+        }
+        private static string[] s_BuglySeperators = new string[] { "\n" };
     }
 }
 #endregion
