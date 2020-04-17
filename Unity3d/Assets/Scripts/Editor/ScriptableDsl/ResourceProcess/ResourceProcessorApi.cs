@@ -854,19 +854,27 @@ internal static class ResourceEditUtility
         string procCode = string.Format("script{{ {0}; }};", code);
         var file = new Dsl.DslFile();
         if (file.LoadFromString(procCode, "command", msg => { Console.WriteLine("{0}", msg); })) {
-            var calc = GetCommandCalculator();
-            calc.SetGlobalVariable("params", args);
-            foreach (var pair in args) {
-                var p = pair.Value;
-                calc.SetGlobalVariable(p.Name, p.Value);
+            var dslInfo = file.DslInfos[0];
+            var func = dslInfo as Dsl.FunctionData;
+            var stData = dslInfo as Dsl.StatementData;
+            if(null==func && null != stData) {
+                func = stData.First;
             }
-            if (null != addVars) {
-                foreach (var pair in addVars) {
-                    calc.SetGlobalVariable(pair.Key, pair.Value);
+            if (null != func) {
+                var calc = GetCommandCalculator();
+                calc.SetGlobalVariable("params", args);
+                foreach (var pair in args) {
+                    var p = pair.Value;
+                    calc.SetGlobalVariable(p.Name, p.Value);
                 }
+                if (null != addVars) {
+                    foreach (var pair in addVars) {
+                        calc.SetGlobalVariable(pair.Key, pair.Value);
+                    }
+                }
+                calc.LoadDsl("main", new string[] { "$obj", "$item" }, func);
+                r = calc.Calc("main", obj, item);
             }
-            calc.LoadDsl("main", new string[] { "$obj", "$item" }, file.DslInfos[0].First);
-            r = calc.Calc("main", obj, item);
         }
         return r;
     }

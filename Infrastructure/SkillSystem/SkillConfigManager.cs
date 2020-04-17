@@ -86,8 +86,15 @@ namespace SkillSystem
         {
             lock (m_Lock) {
                 for (int i = 0; i < dataFile.DslInfos.Count; i++) {
-                    Dsl.FunctionData funcData = dataFile.DslInfos[i].First;
-                    Load(id, funcData);
+                    var info = dataFile.DslInfos[i];
+                    var func = info as Dsl.FunctionData;
+                    var stData = info as Dsl.StatementData;
+                    if (null == func && null != stData) {
+                        func = stData.First;
+                    }
+                    if (null == func)
+                        continue;
+                    Load(id, func);
                 }
             }
         }

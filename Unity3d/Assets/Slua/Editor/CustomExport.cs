@@ -90,7 +90,7 @@ namespace SLua
             add(typeof(System.Text.RegularExpressions.Capture), "System.Text.RegularExpressions.Capture");
             add(typeof(System.Text.RegularExpressions.CaptureCollection), "System.Text.RegularExpressions.CaptureCollection");
             add(typeof(System.GC), "System.GC");
-            add(typeof(LinkedListNode<CsLibrary.EntityInfo>), "LinkedListNodeEntityInfo");
+            add(typeof(LinkedListNode<GameFramework.EntityInfo>), "LinkedListNodeEntityInfo");
             add(typeof(KeyValuePair<int, int>), "IntIntPair");
             add(typeof(KeyValuePair<int, float>), "IntFloatPair");
             add(typeof(KeyValuePair<int, string>), "IntStrPair");

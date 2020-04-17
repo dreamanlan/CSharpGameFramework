@@ -540,9 +540,16 @@ namespace SkillSystem
             instance.m_SkillDsl = m_SkillDsl;
             return instance;
         }
-        public bool Init(Dsl.DslInfo config)
+        public bool Init(Dsl.ISyntaxComponent config)
         {
-            Dsl.FunctionData skill = config.First;
+            var func = config as Dsl.FunctionData;
+            var stData = config as Dsl.StatementData;
+            if (null == func && null != stData) {
+                func = stData.First;
+            }
+            if (null == func)
+                return false;
+            Dsl.FunctionData skill = func;
             return Init(skill);
         }
         public bool Init(Dsl.FunctionData skill)
@@ -714,9 +721,7 @@ namespace SkillSystem
         }
         public string ToScriptString()
         {
-            Dsl.DslInfo info = new Dsl.DslInfo();
-            info.AddFunction(m_SkillDsl);
-            return info.ToScriptString(true);
+            return m_SkillDsl.ToScriptString(true);
         }
         public void Save(string file)
         {

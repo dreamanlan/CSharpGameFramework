@@ -95,47 +95,58 @@ namespace StorySystem
                 FinalParse(dataFile.DslInfos);
             }
         }
-        public static void FirstParse(IList<Dsl.DslInfo> dslInfos)
+        public static void FirstParse(IList<Dsl.ISyntaxComponent> dslInfos)
         {
             for (int i = 0; i < dslInfos.Count; i++) {
-                Dsl.DslInfo dslInfo = dslInfos[i];
+                Dsl.ISyntaxComponent dslInfo = dslInfos[i];
                 FirstParse(dslInfo);
             }
         }
-        public static void FinalParse(IList<Dsl.DslInfo> dslInfos)
+        public static void FinalParse(IList<Dsl.ISyntaxComponent> dslInfos)
         {
             for (int i = 0; i < dslInfos.Count; i++) {
-                Dsl.DslInfo dslInfo = dslInfos[i];
+                Dsl.ISyntaxComponent dslInfo = dslInfos[i];
                 FinalParse(dslInfo);
             }
         }
-        public static void FirstParse(Dsl.DslInfo dslInfo)
+        public static void FirstParse(Dsl.ISyntaxComponent dslInfo)
         {            
             string id = dslInfo.GetId();
             if (id == "command") {
                 StorySystem.CommonCommands.CompositeCommand cmd = new CommonCommands.CompositeCommand();
                 cmd.InitSharedData();
-                Dsl.FunctionData first = dslInfo.First;
-                cmd.Name = first.Call.GetParamId(0);
-
-                for(int i = 1; i < dslInfo.GetFunctionNum(); ++i) {
-                    var funcData = dslInfo.GetFunction(i);
-                    var fid = funcData.GetId();
-                    if (fid == "args") {
-                        for (int ix = 0; ix < funcData.Call.GetParamNum(); ++ix) {
-                            cmd.ArgNames.Add(funcData.Call.GetParamId(ix));
-                        }
-                    } else if(fid == "opts") {
-                        for (int ix = 0; ix < funcData.GetStatementNum(); ++ix) {
-                            var fcomp = funcData.GetStatement(ix);
-                            var fcd = fcomp as Dsl.CallData;
-                            if (null != fcd) {
-                                cmd.OptArgs.Add(fcd.GetId(), fcd.GetParam(0));
+                var first = dslInfo as Dsl.FunctionData;
+                if (null != first) {
+                    cmd.Name = first.Call.GetParamId(0);
+                }
+                else {
+                    var statement = dslInfo as Dsl.StatementData;
+                    if (null != statement) {
+                        first = statement.First;
+                        cmd.Name = first.Call.GetParamId(0);
+                        for (int i = 1; i < statement.GetFunctionNum(); ++i) {
+                            var funcData = statement.GetFunction(i);
+                            var fid = funcData.GetId();
+                            if (fid == "args") {
+                                for (int ix = 0; ix < funcData.Call.GetParamNum(); ++ix) {
+                                    cmd.ArgNames.Add(funcData.Call.GetParamId(ix));
+                                }
+                            }
+                            else if (fid == "opts") {
+                                for (int ix = 0; ix < funcData.GetStatementNum(); ++ix) {
+                                    var fcomp = funcData.GetStatement(ix);
+                                    var fcd = fcomp as Dsl.CallData;
+                                    if (null != fcd) {
+                                        cmd.OptArgs.Add(fcd.GetId(), fcd.GetParam(0));
+                                    }
+                                }
+                            }
+                            else if (fid == "body") {
+                            }
+                            else {
+                                LogSystem.Error("Command {0} unknown part '{1}'", cmd.Name, fid);
                             }
                         }
-                    } else if (fid == "body") {
-                    } else {
-                        LogSystem.Error("Command {0} unknown part '{1}'", cmd.Name, fid);
                     }
                 }
                 //注册
@@ -143,91 +154,132 @@ namespace StorySystem
             } else if (id == "value") {
                 StorySystem.CommonValues.CompositeValue val = new CommonValues.CompositeValue();
                 val.InitSharedData();
-                Dsl.FunctionData first = dslInfo.First;
-                val.Name = first.Call.GetParamId(0);
-
-                for (int i = 1; i < dslInfo.GetFunctionNum(); ++i) {
-                    var funcData = dslInfo.GetFunction(i);
-                    var fid = funcData.GetId();
-                    if (fid == "args") {
-                        for (int ix = 0; ix < funcData.Call.GetParamNum(); ++ix) {
-                            val.ArgNames.Add(funcData.Call.GetParamId(ix));
-                        }
-                    } else if (fid == "ret") {
-                        val.ReturnName = funcData.Call.GetParamId(0);
-                    } else if (fid == "opts") {
-                        for (int ix = 0; ix < funcData.GetStatementNum(); ++ix) {
-                            var fcomp = funcData.GetStatement(ix);
-                            var fcd = fcomp as Dsl.CallData;
-                            if (null != fcd) {
-                                val.OptArgs.Add(fcd.GetId(), fcd.GetParam(0));
+                var first = dslInfo as Dsl.FunctionData;
+                if (null != first) {
+                    val.Name = first.Call.GetParamId(0);
+                }
+                else {
+                    var statement = dslInfo as Dsl.StatementData;
+                    if (null != statement) {
+                        first = statement.First;
+                        val.Name = first.Call.GetParamId(0);
+                        for (int i = 1; i < statement.GetFunctionNum(); ++i) {
+                            var funcData = statement.GetFunction(i);
+                            var fid = funcData.GetId();
+                            if (fid == "args") {
+                                for (int ix = 0; ix < funcData.Call.GetParamNum(); ++ix) {
+                                    val.ArgNames.Add(funcData.Call.GetParamId(ix));
+                                }
+                            }
+                            else if (fid == "ret") {
+                                val.ReturnName = funcData.Call.GetParamId(0);
+                            }
+                            else if (fid == "opts") {
+                                for (int ix = 0; ix < funcData.GetStatementNum(); ++ix) {
+                                    var fcomp = funcData.GetStatement(ix);
+                                    var fcd = fcomp as Dsl.CallData;
+                                    if (null != fcd) {
+                                        val.OptArgs.Add(fcd.GetId(), fcd.GetParam(0));
+                                    }
+                                }
+                            }
+                            else if (fid == "body") {
+                            }
+                            else {
+                                LogSystem.Error("Value {0} unknown part '{1}'", val.Name, fid);
                             }
                         }
-                    } else if (fid == "body") {
-                    } else {
-                        LogSystem.Error("Value {0} unknown part '{1}'", val.Name, fid);
                     }
                 }
                 //注册
                 StoryValueManager.Instance.RegisterValueFactory(val.Name, new CommonValues.CompositeValueFactory(val), true);
             }
         }
-        public static void FinalParse(Dsl.DslInfo dslInfo)
+        public static void FinalParse(Dsl.ISyntaxComponent dslInfo)
         {
             string id = dslInfo.GetId();
-            if (id == "command") {                        
-                Dsl.FunctionData first = dslInfo.First;
-                string name = first.Call.GetParamId(0);
+            if (id == "command") {
+                string name = string.Empty;
+                var first = dslInfo as Dsl.FunctionData;
+                if (null != first) {
+                    name = first.Call.GetParamId(0);
+                }
+                else {
+                    var statement = dslInfo as Dsl.StatementData;
+                    if (null != statement) {
+                        first = statement.First;
+                        name = first.Call.GetParamId(0);
+                    }
+                }
 
                 IStoryCommandFactory factory = StoryCommandManager.Instance.FindFactory(name);
                 if (null != factory) {
                     StorySystem.CommonCommands.CompositeCommand cmd = factory.Create() as StorySystem.CommonCommands.CompositeCommand;
                     cmd.InitialCommands.Clear();
 
-                    Dsl.FunctionData bodyFunc = null;
-                    for (int i = 0; i < dslInfo.GetFunctionNum(); ++i) {
-                        var funcData = dslInfo.GetFunction(i);
-                        var fid = funcData.GetId();
-                        if (funcData.HaveStatement() && fid != "opts") {
-                            bodyFunc = funcData;
+                    var statement = dslInfo as Dsl.StatementData;
+                    if (null != statement) {
+                        Dsl.FunctionData bodyFunc = null;
+                        for (int i = 0; i < statement.GetFunctionNum(); ++i) {
+                            var funcData = statement.GetFunction(i);
+                            var fid = funcData.GetId();
+                            if (funcData.HaveStatement() && fid != "opts") {
+                                bodyFunc = funcData;
+                            }
                         }
-                    }
-                    if (null != bodyFunc) {
-                        for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
-                            Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
-                            IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
-                            cmd.InitialCommands.Add(sub);
+                        if (null != bodyFunc) {
+                            for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
+                                Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
+                                IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
+                                cmd.InitialCommands.Add(sub);
+                            }
                         }
-                    } else {
-                        LogSystem.Error("Can't find command {0}'s body", name);
+                        else {
+                            LogSystem.Error("Can't find command {0}'s body", name);
+                        }
                     }
                 } else {
                     LogSystem.Error("Can't find command {0}'s factory", name);
                 }
             } else if (id == "value") {
-                Dsl.FunctionData first = dslInfo.First;
-                string name = first.Call.GetParamId(0);
+                string name = string.Empty;
+                var first = dslInfo as Dsl.FunctionData;
+                if (null != first) {
+                    name = first.Call.GetParamId(0);
+                }
+                else {
+                    var statement = dslInfo as Dsl.StatementData;
+                    if (null != statement) {
+                        first = statement.First;
+                        name = first.Call.GetParamId(0);
+                    }
+                }
+
                 IStoryValueFactory factory = StoryValueManager.Instance.FindFactory(name);
                 if (null != factory) {
                     StorySystem.CommonValues.CompositeValue val = factory.Build() as StorySystem.CommonValues.CompositeValue;
                     val.InitialCommands.Clear();
 
-                    Dsl.FunctionData bodyFunc = null;
-                    for (int i = 0; i < dslInfo.GetFunctionNum(); ++i) {
-                        var funcData = dslInfo.GetFunction(i);
-                        var fid = funcData.GetId();
-                        if (funcData.HaveStatement() && fid != "opts") {
-                            bodyFunc = funcData;
+                    var statement = dslInfo as Dsl.StatementData;
+                    if (null != statement) {
+                        Dsl.FunctionData bodyFunc = null;
+                        for (int i = 0; i < statement.GetFunctionNum(); ++i) {
+                            var funcData = statement.GetFunction(i);
+                            var fid = funcData.GetId();
+                            if (funcData.HaveStatement() && fid != "opts") {
+                                bodyFunc = funcData;
+                            }
                         }
-                    }
-                    if (null != bodyFunc) {
-                        for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
-                            Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
-                            IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
-                            val.InitialCommands.Add(sub);
+                        if (null != bodyFunc) {
+                            for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
+                                Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
+                                IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
+                                val.InitialCommands.Add(sub);
+                            }
                         }
-                    } else {
-                        LogSystem.Error("Can't find value {0}'s body", name);
+                        else {
+                            LogSystem.Error("Can't find value {0}'s body", name);
+                        }
                     }
                 } else {
                     LogSystem.Error("Can't find value {0}'s factory", name);

@@ -256,16 +256,29 @@ public static class AnimationClipUtility
     {
         Dsl.DslFile file = new Dsl.DslFile();
         if (file.Load(path, (string msg) => { Debug.Log(msg); })) {
-            Dsl.DslInfo dslInfo = null;
+            Dsl.ISyntaxComponent dslInfo = null;
+            Dsl.FunctionData funcData = null;
             if (file.DslInfos.Count == 1) {
                 dslInfo = file.DslInfos[0];
+                funcData = dslInfo as Dsl.FunctionData;
+                var stData = dslInfo as Dsl.StatementData;
+                if (null == funcData && null!=stData) {
+                    funcData = stData.First;
+                }
             } else {
                 foreach (var info in file.DslInfos) {
                     if (info.GetId() == "model") {
-                        var callData = info.First.Call;
-                        if (callData.GetId() == name) {
-                            dslInfo = info;
-                            break;
+                        funcData = dslInfo as Dsl.FunctionData;
+                        var stData = dslInfo as Dsl.StatementData;
+                        if (null == funcData && null != stData) {
+                            funcData = stData.First;
+                        }
+                        if (null != funcData) {
+                            var callData = funcData.Call;
+                            if (callData.GetId() == name) {
+                                dslInfo = info;
+                                break;
+                            }
                         }
                     }
                 }
@@ -274,7 +287,6 @@ public static class AnimationClipUtility
                 if (dslInfo.GetId() == "model") {
                     List<ModelImporterClipAnimation> list = new List<ModelImporterClipAnimation>();
 
-                    Dsl.FunctionData funcData = dslInfo.First;
                     foreach (Dsl.ISyntaxComponent clipInfo in funcData.Statements) {
                         var fd = clipInfo as Dsl.FunctionData;
                         if (null != fd) {

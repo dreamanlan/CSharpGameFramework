@@ -203,8 +203,14 @@ public class SkillRecordDrawer : PropertyDrawer
             List<GUIContent> menus = new List<GUIContent>();
             menus.Add(new GUIContent("取消创建"));
             s_SkillDslTemplates.Clear();
-            foreach (Dsl.DslInfo info in file.DslInfos) {
-                Dsl.FunctionData funcData = info.First;
+            foreach (Dsl.ISyntaxComponent info in file.DslInfos) {
+                var funcData = info as Dsl.FunctionData;
+                var stData = info as Dsl.StatementData;
+                if (null == funcData && null != stData) {
+                    funcData = stData.First;
+                }
+                if (null == funcData)
+                    continue;
                 if (funcData.GetId() == "skilltemplate") {
                     string key = funcData.Call.GetParamId(0);
                     string content = funcData.GetExternScript();

@@ -2295,15 +2295,19 @@ internal sealed class ResourceProcessor
                 ResourceEditUtility.InitCalculator(m_ProcessCalculator);
 
                 bool haveError = false;
-                foreach (var info in file.DslInfos) {
+                foreach (var syntaxComponent in file.DslInfos) {
                     bool check = false;
-                    int num = info.GetFunctionNum();
+                    var func = syntaxComponent as Dsl.FunctionData;
+                    var info = syntaxComponent as Dsl.StatementData;
+                    if(null==func && null != info) {
+                        func = info.First;
+                    }
+                    int num = null != info ? info.GetFunctionNum() : 1;
                     if (num == 1) {
-                        var func = info.First;
                         var id = func.GetId();
                         if (id == "script") {
                             check = true;
-                            m_ScriptCalculator.LoadDsl(info);
+                            m_ScriptCalculator.LoadDsl(func);
                         }
                     }
                     else if (num == 2) {
@@ -2376,10 +2380,14 @@ internal sealed class ResourceProcessor
                     m_ParamNames.Clear();
                     m_Params.Clear();
 
-                    foreach (var info in m_DslFile.DslInfos) {
-                        int num = info.GetFunctionNum();
+                    foreach (var syntaxComponent in m_DslFile.DslInfos) {
+                        var func = syntaxComponent as Dsl.FunctionData;
+                        var info = syntaxComponent as Dsl.StatementData;
+                        if (null == func && null != info) {
+                            func = info.First;
+                        }
+                        int num = null != info ? info.GetFunctionNum() : 1;
                         if (num == 1) {
-                            var func = info.First;
                             var id = func.GetId();
                             if (id == "script") {
                                 continue;
@@ -4210,9 +4218,13 @@ internal sealed class ResourceProcessor
             if (file.Load(path, (string msg) => { Debug.LogError(msg); })) {
                 if (file.DslInfos.Count > 0) {
                     var info = file.DslInfos[0];
-                    var first = info.First;
-                    if (first.GetId() == "input") {
-                        foreach (var comp in first.Statements) {
+                    var func = info as Dsl.FunctionData;
+                    var stData = info as Dsl.StatementData;
+                    if (null == func && null != stData) {
+                        func = stData.First;
+                    }
+                    if (null!=func && func.GetId() == "input") {
+                        foreach (var comp in func.Statements) {
                             var callData = comp as Dsl.CallData;
                             if (null != callData && callData.GetId() == "feature") {
                                 string key = callData.GetParamId(0);
@@ -4265,9 +4277,14 @@ internal sealed class ResourceProcessor
                 Dsl.DslFile file = new Dsl.DslFile();
                 if (file.Load(path, (string msg) => { Debug.LogError(msg); })) {
                     var info = file.DslInfos[0];
-                    var first = info.First;
-                    var last = info.Last;
-                    if (first.GetId() == "input" && last.GetId() == "assetprocessor") {
+                    Dsl.FunctionData first = null;
+                    Dsl.FunctionData last = null;
+                    var stData = info as Dsl.StatementData;
+                    if (null != stData) {
+                        first = stData.First;
+                        last = stData.Last;
+                    }
+                    if (null != stData && first.GetId() == "input" && last.GetId() == "assetprocessor") {
                         foreach (var param in first.Call.Params) {
                             filters.Add(param.GetId());
                         }

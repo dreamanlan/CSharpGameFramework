@@ -281,7 +281,14 @@ internal static class UiEditUtility
         Dsl.DslFile file = new Dsl.DslFile();
         if (file.Load(path, (string msg) => { Debug.Log(msg); })) {
             foreach (var info in file.DslInfos) {
-                ReadObject(info.First, root.transform);
+                var func = info as Dsl.FunctionData;
+                var stData = info as Dsl.StatementData;
+                if(null==func && null != stData) {
+                    func = stData.First;
+                }
+                if (null == func)
+                    continue;
+                ReadObject(func, root.transform);
             }
         }
     }
@@ -291,7 +298,14 @@ internal static class UiEditUtility
         Dsl.DslFile file = new Dsl.DslFile();
         if (file.Load(path, (string msg) => { Debug.Log(msg); })) {
             foreach (var info in file.DslInfos) {
-                foreach (var comp in info.First.Statements) {
+                var func = info as Dsl.FunctionData;
+                var stData = info as Dsl.StatementData;
+                if (null == func && null != stData) {
+                    func = stData.First;
+                }
+                if (null == func)
+                    continue;
+                foreach (var comp in func.Statements) {
                     var funcData = comp as Dsl.FunctionData;
                     if (null != funcData && funcData.GetId() == "object") {
                         ReadAttachPoint(funcData, root.transform);

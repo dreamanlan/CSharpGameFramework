@@ -12,8 +12,8 @@ namespace GameFramework.AttrCalc
             Dsl.DslFile file = new Dsl.DslFile();
             string path = HomePath.GetAbsolutePath(dslFile);
             if (file.Load(path, LogSystem.Log)) {
-                foreach (Dsl.DslInfo info in file.DslInfos) {
-                    Load(info);
+                foreach (Dsl.ISyntaxComponent info in file.DslInfos) {
+                    LoadDsl(info);
                 }
             }
         }
@@ -46,9 +46,15 @@ namespace GameFramework.AttrCalc
             return ret;
         }
 
-        private void Load(Dsl.DslInfo info)
+        private void LoadDsl(Dsl.ISyntaxComponent info)
         {
-            Dsl.FunctionData func = info.First;
+            var func = info as Dsl.FunctionData;
+            var stData = info as Dsl.StatementData;
+            if (null == func && null != stData) {
+                func = stData.First;
+            }
+            if (null == func)
+                return;
             string id = func.Call.GetParamId(0);
             List<Interpreter> list;
             if (!m_Procs.TryGetValue(id, out list)) {

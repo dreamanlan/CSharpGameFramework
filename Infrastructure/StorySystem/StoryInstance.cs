@@ -535,7 +535,7 @@ namespace StorySystem
             get { return m_Namespace; }
             set { m_Namespace = value; }
         }
-        public Dsl.DslInfo Config
+        public Dsl.ISyntaxComponent Config
         {
             get { return m_Config; }
         }
@@ -663,13 +663,20 @@ namespace StorySystem
             instance.m_Config = m_Config;
             return instance;
         }
-        public bool Init(Dsl.DslInfo config)
+        public bool Init(Dsl.ISyntaxComponent config)
         {
-            if (null == config || null == config.First)
-                return false;
             bool ret = false;
             m_Config = config;
-            Dsl.FunctionData story = config.First;
+            Dsl.FunctionData story = config as Dsl.FunctionData;
+            if (null == story) {
+#if DEBUG
+                string err = string.Format("StoryInstance::Init, isn't story DSL, line:{0} story:{1}", story.GetLine(), story.ToScriptString(false));
+                throw new Exception(err);
+#else
+                LogSystem.Error("StoryInstance::Init, isn't story DSL");
+                return;
+#endif
+            }
             if (story.GetId() == "story" || story.GetId() == "script") {
                 ret = true;
                 Dsl.CallData callData = story.Call;
@@ -1126,6 +1133,6 @@ namespace StorySystem
         private StrObjDict m_PreInitedLocalVariables = new StrObjDict();
         private Dictionary<string, StoryMessageHandler> m_LoadedMessageHandlers = new Dictionary<string, StoryMessageHandler>();
 
-        private Dsl.DslInfo m_Config = null;
+        private Dsl.ISyntaxComponent m_Config = null;
     }
 }

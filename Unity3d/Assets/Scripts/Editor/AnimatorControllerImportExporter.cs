@@ -326,14 +326,21 @@ public static class AnimatorControllerUtility
         Dsl.DslFile file = new Dsl.DslFile();
         if (file.Load(path, (string msg) => { Debug.Log(msg); })) {
             if (file.DslInfos.Count == 1) {
-                Dsl.DslInfo dslInfo = file.DslInfos[0];
+                Dsl.ISyntaxComponent dslInfo = file.DslInfos[0];
                 if (dslInfo.GetId() == "animatorcontroller") {
-                    Dsl.FunctionData funcData = dslInfo.First;
-                    foreach (Dsl.ISyntaxComponent comp in funcData.Statements) {
-                        if (comp.GetId() == "parameters") {
-                            ReadAnimatorParameter(comp as Dsl.FunctionData, ctrl);
-                        } else if (comp.GetId() == "layer") {
-                            ReadAnimatorLayer(comp as Dsl.FunctionData, ctrl);
+                    var func = dslInfo as Dsl.FunctionData;
+                    var stData = dslInfo as Dsl.StatementData;
+                    if (null == func && null != stData) {
+                        func = stData.First;
+                    }
+                    if (null != func) {
+                        foreach (Dsl.ISyntaxComponent comp in func.Statements) {
+                            if (comp.GetId() == "parameters") {
+                                ReadAnimatorParameter(comp as Dsl.FunctionData, ctrl);
+                            }
+                            else if (comp.GetId() == "layer") {
+                                ReadAnimatorLayer(comp as Dsl.FunctionData, ctrl);
+                            }
                         }
                     }
                 }

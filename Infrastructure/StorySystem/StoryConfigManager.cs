@@ -123,14 +123,14 @@ namespace StorySystem
             lock (m_Lock) {
                 Dictionary<string, StoryInstance> existStoryInstances;
                 if (!m_StoryInstancePool.TryGetValue(resourceName, out existStoryInstances)) {
-                    List<Dsl.DslInfo> cmdOrValList = new List<Dsl.DslInfo>();
+                    List<Dsl.ISyntaxComponent> cmdOrValList = new List<Dsl.ISyntaxComponent>();
                     existStoryInstances = new Dictionary<string, StoryInstance>();
                     m_StoryInstancePool.Add(resourceName, existStoryInstances);
                     for (int i = 0; i < dataFile.DslInfos.Count; i++) {
-                        Dsl.DslInfo dslInfo = dataFile.DslInfos[i];
-                        string id = dslInfo.GetId();
+                        var comp = dataFile.DslInfos[i];
+                        string id = comp.GetId();
                         if (id == "story" || id == "script") {
-                            Dsl.FunctionData funcData = dslInfo.First;
+                            var funcData = comp as Dsl.FunctionData;
                             if (null != funcData) {
                                 Dsl.CallData callData = funcData.Call;
                                 if (null != callData && callData.HaveParam()) {
@@ -138,25 +138,29 @@ namespace StorySystem
                                     if (!string.IsNullOrEmpty(_namespace)) {
                                         instance.Namespace = _namespace;
                                     }
-                                    instance.Init(dslInfo);
+                                    instance.Init(funcData);
                                     string storyId;
                                     if (string.IsNullOrEmpty(_namespace)) {
                                         storyId = instance.StoryId;
-                                    } else {
+                                    }
+                                    else {
                                         storyId = string.Format("{0}:{1}", _namespace, instance.StoryId);
                                         instance.StoryId = storyId;
                                     }
                                     if (!existStoryInstances.ContainsKey(storyId)) {
                                         existStoryInstances.Add(storyId, instance);
-                                    } else {
+                                    }
+                                    else {
                                         existStoryInstances[storyId] = instance;
                                     }
                                     LogSystem.Info("ParseStory {0} {1}", storyId, sceneId);
                                 }
                             }
-                        } else if (id == "command" || id == "value") {
-                            cmdOrValList.Add(dslInfo);
-                        } else {
+                        }
+                        else if (id == "command" || id == "value") {
+                            cmdOrValList.Add(comp);
+                        }
+                        else {
                             LogSystem.Error("[LoadStory] Unknown story keyword '{0}'", id);
                         }
                     }

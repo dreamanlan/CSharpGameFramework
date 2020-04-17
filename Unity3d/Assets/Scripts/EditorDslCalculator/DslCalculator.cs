@@ -6492,40 +6492,43 @@ namespace DslExpression
             Dsl.DslFile file = new Dsl.DslFile();
             string path = dslFile;
             if (file.Load(path, (string s) => { Debug.LogError(s); })) {
-                foreach (Dsl.DslInfo info in file.DslInfos) {
+                foreach (Dsl.ISyntaxComponent info in file.DslInfos) {
                     LoadDsl(info);
                 }
             }
         }
-        public void LoadDsl(Dsl.DslInfo info)
+        public void LoadDsl(Dsl.ISyntaxComponent info)
         {
             if (info.GetId() != "script")
                 return;
-            string id = info.First.Call.GetParamId(0);
-            Dsl.FunctionData func = null;
-            if (info.GetFunctionNum() == 1) {
-                func = info.First;
+            var func = info as Dsl.FunctionData;
+            string id;
+            if (null != func) {
+                id = func.Call.GetParamId(0);
             }
-            else if (info.GetFunctionNum() == 2) {
-                func = info.Second;
-
-                if (func.GetId() == "args") {
-                    if (func.Call.GetParamNum() > 0) {
-                        List<string> names;
-                        if (!m_ProcArgNames.TryGetValue(id, out names)) {
-                            names = new List<string>();
-                            m_ProcArgNames.Add(id, names);
-                        }
-                        else {
-                            names.Clear();
-                        }
-                        foreach (var p in func.Call.Params) {
-                            names.Add(p.GetId());
-                        }
-                    }
+            else {
+                var statement = info as Dsl.StatementData;
+                if (null != statement && statement.GetFunctionNum() == 2) {
+                    id = statement.First.Call.GetParamId(0);
+                    func = statement.Second;
                 }
                 else {
                     return;
+                }
+            }
+            if (func.GetId() == "args") {
+                if (func.Call.GetParamNum() > 0) {
+                    List<string> names;
+                    if (!m_ProcArgNames.TryGetValue(id, out names)) {
+                        names = new List<string>();
+                        m_ProcArgNames.Add(id, names);
+                    }
+                    else {
+                        names.Clear();
+                    }
+                    foreach (var p in func.Call.Params) {
+                        names.Add(p.GetId());
+                    }
                 }
             }
             else {
