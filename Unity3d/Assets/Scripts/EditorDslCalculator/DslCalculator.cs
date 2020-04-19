@@ -6511,28 +6511,28 @@ namespace DslExpression
                 if (null != statement && statement.GetFunctionNum() == 2) {
                     id = statement.First.Call.GetParamId(0);
                     func = statement.Second;
+                    if (func.GetId() == "args") {
+                        if (func.Call.GetParamNum() > 0) {
+                            List<string> names;
+                            if (!m_ProcArgNames.TryGetValue(id, out names)) {
+                                names = new List<string>();
+                                m_ProcArgNames.Add(id, names);
+                            }
+                            else {
+                                names.Clear();
+                            }
+                            foreach (var p in func.Call.Params) {
+                                names.Add(p.GetId());
+                            }
+                        }
+                    }
+	                else {
+	                    return;
+	                }
                 }
                 else {
                     return;
                 }
-            }
-            if (func.GetId() == "args") {
-                if (func.Call.GetParamNum() > 0) {
-                    List<string> names;
-                    if (!m_ProcArgNames.TryGetValue(id, out names)) {
-                        names = new List<string>();
-                        m_ProcArgNames.Add(id, names);
-                    }
-                    else {
-                        names.Clear();
-                    }
-                    foreach (var p in func.Call.Params) {
-                        names.Add(p.GetId());
-                    }
-                }
-            }
-            else {
-                return;
             }
             List<IExpression> list;
             if (!m_Procs.TryGetValue(id, out list)) {
