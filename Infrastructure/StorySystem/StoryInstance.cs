@@ -404,7 +404,7 @@ namespace StorySystem
         public void Reset(bool logIfTriggered)
         {
             if (logIfTriggered && m_IsTriggered) {
-                LogSystem.Error("Reset a running message handler !");
+                LogSystem.Error("Reset a running message handler，story:{0} message:{1} !", m_StoryId, m_MessageId);
                 Helper.LogCallStack(true);
             }
             m_CanSkip = false;

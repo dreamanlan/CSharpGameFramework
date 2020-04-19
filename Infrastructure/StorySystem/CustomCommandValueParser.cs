@@ -201,11 +201,11 @@ namespace StorySystem
             if (id == "command") {
                 string name = string.Empty;
                 var first = dslInfo as Dsl.FunctionData;
+                var statement = dslInfo as Dsl.StatementData;
                 if (null != first) {
                     name = first.Call.GetParamId(0);
                 }
                 else {
-                    var statement = dslInfo as Dsl.StatementData;
                     if (null != statement) {
                         first = statement.First;
                         name = first.Call.GetParamId(0);
@@ -217,9 +217,8 @@ namespace StorySystem
                     StorySystem.CommonCommands.CompositeCommand cmd = factory.Create() as StorySystem.CommonCommands.CompositeCommand;
                     cmd.InitialCommands.Clear();
 
-                    var statement = dslInfo as Dsl.StatementData;
+                    Dsl.FunctionData bodyFunc = null;
                     if (null != statement) {
-                        Dsl.FunctionData bodyFunc = null;
                         for (int i = 0; i < statement.GetFunctionNum(); ++i) {
                             var funcData = statement.GetFunction(i);
                             var fid = funcData.GetId();
@@ -227,16 +226,19 @@ namespace StorySystem
                                 bodyFunc = funcData;
                             }
                         }
-                        if (null != bodyFunc) {
-                            for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
-                                Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
-                                IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
-                                cmd.InitialCommands.Add(sub);
-                            }
+                    }
+                    else {
+                        bodyFunc = first;
+                    }
+                    if (null != bodyFunc) {
+                        for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
+                            Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
+                            IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
+                            cmd.InitialCommands.Add(sub);
                         }
-                        else {
-                            LogSystem.Error("Can't find command {0}'s body", name);
-                        }
+                    }
+                    else {
+                        LogSystem.Error("Can't find command {0}'s body", name);
                     }
                 } else {
                     LogSystem.Error("Can't find command {0}'s factory", name);
@@ -244,11 +246,11 @@ namespace StorySystem
             } else if (id == "value") {
                 string name = string.Empty;
                 var first = dslInfo as Dsl.FunctionData;
+                var statement = dslInfo as Dsl.StatementData;
                 if (null != first) {
                     name = first.Call.GetParamId(0);
                 }
                 else {
-                    var statement = dslInfo as Dsl.StatementData;
                     if (null != statement) {
                         first = statement.First;
                         name = first.Call.GetParamId(0);
@@ -260,9 +262,8 @@ namespace StorySystem
                     StorySystem.CommonValues.CompositeValue val = factory.Build() as StorySystem.CommonValues.CompositeValue;
                     val.InitialCommands.Clear();
 
-                    var statement = dslInfo as Dsl.StatementData;
+                    Dsl.FunctionData bodyFunc = null;
                     if (null != statement) {
-                        Dsl.FunctionData bodyFunc = null;
                         for (int i = 0; i < statement.GetFunctionNum(); ++i) {
                             var funcData = statement.GetFunction(i);
                             var fid = funcData.GetId();
@@ -270,16 +271,19 @@ namespace StorySystem
                                 bodyFunc = funcData;
                             }
                         }
-                        if (null != bodyFunc) {
-                            for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
-                                Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
-                                IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
-                                val.InitialCommands.Add(sub);
-                            }
+                    }
+                    else {
+                        bodyFunc = first;
+                    }
+                    if (null != bodyFunc) {
+                        for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
+                            Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
+                            IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
+                            val.InitialCommands.Add(sub);
                         }
-                        else {
-                            LogSystem.Error("Can't find value {0}'s body", name);
-                        }
+                    }
+                    else {
+                        LogSystem.Error("Can't find value {0}'s body", name);
                     }
                 } else {
                     LogSystem.Error("Can't find value {0}'s factory", name);
