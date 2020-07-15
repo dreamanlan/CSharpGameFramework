@@ -10,7 +10,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
             }
@@ -66,7 +66,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
                 m_Index.InitFromDsl(callData.GetParam(1));
@@ -131,7 +131,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
             }
@@ -187,7 +187,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
                 m_Index.InitFromDsl(callData.GetParam(1));
@@ -262,7 +262,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
             }
@@ -320,7 +320,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
             }
@@ -378,7 +378,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
                 m_Index.InitFromDsl(callData.GetParam(1));
@@ -453,7 +453,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
                 m_Index.InitFromDsl(callData.GetParam(1));
@@ -524,7 +524,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
                 m_ItemId.InitFromDsl(callData.GetParam(1));
@@ -587,7 +587,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 3) {
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
                 m_Key.InitFromDsl(callData.GetParam(1));
@@ -667,7 +667,7 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 m_Key.InitFromDsl(callData.GetParam(0));
                 m_Type.InitFromDsl(callData.GetParam(1));

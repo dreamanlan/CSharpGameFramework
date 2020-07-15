@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace StorySystem
 {
     /// <summary>
-    /// 简单的函数值基类，简化实现IStoryValue需要写的代码行数(当前值类只支持CallData样式)
+    /// 简单的函数值基类，简化实现IStoryValue需要写的代码行数(当前值类只支持FunctionData样式)
     /// </summary>
     public abstract class SimpleStoryValueBase<SubClassType, ValueParamType> : IStoryValue
         where SubClassType : SimpleStoryValueBase<SubClassType, ValueParamType>, new()
@@ -54,7 +54,7 @@ namespace StorySystem
         private StoryValueResult m_Result = new StoryValueResult();
     }
     /// <summary>
-    /// 简单的命令基类，简化实现IStoryCommand需要写的代码行数（通常这样的命令是一个CallData样式的命令）
+    /// 简单的命令基类，简化实现IStoryCommand需要写的代码行数（通常这样的命令是一个FunctionData样式的命令）
     /// </summary>
     public abstract class SimpleStoryCommandBase<SubClassType, ValueParamType> : IStoryCommand
         where SubClassType : SimpleStoryCommandBase<SubClassType, ValueParamType>, new()
@@ -64,7 +64,7 @@ namespace StorySystem
         {
             m_Comments = m_Params.InitFromDsl(config, 0, true);
             m_Config = config;
-            return config is Dsl.CallData;
+            return config is Dsl.FunctionData;
         }
         public IStoryCommand Clone()
         {

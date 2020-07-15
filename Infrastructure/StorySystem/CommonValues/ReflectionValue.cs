@@ -9,7 +9,7 @@ namespace StorySystem.CommonValues
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 0) {
@@ -65,7 +65,7 @@ namespace StorySystem.CommonValues
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
@@ -208,7 +208,7 @@ namespace StorySystem.CommonValues
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData) {
                 int num = callData.GetParamNum();
                 if (num > 1) {
@@ -342,7 +342,7 @@ namespace StorySystem.CommonValues
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData) {
                 if (callData.GetParamNum() == 2) {
                     m_Object.InitFromDsl(callData.GetParam(0));
@@ -444,7 +444,7 @@ namespace StorySystem.CommonValues
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData) {
                 if (callData.GetParamNum() == 2) {
                     m_Type.InitFromDsl(callData.GetParam(0));
@@ -516,7 +516,7 @@ namespace StorySystem.CommonValues
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData) {
                 if (callData.GetParamNum() >= 1) {
                     m_Filter.InitFromDsl(callData.GetParam(0));
@@ -588,7 +588,7 @@ namespace StorySystem.CommonValues
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData) {
                 if (callData.GetParamNum() >= 1) {
                     m_Filter.InitFromDsl(callData.GetParam(0));

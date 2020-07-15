@@ -89,7 +89,7 @@ namespace TableReaderGenerator
                             FunctionData funcData = info.First;
                             if (null != funcData && funcData.HaveExternScript()) {
                                 string toolFile;
-                                CallData callData = funcData.Call;
+                                FunctionData callData = funcData.Call;
                                 if (null != callData && callData.GetParamNum() == 1) {
                                     toolFile = callData.GetParamId(0);
                                 } else {
@@ -111,7 +111,7 @@ namespace TableReaderGenerator
                             FunctionData funcData = info.First;
                             if (null != funcData && funcData.HaveExternScript()) {
                                 string globalFile;
-                                CallData callData = funcData.Call;
+                                FunctionData callData = funcData.Call;
                                 if (null != callData && callData.GetParamNum() == 1) {
                                     globalFile = callData.GetParamId(0);
                                 } else {
@@ -132,7 +132,7 @@ namespace TableReaderGenerator
                         if (info.Functions.Count == 1) {
                             FunctionData funcData = info.First;
                             if (null != funcData) {
-                                CallData callData = funcData.Call;
+                                FunctionData callData = funcData.Call;
                                 if (null != callData && callData.GetParamNum() == 1) {
                                     string typeName = callData.GetParamId(0);
 
@@ -158,7 +158,7 @@ namespace TableReaderGenerator
                                                 haveError = true;
                                             }
                                         } else {
-                                            CallData call = comp as CallData;
+                                            FunctionData call = comp as FunctionData;
                                             if (null != call && call.GetParamNum() == 1) {
                                                 if (call.GetId() == "type") {
                                                     typeDef.m_TypeCode = call.GetParamId(0);
@@ -182,7 +182,7 @@ namespace TableReaderGenerator
                         if (info.Functions.Count == 1) {
                             FunctionData funcData = info.First;
                             if (null != funcData) {
-                                CallData callData = funcData.Call;
+                                FunctionData callData = funcData.Call;
                                 if (null != callData && callData.GetParamNum() == 3) {
                                     TableFileTypeEnum fileType = TableFileTypeEnum.PUBLIC;
                                     string tableName, tableType, recordName, providerName;
@@ -215,7 +215,7 @@ namespace TableReaderGenerator
                                     }
 
                                     foreach (ISyntaxComponent comp in funcData.Statements) {
-                                        CallData field = comp as CallData;
+                                        FunctionData field = comp as FunctionData;
                                         if (null != field) {
                                             if (field.GetId() == "recordname") {
                                                 tableDef.m_RecordName = field.GetParamId(0);

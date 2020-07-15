@@ -305,7 +305,7 @@ internal static class UiEditUtility
                 }
                 if (null == func)
                     continue;
-                foreach (var comp in func.Statements) {
+                foreach (var comp in func.Params) {
                     var funcData = comp as Dsl.FunctionData;
                     if (null != funcData && funcData.GetId() == "object") {
                         ReadAttachPoint(funcData, root.transform);
@@ -328,13 +328,16 @@ internal static class UiEditUtility
 
     private static void ReadObject(Dsl.FunctionData funcData, Transform trans)
     {
+        var funcHeader = funcData;
+        if (funcData.IsHighOrder)
+            funcHeader = funcData.LowerOrderFunction;
         if (null == funcData)
             return;
         GameObject prefab = null;
-        foreach (var statement in funcData.Statements) {
+        foreach (var statement in funcData.Params) {
             string id = statement.GetId();
             if (id == "asset") {
-                var call = statement as Dsl.CallData;
+                var call = statement as Dsl.FunctionData;
                 if (null != call) {
                     string path = call.GetParamId(0);
                     prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
@@ -343,12 +346,12 @@ internal static class UiEditUtility
         }
         GameObject obj;
         if (null == prefab) {
-            obj = new GameObject(funcData.Call.GetParamId(0));
+            obj = new GameObject(funcHeader.GetParamId(0));
         } else {
             obj = GameObject.Instantiate(prefab);
-            obj.name = funcData.Call.GetParamId(0);
+            obj.name = funcHeader.GetParamId(0);
         }
-        foreach (var statement in funcData.Statements) {
+        foreach (var statement in funcData.Params) {
             string id = statement.GetId();
             if (id == "recttransform") {
                 ReadRectTransform(statement, obj);
@@ -357,13 +360,13 @@ internal static class UiEditUtility
             }
         }
         obj.transform.SetParent(trans, false);
-        foreach (var statement in funcData.Statements) {
+        foreach (var statement in funcData.Params) {
             string id = statement.GetId();
             if (id == "object") {
                 ReadObject(statement as Dsl.FunctionData, obj.transform);
             }
         }
-        foreach (var statement in funcData.Statements) {
+        foreach (var statement in funcData.Params) {
             string id = statement.GetId();
             if (id == "component") {
                 ReadComponent(statement, obj);
@@ -374,19 +377,22 @@ internal static class UiEditUtility
     {
         var funcData = comp as Dsl.FunctionData;
         if (null != funcData) {
+            var funcHeader = funcData;
+            if (funcData.IsHighOrder)
+                funcHeader = funcData.LowerOrderFunction;
             var rect = obj.AddComponent<RectTransform>();
             if (null != rect) {
-                float x = float.Parse(funcData.Call.GetParamId(0));
-                float y = float.Parse(funcData.Call.GetParamId(1));
-                float z = float.Parse(funcData.Call.GetParamId(2));
-                float w = float.Parse(funcData.Call.GetParamId(3));
-                float h = float.Parse(funcData.Call.GetParamId(4));
+                float x = float.Parse(funcHeader.GetParamId(0));
+                float y = float.Parse(funcHeader.GetParamId(1));
+                float z = float.Parse(funcHeader.GetParamId(2));
+                float w = float.Parse(funcHeader.GetParamId(3));
+                float h = float.Parse(funcHeader.GetParamId(4));
                 rect.anchoredPosition3D = new Vector3(x, y, z);
                 rect.sizeDelta = new Vector2(w, h);
-                foreach (var statement in funcData.Statements) {
+                foreach (var statement in funcData.Params) {
                     string id = statement.GetId();
                     if (id == "anchor") {
-                        var call = statement as Dsl.CallData;
+                        var call = statement as Dsl.FunctionData;
                         if (null != call) {
                             float a1 = float.Parse(call.GetParamId(0));
                             float a2 = float.Parse(call.GetParamId(1));
@@ -396,14 +402,14 @@ internal static class UiEditUtility
                             rect.anchorMax = new Vector2(a3, a4);
                         }
                     } else if (id == "pivot") {
-                        var call = statement as Dsl.CallData;
+                        var call = statement as Dsl.FunctionData;
                         if (null != call) {
                             float p1 = float.Parse(call.GetParamId(0));
                             float p2 = float.Parse(call.GetParamId(1));
                             rect.pivot = new Vector2(p1, p2);
                         }
                     } else if (id == "rotation") {
-                        var call = statement as Dsl.CallData;
+                        var call = statement as Dsl.FunctionData;
                         if (null != call) {
                             float r1 = float.Parse(call.GetParamId(0));
                             float r2 = float.Parse(call.GetParamId(1));
@@ -411,7 +417,7 @@ internal static class UiEditUtility
                             rect.localEulerAngles = new Vector3(r1, r2, r3);
                         }
                     } else if (id == "scale") {
-                        var call = statement as Dsl.CallData;
+                        var call = statement as Dsl.FunctionData;
                         if (null != call) {
                             float s1 = float.Parse(call.GetParamId(0));
                             float s2 = float.Parse(call.GetParamId(1));
@@ -427,10 +433,10 @@ internal static class UiEditUtility
     {
         var funcData = comp as Dsl.FunctionData;
         if (null != funcData) {
-            foreach (var statement in funcData.Statements) {
+            foreach (var statement in funcData.Params) {
                 string id = statement.GetId();
                 if (id == "position") {
-                    var call = statement as Dsl.CallData;
+                    var call = statement as Dsl.FunctionData;
                     if (null != call) {
                         float x = float.Parse(call.GetParamId(0));
                         float y = float.Parse(call.GetParamId(1));
@@ -438,7 +444,7 @@ internal static class UiEditUtility
                         obj.transform.localPosition = new Vector3(x, y, z);
                     }
                 } else if (id == "rotation") {
-                    var call = statement as Dsl.CallData;
+                    var call = statement as Dsl.FunctionData;
                     if (null != call) {
                         float x = float.Parse(call.GetParamId(0));
                         float y = float.Parse(call.GetParamId(1));
@@ -446,7 +452,7 @@ internal static class UiEditUtility
                         obj.transform.localEulerAngles = new Vector3(x, y, z);
                     }
                 } else if (id == "scale") {
-                    var call = statement as Dsl.CallData;
+                    var call = statement as Dsl.FunctionData;
                     if (null != call) {
                         float x = float.Parse(call.GetParamId(0));
                         float y = float.Parse(call.GetParamId(1));
@@ -461,7 +467,9 @@ internal static class UiEditUtility
     {
         var funcData = comp as Dsl.FunctionData;
         if (null != funcData) {
-            var callData = funcData.Call;
+            var callData = funcData;
+            if (funcData.IsHighOrder)
+                callData = funcData.LowerOrderFunction;
             int paramNum = callData.GetParamNum();
             string name = callData.GetParamId(0);
             System.Type type;
@@ -492,10 +500,10 @@ internal static class UiEditUtility
                 var cobj = obj.AddComponent(type);
                 var img = cobj as Image;
                 if (null != img) {
-                    foreach (var statement in funcData.Statements) {
+                    foreach (var statement in funcData.Params) {
                         string id = statement.GetId();
                         if (id == "color") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 float r = float.Parse(call.GetParamId(0));
                                 float g = float.Parse(call.GetParamId(1));
@@ -504,7 +512,7 @@ internal static class UiEditUtility
                                 img.color = new Color(r, g, b, a);
                             }
                         } else if (id == "sprite") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string sprite = call.GetParamId(0);
                                 img.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(sprite);
@@ -515,10 +523,10 @@ internal static class UiEditUtility
                 }
                 var text = cobj as Text;
                 if (null != text) {
-                    foreach (var statement in funcData.Statements) {
+                    foreach (var statement in funcData.Params) {
                         string id = statement.GetId();
                         if (id == "color") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 float r = float.Parse(call.GetParamId(0));
                                 float g = float.Parse(call.GetParamId(1));
@@ -527,13 +535,13 @@ internal static class UiEditUtility
                                 text.color = new Color(r, g, b, a);
                             }
                         } else if (id == "text") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string txt = call.GetParamId(0);
                                 text.text = txt;
                             }
                         } else if (id == "align") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string alignEnum = call.GetParamId(0);
                                 string boolVal = call.GetParamId(1);
@@ -541,7 +549,7 @@ internal static class UiEditUtility
                                 text.alignByGeometry = boolVal == "True";
                             }
                         } else if (id == "font") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string fontName = call.GetParamId(0);
                                 string fontPath = call.GetParamId(1);
@@ -563,24 +571,24 @@ internal static class UiEditUtility
                 }
                 var gridLayout = cobj as GridLayoutGroup;
                 if (null != gridLayout) {
-                    foreach (var statement in funcData.Statements) {
+                    foreach (var statement in funcData.Params) {
                         string id = statement.GetId();
                         if (id == "cellsize") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 float x = float.Parse(call.GetParamId(0));
                                 float y = float.Parse(call.GetParamId(1));
                                 gridLayout.cellSize = new Vector2(x, y);
                             }
                         } else if (id == "spacing") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 float x = float.Parse(call.GetParamId(0));
                                 float y = float.Parse(call.GetParamId(1));
                                 gridLayout.spacing = new Vector2(x, y);
                             }
                         } else if (id == "padding") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 int l = int.Parse(call.GetParamId(0));
                                 int t = int.Parse(call.GetParamId(1));
@@ -589,7 +597,7 @@ internal static class UiEditUtility
                                 gridLayout.padding = new RectOffset(l, r, t, b);
                             }
                         } else if (id == "options") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string e1 = call.GetParamId(0);
                                 string e2 = call.GetParamId(1);
@@ -606,16 +614,16 @@ internal static class UiEditUtility
                 }
                 var horizontalLayout = cobj as HorizontalLayoutGroup;
                 if (null != horizontalLayout) {
-                    foreach (var statement in funcData.Statements) {
+                    foreach (var statement in funcData.Params) {
                         string id = statement.GetId();
                         if (id == "spacing") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 float x = float.Parse(call.GetParamId(0));
                                 horizontalLayout.spacing = x;
                             }
                         } else if (id == "padding") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 int l = int.Parse(call.GetParamId(0));
                                 int t = int.Parse(call.GetParamId(1));
@@ -624,7 +632,7 @@ internal static class UiEditUtility
                                 horizontalLayout.padding = new RectOffset(l, r, t, b);
                             }
                         } else if (id == "options") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string o1 = call.GetParamId(0);
                                 bool o2 = call.GetParamId(1) == "True";
@@ -643,16 +651,16 @@ internal static class UiEditUtility
                 }
                 var verticalLayout = cobj as VerticalLayoutGroup;
                 if (null != verticalLayout) {
-                    foreach (var statement in funcData.Statements) {
+                    foreach (var statement in funcData.Params) {
                         string id = statement.GetId();
                         if (id == "spacing") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 float x = float.Parse(call.GetParamId(0));
                                 verticalLayout.spacing = x;
                             }
                         } else if (id == "padding") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 int l = int.Parse(call.GetParamId(0));
                                 int t = int.Parse(call.GetParamId(1));
@@ -661,7 +669,7 @@ internal static class UiEditUtility
                                 verticalLayout.padding = new RectOffset(l, r, t, b);
                             }
                         } else if (id == "options") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string o1 = call.GetParamId(0);
                                 bool o2 = call.GetParamId(1) == "True";
@@ -681,22 +689,22 @@ internal static class UiEditUtility
                 //---------------------------------------------------------------------------
                 var animator = cobj as Animator;
                 if (null != animator) {
-                    foreach (var statement in funcData.Statements) {
+                    foreach (var statement in funcData.Params) {
                         string id = statement.GetId();
                         if (id == "controller") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string path = call.GetParamId(0);
                                 animator.runtimeAnimatorController = AssetDatabase.LoadAssetAtPath<RuntimeAnimatorController>(path);
                             }
                         } else if (id == "avatar") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string path = call.GetParamId(0);
                                 animator.avatar = AssetDatabase.LoadAssetAtPath<Avatar>(path);
                             }
                         } else if (id == "options") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 bool v1 = call.GetParamId(0) == "True";
                                 string v2 = call.GetParamId(1);
@@ -710,10 +718,10 @@ internal static class UiEditUtility
                 }
                 var meshFilter = cobj as MeshFilter;
                 if (null != meshFilter) {
-                    foreach (var statement in funcData.Statements) {
+                    foreach (var statement in funcData.Params) {
                         string id = statement.GetId();
                         if (id == "mesh") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string meshName = call.GetParamId(0);
                                 string path = call.GetParamId(1);
@@ -725,10 +733,10 @@ internal static class UiEditUtility
                 var meshRenderer = cobj as MeshRenderer;
                 if (null != meshRenderer) {
                     List<Material> mats = new List<Material>();
-                    foreach (var statement in funcData.Statements) {
+                    foreach (var statement in funcData.Params) {
                         string id = statement.GetId();
                         if (id == "material") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string matName = call.GetParamId(0);
                                 string path = call.GetParamId(1);
@@ -743,24 +751,24 @@ internal static class UiEditUtility
                 var skinnedMeshRenderer = cobj as SkinnedMeshRenderer;
                 if (null != skinnedMeshRenderer) {
                     List<Material> mats = new List<Material>();
-                    foreach (var statement in funcData.Statements) {
+                    foreach (var statement in funcData.Params) {
                         string id = statement.GetId();
                         if (id == "material") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string matName = call.GetParamId(0);
                                 string path = call.GetParamId(1);
                                 mats.Add(AssetDatabase.LoadAssetAtPath<Material>(path));
                             }
                         } else if (id == "mesh") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string meshName = call.GetParamId(0);
                                 string path = call.GetParamId(1);
                                 skinnedMeshRenderer.sharedMesh = LoadAssetByPathAndName(path, meshName) as Mesh;
                             }
                         } else if (id == "rootbone") {
-                            var call = statement as Dsl.CallData;
+                            var call = statement as Dsl.FunctionData;
                             if (null != call) {
                                 string rootBone = call.GetParamId(0);
                                 var root = FindRoot(obj);
@@ -777,7 +785,7 @@ internal static class UiEditUtility
                 }
             }
         } else {
-            var callData = comp as Dsl.CallData;
+            var callData = comp as Dsl.FunctionData;
             string name = callData.GetParamId(0);
             string fullName = callData.GetParamId(1);
             var type = System.Type.GetType(fullName);
@@ -792,13 +800,16 @@ internal static class UiEditUtility
         if (null == funcData)
             return;
         //跳过非骨胳结点
-        foreach (var statement in funcData.Statements) {
+        foreach (var statement in funcData.Params) {
             string id = statement.GetId();
             if (id == "asset" || id == "component") {
                 return;
             }
         }
-        string name = funcData.Call.GetParamId(0);
+        var cd = funcData;
+        if (funcData.IsHighOrder)
+            cd = funcData.LowerOrderFunction;
+        string name = cd.GetParamId(0);
         GameObject obj = null;
         var t = trans.Find(name);
         if (null != t) {
@@ -807,7 +818,7 @@ internal static class UiEditUtility
             obj = new GameObject(name);
             obj.transform.SetParent(trans, false);
         }
-        foreach (var statement in funcData.Statements) {
+        foreach (var statement in funcData.Params) {
             string id = statement.GetId();
             if (id == "recttransform") {
                 ReadRectTransform(statement, obj);
@@ -815,7 +826,7 @@ internal static class UiEditUtility
                 ReadTransform(statement, obj);
             }
         }
-        foreach (var statement in funcData.Statements) {
+        foreach (var statement in funcData.Params) {
             string id = statement.GetId();
             if (id == "object") {
                 ReadAttachPoint(statement as Dsl.FunctionData, obj.transform);

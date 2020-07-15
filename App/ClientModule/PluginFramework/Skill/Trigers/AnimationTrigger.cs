@@ -77,31 +77,17 @@ namespace GameFramework.Skill.Trigers
             AddProperty("AnimName", () => { return m_AnimName.EditableValue; }, (object val) => { m_AnimName.EditableValue = val; });
             AddProperty("NormalizedAnimStartTime", () => { return m_NormalizedAnimStartTime.EditableValue; }, (object val) => { m_NormalizedAnimStartTime.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance )
-        {
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_AnimName.Set(callData.GetParam(0));
-            }
-            if (num > 1) {
-                StartTime = long.Parse(callData.GetParamId(1));
-            } else {
-                StartTime = 0;
-            }
-            if (num > 2) {
-                m_NormalizedAnimStartTime.Set(callData.GetParam(2));
-            } else {
-                m_NormalizedAnimStartTime.Set(0.0f);
-            }
-            
-        }
         protected override void Load(Dsl.FunctionData funcData, SkillInstance instance )
         {
-            Dsl.CallData callData = funcData.Call;
-            if (null != callData) {
-                Load(callData, instance);
-                foreach (Dsl.ISyntaxComponent statement in funcData.Statements) {
-                    Dsl.CallData stCall = statement as Dsl.CallData;
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction, instance);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData, instance);
+            }
+            if (funcData.HaveStatement()) {
+                foreach (Dsl.ISyntaxComponent statement in funcData.Params) {
+                    Dsl.FunctionData stCall = statement as Dsl.FunctionData;
                     if (null != stCall && stCall.GetParamNum() > 0) {
                         string id = stCall.GetId();
                         string param = stCall.GetParamId(0);
@@ -119,6 +105,26 @@ namespace GameFramework.Skill.Trigers
                     }
                 }
             }
+        }
+        private void LoadCall(Dsl.FunctionData callData, SkillInstance instance)
+        {
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_AnimName.Set(callData.GetParam(0));
+            }
+            if (num > 1) {
+                StartTime = long.Parse(callData.GetParamId(1));
+            }
+            else {
+                StartTime = 0;
+            }
+            if (num > 2) {
+                m_NormalizedAnimStartTime.Set(callData.GetParam(2));
+            }
+            else {
+                m_NormalizedAnimStartTime.Set(0.0f);
+            }
+
         }
 
         private SkillStringParam m_AnimName = new SkillStringParam();
@@ -186,7 +192,7 @@ namespace GameFramework.Skill.Trigers
         {
             AddProperty("Speed", () => { return m_Speed; }, (object val) => { m_Speed = (float)Convert.ChangeType(val, typeof(float)); });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance )
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance )
         {
             int num = callData.GetParamNum();
             if (num >= 2) {
@@ -263,25 +269,19 @@ namespace GameFramework.Skill.Trigers
         {
         }
 
-        protected override void Load(Dsl.CallData callData, SkillInstance instance )
-        {
-            m_Params = new Dictionary<string, object>();
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                StartTime = long.Parse(callData.GetParamId(0));
-            } else {
-                StartTime = 0;
-            }
-        }
 
         protected override void Load(Dsl.FunctionData funcData, SkillInstance instance )
         {
-            Dsl.CallData callData = funcData.Call;
-            if (null != callData) {
-                Load(callData, instance);
-                for (int i = 0; i < funcData.Statements.Count; ++i) {
-                    Dsl.ISyntaxComponent statement = funcData.Statements[i];
-                    Dsl.CallData stCall = statement as Dsl.CallData;
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction, instance);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData, instance);
+            }
+            if (funcData.HaveStatement()) {
+                for (int i = 0; i < funcData.GetParamNum(); ++i) {
+                    Dsl.ISyntaxComponent statement = funcData.GetParam(i);
+                    Dsl.FunctionData stCall = statement as Dsl.FunctionData;
                     if (null != stCall) {
                         string id = stCall.GetId();
                         string key = stCall.GetParamId(0);
@@ -298,6 +298,16 @@ namespace GameFramework.Skill.Trigers
                         m_Params.Add(key, val);
                     }
                 }
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData, SkillInstance instance )
+        {
+            m_Params = new Dictionary<string, object>();
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                StartTime = long.Parse(callData.GetParamId(0));
+            } else {
+                StartTime = 0;
             }
         }
 
@@ -366,36 +376,18 @@ namespace GameFramework.Skill.Trigers
             AddProperty("NormalizedFireEventTime", () => { return m_NormalizedFireEventTime.EditableValue; }, (object val) => { m_NormalizedFireEventTime.EditableValue = val; });
             AddProperty("MessageName", () => { return m_MsgId.EditableValue; }, (object val) => { m_MsgId.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance )
-        {
-            m_Params = new Dictionary<string, object>();
-            int num = callData.GetParamNum();
-            if (num > 0) {
-                m_AnimName.Set(callData.GetParam(0));
-            }
-            if (num > 1) {
-                m_NormalizedFireEventTime.Set(callData.GetParam(1));
-            } else {
-                m_NormalizedFireEventTime.Set(0.0f);
-            }
-            if (num > 2) {
-                m_MsgId.Set(callData.GetParam(2));
-            }
-            if (num > 3) {
-                StartTime = long.Parse(callData.GetParamId(3));
-            } else {
-                StartTime = 0;
-            }
-        }
         protected override void Load(Dsl.FunctionData funcData, SkillInstance instance )
         {
-            Dsl.CallData callData = funcData.Call;
-            if (null != callData) {
-                Load(callData, instance);
-
-                for (int i = 0; i < funcData.Statements.Count; ++i) {
-                    Dsl.ISyntaxComponent statement = funcData.Statements[i];
-                    Dsl.CallData stCall = statement as Dsl.CallData;
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction, instance);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData, instance);
+            }
+            if (funcData.HaveStatement()) {
+                for (int i = 0; i < funcData.GetParamNum(); ++i) {
+                    Dsl.ISyntaxComponent statement = funcData.GetParam(i);
+                    Dsl.FunctionData stCall = statement as Dsl.FunctionData;
                     if (null != stCall) {
                         string id = stCall.GetId();
                         string key = stCall.GetParamId(0);
@@ -414,6 +406,27 @@ namespace GameFramework.Skill.Trigers
                         m_Params.Add(key, val);
                     }
                 }
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData, SkillInstance instance )
+        {
+            m_Params = new Dictionary<string, object>();
+            int num = callData.GetParamNum();
+            if (num > 0) {
+                m_AnimName.Set(callData.GetParam(0));
+            }
+            if (num > 1) {
+                m_NormalizedFireEventTime.Set(callData.GetParam(1));
+            } else {
+                m_NormalizedFireEventTime.Set(0.0f);
+            }
+            if (num > 2) {
+                m_MsgId.Set(callData.GetParam(2));
+            }
+            if (num > 3) {
+                StartTime = long.Parse(callData.GetParamId(3));
+            } else {
+                StartTime = 0;
             }
         }
 

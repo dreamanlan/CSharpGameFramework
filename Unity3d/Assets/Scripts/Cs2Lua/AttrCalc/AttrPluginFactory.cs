@@ -56,13 +56,6 @@ public class NativeAttrExpressionProxy : AbstractAttrExpression
         }
         return base.Load(valData);
     }
-    protected override bool Load(Dsl.CallData callData)
-    {
-        if (null != m_Plugin) {
-            return m_Plugin.LoadCallData(callData);
-        }
-        return base.Load(callData);
-    }
     protected override bool Load(AttrExpressionList exps)
     {
         if (null != m_Plugin) {
@@ -118,13 +111,6 @@ public class LuaAttrExpressionProxy : AbstractAttrExpression
             return m_Plugin.LoadValue(valData);
         }
         return base.Load(valData);
-    }
-    protected override bool Load(Dsl.CallData callData)
-    {
-        if (null != m_Plugin) {
-            return m_Plugin.LoadCallData(callData);
-        }
-        return base.Load(callData);
     }
     protected override bool Load(AttrExpressionList exps)
     {

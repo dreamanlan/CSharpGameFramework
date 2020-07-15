@@ -53,15 +53,15 @@ namespace GameFramework.AttrCalc
             if (null == func && null != stData) {
                 func = stData.First;
             }
-            if (null == func)
+            if (null == func || !func.IsHighOrder)
                 return;
-            string id = func.Call.GetParamId(0);
+            string id = func.LowerOrderFunction.GetParamId(0);
             List<Interpreter> list;
             if (!m_Procs.TryGetValue(id, out list)) {
                 list = new List<Interpreter>();
                 m_Procs.Add(id, list);
             }
-            foreach (Dsl.ISyntaxComponent comp in func.Statements) {
+            foreach (Dsl.ISyntaxComponent comp in func.Params) {
                 Load(list, comp);
             }
         }
@@ -112,7 +112,7 @@ namespace GameFramework.AttrCalc
         {
             internal void Load(Dsl.ISyntaxComponent comp)
             {
-                Dsl.CallData callData = comp as Dsl.CallData;
+                Dsl.FunctionData callData = comp as Dsl.FunctionData;
                 if (null != callData) {
                     if (!callData.HaveId()) {
                         Dsl.ISyntaxComponent param = callData.GetParam(0);
@@ -120,7 +120,7 @@ namespace GameFramework.AttrCalc
                     } else {
                         string op = callData.GetId();
                         if (op == "=") {//赋值
-                            Dsl.CallData param1 = callData.GetParam(0) as Dsl.CallData;
+                            Dsl.FunctionData param1 = callData.GetParam(0) as Dsl.FunctionData;
                             Dsl.ISyntaxComponent param2 = callData.GetParam(1);
                             string name = param1.GetId();
                             int id = int.Parse(param1.GetParamId(0));

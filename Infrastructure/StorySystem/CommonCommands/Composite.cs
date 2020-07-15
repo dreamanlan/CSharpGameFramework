@@ -146,7 +146,28 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(FunctionData funcData)
+        {
+            if (funcData.IsHighOrder) {
+                var cd = funcData.LowerOrderFunction;
+                LoadCall(cd);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData);
+            }
+            if (funcData.HaveStatement()) {
+                foreach (var comp in funcData.Params) {
+                    var fcd = comp as Dsl.FunctionData;
+                    if (null != fcd) {
+                        var key = fcd.GetId();
+                        StoryValue val = new StoryValue();
+                        val.InitFromDsl(fcd.GetParam(0));
+                        m_LoadedOptArgs[key] = val;
+                    }
+                }
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData)
         {
             m_LoadedOptArgs = new Dictionary<string, IStoryValue>();
             foreach (var pair in m_OptArgs) {
@@ -167,20 +188,6 @@ namespace StorySystem.CommonCommands
             }
             if (null == m_EpilogueCommand) {
                 m_EpilogueCommand = new CompositeEpilogueCommandHelper(this);
-            }
-        }
-        protected override void Load(FunctionData funcData)
-        {
-            var cd = funcData.Call;
-            Load(cd);
-            foreach (var comp in funcData.Statements) {
-                var fcd = comp as Dsl.CallData;
-                if (null != fcd) {
-                    var key = fcd.GetId();
-                    StoryValue val = new StoryValue();
-                    val.InitFromDsl(fcd.GetParam(0));
-                    m_LoadedOptArgs[key] = val;
-                }
             }
         }
 
@@ -297,7 +304,7 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -326,7 +333,7 @@ namespace StorySystem.CommonCommands
             StoryCommandManager.Instance.ClearSubstitutes();
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
         }
@@ -360,7 +367,7 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -389,7 +396,7 @@ namespace StorySystem.CommonCommands
             StoryValueManager.Instance.ClearSubstitutes();
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
         }

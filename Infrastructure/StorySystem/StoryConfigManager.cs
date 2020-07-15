@@ -131,8 +131,8 @@ namespace StorySystem
                         string id = comp.GetId();
                         if (id == "story" || id == "script") {
                             var funcData = comp as Dsl.FunctionData;
-                            if (null != funcData) {
-                                Dsl.CallData callData = funcData.Call;
+                            if (null != funcData && funcData.IsHighOrder) {
+                                Dsl.FunctionData callData = funcData.LowerOrderFunction;
                                 if (null != callData && callData.HaveParam()) {
                                     StoryInstance instance = new StoryInstance();
                                     if (!string.IsNullOrEmpty(_namespace)) {

@@ -71,12 +71,6 @@ internal class NativeStoryCommand : AbstractStoryCommand
         }
         return false;
     }
-    protected override void Load(Dsl.CallData callData)
-    {
-        if (null != m_Plugin) {
-            m_Plugin.LoadCallData(callData);
-        }
-    }
     protected override void Load(Dsl.FunctionData funcData)
     {
         if (null != m_Plugin) {
@@ -147,12 +141,6 @@ internal class LuaStoryCommand : AbstractStoryCommand
             return m_Plugin.ExecCommandWithArgs(instance, handler, delta, iterator, args);
         }
         return false;
-    }
-    protected override void Load(Dsl.CallData callData)
-    {
-        if (null != m_Plugin) {
-            m_Plugin.LoadCallData(callData);
-        }
     }
     protected override void Load(Dsl.FunctionData funcData)
     {

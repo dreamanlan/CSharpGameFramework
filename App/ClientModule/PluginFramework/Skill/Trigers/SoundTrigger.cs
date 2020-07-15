@@ -149,7 +149,41 @@ namespace GameFramework.Skill.Trigers
             }
             return audiosource_obj.GetComponentInChildren<AudioSource>();
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
+        {
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction, instance);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData, instance);
+            }
+            if (funcData.HaveStatement()) {
+                for (int i = 0; i < funcData.GetParamNum(); i++) {
+                    Dsl.FunctionData stCall = funcData.GetParam(i) as Dsl.FunctionData;
+                    if (null == stCall) {
+                        continue;
+                    }
+                    if (stCall.GetId() == "position") {
+                        LoadPositionConfig(stCall);
+                    }
+                    else if (stCall.GetId() == "bone") {
+                        LoadBoneConfig(stCall);
+                    }
+                    else if (stCall.GetId() == "audiogroup") {
+                        LoadAudioGroup(stCall);
+                    }
+                    else if (stCall.GetId() == "volume") {
+                        if (stCall.GetParamNum() >= 1) {
+                            m_volume = float.Parse(stCall.GetParamId(0));
+                        }
+                        else {
+                            m_volume = 1.0f;
+                        }
+                    }
+                }
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 6) {
@@ -162,52 +196,25 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
-        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
-        {
-            Dsl.CallData callData = funcData.Call;
-            if (null == callData) {
-                return;
-            }
-            Load(callData, instance);
-            for (int i = 0; i < funcData.Statements.Count; i++) {
-                Dsl.CallData stCall = funcData.Statements[i] as Dsl.CallData;
-                if (null == stCall) {
-                    continue;
-                }
-                if (stCall.GetId() == "position") {
-                    LoadPositionConfig(stCall);
-                } else if (stCall.GetId() == "bone") {
-                    LoadBoneConfig(stCall);
-                } else if (stCall.GetId() == "audiogroup") {
-                    LoadAudioGroup(stCall);
-                } else if (stCall.GetId() == "volume") {
-                    if (stCall.GetParamNum() >= 1) {
-                        m_volume = float.Parse(stCall.GetParamId(0));
-                    } else {
-                        m_volume = 1.0f;
-                    }
-                }
-            }
-        }
-        private void LoadAudioGroup(Dsl.CallData stCall)
+        private void LoadAudioGroup(Dsl.FunctionData stCall)
         {
             for (int i = 0; i < stCall.GetParamNum(); i++) {
                 m_AudioGroup.Add(stCall.GetParamId(i));
             }
         }
-        private void LoadPositionConfig(Dsl.CallData stCall)
+        private void LoadPositionConfig(Dsl.FunctionData stCall)
         {
             if (stCall.GetParamNum() >= 2) {
                 m_IsBoneSound = false;
-                m_Position = DslUtility.CalcVector3(stCall.GetParam(0) as Dsl.CallData);
+                m_Position = DslUtility.CalcVector3(stCall.GetParam(0) as Dsl.FunctionData);
                 m_IsAttach = bool.Parse(stCall.GetParamId(1));
             }
         }
-        private void LoadBoneConfig(Dsl.CallData stCall)
+        private void LoadBoneConfig(Dsl.FunctionData stCall)
         {
             if (stCall.GetParamNum() >= 2) {
                 m_IsBoneSound = true;
-                m_Position = DslUtility.CalcVector3(stCall.GetParam(0) as Dsl.CallData); ;
+                m_Position = DslUtility.CalcVector3(stCall.GetParam(0) as Dsl.FunctionData); ;
                 m_IsAttach = bool.Parse(stCall.GetParamId(1));
             }
         }
@@ -241,7 +248,7 @@ namespace GameFramework.Skill.Trigers
         {
             
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() >= 2) {
                 StartTime = long.Parse(callData.GetParamId(0));

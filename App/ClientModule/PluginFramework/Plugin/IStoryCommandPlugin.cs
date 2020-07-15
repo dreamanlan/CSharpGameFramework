@@ -13,7 +13,7 @@ namespace GameFramework.Plugin
         void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args);
         bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta);
         bool ExecCommandWithArgs(StoryInstance instance, long delta, object iterator, object[] args);
-        void LoadCallData(Dsl.CallData callData);
+        void LoadCallData(Dsl.FunctionData callData);
         void LoadFuncData(Dsl.FunctionData funcData);
         void LoadStatementData(Dsl.StatementData statementData);
     }

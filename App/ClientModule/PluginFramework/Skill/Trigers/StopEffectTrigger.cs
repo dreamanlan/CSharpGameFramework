@@ -21,7 +21,7 @@ namespace GameFramework.Skill.Trigers
         {
             
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() >= 1) {
                 StartTime = long.Parse(callData.GetParamId(0));

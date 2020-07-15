@@ -37,7 +37,7 @@ namespace GameFramework.AttrCalc
             if (null != valueData) {
                 return Load(valueData);
             } else {
-                Dsl.CallData callData = dsl as Dsl.CallData;
+                Dsl.FunctionData callData = dsl as Dsl.FunctionData;
                 if (null != callData) {
                     if (Load(callData)) {
                         return true;
@@ -66,7 +66,6 @@ namespace GameFramework.AttrCalc
         }
         protected virtual void SetCalculator(DslCalculator calculator) { }
         protected virtual bool Load(Dsl.ValueData valData) { return false; }
-        protected virtual bool Load(Dsl.CallData callData) { return false; }
         protected virtual bool Load(AttrExpressionList exps) { return false; }
         protected virtual bool Load(Dsl.FunctionData funcData) { return false; }
         protected virtual bool Load(Dsl.StatementData statementData) { return false; }
@@ -90,9 +89,9 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
-            Dsl.CallData param1 = callData.GetParam(0) as Dsl.CallData;
+            Dsl.FunctionData param1 = callData.GetParam(0) as Dsl.FunctionData;
             Dsl.ISyntaxComponent param2 = callData.GetParam(1);
             m_Variables = Calculator.Variables;
             m_VarId = int.Parse(param1.GetParamId(0));
@@ -116,7 +115,7 @@ namespace GameFramework.AttrCalc
             }
             return ret;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             m_Variables = Calculator.Variables;
             m_VarId = int.Parse(callData.GetParamId(0));
@@ -145,9 +144,9 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
-            Dsl.CallData param1 = callData.GetParam(0) as Dsl.CallData;
+            Dsl.FunctionData param1 = callData.GetParam(0) as Dsl.FunctionData;
             Dsl.ISyntaxComponent param2 = callData.GetParam(1);
             m_PropId = (CharacterPropertyEnum)int.Parse(param1.GetParamId(0));
             m_Op = Calculator.Load(param2);
@@ -169,7 +168,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             m_PropId = (CharacterPropertyEnum)int.Parse(callData.GetParamId(0));
             return true;
@@ -188,7 +187,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             m_PropId = (CharacterPropertyEnum)int.Parse(callData.GetParamId(0));
             return true;
@@ -210,7 +209,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             m_Index = int.Parse(callData.GetParamId(0));
             return true;
@@ -267,7 +266,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             var syntaxComp = callData.GetParam(0);
             var valData = syntaxComp as Dsl.ValueData;
@@ -302,7 +301,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             m_PropId = int.Parse(callData.GetParamId(0));
             return true;
@@ -321,7 +320,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             return true;
         }
@@ -337,7 +336,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             return true;
         }
@@ -390,7 +389,7 @@ namespace GameFramework.AttrCalc
             m_Val = long.Parse(valData.GetId());
             return true;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             m_Val = long.Parse(callData.GetParamId(0));
             return true;
@@ -467,7 +466,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             return true;
         }
@@ -487,7 +486,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             return true;
         }
@@ -507,7 +506,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             return true;
         }
@@ -527,7 +526,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             return true;
         }
@@ -547,7 +546,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             return true;
         }
@@ -567,7 +566,7 @@ namespace GameFramework.AttrCalc
             }
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             return true;
         }
@@ -1036,9 +1035,9 @@ namespace GameFramework.AttrCalc
             Dsl.FunctionData funcData1 = statementData.First;
             Dsl.FunctionData funcData2 = statementData.Second;
             if (funcData2.GetId() == ":") {
-                Dsl.ISyntaxComponent cond = funcData1.Call.GetParam(0);
-                Dsl.ISyntaxComponent op1 = funcData1.GetStatement(0);
-                Dsl.ISyntaxComponent op2 = funcData2.GetStatement(0);
+                Dsl.ISyntaxComponent cond = funcData1.LowerOrderFunction.GetParam(0);
+                Dsl.ISyntaxComponent op1 = funcData1.GetParam(0);
+                Dsl.ISyntaxComponent op2 = funcData2.GetParam(0);
                 m_Op1 = Calculator.Load(cond);
                 m_Op2 = Calculator.Load(op1);
                 m_Op3 = Calculator.Load(op2);
@@ -1132,30 +1131,32 @@ namespace GameFramework.AttrCalc
         }
         protected override bool Load(Dsl.FunctionData funcData)
         {
-            Dsl.ISyntaxComponent cond = funcData.Call.GetParam(0);
-            IfExp.Clause item = new IfExp.Clause();
-            item.Condition = Calculator.Load(cond);
-            for (int ix = 0; ix < funcData.GetStatementNum(); ++ix) {
-                IAttrExpression subExp = Calculator.Load(funcData.GetStatement(ix));
-                item.Expressions.Add(subExp);
+            if (funcData.IsHighOrder) {
+                Dsl.ISyntaxComponent cond = funcData.LowerOrderFunction.GetParam(0);
+                IfExp.Clause item = new IfExp.Clause();
+                item.Condition = Calculator.Load(cond);
+                for (int ix = 0; ix < funcData.GetParamNum(); ++ix) {
+                    IAttrExpression subExp = Calculator.Load(funcData.GetParam(ix));
+                    item.Expressions.Add(subExp);
+                }
+                m_Clauses.Add(item);
             }
-            m_Clauses.Add(item);
             return true;
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
             foreach (var fData in statementData.Functions) {
-                if (fData.GetId() == "if" || fData.GetId() == "elseif") {
+                if (fData.IsHighOrder && (fData.GetId() == "if" || fData.GetId() == "elseif")) {
                     IfExp.Clause item = new IfExp.Clause();
-                    if (fData.Call.GetParamNum() > 0) {
-                        Dsl.ISyntaxComponent cond = fData.Call.GetParam(0);
+                    if (fData.LowerOrderFunction.GetParamNum() > 0) {
+                        Dsl.ISyntaxComponent cond = fData.LowerOrderFunction.GetParam(0);
                         item.Condition = Calculator.Load(cond);
                     } else {
                         //error
                         LogSystem.Error("DslCalculator error, {0} line {1}", fData.ToScriptString(false), fData.GetLine());
                     }
-                    for (int ix = 0; ix < fData.GetStatementNum(); ++ix) {
-                        IAttrExpression subExp = Calculator.Load(fData.GetStatement(ix));
+                    for (int ix = 0; ix < fData.GetParamNum(); ++ix) {
+                        IAttrExpression subExp = Calculator.Load(fData.GetParam(ix));
                         item.Expressions.Add(subExp);
                     }
                     m_Clauses.Add(item);
@@ -1165,8 +1166,8 @@ namespace GameFramework.AttrCalc
                         LogSystem.Error("DslCalculator error, {0} line {1}", fData.ToScriptString(false), fData.GetLine());
                     } else {
                         IfExp.Clause item = new IfExp.Clause();
-                        for (int ix = 0; ix < fData.GetStatementNum(); ++ix) {
-                            IAttrExpression subExp = Calculator.Load(fData.GetStatement(ix));
+                        for (int ix = 0; ix < fData.GetParamNum(); ++ix) {
+                            IAttrExpression subExp = Calculator.Load(fData.GetParam(ix));
                             item.Expressions.Add(subExp);
                         }
                         m_Clauses.Add(item);
@@ -1204,7 +1205,7 @@ namespace GameFramework.AttrCalc
             Calculator.Log(")");
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             for (int i = 0; i < callData.GetParamNum(); ++i) {
                 Dsl.ISyntaxComponent param = callData.GetParam(i);
@@ -1240,9 +1241,9 @@ namespace GameFramework.AttrCalc
             Calculator.Log("])");
             return v;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
-            Dsl.CallData strParams = callData.GetParam(0) as Dsl.CallData;
+            Dsl.FunctionData strParams = callData.GetParam(0) as Dsl.FunctionData;
             if (null != strParams) {
                 foreach (Dsl.ISyntaxComponent str in strParams.Params) {
                     m_Strings.Add(str.GetId());
@@ -1400,7 +1401,7 @@ namespace GameFramework.AttrCalc
                     return null;
                 }
             } else {
-                Dsl.CallData callData = comp as Dsl.CallData;
+                Dsl.FunctionData callData = comp as Dsl.FunctionData;
                 if (null != callData) {
                     if (!callData.HaveId()) {
 #if DEBUG
@@ -1465,15 +1466,15 @@ namespace GameFramework.AttrCalc
             if(null==func && null != stData) {
                 func = stData.First;
             }
-            if (null == func)
+            if (null == func || !func.IsHighOrder)
                 return;
-            string id = func.Call.GetParamId(0);
+            string id = func.LowerOrderFunction.GetParamId(0);
             AttrExpressionList list;
             if (!m_Procs.TryGetValue(id, out list)) {
                 list = new AttrExpressionList();
                 m_Procs.Add(id, list);
             }
-            foreach (Dsl.ISyntaxComponent comp in func.Statements) {
+            foreach (Dsl.ISyntaxComponent comp in func.Params) {
                 var exp = Load(comp);
                 if (null != exp) {
                     list.Add(exp);

@@ -28,6 +28,4 @@ E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug
 E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\ServerProtoBuf.pdb
 E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.dll
 E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.pdb
-E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.csprojAssemblyReference.cache
-E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.csproj.CoreCompileInputs.cache
-E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.csproj.CopyComplete
+E:\OpenSource\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.csprojResolveAssemblyReference.cache

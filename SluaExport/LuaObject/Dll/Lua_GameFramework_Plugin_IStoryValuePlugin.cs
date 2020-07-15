@@ -39,7 +39,7 @@ public class Lua_GameFramework_Plugin_IStoryValuePlugin : LuaObject {
 	static public int LoadCallData(IntPtr l) {
 		try {
 			GameFramework.Plugin.IStoryValuePlugin self=(GameFramework.Plugin.IStoryValuePlugin)checkSelf(l);
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,2,out a1);
 			self.LoadCallData(a1);
 			pushValue(l,true);

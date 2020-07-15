@@ -288,9 +288,9 @@ public class Lua_Dsl_FunctionData : LuaObject {
 				pushValue(l,true);
 				return 1;
 			}
-			else if(matchType(l,argc,2,typeof(Dsl.CallData))){
+			else if(matchType(l,argc,2,typeof(Dsl.FunctionData))){
 				Dsl.FunctionData self=(Dsl.FunctionData)checkSelf(l);
-				Dsl.CallData a1;
+				Dsl.FunctionData a1;
 				checkType(l,2,out a1);
 				self.AddStatement(a1);
 				pushValue(l,true);
@@ -372,7 +372,7 @@ public class Lua_Dsl_FunctionData : LuaObject {
 	static public int set_Call(IntPtr l) {
 		try {
 			Dsl.FunctionData self=(Dsl.FunctionData)checkSelf(l);
-			Dsl.CallData v;
+			Dsl.FunctionData v;
 			checkType(l,2,out v);
 			self.Call=v;
 			pushValue(l,true);

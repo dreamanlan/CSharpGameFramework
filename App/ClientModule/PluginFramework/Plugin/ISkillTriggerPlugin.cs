@@ -12,7 +12,7 @@ namespace GameFramework.Plugin
         ISkillTriggerPlugin Clone();
         void Reset();
         bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime);        
-        void LoadCallData(Dsl.CallData callData, SkillInstance instance);
+        void LoadCallData(Dsl.FunctionData callData, SkillInstance instance);
         void LoadFuncData(Dsl.FunctionData funcData, SkillInstance instance);
         void LoadStatementData(Dsl.StatementData statementData, SkillInstance instance);
         void OnInitProperties();

@@ -89,7 +89,10 @@ namespace SkillSystem
         }
         public void Load(Dsl.FunctionData sectionData, SkillInstance instance)
         {
-            Dsl.CallData callData = sectionData.Call;
+            Dsl.FunctionData callData = sectionData;
+            if (sectionData.IsHighOrder) {
+                callData = sectionData.LowerOrderFunction;
+            }
             if (null != callData && callData.HaveParam()) {
                 m_InitTrigers.Clear();
                 int num = callData.GetParamNum();
@@ -187,13 +190,13 @@ namespace SkillSystem
         private void RefreshTrigers(Dsl.FunctionData sectionData, SkillInstance instance)
         {
             m_LoadedTrigers.Clear();
-            for (int i = 0; i < sectionData.Statements.Count; i++) {
-                ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(sectionData.Statements[i], instance);
+            for (int i = 0; i < sectionData.GetParamNum(); i++) {
+                ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(sectionData.GetParam(i), instance);
                 if (null != triger) {
                     m_LoadedTrigers.Add(triger);
                 } else {
 #if DEBUG
-                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, sectionData.Statements[i].GetLine(), sectionData.Statements[i].ToScriptString(false));
+                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, sectionData.GetParam(i).GetLine(), sectionData.GetParam(i).ToScriptString(false));
                     throw new Exception(err);
 #endif
                 }
@@ -245,7 +248,10 @@ namespace SkillSystem
         }
         public void Load(Dsl.FunctionData sectionData, SkillInstance instance)
         {
-            Dsl.CallData callData = sectionData.Call;
+            Dsl.FunctionData callData = sectionData;
+            if (sectionData.IsHighOrder) {
+                callData = sectionData.LowerOrderFunction;
+            }
             if (null != callData && callData.HaveParam()) {
                 string[] args = new string[callData.GetParamNum()];
                 for (int i = 0; i < callData.GetParamNum(); ++i) {
@@ -313,13 +319,13 @@ namespace SkillSystem
         private void RefreshTrigers(Dsl.FunctionData sectionData, SkillInstance instance)
         {
             m_LoadedTrigers.Clear();
-            for (int i = 0; i < sectionData.Statements.Count; i++) {
-                ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(sectionData.Statements[i], instance);
+            for (int i = 0; i < sectionData.GetParamNum(); i++) {
+                ISkillTriger triger = SkillTrigerManager.Instance.CreateTriger(sectionData.GetParam(i), instance);
                 if (null != triger) {
                     m_LoadedTrigers.Add(triger);
                 } else {
 #if DEBUG
-                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, sectionData.Statements[i].GetLine(), sectionData.Statements[i].ToScriptString(false));
+                    string err = string.Format("CreateTriger failed, skill:{0} line:{1} triger:{2}", instance.DslSkillId, sectionData.GetParam(i).GetLine(), sectionData.GetParam(i).ToScriptString(false));
                     throw new Exception(err);
 #endif
                 }
@@ -561,86 +567,94 @@ namespace SkillSystem
             m_DamagesForInit = new List<SkillSectionOrMessageTriggers>();
             if (null != skill && (skill.GetId() == "skill" || skill.GetId() == "skilldsl" || skill.GetId() == "emitskill" || skill.GetId() == "hitskill")) {
                 ret = true;
-                Dsl.CallData callData = skill.Call;
+                Dsl.FunctionData callData = skill;
+                if (skill.IsHighOrder) {
+                    callData = skill.LowerOrderFunction;
+                }
                 if (null != callData && callData.HaveParam()) {
                     m_OuterDslSkillId = int.Parse(callData.GetParamId(0));
                     m_DslSkillId = m_OuterDslSkillId;
                 }
 
-                for (int i = 0; i < skill.Statements.Count; i++) {
-                    if (skill.Statements[i].GetId() == "section") {
+                for (int i = 0; i < skill.GetParamNum(); i++) {
+                    var part = skill.GetParam(i);
+                    string partId = part.GetId();
+                    if (partId == "section") {
                         m_UseImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Section));
                         m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Section));
                         m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Section));
-                        Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
+                        Dsl.FunctionData sectionData = part as Dsl.FunctionData;
                         if (null != sectionData) {
                             SkillSection section = new SkillSection();
                             section.Load(sectionData, this);
                             m_Sections.Add(section);
                         } else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, section must be a function ! line:{1} section:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, section must be a function ! line:{1} section:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, section must be a function !", m_DslSkillId);
 #endif
                         }
-                    } else if (skill.Statements[i].GetId() == "onmessage") {
+                    } else if (partId == "onmessage") {
                         m_UseImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Message));
                         m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Message));
                         m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.Message));
-                        Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
+                        Dsl.FunctionData sectionData = part as Dsl.FunctionData;
                         if (null != sectionData) {
                             SkillMessageHandler handler = new SkillMessageHandler();
                             handler.Load(sectionData, this);
                             m_MessageHandlers.Add(handler);
                         } else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, onmessage must be a function ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, onmessage must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, onmessage must be a function !", m_DslSkillId);
 #endif
                         }
-                    } else if (skill.Statements[i].GetId() == "onstop") {
+                    } else if (partId == "onstop") {
                         m_UseImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnStop));
                         m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnStop));
                         m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnStop));
-                        Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
+                        Dsl.FunctionData sectionData = part as Dsl.FunctionData;
                         if (null != sectionData) {
                             m_StopSection = new SkillMessageHandler();
                             m_StopSection.Load(sectionData, this);
                         } else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, onstop must be a function ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, onstop must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, onstop must be a function !", m_DslSkillId);
 #endif
                         }
-                    } else if (skill.Statements[i].GetId() == "oninterrupt") {
+                    } else if (partId == "oninterrupt") {
                         m_UseImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnInterrupt));
                         m_ImpactsForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnInterrupt));
                         m_DamagesForInit.Add(new SkillSectionOrMessageTriggers(SectionOrMessageType.OnInterrupt));
-                        Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
+                        Dsl.FunctionData sectionData = part as Dsl.FunctionData;
                         if (null != sectionData) {
                             m_InterruptSection = new SkillMessageHandler();
                             m_InterruptSection.Load(sectionData, this);
                         } else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, oninterrupt must be a function ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, oninterrupt must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, oninterrupt must be a function !", m_DslSkillId);
 #endif
                         }
-                    } else if (skill.Statements[i].GetId() == "emitskill") {
-                        Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
+                    } else if (partId == "emitskill") {
+                        Dsl.FunctionData sectionData = part as Dsl.FunctionData;
                         if (null != sectionData) {
                             PrepareInnerEmitSkillInstances();
                             SkillInstance inst = new SkillInstance();
                             inst.Init(sectionData);
-                            Dsl.CallData header = sectionData.Call;
+                            Dsl.FunctionData header = sectionData;
+                            if (sectionData.IsHighOrder) {
+                                header = sectionData.LowerOrderFunction;
+                            }
                             int innerId = 0;
                             if (header.GetParamNum() > 0) {
                                 innerId = int.Parse(header.GetParamId(0));
@@ -652,7 +666,7 @@ namespace SkillSystem
                                 m_EmitSkillInstances.Add(inst.InnerDslSkillId, inst);
                             } else {
 #if DEBUG
-                                string err = string.Format("Skill {0} DSL, emitskill id duplicate ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString(false));
+                                string err = string.Format("Skill {0} DSL, emitskill id duplicate ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
                                 throw new Exception(err);
 #else
                                 LogSystem.Error("Skill {0} DSL, emitskill id duplicate !", m_DslSkillId);
@@ -660,19 +674,22 @@ namespace SkillSystem
                             }
                         } else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, emitskill must be a function ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, emitskill must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, oninterrupt must be a function !", m_DslSkillId);
 #endif
                         }
-                    } else if (skill.Statements[i].GetId() == "hitskill") {
-                        Dsl.FunctionData sectionData = skill.Statements[i] as Dsl.FunctionData;
+                    } else if (partId == "hitskill") {
+                        Dsl.FunctionData sectionData = part as Dsl.FunctionData;
                         if (null != sectionData) {
                             PrepareInnerHitSkillInstances();
                             SkillInstance inst = new SkillInstance();
                             inst.Init(sectionData);
-                            Dsl.CallData header = sectionData.Call;
+                            Dsl.FunctionData header = sectionData;
+                            if (sectionData.IsHighOrder) {
+                                header = sectionData.LowerOrderFunction;
+                            }
                             int innerId = 0;
                             if (header.GetParamNum() > 0) {
                                 innerId = int.Parse(header.GetParamId(0));
@@ -684,7 +701,7 @@ namespace SkillSystem
                                 m_HitSkillInstances.Add(inst.InnerDslSkillId, inst);
                             } else {
 #if DEBUG
-                                string err = string.Format("Skill {0} DSL, hitskill id duplicate ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString(false));
+                                string err = string.Format("Skill {0} DSL, hitskill id duplicate ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
                                 throw new Exception(err);
 #else
                                 LogSystem.Error("Skill {0} DSL, hitskill id duplicate !", m_DslSkillId);
@@ -692,7 +709,7 @@ namespace SkillSystem
                             }
                         } else {
 #if DEBUG
-                            string err = string.Format("Skill {0} DSL, hitskill must be a function ! line:{1} onmessage:{2}", m_DslSkillId, skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString(false));
+                            string err = string.Format("Skill {0} DSL, hitskill must be a function ! line:{1} onmessage:{2}", m_DslSkillId, part.GetLine(), part.ToScriptString(false));
                             throw new Exception(err);
 #else
               LogSystem.Error("Skill {0} DSL, oninterrupt must be a function !", m_DslSkillId);
@@ -700,10 +717,10 @@ namespace SkillSystem
                         }
                     } else {
 #if DEBUG
-                        string err = string.Format("SkillInstance::Init, Skill {0} unknown part {1}, line:{2} section:{3}", m_DslSkillId, skill.Statements[i].GetId(), skill.Statements[i].GetLine(), skill.Statements[i].ToScriptString(false));
+                        string err = string.Format("SkillInstance::Init, Skill {0} unknown part {1}, line:{2} section:{3}", m_DslSkillId, part.GetId(), part.GetLine(), part.ToScriptString(false));
                         throw new Exception(err);
 #else
-            LogSystem.Error("SkillInstance::Init, Skill {0} unknown part {1}", m_DslSkillId, skill.Statements[i].GetId());
+            LogSystem.Error("SkillInstance::Init, Skill {0} unknown part {1}", m_DslSkillId, part.GetId());
 #endif
                     }
                 }

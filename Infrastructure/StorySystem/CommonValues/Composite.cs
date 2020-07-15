@@ -57,14 +57,9 @@ namespace StorySystem.CommonValues
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
             m_LoadedArgs = new List<IStoryValue>();
-            Dsl.CallData callData = param as Dsl.CallData;
-            if (null != callData) {
-                Load(callData);
-            } else {
-                Dsl.FunctionData funcData = param as Dsl.FunctionData;
-                if (null != funcData) {
-                    Load(funcData);
-                }
+            Dsl.FunctionData funcData = param as Dsl.FunctionData;
+            if (null != funcData) {
+                Load(funcData);
             }
         }
         public IStoryValue Clone()
@@ -137,7 +132,28 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private void Load(Dsl.CallData callData)
+        private void Load(Dsl.FunctionData funcData)
+        {
+            if (funcData.IsHighOrder) {
+                var cd = funcData.LowerOrderFunction;
+                LoadCall(cd);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData);
+            }
+            if (funcData.HaveStatement()) {
+                foreach (var comp in funcData.Params) {
+                    var fcd = comp as Dsl.FunctionData;
+                    if (null != fcd) {
+                        var key = fcd.GetId();
+                        StoryValue val = new StoryValue();
+                        val.InitFromDsl(fcd.GetParam(0));
+                        m_LoadedOptArgs[key] = val;
+                    }
+                }
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData)
         {
             m_LoadedOptArgs = new Dictionary<string, IStoryValue>();
             foreach (var pair in m_OptArgs) {
@@ -150,20 +166,6 @@ namespace StorySystem.CommonValues
                 StoryValue val = new StoryValue();
                 val.InitFromDsl(callData.GetParam(i));
                 m_LoadedArgs.Add(val);
-            }
-        }
-        private void Load(Dsl.FunctionData funcData)
-        {
-            var cd = funcData.Call;
-            Load(cd);
-            foreach (var comp in funcData.Statements) {
-                var fcd = comp as Dsl.CallData;
-                if (null != fcd) {
-                    var key = fcd.GetId();
-                    StoryValue val = new StoryValue();
-                    val.InitFromDsl(fcd.GetParam(0));
-                    m_LoadedOptArgs[key] = val;
-                }
             }
         }
         private void Prepare(StoryRuntime runtime)
@@ -231,7 +233,7 @@ namespace StorySystem.CommonValues
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() > 0) {
                 m_Id.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
@@ -286,7 +288,7 @@ namespace StorySystem.CommonValues
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData && callData.GetParamNum() > 0) {
                 m_Id.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();

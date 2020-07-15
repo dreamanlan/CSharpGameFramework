@@ -87,11 +87,11 @@ namespace StorySystem
         public IStoryValue CalcValue(Dsl.ISyntaxComponent param)
         {
             lock (m_Lock) {
-                Dsl.CallData callData = param as Dsl.CallData;
-                if (null != callData && callData.IsValid() && callData.GetId().Length == 0 && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS || callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET)) {
+                Dsl.FunctionData callData = param as Dsl.FunctionData;
+                if (null != callData && callData.IsValid() && callData.GetId().Length == 0 && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS || callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET)) {
                     //处理圆括弧与方括弧
                     switch (callData.GetParamClass()) {
-                        case (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS:
+                        case (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS:
                             if (callData.GetParamNum() > 0) {
                                 int ct = callData.GetParamNum();
                                 return CalcValue(callData.GetParam(ct - 1));
@@ -99,7 +99,7 @@ namespace StorySystem
                             else {
                                 return null;
                             }
-                        case (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET: {
+                        case (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET: {
                                 IStoryValue ret = null;
                                 IStoryValueFactory factory = GetFactory("array");
                                 if (null != factory) {
@@ -122,7 +122,7 @@ namespace StorySystem
                     Dsl.FunctionData funcData = param as Dsl.FunctionData;
                     if (null != funcData && funcData.HaveStatement()) {
                         //处理大括弧
-                        callData = funcData.Call;
+                        callData = funcData;
                         if (null == callData || !callData.HaveParam()) {
                             IStoryValue ret = null;
                             IStoryValueFactory factory = GetFactory("hashtable");
@@ -145,13 +145,13 @@ namespace StorySystem
                     }
                     else {
                         if (null != callData) {
-                            Dsl.CallData innerCall = callData.Call;
-                            if (callData.IsHighOrder && callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS && (
-                                innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                                innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                                innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                                innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                                innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS
+                            Dsl.FunctionData innerCall = callData.LowerOrderFunction;
+                            if (callData.IsHighOrder && callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS && (
+                                innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                                innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                                innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                                innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                                innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS
                                 )) {
                                 //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> dotnetcall(obj,member,a,b,...)
                                 string method = innerCall.GetParamId(0);
@@ -162,11 +162,11 @@ namespace StorySystem
                                 else {
                                     apiName = "dotnetcall";
                                 }
-                                Dsl.CallData newCall = new Dsl.CallData();
+                                Dsl.FunctionData newCall = new Dsl.FunctionData();
                                 newCall.Name = new Dsl.ValueData(apiName, Dsl.ValueData.ID_TOKEN);
-                                newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                                newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                 if (innerCall.IsHighOrder) {
-                                    newCall.Params.Add(innerCall.Call);
+                                    newCall.Params.Add(innerCall.LowerOrderFunction);
                                     newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
                                     for (int i = 0; i < callData.GetParamNum(); ++i) {
                                         Dsl.ISyntaxComponent p = callData.Params[i];
@@ -183,17 +183,17 @@ namespace StorySystem
                                 }
                                 return CalcValue(newCall);
                             }
-                            else if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                              callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                              callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                              callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                              callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
+                            else if (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
                                 //obj.property or obj[property] or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
-                                Dsl.CallData newCall = new Dsl.CallData();
+                                Dsl.FunctionData newCall = new Dsl.FunctionData();
                                 newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
-                                newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                                newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                 if (callData.IsHighOrder) {
-                                    newCall.Params.Add(callData.Call);
+                                    newCall.Params.Add(callData.LowerOrderFunction);
                                     newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0), callData.GetParamClass()));
                                 }
                                 else {

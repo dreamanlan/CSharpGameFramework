@@ -103,7 +103,7 @@ namespace LogicDataGenerator
           if (info.GetId() == "explanationfile") {
             if (info.Functions.Count == 1) {
               FunctionData funcData = info.First;
-              CallData call = funcData.Call;
+              FunctionData call = funcData.Call;
               if (null != call && call.GetParamNum() >= 1) {
                 string commentFile = call.GetParamId(0);
                 string path = Path.Combine(Path.GetDirectoryName(m_DslFile), commentFile);
@@ -125,7 +125,7 @@ namespace LogicDataGenerator
           } else if (info.GetId() == "explanation") {
             if (info.Functions.Count == 1) {
               FunctionData funcData = info.First;
-              CallData call = funcData.Call;
+              FunctionData call = funcData.Call;
               if (null != call && call.GetParamNum() >= 1) {
                 string line = call.GetParamId(0);
                 m_Explanation.Add(line);
@@ -140,7 +140,7 @@ namespace LogicDataGenerator
           } else if (info.GetId() == "version") {
             if (info.Functions.Count == 1) {
               FunctionData funcData = info.First;
-              CallData call = funcData.Call;
+              FunctionData call = funcData.Call;
               if (null != call && call.GetParamNum() >= 1) {
                 m_Version = call.GetParamId(0);
               } else {
@@ -154,7 +154,7 @@ namespace LogicDataGenerator
           } else if (info.GetId() == "package") {
             if (info.Functions.Count == 1) {
               FunctionData funcData = info.First;
-              CallData call = funcData.Call;
+              FunctionData call = funcData.Call;
               if (null != call && call.GetParamNum() >= 1) {
                 m_Package = call.GetParamId(0);
               } else {
@@ -168,7 +168,7 @@ namespace LogicDataGenerator
           } else if (info.GetId() == "defaultsize") {
             if (info.Functions.Count == 1) {
               FunctionData funcData = info.First;
-              CallData call = funcData.Call;
+              FunctionData call = funcData.Call;
               if (null != call && call.GetParamNum() >= 1) {
                 m_DefVarcharSize = int.Parse(call.GetParamId(0));
               } else {
@@ -182,7 +182,7 @@ namespace LogicDataGenerator
           } else if (info.GetId() == "import") {
             if (info.Functions.Count == 1) {
               FunctionData funcData = info.First;
-              CallData call = funcData.Call;
+              FunctionData call = funcData.Call;
               if (null != call && call.GetParamNum() >= 1) {
                 string importDslFile = call.GetParamId(0);
                 if (string.IsNullOrEmpty(importDslFile)) {
@@ -227,7 +227,7 @@ namespace LogicDataGenerator
             if (info.Functions.Count == 1) {
               FunctionData funcData = info.First;
               if (null != funcData) {
-                CallData callData = funcData.Call;
+                FunctionData callData = funcData.Call;
                 if (null != callData && callData.GetParamNum() >= 1) {
                   string logicTypeName = callData.GetParamId(0);
 
@@ -257,7 +257,7 @@ namespace LogicDataGenerator
                         haveError = true;
                       }
                     } else {
-                      CallData converterData = comp as CallData;
+                      FunctionData converterData = comp as FunctionData;
                       if (null != converterData && converterData.GetParamNum() == 1) {
                         string id = converterData.GetId();
                         string param = converterData.GetParamId(0);
@@ -1557,7 +1557,7 @@ namespace LogicDataGenerator
     private static void ParseEnum(string dslFile, FunctionData funcData, string defGroupName, SortedDictionary<string, EnumTypeDef> enumTypes, ref bool haveError)
     {
       if (null != funcData) {
-        CallData callData = funcData.Call;
+        FunctionData callData = funcData.Call;
         if (null != callData && callData.GetParamNum() >= 1) {
           string enumName, groupName;
           enumName = callData.GetParamId(0);
@@ -1588,7 +1588,7 @@ namespace LogicDataGenerator
                 haveError = true;
               }
             } else {
-              CallData field = comp as CallData;
+              FunctionData field = comp as FunctionData;
               if (null != field) {
                 if (field.HaveId()) {
                   if (field.GetParamNum() >= 1) {
@@ -1626,7 +1626,7 @@ namespace LogicDataGenerator
     {
       string typeName = null;
       if (null != funcData) {
-        CallData callData = funcData.Call;
+        FunctionData callData = funcData.Call;
         if (null != callData && callData.GetParamNum() >= 1) {
           string groupName;
           typeName = callData.GetParamId(0);
@@ -1650,7 +1650,7 @@ namespace LogicDataGenerator
 
           int nextOrder = 1;
           foreach (ISyntaxComponent comp in funcData.Statements) {
-            CallData field = comp as CallData;
+            FunctionData field = comp as FunctionData;
             if (null != field) {
               if (field.GetId() == "option") {
                 if (field.GetParamId(0) == "dontgenenum")
@@ -1683,7 +1683,7 @@ namespace LogicDataGenerator
                 } if (customCode.GetId() == "message") {
                   ParseMessage(dslFile, customCode, messageDef.m_GroupName, true, messageDef.m_Messages, ref haveError);
                 } if (customCode.GetId() == "member") {
-                  CallData customField = customCode.Call;
+                  FunctionData customField = customCode.Call;
                   if (null != customField && customField.GetParamNum() >= 3) {
                     MemberDef memberDef = new MemberDef();
                     memberDef.m_MemberName = customField.GetParamId(0);
@@ -1704,7 +1704,7 @@ namespace LogicDataGenerator
                           messageDef.m_ForeignKeys.Add(memberDef.m_MemberName);
                         }
                       } else {
-                        CallData item = comp2 as CallData;
+                        FunctionData item = comp2 as FunctionData;
                         if (null != item) {
                           if (item.GetId() == "default") {
                             memberDef.m_Default = item.GetParamId(0);

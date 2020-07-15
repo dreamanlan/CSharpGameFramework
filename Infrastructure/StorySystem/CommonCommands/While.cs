@@ -72,20 +72,22 @@ namespace StorySystem.CommonCommands
         }
         protected override void Load(Dsl.FunctionData functionData)
         {
-            m_LocalInfoIndex = StoryCommandManager.Instance.AllocLocalInfoIndex();
-            Dsl.CallData callData = functionData.Call;
-            if (null != callData) {
-                if (callData.GetParamNum() > 0) {
-                    Dsl.ISyntaxComponent param = callData.GetParam(0);
-                    m_LoadedCondition.InitFromDsl(param);
+            if (functionData.IsHighOrder) {
+                m_LocalInfoIndex = StoryCommandManager.Instance.AllocLocalInfoIndex();
+                Dsl.FunctionData callData = functionData.LowerOrderFunction;
+                if (null != callData) {
+                    if (callData.GetParamNum() > 0) {
+                        Dsl.ISyntaxComponent param = callData.GetParam(0);
+                        m_LoadedCondition.InitFromDsl(param);
+                    }
+                    for (int i = 0; i < functionData.GetParamNum(); i++) {
+                        IStoryCommand cmd = StoryCommandManager.Instance.CreateCommand(functionData.GetParam(i));
+                        if (null != cmd)
+                            m_LoadedCommands.Add(cmd);
+                    }
                 }
-                for (int i = 0; i < functionData.Statements.Count; i++) {
-                    IStoryCommand cmd = StoryCommandManager.Instance.CreateCommand(functionData.Statements[i]);
-                    if (null != cmd)
-                        m_LoadedCommands.Add(cmd);
-                }
+                IsCompositeCommand = true;
             }
-            IsCompositeCommand = true;
         }
         private void Prepare(StoryMessageHandler handler)
         {

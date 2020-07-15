@@ -42,7 +42,7 @@ namespace GameFramework.Skill.Trigers
         {
             
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -108,7 +108,7 @@ namespace GameFramework.Skill.Trigers
             m_Myself = null;
             m_Target = null;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 1) {
@@ -210,7 +210,7 @@ namespace GameFramework.Skill.Trigers
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

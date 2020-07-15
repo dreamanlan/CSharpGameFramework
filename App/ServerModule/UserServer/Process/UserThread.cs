@@ -239,6 +239,7 @@ namespace GameFramework
             ServerStorySystem.ThreadInitMask();
             m_GmStorySystem.Init(this);
             m_StorySystem.Init(this);
+            m_StorySystem.LoadStory("UserServer/main.dsl");
             m_StorySystem.StartStory("user_main");
         }
         protected override void OnTick()

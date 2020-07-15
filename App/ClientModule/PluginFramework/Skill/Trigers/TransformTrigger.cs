@@ -29,7 +29,7 @@ namespace GameFramework.Skill.Trigers
         public override void Reset()
         {
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() >= 5) {
                 StartTime = long.Parse(callData.GetParamId(0));
@@ -39,13 +39,13 @@ namespace GameFramework.Skill.Trigers
                 }
                 var param2 = callData.GetParam(2);
                 m_PosObjPath = param2.GetId();
-                var cd2 = param2 as Dsl.CallData;
+                var cd2 = param2 as Dsl.FunctionData;
                 if (null != cd2 && m_PosObjPath == "vector3") {
                     m_Postion = DslUtility.CalcVector3(cd2);
                 }
                 var param3 = callData.GetParam(3);
                 m_RotateObjPath = param3.GetId();
-                var cd3 = param3 as Dsl.CallData;
+                var cd3 = param3 as Dsl.FunctionData;
                 if (null != cd3 && m_RotateObjPath == "eular") {
                     m_Rotate = DslUtility.CalcEularAngles(cd3);
                 }
@@ -58,7 +58,7 @@ namespace GameFramework.Skill.Trigers
                 m_IsUseTerrainHeight = bool.Parse(callData.GetParamId(6));
             }
             if (callData.GetParamNum() >= 8) {
-                m_RandomRotate = DslUtility.CalcVector3(callData.GetParam(7) as Dsl.CallData);
+                m_RandomRotate = DslUtility.CalcVector3(callData.GetParam(7) as Dsl.FunctionData);
             }
             
         }
@@ -208,7 +208,7 @@ namespace GameFramework.Skill.Trigers
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 1) {
@@ -217,7 +217,7 @@ namespace GameFramework.Skill.Trigers
             if (num >= 2) {
                 var param = callData.GetParam(1);
                 m_ObjPath = param.GetId();
-                var cd = param as Dsl.CallData;
+                var cd = param as Dsl.FunctionData;
                 if (null != cd && m_ObjPath == "vector3") {
                     m_RelativeOffset = DslUtility.CalcVector3(cd);
                 }
@@ -275,14 +275,14 @@ namespace GameFramework.Skill.Trigers
             }
             return true;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 3) {
                 StartTime = long.Parse(callData.GetParamId(0));
                 var param = callData.GetParam(1);
                 m_ObjPath = param.GetId();
-                var cd = param as Dsl.CallData;
+                var cd = param as Dsl.FunctionData;
                 if (null != cd && m_ObjPath == "vector3") {
                     m_RelativeOffset = DslUtility.CalcVector3(cd);
                 }

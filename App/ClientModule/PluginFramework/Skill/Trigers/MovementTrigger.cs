@@ -60,7 +60,7 @@ namespace GameFramework.Skill.Trigers
                 return true;
             }
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -115,7 +115,7 @@ namespace GameFramework.Skill.Trigers
             m_IsInited = false;
             GameObject.Destroy(m_StartTransform);            
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -476,7 +476,19 @@ namespace GameFramework.Skill.Trigers
             AddProperty("StopAtTarget", () => { return m_StopAtTarget; }, (object val) => { m_StopAtTarget = (int)Convert.ChangeType(val, typeof(int)); });
             AddProperty("Curve", () => { return m_Curve; }, (object val) => { m_Curve = val as AnimationCurve; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
+        {
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction, instance);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData, instance);
+            }
+            if (funcData.HaveStatement()) {
+                LoadKeyFrames(funcData.Params);
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -489,7 +501,7 @@ namespace GameFramework.Skill.Trigers
                 m_StopAtTarget = int.Parse(callData.GetParamId(2));
             }
             if (num > 3) {
-                m_Offset = DslUtility.CalcVector3(callData.GetParam(3) as Dsl.CallData);
+                m_Offset = DslUtility.CalcVector3(callData.GetParam(3) as Dsl.FunctionData);
             }
             if (num > 4) {
                 StartTime = long.Parse(callData.GetParamId(4));
@@ -503,20 +515,11 @@ namespace GameFramework.Skill.Trigers
                 m_RandRelativeToTarget = list.IndexOf("randrelativetotarget") >= 0;
             }
         }
-        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
-        {
-            Dsl.CallData callData = funcData.Call;
-            if (null == callData) {
-                return;
-            }
-            Load(callData, instance);
-            LoadKeyFrames(funcData.Statements);
-        }
         private void LoadKeyFrames(List<Dsl.ISyntaxComponent> statements)
         {
             m_Curve = new AnimationCurve();
             for (int i = 0; i < statements.Count; i++) {
-                Dsl.CallData stCall = statements[i] as Dsl.CallData;
+                Dsl.FunctionData stCall = statements[i] as Dsl.FunctionData;
                 if (stCall.GetId() == "keyframe") {
                     if (stCall.GetParamNum() >= 4) {
                         float time = float.Parse(stCall.GetParamId(0));
@@ -651,7 +654,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("Velocity", () => { return m_Velocity; }, (object val) => { m_Velocity = (float)Convert.ChangeType(val, typeof(float)); });
             AddProperty("G", () => { return m_G; }, (object val) => { m_G = (float)Convert.ChangeType(val, typeof(float)); });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -665,7 +668,7 @@ namespace GameFramework.Skill.Trigers
             if (num > 2) {
                 var param = callData.GetParam(2);
                 m_ObjPath = param.GetId();
-                var cd = param as Dsl.CallData;
+                var cd = param as Dsl.FunctionData;
                 if (null != cd && m_ObjPath == "vector3") {
                     m_Offset = DslUtility.CalcVector3(cd);
                 }
@@ -727,7 +730,7 @@ namespace GameFramework.Skill.Trigers
             HitFlightManager.Instance.Trigger(senderObj, m_CurveTime / 1000.0f, m_CurveHeight, m_QteStartTime / 1000.0f, m_QteDuration / 1000.0f, m_QteHeight, m_QteButtonDuration / 1000.0f, m_UpAnim, m_DownAnim, m_FalldownAnim, m_AnimFadeTime / 1000.0f);
             return false;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 11) {
@@ -782,7 +785,7 @@ namespace GameFramework.Skill.Trigers
             HitFlightManager.Instance.Hit(senderObj, m_HitDuration / 1000.0f);
             return false;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 2) {

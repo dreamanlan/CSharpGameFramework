@@ -339,21 +339,27 @@ namespace StorySystem
         public void Load(Dsl.FunctionData messageHandlerData, string storyId)
         {
             m_StoryId = storyId;
-            Dsl.CallData callData = messageHandlerData.Call;
-            if (null != callData && callData.HaveParam()) {
-                int paramNum = callData.GetParamNum();
-                string[] args = new string[paramNum];
-                for (int i = 0; i < paramNum; ++i) {
-                    args[i] = callData.GetParamId(i);
+            if (messageHandlerData.IsHighOrder) {
+                Dsl.FunctionData callData = messageHandlerData.LowerOrderFunction;
+                if (null != callData && callData.HaveParam()) {
+                    int paramNum = callData.GetParamNum();
+                    string[] args = new string[paramNum];
+                    for (int i = 0; i < paramNum; ++i) {
+                        args[i] = callData.GetParamId(i);
+                    }
+                    m_MessageId = string.Join(":", args);
                 }
-                m_MessageId = string.Join(":", args);
+                RefreshCommands(messageHandlerData);
             }
-            RefreshCommands(messageHandlerData);
         }
         public void Load(Dsl.StatementData messageHandlerData, string storyId)
         {
             m_StoryId = storyId;
-            Dsl.CallData msgCallData = messageHandlerData.First.Call;
+            var first = messageHandlerData.First;
+            Dsl.FunctionData msgCallData = first;
+            if (first.IsHighOrder) {
+                msgCallData = first.LowerOrderFunction;
+            }
             if (null != msgCallData && msgCallData.HaveParam()) {
                 int paramNum = msgCallData.GetParamNum();
                 string[] args = new string[paramNum];
@@ -362,11 +368,14 @@ namespace StorySystem
                 }
                 m_MessageId = string.Join(":", args);
             }
-            for(int ix = 1; ix < messageHandlerData.GetFunctionNum(); ++ix) {
+            for (int ix = 1; ix < messageHandlerData.GetFunctionNum(); ++ix) {
                 var funcData = messageHandlerData.Functions[ix];
                 var id = funcData.GetId();
                 if (id == "args") {
-                    var callData = funcData.Call;
+                    var callData = funcData;
+                    if (funcData.IsHighOrder) {
+                        callData = funcData.LowerOrderFunction;
+                    }
                     if (null != callData && callData.HaveParam()) {
                         int paramNum = callData.GetParamNum();
                         if (paramNum > 0) {
@@ -476,8 +485,8 @@ namespace StorySystem
         private void RefreshCommands(Dsl.FunctionData handlerData)
         {
             m_LoadedCommands.Clear();
-            for (int i = 0; i < handlerData.Statements.Count; i++) {
-                IStoryCommand cmd = StoryCommandManager.Instance.CreateCommand(handlerData.Statements[i]);
+            for (int i = 0; i < handlerData.GetParamNum(); i++) {
+                IStoryCommand cmd = StoryCommandManager.Instance.CreateCommand(handlerData.GetParam(i));
                 if (null != cmd) {
                     m_LoadedCommands.Add(cmd);
                 }
@@ -677,9 +686,9 @@ namespace StorySystem
                 return;
 #endif
             }
-            if (story.GetId() == "story" || story.GetId() == "script") {
-                ret = true;
-                Dsl.CallData callData = story.Call;
+            if (story.IsHighOrder && (story.GetId() == "story" || story.GetId() == "script")) {
+                ret = true;                
+                Dsl.FunctionData callData = story.LowerOrderFunction;
                 if (null != callData && callData.HaveParam()) {
                     int paramNum = callData.GetParamNum();
                     string[] args = new string[paramNum];
@@ -688,12 +697,14 @@ namespace StorySystem
                     }
                     m_StoryId = string.Join(":", args);
                 }
-                for (int i = 0; i < story.Statements.Count; i++) {
-                    if (story.Statements[i].GetId() == "local") {
-                        Dsl.FunctionData sectionData = story.Statements[i] as Dsl.FunctionData;
+                for (int i = 0; i < story.GetParamNum(); i++) {
+                    var part = story.GetParam(i);
+                    string partId = part.GetId();
+                    if (partId == "local") {
+                        Dsl.FunctionData sectionData = part as Dsl.FunctionData;
                         if (null != sectionData) {
-                            for (int j = 0; j < sectionData.Statements.Count; j++) {
-                                Dsl.CallData defData = sectionData.Statements[j] as Dsl.CallData;
+                            for (int j = 0; j < sectionData.GetParamNum(); j++) {
+                                Dsl.FunctionData defData = sectionData.GetParam(j) as Dsl.FunctionData;
                                 if (null != defData && defData.HaveId() && defData.HaveParam()) {
                                     string id = defData.GetId();
                                     if (id.StartsWith("@") && !id.StartsWith("@@")) {
@@ -709,20 +720,20 @@ namespace StorySystem
                             }
                         } else {
 #if DEBUG
-                            string err = string.Format("Story {0} DSL, local must be a function ! line:{1} local:{2}", m_StoryId, story.Statements[i].GetLine(), story.Statements[i].ToScriptString(false));
+                            string err = string.Format("Story {0} DSL, local must be a function ! line:{1} local:{2}", m_StoryId, part.GetLine(), part.ToScriptString(false));
                             throw new Exception(err);
 #else
                             LogSystem.Error("Story {0} DSL, local must be a function !", m_StoryId);
 #endif
                         }
-                    } else if (story.Statements[i].GetId() == "onmessage" || story.Statements[i].GetId() == "onnamespacedmessage") {
+                    } else if (partId == "onmessage" || partId == "onnamespacedmessage") {
                         StoryMessageHandler handler = null;
-                        Dsl.StatementData msgData = story.Statements[i] as Dsl.StatementData;
+                        Dsl.StatementData msgData = part as Dsl.StatementData;
                         if (null != msgData) {
                             handler = new StoryMessageHandler();
                             handler.Load(msgData, m_StoryId);
                         } else {
-                            Dsl.FunctionData sectionData = story.Statements[i] as Dsl.FunctionData;
+                            Dsl.FunctionData sectionData = part as Dsl.FunctionData;
                             if (null != sectionData) {
                                 handler = new StoryMessageHandler();
                                 handler.Load(sectionData, m_StoryId);
@@ -730,7 +741,7 @@ namespace StorySystem
                         }
                         if (null != handler) {
                             string msgId;
-                            if (!string.IsNullOrEmpty(m_Namespace) && story.Statements[i].GetId() == "onnamespacedmessage") {
+                            if (!string.IsNullOrEmpty(m_Namespace) && partId == "onnamespacedmessage") {
                                 msgId = string.Format("{0}:{1}", m_Namespace, handler.MessageId);
                                 handler.MessageId = msgId;
                             } else {
@@ -744,7 +755,7 @@ namespace StorySystem
                                 m_ConcurrentMessageHandlerPool.Add(msgId, new Queue<StoryMessageHandler>());
                             } else {
 #if DEBUG
-                                string err = string.Format("Story {0} DSL, onmessage or onnamespacedmessage {1} duplicate, discard it ! line:{2}", m_StoryId, msgId, story.Statements[i].GetLine());
+                                string err = string.Format("Story {0} DSL, onmessage or onnamespacedmessage {1} duplicate, discard it ! line:{2}", m_StoryId, msgId, part.GetLine());
                                 throw new Exception(err);
 #else
                                 LogSystem.Error("Story {0} DSL, onmessage {1} duplicate, discard it !", m_StoryId, msgId);
@@ -752,7 +763,7 @@ namespace StorySystem
                             }
                         } else {
 #if DEBUG
-                            string err = string.Format("Story {0} DSL, onmessage must be a function or statement ! line:{1} onmessage:{2}", m_StoryId, story.Statements[i].GetLine(), story.Statements[i].ToScriptString(false));
+                            string err = string.Format("Story {0} DSL, onmessage must be a function or statement ! line:{1} onmessage:{2}", m_StoryId, part.GetLine(), part.ToScriptString(false));
                             throw new Exception(err);
 #else
                             LogSystem.Error("Story {0} DSL, onmessage must be a function !", m_StoryId);
@@ -760,10 +771,10 @@ namespace StorySystem
                         }
                     } else {
 #if DEBUG
-                        string err = string.Format("StoryInstance::Init, Story {0} unknown part {1}, line:{2} section:{3}", m_StoryId, story.Statements[i].GetId(), story.Statements[i].GetLine(), story.Statements[i].ToScriptString(false));
+                        string err = string.Format("StoryInstance::Init, Story {0} unknown part {1}, line:{2} section:{3}", m_StoryId, part.GetId(), part.GetLine(), part.ToScriptString(false));
                         throw new Exception(err);
 #else
-                        LogSystem.Error("StoryInstance::Init, Story {0} unknown part {1}", m_StoryId, story.Statements[i].GetId());
+                        LogSystem.Error("StoryInstance::Init, Story {0} unknown part {1}", m_StoryId, part.GetId());
 #endif
                     }
                 }

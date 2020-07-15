@@ -21,12 +21,12 @@ namespace GameFramework.Skill.Trigers
         {
             
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() >= 3) {
                 StartTime = long.Parse(callData.GetParamId(0));
                 m_RemainTime = long.Parse(callData.GetParamId(1));
-                m_RotateSpeed = DslUtility.CalcVector3(callData.GetParam(2) as Dsl.CallData);
+                m_RotateSpeed = DslUtility.CalcVector3(callData.GetParam(2) as Dsl.FunctionData);
             }
             
         }

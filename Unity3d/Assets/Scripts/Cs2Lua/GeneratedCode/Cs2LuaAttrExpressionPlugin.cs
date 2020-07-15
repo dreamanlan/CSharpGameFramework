@@ -54,7 +54,7 @@ public class Cs2LuaAttrExpressionPlugin : LuaClassProxyBase, IAttrExpressionPlug
 			return false;
 		}
 	}
-	public bool LoadCallData(Dsl.CallData callData)
+	public bool LoadCallData(Dsl.FunctionData callData)
 	{
 		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_LoadCallData);
 		LuaFunctionHelper.PushValue(Self);

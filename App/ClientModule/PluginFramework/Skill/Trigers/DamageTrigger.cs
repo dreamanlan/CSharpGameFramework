@@ -41,7 +41,7 @@ namespace GameFramework.Skill.Trigers
         {
             AddProperty("IsFinal", () => { return IsFinal; }, (object val) => { IsFinal = (bool)Convert.ChangeType(val, typeof(bool)); });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             instance.AddDamageForInit(this);
             int num = callData.GetParamNum();
@@ -94,7 +94,7 @@ namespace GameFramework.Skill.Trigers
         {
             AddProperty("State", () => { return m_State; }, (object val) => { m_State = val as string; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -146,7 +146,7 @@ namespace GameFramework.Skill.Trigers
         {
             AddProperty("State", () => { return m_State; }, (object val) => { m_State = val as string; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -193,7 +193,7 @@ namespace GameFramework.Skill.Trigers
                 return true;
             }
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -238,7 +238,7 @@ namespace GameFramework.Skill.Trigers
             }
         }
 
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

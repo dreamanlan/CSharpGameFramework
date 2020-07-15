@@ -100,10 +100,10 @@ namespace SkillSystem
         }
         private void Load(int id, Dsl.FunctionData funcData)
         {
-            if (null != funcData) {
+            if (null != funcData && funcData.IsHighOrder) {
                 string key = funcData.GetId();
                 if (key == "skill" || key == "skilldsl") {
-                    Dsl.CallData callData = funcData.Call;
+                    Dsl.FunctionData callData = funcData.LowerOrderFunction;
                     if (null != callData) {
                         int dslId = id;
                         if (callData.HaveParam()) {

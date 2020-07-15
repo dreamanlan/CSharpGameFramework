@@ -160,7 +160,7 @@ namespace SkillSystem
         public void Init(Dsl.ISyntaxComponent config, SkillInstance instance)
         {
             m_Name = config.GetId();
-            Dsl.CallData callData = config as Dsl.CallData;
+            Dsl.FunctionData callData = config as Dsl.FunctionData;
             if (null != callData) {
                 Load(callData, instance);
             } else {
@@ -194,9 +194,6 @@ namespace SkillSystem
         
         protected abstract ISkillTriger OnClone();
 
-        protected virtual void Load(Dsl.CallData callData, SkillInstance instance)
-        {
-        }
         protected virtual void Load(Dsl.FunctionData funcData, SkillInstance instance)
         {
         }
@@ -232,7 +229,7 @@ namespace SkillSystem
         private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
         
         //用于同步修改回加载Dsl实例的工具方法
-        public static void SetParam(Dsl.CallData callData, int index, string val)
+        public static void SetParam(Dsl.FunctionData callData, int index, string val)
         {
             Dsl.ValueData valData = callData.GetParam(index) as Dsl.ValueData;
             if (null != valData) {
@@ -240,11 +237,6 @@ namespace SkillSystem
                 valData.SetId(val);
                 valData.SetType(idType);
             }
-        }
-        public static void SetParam(Dsl.FunctionData funcData, int index, string val)
-        {
-            Dsl.CallData callData = funcData.Call;
-            SetParam(callData, index, val);
         }
         public static void SetParam(Dsl.StatementData statementData, int funcIndex, int index, string val)
         {
@@ -255,13 +247,13 @@ namespace SkillSystem
         }
         public static void SetStatementParam(Dsl.FunctionData funcData, int stIndex, int paramIndex, string val)
         {
-            Dsl.CallData callData = funcData.GetStatement(stIndex) as Dsl.CallData;
+            Dsl.FunctionData callData = funcData.GetParam(stIndex) as Dsl.FunctionData;
             SetParam(callData, paramIndex, val);
         }
         public static void SetStatementParam(Dsl.StatementData statementData, int funcIndex, int stIndex, int paramIndex, string val)
         {
-            if (funcIndex >= 0 && funcIndex < statementData.Functions.Count) {
-                Dsl.FunctionData funcData = statementData.Functions[funcIndex];
+            if (funcIndex >= 0 && funcIndex < statementData.GetFunctionNum()) {
+                Dsl.FunctionData funcData = statementData.GetFunction(funcIndex);
                 SetStatementParam(funcData, stIndex, paramIndex, val);
             }
         }
@@ -446,7 +438,7 @@ namespace SkillSystem
             string val = p.GetId();
             int type = p.GetIdType();
             if (!string.IsNullOrEmpty(val)) {
-                if (type == Dsl.CallData.NUM_TOKEN) {
+                if (type == Dsl.FunctionData.NUM_TOKEN) {
                     m_Key = string.Empty;
                     m_Value = (T)Convert.ChangeType(val, typeof(T));
                 } else {
@@ -508,7 +500,7 @@ namespace SkillSystem
             string val = p.GetId();
             int type = p.GetIdType();
             if (!string.IsNullOrEmpty(val)) {
-                if (type == Dsl.CallData.NUM_TOKEN) {
+                if (type == Dsl.FunctionData.NUM_TOKEN) {
                     m_Key = string.Empty;
                     if (val.IndexOf('.') >= 0) {
                         m_Value = Convert.ChangeType(val, typeof(float));

@@ -54,7 +54,7 @@ public class Lua_GameFramework_Plugin_ISkillTriggerPlugin : LuaObject {
 	static public int LoadCallData(IntPtr l) {
 		try {
 			GameFramework.Plugin.ISkillTriggerPlugin self=(GameFramework.Plugin.ISkillTriggerPlugin)checkSelf(l);
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,2,out a1);
 			SkillSystem.SkillInstance a2;
 			checkType(l,3,out a2);

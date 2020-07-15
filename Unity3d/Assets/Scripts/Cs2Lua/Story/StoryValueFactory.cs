@@ -52,7 +52,7 @@ internal class NativeStoryValue : IStoryValue
 
     public void InitFromDsl(Dsl.ISyntaxComponent param)
     {
-        Dsl.CallData callData = param as Dsl.CallData;
+        Dsl.FunctionData callData = param as Dsl.FunctionData;
         if (null != callData) {
             Load(callData);
         } else {
@@ -103,12 +103,6 @@ internal class NativeStoryValue : IStoryValue
         }
     }
 
-    private void Load(Dsl.CallData callData)
-    {
-        if (null != m_Plugin) {
-            m_Plugin.LoadCallData(callData);
-        }
-    }
     private void Load(Dsl.FunctionData funcData)
     {
         if (null != m_Plugin) {
@@ -148,7 +142,7 @@ internal class LuaStoryValue : IStoryValue
     
     public void InitFromDsl(Dsl.ISyntaxComponent param)
     {
-        Dsl.CallData callData = param as Dsl.CallData;
+        Dsl.FunctionData callData = param as Dsl.FunctionData;
         if (null != callData) {
             Load(callData);
         } else {
@@ -201,12 +195,6 @@ internal class LuaStoryValue : IStoryValue
         }
     }
 
-    private void Load(Dsl.CallData callData)
-    {
-        if (null != m_Plugin) {
-            m_Plugin.LoadCallData(callData);
-        }
-    }
     private void Load(Dsl.FunctionData funcData)
     {
         if (null != m_Plugin) {

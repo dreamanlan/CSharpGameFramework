@@ -189,7 +189,7 @@ public class TrackBulletTrigger : ISkillTriggerPlugin
         m_TriggerProxy.AddProperty("TrackBone", () => { return m_TrackBone.EditableValue; }, (object val) => { m_TrackBone.EditableValue = val; });
         m_TriggerProxy.AddProperty("Duration", () => { return m_Duration.EditableValue; }, (object val) => { m_Duration.EditableValue = val; });
     }
-    public void LoadCallData(Dsl.CallData callData, SkillInstance instance)
+    public void LoadCallData(Dsl.FunctionData callData, SkillInstance instance)
     {
         int num = callData.GetParamNum();
         if (num > 0) {

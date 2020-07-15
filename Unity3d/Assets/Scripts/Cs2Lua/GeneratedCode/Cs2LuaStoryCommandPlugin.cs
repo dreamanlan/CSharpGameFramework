@@ -101,7 +101,7 @@ public class Cs2LuaStoryCommandPlugin : LuaClassProxyBase
 			return false;
 		}
 	}
-	public void LoadCallData(Dsl.CallData callData)
+	public void LoadCallData(Dsl.FunctionData callData)
 	{
 		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_LoadCallData);
 		LuaFunctionHelper.PushValue(Self);

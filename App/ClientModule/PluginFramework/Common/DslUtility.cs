@@ -7,7 +7,7 @@ namespace GameFramework
 {
   public static class DslUtility
   {
-    public static Vector2 CalcVector2(Dsl.CallData callData)
+    public static Vector2 CalcVector2(Dsl.FunctionData callData)
     {
       if (null == callData || callData.GetId() != "vector2")
         return Vector2.zero;
@@ -20,7 +20,7 @@ namespace GameFramework
         return Vector2.zero;
       }
     }
-    public static Vector3 CalcVector3(Dsl.CallData callData)
+    public static Vector3 CalcVector3(Dsl.FunctionData callData)
     {
       if (null == callData || callData.GetId() != "vector3")
         return Vector3.zero;
@@ -34,7 +34,7 @@ namespace GameFramework
         return Vector3.zero;
       }
     }
-    public static Vector4 CalcVector4(Dsl.CallData callData)
+    public static Vector4 CalcVector4(Dsl.FunctionData callData)
     {
       if (null == callData || callData.GetId() != "vector4")
         return Vector4.zero;
@@ -49,7 +49,7 @@ namespace GameFramework
         return Vector4.zero;
       }
     }
-    public static Color CalcColor(Dsl.CallData callData)
+    public static Color CalcColor(Dsl.FunctionData callData)
     {
       if (null == callData || callData.GetId() != "color")
         return Color.white;
@@ -64,7 +64,7 @@ namespace GameFramework
         return Color.white;
       }
     }
-    public static Quaternion CalcQuaternion(Dsl.CallData callData)
+    public static Quaternion CalcQuaternion(Dsl.FunctionData callData)
     {
       if (null == callData || callData.GetId() != "quaternion")
         return Quaternion.identity;
@@ -79,7 +79,7 @@ namespace GameFramework
         return Quaternion.identity;
       }
     }
-    public static Quaternion CalcEularRotation(Dsl.CallData callData)
+    public static Quaternion CalcEularRotation(Dsl.FunctionData callData)
     {
       if (null == callData || callData.GetId() != "eular")
         return Quaternion.identity;
@@ -97,7 +97,7 @@ namespace GameFramework
         return Quaternion.identity;
       }
     }
-    public static Vector3 CalcEularAngles(Dsl.CallData callData)
+    public static Vector3 CalcEularAngles(Dsl.FunctionData callData)
     {
       if (null == callData || callData.GetId() != "eular")
         return Vector3.zero;

@@ -727,8 +727,8 @@ namespace GameFramework.Story
         }
         private void LoadCustomCommandsAndValues()
         {
-            string valFile = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + "Story/Common/CustomValues");
-            string cmdFile = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + "Story/Common/CustomCommands");
+            string valFile = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + "Story/Common/CustomValues.dsl");
+            string cmdFile = HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + "Story/Common/CustomCommands.dsl");
             Dsl.DslFile file1 = CustomCommandValueParser.LoadStory(valFile);
             Dsl.DslFile file2 = CustomCommandValueParser.LoadStory(cmdFile);
             CustomCommandValueParser.FirstParse(file1, file2);

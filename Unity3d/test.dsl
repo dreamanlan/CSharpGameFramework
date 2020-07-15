@@ -1,61 +1,199 @@
-object("SkillBar")
+animatorcontroller("ThirdPersonAnimatorController")
 {
-	recttransform(0.000, 0.000, 0.000, 0.000, 0.000)
+	parameters
 	{
-		anchor(0.000, 0.000, 0.000, 0.000);
-		pivot(0.000, 0.000);
-		rotation(0.000, 0.000, 0.000);
-		scale(0.000, 0.000, 0.000);
-		offset(0.000, 0.000, 0.000, 0.000);
+		float("Forward",0);
+		float("Turn",0);
+		bool("Crouch",False);
+		bool("OnGround",True);
+		float("Jump",0);
+		float("JumpLeg",0);
 	};
-	component("GraphicRaycaster", "UnityEngine.UI.GraphicRaycaster, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
-	component("CanvasScaler", "UnityEngine.UI.CanvasScaler, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
-	object("Panel")
+
+	layer("Base Layer")
 	{
-		recttransform(0.000, -244.000, 0.000, 0.000, -488.000)
+		weight(0);
+		blendingmode("Override");
+
+		blendtreestate("Grounded",vector3(588,96,0))
 		{
-			anchor(0.000, 0.000, 1.000, 1.000);
-			pivot(0.500, 0.500);
-			rotation(0.000, 0.000, 0.000);
-			scale(1.000, 1.000, 1.000);
-			offset(0.000, 0.000, 0.000, -488.000);
+			layerdefaultstate(True);
+			footik(True);
+
+			blendtree
+			{
+				type("FreeformCartesian2D");
+				parameter("Turn");
+				parametery("Forward");
+
+				motion
+				{
+					position(0,0);
+				};
+				motion
+				{
+					position(0.5,0);
+				};
+				motion
+				{
+					position(1,0);
+				};
+				motion
+				{
+					position(-0.5,0);
+				};
+				motion
+				{
+					position(-1,0);
+				};
+				motion
+				{
+					position(0,0.5);
+				};
+				motion
+				{
+					position(1,0.5);
+				};
+				motion
+				{
+					position(0.5,0.5);
+				};
+				motion
+				{
+					position(-1,0.5);
+				};
+				motion
+				{
+					position(-0.5,0.5);
+				};
+				motion
+				{
+					position(0,1);
+				};
+				motion
+				{
+					position(1,1);
+				};
+				motion
+				{
+					position(-1,1);
+				};
+				motion
+				{
+					position(0.5,1);
+				};
+				motion
+				{
+					position(-0.5,1);
+				};
+			};
+
+			transition("Crouching")
+			{
+				condition("Crouch","If",0);
+			};
+			transition("Airborne")
+			{
+				condition("OnGround","IfNot",0);
+			};
 		};
-		component("Image", "UnityEngine.UI.Image, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
+		blendtreestate("Crouching",vector3(444,240,0))
 		{
-			sprite("Assets/Resources/UITexture/ActorBigIcon.png");
-			color(1.000, 1.000, 1.000, 0.392);
+			footik(True);
+
+			blendtree
+			{
+				type("FreeformCartesian2D");
+				parameter("Turn");
+				parametery("Forward");
+				automatethreshold(True);
+
+				motion
+				{
+					position(0,0);
+				};
+				motion
+				{
+					timescale(2);
+					position(0,1);
+				};
+				motion
+				{
+					timescale(2);
+					position(-1,1);
+				};
+				motion
+				{
+					timescale(2);
+					position(1,1);
+				};
+			};
+
+			transition("Grounded")
+			{
+				condition("Crouch","IfNot",0);
+			};
+			transition("Airborne")
+			{
+				condition("OnGround","IfNot",0);
+			};
 		};
-		object("ImageBkg")
+		blendtreestate("Airborne",vector3(444,-48,0))
 		{
-			recttransform(0.000, 0.000, 0.000, 1149.000, 116.000)
+			blendtree
 			{
-				anchor(0.500, 0.500, 0.500, 0.500);
-				pivot(0.500, 0.500);
-				rotation(0.000, 0.000, 0.000);
-				scale(1.000, 1.000, 1.000);
-				offset(-574.500, -58.000, 574.500, 58.000);
+				type("FreeformCartesian2D");
+				parameter("Jump");
+				parametery("JumpLeg");
+
+				motion
+				{
+					timescale(0.1);
+					position(0,-1);
+				};
+				motion
+				{
+					timescale(0.1);
+					position(5,-1);
+				};
+				motion
+				{
+					timescale(0.1);
+					position(5,1);
+				};
+				motion
+				{
+					timescale(0.1);
+					position(-9,0);
+				};
+				motion
+				{
+					timescale(0.1);
+					position(0,1);
+				};
+				motion
+				{
+					timescale(0.1);
+					position(5,0);
+				};
+				motion
+				{
+					timescale(0.1);
+					position(0,0);
+				};
 			};
-			component("Image", "UnityEngine.UI.Image, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
+
+			transition("Crouching")
 			{
-				sprite("Assets/Resources/UITexture/ActorIcons.png");
-				color(1.000, 1.000, 1.000, 1.000);
+				condition("OnGround","If",0);
+				condition("Jump","Less",-2);
+			};
+			transition("Grounded")
+			{
+				condition("OnGround","If",0);
+				condition("Jump","Greater",-2);
 			};
 		};
-		object("PanelSkills")
-		{
-			recttransform(0.000, 0.000, 0.000, 1149.000, 116.000)
-			{
-				anchor(0.500, 0.500, 0.500, 0.500);
-				pivot(0.500, 0.500);
-				rotation(0.000, 0.000, 0.000);
-				scale(1.000, 1.000, 1.000);
-				offset(-574.500, -58.000, 574.500, 58.000);
-			};
-			component("Image", "UnityEngine.UI.Image, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
-			{
-				sprite("Resources/unity_builtin_extra");
-				color(1.000, 1.000, 1.000, 0.392);
-			};
-		};
+
 	};
 };

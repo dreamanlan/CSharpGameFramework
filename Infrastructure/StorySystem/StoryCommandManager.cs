@@ -79,22 +79,22 @@ namespace StorySystem
         }
         public IStoryCommand CreateCommand(Dsl.ISyntaxComponent commandConfig)
         {
-            Dsl.CallData callData = commandConfig as Dsl.CallData;
+            Dsl.FunctionData callData = commandConfig as Dsl.FunctionData;
             if (null != callData) {
                 if (callData.IsHighOrder) {
-                    Dsl.CallData innerCall = callData.Call;
-                    if (innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                      innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                      innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                      innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                      innerCall.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
-                        if (callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS) {
+                    Dsl.FunctionData innerCall = callData.LowerOrderFunction;
+                    if (innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                      innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                      innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                      innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                      innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
+                        if (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS) {
                             //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> execinstance(obj,member,a,b,...)
-                            Dsl.CallData newCall = new Dsl.CallData();
+                            Dsl.FunctionData newCall = new Dsl.FunctionData();
                             newCall.Name = new Dsl.ValueData("dotnetexec", Dsl.ValueData.ID_TOKEN);
-                            newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                            newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                             if (innerCall.IsHighOrder) {
-                                newCall.Params.Add(innerCall.Call);
+                                newCall.Params.Add(innerCall.LowerOrderFunction);
                                 newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
                                 for (int i = 0; i < callData.GetParamNum(); ++i) {
                                     Dsl.ISyntaxComponent p = callData.Params[i];
@@ -113,20 +113,20 @@ namespace StorySystem
                         }
                     }
                 }
-                else if ((callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_OPERATOR ||
-                      callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                      callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                      callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                      callData.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) &&
+                else if ((callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_OPERATOR ||
+                      callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                      callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                      callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                      callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) &&
                       callData.GetId() == "=") {
-                    Dsl.CallData innerCall = callData.GetParam(0) as Dsl.CallData;
+                    Dsl.FunctionData innerCall = callData.GetParam(0) as Dsl.FunctionData;
                     if (null != innerCall) {
                         //obj.property = val  or obj[property] = val or obj.(property) = val or obj.[property] = val or obj.{property} = val -> setinstance(obj,property,val)
-                        Dsl.CallData newCall = new Dsl.CallData();
+                        Dsl.FunctionData newCall = new Dsl.FunctionData();
                         newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
-                        newCall.SetParamClass((int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                        newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                         if (innerCall.IsHighOrder) {
-                            newCall.Params.Add(innerCall.Call);
+                            newCall.Params.Add(innerCall.LowerOrderFunction);
                             newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
                             newCall.Params.Add(callData.GetParam(1));
                         }
@@ -411,9 +411,9 @@ namespace StorySystem
         internal static Dsl.ISyntaxComponent Convert(Dsl.ISyntaxComponent p, int paramClass)
         {
             var pvd = p as Dsl.ValueData;
-            if (null != pvd && pvd.IsId() && (paramClass == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_PERIOD
-                || paramClass == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_POINTER
-                || paramClass == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_QUESTION_PERIOD)) {
+            if (null != pvd && pvd.IsId() && (paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD
+                || paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_POINTER
+                || paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_QUESTION_PERIOD)) {
                 pvd.SetType(Dsl.ValueData.STRING_TOKEN);
                 return pvd;
             }

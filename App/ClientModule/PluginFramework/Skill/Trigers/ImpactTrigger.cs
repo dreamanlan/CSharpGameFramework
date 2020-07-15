@@ -51,7 +51,7 @@ namespace GameFramework.Skill.Trigers
         protected override void OnInitProperties()
         {
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 1) {
@@ -130,7 +130,7 @@ namespace GameFramework.Skill.Trigers
         protected override void OnInitProperties()
         {
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 1) {
@@ -206,7 +206,7 @@ namespace GameFramework.Skill.Trigers
         protected override void OnInitProperties()
         {
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
@@ -282,7 +282,7 @@ namespace GameFramework.Skill.Trigers
         protected override void OnInitProperties()
         {
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
@@ -386,7 +386,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
             AddProperty("Interval", () => { return m_IntervalTime.EditableValue; }, (object val) => { m_IntervalTime.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
@@ -480,7 +480,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
             AddProperty("Interval", () => { return m_IntervalTime.EditableValue; }, (object val) => { m_IntervalTime.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
@@ -572,7 +572,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
             AddProperty("Interval", () => { return m_IntervalTime.EditableValue; }, (object val) => { m_IntervalTime.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             instance.AddImpactForInit(this);
             int num = callData.GetParamNum();
@@ -755,7 +755,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("TrackBone", () => { return m_TrackBone.EditableValue; }, (object val) => { m_TrackBone.EditableValue = val; });
             AddProperty("Duration", () => { return m_Duration.EditableValue; }, (object val) => { m_Duration.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum(); 
             if (num > 0) {
@@ -891,7 +891,7 @@ namespace GameFramework.Skill.Trigers
         {
             AddProperty("Duration", () => { return m_DurationTime.EditableValue; }, (object val) => { m_DurationTime.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             instance.AddImpactForInit(this);
             int num = callData.GetParamNum();

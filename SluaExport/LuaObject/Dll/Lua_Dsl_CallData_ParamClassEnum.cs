@@ -4,7 +4,7 @@ using SLua;
 using System.Collections.Generic;
 public class Lua_Dsl_CallData_ParamClassEnum : LuaObject {
 	static public void reg(IntPtr l) {
-		getEnumTable(l,"Dsl.CallData.ParamClassEnum");
+		getEnumTable(l,"Dsl.FunctionData.ParamClassEnum");
 		addMember(l,0,"PARAM_CLASS_NOTHING");
 		addMember(l,0,"PARAM_CLASS_MIN");
 		addMember(l,1,"PARAM_CLASS_PARENTHESIS");

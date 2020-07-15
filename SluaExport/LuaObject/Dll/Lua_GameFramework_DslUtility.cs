@@ -6,7 +6,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int CalcVector2_s(IntPtr l) {
 		try {
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,1,out a1);
 			var ret=GameFramework.DslUtility.CalcVector2(a1);
 			pushValue(l,true);
@@ -20,7 +20,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int CalcVector3_s(IntPtr l) {
 		try {
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,1,out a1);
 			var ret=GameFramework.DslUtility.CalcVector3(a1);
 			pushValue(l,true);
@@ -34,7 +34,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int CalcVector4_s(IntPtr l) {
 		try {
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,1,out a1);
 			var ret=GameFramework.DslUtility.CalcVector4(a1);
 			pushValue(l,true);
@@ -48,7 +48,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int CalcColor_s(IntPtr l) {
 		try {
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,1,out a1);
 			var ret=GameFramework.DslUtility.CalcColor(a1);
 			pushValue(l,true);
@@ -62,7 +62,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int CalcQuaternion_s(IntPtr l) {
 		try {
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,1,out a1);
 			var ret=GameFramework.DslUtility.CalcQuaternion(a1);
 			pushValue(l,true);
@@ -76,7 +76,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int CalcEularRotation_s(IntPtr l) {
 		try {
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,1,out a1);
 			var ret=GameFramework.DslUtility.CalcEularRotation(a1);
 			pushValue(l,true);
@@ -90,7 +90,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int CalcEularAngles_s(IntPtr l) {
 		try {
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,1,out a1);
 			var ret=GameFramework.DslUtility.CalcEularAngles(a1);
 			pushValue(l,true);

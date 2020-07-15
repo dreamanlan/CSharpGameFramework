@@ -53,16 +53,31 @@ namespace StorySystem
         {
             m_LoadSuccess = true;
             m_Config = config;
-            Dsl.CallData callData = config as Dsl.CallData;
-            if (null != callData) {
-                Load(callData);
-            } else {
-                Dsl.FunctionData funcData = config as Dsl.FunctionData;
-                if (null != funcData) {
-                    Load(funcData);
-                } else {
-                    Dsl.StatementData statementData = config as Dsl.StatementData;
-                    if (null != statementData) {
+            Dsl.FunctionData funcData = config as Dsl.FunctionData;
+            if (null != funcData) {
+                Load(funcData);
+            }
+            else {
+                Dsl.StatementData statementData = config as Dsl.StatementData;
+                if (null != statementData) {
+                    var first = statementData.First;
+                    if (first.HaveId() && !first.HaveParamOrStatement()) {
+                        //命令行样式转换为函数样式
+                        var func = new Dsl.FunctionData();
+                        func.CopyFrom(first);
+                        func.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                        for (int i = 1; i < statementData.GetFunctionNum(); ++i) {
+                            var fd = statementData.GetFunction(i);
+                            if(fd.HaveId() && !fd.HaveParamOrStatement()) {
+                                func.AddParam(fd.Name);
+                            }
+                            else {
+                                func.AddParam(fd);
+                            }
+                        }
+                        Load(func);
+                    }
+                    else {
                         int funcNum = statementData.GetFunctionNum();
                         var lastFunc = statementData.Last;
                         var id = lastFunc.GetId();
@@ -71,20 +86,19 @@ namespace StorySystem
                             statementData.Functions.RemoveAt(funcNum - 1);
                             if (statementData.GetFunctionNum() == 1) {
                                 funcData = statementData.GetFunction(0);
-                                if (funcData.HaveStatement()) {
-                                    Load(funcData);
-                                } else {
-                                    Load(funcData.Call);
-                                }
-                            } else {
+                                Load(funcData);
+                            }
+                            else {
                                 Load(statementData);
                             }
-                        } else {
+                        }
+                        else {
                             Load(statementData);
                         }
-                    } else {
-                        //keyword
                     }
+                }
+                else {
+                    //keyword
                 }
             }
             return m_LoadSuccess;
@@ -158,23 +172,30 @@ namespace StorySystem
         {
             return false;
         }
-        protected virtual void Load(Dsl.CallData callData)
-        {
-            if (callData.GetParamNum() > 0) {
-                m_LoadSuccess = true;
-            }
-        }
         protected virtual void Load(Dsl.FunctionData funcData)
         {
-            if (funcData.Call.GetParamNum() > 0 || funcData.GetStatementNum() > 0 || funcData.HaveExternScript()) {
+            if (funcData.IsHighOrder) {
+                if (funcData.LowerOrderFunction.GetParamNum() > 0 || funcData.HaveStatement() || funcData.HaveExternScript()) {
+                    m_LoadSuccess = false;
+                }
+            }
+            else if (funcData.HaveStatement() || funcData.HaveExternScript()) {
                 m_LoadSuccess = false;
+            }
+            else if (funcData.HaveParam()) {
+                m_LoadSuccess = true;
             }
         }
         protected virtual void Load(Dsl.StatementData statementData)
         {
             bool v = true;
             foreach (var func in statementData.Functions) {
-                if (func.Call.GetParamNum() > 0 || func.GetStatementNum() > 0 || func.HaveExternScript()) {
+                if (func.IsHighOrder) {
+                    if (func.LowerOrderFunction.GetParamNum() > 0 || func.HaveStatement() || func.HaveExternScript()) {
+                        v = false;
+                    }
+                }
+                else if (func.HaveStatement() || func.HaveExternScript()) {
                     v = false;
                 }
             }

@@ -334,7 +334,7 @@ public static class AnimatorControllerUtility
                         func = stData.First;
                     }
                     if (null != func) {
-                        foreach (Dsl.ISyntaxComponent comp in func.Statements) {
+                        foreach (Dsl.ISyntaxComponent comp in func.Params) {
                             if (comp.GetId() == "parameters") {
                                 ReadAnimatorParameter(comp as Dsl.FunctionData, ctrl);
                             }
@@ -350,8 +350,8 @@ public static class AnimatorControllerUtility
 
     private static void ReadAnimatorParameter(Dsl.FunctionData funcData, AnimatorController ctrl)
     {
-        foreach (Dsl.ISyntaxComponent comp in funcData.Statements) {
-            Dsl.CallData callData = comp as Dsl.CallData;
+        foreach (Dsl.ISyntaxComponent comp in funcData.Params) {
+            Dsl.FunctionData callData = comp as Dsl.FunctionData;
             if (null != callData) {
                 string name = callData.GetParamId(0);
                 AnimatorControllerParameter param = FindAnimatorParameter(ctrl, name);
@@ -403,7 +403,10 @@ public static class AnimatorControllerUtility
     }
     private static void ReadAnimatorLayer(Dsl.FunctionData funcData, AnimatorController ctrl)
     {
-        string name = funcData.Call.GetParamId(0);
+        var funcHeader = funcData;
+        if (funcData.IsHighOrder)
+            funcHeader = funcData.LowerOrderFunction;
+        string name = funcHeader.GetParamId(0);
         if (!string.IsNullOrEmpty(name)) {
             int layerIndex;
             AnimatorControllerLayer layer = FindAnimatorLayer(ctrl, name, out layerIndex);
@@ -412,8 +415,8 @@ public static class AnimatorControllerUtility
                 layer = FindAnimatorLayer(ctrl, name, out layerIndex);
             }
             if (null != layer) {
-                foreach (Dsl.ISyntaxComponent comp in funcData.Statements) {
-                    Dsl.CallData callData = comp as Dsl.CallData;
+                foreach (Dsl.ISyntaxComponent comp in funcData.Params) {
+                    Dsl.FunctionData callData = comp as Dsl.FunctionData;
                     if (null != callData) {
                         string id = callData.GetId();
                         if (id == "weight") {
@@ -436,9 +439,9 @@ public static class AnimatorControllerUtility
     }
     private static void ReadAnimatorState(Dsl.FunctionData funcData, AnimatorState state, AnimatorStateMachine stateMachine, AnimatorControllerLayer layer, int layerIndex, AnimatorController ctrl)
     {
-        foreach (Dsl.ISyntaxComponent comp in funcData.Statements) {
+        foreach (Dsl.ISyntaxComponent comp in funcData.Params) {
             string id = comp.GetId();
-            Dsl.CallData callData = comp as Dsl.CallData;
+            Dsl.FunctionData callData = comp as Dsl.FunctionData;
             if (null != callData) {
                 string val = callData.GetParamId(0);
                 if (id == "tag") {
@@ -482,7 +485,9 @@ public static class AnimatorControllerUtility
                             ReadAnimatorBlendTree(subFuncData, blendTree);
                         }
                     } else if (id == "transition") {
-                        Dsl.CallData callData2 = subFuncData.Call;
+                        Dsl.FunctionData callData2 = subFuncData;
+                        if (subFuncData.IsHighOrder)
+                            callData2 = subFuncData.LowerOrderFunction;
                         AnimatorStateTransition tran = null;
                         int paramNum = callData2.GetParamNum();
                         if (paramNum >= 1) {
@@ -521,9 +526,9 @@ public static class AnimatorControllerUtility
     private static void ReadAnimatorBlendTree(Dsl.FunctionData funcData, BlendTree tree)
     {
         int motionIndex = 0;
-        foreach (Dsl.ISyntaxComponent comp in funcData.Statements) {
+        foreach (Dsl.ISyntaxComponent comp in funcData.Params) {
             string id = comp.GetId();
-            Dsl.CallData callData = comp as Dsl.CallData;
+            Dsl.FunctionData callData = comp as Dsl.FunctionData;
             if (null != callData) {
                 string val = callData.GetParamId(0);
                 if (id == "type") {
@@ -582,9 +587,9 @@ public static class AnimatorControllerUtility
             }
             motion = tree.children[tree.children.Length - 1];
         }
-        foreach (Dsl.ISyntaxComponent comp in funcData.Statements) {
+        foreach (Dsl.ISyntaxComponent comp in funcData.Params) {
             string id = comp.GetId();
-            Dsl.CallData callData = comp as Dsl.CallData;
+            Dsl.FunctionData callData = comp as Dsl.FunctionData;
             if (null != callData) {
                 string val = callData.GetParamId(0);
                 if (id == "mirror") {
@@ -614,16 +619,19 @@ public static class AnimatorControllerUtility
     }
     private static void ReadAnimatorStateMachine1(Dsl.FunctionData funcData, AnimatorStateMachine stateMachine, AnimatorControllerLayer layer, int layerIndex, AnimatorController ctrl, HashSet<string> stateMachines, HashSet<string> states)
     {
-        foreach (Dsl.ISyntaxComponent comp in funcData.Statements) {
+        foreach (Dsl.ISyntaxComponent comp in funcData.Params) {
             Dsl.FunctionData subFuncData = comp as Dsl.FunctionData;
             if (null != subFuncData) {
+                var funcHeader = subFuncData;
+                if (subFuncData.IsHighOrder)
+                    funcHeader = subFuncData.LowerOrderFunction;
                 string id = subFuncData.GetId();
-                string name = subFuncData.Call.GetParamId(0);
+                string name = funcHeader.GetParamId(0);
                 if (id == "state") {
                     states.Add(name);
                     Vector3 pos = Vector3.zero;
-                    if (subFuncData.Call.GetParamNum() >= 2) {
-                        Dsl.CallData posDsl = subFuncData.Call.GetParam(1) as Dsl.CallData;
+                    if (funcHeader.GetParamNum() >= 2) {
+                        Dsl.FunctionData posDsl = funcHeader.GetParam(1) as Dsl.FunctionData;
                         pos = ReadPosition(posDsl);
                     }
                     AnimatorState state = FindAnimatorState(stateMachine, name);
@@ -636,8 +644,8 @@ public static class AnimatorControllerUtility
                 } else if (id == "blendtreestate") {
                     states.Add(name);
                     Vector3 pos = Vector3.zero;
-                    if (subFuncData.Call.GetParamNum() >= 2) {
-                        Dsl.CallData posDsl = subFuncData.Call.GetParam(1) as Dsl.CallData;
+                    if (funcHeader.GetParamNum() >= 2) {
+                        Dsl.FunctionData posDsl = funcHeader.GetParam(1) as Dsl.FunctionData;
                         pos = ReadPosition(posDsl);
                     }
                     BlendTree tree;
@@ -646,7 +654,7 @@ public static class AnimatorControllerUtility
                         state = ctrl.CreateBlendTreeInController(name, out tree, layerIndex);
                         if (pos.sqrMagnitude >= GameFramework.Geometry.c_FloatPrecision) {
                             int len = stateMachine.states.Length - 1;
-                            stateMachine.states[len - 1].position = pos;
+                            stateMachine.states[len].position = pos;
                         }
                     } else {
                         tree = state.motion as BlendTree;
@@ -654,15 +662,15 @@ public static class AnimatorControllerUtility
                             state = ctrl.CreateBlendTreeInController(name, out tree, layerIndex);
                             if (pos.sqrMagnitude >= GameFramework.Geometry.c_FloatPrecision) {
                                 int len = stateMachine.states.Length - 1;
-                                stateMachine.states[len - 1].position = pos;
+                                stateMachine.states[len].position = pos;
                             }
                         }
                     }
                 } else if (id == "statemachine") {
                     stateMachines.Add(name);
                     Vector3 pos = Vector3.zero;
-                    if (subFuncData.Call.GetParamNum() >= 2) {
-                        Dsl.CallData posDsl = subFuncData.Call.GetParam(1) as Dsl.CallData;
+                    if (funcHeader.GetParamNum() >= 2) {
+                        Dsl.FunctionData posDsl = funcHeader.GetParam(1) as Dsl.FunctionData;
                         pos = ReadPosition(posDsl);
                     }
                     AnimatorStateMachine subStateMachine = FindAnimatorStateMachine(stateMachine, name);
@@ -784,15 +792,18 @@ public static class AnimatorControllerUtility
     }
     private static void ReadAnimatorStateMachine2(Dsl.FunctionData funcData, AnimatorStateMachine stateMachine, AnimatorControllerLayer layer, int layerIndex, AnimatorController ctrl)
     {
-        foreach (Dsl.ISyntaxComponent comp in funcData.Statements) {
+        foreach (Dsl.ISyntaxComponent comp in funcData.Params) {
             Dsl.FunctionData subFuncData = comp as Dsl.FunctionData;
             if (null != subFuncData) {
+                var funcHeader = subFuncData;
+                if (subFuncData.IsHighOrder)
+                    funcHeader = subFuncData.LowerOrderFunction;
                 string id = subFuncData.GetId();
-                string name = subFuncData.Call.GetParamId(0);
+                string name = funcHeader.GetParamId(0);
                 if (id == "state") {
                     Vector3 pos = Vector3.zero;
-                    if (subFuncData.Call.GetParamNum() >= 2) {
-                        Dsl.CallData posDsl = subFuncData.Call.GetParam(1) as Dsl.CallData;
+                    if (funcHeader.GetParamNum() >= 2) {
+                        Dsl.FunctionData posDsl = funcHeader.GetParam(1) as Dsl.FunctionData;
                         pos = ReadPosition(posDsl);
                     }
                     AnimatorState state = FindAnimatorState(stateMachine, name);
@@ -805,8 +816,8 @@ public static class AnimatorControllerUtility
                     ReadAnimatorState(subFuncData, state, stateMachine, layer, layerIndex, ctrl);
                 } else if (id == "blendtreestate") {
                     Vector3 pos = Vector3.zero;
-                    if (subFuncData.Call.GetParamNum() >= 2) {
-                        Dsl.CallData posDsl = subFuncData.Call.GetParam(1) as Dsl.CallData;
+                    if (funcHeader.GetParamNum() >= 2) {
+                        Dsl.FunctionData posDsl = funcHeader.GetParam(1) as Dsl.FunctionData;
                         pos = ReadPosition(posDsl);
                     }
                     BlendTree tree;
@@ -815,7 +826,7 @@ public static class AnimatorControllerUtility
                         state = ctrl.CreateBlendTreeInController(name, out tree, layerIndex);
                         if (pos.sqrMagnitude >= GameFramework.Geometry.c_FloatPrecision) {
                             int len = stateMachine.states.Length - 1;
-                            stateMachine.states[len - 1].position = pos;
+                            stateMachine.states[len].position = pos;
                         }
                     } else {
                         tree = state.motion as BlendTree;
@@ -823,15 +834,15 @@ public static class AnimatorControllerUtility
                             state = ctrl.CreateBlendTreeInController(name, out tree, layerIndex);
                             if (pos.sqrMagnitude >= GameFramework.Geometry.c_FloatPrecision) {
                                 int len = stateMachine.states.Length - 1;
-                                stateMachine.states[len - 1].position = pos;
+                                stateMachine.states[len].position = pos;
                             }
                         }
                     }
                     ReadAnimatorState(subFuncData, state, stateMachine, layer, layerIndex, ctrl);
                 } else if (id == "statemachine") {
                     Vector3 pos = Vector3.zero;
-                    if (subFuncData.Call.GetParamNum() >= 2) {
-                        Dsl.CallData posDsl = subFuncData.Call.GetParam(1) as Dsl.CallData;
+                    if (funcHeader.GetParamNum() >= 2) {
+                        Dsl.FunctionData posDsl = funcHeader.GetParam(1) as Dsl.FunctionData;
                         pos = ReadPosition(posDsl);
                     }
                     AnimatorStateMachine subStateMachine = FindAnimatorStateMachine(stateMachine, name);
@@ -843,7 +854,7 @@ public static class AnimatorControllerUtility
                     }
                     ReadAnimatorStateMachine2(subFuncData, subStateMachine, layer, layerIndex, ctrl);
                 } else if (id == "anytransition" && s_ImportAll) {
-                    Dsl.CallData callData = subFuncData.Call;
+                    Dsl.FunctionData callData = funcHeader;
                     string destName = callData.GetParamId(0);
                     AnimatorStateTransition tran = null;
                     int paramNum = callData.GetParamNum();
@@ -868,7 +879,7 @@ public static class AnimatorControllerUtility
                         ReadAnimatorStateTransition(subFuncData, tran);
                     }
                 } else if (id == "entrytransition" && s_ImportAll) {
-                    Dsl.CallData callData = subFuncData.Call;
+                    Dsl.FunctionData callData = funcHeader;
                     string destName = callData.GetParamId(0);
                     AnimatorTransition tran = null;
                     int paramNum = callData.GetParamNum();
@@ -893,7 +904,7 @@ public static class AnimatorControllerUtility
                         ReadAnimatorTransition(subFuncData, tran);
                     }
                 } else if (id == "transition") {
-                    Dsl.CallData callData = subFuncData.Call;
+                    Dsl.FunctionData callData = funcHeader;
                     AnimatorTransition tran = null;
                     int paramNum = callData.GetParamNum();
                     if (paramNum >= 1) {
@@ -930,8 +941,8 @@ public static class AnimatorControllerUtility
     }
     private static void ReadAnimatorStateTransition(Dsl.FunctionData funcData, AnimatorStateTransition tran)
     {
-        foreach (Dsl.ISyntaxComponent comp in funcData.Statements) {
-            Dsl.CallData callData = comp as Dsl.CallData;
+        foreach (Dsl.ISyntaxComponent comp in funcData.Params) {
+            Dsl.FunctionData callData = comp as Dsl.FunctionData;
             if (null != callData) {
                 string id = callData.GetId();
                 if (id == "hasexittime") {
@@ -951,8 +962,8 @@ public static class AnimatorControllerUtility
     }
     private static void ReadAnimatorTransition(Dsl.FunctionData funcData, AnimatorTransition tran)
     {
-        foreach (Dsl.ISyntaxComponent comp in funcData.Statements) {
-            Dsl.CallData callData = comp as Dsl.CallData;
+        foreach (Dsl.ISyntaxComponent comp in funcData.Params) {
+            Dsl.FunctionData callData = comp as Dsl.FunctionData;
             if (null != callData) {
                 if (callData.GetId() == "condition") {
                     string param = callData.GetParamId(0);
@@ -966,7 +977,7 @@ public static class AnimatorControllerUtility
             }
         }
     }
-    private static Vector3 ReadPosition(Dsl.CallData posDsl)
+    private static Vector3 ReadPosition(Dsl.FunctionData posDsl)
     {
         if (posDsl.GetId() == "vector3") {
             float x = float.Parse(posDsl.GetParamId(0));

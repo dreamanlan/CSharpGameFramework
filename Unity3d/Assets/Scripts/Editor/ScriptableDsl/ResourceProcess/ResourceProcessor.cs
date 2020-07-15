@@ -2401,19 +2401,22 @@ internal sealed class ResourceProcessor
                             }
                         }
                         var first = info.First;
-                        var input = first.Call;
+                        var input = first;
+                        if (first.IsHighOrder)
+                            input = first.LowerOrderFunction;
                         foreach (var param in input.Params) {
                             string ext = param.GetId();
                             m_TypeOrExtList.Add(ext);
                         }
-                        foreach (var comp in first.Statements) {
-                            var callData = comp as Dsl.CallData;
-                            if (null != callData) {
-                                ParseCallData(callData);
-                            }
-                            else {
-                                var funcData = comp as Dsl.FunctionData;
-                                ParseFunctionData(funcData);
+                        foreach (var comp in first.Params) {
+                            var funcData = comp as Dsl.FunctionData;
+                            if (null != funcData) {
+                                if (funcData.IsHighOrder) {
+                                    ParseFunctionData(funcData);
+                                }
+                                else if (funcData.HaveParam()) {
+                                    ParseCallData(funcData);
+                                }
                             }
                         }
                     }
@@ -2438,7 +2441,7 @@ internal sealed class ResourceProcessor
             }
         }
     }
-    internal string ParseCallData(Dsl.CallData callData)
+    internal string ParseCallData(Dsl.FunctionData callData)
     {
         string id = callData.GetId();
         string key = callData.GetParamId(0);
@@ -2609,13 +2612,15 @@ internal sealed class ResourceProcessor
     }
     internal void ParseFunctionData(Dsl.FunctionData funcData)
     {
-        var callData = funcData.Call;
+        var callData = funcData;
+        if (funcData.IsHighOrder)
+            callData = funcData.LowerOrderFunction;
         string name = ParseCallData(callData);
         ResourceEditUtility.ParamInfo info;
         if (m_Params.TryGetValue(name, out info)) {
-            foreach (var comp in funcData.Statements) {
+            foreach (var comp in funcData.Params) {
                 var id = comp.GetId();
-                var cd = comp as Dsl.CallData;
+                var cd = comp as Dsl.FunctionData;
                 if (null != cd) {
                     if (id == "script") {
                         info.Script = cd.GetParamId(0);
@@ -2683,10 +2688,10 @@ internal sealed class ResourceProcessor
                             info.OptionNames.Add(key);
                         }
                         else {
-                            var pcd1 = p1 as Dsl.CallData;
-                            var pcd2 = p2 as Dsl.CallData;
+                            var pcd1 = p1 as Dsl.FunctionData;
+                            var pcd2 = p2 as Dsl.FunctionData;
                             if (1 == num && null != pcd1) {
-                                if (pcd1.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_OPERATOR && pcd1.GetId() == "..") {
+                                if (pcd1.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_OPERATOR && pcd1.GetId() == "..") {
                                     //xxx(min..max);
                                     int min = int.Parse(pcd1.GetParamId(0));
                                     int max = int.Parse(pcd1.GetParamId(1));
@@ -2697,7 +2702,7 @@ internal sealed class ResourceProcessor
                                         info.OptionNames.Add(kStr);
                                     }
                                 }
-                                else if (pcd1.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd1.HaveId()) {
+                                else if (pcd1.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd1.HaveId()) {
                                     //xxx([v1,v2,v3,v4,v5]);
                                     for (int i = 0; i < pcd1.GetParamNum(); ++i) {
                                         var vStr = pcd1.GetParamId(i);
@@ -2708,7 +2713,7 @@ internal sealed class ResourceProcessor
                             }
                             else if (2 == num) {
                                 if (null != pcd1 && null != pcd2) {
-                                    if (pcd1.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd1.HaveId() && pcd2.GetParamClass() == (int)Dsl.CallData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd2.HaveId()) {
+                                    if (pcd1.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd1.HaveId() && pcd2.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET && !pcd2.HaveId()) {
                                         //xxx([k1,k2,k3,k4,k5],[v1,v2,v3,v4,v5]);
                                         int num1 = pcd1.GetParamNum();
                                         int num2 = pcd2.GetParamNum();
@@ -4224,8 +4229,8 @@ internal sealed class ResourceProcessor
                         func = stData.First;
                     }
                     if (null!=func && func.GetId() == "input") {
-                        foreach (var comp in func.Statements) {
-                            var callData = comp as Dsl.CallData;
+                        foreach (var comp in func.Params) {
+                            var callData = comp as Dsl.FunctionData;
                             if (null != callData && callData.GetId() == "feature") {
                                 string key = callData.GetParamId(0);
                                 string val = callData.GetParamId(1);
@@ -4285,10 +4290,13 @@ internal sealed class ResourceProcessor
                         last = stData.Last;
                     }
                     if (null != stData && first.GetId() == "input" && last.GetId() == "assetprocessor") {
-                        foreach (var param in first.Call.Params) {
+                        var cd = first;
+                        if (first.IsHighOrder)
+                            cd = first.LowerOrderFunction;
+                        foreach (var param in cd.Params) {
                             filters.Add(param.GetId());
                         }
-                        foreach (var comp in last.Statements) {
+                        foreach (var comp in last.Params) {
                             var processor = comp.GetId();
                             processors.Add(processor);
                         }

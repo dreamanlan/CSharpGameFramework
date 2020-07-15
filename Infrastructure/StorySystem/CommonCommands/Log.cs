@@ -36,7 +36,7 @@ namespace StorySystem.CommonCommands
             LogSystem.Warn(m_Format.Value, args);
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

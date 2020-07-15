@@ -75,7 +75,7 @@ public class AiQuery : IStoryValuePlugin
         }
     }
 
-    public void LoadCallData(Dsl.CallData callData)
+    public void LoadCallData(Dsl.FunctionData callData)
     {
         string id = callData.GetId();
         if (id == "select") {
@@ -102,7 +102,7 @@ public class AiQuery : IStoryValuePlugin
 
     public void LoadFuncData(Dsl.FunctionData funcData)
     {
-        LoadCallData(funcData.Call);
+        LoadCallData(funcData);
     }
 
     public void LoadStatementData(Dsl.StatementData statementData)

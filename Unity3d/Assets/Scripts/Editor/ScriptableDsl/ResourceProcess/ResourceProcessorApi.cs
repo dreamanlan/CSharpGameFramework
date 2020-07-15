@@ -1477,27 +1477,35 @@ namespace ResourceEditApi
             r = list;
             return r;
         }
-        protected override bool Load(Dsl.CallData callData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
-            for (int i = 0; i < callData.GetParamNum(); ++i) {
-                Dsl.CallData paramCallData = callData.GetParam(i) as Dsl.CallData;
-                if (null != paramCallData && paramCallData.GetParamNum() == 2) {
-                    var expKey = Calculator.Load(paramCallData.GetParam(0));
-                    m_Expressions.Add(expKey);
-                    var expVal = Calculator.Load(paramCallData.GetParam(1));
-                    m_Expressions.Add(expVal);
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData);
+            }
+            if (funcData.HaveStatement()) {
+                for (int i = 0; i < funcData.GetParamNum(); ++i) {
+                    Dsl.FunctionData callData = funcData.GetParam(i) as Dsl.FunctionData;
+                    if (null != callData && callData.GetParamNum() == 2) {
+                        var expKey = Calculator.Load(callData.GetParam(0));
+                        m_Expressions.Add(expKey);
+                        var expVal = Calculator.Load(callData.GetParam(1));
+                        m_Expressions.Add(expVal);
+                    }
                 }
             }
             return true;
         }
-        protected override bool Load(Dsl.FunctionData funcData)
+        private bool LoadCall(Dsl.FunctionData callData)
         {
-            for (int i = 0; i < funcData.GetStatementNum(); ++i) {
-                Dsl.CallData callData = funcData.GetStatement(i) as Dsl.CallData;
-                if (null != callData && callData.GetParamNum() == 2) {
-                    var expKey = Calculator.Load(callData.GetParam(0));
+            for (int i = 0; i < callData.GetParamNum(); ++i) {
+                Dsl.FunctionData paramCallData = callData.GetParam(i) as Dsl.FunctionData;
+                if (null != paramCallData && paramCallData.GetParamNum() == 2) {
+                    var expKey = Calculator.Load(paramCallData.GetParam(0));
                     m_Expressions.Add(expKey);
-                    var expVal = Calculator.Load(callData.GetParam(1));
+                    var expVal = Calculator.Load(paramCallData.GetParam(1));
                     m_Expressions.Add(expVal);
                 }
             }

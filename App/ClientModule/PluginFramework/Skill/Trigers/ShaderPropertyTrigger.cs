@@ -96,15 +96,15 @@ namespace GameFramework.Skill.Trigers
             }
             return true;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 5) {
                 StartTime = long.Parse(callData.GetParamId(0));
                 m_RemainTime = long.Parse(callData.GetParamId(1));
                 m_ShaderName = callData.GetParamId(2);
-                m_StartColor = DslUtility.CalcColor(callData.GetParam(3) as Dsl.CallData);
-                m_ChangeColor = DslUtility.CalcColor(callData.GetParam(4) as Dsl.CallData);
+                m_StartColor = DslUtility.CalcColor(callData.GetParam(3) as Dsl.FunctionData);
+                m_ChangeColor = DslUtility.CalcColor(callData.GetParam(4) as Dsl.FunctionData);
             }
             if (num >= 6) {
                 m_ChangeTime = long.Parse(callData.GetParamId(5));
@@ -210,7 +210,7 @@ namespace GameFramework.Skill.Trigers
             }
             return true;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num >= 6) {
@@ -218,8 +218,8 @@ namespace GameFramework.Skill.Trigers
                 m_RemainTime = long.Parse(callData.GetParamId(1));
                 m_GoPath = callData.GetParamId(2);
                 m_ShaderName = callData.GetParamId(3);
-                m_StartColor = DslUtility.CalcColor(callData.GetParam(4) as Dsl.CallData);
-                m_ChangeColor = DslUtility.CalcColor(callData.GetParam(5) as Dsl.CallData);
+                m_StartColor = DslUtility.CalcColor(callData.GetParam(4) as Dsl.FunctionData);
+                m_ChangeColor = DslUtility.CalcColor(callData.GetParam(5) as Dsl.FunctionData);
             }
             if (num >= 7) {
                 m_ChangeTime = long.Parse(callData.GetParamId(6));

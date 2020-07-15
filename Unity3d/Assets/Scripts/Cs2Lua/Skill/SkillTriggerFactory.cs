@@ -93,13 +93,6 @@ internal abstract class CsSkillTrigger<T> : AbstractSkillTriger where T : CsSkil
         return false;
     }
 
-    protected override void Load(Dsl.CallData callData, SkillInstance instance)
-    {
-        if (null != m_Plugin) {
-            m_Plugin.LoadCallData(callData, instance);
-        }
-    }
-
     protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
     {
         if (null != m_Plugin) {
@@ -183,25 +176,18 @@ internal class LuaSkillTrigger : AbstractSkillTriger
         }
         return newObj;
     }
-
-    protected override void Load(Dsl.CallData callData, SkillInstance instance)
-    {
-        if (null != m_Load1) {
-            m_Load1.call(m_Self, callData, instance);
-        }
-    }
-
+    
     protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
     {
-        if (null != m_Load2) {
-            m_Load2.call(m_Self, funcData, instance);
+        if (null != m_Load1) {
+            m_Load1.call(m_Self, funcData, instance);
         }
     }
 
     protected override void Load(Dsl.StatementData statementData, SkillInstance instance)
     {
-        if (null != m_Load3) {
-            m_Load3.call(m_Self, statementData, instance);
+        if (null != m_Load2) {
+            m_Load2.call(m_Self, statementData, instance);
         }
     }
 
@@ -219,9 +205,8 @@ internal class LuaSkillTrigger : AbstractSkillTriger
             m_Reset = (LuaFunction)m_Self["Reset"];
             m_Execute = (LuaFunction)m_Self["Execute"];
             m_Clone = (LuaFunction)m_Self["Clone"];
-            m_Load1 = (LuaFunction)m_Self["LoadCallData"];
-            m_Load2 = (LuaFunction)m_Self["LoadFuncData"];
-            m_Load3 = (LuaFunction)m_Self["LoadStatementData"];
+            m_Load1 = (LuaFunction)m_Self["LoadFuncData"];
+            m_Load2 = (LuaFunction)m_Self["LoadStatementData"];
             m_OnInitProperties = (LuaFunction)m_Self["OnInitProperties"];
         }
     }
@@ -239,6 +224,5 @@ internal class LuaSkillTrigger : AbstractSkillTriger
     private LuaFunction m_Clone;
     private LuaFunction m_Load1;
     private LuaFunction m_Load2;
-    private LuaFunction m_Load3;
     private LuaFunction m_OnInitProperties;
 }

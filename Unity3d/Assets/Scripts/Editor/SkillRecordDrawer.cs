@@ -209,11 +209,11 @@ public class SkillRecordDrawer : PropertyDrawer
                 if (null == funcData && null != stData) {
                     funcData = stData.First;
                 }
-                if (null == funcData)
+                if (null == funcData || !funcData.IsHighOrder)
                     continue;
                 if (funcData.GetId() == "skilltemplate") {
-                    string key = funcData.Call.GetParamId(0);
-                    string content = funcData.GetExternScript();
+                    string key = funcData.LowerOrderFunction.GetParamId(0);
+                    string content = funcData.GetParamId(0);
                     if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(content)) {
                         s_SkillDslTemplates.Add(key, content);
                         menus.Add(new GUIContent(key));

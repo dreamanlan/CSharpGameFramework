@@ -137,7 +137,7 @@ object("Image")
 		};
 		component("Text", "UnityEngine.UI.Text, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
 		{
-			text("<color="#115500">fdsafdasfasd</color>fdsafdsafdsafdas<b>fdasfdasfds</b><i>fdasfdasfdsa</i>");
+			text("<color=\"#115500\">fdsafdasfasd</color>fdsafdsafdsafdas<b>fdasfdasfds</b><i>fdasfdasfdsa</i>");
 			color(0.986, 1.000, 0.000, 1.000);
 			font("Arial", "Library/unity default resources", 18, 1, "Normal");
 			align("UpperLeft", False);
@@ -225,6 +225,24 @@ object("Loading")
 					color(1.000, 1.000, 1.000, 1.000);
 				};
 			};
+		};
+	};
+	object("Text")
+	{
+		recttransform(0.000, 0.000, 0.000, 190.000, 30.000)
+		{
+			anchor(0.500, 0.500, 0.500, 0.500);
+			pivot(0.500, 0.500);
+			rotation(0.000, 0.000, 0.000);
+			scale(1.000, 1.000, 1.000);
+			offset(-95.000, -15.000, 95.000, 15.000);
+		};
+		component("Text", "UnityEngine.UI.Text, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
+		{
+			text("场景加载中。。。");
+			color(1.000, 0.807, 0.000, 1.000);
+			font("Arial", "Library/unity default resources", 24, 1, "Normal");
+			align("UpperLeft", False);
 		};
 	};
 };
@@ -678,13 +696,13 @@ object("MainUI")
 				};
 				object("Viewport")
 				{
-					recttransform(0.000, 0.000, 0.000, 0.000, 0.000)
+					recttransform(0.000, 0.000, 0.000, -17.000, -17.000)
 					{
-						anchor(0.000, 0.000, 0.000, 0.000);
+						anchor(0.000, 0.000, 1.000, 1.000);
 						pivot(0.000, 1.000);
 						rotation(0.000, 0.000, 0.000);
 						scale(1.000, 1.000, 1.000);
-						offset(0.000, 0.000, 0.000, 0.000);
+						offset(0.000, 17.000, -17.000, 0.000);
 					};
 					component("Mask", "UnityEngine.UI.Mask, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null");
 					component("Image", "UnityEngine.UI.Image, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
@@ -706,13 +724,13 @@ object("MainUI")
 				};
 				object("Scrollbar Horizontal")
 				{
-					recttransform(0.000, 0.000, 0.000, 0.000, 20.000)
+					recttransform(0.000, 0.000, 0.000, -17.000, 20.000)
 					{
-						anchor(0.000, 0.000, 0.000, 0.000);
+						anchor(0.000, 0.000, 1.000, 0.000);
 						pivot(0.000, 0.000);
 						rotation(0.000, 0.000, 0.000);
 						scale(1.000, 1.000, 1.000);
-						offset(0.000, 0.000, 0.000, 20.000);
+						offset(0.000, 0.000, -17.000, 20.000);
 					};
 					component("Image", "UnityEngine.UI.Image, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
 					{
@@ -734,7 +752,7 @@ object("MainUI")
 						{
 							recttransform(0.000, 0.000, 0.000, 20.000, 20.000)
 							{
-								anchor(0.000, 0.000, 0.000, 0.000);
+								anchor(0.000, 0.000, 1.000, 1.000);
 								pivot(0.500, 0.500);
 								rotation(0.000, 0.000, 0.000);
 								scale(1.000, 1.000, 1.000);
@@ -750,13 +768,13 @@ object("MainUI")
 				};
 				object("Scrollbar Vertical")
 				{
-					recttransform(0.000, 0.000, 0.000, 20.000, 0.000)
+					recttransform(0.000, 0.000, 0.000, 20.000, -17.000)
 					{
-						anchor(1.000, 0.000, 1.000, 0.000);
+						anchor(1.000, 0.000, 1.000, 1.000);
 						pivot(1.000, 1.000);
 						rotation(0.000, 0.000, 0.000);
 						scale(1.000, 1.000, 1.000);
-						offset(-20.000, 0.000, 0.000, 0.000);
+						offset(-20.000, 17.000, 0.000, 0.000);
 					};
 					component("Image", "UnityEngine.UI.Image, UnityEngine.UI, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null")
 					{
@@ -778,7 +796,7 @@ object("MainUI")
 						{
 							recttransform(0.000, 0.000, 0.000, 20.000, 20.000)
 							{
-								anchor(0.000, 0.000, 0.000, 0.000);
+								anchor(0.000, 0.970, 1.000, 1.000);
 								pivot(0.500, 0.500);
 								rotation(0.000, 0.000, 0.000);
 								scale(1.000, 1.000, 1.000);
@@ -1053,10 +1071,10 @@ object("ScreenInput")
 					rotation(0.000, 0.000, 0.000);
 					scale(100.000, 100.000, 0.000);
 				};
-				component("MeshFilter", "UnityEngine.MeshFilter, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null")
+				component("MeshFilter", "UnityEngine.MeshFilter, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null")
 				{
 				};
-				component("MeshRenderer", "UnityEngine.MeshRenderer, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null")
+				component("MeshRenderer", "UnityEngine.MeshRenderer, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null")
 				{
 				};
 			};
@@ -1078,10 +1096,10 @@ object("ScreenInput")
 						rotation(0.000, 0.000, 0.000);
 						scale(100.000, 100.000, 0.000);
 					};
-					component("MeshFilter", "UnityEngine.MeshFilter, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null")
+					component("MeshFilter", "UnityEngine.MeshFilter, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null")
 					{
 					};
-					component("MeshRenderer", "UnityEngine.MeshRenderer, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null")
+					component("MeshRenderer", "UnityEngine.MeshRenderer, UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null")
 					{
 					};
 				};
@@ -1805,8 +1823,8 @@ object("SummonIconItem")
 				rotation(0.000, 0.000, 0.000);
 				scale(1.000, 1.000, 1.000);
 			};
-			component("ParticleSystem", "UnityEngine.ParticleSystem, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
-			component("ParticleSystemRenderer", "UnityEngine.ParticleSystemRenderer, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
+			component("ParticleSystem", "UnityEngine.ParticleSystem, UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
+			component("ParticleSystemRenderer", "UnityEngine.ParticleSystemRenderer, UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
 			object("Particle System6")
 			{
 				transform
@@ -1815,8 +1833,8 @@ object("SummonIconItem")
 					rotation(0.000, 0.000, 0.000);
 					scale(1.000, 1.000, 1.000);
 				};
-				component("ParticleSystem", "UnityEngine.ParticleSystem, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
-				component("ParticleSystemRenderer", "UnityEngine.ParticleSystemRenderer, UnityEngine, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
+				component("ParticleSystem", "UnityEngine.ParticleSystem, UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
+				component("ParticleSystemRenderer", "UnityEngine.ParticleSystemRenderer, UnityEngine.ParticleSystemModule, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null");
 			};
 		};
 	};

@@ -77,33 +77,9 @@ namespace GameFramework
         private void ExecCommand(string cmd)
         {
             try {
-                int stIndex = cmd.IndexOf('(');
-                if (stIndex > 0) {
-#if DEBUG
-                    ClientGmStorySystem.Instance.Reset();
-                    ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes("script(main){onmessage(\"start\"){" + cmd + "}}"));
-                    ClientGmStorySystem.Instance.StartStory("main");
-#else
-          int edIndex = cmd.IndexOf(')');
-          if (edIndex > 0) {
-            string msgId = cmd.Substring(0, stIndex);
-            string[] args = cmd.Substring(stIndex + 1, edIndex - stIndex).Split(',');
-            ClientGmStorySystem.Instance.SendMessage(msgId, args);
-          }
-#endif
-                } else {
-                    stIndex = cmd.IndexOf(' ');
-                    if (stIndex > 0) {
-                        string msgId = cmd.Substring(0, stIndex);
-                        string[] args = cmd.Substring(stIndex + 1).Split(new char[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
-                        ClientGmStorySystem.Instance.SendMessage(msgId, args);
-                        GfxStorySystem.Instance.SendMessage(msgId, args);
-                    } else {
-                        ClientGmStorySystem.Instance.SendMessage(cmd);
-                        GfxStorySystem.Instance.SendMessage(cmd);
-                    }
-                }
-
+                ClientGmStorySystem.Instance.Reset();
+                ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes("script(main){onmessage(\"start\"){" + cmd + "}}"));
+                ClientGmStorySystem.Instance.StartStory("main");
                 LogSystem.Warn("ExecCommand {0} finish.", cmd);
             } catch (Exception ex) {
                 LogSystem.Error("ExecCommand exception:{0}\n{1}", ex.Message, ex.StackTrace);

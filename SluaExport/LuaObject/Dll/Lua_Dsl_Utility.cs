@@ -63,7 +63,7 @@ public class Lua_Dsl_Utility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 	static public int getCallString_s(IntPtr l) {
 		try {
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,1,out a1);
 			System.Boolean a2;
 			checkType(l,2,out a2);

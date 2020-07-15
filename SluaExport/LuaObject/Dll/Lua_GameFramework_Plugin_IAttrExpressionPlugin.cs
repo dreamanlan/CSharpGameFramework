@@ -57,7 +57,7 @@ public class Lua_GameFramework_Plugin_IAttrExpressionPlugin : LuaObject {
 	static public int LoadCallData(IntPtr l) {
 		try {
 			GameFramework.Plugin.IAttrExpressionPlugin self=(GameFramework.Plugin.IAttrExpressionPlugin)checkSelf(l);
-			Dsl.CallData a1;
+			Dsl.FunctionData a1;
 			checkType(l,2,out a1);
 			var ret=self.LoadCallData(a1);
 			pushValue(l,true);

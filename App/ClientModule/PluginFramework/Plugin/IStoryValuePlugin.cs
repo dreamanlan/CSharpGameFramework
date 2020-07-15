@@ -11,7 +11,6 @@ namespace GameFramework.Plugin
         void SetProxy(StoryValueResult result);
         IStoryValuePlugin Clone();
         void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args);
-        void LoadCallData(Dsl.CallData callData);
         void LoadFuncData(Dsl.FunctionData funcData);
         void LoadStatementData(Dsl.StatementData statementData);
     }

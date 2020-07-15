@@ -117,25 +117,33 @@ namespace StorySystem
                 cmd.InitSharedData();
                 var first = dslInfo as Dsl.FunctionData;
                 if (null != first) {
-                    cmd.Name = first.Call.GetParamId(0);
+                    if (first.IsHighOrder) {
+                        cmd.Name = first.LowerOrderFunction.GetParamId(0);
+                    }
+                    else {
+                        cmd.Name = first.GetParamId(0);
+                    }
                 }
                 else {
                     var statement = dslInfo as Dsl.StatementData;
                     if (null != statement) {
                         first = statement.First;
-                        cmd.Name = first.Call.GetParamId(0);
+                        cmd.Name = first.GetParamId(0);
                         for (int i = 1; i < statement.GetFunctionNum(); ++i) {
                             var funcData = statement.GetFunction(i);
+                            var cd = funcData;
+                            if (funcData.IsHighOrder)
+                                cd = funcData.LowerOrderFunction;
                             var fid = funcData.GetId();
                             if (fid == "args") {
-                                for (int ix = 0; ix < funcData.Call.GetParamNum(); ++ix) {
-                                    cmd.ArgNames.Add(funcData.Call.GetParamId(ix));
+                                for (int ix = 0; ix < cd.GetParamNum(); ++ix) {
+                                    cmd.ArgNames.Add(cd.GetParamId(ix));
                                 }
                             }
                             else if (fid == "opts") {
-                                for (int ix = 0; ix < funcData.GetStatementNum(); ++ix) {
-                                    var fcomp = funcData.GetStatement(ix);
-                                    var fcd = fcomp as Dsl.CallData;
+                                for (int ix = 0; ix < cd.GetParamNum(); ++ix) {
+                                    var fcomp = cd.GetParam(ix);
+                                    var fcd = fcomp as Dsl.FunctionData;
                                     if (null != fcd) {
                                         cmd.OptArgs.Add(fcd.GetId(), fcd.GetParam(0));
                                     }
@@ -156,28 +164,37 @@ namespace StorySystem
                 val.InitSharedData();
                 var first = dslInfo as Dsl.FunctionData;
                 if (null != first) {
-                    val.Name = first.Call.GetParamId(0);
+                    if (first.IsHighOrder) {
+                        val.Name = first.LowerOrderFunction.GetParamId(0);
+                    }
+                    else {
+                        val.Name = first.GetParamId(0);
+                    }
                 }
                 else {
                     var statement = dslInfo as Dsl.StatementData;
                     if (null != statement) {
                         first = statement.First;
-                        val.Name = first.Call.GetParamId(0);
+                        val.Name = first.GetParamId(0);
                         for (int i = 1; i < statement.GetFunctionNum(); ++i) {
                             var funcData = statement.GetFunction(i);
+                            var cd = funcData;
+                            if (funcData.IsHighOrder) {
+                                cd = funcData.LowerOrderFunction;
+                            }
                             var fid = funcData.GetId();
                             if (fid == "args") {
-                                for (int ix = 0; ix < funcData.Call.GetParamNum(); ++ix) {
-                                    val.ArgNames.Add(funcData.Call.GetParamId(ix));
+                                for (int ix = 0; ix < cd.GetParamNum(); ++ix) {
+                                    val.ArgNames.Add(cd.GetParamId(ix));
                                 }
                             }
                             else if (fid == "ret") {
-                                val.ReturnName = funcData.Call.GetParamId(0);
+                                val.ReturnName = cd.GetParamId(0);
                             }
                             else if (fid == "opts") {
-                                for (int ix = 0; ix < funcData.GetStatementNum(); ++ix) {
-                                    var fcomp = funcData.GetStatement(ix);
-                                    var fcd = fcomp as Dsl.CallData;
+                                for (int ix = 0; ix < cd.GetParamNum(); ++ix) {
+                                    var fcomp = cd.GetParam(ix);
+                                    var fcd = fcomp as Dsl.FunctionData;
                                     if (null != fcd) {
                                         val.OptArgs.Add(fcd.GetId(), fcd.GetParam(0));
                                     }
@@ -203,12 +220,17 @@ namespace StorySystem
                 var first = dslInfo as Dsl.FunctionData;
                 var statement = dslInfo as Dsl.StatementData;
                 if (null != first) {
-                    name = first.Call.GetParamId(0);
+                    if (first.IsHighOrder) {
+                        name = first.LowerOrderFunction.GetParamId(0);
+                    }
+                    else {
+                        name = first.GetParamId(0);
+                    }
                 }
                 else {
                     if (null != statement) {
                         first = statement.First;
-                        name = first.Call.GetParamId(0);
+                        name = first.GetParamId(0);
                     }
                 }
 
@@ -231,8 +253,8 @@ namespace StorySystem
                         bodyFunc = first;
                     }
                     if (null != bodyFunc) {
-                        for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
-                            Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
+                        for (int ix = 0; ix < bodyFunc.GetParamNum(); ++ix) {
+                            Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetParam(ix);
                             IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
                             cmd.InitialCommands.Add(sub);
                         }
@@ -248,12 +270,17 @@ namespace StorySystem
                 var first = dslInfo as Dsl.FunctionData;
                 var statement = dslInfo as Dsl.StatementData;
                 if (null != first) {
-                    name = first.Call.GetParamId(0);
+                    if (first.IsHighOrder) {
+                        name = first.LowerOrderFunction.GetParamId(0);
+                    }
+                    else {
+                        name = first.GetParamId(0);
+                    }
                 }
                 else {
                     if (null != statement) {
                         first = statement.First;
-                        name = first.Call.GetParamId(0);
+                        name = first.GetParamId(0);
                     }
                 }
 
@@ -276,8 +303,8 @@ namespace StorySystem
                         bodyFunc = first;
                     }
                     if (null != bodyFunc) {
-                        for (int ix = 0; ix < bodyFunc.GetStatementNum(); ++ix) {
-                            Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetStatement(ix);
+                        for (int ix = 0; ix < bodyFunc.GetParamNum(); ++ix) {
+                            Dsl.ISyntaxComponent syntaxComp = bodyFunc.GetParam(ix);
                             IStoryCommand sub = StoryCommandManager.Instance.CreateCommand(syntaxComp);
                             val.InitialCommands.Add(sub);
                         }

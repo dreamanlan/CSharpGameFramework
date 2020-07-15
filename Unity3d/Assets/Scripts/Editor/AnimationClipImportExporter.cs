@@ -268,14 +268,16 @@ public static class AnimationClipUtility
             } else {
                 foreach (var info in file.DslInfos) {
                     if (info.GetId() == "model") {
-                        funcData = dslInfo as Dsl.FunctionData;
-                        var stData = dslInfo as Dsl.StatementData;
+                        funcData = info as Dsl.FunctionData;
+                        var stData = info as Dsl.StatementData;
                         if (null == funcData && null != stData) {
                             funcData = stData.First;
                         }
                         if (null != funcData) {
-                            var callData = funcData.Call;
-                            if (callData.GetId() == name) {
+                            var callData = funcData;
+                            if (funcData.IsHighOrder)
+                                callData = funcData.LowerOrderFunction;
+                            if (callData.GetParamId(0) == name) {
                                 dslInfo = info;
                                 break;
                             }
@@ -287,14 +289,16 @@ public static class AnimationClipUtility
                 if (dslInfo.GetId() == "model") {
                     List<ModelImporterClipAnimation> list = new List<ModelImporterClipAnimation>();
 
-                    foreach (Dsl.ISyntaxComponent clipInfo in funcData.Statements) {
+                    foreach (Dsl.ISyntaxComponent clipInfo in funcData.Params) {
                         var fd = clipInfo as Dsl.FunctionData;
                         if (null != fd) {
-                            var cd = fd.Call;
+                            var cd = fd;
+                            if (fd.IsHighOrder)
+                                cd = fd.LowerOrderFunction;
                             string id = cd.GetId();
                             if (id == "setting") {
-                                foreach (var settingInfo in fd.Statements) {
-                                    var setting = settingInfo as Dsl.CallData;
+                                foreach (var settingInfo in fd.Params) {
+                                    var setting = settingInfo as Dsl.FunctionData;
                                     if (null != setting) {
                                         string key = setting.GetId();
                                         if (key == "import_animation") {
@@ -315,8 +319,8 @@ public static class AnimationClipUtility
                             } else if (id == "clip_animation") {
                                 ModelImporterClipAnimation clip = new ModelImporterClipAnimation();
                                 clip.name = cd.GetParamId(0);
-                                foreach (var settingInfo in fd.Statements) {
-                                    var setting = settingInfo as Dsl.CallData;
+                                foreach (var settingInfo in fd.Params) {
+                                    var setting = settingInfo as Dsl.FunctionData;
                                     if (null != setting) {
                                         string key = setting.GetId();
                                         if (key == "take_name") {

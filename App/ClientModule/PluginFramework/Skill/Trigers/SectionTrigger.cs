@@ -95,7 +95,7 @@ namespace GameFramework.Skill.Trigers
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() > 0) {
                 m_Type = callData.GetParamId(0);
@@ -155,7 +155,7 @@ namespace GameFramework.Skill.Trigers
             }
             return true;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() > 0) {
                 m_Interval = long.Parse(callData.GetParamId(0));
@@ -219,7 +219,7 @@ namespace GameFramework.Skill.Trigers
             instance.StopCurSection();
             return false;
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -233,11 +233,11 @@ namespace GameFramework.Skill.Trigers
             Dsl.FunctionData func1 = statementData.First;
             Dsl.FunctionData func2 = statementData.Second;
             if (null != func1 && null != func2) {
-                Load(func1.Call, instance);
-                LoadIf(func2.Call, instance);
+                Load(func1, instance);
+                LoadIf(func2, instance);
             }
         }
-        private void LoadIf(Dsl.CallData callData, SkillInstance instance)
+        private void LoadIf(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -261,7 +261,7 @@ namespace GameFramework.Skill.Trigers
             return copy;
         }
 
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             if (callData.GetParamNum() >= 2) {
                 StartTime = long.Parse(callData.GetParamId(0));

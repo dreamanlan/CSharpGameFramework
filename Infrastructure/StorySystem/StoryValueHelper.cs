@@ -115,7 +115,7 @@ namespace StorySystem
         public Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments)
         {
             Dsl.FunctionData ret = null;
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
@@ -124,7 +124,7 @@ namespace StorySystem
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
-                        callData = first.Call;
+                        callData = first;
                     }
                 }
             }
@@ -159,7 +159,7 @@ namespace StorySystem
         public Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments)
         {
             Dsl.FunctionData ret = null;
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
@@ -168,7 +168,7 @@ namespace StorySystem
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
-                        callData = first.Call;
+                        callData = first;
                     }
                 }
             }
@@ -211,7 +211,7 @@ namespace StorySystem
         public Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments)
         {
             Dsl.FunctionData ret = null;
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
@@ -220,7 +220,7 @@ namespace StorySystem
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
-                        callData = first.Call;
+                        callData = first;
                     }
                 }
             }
@@ -271,7 +271,7 @@ namespace StorySystem
         public Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments)
         {
             Dsl.FunctionData ret = null;
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
@@ -280,7 +280,7 @@ namespace StorySystem
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
-                        callData = first.Call;
+                        callData = first;
                     }
                 }
             }
@@ -339,7 +339,7 @@ namespace StorySystem
         public Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments)
         {
             Dsl.FunctionData ret = null;
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
@@ -348,7 +348,7 @@ namespace StorySystem
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
-                        callData = first.Call;
+                        callData = first;
                     }
                 }
             }
@@ -415,7 +415,7 @@ namespace StorySystem
         public Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments)
         {
             Dsl.FunctionData ret = null;
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
@@ -424,7 +424,7 @@ namespace StorySystem
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
-                        callData = first.Call;
+                        callData = first;
                     }
                 }
             }
@@ -499,7 +499,7 @@ namespace StorySystem
         public Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments)
         {
             Dsl.FunctionData ret = null;
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
@@ -508,7 +508,7 @@ namespace StorySystem
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
-                        callData = first.Call;
+                        callData = first;
                     }
                 }
             }
@@ -591,7 +591,7 @@ namespace StorySystem
         public Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments)
         {
             Dsl.FunctionData ret = null;
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
@@ -600,7 +600,7 @@ namespace StorySystem
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
-                        callData = first.Call;
+                        callData = first;
                     }
                 }
             }
@@ -691,7 +691,7 @@ namespace StorySystem
         public Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments)
         {
             Dsl.FunctionData ret = null;
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
@@ -700,7 +700,7 @@ namespace StorySystem
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
-                        callData = first.Call;
+                        callData = first;
                     }
                 }
             }
@@ -766,7 +766,7 @@ namespace StorySystem
         public Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments)
         {
             Dsl.FunctionData ret = null;
-            Dsl.CallData callData = param as Dsl.CallData;
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
@@ -775,7 +775,7 @@ namespace StorySystem
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
-                        callData = first.Call;
+                        callData = first;
                     }
                 }
             }

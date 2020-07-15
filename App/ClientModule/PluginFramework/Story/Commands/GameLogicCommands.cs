@@ -31,7 +31,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
         }
     }
@@ -62,7 +62,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -119,7 +119,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -133,14 +133,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -195,7 +195,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -207,14 +207,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -269,7 +269,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -281,14 +281,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -343,7 +343,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -355,14 +355,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -405,7 +405,7 @@ namespace GameFramework.Story.Commands
             Utility.SendMessage(path, "CameraFixedYaw", arg1);
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -417,14 +417,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -473,7 +473,7 @@ namespace GameFramework.Story.Commands
             Utility.SendMessage(path, "CameraYaw", new object[] { arg1, arg2, arg3 });
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 2) {
@@ -487,14 +487,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -542,7 +542,7 @@ namespace GameFramework.Story.Commands
             Utility.SendMessage(path, "CameraHeight", new object[] { arg1, arg2 });
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -555,14 +555,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -609,7 +609,7 @@ namespace GameFramework.Story.Commands
             Utility.SendMessage(path, "CameraDistance", new object[] { arg1, arg2 });
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -622,14 +622,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -676,7 +676,7 @@ namespace GameFramework.Story.Commands
             Utility.SendMessage(path, "SetDistanceAndHeight", new object[] { arg1, arg2 });
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -689,14 +689,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -737,7 +737,7 @@ namespace GameFramework.Story.Commands
             Utility.SendMessage(path, "ResetDistanceAndHeight", null);
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
         }
@@ -746,14 +746,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -807,7 +807,7 @@ namespace GameFramework.Story.Commands
             Utility.SendMessage(path, "SetFollowSpeed", new object[] { arg1, arg2, arg3, arg4, arg5 });
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 4) {
@@ -823,14 +823,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -874,7 +874,7 @@ namespace GameFramework.Story.Commands
             Utility.SendMessage(path, "ResetFollowSpeed", null);
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
         }
@@ -883,14 +883,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -934,7 +934,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if(num>0) {
@@ -946,14 +946,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -999,7 +999,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1011,14 +1011,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1064,7 +1064,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1076,14 +1076,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1129,7 +1129,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1141,14 +1141,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1212,7 +1212,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -1225,14 +1225,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1288,7 +1288,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -1301,14 +1301,14 @@ namespace GameFramework.Story.Commands
             var first = statementData.First;
             var second = statementData.Second;
             if (null != first && null != second) {
-                var cd1 = first.Call;
-                var cd2 = second.Call;
+                var cd1 = first;
+                var cd2 = second;
 
                 Load(cd1);
                 LoadCameraPath(cd2);
             }
         }
-        private void LoadCameraPath(Dsl.CallData callData)
+        private void LoadCameraPath(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1348,7 +1348,7 @@ namespace GameFramework.Story.Commands
             Utility.SendMessage("GameRoot", "CameraEnable", new object[] { name, v });
             return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -1388,7 +1388,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1439,7 +1439,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             m_ParamNum = callData.GetParamNum();
             if (m_ParamNum > 1) {
@@ -1482,7 +1482,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1570,7 +1570,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 3) {
@@ -1584,8 +1584,8 @@ namespace GameFramework.Story.Commands
         protected override void Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 2) {
-                Dsl.CallData first = statementData.Functions[0].Call;
-                Dsl.CallData second = statementData.Functions[1].Call;
+                Dsl.FunctionData first = statementData.First;
+                Dsl.FunctionData second = statementData.Second;
                 if (null != first && null != second) {
                     m_HaveSet = true;
 
@@ -1595,7 +1595,7 @@ namespace GameFramework.Story.Commands
             }
         }
 
-        private void LoadSet(Dsl.CallData callData)
+        private void LoadSet(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num >= 3) {
@@ -1679,7 +1679,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 2) {
@@ -1840,39 +1840,49 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData funcData)
+        {
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData);
+            }
+            if (funcData.HaveStatement()) {
+                for (int i = 0; i < funcData.GetParamNum(); ++i) {
+                    Dsl.FunctionData callData = funcData.GetParam(i) as Dsl.FunctionData;
+                    if (null != callData) {
+                        string id = callData.GetId();
+                        if (id == "var") {
+                            LoadVar(callData);
+                        }
+                        else if (id == "onevent") {
+                            LoadEvent(callData);
+                        }
+                        else if (id == "inputs") {
+                            LoadPaths(m_Inputs, callData);
+                        }
+                        else if (id == "toggles") {
+                            LoadPaths(m_Toggles, callData);
+                        }
+                        else if (id == "sliders") {
+                            LoadPaths(m_Sliders, callData);
+                        }
+                        else if (id == "dropdowns") {
+                            LoadPaths(m_DropDowns, callData);
+                        }
+                    }
+                }
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_Obj.InitFromDsl(callData.GetParam(0));
             }
         }
-
-        protected override void Load(Dsl.FunctionData funcData)
-        {
-            Load(funcData.Call);
-            for (int i = 0; i < funcData.Statements.Count; ++i) {
-                Dsl.CallData callData = funcData.Statements[i] as Dsl.CallData;
-                if (null != callData) {
-                    string id = callData.GetId();
-                    if (id == "var") {
-                        LoadVar(callData);
-                    } else if (id == "onevent") {
-                        LoadEvent(callData);
-                    } else if (id == "inputs") {
-                        LoadPaths(m_Inputs, callData);
-                    } else if (id == "toggles") {
-                        LoadPaths(m_Toggles, callData);
-                    } else if (id == "sliders") {
-                        LoadPaths(m_Sliders, callData);
-                    } else if (id == "dropdowns") {
-                        LoadPaths(m_DropDowns, callData);
-                    }
-                }
-            }
-        }
-
-        private void LoadVar(Dsl.CallData callData)
+        private void LoadVar(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num >= 2) {
@@ -1883,7 +1893,7 @@ namespace GameFramework.Story.Commands
             }
         }
 
-        private void LoadEvent(Dsl.CallData callData)
+        private void LoadEvent(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num >= 3) {
@@ -1939,7 +1949,7 @@ namespace GameFramework.Story.Commands
         internal List<IStoryValue<string>> m_DropDowns = new List<IStoryValue<string>>();
         private List<EventInfo> m_EventInfos = new List<EventInfo>();
 
-        private static void LoadPaths(List<IStoryValue<string>> List, Dsl.CallData callData)
+        private static void LoadPaths(List<IStoryValue<string>> List, Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {

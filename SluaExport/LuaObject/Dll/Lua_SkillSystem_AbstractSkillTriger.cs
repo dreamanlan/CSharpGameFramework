@@ -144,8 +144,8 @@ public class Lua_SkillSystem_AbstractSkillTriger : LuaObject {
 				pushValue(l,true);
 				return 1;
 			}
-			else if(matchType(l,argc,1,typeof(Dsl.CallData),typeof(int),typeof(string))){
-				Dsl.CallData a1;
+			else if(matchType(l,argc,1,typeof(Dsl.FunctionData),typeof(int),typeof(string))){
+				Dsl.FunctionData a1;
 				checkType(l,1,out a1);
 				System.Int32 a2;
 				checkType(l,2,out a2);

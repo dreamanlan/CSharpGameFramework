@@ -152,7 +152,39 @@ namespace GameFramework.Skill.Trigers
             AddProperty("DeleteTime", () => { return m_DeleteTime.EditableValue; }, (object val) => { m_DeleteTime.EditableValue = val; });
             AddProperty("AttachPath", () => { return m_AttachPath.EditableValue; }, (object val) => { m_AttachPath.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
+        {
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction, instance);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData, instance);
+            }
+            if (funcData.HaveStatement()) {
+                Dsl.ISyntaxComponent statement = funcData.Params.Find(st => st.GetId() == "transform");
+                if (null != statement) {
+                    Dsl.FunctionData stCall = statement as Dsl.FunctionData;
+                    if (null != stCall) {
+                        if (stCall.GetParamNum() > 0) {
+                            Dsl.FunctionData param0 = stCall.GetParam(0) as Dsl.FunctionData;
+                            if (null != param0)
+                                m_Pos = DslUtility.CalcVector3(param0);
+                        }
+                        if (stCall.GetParamNum() > 1) {
+                            Dsl.FunctionData param1 = stCall.GetParam(1) as Dsl.FunctionData;
+                            if (null != param1)
+                                m_Dir = DslUtility.CalcEularRotation(param1);
+                        }
+                        if (stCall.GetParamNum() > 2) {
+                            Dsl.FunctionData param2 = stCall.GetParam(2) as Dsl.FunctionData;
+                            if (null != param2)
+                                m_Scale = DslUtility.CalcVector3(param2);
+                        }
+                    }
+                }
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -169,34 +201,6 @@ namespace GameFramework.Skill.Trigers
             }
             if (num > 4) {
                 m_IsAttach = bool.Parse(callData.GetParamId(4));
-            }
-        }
-        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
-        {
-            Dsl.CallData callData = funcData.Call;
-            if (null != callData) {
-                Load(callData, instance);
-                Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
-                if (null != statement) {
-                    Dsl.CallData stCall = statement as Dsl.CallData;
-                    if (null != stCall) {
-                        if (stCall.GetParamNum() > 0) {
-                            Dsl.CallData param0 = stCall.GetParam(0) as Dsl.CallData;
-                            if (null != param0)
-                                m_Pos = DslUtility.CalcVector3(param0);
-                        }
-                        if (stCall.GetParamNum() > 1) {
-                            Dsl.CallData param1 = stCall.GetParam(1) as Dsl.CallData;
-                            if (null != param1)
-                                m_Dir = DslUtility.CalcEularRotation(param1);
-                        }
-                        if (stCall.GetParamNum() > 2) {
-                            Dsl.CallData param2 = stCall.GetParam(2) as Dsl.CallData;
-                            if (null != param2)
-                                m_Scale = DslUtility.CalcVector3(param2);
-                        }
-                    }
-                }
             }
         }
         private SkillResourceParam m_EffectPath = new SkillResourceParam();
@@ -311,7 +315,39 @@ namespace GameFramework.Skill.Trigers
             AddProperty("DeleteTime", () => { return m_DeleteTime.EditableValue; }, (object val) => { m_DeleteTime.EditableValue = val; });
             AddProperty("AttachPath", () => { return m_AttachPath.EditableValue; }, (object val) => { m_AttachPath.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
+        {
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction, instance);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData, instance);
+            }
+            if (funcData.HaveStatement()) {
+                Dsl.ISyntaxComponent statement = funcData.Params.Find(st => st.GetId() == "transform");
+                if (null != statement) {
+                    Dsl.FunctionData stCall = statement as Dsl.FunctionData;
+                    if (null != stCall) {
+                        if (stCall.GetParamNum() > 0) {
+                            Dsl.FunctionData param0 = stCall.GetParam(0) as Dsl.FunctionData;
+                            if (null != param0)
+                                m_Pos = DslUtility.CalcVector3(param0);
+                        }
+                        if (stCall.GetParamNum() > 1) {
+                            Dsl.FunctionData param1 = stCall.GetParam(1) as Dsl.FunctionData;
+                            if (null != param1)
+                                m_Dir = DslUtility.CalcEularRotation(param1);
+                        }
+                        if (stCall.GetParamNum() > 2) {
+                            Dsl.FunctionData param2 = stCall.GetParam(2) as Dsl.FunctionData;
+                            if (null != param2)
+                                m_Scale = DslUtility.CalcVector3(param2);
+                        }
+                    }
+                }
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -328,34 +364,6 @@ namespace GameFramework.Skill.Trigers
             }
             if (num > 4) {
                 m_IsAttach = bool.Parse(callData.GetParamId(4));
-            }
-        }
-        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
-        {
-            Dsl.CallData callData = funcData.Call;
-            if (null != callData) {
-                Load(callData, instance);
-                Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
-                if (null != statement) {
-                    Dsl.CallData stCall = statement as Dsl.CallData;
-                    if (null != stCall) {
-                        if (stCall.GetParamNum() > 0) {
-                            Dsl.CallData param0 = stCall.GetParam(0) as Dsl.CallData;
-                            if (null != param0)
-                                m_Pos = DslUtility.CalcVector3(param0);
-                        }
-                        if (stCall.GetParamNum() > 1) {
-                            Dsl.CallData param1 = stCall.GetParam(1) as Dsl.CallData;
-                            if (null != param1)
-                                m_Dir = DslUtility.CalcEularRotation(param1);
-                        }
-                        if (stCall.GetParamNum() > 2) {
-                            Dsl.CallData param2 = stCall.GetParam(2) as Dsl.CallData;
-                            if (null != param2)
-                                m_Scale = DslUtility.CalcVector3(param2);
-                        }
-                    }
-                }
             }
         }
         private SkillResourceParam m_EffectPath = new SkillResourceParam();
@@ -450,7 +458,7 @@ namespace GameFramework.Skill.Trigers
             AddProperty("DeleteTime", () => { return m_DeleteTime.EditableValue; }, (object val) => { m_DeleteTime.EditableValue = val; });
             //AddProperty("Position", () => { return m_Pos; }, (object val) => { m_Pos = (Vector3)val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -460,16 +468,16 @@ namespace GameFramework.Skill.Trigers
                 m_DeleteTime.Set(callData.GetParam(1));
             }
             if (num > 2) {
-                m_Pos = DslUtility.CalcVector3(callData.GetParam(2) as Dsl.CallData);
+                m_Pos = DslUtility.CalcVector3(callData.GetParam(2) as Dsl.FunctionData);
             }
             if (num > 3) {
                 StartTime = long.Parse(callData.GetParamId(3));
             }
             if (num > 4) {
-                m_Dir = DslUtility.CalcEularRotation(callData.GetParam(4) as Dsl.CallData);
+                m_Dir = DslUtility.CalcEularRotation(callData.GetParam(4) as Dsl.FunctionData);
             }
             if (num > 5) {
-                m_Scale = DslUtility.CalcVector3(callData.GetParam(5) as Dsl.CallData);
+                m_Scale = DslUtility.CalcVector3(callData.GetParam(5) as Dsl.FunctionData);
             }
             if (num > 6) {
                 m_IsRotateRelativeUser = bool.Parse(callData.GetParamId(6));
@@ -564,7 +572,39 @@ namespace GameFramework.Skill.Trigers
             AddProperty("EmitBone", () => { return m_EmitBone.EditableValue; }, (object val) => { m_EmitBone.EditableValue = val; });
             AddProperty("EmitSpeed", () => { return m_EmitSpeed.EditableValue; }, (object val) => { m_EmitSpeed.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
+        {
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction, instance);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData, instance);
+            }
+            if (funcData.HaveStatement()) {
+                Dsl.ISyntaxComponent statement = funcData.Params.Find(st => st.GetId() == "transform");
+                if (null != statement) {
+                    Dsl.FunctionData stCall = statement as Dsl.FunctionData;
+                    if (null != stCall) {
+                        if (stCall.GetParamNum() > 0) {
+                            Dsl.FunctionData param0 = stCall.GetParam(0) as Dsl.FunctionData;
+                            if (null != param0)
+                                m_Pos = DslUtility.CalcVector3(param0);
+                        }
+                        if (stCall.GetParamNum() > 1) {
+                            Dsl.FunctionData param1 = stCall.GetParam(1) as Dsl.FunctionData;
+                            if (null != param1)
+                                m_Dir = DslUtility.CalcEularRotation(param1);
+                        }
+                        if (stCall.GetParamNum() > 2) {
+                            Dsl.FunctionData param2 = stCall.GetParam(2) as Dsl.FunctionData;
+                            if (null != param2)
+                                m_Scale = DslUtility.CalcVector3(param2);
+                        }
+                    }
+                }
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -586,34 +626,6 @@ namespace GameFramework.Skill.Trigers
                 m_IsExternalImpact = callData.GetParamId(5) == "true";
             }
             instance.AddImpactForInit(this, m_EmitImpact, m_IsExternalImpact);
-        }
-        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
-        {
-            Dsl.CallData callData = funcData.Call;
-            if (null != callData) {
-                Load(callData, instance);
-                Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
-                if (null != statement) {
-                    Dsl.CallData stCall = statement as Dsl.CallData;
-                    if (null != stCall) {
-                        if (stCall.GetParamNum() > 0) {
-                            Dsl.CallData param0 = stCall.GetParam(0) as Dsl.CallData;
-                            if (null != param0)
-                                m_Pos = DslUtility.CalcVector3(param0);
-                        }
-                        if (stCall.GetParamNum() > 1) {
-                            Dsl.CallData param1 = stCall.GetParam(1) as Dsl.CallData;
-                            if (null != param1)
-                                m_Dir = DslUtility.CalcEularRotation(param1);
-                        }
-                        if (stCall.GetParamNum() > 2) {
-                            Dsl.CallData param2 = stCall.GetParam(2) as Dsl.CallData;
-                            if (null != param2)
-                                m_Scale = DslUtility.CalcVector3(param2);
-                        }
-                    }
-                }
-            }
         }
 
         private SkillResourceParam m_EffectPath = new SkillResourceParam();
@@ -713,7 +725,39 @@ namespace GameFramework.Skill.Trigers
             AddProperty("EmitBone", () => { return m_EmitBone.EditableValue; }, (object val) => { m_EmitBone.EditableValue = val; });
             AddProperty("EmitSpeed", () => { return m_EmitSpeed.EditableValue; }, (object val) => { m_EmitSpeed.EditableValue = val; });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
+        {
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction, instance);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData, instance);
+            }
+            if (funcData.HaveStatement()) {
+                Dsl.ISyntaxComponent statement = funcData.Params.Find(st => st.GetId() == "transform");
+                if (null != statement) {
+                    Dsl.FunctionData stCall = statement as Dsl.FunctionData;
+                    if (null != stCall) {
+                        if (stCall.GetParamNum() > 0) {
+                            Dsl.FunctionData param0 = stCall.GetParam(0) as Dsl.FunctionData;
+                            if (null != param0)
+                                m_Pos = DslUtility.CalcVector3(param0);
+                        }
+                        if (stCall.GetParamNum() > 1) {
+                            Dsl.FunctionData param1 = stCall.GetParam(1) as Dsl.FunctionData;
+                            if (null != param1)
+                                m_Dir = DslUtility.CalcEularRotation(param1);
+                        }
+                        if (stCall.GetParamNum() > 2) {
+                            Dsl.FunctionData param2 = stCall.GetParam(2) as Dsl.FunctionData;
+                            if (null != param2)
+                                m_Scale = DslUtility.CalcVector3(param2);
+                        }
+                    }
+                }
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -741,34 +785,6 @@ namespace GameFramework.Skill.Trigers
                 m_IsExternalImpact = callData.GetParamId(9) == "true";
             }
             instance.AddImpactForInit(this, m_EmitImpact, m_IsExternalImpact);     
-        }
-        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
-        {
-            Dsl.CallData callData = funcData.Call;
-            if (null != callData) {
-                Load(callData, instance);
-                Dsl.ISyntaxComponent statement = funcData.Statements.Find(st => st.GetId() == "transform");
-                if (null != statement) {
-                    Dsl.CallData stCall = statement as Dsl.CallData;
-                    if (null != stCall) {
-                        if (stCall.GetParamNum() > 0) {
-                            Dsl.CallData param0 = stCall.GetParam(0) as Dsl.CallData;
-                            if (null != param0)
-                                m_Pos = DslUtility.CalcVector3(param0);
-                        }
-                        if (stCall.GetParamNum() > 1) {
-                            Dsl.CallData param1 = stCall.GetParam(1) as Dsl.CallData;
-                            if (null != param1)
-                                m_Dir = DslUtility.CalcEularRotation(param1);
-                        }
-                        if (stCall.GetParamNum() > 2) {
-                            Dsl.CallData param2 = stCall.GetParam(2) as Dsl.CallData;
-                            if (null != param2)
-                                m_Scale = DslUtility.CalcVector3(param2);
-                        }
-                    }
-                }
-            }
         }
         private SkillResourceParam m_EffectPath = new SkillResourceParam();
         private SkillStringParam m_EmitBone = new SkillStringParam();
@@ -871,7 +887,19 @@ namespace GameFramework.Skill.Trigers
             AddProperty("LockSpeed", () => { return m_LockSpeed; }, (object val) => { m_LockSpeed = (float)Convert.ChangeType(val, typeof(float)); });
             AddProperty("LockTime", () => { return m_LockTime; }, (object val) => { m_LockTime = (long)Convert.ChangeType(val, typeof(long)); });
         }
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
+        {
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction, instance);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData, instance);
+            }
+            if (funcData.HaveStatement()) {
+                LoadKeyFrames(funcData.Params);
+            }
+        }
+        private void LoadCall(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             int index = 0;
@@ -892,20 +920,11 @@ namespace GameFramework.Skill.Trigers
             }
             
         }
-        protected override void Load(Dsl.FunctionData funcData, SkillInstance instance)
-        {
-            Dsl.CallData callData = funcData.Call;
-            if (null == callData) {
-                return;
-            }
-            Load(callData, instance);
-            LoadKeyFrames(funcData.Statements);
-        }
         private void LoadKeyFrames(List<Dsl.ISyntaxComponent> statements)
         {
             m_Curve = new AnimationCurve();
             for (int i = 0; i < statements.Count; i++) {
-                Dsl.CallData stCall = statements[i] as Dsl.CallData;
+                Dsl.FunctionData stCall = statements[i] as Dsl.FunctionData;
                 if (stCall.GetId() == "keyframe") {
                     if (stCall.GetParamNum() >= 4) {
                         float time = float.Parse(stCall.GetParamId(0));
@@ -983,7 +1002,7 @@ namespace GameFramework.Skill.Trigers
             return false;
         }
 
-        protected override void Load(Dsl.CallData callData, SkillInstance instance)
+        protected override void Load(Dsl.FunctionData callData, SkillInstance instance)
         {
             int num = callData.GetParamNum();
             if (num > 0) {

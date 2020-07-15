@@ -38,7 +38,7 @@ namespace StorySystem.CommonCommands
             else
                 return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -50,13 +50,13 @@ namespace StorySystem.CommonCommands
             if (statementData.Functions.Count == 2) {
                 Dsl.FunctionData first = statementData.First;
                 Dsl.FunctionData second = statementData.Second;
-                if (null != first && null != first.Call && null != second && null != second.Call) {
-                    Load(first.Call);
-                    LoadCondition(second.Call);
+                if (null != first && null != second) {
+                    Load(first);
+                    LoadCondition(second);
                 }
             }
         }
-        private void LoadCondition(Dsl.CallData callData)
+        private void LoadCondition(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -107,7 +107,7 @@ namespace StorySystem.CommonCommands
             else
                 return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -119,13 +119,13 @@ namespace StorySystem.CommonCommands
             if (statementData.Functions.Count == 2) {
                 Dsl.FunctionData first = statementData.First;
                 Dsl.FunctionData second = statementData.Second;
-                if (null != first && null != first.Call && null != second && null != second.Call) {
-                    Load(first.Call);
-                    LoadCondition(second.Call);
+                if (null != first && null != second) {
+                    Load(first);
+                    LoadCondition(second);
                 }
             }
         }
-        private void LoadCondition(Dsl.CallData callData)
+        private void LoadCondition(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -180,7 +180,7 @@ namespace StorySystem.CommonCommands
             else
                 return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -192,13 +192,13 @@ namespace StorySystem.CommonCommands
             if (statementData.Functions.Count == 2) {
                 Dsl.FunctionData first = statementData.First;
                 Dsl.FunctionData second = statementData.Second;
-                if (null != first && null != first.Call && null != second && null != second.Call) {
-                    Load(first.Call);
-                    LoadCondition(second.Call);
+                if (null != first && null != second) {
+                    Load(first);
+                    LoadCondition(second);
                 }
             }
         }
-        private void LoadCondition(Dsl.CallData callData)
+        private void LoadCondition(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -255,7 +255,7 @@ namespace StorySystem.CommonCommands
             else
                 return false;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -267,13 +267,13 @@ namespace StorySystem.CommonCommands
             if (statementData.Functions.Count == 2) {
                 Dsl.FunctionData first = statementData.First;
                 Dsl.FunctionData second = statementData.Second;
-                if (null != first && null != first.Call && null != second && null != second.Call) {
-                    Load(first.Call);
-                    LoadCondition(second.Call);
+                if (null != first && null != second) {
+                    Load(first);
+                    LoadCondition(second);
                 }
             }
         }
-        private void LoadCondition(Dsl.CallData callData)
+        private void LoadCondition(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -320,7 +320,7 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        protected override void Load(Dsl.CallData callData)
+        protected override void Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
