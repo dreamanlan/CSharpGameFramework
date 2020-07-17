@@ -52,21 +52,18 @@ internal class NativeStoryValue : IStoryValue
 
     public void InitFromDsl(Dsl.ISyntaxComponent param)
     {
-        Dsl.FunctionData callData = param as Dsl.FunctionData;
-        if (null != callData) {
-            Load(callData);
-        } else {
-            Dsl.FunctionData funcData = param as Dsl.FunctionData;
-            if (null != funcData) {
-                Load(funcData);
-            } else {
-                Dsl.StatementData statementData = param as Dsl.StatementData;
-                if (null != statementData) {
-                    //是否支持语句类型的命令语法？
-                    Load(statementData);
-                } else {
-                    //error
-                }
+        Dsl.FunctionData funcData = param as Dsl.FunctionData;
+        if (null != funcData) {
+            Load(funcData);
+        }
+        else {
+            Dsl.StatementData statementData = param as Dsl.StatementData;
+            if (null != statementData) {
+                //是否支持语句类型的命令语法？
+                Load(statementData);
+            }
+            else {
+                //error
             }
         }
     }
@@ -142,21 +139,18 @@ internal class LuaStoryValue : IStoryValue
     
     public void InitFromDsl(Dsl.ISyntaxComponent param)
     {
-        Dsl.FunctionData callData = param as Dsl.FunctionData;
-        if (null != callData) {
-            Load(callData);
-        } else {
-            Dsl.FunctionData funcData = param as Dsl.FunctionData;
-            if (null != funcData) {
-                Load(funcData);
-            } else {
-                Dsl.StatementData statementData = param as Dsl.StatementData;
-                if (null != statementData) {
-                    //是否支持语句类型的命令语法？
-                    Load(statementData);
-                } else {
-                    //error
-                }
+        Dsl.FunctionData funcData = param as Dsl.FunctionData;
+        if (null != funcData) {
+            Load(funcData);
+        }
+        else {
+            Dsl.StatementData statementData = param as Dsl.StatementData;
+            if (null != statementData) {
+                //是否支持语句类型的命令语法？
+                Load(statementData);
+            }
+            else {
+                //error
             }
         }
     }

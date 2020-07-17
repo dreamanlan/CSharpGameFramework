@@ -2411,7 +2411,7 @@ internal sealed class ResourceProcessor
                         foreach (var comp in first.Params) {
                             var funcData = comp as Dsl.FunctionData;
                             if (null != funcData) {
-                                if (funcData.IsHighOrder) {
+                                if (funcData.HaveStatement()) {
                                     ParseFunctionData(funcData);
                                 }
                                 else if (funcData.HaveParam()) {

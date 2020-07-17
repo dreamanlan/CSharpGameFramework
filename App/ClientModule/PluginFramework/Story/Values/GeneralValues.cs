@@ -1001,10 +1001,6 @@ namespace GameFramework.Story.Values
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData) {
-                Load(callData);
-            }
             Dsl.FunctionData funcData = param as Dsl.FunctionData;
             if (null != funcData) {
                 Load(funcData);
