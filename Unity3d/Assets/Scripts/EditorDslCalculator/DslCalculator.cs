@@ -5153,95 +5153,94 @@ namespace DslExpression
         }
         protected override bool Load(Dsl.FunctionData funcData)
         {
-            if (!funcData.HaveStatement()) {
-                return LoadCall(funcData);
+            var id = funcData.GetId();
+            if (funcData.IsHighOrder) {
+                var callData = funcData.LowerOrderFunction;
+                LoadCall(callData);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData);
             }
             else {
-                var id = funcData.GetId();
-                if (funcData.IsHighOrder) {
-                    var callData = funcData.LowerOrderFunction;
-                    LoadCall(callData);
-                }
-                else {
-                    LoadCall(funcData);
-                }
-                if (funcData.HaveStatement()) {
-                    var cmd = m_CommandConfigs[m_CommandConfigs.Count - 1];
-                    for (int i = 0; i < funcData.GetParamNum(); ++i) {
-                        var comp = funcData.GetParam(i);
-                        var cd = comp as Dsl.FunctionData;
-                        if (null != cd) {
-                            int num = cd.GetParamNum();
-                            if (cd.HaveExternScript()) {
-                                string os = cd.GetId();
-                                string txt = cd.GetParamId(0);
-                                cmd.m_Commands.Add(os, txt);
+                var cmd = new CommandConfig();
+                m_CommandConfigs.Add(cmd);
+            }
+            if (funcData.HaveStatement()) {
+                var cmd = m_CommandConfigs[m_CommandConfigs.Count - 1];
+                for (int i = 0; i < funcData.GetParamNum(); ++i) {
+                    var comp = funcData.GetParam(i);
+                    var cd = comp as Dsl.FunctionData;
+                    if (null != cd) {
+                        int num = cd.GetParamNum();
+                        if (cd.HaveExternScript()) {
+                            string os = cd.GetId();
+                            string txt = cd.GetParamId(0);
+                            cmd.m_Commands.Add(os, txt);
+                        }
+                        else if (num >= 1) {
+                            string type = cd.GetId();
+                            var exp = Calculator.Load(cd.GetParam(0));
+                            if (type == "input") {
+                                cmd.m_Input = exp;
                             }
-                            else if (num >= 1) {
-                                string type = cd.GetId();
-                                var exp = Calculator.Load(cd.GetParam(0));
-                                if (type == "input") {
-                                    cmd.m_Input = exp;
-                                }
-                                else if (type == "output") {
-                                    cmd.m_Output = exp;
-                                }
-                                else if (type == "error") {
-                                    cmd.m_Error = exp;
-                                }
-                                else if (type == "redirecttoconsole") {
-                                    cmd.m_RedirectToConsole = exp;
-                                }
-                                else if (type == "nowait") {
-                                    cmd.m_NoWait = exp;
-                                }
-                                else if (type == "useshellexecute") {
-                                    cmd.m_UseShellExecute = exp;
-                                }
-                                else if (type == "verb") {
-                                    cmd.m_Verb = exp;
-                                }
-                                else if (type == "domain") {
-                                    cmd.m_Domain = exp;
-                                }
-                                else if (type == "user") {
-                                    cmd.m_UserName = exp;
-                                }
-                                else if (type == "password") {
-                                    cmd.m_Password = exp;
-                                }
-                                else if (type == "passwordincleartext") {
-                                    cmd.m_PasswordInClearText = exp;
-                                }
-                                else if (type == "loadprofile") {
-                                    cmd.m_LoadUserProfile = exp;
-                                }
-                                else if (type == "windowstyle") {
-                                    cmd.m_WindowStyle = exp;
-                                }
-                                else if (type == "newwindow") {
-                                    cmd.m_NewWindow = exp;
-                                }
-                                else if (type == "errordialog") {
-                                    cmd.m_ErrorDialog = exp;
-                                }
-                                else if (type == "workingdirectory") {
-                                    cmd.m_WorkingDirectory = exp;
-                                }
-                                else if (type == "encoding") {
-                                    cmd.m_Encoding = exp;
-                                }
-                                else {
-                                    Debug.LogWarningFormat("[syntax error] {0} line:{1}", cd.ToScriptString(false), cd.GetLine());
-                                }
+                            else if (type == "output") {
+                                cmd.m_Output = exp;
+                            }
+                            else if (type == "error") {
+                                cmd.m_Error = exp;
+                            }
+                            else if (type == "redirecttoconsole") {
+                                cmd.m_RedirectToConsole = exp;
+                            }
+                            else if (type == "nowait") {
+                                cmd.m_NoWait = exp;
+                            }
+                            else if (type == "useshellexecute") {
+                                cmd.m_UseShellExecute = exp;
+                            }
+                            else if (type == "verb") {
+                                cmd.m_Verb = exp;
+                            }
+                            else if (type == "domain") {
+                                cmd.m_Domain = exp;
+                            }
+                            else if (type == "user") {
+                                cmd.m_UserName = exp;
+                            }
+                            else if (type == "password") {
+                                cmd.m_Password = exp;
+                            }
+                            else if (type == "passwordincleartext") {
+                                cmd.m_PasswordInClearText = exp;
+                            }
+                            else if (type == "loadprofile") {
+                                cmd.m_LoadUserProfile = exp;
+                            }
+                            else if (type == "windowstyle") {
+                                cmd.m_WindowStyle = exp;
+                            }
+                            else if (type == "newwindow") {
+                                cmd.m_NewWindow = exp;
+                            }
+                            else if (type == "errordialog") {
+                                cmd.m_ErrorDialog = exp;
+                            }
+                            else if (type == "workingdirectory") {
+                                cmd.m_WorkingDirectory = exp;
+                            }
+                            else if (type == "encoding") {
+                                cmd.m_Encoding = exp;
                             }
                             else {
                                 Debug.LogWarningFormat("[syntax error] {0} line:{1}", cd.ToScriptString(false), cd.GetLine());
                             }
                         }
                         else {
-                            Debug.LogErrorFormat("[syntax error] {0} line:{1}", comp.ToScriptString(false), comp.GetLine());
+                            Debug.LogWarningFormat("[syntax error] {0} line:{1}", cd.ToScriptString(false), cd.GetLine());
                         }
+                    }
+                    else {
+                        Debug.LogErrorFormat("[syntax error] {0} line:{1}", comp.ToScriptString(false), comp.GetLine());
                     }
                 }
             }
