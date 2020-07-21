@@ -62,6 +62,26 @@ namespace StorySystem
     {
         public bool Init(Dsl.ISyntaxComponent config)
         {
+            Dsl.StatementData statementData = config as Dsl.StatementData;
+            if (null != statementData) {
+                var first = statementData.First;
+                if (first.HaveId() && !first.HaveParamOrStatement()) {
+                    //命令行样式转换为函数样式
+                    var func = new Dsl.FunctionData();
+                    func.CopyFrom(first);
+                    func.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                    for (int i = 1; i < statementData.GetFunctionNum(); ++i) {
+                        var fd = statementData.GetFunction(i);
+                        if (fd.HaveId() && !fd.HaveParamOrStatement()) {
+                            func.AddParam(fd.Name);
+                        }
+                        else {
+                            func.AddParam(fd);
+                        }
+                    }
+                    config = func;
+                }
+            }
             m_Comments = m_Params.InitFromDsl(config, 0, true);
             m_Config = config;
             return config is Dsl.FunctionData;

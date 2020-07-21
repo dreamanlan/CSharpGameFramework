@@ -293,6 +293,7 @@ namespace StorySystem
             RegisterCommandFactory("clearvalsubsts", new StoryCommandFactoryHelper<CommonCommands.ClearValSubstsCommand>());
             //注册通用值与内部函数
             //object
+            StoryValueManager.Instance.RegisterValueFactory("eval", new StoryValueFactoryHelper<CommonValues.EvalValue>());
             StoryValueManager.Instance.RegisterValueFactory("namespace", new StoryValueFactoryHelper<CommonValues.NamespaceValue>());
             StoryValueManager.Instance.RegisterValueFactory("storyid", new StoryValueFactoryHelper<CommonValues.StoryIdValue>());
             StoryValueManager.Instance.RegisterValueFactory("messageid", new StoryValueFactoryHelper<CommonValues.MessageIdValue>());

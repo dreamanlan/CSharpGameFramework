@@ -27,10 +27,7 @@ namespace StorySystem.CommonValues
         public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_HaveValue = false;
-            TryUpdateValue(instance);
-        }
-        public void Analyze(StoryInstance instance)
-        {
+            TryUpdateValue();
         }
         public bool HaveValue
         {
@@ -47,12 +44,76 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private void TryUpdateValue(StoryInstance instance)
+        private void TryUpdateValue()
         {
             m_HaveValue = true;
             m_Value = 0;
         }
 
+        private bool m_HaveValue;
+        private object m_Value;
+    }
+    internal sealed class EvalValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            if (null != callData) {
+                for (int i = 0; i < callData.GetParamNum(); ++i) {
+                    StoryValue val = new StoryValue();
+                    val.InitFromDsl(callData.GetParam(i));
+                    m_Args.Add(val);
+                }
+                TryUpdateValue();
+            }
+        }
+        public IStoryValue Clone()
+        {
+            EvalValue val = new EvalValue();
+            for (int i = 0; i < m_Args.Count; i++) {
+                val.m_Args.Add(m_Args[i].Clone());
+            }
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        {
+            m_HaveValue = false;
+            for (int i = 0; i < m_Args.Count; i++) {
+                m_Args[i].Evaluate(instance, handler, iterator, args);
+            }
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public object Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue()
+        {
+            bool canCalc = true;
+            for (int i = 0; i < m_Args.Count; i++) {
+                if (!m_Args[i].HaveValue) {
+                    canCalc = false;
+                    break;
+                }
+            }
+            if (canCalc) {
+                m_HaveValue = true;
+                m_Value = m_Args[m_Args.Count - 1].Value;
+            }
+        }
+
+        private List<IStoryValue> m_Args = new List<IStoryValue>();
         private bool m_HaveValue;
         private object m_Value;
     }
