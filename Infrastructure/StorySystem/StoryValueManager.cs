@@ -87,6 +87,13 @@ namespace StorySystem
         public IStoryValue CalcValue(Dsl.ISyntaxComponent param)
         {
             lock (m_Lock) {
+                Dsl.StatementData statementData = param as Dsl.StatementData;
+                if (null != statementData) {
+                    Dsl.FunctionData func;
+                    if (DslSyntaxTransformer.TryTransformCommandLineLikeSyntax(statementData, out func)) {
+                        param = func;
+                    }
+                }
                 Dsl.FunctionData callData = param as Dsl.FunctionData;
                 if (null != callData && callData.IsValid() && callData.GetId().Length == 0 && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS || callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET)) {
                     //处理圆括弧与方括弧
@@ -184,10 +191,10 @@ namespace StorySystem
                                 return CalcValue(newCall);
                             }
                             else if (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
+                                callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                                callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                                callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                                callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
                                 //obj.property or obj[property] or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
                                 Dsl.FunctionData newCall = new Dsl.FunctionData();
                                 newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);

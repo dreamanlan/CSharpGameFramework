@@ -27,13 +27,22 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            string format = m_Format.Value;
-            ArrayList arglist = new ArrayList();
-            for (int i = 0; i < m_FormatArgs.Count; i++) {
-                arglist.Add(m_FormatArgs[i].Value);
+            object formatObj = m_Format.Value;
+            string format = formatObj as string;
+            if (!string.IsNullOrEmpty(format) && m_FormatArgs.Count > 0) {
+                ArrayList arglist = new ArrayList();
+                for (int i = 0; i < m_FormatArgs.Count; i++) {
+                    arglist.Add(m_FormatArgs[i].Value);
+                }
+                object[] args = arglist.ToArray();
+                LogSystem.GmLog(format, args);
             }
-            object[] args = arglist.ToArray();
-            LogSystem.Warn(m_Format.Value, args);
+            else if (!string.IsNullOrEmpty(format)) {
+                LogSystem.GmLog(format);
+            }
+            else {
+                LogSystem.GmLog("{0}", formatObj);
+            }
             return false;
         }
         protected override void Load(Dsl.FunctionData callData)
@@ -48,7 +57,7 @@ namespace StorySystem.CommonCommands
                 m_FormatArgs.Add(val);
             }
         }
-        private IStoryValue<string> m_Format = new StoryValue<string>();
+        private IStoryValue m_Format = new StoryValue();
         private List<IStoryValue> m_FormatArgs = new List<IStoryValue>();
     }
 }

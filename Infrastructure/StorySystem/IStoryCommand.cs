@@ -60,41 +60,22 @@ namespace StorySystem
             else {
                 Dsl.StatementData statementData = config as Dsl.StatementData;
                 if (null != statementData) {
-                    var first = statementData.First;
-                    if (first.HaveId() && !first.HaveParamOrStatement()) {
-                        //命令行样式转换为函数样式
-                        var func = new Dsl.FunctionData();
-                        func.CopyFrom(first);
-                        func.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
-                        for (int i = 1; i < statementData.GetFunctionNum(); ++i) {
-                            var fd = statementData.GetFunction(i);
-                            if(fd.HaveId() && !fd.HaveParamOrStatement()) {
-                                func.AddParam(fd.Name);
-                            }
-                            else {
-                                func.AddParam(fd);
-                            }
-                        }
-                        Load(func);
-                    }
-                    else {
-                        int funcNum = statementData.GetFunctionNum();
-                        var lastFunc = statementData.Last;
-                        var id = lastFunc.GetId();
-                        if (funcNum >= 2 && id == "comment" || id == "comments") {
-                            m_Comments = lastFunc;
-                            statementData.Functions.RemoveAt(funcNum - 1);
-                            if (statementData.GetFunctionNum() == 1) {
-                                funcData = statementData.GetFunction(0);
-                                Load(funcData);
-                            }
-                            else {
-                                Load(statementData);
-                            }
+                    int funcNum = statementData.GetFunctionNum();
+                    var lastFunc = statementData.Last;
+                    var id = lastFunc.GetId();
+                    if (funcNum >= 2 && id == "comment" || id == "comments") {
+                        m_Comments = lastFunc;
+                        statementData.Functions.RemoveAt(funcNum - 1);
+                        if (statementData.GetFunctionNum() == 1) {
+                            funcData = statementData.GetFunction(0);
+                            Load(funcData);
                         }
                         else {
                             Load(statementData);
                         }
+                    }
+                    else {
+                        Load(statementData);
                     }
                 }
                 else {

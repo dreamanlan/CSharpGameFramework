@@ -72,16 +72,22 @@ namespace StorySystem.CommonValues
             }
             if (canCalc) {
                 m_HaveValue = true;
-                string format = m_Format.Value;
-                ArrayList arglist = new ArrayList();
-                for (int i = 0; i < m_FormatArgs.Count; i++) {
-                    arglist.Add(m_FormatArgs[i].Value);
+                object formatObj = m_Format.Value;
+                string format = formatObj as string;
+                if (!string.IsNullOrEmpty(format) && m_FormatArgs.Count > 0) {
+                    ArrayList arglist = new ArrayList();
+                    for (int i = 0; i < m_FormatArgs.Count; i++) {
+                        arglist.Add(m_FormatArgs[i].Value);
+                    }
+                    object[] args = arglist.ToArray();
+                    m_Value = string.Format(format, args);
                 }
-                object[] args = arglist.ToArray();
-                m_Value = string.Format(format, args);
+                else {
+                    m_Value = string.Format("{0}", formatObj);
+                }
             }
         }
-        private IStoryValue<string> m_Format = new StoryValue<string>();
+        private IStoryValue m_Format = new StoryValue();
         private List<IStoryValue> m_FormatArgs = new List<IStoryValue>();
         private bool m_HaveValue;
         private object m_Value;

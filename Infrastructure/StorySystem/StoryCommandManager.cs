@@ -79,102 +79,111 @@ namespace StorySystem
         }
         public IStoryCommand CreateCommand(Dsl.ISyntaxComponent commandConfig)
         {
-            Dsl.FunctionData callData = commandConfig as Dsl.FunctionData;
-            if (null != callData) {
-                if (callData.IsHighOrder) {
-                    Dsl.FunctionData innerCall = callData.LowerOrderFunction;
-                    if (innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                      innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                      innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                      innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                      innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
-                        if (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS) {
-                            //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> execinstance(obj,member,a,b,...)
+            IStoryCommand command = null;
+            lock (m_Lock) {
+                Dsl.StatementData statementData = commandConfig as Dsl.StatementData;
+                if (null != statementData) {
+                    Dsl.FunctionData func;
+                    if (DslSyntaxTransformer.TryTransformCommandLineLikeSyntax(statementData, out func)) {
+                        commandConfig = func;
+                    }
+                }
+                Dsl.FunctionData callData = commandConfig as Dsl.FunctionData;
+                if (null != callData) {
+                    if (callData.IsHighOrder) {
+                        Dsl.FunctionData innerCall = callData.LowerOrderFunction;
+                        if (innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                            innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                            innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                            innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                            innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
+                            if (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS) {
+                                //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> execinstance(obj,member,a,b,...)
+                                Dsl.FunctionData newCall = new Dsl.FunctionData();
+                                newCall.Name = new Dsl.ValueData("dotnetexec", Dsl.ValueData.ID_TOKEN);
+                                newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
+                                if (innerCall.IsHighOrder) {
+                                    newCall.Params.Add(innerCall.LowerOrderFunction);
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
+                                    for (int i = 0; i < callData.GetParamNum(); ++i) {
+                                        Dsl.ISyntaxComponent p = callData.Params[i];
+                                        newCall.Params.Add(p);
+                                    }
+                                }
+                                else {
+                                    newCall.Params.Add(innerCall.Name);
+                                    newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
+                                    for (int i = 0; i < callData.GetParamNum(); ++i) {
+                                        Dsl.ISyntaxComponent p = callData.Params[i];
+                                        newCall.Params.Add(p);
+                                    }
+                                }
+                                return CreateCommand(newCall);
+                            }
+                        }
+                    }
+                    else if ((callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_OPERATOR ||
+                        callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                        callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                        callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                        callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) &&
+                        callData.GetId() == "=") {
+                        Dsl.FunctionData innerCall = callData.GetParam(0) as Dsl.FunctionData;
+                        if (null != innerCall) {
+                            //obj.property = val  or obj[property] = val or obj.(property) = val or obj.[property] = val or obj.{property} = val -> setinstance(obj,property,val)
                             Dsl.FunctionData newCall = new Dsl.FunctionData();
-                            newCall.Name = new Dsl.ValueData("dotnetexec", Dsl.ValueData.ID_TOKEN);
+                            newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
                             newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                             if (innerCall.IsHighOrder) {
                                 newCall.Params.Add(innerCall.LowerOrderFunction);
                                 newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
-                                for (int i = 0; i < callData.GetParamNum(); ++i) {
-                                    Dsl.ISyntaxComponent p = callData.Params[i];
-                                    newCall.Params.Add(p);
-                                }
+                                newCall.Params.Add(callData.GetParam(1));
                             }
                             else {
                                 newCall.Params.Add(innerCall.Name);
                                 newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
-                                for (int i = 0; i < callData.GetParamNum(); ++i) {
-                                    Dsl.ISyntaxComponent p = callData.Params[i];
-                                    newCall.Params.Add(p);
-                                }
+                                newCall.Params.Add(callData.GetParam(1));
                             }
                             return CreateCommand(newCall);
                         }
                     }
                 }
-                else if ((callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_OPERATOR ||
-                      callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                      callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                      callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                      callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) &&
-                      callData.GetId() == "=") {
-                    Dsl.FunctionData innerCall = callData.GetParam(0) as Dsl.FunctionData;
-                    if (null != innerCall) {
-                        //obj.property = val  or obj[property] = val or obj.(property) = val or obj.[property] = val or obj.{property} = val -> setinstance(obj,property,val)
-                        Dsl.FunctionData newCall = new Dsl.FunctionData();
-                        newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
-                        newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
-                        if (innerCall.IsHighOrder) {
-                            newCall.Params.Add(innerCall.LowerOrderFunction);
-                            newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
-                            newCall.Params.Add(callData.GetParam(1));
+                string type = commandConfig.GetId();
+                if (commandConfig.GetIdType() == Dsl.ValueData.ID_TOKEN) {
+                    IStoryCommandFactory factory = GetFactory(type);
+                    if (null != factory) {
+                        try {
+                            command = factory.Create();
+                            if (!command.Init(commandConfig)) {
+                                GameFramework.LogSystem.Error("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
+                            }
                         }
-                        else {
-                            newCall.Params.Add(innerCall.Name);
-                            newCall.Params.Add(ObjectMemberConverter.Convert(innerCall.GetParam(0), innerCall.GetParamClass()));
-                            newCall.Params.Add(callData.GetParam(1));
-                        }
-                        return CreateCommand(newCall);
-                    }
-                }
-            }
-            IStoryCommand command = null;
-            string type = commandConfig.GetId();
-            if (commandConfig.GetIdType() == Dsl.ValueData.ID_TOKEN) {
-                IStoryCommandFactory factory = GetFactory(type);
-                if (null != factory) {
-                    try {
-                        command = factory.Create();
-                        if (!command.Init(commandConfig)) {
-                            GameFramework.LogSystem.Error("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
+                        catch (Exception ex) {
+                            var msg = string.Format("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
+                            throw new Exception(msg, ex);
                         }
                     }
-                    catch (Exception ex) {
-                        var msg = string.Format("[LoadStory] command:{0}[{1}] line:{2} failed.", type, commandConfig.ToScriptString(false), commandConfig.GetLine());
-                        throw new Exception(msg, ex);
-                    }
-                }
-                else {
+                    else {
 #if DEBUG
-                    string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false));
-                    GameFramework.LogSystem.Error("{0}", err);
-                    throw new Exception(err);
+                        string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false));
+                        GameFramework.LogSystem.Error("{0}", err);
+                        throw new Exception(err);
 #else
-                GameFramework.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
+                        GameFramework.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
 #endif
-                }
-                if (null != command) {
-                    //GameFramework.LogSystem.Debug("[LoadStory] CreateCommand, type:{0} command:{1}", type, command.GetType().Name);
-                }
-                else {
+                    }
+                    if (null != command) {
+                        //GameFramework.LogSystem.Debug("[LoadStory] CreateCommand, type:{0} command:{1}", type, command.GetType().Name);
+                    }
+                    else {
 #if DEBUG
-                    string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false));
-                    GameFramework.LogSystem.Error("{0}", err);
-                    throw new Exception(err);
+                        string err = string.Format("[LoadStory] CreateCommand failed, line:{0} command:{1}[{2}]", commandConfig.GetLine(), type, commandConfig.ToScriptString(false));
+                        GameFramework.LogSystem.Error("{0}", err);
+                        throw new Exception(err);
 #else
-                GameFramework.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
+                        GameFramework.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
 #endif
+                    }
                 }
             }
             return command;
