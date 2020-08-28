@@ -78,8 +78,11 @@ namespace SLua
 
 	public partial class LuaObject
 	{
-
-		static protected LuaCSFunction lua_gc = new LuaCSFunction(luaGC);
+        //因为cs2lua为了更好的匹配重载方法，给存在重载的方法添加了一个签名参数
+        //lua元方法调用传过来的参数是没有签名参数的，这样会导致方法匹配失败。
+        //cs2lua翻译的代码会明确调用c#的重载操作符方法。slua对lua元方法的支持
+        //只保留__gc与__tostring
+        /*
 		static protected LuaCSFunction lua_add = new LuaCSFunction(luaAdd);
 		static protected LuaCSFunction lua_sub = new LuaCSFunction(luaSub);
 		static protected LuaCSFunction lua_mul = new LuaCSFunction(luaMul);
@@ -88,6 +91,8 @@ namespace SLua
 		static protected LuaCSFunction lua_eq = new LuaCSFunction(luaEq);
         static protected LuaCSFunction lua_lt = new LuaCSFunction(luaLt);
         static protected LuaCSFunction lua_le = new LuaCSFunction(luaLe);
+        */
+        static protected LuaCSFunction lua_gc = new LuaCSFunction(luaGC);
         static protected LuaCSFunction lua_tostring = new LuaCSFunction(ToString);
 		const string DelgateTable = "__LuaDelegate";
 
@@ -350,7 +355,7 @@ return index
 			};
 		}
 
-		static int getOpFunction(IntPtr l, string f, string tip)
+        static int getOpFunction(IntPtr l, string f, string tip)
 		{
 			int err = pushTry(l);
 			checkLuaObject(l, 1);
@@ -376,7 +381,12 @@ return index
 			return err;
 		}
 
-		static int luaOp(IntPtr l, string f, string tip)
+        //因为cs2lua为了更好的匹配重载方法，给存在重载的方法添加了一个签名参数
+        //lua元方法调用传过来的参数是没有签名参数的，这样会导致方法匹配失败。
+        //cs2lua翻译的代码会明确调用c#的重载操作符方法。slua对lua元方法的支持
+        //只保留__gc与__tostring
+        /*
+        static int luaOp(IntPtr l, string f, string tip)
 		{
 			int err = getOpFunction(l, f, tip);
 			LuaDLL.lua_pushvalue(l, 1);
@@ -389,8 +399,7 @@ return index
 			return 2;
 		}
 
-
-		static int luaUnaryOp(IntPtr l, string f, string tip)
+        static int luaUnaryOp(IntPtr l, string f, string tip)
 		{
 			int err = getOpFunction(l, f, tip);
 			LuaDLL.lua_pushvalue(l, 1);
@@ -400,7 +409,7 @@ return index
 			pushValue(l, true);
 			LuaDLL.lua_insert(l, -2);
 			return 2;
-		}
+        }
 
 		[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
 		static public int luaAdd(IntPtr l)
@@ -505,8 +514,9 @@ return index
 				return error(l, e);
 			}
         }
+        */
 
-		public static void getEnumTable(IntPtr l, string t)
+        public static void getEnumTable(IntPtr l, string t)
 		{
 			newTypeTable(l, t);
 		}
@@ -652,6 +662,11 @@ return index
 			newindex_func.push(l);
 			LuaDLL.lua_setfield(l, -2, "__newindex");
 
+            //因为cs2lua为了更好的匹配重载方法，给存在重载的方法添加了一个签名参数
+            //lua元方法调用传过来的参数是没有签名参数的，这样会导致方法匹配失败。
+            //cs2lua翻译的代码会明确调用c#的重载操作符方法。slua对lua元方法的支持
+            //只保留__gc与__tostring
+            /*
 			pushValue(l, lua_add);
 			LuaDLL.lua_setfield(l, -2, "__add");
 			pushValue(l, lua_sub);
@@ -668,7 +683,8 @@ return index
             LuaDLL.lua_setfield(l, -2, "__le");
             pushValue(l, lua_lt);
             LuaDLL.lua_setfield(l, -2, "__lt");
-			pushValue(l, lua_tostring);
+            */
+            pushValue(l, lua_tostring);
 			LuaDLL.lua_setfield(l, -2, "__tostring");
 
 			LuaDLL.lua_pushcfunction(l, lua_gc);
@@ -916,13 +932,19 @@ return index
 		public static bool matchType(IntPtr l, int p, Type t1)
 		{
 			LuaTypes t = LuaDLL.lua_type(l, p);
+            if (t == LuaTypes.LUA_TNONE && t1.IsArray)
+                return true;
 			return matchType(l, p, t, t1);
 		}
 
 		public static bool matchType(IntPtr l, string signature, int total, int from, Type t1)
-		{
-			if (total - from != 1)
-				return false;
+        {
+            int bias = 0;
+            if (t1.IsArray) {
+                bias = -1;
+            }
+            if (total - from != 1 && total - from != 1 + bias)
+                return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
                 return false;
@@ -931,9 +953,13 @@ return index
 		}
 
 		public static bool matchType(IntPtr l, string signature, int total, int from, Type t1, Type t2)
-		{
-			if (total - from != 2)
-				return false;
+        {
+            int bias = 0;
+            if (t2.IsArray) {
+                bias = -1;
+            }
+            if (total - from != 2 && total - from != 2 + bias)
+                return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
                 return false;
@@ -942,9 +968,13 @@ return index
 		}
 
 		public static bool matchType(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3)
-		{
-			if (total - from != 3)
-				return false;
+        {
+            int bias = 0;
+            if (t3.IsArray) {
+                bias = -1;
+            }
+            if (total - from != 3 && total - from != 3 + bias)
+                return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
                 return false;
@@ -953,9 +983,13 @@ return index
 		}
 
 		public static bool matchType(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4)
-		{
-			if (total - from != 4)
-				return false;
+        {
+            int bias = 0;
+            if (t4.IsArray) {
+                bias = -1;
+            }
+            if (total - from != 4 && total - from != 4 + bias)
+                return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
                 return false;
@@ -964,9 +998,13 @@ return index
 		}
 
 		public static bool matchType(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5)
-		{
-			if (total - from != 5)
-				return false;
+        {
+            int bias = 0;
+            if (t5.IsArray) {
+                bias = -1;
+            }
+            if (total - from != 5 && total - from != 5 + bias)
+                return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
                 return false;
@@ -977,9 +1015,13 @@ return index
 
 		public static bool matchType
 			(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6)
-		{
-			if (total - from != 6)
-				return false;
+        {
+            int bias = 0;
+            if (t6.IsArray) {
+                bias = -1;
+            }
+            if (total - from != 6 && total - from != 6 + bias)
+                return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
                 return false;
@@ -991,9 +1033,13 @@ return index
 
 		public static bool matchType
 			(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7)
-		{
-			if (total - from != 7)
-				return false;
+        {
+            int bias = 0;
+            if (t7.IsArray) {
+                bias = -1;
+            }
+            if (total - from != 7 && total - from != 7 + bias)
+                return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
                 return false;
@@ -1006,9 +1052,13 @@ return index
 
 		public static bool matchType
 			(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7,Type t8)
-		{
-			if (total - from != 8)
-				return false;
+        {
+            int bias = 0;
+            if (t8.IsArray) {
+                bias = -1;
+            }
+            if (total - from != 8 && total - from != 8 + bias)
+                return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
                 return false;
@@ -1023,9 +1073,13 @@ return index
 
 		public static bool matchType
 			(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7,Type t8,Type t9)
-		{
-			if (total - from != 9)
-				return false;
+        {
+            int bias = 0;
+            if (t9.IsArray) {
+                bias = -1;
+            }
+            if (total - from != 9 && total - from != 9 + bias)
+                return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
                 return false;
@@ -1040,9 +1094,13 @@ return index
 
 		public static bool matchType
 			(IntPtr l, string signature, int total, int from, Type t1, Type t2, Type t3, Type t4, Type t5,Type t6,Type t7,Type t8,Type t9,Type t10)
-		{
-			if (total - from != 10)
-				return false;
+        {
+            int bias = 0;
+            if (t10.IsArray) {
+                bias = -1;
+            }
+            if (total - from != 10 && total - from != 10 + bias)
+                return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
                 return false;
@@ -1058,7 +1116,11 @@ return index
 
         public static bool matchType(IntPtr l, string signature, int total, int from, params Type[] t)
         {
-            if (total - from != t.Length)
+            int bias = 0;
+            if (t.Length > 0 && t[t.Length - 1].IsArray) {
+                bias = -1;
+            }
+            if (total - from != t.Length && total - from != t.Length + bias)
                 return false;
             string sig;
             if (!checkType(l, from, out sig) || !sig.EndsWith(signature))
@@ -1074,8 +1136,12 @@ return index
         }
 
         public static bool matchType(IntPtr l, int total, int from, ParameterInfo[] pars)
-		{
-			if (total - from + 1 != pars.Length)
+        {
+            int bias = 0;
+            if (pars.Length > 0 && pars[pars.Length - 1].ParameterType.IsArray) {
+                bias = -1;
+            }
+            if (total - from + 1 != pars.Length && total - from != pars.Length + bias)
 				return false;
 
 			for (int n = 0; n < pars.Length; n++)
@@ -1187,7 +1253,16 @@ return index
 		static public bool checkParams<T>(IntPtr l, int p, out T[] pars) where T:class
 		{
 			int top = LuaDLL.lua_gettop(l);
-			if (top - p >= 0)
+            if (top == p && LuaDLL.lua_type(l, p) == LuaTypes.LUA_TTABLE) {
+                int n = LuaDLL.lua_rawlen(l, p);
+                pars = new T[n];
+                for (int k = 0; k < n; k++) {
+                    LuaDLL.lua_rawgeti(l, p, k + 1);
+                    checkType(l, -1, out pars[k]);
+                    LuaDLL.lua_pop(l, 1);
+                }
+            }
+            else if (top - p >= 0)
 			{
 				pars = new T[top - p + 1];
 				for (int n = p, k = 0; n <= top; n++, k++)
@@ -1203,7 +1278,16 @@ return index
 		static public bool checkValueParams<T>(IntPtr l, int p, out T[] pars) where T : struct
 		{
 			int top = LuaDLL.lua_gettop(l);
-			if (top - p >= 0)
+            if (top == p && LuaDLL.lua_type(l, p) == LuaTypes.LUA_TTABLE) {
+                int n = LuaDLL.lua_rawlen(l, p);
+                pars = new T[n];
+                for (int k = 0; k < n; k++) {
+                    LuaDLL.lua_rawgeti(l, p, k + 1);
+                    checkValueType(l, -1, out pars[k]);
+                    LuaDLL.lua_pop(l, 1);
+                }
+            }
+            else if (top - p >= 0)
 			{
 				pars = new T[top - p + 1];
 				for (int n = p, k = 0; n <= top; n++, k++)
@@ -1219,7 +1303,16 @@ return index
         static public bool checkParams(IntPtr l, int p, out bool[] pars)
         {
             int top = LuaDLL.lua_gettop(l);
-            if (top - p >= 0) {
+            if (top == p && LuaDLL.lua_type(l, p) == LuaTypes.LUA_TTABLE) {
+                int n = LuaDLL.lua_rawlen(l, p);
+                pars = new bool[n];
+                for (int k = 0; k < n; k++) {
+                    LuaDLL.lua_rawgeti(l, p, k + 1);
+                    checkType(l, -1, out pars[k]);
+                    LuaDLL.lua_pop(l, 1);
+                }
+            }
+            else if (top - p >= 0) {
                 pars = new bool[top - p + 1];
                 for (int n = p, k = 0; n <= top; n++, k++) {
                     checkType(l, n, out pars[k]);
@@ -1233,7 +1326,16 @@ return index
 		static public bool checkParams(IntPtr l, int p, out float[] pars)
 		{
 			int top = LuaDLL.lua_gettop(l);
-			if (top - p >= 0)
+            if (top == p && LuaDLL.lua_type(l, p) == LuaTypes.LUA_TTABLE) {
+                int n = LuaDLL.lua_rawlen(l, p);
+                pars = new float[n];
+                for (int k = 0; k < n; k++) {
+                    LuaDLL.lua_rawgeti(l, p, k + 1);
+                    checkType(l, -1, out pars[k]);
+                    LuaDLL.lua_pop(l, 1);
+                }
+            }
+            else if (top - p >= 0)
 			{
 				pars = new float[top - p + 1];
 				for (int n = p, k = 0; n <= top; n++, k++)
@@ -1249,7 +1351,16 @@ return index
 		static public bool checkParams(IntPtr l, int p, out int[] pars)
 		{
 			int top = LuaDLL.lua_gettop(l);
-			if (top - p >= 0)
+            if (top == p && LuaDLL.lua_type(l, p) == LuaTypes.LUA_TTABLE) {
+                int n = LuaDLL.lua_rawlen(l, p);
+                pars = new int[n];
+                for (int k = 0; k < n; k++) {
+                    LuaDLL.lua_rawgeti(l, p, k + 1);
+                    checkType(l, -1, out pars[k]);
+                    LuaDLL.lua_pop(l, 1);
+                }
+            }
+            else if (top - p >= 0)
 			{
 				pars = new int[top - p + 1];
 				for (int n = p, k = 0; n <= top; n++, k++)
@@ -1265,7 +1376,16 @@ return index
         static public bool checkParams(IntPtr l, int p, out long[] pars)
         {
             int top = LuaDLL.lua_gettop(l);
-            if (top - p >= 0) {
+            if (top == p && LuaDLL.lua_type(l, p) == LuaTypes.LUA_TTABLE) {
+                int n = LuaDLL.lua_rawlen(l, p);
+                pars = new long[n];
+                for (int k = 0; k < n; k++) {
+                    LuaDLL.lua_rawgeti(l, p, k + 1);
+                    checkType(l, -1, out pars[k]);
+                    LuaDLL.lua_pop(l, 1);
+                }
+            }
+            else if (top - p >= 0) {
                 pars = new long[top - p + 1];
                 for (int n = p, k = 0; n <= top; n++, k++) {
                     checkType(l, n, out pars[k]);
@@ -1278,9 +1398,17 @@ return index
 
 		static public bool checkParams(IntPtr l, int p, out string[] pars)
 		{
-			int top = LuaDLL.lua_gettop(l);
-			if (top - p >= 0)
-			{
+            int top = LuaDLL.lua_gettop(l);
+            if (top == p && LuaDLL.lua_type(l, p) == LuaTypes.LUA_TTABLE) {
+                int n = LuaDLL.lua_rawlen(l, p);
+                pars = new string[n];
+                for (int k = 0; k < n; k++) {
+                    LuaDLL.lua_rawgeti(l, p, k + 1);
+                    checkType(l, -1, out pars[k]);
+                    LuaDLL.lua_pop(l, 1);
+                }
+            }
+            else if (top - p >= 0) {
 				pars = new string[top - p + 1];
 				for (int n = p, k = 0; n <= top; n++, k++)
 				{
@@ -1293,12 +1421,40 @@ return index
 		}
 
 		static public bool checkParams(IntPtr l, int p, out char[] pars)
-		{
-			LuaDLL.luaL_checktype(l, p, LuaTypes.LUA_TSTRING);
-			string s;
-			checkType(l, p, out s);
-			pars = s.ToCharArray();
-			return true;
+        {
+            int top = LuaDLL.lua_gettop(l);
+            if (top == p) {
+                if (LuaDLL.lua_type(l, p) == LuaTypes.LUA_TTABLE) {
+                    int n = LuaDLL.lua_rawlen(l, p);
+                    pars = new char[n];
+                    for (int k = 0; k < n; k++) {
+                        LuaDLL.lua_rawgeti(l, p, k + 1);
+                        checkType(l, -1, out pars[k]);
+                        LuaDLL.lua_pop(l, 1);
+                    }
+                }
+                else if(LuaDLL.lua_isnumber(l, p)) {
+                    char c;
+                    checkType(l, p, out c);
+                    pars = new char[] { c };
+                }
+                else {
+                    LuaDLL.luaL_checktype(l, p, LuaTypes.LUA_TSTRING);
+                    string s;
+                    checkType(l, p, out s);
+                    pars = s.ToCharArray();
+                }
+                return true;
+            }
+            else if (top - p > 0) {
+                pars = new char[top - p + 1];
+                for (int n = p, k = 0; n <= top; n++, k++) {
+                    checkType(l, n, out pars[k]);
+                }
+                return true;
+            }
+            pars = new char[0];
+            return true;
 		}
 
         static public object checkVar(IntPtr l, int p, Type t)
