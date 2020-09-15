@@ -35,13 +35,13 @@ namespace StorySystem.CommonCommands
                     arglist.Add(m_FormatArgs[i].Value);
                 }
                 object[] args = arglist.ToArray();
-                LogSystem.GmLog(format, args);
+                LogSystem.Warn(format, args);
             }
             else if (!string.IsNullOrEmpty(format)) {
-                LogSystem.GmLog(format);
+                LogSystem.Warn(format);
             }
             else {
-                LogSystem.GmLog("{0}", formatObj);
+                LogSystem.Warn("{0}", formatObj);
             }
             return false;
         }

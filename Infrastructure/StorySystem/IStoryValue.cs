@@ -35,23 +35,28 @@ namespace StorySystem
                 if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("$")) {
                     if (0 == id.CompareTo("$$")) {
                         SetArgument(c_Iterator);
-                    } else {
+                    }
+                    else {
                         string idName = id.Substring(1);
                         if (idName.Length > 0 && char.IsDigit(idName[0])) {
                             SetArgument(int.Parse(idName));
-                        } else {
+                        }
+                        else {
                             SetStack(id);
                         }
                     }
-                } else if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("@")) {
+                }
+                else if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("@")) {
                     if (id.StartsWith("@@"))
                         SetGlobal(id);
                     else
                         SetLocal(id);
-                } else {
+                }
+                else {
                     CalcInitValue(param);
                 }
-            } else {
+            }
+            else {
                 CalcInitValue(param);
             }
         }
@@ -68,24 +73,30 @@ namespace StorySystem
             if (m_ArgIndex >= 0 && m_ArgIndex < args.Length) {
                 m_Value = args[m_ArgIndex];
                 m_HaveValue = true;
-            } else if (m_ArgIndex == c_Iterator) {
+            }
+            else if (m_ArgIndex == c_Iterator) {
                 m_Value = iterator;
                 m_HaveValue = true;
-            } else if (null != m_Proxy) {
+            }
+            else if (null != m_Proxy) {
                 m_Proxy.Evaluate(instance, handler, iterator, args);
                 if (m_Proxy.HaveValue) {
                     m_Value = m_Proxy.Value;
                     m_HaveValue = true;
-                } else {
+                }
+                else {
                     m_HaveValue = false;
                 }
-            } else {
+            }
+            else {
                 string name = string.Empty;
                 if (null != m_LocalName) {
                     name = m_LocalName;
-                } else if (null != m_GlobalName) {
+                }
+                else if (null != m_GlobalName) {
                     name = m_GlobalName;
-                } else if (null != m_StackName) {
+                }
+                else if (null != m_StackName) {
                     name = m_StackName;
                 }
                 if (!string.IsNullOrEmpty(name)) {
@@ -95,26 +106,23 @@ namespace StorySystem
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
         public object Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
         public bool IsConst
         {
-            get
-            {
+            get {
                 return m_IsConst;
             }
         }
-        
+
         protected virtual StoryValue NewValueObject()
         {
             StoryValue obj = new StoryValue();
@@ -207,10 +215,12 @@ namespace StorySystem
                 //对初始化即能求得值的函数，不需要再记录函数表达式，直接转换为常量值。
                 if (val.HaveValue) {
                     SetValue(val.Value);
-                } else {
+                }
+                else {
                     SetProxy(val);
                 }
-            } else if (param is Dsl.ValueData) {
+            }
+            else if (param is Dsl.ValueData) {
                 string id = param.GetId();
                 int idType = param.GetIdType();
                 if (idType == Dsl.ValueData.NUM_TOKEN) {
@@ -220,12 +230,15 @@ namespace StorySystem
                         SetValue(uint.Parse(id.Substring(2), System.Globalization.NumberStyles.HexNumber));
                     else
                         SetValue(int.Parse(id, System.Globalization.NumberStyles.Integer));
-                } else if (idType == Dsl.ValueData.BOOL_TOKEN) {
+                }
+                else if (id == "true" || id == "false") {
                     SetValue(id == "true");
-                } else {
+                }
+                else {
                     SetValue(id);
                 }
-            } else {
+            }
+            else {
 #if DEBUG
                 string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
                 throw new Exception(err);
@@ -256,23 +269,28 @@ namespace StorySystem
                 if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("$")) {
                     if (0 == id.CompareTo("$$")) {
                         SetArgument(c_Iterator);
-                    } else {
+                    }
+                    else {
                         string idName = id.Substring(1);
                         if (idName.Length > 0 && char.IsDigit(idName[0])) {
                             SetArgument(int.Parse(id.Substring(1)));
-                        } else {
+                        }
+                        else {
                             SetStack(id);
                         }
                     }
-                } else if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("@")) {
+                }
+                else if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("@")) {
                     if (id.StartsWith("@@"))
                         SetGlobal(id);
                     else
                         SetLocal(id);
-                } else {
+                }
+                else {
                     CalcInitValue(param);
                 }
-            } else {
+            }
+            else {
                 CalcInitValue(param);
             }
         }
@@ -289,24 +307,30 @@ namespace StorySystem
             if (m_ArgIndex >= 0 && m_ArgIndex < args.Length) {
                 m_Value = StoryValueHelper.CastTo<T>(args[m_ArgIndex]);
                 m_HaveValue = true;
-            } else if (m_ArgIndex == c_Iterator) {
+            }
+            else if (m_ArgIndex == c_Iterator) {
                 m_Value = StoryValueHelper.CastTo<T>(iterator);
                 m_HaveValue = true;
-            } else if (null != m_Proxy) {
+            }
+            else if (null != m_Proxy) {
                 m_Proxy.Evaluate(instance, handler, iterator, args);
                 if (m_Proxy.HaveValue) {
                     m_Value = StoryValueHelper.CastTo<T>(m_Proxy.Value);
                     m_HaveValue = true;
-                } else {
+                }
+                else {
                     m_HaveValue = false;
                 }
-            } else {
+            }
+            else {
                 string name = string.Empty;
                 if (null != m_LocalName) {
                     name = m_LocalName;
-                } else if (null != m_GlobalName) {
+                }
+                else if (null != m_GlobalName) {
                     name = m_GlobalName;
-                } else if (null != m_StackName) {
+                }
+                else if (null != m_StackName) {
                     name = m_StackName;
                 }
                 if (!string.IsNullOrEmpty(name)) {
@@ -320,22 +344,19 @@ namespace StorySystem
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
         public T Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
         public bool IsConst
         {
-            get
-            {
+            get {
                 return m_IsConst;
             }
         }
@@ -430,10 +451,12 @@ namespace StorySystem
                 //对初始化即能求得值的函数，不需要再记录函数表达式，直接转换为常量值。
                 if (val.HaveValue) {
                     SetValue(StoryValueHelper.CastTo<T>(val.Value));
-                } else {
+                }
+                else {
                     SetProxy(val);
                 }
-            } else if (param is Dsl.ValueData) {
+            }
+            else if (param is Dsl.ValueData) {
                 string id = param.GetId();
                 int idType = param.GetIdType();
                 if (idType == Dsl.ValueData.NUM_TOKEN) {
@@ -443,12 +466,15 @@ namespace StorySystem
                         SetValue(StoryValueHelper.CastTo<T>(uint.Parse(id.Substring(2), System.Globalization.NumberStyles.HexNumber)));
                     else
                         SetValue(StoryValueHelper.CastTo<T>(int.Parse(id, System.Globalization.NumberStyles.Integer)));
-                } else if (idType == Dsl.ValueData.BOOL_TOKEN) {
+                }
+                else if (id == "true" || id == "false") {
                     SetValue(StoryValueHelper.CastTo<T>(id == "true"));
-                } else {
+                }
+                else {
                     SetValue(StoryValueHelper.CastTo<T>(id));
                 }
-            } else {
+            }
+            else {
 #if DEBUG
                 string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
                 throw new Exception(err);
@@ -481,19 +507,17 @@ namespace StorySystem
         public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
         {
             m_Original.Evaluate(instance, handler, iterator, args);
-        
+
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_Original.HaveValue;
             }
         }
         public object Value
         {
-            get
-            {
+            get {
                 return m_Original.Value;
             }
         }
