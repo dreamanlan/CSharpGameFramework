@@ -149,7 +149,7 @@ namespace StorySystem
                     }
                 }
                 string type = commandConfig.GetId();
-                if (commandConfig.GetIdType() == Dsl.ValueData.ID_TOKEN) {
+                if (commandConfig.GetIdType() == Dsl.ValueData.ID_TOKEN && type != "true" && type != "false") {
                     IStoryCommandFactory factory = GetFactory(type);
                     if (null != factory) {
                         try {

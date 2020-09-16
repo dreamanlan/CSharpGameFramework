@@ -212,7 +212,7 @@ namespace StorySystem
                         }
                         IStoryValue ret = null;
                         string id = param.GetId();
-                        if (param.GetIdType() == Dsl.ValueData.ID_TOKEN) {
+                        if (param.GetIdType() == Dsl.ValueData.ID_TOKEN && id != "true" && id != "false") {
                             IStoryValueFactory factory = GetFactory(id);
                             if (null != factory) {
                                 try {
