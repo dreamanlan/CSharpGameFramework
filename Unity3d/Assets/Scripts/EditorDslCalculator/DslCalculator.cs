@@ -394,12 +394,17 @@ namespace DslExpression
                 }
             }
             else {
-                if (id == "true")
-                    m_Val = true;
-                else if (id == "false")
-                    m_Val = false;
-                else
+                if (idType == Dsl.ValueData.ID_TOKEN) {
+                    if (id == "true")
+                        m_Val = true;
+                    else if (id == "false")
+                        m_Val = false;
+                    else
+                        m_Val = id;
+                }
+                else {
                     m_Val = id;
+                }
             }
             return true;
         }

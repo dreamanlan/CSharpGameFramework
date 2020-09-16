@@ -231,7 +231,7 @@ namespace StorySystem
                     else
                         SetValue(int.Parse(id, System.Globalization.NumberStyles.Integer));
                 }
-                else if (id == "true" || id == "false") {
+                else if (idType == Dsl.ValueData.ID_TOKEN && (id == "true" || id == "false")) {
                     SetValue(id == "true");
                 }
                 else {
@@ -467,7 +467,7 @@ namespace StorySystem
                     else
                         SetValue(StoryValueHelper.CastTo<T>(int.Parse(id, System.Globalization.NumberStyles.Integer)));
                 }
-                else if (id == "true" || id == "false") {
+                else if (idType == Dsl.ValueData.ID_TOKEN && (id == "true" || id == "false")) {
                     SetValue(StoryValueHelper.CastTo<T>(id == "true"));
                 }
                 else {
