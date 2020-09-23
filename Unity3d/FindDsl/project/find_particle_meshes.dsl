@@ -15,23 +15,25 @@ filter
 {
     if(stringcontains(assetpath, filter) && stringnotcontains(assetpath, notfilter)){
         var(0) = loadasset(assetpath);  
-        var(1) = collectmeshes(var(0), true, 2);
-        var(2) = collectprefabinfo(var(0));
+        var(1) = collectprefabinfo(var(0));
         //unloadasset(var(0));
-        $totalTriangleCount = var(2).triangleCount;
+        $totalTriangleCount = var(1).triangleCount;
         if($totalTriangleCount>=totalTriangleCount){
-            looplist(var(1)){
-                $mesh = $$;
-                $name = $mesh.name;
-                $vertexCount = $mesh.vertexCount;
-                $triangleCount = $mesh.triangles.Length/3;
-                if(stringcontains($name, meshfilter) && stringnotcontains($name, meshnotfilter) && $triangleCount>=triangleCount){
+            looplist(var(1).meshes){
+                $meshInfo = $$;
+                $name = $meshInfo.meshName;
+                $count = $meshInfo.meshCount;
+                $vertexCount = $meshInfo.vertexCount;
+                $triangleCount = $meshInfo.triangleCount;
+                $tvc = $meshInfo.totalVertexCount;
+                $ttc = $meshInfo.totalTriangleCount;
+                if(stringcontains($name, meshfilter) && stringnotcontains($name, meshnotfilter) && $ttc>=triangleCount){
                     var(3) = newitem();
                     var(3).AssetPath = assetpath;
                     var(3).ScenePath = getassetpath($mesh);
-                    var(3).Info = format("mesh:{0} vertex:{1} triangle:{2} total_triangle:{3}",$name,$vertexCount,$triangleCount,$totalTriangleCount);
-                    var(3).Order = $triangleCount;
-                    var(3).Value = $triangleCount;
+                    var(3).Info = format("mesh:{0} vertex:{1} triangle:{2} count:{3} total_vertex:{4} total_triangle:{5} total_prefab_triangle:{6}",$name,$vertexCount,$triangleCount,$count,$tvc,$ttc,$totalTriangleCount);
+                    var(3).Order = $totalTriangleCount*100000+$ttc;
+                    var(3).Value = $ttc;
                     var(3).ExtraList = newextralist(var(3).ScenePath => var(3).ScenePath);
                     var(3).ExtraListClickScript = "OnClickExtraListItem";
                 };

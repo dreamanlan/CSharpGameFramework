@@ -427,6 +427,7 @@ internal static class ResourceEditUtility
         calc.Register("loadxcodesymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadXcodeSymbolsExp>());
         calc.Register("loadbuglyandroidsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadBuglyAndroidSymbolsExp>());
         calc.Register("loadbuglyiossymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadBuglyIosSymbolsExp>());
+        calc.Register("converttorelativeaddrs", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ConvertToRelativeAddrsExp>());
         calc.Register("mapbuglyandroidsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapBuglyAndroidSymbolsExp>());
         calc.Register("mapbuglyiossymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapBuglyIosSymbolsExp>());
         calc.Register("mapmyhooksymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapMyhookSymbolsExp>());
@@ -470,6 +471,7 @@ internal static class ResourceEditUtility
         calc.Register("clearanimationscalecurve", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ClearAnimationScaleCurveExp>());
         calc.Register("getaudiosetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetAudioSettingExp>());
         calc.Register("setaudiosetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetAudioSettingExp>());
+        calc.Register("calcmeshvertexcomponentcount", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMeshVertexComponentCountExp>());
         calc.Register("calcmeshtexratio", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMeshTexRatioExp>());
         calc.Register("calcassetmd5", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcAssetMd5Exp>());
         calc.Register("calcassetsize", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcAssetSizeExp>());
@@ -1263,9 +1265,14 @@ namespace ResourceEditApi
         public int updateWhenOffscreenCount = 0;
         public int animatorCount = 0;
         public int alwaysAnimateCount = 0;
+        public List<SingleMeshInfo> meshes = new List<SingleMeshInfo>();
         public List<MaterialInfo> materials = new List<MaterialInfo>();
         public List<AnimationClipInfo> clips = new List<AnimationClipInfo>();
 
+        public void AddSingleMesh(string name, int count, int vc, int tc)
+        {
+            meshes.Add(new SingleMeshInfo { meshName = name, meshCount = count, vertexCount = vc, triangleCount = tc, totalVertexCount = count * vc, totalTriangleCount = count * tc });
+        }
         public void CollectMaterials(IList<Material> mats)
         {
             foreach (var mat in mats) {
@@ -1333,6 +1340,15 @@ namespace ResourceEditApi
                 maxKeyFrameClipName = clip.name;
             }
         }
+    }
+    internal class SingleMeshInfo
+    {
+        public string meshName;
+        public int meshCount;
+        public int vertexCount;
+        public int triangleCount;
+        public int totalVertexCount;
+        public int totalTriangleCount;
     }
     internal class TextureInfo
     {
@@ -2158,6 +2174,47 @@ namespace ResourceEditApi
             return r;
         }
         private static Regex s_Address = new Regex(@"^([0-9a-fA-F]+)\s+[0-9a-fA-F]+\s+(.*)", RegexOptions.Compiled);
+    }
+    internal class ConvertToRelativeAddrsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            object r = null;
+            if (operands.Count >= 3) {
+                var lines = operands[0] as IList<string>;
+                var key = operands[1] as string;
+                var baseAddr = (ulong)Convert.ChangeType(operands[2], typeof(ulong));
+                if (null != lines && null != key && baseAddr > 0) {
+                    for (int i = 0; i < lines.Count; ++i) {
+                        lines[i] = lines[i].TrimEnd();
+                    }
+                    int ct = lines.Count;
+                    for (int ix = 0; ix < ct; ++ix) {
+                        var line = lines[ix];
+                        var m = s_Address.Match(line);
+                        string addr = null, so = null;
+                        if (m.Success) {
+                            addr = m.Groups[1].Value;
+                            so = m.Groups[2].Value;
+                            if (so.Contains(key)) {
+                                ulong v;
+                                if (ulong.TryParse(addr, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                                    v -= baseAddr;
+                                    lines[ix] = line.Replace(addr, v.ToString("x8"));
+                                }
+                            }
+                        }
+                        if (ResourceProcessor.Instance.DisplayCancelableProgressBar("convert addr ...", ix, ct)) {
+                            break;
+                        }
+                    }
+                    r = lines;
+                }
+            }
+            EditorUtility.ClearProgressBar();
+            return r;
+        }
+        private static Regex s_Address = new Regex(@"^[0-9]+\s+#[0-9]+\s+pc\s+([0-9a-fA-F]+)\s+(\S+)", RegexOptions.Compiled);
     }
     internal class MapBuglyAndroidSymbolsExp : DslExpression.SimpleExpressionBase
     {
@@ -3201,8 +3258,10 @@ namespace ResourceEditApi
                     info.skinnedMeshCount = skinnedrenderers.Length;
                     foreach (var renderer in skinnedrenderers) {
                         if (null != renderer.sharedMesh) {
-                            vc += renderer.sharedMesh.vertexCount;
-                            tc += renderer.sharedMesh.triangles.Length;
+                            var mesh = renderer.sharedMesh;
+                            vc += mesh.vertexCount;
+                            tc += mesh.triangles.Length;
+                            info.AddSingleMesh(renderer.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
                         }
                         bc += renderer.bones.Length;
                         mc += renderer.sharedMaterials.Length;
@@ -3214,8 +3273,10 @@ namespace ResourceEditApi
                     info.meshFilterCount = filters.Length;
                     foreach (var filter in filters) {
                         if (null != filter.sharedMesh) {
-                            vc += filter.sharedMesh.vertexCount;
-                            tc += filter.sharedMesh.triangles.Length;
+                            var mesh = filter.sharedMesh;
+                            vc += mesh.vertexCount;
+                            tc += mesh.triangles.Length;
+                            info.AddSingleMesh(filter.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
                         }
                     }
                     var meshrenderers = obj.GetComponentsInChildren<MeshRenderer>();
@@ -3351,8 +3412,10 @@ namespace ResourceEditApi
                     info.skinnedMeshCount = skinnedrenderers.Length;
                     foreach (var renderer in skinnedrenderers) {
                         if (null != renderer.sharedMesh) {
-                            vc += renderer.sharedMesh.vertexCount;
-                            tc += renderer.sharedMesh.triangles.Length;
+                            var mesh = renderer.sharedMesh;
+                            vc += mesh.vertexCount;
+                            tc += mesh.triangles.Length;
+                            info.AddSingleMesh(renderer.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
                         }
                         bc += renderer.bones.Length;
                         mc += renderer.sharedMaterials.Length;
@@ -3364,8 +3427,10 @@ namespace ResourceEditApi
                     info.meshFilterCount = filters.Length;
                     foreach (var filter in filters) {
                         if (null != filter.sharedMesh) {
-                            vc += filter.sharedMesh.vertexCount;
-                            tc += filter.sharedMesh.triangles.Length;
+                            var mesh = filter.sharedMesh;
+                            vc += mesh.vertexCount;
+                            tc += mesh.triangles.Length;
+                            info.AddSingleMesh(filter.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
                         }
                     }
                     var meshrenderers = obj.GetComponentsInChildren<MeshRenderer>();
@@ -3382,8 +3447,10 @@ namespace ResourceEditApi
                             ParticleSystemRenderer renderer = ps.GetComponent<ParticleSystemRenderer>();
                             if (null != renderer && renderer.renderMode == ParticleSystemRenderMode.Mesh) {
                                 if (null != renderer.mesh) {
-                                    vc += multiple * renderer.mesh.vertexCount;
-                                    tc += multiple * renderer.mesh.triangles.Length;
+                                    var mesh = renderer.mesh;
+                                    vc += multiple * mesh.vertexCount;
+                                    tc += multiple * mesh.triangles.Length;
+                                    info.AddSingleMesh(ps.name + "/" + mesh.name, multiple, mesh.vertexCount, mesh.triangles.Length / 3);
                                 }
                                 mc += renderer.sharedMaterials.Length;
 
@@ -3667,6 +3734,99 @@ namespace ResourceEditApi
                 }
             }
             return r;
+        }
+    }
+    internal class CalcMeshVertexComponentCountExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            if (operands.Count >= 1) {
+                var obj0 = operands[0] as GameObject;
+                bool includeChildren = false;
+                if (operands.Count >= 2) {
+                    includeChildren = (bool)Convert.ChangeType(operands[1], typeof(bool));
+                }
+                if (null != obj0) {
+                    List<GameObject> list = new List<GameObject>();
+                    if (includeChildren) {
+                        var comps = obj0.GetComponentsInChildren<Renderer>();
+                        foreach (var comp in comps) {
+                            list.Add(comp.gameObject);
+                        }
+                    }
+                    else {
+                        list.Add(obj0);
+                    }
+                    List<KeyValuePair<string, int>> pairList = new List<KeyValuePair<string, int>>();
+                    foreach (var obj in list) {
+                        string objName = obj.name;
+                        var filters = obj.GetComponents<MeshFilter>();
+                        foreach (var filter in filters) {
+                            if (null != filter && null != filter.sharedMesh) {
+                                var mesh = filter.sharedMesh;
+                                var pair = CalcOneMesh(objName, mesh);
+                                pairList.Add(pair);
+                            }
+                        }
+                        var renderers = obj.GetComponents<SkinnedMeshRenderer>();
+                        foreach (var renderer in renderers) {
+                            if (null != renderer && null != renderer.sharedMesh) {
+                                var mesh = renderer.sharedMesh;
+                                var pair = CalcOneMesh(objName, mesh);
+                                pairList.Add(pair);
+                            }
+                        }
+                    }
+                    return pairList;
+                }
+            }
+            return null;
+        }
+        private KeyValuePair<string, int> CalcOneMesh(string name, Mesh mesh)
+        {
+            int ct = 0;
+            StringBuilder sb = new StringBuilder();
+            sb.Append(name);
+            sb.Append("/");
+            sb.Append(mesh.name);
+            sb.Append(":");
+            if (null != mesh.uv && mesh.uv.Length > 0) {
+                ++ct;
+                sb.Append(" uv");
+            }
+            if (null != mesh.uv2 && mesh.uv2.Length > 0) {
+                ++ct;
+                sb.Append(" uv2");
+            }
+            if (null != mesh.uv3 && mesh.uv3.Length > 0) {
+                ++ct;
+                sb.Append(" uv3");
+            }
+            if (null != mesh.uv4 && mesh.uv4.Length > 0) {
+                ++ct;
+                sb.Append(" uv4");
+            }
+            if (null != mesh.uv5 && mesh.uv5.Length > 0) {
+                ++ct;
+                sb.Append(" uv5");
+            }
+            if (null != mesh.uv6 && mesh.uv6.Length > 0) {
+                ++ct;
+                sb.Append(" uv6");
+            }
+            if (null != mesh.uv7 && mesh.uv7.Length > 0) {
+                ++ct;
+                sb.Append(" uv7");
+            }
+            if (null != mesh.uv8 && mesh.uv8.Length > 0) {
+                ++ct;
+                sb.Append(" uv8");
+            }
+            if (null != mesh.colors && mesh.colors.Length > 0) {
+                ++ct;
+                sb.Append(" colors");
+            }
+            return new KeyValuePair<string, int>(sb.ToString(), ct);
         }
     }
     internal class CalcMeshTexRatioExp : DslExpression.SimpleExpressionBase

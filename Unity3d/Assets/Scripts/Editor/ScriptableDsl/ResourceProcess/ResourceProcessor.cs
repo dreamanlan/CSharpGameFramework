@@ -173,7 +173,7 @@ internal sealed class ResourceEditWindow : EditorWindow
         }
         GUILayout.Space(20);
         if (GUILayout.Button("保存", EditorStyles.toolbarButton)) {
-            DeferAction(obj => { ResourceProcessor.Instance.SaveResult(); });
+            DeferAction(obj => { ResourceProcessor.Instance.SaveResult(obj.m_ItemList, obj.m_GroupList); });
         }
         if (GUILayout.Button("加载", EditorStyles.toolbarButton)) {
             DeferAction(obj => { ResourceProcessor.Instance.LoadResult(); obj.CopyCollectResult(); });
@@ -2164,9 +2164,13 @@ internal sealed class ResourceProcessor
             EditorUtility.ClearProgressBar();
         }
     }
-    internal void SaveResult()
+    internal void SaveResult(List<ResourceEditUtility.ItemInfo> itemList, List<ResourceEditUtility.GroupInfo> groupList)
     {
-        if (m_GroupList.Count > 0 || m_ItemList.Count > 0) {
+        if (null == itemList && null == groupList) {
+            itemList = m_ItemList;
+            groupList = m_GroupList;
+        }
+        if (groupList.Count > 0 || itemList.Count > 0) {
             string fullpath = EditorPrefs.GetString(c_pref_key_save_result);
             bool noPath = string.IsNullOrEmpty(fullpath);
             string dir = noPath ? Application.dataPath : Path.GetDirectoryName(fullpath);
@@ -2179,11 +2183,11 @@ internal sealed class ResourceProcessor
                     File.Delete(path);
                 }
                 using (StreamWriter sw = new StreamWriter(path)) {
-                    if (m_GroupList.Count > 0) {
+                    if (groupList.Count > 0) {
                         sw.WriteLine("asset_path\tscene_path\tinfo\torder\tvalue");
                         int curCount = 0;
-                        int totalCount = m_GroupList.Count;
-                        foreach (var item in m_GroupList) {
+                        int totalCount = groupList.Count;
+                        foreach (var item in groupList) {
                             sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
                             ++curCount;
                             if (DisplayCancelableProgressBar("保存进度", curCount, totalCount)) {
@@ -2195,8 +2199,8 @@ internal sealed class ResourceProcessor
                     else {
                         sw.WriteLine("asset_path\tscene_path\tinfo\torder\tvalue");
                         int curCount = 0;
-                        int totalCount = m_ItemList.Count;
-                        foreach (var item in m_ItemList) {
+                        int totalCount = itemList.Count;
+                        foreach (var item in itemList) {
                             sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
                             ++curCount;
                             if (DisplayCancelableProgressBar("保存进度", curCount, totalCount)) {
@@ -3048,22 +3052,23 @@ internal sealed class ResourceProcessor
             }
         }
     }
-    internal void Process()
+    internal int Process()
     {
         m_OverridedProgressTitle = string.Empty;
-        Process(false);
+        return Process(false);
     }
-    internal void Process(bool isBatch)
+    internal int Process(bool isBatch)
     {
+        int ct = 0;
         if (null == m_DslFile) {
             if (!isBatch)
                 EditorUtility.DisplayDialog("错误", "请先选择dsl !", "ok");
-            return;
+            return -1;
         }
         if (null == m_ProcessCalculator || m_NextProcessIndex <= 0) {
             if (!isBatch)
                 EditorUtility.DisplayDialog("错误", "当前dsl没有配置process !", "ok");
-            return;
+            return -1;
         }
         if (!isBatch) {
             m_ProcessedAssets.Clear();
@@ -3084,7 +3089,10 @@ internal sealed class ResourceProcessor
                         if (!m_ProcessedAssets.Contains(item.AssetPath)) {
                             if (!string.IsNullOrEmpty(item.AssetPath))
                                 m_ProcessedAssets.Add(item.AssetPath);
-                            ResourceEditUtility.Process(item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+                            object o = ResourceEditUtility.Process(item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+                            if (null != o && (bool)Convert.ChangeType(o, typeof(bool))) {
+                            	++ct;
+                            }
                         }
                         ++index;
                         if (DisplayCancelableProgressBar("处理进度", index, totalSelectedCount)) {
@@ -3104,7 +3112,10 @@ internal sealed class ResourceProcessor
                         if (!m_ProcessedAssets.Contains(item.AssetPath)) {
                             if (!string.IsNullOrEmpty(item.AssetPath))
                                 m_ProcessedAssets.Add(item.AssetPath);
-                            ResourceEditUtility.GroupProcess(item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+                            object o = ResourceEditUtility.GroupProcess(item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+                            if (null != o && (bool)Convert.ChangeType(o, typeof(bool))) {
+                            	++ct;
+                            }
                         }
                         ++index;
                         if (DisplayCancelableProgressBar("处理进度", index, totalSelectedCount)) {
@@ -3127,6 +3138,7 @@ internal sealed class ResourceProcessor
             if (!isBatch)
                 EditorUtility.DisplayDialog("提示", "处理完成", "ok");
         }
+        return ct;
     }
     internal void ClearCaches()
     {
