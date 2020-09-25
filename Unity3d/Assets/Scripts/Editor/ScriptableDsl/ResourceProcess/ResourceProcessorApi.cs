@@ -73,6 +73,13 @@ internal static class ResourceEditUtility
                 Value = 0;
             }
         }
+        internal bool IsEqual(string assetPath, string scenePath, string info, double order, double value)
+        {
+            if (AssetPath == assetPath && ScenePath == scenePath && Info == info && Geometry.IsSameDouble(Order, order) && Geometry.IsSameDouble(Value, value))
+                return true;
+            else
+                return false;
+        }
     }
     internal class GroupInfo
     {

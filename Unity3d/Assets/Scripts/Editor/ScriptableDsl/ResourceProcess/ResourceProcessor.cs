@@ -767,12 +767,61 @@ internal sealed class ResourceEditWindow : EditorWindow
     {
         var sb = new StringBuilder();
         if (m_GroupList.Count > 0) {
-            sb.AppendLine("asset_path\tscene_path\tinfo\torder\tvalue");
+            sb.AppendLine("asset_path\tscene_path\tinfo\torder\tvalue\tref\trefby\textra");
             int curCount = 0;
             int totalCount = m_GroupList.Count;
             foreach (var item in m_GroupList) {
-                sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
-                sb.AppendLine();
+                if (!string.IsNullOrEmpty(item.AssetPath)) {
+                    HashSet<string> refs;
+                    HashSet<string> refbys;
+                    ResourceProcessor.Instance.ReferenceAssets.TryGetValue(item.AssetPath, out refs);
+                    ResourceProcessor.Instance.ReferenceByAssets.TryGetValue(item.AssetPath, out refbys);
+                    int refCt = 0;
+                    if (null != refs)
+                        refCt = refs.Count;
+                    int refByCt = 0;
+                    if (null != refbys)
+                        refByCt = refbys.Count;
+                    int extraCt = 0;
+                    if (null != item.ExtraList)
+                        extraCt = item.ExtraList.Count;
+                    int ct = Mathf.Max(refCt, refByCt, extraCt);
+                    IEnumerator<string> refEnumer = null;
+                    if (null != refs)
+                        refEnumer = refs.GetEnumerator();
+                    IEnumerator<string> refByEnumer = null;
+                    if (null != refbys)
+                        refByEnumer = refbys.GetEnumerator();
+                    IEnumerator<KeyValuePair<string, object>> extraEnumer = null;
+                    if (null != item.ExtraList)
+                        extraEnumer = item.ExtraList.GetEnumerator();
+                    if (ct == 0) {
+                        sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t\t\t", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
+                        sb.AppendLine();
+                    }
+                    else {
+                        for (int i = 0; i < ct; ++i) {
+                            string refAsset = string.Empty;
+                            string refByAsset = string.Empty;
+                            string extra = string.Empty;
+                            if (i < refCt && refEnumer.MoveNext()) {
+                                refAsset = refEnumer.Current;
+                            }
+                            if (i < refByCt && refByEnumer.MoveNext()) {
+                                refByAsset = refByEnumer.Current;
+                            }
+                            if (i < extraCt && extraEnumer.MoveNext()) {
+                                extra = extraEnumer.Current.Key;
+                            }
+                            sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value, refAsset, refByAsset, extra);
+                            sb.AppendLine();
+                        }
+                    }
+                }
+                else {
+                    sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t\t\t", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
+                    sb.AppendLine();
+                }
                 ++curCount;
                 if (ResourceProcessor.Instance.DisplayCancelableProgressBar("拷贝进度", curCount, totalCount)) {
                     break;
@@ -780,12 +829,61 @@ internal sealed class ResourceEditWindow : EditorWindow
             }
         }
         else {
-            sb.AppendLine("asset_path\tscene_path\tinfo\torder\tvalue");
+            sb.AppendLine("asset_path\tscene_path\tinfo\torder\tvalue\tref\trefby\textra");
             int curCount = 0;
             int totalCount = m_ItemList.Count;
             foreach (var item in m_ItemList) {
-                sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
-                sb.AppendLine();
+                if (!string.IsNullOrEmpty(item.AssetPath)) {
+                    HashSet<string> refs;
+                    HashSet<string> refbys;
+                    ResourceProcessor.Instance.ReferenceAssets.TryGetValue(item.AssetPath, out refs);
+                    ResourceProcessor.Instance.ReferenceByAssets.TryGetValue(item.AssetPath, out refbys);
+                    int refCt = 0;
+                    if (null != refs)
+                        refCt = refs.Count;
+                    int refByCt = 0;
+                    if (null != refbys)
+                        refByCt = refbys.Count;
+                    int extraCt = 0;
+                    if (null != item.ExtraList)
+                        extraCt = item.ExtraList.Count;
+                    int ct = Mathf.Max(refCt, refByCt, extraCt);
+                    IEnumerator<string> refEnumer = null;
+                    if (null != refs)
+                        refEnumer = refs.GetEnumerator();
+                    IEnumerator<string> refByEnumer = null;
+                    if (null != refbys)
+                        refByEnumer = refbys.GetEnumerator();
+                    IEnumerator<KeyValuePair<string, object>> extraEnumer = null;
+                    if (null != item.ExtraList)
+                        extraEnumer = item.ExtraList.GetEnumerator();
+                    if (ct == 0) {
+                        sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t\t\t", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
+                        sb.AppendLine();
+                    }
+                    else {
+                        for (int i = 0; i < ct; ++i) {
+                            string refAsset = string.Empty;
+                            string refByAsset = string.Empty;
+                            string extra = string.Empty;
+                            if (i < refCt && refEnumer.MoveNext()) {
+                                refAsset = refEnumer.Current;
+                            }
+                            if (i < refByCt && refByEnumer.MoveNext()) {
+                                refByAsset = refByEnumer.Current;
+                            }
+                            if (i < extraCt && extraEnumer.MoveNext()) {
+                                extra = extraEnumer.Current.Key;
+                            }
+                            sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value, refAsset, refByAsset, extra);
+                            sb.AppendLine();
+                        }
+                    }
+                }
+                else {
+                    sb.AppendFormat("{0}\t{1}\t{2}\t{3}\t{4}\t\t\t", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
+                    sb.AppendLine();
+                }
                 ++curCount;
                 if (ResourceProcessor.Instance.DisplayCancelableProgressBar("拷贝进度", curCount, totalCount)) {
                     break;
@@ -2184,11 +2282,58 @@ internal sealed class ResourceProcessor
                 }
                 using (StreamWriter sw = new StreamWriter(path)) {
                     if (groupList.Count > 0) {
-                        sw.WriteLine("asset_path\tscene_path\tinfo\torder\tvalue");
+                        sw.WriteLine("asset_path\tscene_path\tinfo\torder\tvalue\tref\trefby\textra");
                         int curCount = 0;
                         int totalCount = groupList.Count;
                         foreach (var item in groupList) {
-                            sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
+                            if (!string.IsNullOrEmpty(item.AssetPath)) {
+                                HashSet<string> refs;
+                                HashSet<string> refbys;
+                                ResourceProcessor.Instance.ReferenceAssets.TryGetValue(item.AssetPath, out refs);
+                                ResourceProcessor.Instance.ReferenceByAssets.TryGetValue(item.AssetPath, out refbys);
+                                int refCt = 0;
+                                if (null != refs)
+                                    refCt = refs.Count;
+                                int refByCt = 0;
+                                if (null != refbys)
+                                    refByCt = refbys.Count;
+                                int extraCt = 0;
+                                if (null != item.ExtraList)
+                                    extraCt = item.ExtraList.Count;
+                                int ct = Mathf.Max(refCt, refByCt, extraCt);
+                                IEnumerator<string> refEnumer = null;
+                                if (null != refs)
+                                    refEnumer = refs.GetEnumerator();
+                                IEnumerator<string> refByEnumer = null;
+                                if (null != refbys)
+                                    refByEnumer = refbys.GetEnumerator();
+                                IEnumerator<KeyValuePair<string, object>> extraEnumer = null;
+                                if (null != item.ExtraList)
+                                    extraEnumer = item.ExtraList.GetEnumerator();
+                                if (ct == 0) {
+                                    sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t\t\t", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
+                                }
+                                else {
+                                    for (int i = 0; i < ct; ++i) {
+                                        string refAsset = string.Empty;
+                                        string refByAsset = string.Empty;
+                                        string extra = string.Empty;
+                                        if (i < refCt && refEnumer.MoveNext()) {
+                                            refAsset = refEnumer.Current;
+                                        }
+                                        if (i < refByCt && refByEnumer.MoveNext()) {
+                                            refByAsset = refByEnumer.Current;
+                                        }
+                                        if (i < extraCt && extraEnumer.MoveNext()) {
+                                            extra = extraEnumer.Current.Key;
+                                        }
+                                        sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value, refAsset, refByAsset, extra);
+                                    }
+                                }
+                            }
+                            else {
+                                sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t\t\t", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
+                            }
                             ++curCount;
                             if (DisplayCancelableProgressBar("保存进度", curCount, totalCount)) {
                                 break;
@@ -2197,11 +2342,58 @@ internal sealed class ResourceProcessor
                         sw.Close();
                     }
                     else {
-                        sw.WriteLine("asset_path\tscene_path\tinfo\torder\tvalue");
+                        sw.WriteLine("asset_path\tscene_path\tinfo\torder\tvalue\tref\trefby\textra");
                         int curCount = 0;
                         int totalCount = itemList.Count;
                         foreach (var item in itemList) {
-                            sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
+                            if (!string.IsNullOrEmpty(item.AssetPath)) {
+                                HashSet<string> refs;
+                                HashSet<string> refbys;
+                                ResourceProcessor.Instance.ReferenceAssets.TryGetValue(item.AssetPath, out refs);
+                                ResourceProcessor.Instance.ReferenceByAssets.TryGetValue(item.AssetPath, out refbys);
+                                int refCt = 0;
+                                if (null != refs)
+                                    refCt = refs.Count;
+                                int refByCt = 0;
+                                if (null != refbys)
+                                    refByCt = refbys.Count;
+                                int extraCt = 0;
+                                if (null != item.ExtraList)
+                                    extraCt = item.ExtraList.Count;
+                                int ct = Mathf.Max(refCt, refByCt, extraCt);
+                                IEnumerator<string> refEnumer = null;
+                                if (null != refs)
+                                    refEnumer = refs.GetEnumerator();
+                                IEnumerator<string> refByEnumer = null;
+                                if (null != refbys)
+                                    refByEnumer = refbys.GetEnumerator();
+                                IEnumerator<KeyValuePair<string, object>> extraEnumer = null;
+                                if (null != item.ExtraList)
+                                    extraEnumer = item.ExtraList.GetEnumerator();
+                                if (ct == 0) {
+                                    sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t\t\t", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
+                                }
+                                else {
+                                    for (int i = 0; i < ct; ++i) {
+                                        string refAsset = string.Empty;
+                                        string refByAsset = string.Empty;
+                                        string extra = string.Empty;
+                                        if (i < refCt && refEnumer.MoveNext()) {
+                                            refAsset = refEnumer.Current;
+                                        }
+                                        if (i < refByCt && refByEnumer.MoveNext()) {
+                                            refByAsset = refByEnumer.Current;
+                                        }
+                                        if (i < extraCt && extraEnumer.MoveNext()) {
+                                            extra = extraEnumer.Current.Key;
+                                        }
+                                        sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value, refAsset, refByAsset, extra);
+                                    }
+                                }
+                            }
+                            else {
+                                sw.WriteLine("{0}\t{1}\t{2}\t{3}\t{4}\t\t\t", item.AssetPath, item.ScenePath, item.Info, item.Order, item.Value);
+                            }
                             ++curCount;
                             if (DisplayCancelableProgressBar("保存进度", curCount, totalCount)) {
                                 break;
@@ -2231,17 +2423,49 @@ internal sealed class ResourceProcessor
                 m_ItemList.Clear();
                 int curCount = 1;
                 int totalCount = lines.Length;
+                ResourceEditUtility.ItemInfo lastItem = null;
+                HashSet<string> refs = new HashSet<string>();
+                HashSet<string> refbys = new HashSet<string>();
+                List<KeyValuePair<string, object>> extraList = new List<KeyValuePair<string, object>>();
                 for (i = 1; i < lines.Length; ++i) {
                     var fields = lines[i].Split('\t');
                     var assetPath = fields[0];
                     var scenePath = fields[1];
                     var info = fields[2];
-                    var order = int.Parse(fields[3]);
+                    var order = double.Parse(fields[3]);
                     var value = double.Parse(fields[4]);
+                    string refAsset = string.Empty;
+                    string refByAsset = string.Empty;
+                    string extraKeyVal = string.Empty;
+                    if (fields.Length >= 8) {
+                        refAsset = fields[5];
+                        refByAsset = fields[6];
+                        extraKeyVal = fields[7];
+                        if(!string.IsNullOrEmpty(refAsset))
+                            refs.Add(refAsset);
+                        if (!string.IsNullOrEmpty(refByAsset))
+                            refbys.Add(refByAsset);
+                        if (!string.IsNullOrEmpty(extraKeyVal))
+                            extraList.Add(new KeyValuePair<string, object>(extraKeyVal, extraKeyVal));
+                    }
 
-                    var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = scenePath, Info = info, Order = order, Value = value };
-                    m_ItemList.Add(item);
+                    if (null == lastItem || !lastItem.IsEqual(assetPath, scenePath, info, order, value)) {
+                        var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = scenePath, Info = info, Order = order, Value = value };
+                        if (!ResourceProcessor.Instance.ReferenceAssets.ContainsKey(assetPath)) {
+                            ResourceProcessor.Instance.ReferenceAssets.Add(assetPath, refs);
+                        }
+                        if (!ResourceProcessor.Instance.ReferenceByAssets.ContainsKey(assetPath)) {
+                            ResourceProcessor.Instance.ReferenceByAssets.Add(assetPath, refbys);
+                        }
+                        item.ExtraList = extraList;
 
+                        refs = new HashSet<string>();
+                        refbys = new HashSet<string>();
+                        extraList = new List<KeyValuePair<string, object>>();
+
+                        m_ItemList.Add(item);
+                        lastItem = item;
+                    }
                     ++curCount;
                     if (DisplayCancelableProgressBar("加载进度", curCount, totalCount)) {
                         break;
