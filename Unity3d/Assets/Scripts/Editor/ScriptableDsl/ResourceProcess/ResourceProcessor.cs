@@ -2451,13 +2451,15 @@ internal sealed class ResourceProcessor
 
                     if (null == lastItem || !lastItem.IsEqual(assetPath, scenePath, info, order, value)) {
                         var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = scenePath, Info = info, Order = order, Value = value };
-                        if (!ResourceProcessor.Instance.ReferenceAssets.ContainsKey(assetPath)) {
+                        if (refs.Count > 0 && !ResourceProcessor.Instance.ReferenceAssets.ContainsKey(assetPath)) {
                             ResourceProcessor.Instance.ReferenceAssets.Add(assetPath, refs);
                         }
-                        if (!ResourceProcessor.Instance.ReferenceByAssets.ContainsKey(assetPath)) {
+                        if (refbys.Count > 0 && !ResourceProcessor.Instance.ReferenceByAssets.ContainsKey(assetPath)) {
                             ResourceProcessor.Instance.ReferenceByAssets.Add(assetPath, refbys);
                         }
-                        item.ExtraList = extraList;
+                        if (extraList.Count > 0) {
+                            item.ExtraList = extraList;
+                        }
 
                         refs = new HashSet<string>();
                         refbys = new HashSet<string>();
