@@ -2,6 +2,7 @@ input("*.prefab")
 {
     int("totalTriangleCount", 1000);
     int("triangleCount", 200);
+    bool("onlyParticle", false);
     stringlist("filter", "");
     stringlist("notfilter", "");
     stringlist("meshfilter", "");
@@ -27,7 +28,8 @@ filter
                 $triangleCount = $meshInfo.triangleCount;
                 $tvc = $meshInfo.totalVertexCount;
                 $ttc = $meshInfo.totalTriangleCount;
-                if(stringcontains($name, meshfilter) && stringnotcontains($name, meshnotfilter) && $ttc>=triangleCount){
+                $isps = $meshInfo.isParticle;
+                if(stringcontains($name, meshfilter) && stringnotcontains($name, meshnotfilter) && $ttc>=triangleCount && (!onlyParticle || $isps)){
                     var(3) = newitem();
                     var(3).AssetPath = assetpath;
                     var(3).ScenePath = getassetpath($mesh);

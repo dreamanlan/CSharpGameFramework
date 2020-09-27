@@ -1276,9 +1276,9 @@ namespace ResourceEditApi
         public List<MaterialInfo> materials = new List<MaterialInfo>();
         public List<AnimationClipInfo> clips = new List<AnimationClipInfo>();
 
-        public void AddSingleMesh(string name, int count, int vc, int tc)
+        public void AddSingleMesh(bool isParticle, string name, int count, int vc, int tc)
         {
-            meshes.Add(new SingleMeshInfo { meshName = name, meshCount = count, vertexCount = vc, triangleCount = tc, totalVertexCount = count * vc, totalTriangleCount = count * tc });
+            meshes.Add(new SingleMeshInfo { isParticle = isParticle, meshName = name, meshCount = count, vertexCount = vc, triangleCount = tc, totalVertexCount = count * vc, totalTriangleCount = count * tc });
         }
         public void CollectMaterials(IList<Material> mats)
         {
@@ -1350,6 +1350,7 @@ namespace ResourceEditApi
     }
     internal class SingleMeshInfo
     {
+        public bool isParticle;
         public string meshName;
         public int meshCount;
         public int vertexCount;
@@ -3268,7 +3269,7 @@ namespace ResourceEditApi
                             var mesh = renderer.sharedMesh;
                             vc += mesh.vertexCount;
                             tc += mesh.triangles.Length;
-                            info.AddSingleMesh(renderer.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
+                            info.AddSingleMesh(false, renderer.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
                         }
                         bc += renderer.bones.Length;
                         mc += renderer.sharedMaterials.Length;
@@ -3283,7 +3284,7 @@ namespace ResourceEditApi
                             var mesh = filter.sharedMesh;
                             vc += mesh.vertexCount;
                             tc += mesh.triangles.Length;
-                            info.AddSingleMesh(filter.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
+                            info.AddSingleMesh(false, filter.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
                         }
                     }
                     var meshrenderers = obj.GetComponentsInChildren<MeshRenderer>();
@@ -3422,7 +3423,7 @@ namespace ResourceEditApi
                             var mesh = renderer.sharedMesh;
                             vc += mesh.vertexCount;
                             tc += mesh.triangles.Length;
-                            info.AddSingleMesh(renderer.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
+                            info.AddSingleMesh(false, renderer.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
                         }
                         bc += renderer.bones.Length;
                         mc += renderer.sharedMaterials.Length;
@@ -3437,7 +3438,7 @@ namespace ResourceEditApi
                             var mesh = filter.sharedMesh;
                             vc += mesh.vertexCount;
                             tc += mesh.triangles.Length;
-                            info.AddSingleMesh(filter.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
+                            info.AddSingleMesh(false, filter.name + "/" + mesh.name, 1, mesh.vertexCount, mesh.triangles.Length / 3);
                         }
                     }
                     var meshrenderers = obj.GetComponentsInChildren<MeshRenderer>();
@@ -3457,7 +3458,7 @@ namespace ResourceEditApi
                                     var mesh = renderer.mesh;
                                     vc += multiple * mesh.vertexCount;
                                     tc += multiple * mesh.triangles.Length;
-                                    info.AddSingleMesh(ps.name + "/" + mesh.name, multiple, mesh.vertexCount, mesh.triangles.Length / 3);
+                                    info.AddSingleMesh(true, ps.name + "/" + mesh.name, multiple, mesh.vertexCount, mesh.triangles.Length / 3);
                                 }
                                 mc += renderer.sharedMaterials.Length;
 
