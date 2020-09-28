@@ -2,9 +2,9 @@ input
 {
     int("maxSize", 8);
     string("category", "mgroup");
-	string("contains", "");
-	string("notcontains1", "");
-	string("notcontains2", "");
+	stringlist("contains", "");
+	stringlist("notcontains1", "");
+	stringlist("notcontains2", "");
 	string("startswith", "");
 	string("endswith", "View");
 	int("mincount",2);
@@ -19,7 +19,7 @@ filter
 	order = group_info.size;
 	var(0) = group_info.group;
 	var(1) = group_info.count;
-	if(group_info.size >= maxSize && var(0).Contains(contains) && (String.IsNullOrEmpty(notcontains1) || !var(0).Contains(notcontains1)) && (String.IsNullOrEmpty(notcontains2) || !var(0).Contains(notcontains2)) && (String.IsNullOrEmpty(startswith) || var(0).StartsWith(startswith)) && (String.IsNullOrEmpty(endswith) || var(0).EndsWith(endswith)) && var(1)>=mincount){
+	if(group_info.size >= maxSize && stringcontainsany(var(0),contains) && stringnotcontainsany(var(0),notcontains1) && stringnotcontainsany(var(0),notcontains2) && (String.IsNullOrEmpty(startswith) || var(0).StartsWith(startswith)) && (String.IsNullOrEmpty(endswith) || var(0).EndsWith(endswith)) && var(1)>=mincount){
 		info = format("group:{0} count:{1} size:{2}",
 	        group_info.group, group_info.count, group_info.size
 	        );

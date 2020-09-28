@@ -66,6 +66,12 @@ internal sealed class ResourceEditWindow : EditorWindow
         bool oldRichText = GUI.skin.button.richText;
         GUI.skin.button.richText = true;
         EditorGUILayout.BeginHorizontal();
+        ResourceEditUtility.EnableSaveAndReimport = EditorGUILayout.Toggle("允许SaveAndReimport", ResourceEditUtility.EnableSaveAndReimport);
+        ResourceEditUtility.ForceSaveAndReimport = EditorGUILayout.Toggle("强制SaveAndReimport", ResourceEditUtility.ForceSaveAndReimport);
+        ResourceEditUtility.SaveResultWithXrefs = EditorGUILayout.Toggle("结果保存包含引用数据", ResourceEditUtility.SaveResultWithXrefs);
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("清理缓存", EditorStyles.toolbarButton, GUILayout.Width(60))) {
             DeferAction(obj => { ResourceProcessor.Instance.ClearCaches(); });
         }
@@ -730,6 +736,7 @@ internal sealed class ResourceEditWindow : EditorWindow
             var val = pair.Value;
             ResourceEditUtility.ParamInfo info;
             if (paramInfos.TryGetValue(name, out info)) {
+                info.StringValue = val;
                 if (info.Type == typeof(bool)) {
                     info.Value = bool.Parse(val);
                 }
@@ -771,7 +778,7 @@ internal sealed class ResourceEditWindow : EditorWindow
             int curCount = 0;
             int totalCount = m_GroupList.Count;
             foreach (var item in m_GroupList) {
-                if (!string.IsNullOrEmpty(item.AssetPath)) {
+                if (ResourceEditUtility.SaveResultWithXrefs && !string.IsNullOrEmpty(item.AssetPath)) {
                     HashSet<string> refs;
                     HashSet<string> refbys;
                     ResourceProcessor.Instance.ReferenceAssets.TryGetValue(item.AssetPath, out refs);
@@ -833,7 +840,7 @@ internal sealed class ResourceEditWindow : EditorWindow
             int curCount = 0;
             int totalCount = m_ItemList.Count;
             foreach (var item in m_ItemList) {
-                if (!string.IsNullOrEmpty(item.AssetPath)) {
+                if (ResourceEditUtility.SaveResultWithXrefs && !string.IsNullOrEmpty(item.AssetPath)) {
                     HashSet<string> refs;
                     HashSet<string> refbys;
                     ResourceProcessor.Instance.ReferenceAssets.TryGetValue(item.AssetPath, out refs);
@@ -2286,7 +2293,7 @@ internal sealed class ResourceProcessor
                         int curCount = 0;
                         int totalCount = groupList.Count;
                         foreach (var item in groupList) {
-                            if (!string.IsNullOrEmpty(item.AssetPath)) {
+                            if (ResourceEditUtility.SaveResultWithXrefs && !string.IsNullOrEmpty(item.AssetPath)) {
                                 HashSet<string> refs;
                                 HashSet<string> refbys;
                                 ResourceProcessor.Instance.ReferenceAssets.TryGetValue(item.AssetPath, out refs);
@@ -2346,7 +2353,7 @@ internal sealed class ResourceProcessor
                         int curCount = 0;
                         int totalCount = itemList.Count;
                         foreach (var item in itemList) {
-                            if (!string.IsNullOrEmpty(item.AssetPath)) {
+                            if (ResourceEditUtility.SaveResultWithXrefs && !string.IsNullOrEmpty(item.AssetPath)) {
                                 HashSet<string> refs;
                                 HashSet<string> refbys;
                                 ResourceProcessor.Instance.ReferenceAssets.TryGetValue(item.AssetPath, out refs);
@@ -3416,6 +3423,7 @@ internal sealed class ResourceProcessor
                     var val = pair.Value;
                     ResourceEditUtility.ParamInfo info;
                     if (paramInfos.TryGetValue(key, out info) && val.Type == info.Type) {
+                        val.StringValue = info.StringValue;
                         val.Value = info.Value;
                     }
                 }

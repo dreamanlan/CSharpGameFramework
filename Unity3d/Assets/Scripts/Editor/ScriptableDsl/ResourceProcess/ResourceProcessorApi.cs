@@ -1142,7 +1142,12 @@ internal static class ResourceEditUtility
         get { return s_ForceSaveAndReimport; }
         set { s_ForceSaveAndReimport = value; }
     }
-    
+    internal static bool SaveResultWithXrefs
+    {
+        get { return s_SaveResultWithXrefs; }
+        set { s_SaveResultWithXrefs = value; }
+    }
+
     internal static void SelectObject(UnityEngine.Object obj)
     {
         Selection.activeObject = obj;
@@ -1240,6 +1245,7 @@ internal static class ResourceEditUtility
 
     private static bool s_EnableSaveAndReimport = true;
     private static bool s_ForceSaveAndReimport = false;
+    private static bool s_SaveResultWithXrefs = true;
 
     private static Dictionary<string, Regex> s_Regexes = new Dictionary<string, Regex>();
     private static Dictionary<string, List<string>> s_PathMatchInfos = new Dictionary<string, List<string>>();
