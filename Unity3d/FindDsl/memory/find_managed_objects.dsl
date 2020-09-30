@@ -3,8 +3,6 @@ input
     int("maxSize", 0);
     int("minRefCount",0);
     int("maxRefCount",1024);
-    int("minRefOtherCount",0);
-    int("maxRefOtherCount",1024);
     string("category", "managed");
     string("class", "System.String");  
 	stringlist("filter", "");
@@ -18,10 +16,10 @@ filter
 {
     String = gettype("System.String");
 	order = memory.size;
-	if(memory.size >= maxSize && (isnullorempty(class) || memory.className == class) && stringcontainsany(memory.name, filter) && memory.refCount>=minRefCount && memory.refCount<=maxRefCount && memory.refOtherCount>=minRefOtherCount && memory.refOtherCount<=maxRefOtherCount){
+	if(memory.size >= maxSize && (isnullorempty(class) || memory.className == class) && stringcontainsany(memory.name, filter) && memory.refCount>=minRefCount && memory.refCount<=maxRefCount){
 		assetpath = memory.name;
-		info = format("name:{0} class:{1} size:{2} refby:{3} refother:{4}",
-	        memory.name, memory.className, memory.size, memory.refCount, memory.refOtherCount
+		info = format("name:{0} class:{1} size:{2} refby:{3}",
+	        memory.name, memory.className, memory.size, memory.refCount
 	    );
         value = memory.size;
         extraobject = memory.objectData;

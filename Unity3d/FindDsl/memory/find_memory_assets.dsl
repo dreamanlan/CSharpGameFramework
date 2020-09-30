@@ -22,8 +22,8 @@ filter
 		if(isnullorempty(assetpath)){
 			assetpath = memory.name;
 		};
-		info = format("name:{0} class:{1} size:{2} refby:{3} refother:{4}",
-            memory.name, memory.className, memory.size, memory.refCount, memory.refOtherCount
+		info = format("name:{0} class:{1} size:{2} refby:{3}",
+            memory.name, memory.className, memory.size, memory.refCount
             );
         value = memory.size;
     	extraobject = memory.objectData;
