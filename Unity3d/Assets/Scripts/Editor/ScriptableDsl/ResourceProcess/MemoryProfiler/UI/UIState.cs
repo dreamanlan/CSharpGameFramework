@@ -1,6 +1,7 @@
 using System;
 using Unity.MemoryProfilerForExtension.Editor.Database;
 using Unity.MemoryProfilerForExtension.Editor.EnumerationUtilities;
+using Unity.MemoryProfilerForExtension.Editor.Format;
 using Unity.Profiling;
 using UnityEditor.Profiling.Memory.Experimental;
 using UnityEngine;
@@ -127,7 +128,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
 
         internal class SnapshotMode : BaseMode
         {
-            PackedMemorySnapshot m_RawSnapshot;
+            QueriedMemorySnapshot m_RawSnapshot;
             RawSchema m_RawSchema;
 
             public RawSchema RawSchema
@@ -159,7 +160,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
                 m_RawSchema.formatter.BaseFormatter.PrettyNamesOptionChanged += UpdateTableSelectionNames;
             }
 
-            public SnapshotMode(ObjectDataFormatter objectDataFormatter, PackedMemorySnapshot snapshot)
+            public SnapshotMode(ObjectDataFormatter objectDataFormatter, QueriedMemorySnapshot snapshot)
             {
                 objectDataFormatter.PrettyNamesOptionChanged += UpdateTableSelectionNames;
                 SetSnapshot(objectDataFormatter, snapshot);
@@ -172,7 +173,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
 
             static ProfilerMarker s_CrawlManagedData = new ProfilerMarker("CrawlManagedData");
 
-            void SetSnapshot(ObjectDataFormatter objectDataFormatter, PackedMemorySnapshot snapshot)
+            void SetSnapshot(ObjectDataFormatter objectDataFormatter, QueriedMemorySnapshot snapshot)
             {
                 if (snapshot == null)
                 {
@@ -185,7 +186,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
 
                 m_RawSnapshot = snapshot;
 
-                ProgressBarDisplay.ShowBar(string.Format("Opening snapshot: {0}", System.IO.Path.GetFileNameWithoutExtension(snapshot.filePath)));
+                ProgressBarDisplay.ShowBar(string.Format("Opening snapshot: {0}", System.IO.Path.GetFileNameWithoutExtension(snapshot.GetReader().FilePath)));
 
                 var cachedSnapshot = new CachedSnapshot(snapshot);
                 using (s_CrawlManagedData.Auto())
@@ -280,30 +281,21 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             ObjectDataFormatter m_ObjectDataFormatter;
 
             private const string k_DefaultDiffViewTable = "All Object";
-            public DiffMode(ObjectDataFormatter objectDataFormatter, PackedMemorySnapshot snapshotFirst, PackedMemorySnapshot snapshotSecond)
-            {
-                m_ObjectDataFormatter = objectDataFormatter;
-                m_ObjectDataFormatter.PrettyNamesOptionChanged += UpdateTableSelectionNames;
-                modeFirst = new SnapshotMode(objectDataFormatter, snapshotFirst);
-                modeSecond = new SnapshotMode(objectDataFormatter, snapshotSecond);
-                m_SchemaFirst = modeFirst.GetSchema();
-                m_SchemaSecond = modeSecond.GetSchema();
-
-                m_SchemaDiff = new Database.Operation.DiffSchema(m_SchemaFirst, m_SchemaSecond);
-                UpdateTableSelectionNames();
-            }
 
             public DiffMode(ObjectDataFormatter objectDataFormatter, BaseMode snapshotFirst, BaseMode snapshotSecond)
             {
+                ProgressBarDisplay.ShowBar("Snapshot diff in progress");
                 m_ObjectDataFormatter = objectDataFormatter;
                 m_ObjectDataFormatter.PrettyNamesOptionChanged += UpdateTableSelectionNames;
                 modeFirst = snapshotFirst;
                 modeSecond = snapshotSecond;
                 m_SchemaFirst = modeFirst.GetSchema();
                 m_SchemaSecond = modeSecond.GetSchema();
-
-                m_SchemaDiff = new Database.Operation.DiffSchema(m_SchemaFirst, m_SchemaSecond);
+                ProgressBarDisplay.UpdateProgress(0.1f, "Building diff schema.");
+                m_SchemaDiff = new Database.Operation.DiffSchema(m_SchemaFirst, m_SchemaSecond, () => { ProgressBarDisplay.UpdateProgress(0.3f, "Computing table data"); });
+                ProgressBarDisplay.UpdateProgress(0.85f, "Updating table selection.");
                 UpdateTableSelectionNames();
+                ProgressBarDisplay.ClearBar();
             }
 
             protected DiffMode(DiffMode copy)
@@ -533,7 +525,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             }
         }
 
-        public void SetFirstSnapshot(PackedMemorySnapshot snapshot)
+        public void SetFirstSnapshot(QueriedMemorySnapshot snapshot)
         {
             if (snapshot == null)
             {

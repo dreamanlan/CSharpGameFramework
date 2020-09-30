@@ -728,22 +728,25 @@ namespace Unity.MemoryProfilerForExtension.Editor.Database.Operation
             }
         }
 
-        static ProfilerMarker s_ExpSelectGetComparableValue = new ProfilerMarker("ExpSelectGetComparableValue");
+        static readonly ProfilerMarker s_ExpSelectGetComparableValue = new ProfilerMarker("ExpSelect.GetComparableValue");
         public override IComparable GetComparableValue(long row)
         {
-            Update();
-            if (m_rowIndex != null)
+            using (s_ExpSelectGetComparableValue.Auto())
             {
-                if (row < 0 & row >= m_rowIndex.Length)
+                Update();
+                if (m_rowIndex != null)
                 {
-                    return GetOutOfRangeError(row);
+                    if (row < 0 & row >= m_rowIndex.Length)
+                    {
+                        return GetOutOfRangeError(row);
+                    }
+                    return column.GetRowValue(m_rowIndex[row]);
                 }
-                return column.GetRowValue(m_rowIndex[row]);
-            }
-            else
-            {
-                //no indices means it uses the full table as is
-                return column.GetRowValue(row);
+                else
+                {
+                    //no indices means it uses the full table as is
+                    return column.GetRowValue(row);
+                }
             }
         }
 

@@ -380,7 +380,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
 
             int currentTableView = (int)CurrentTableView;
 
-            EditorGUILayout.BeginHorizontal(MemoryMapBase.Styles.ContentToolbar);
+            EditorGUILayout.BeginHorizontal(Styles.MemoryMap.ContentToolbar);
 
             if (GUILayout.Toggle(m_ActiveMode == m_UIState.FirstMode, "Snapshot A", EditorStyles.radioButton))
             {

@@ -10,8 +10,8 @@ input
     script("dict2","buildHashtable");
     string("encoding", "utf-8");
     int("skiprows", 1);
-    stringlist("classcontains", "");
-    stringlist("namecontains", "");
+    stringlist("classcontainsany", "");
+    stringlist("namecontainsany", "");
     stringlist("classnotcontains", "");
     stringlist("namenotcontains", "");
 	int("resultopt",1){
@@ -37,7 +37,7 @@ filter
     $addr = getcellnumeric(row, $ix4);
     
     var(99) = 0;
-    if(stringcontains($class, classcontains) && stringcontains($name, namecontains) && stringnotcontains($class, classnotcontains) && stringnotcontains($name, namenotcontains)){
+    if(stringcontainsany($class, classcontainsany) && stringcontainsany($name, namecontainsany) && stringnotcontains($class, classnotcontains) && stringnotcontains($name, namenotcontains)){
         $row = findrowfromhashtable(dict2, [$class, $name]);
         if(!isnull($row)){
             if(resultopt!=2){

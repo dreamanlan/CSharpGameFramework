@@ -122,7 +122,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
         [SettingsProvider()]
         static SettingsProvider CreateSettingsProvider()
         {
-            var provider = new SettingsProvider("Preferences/Analysis/MemoryProfiler", SettingsScope.User)
+            var provider = new SettingsProvider("Preferences/Analysis/MemoryProfilerForExtension", SettingsScope.User)
             {
                 guiHandler = searchConext =>
                 {

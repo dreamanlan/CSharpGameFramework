@@ -1726,11 +1726,16 @@ internal sealed class ResourceProcessor
             ManagedObjectInfo objInfo;
             int refCount = 0;
             string typeName = string.Empty;
-            if (s_CachedSnapshot.CrawledData.ManagedObjectByAddress.TryGetValue(addr, out objInfo)) {
+            int index;
+            if (s_CachedSnapshot.CrawledData.MangedObjectIndexByAddress.TryGetValue(addr, out index)) {
+                objInfo = s_CachedSnapshot.CrawledData.ManagedObjects[index];
                 refCount = objInfo.RefCount;
                 if (objInfo.ITypeDescription >= 0 && objInfo.ITypeDescription < s_CachedSnapshot.typeDescriptions.Count) {
                     typeName = s_CachedSnapshot.typeDescriptions.typeDescriptionName[objInfo.ITypeDescription];
                 }
+            }
+            else {
+                objInfo = new ManagedObjectInfo();
             }
 
             var memory = new ResourceEditUtility.MemoryInfo();

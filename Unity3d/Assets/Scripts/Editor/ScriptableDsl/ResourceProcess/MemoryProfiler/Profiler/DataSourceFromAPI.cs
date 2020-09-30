@@ -1,5 +1,5 @@
 using System;
-using UnityEditor.Profiling.Memory.Experimental;
+using Unity.MemoryProfilerForExtension.Editor.Format;
 
 namespace Unity.MemoryProfilerForExtension.Editor
 {
@@ -44,7 +44,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
         public class Adaptor_String : Database.Soa.DataSource<string>
         {
             private ArrayEntries<string> m_Array;
-            public Adaptor_String(UnityEditor.Profiling.Memory.Experimental.ArrayEntries<string> array)
+            public Adaptor_String(ArrayEntries<string> array)
             {
                 m_Array = array;
             }
@@ -60,7 +60,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
         public class Adaptor_Array<DataT> : Database.Soa.DataSource<DataT[]> where DataT : IComparable
         {
             private ArrayEntries<DataT[]> m_Array;
-            public Adaptor_Array(UnityEditor.Profiling.Memory.Experimental.ArrayEntries<DataT[]> array)
+            public Adaptor_Array(ArrayEntries<DataT[]> array)
             {
                 m_Array = array;
             }
@@ -71,7 +71,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 m_Array.GetEntries((uint)range.First, (uint)range.Length, ref dataOut);
             }
         }
-        public static Adaptor<DataT> ApiToDatabase<DataT>(UnityEditor.Profiling.Memory.Experimental.ArrayEntries<DataT> array)
+        public static Adaptor<DataT> ApiToDatabase<DataT>(ArrayEntries<DataT> array)
         {
             return new AdaptorAPIArray<DataT>(array);
         }
@@ -81,12 +81,12 @@ namespace Unity.MemoryProfilerForExtension.Editor
             return new AdaptorArray<DataT>(array);
         }
 
-        public static Adaptor_String ApiToDatabase(UnityEditor.Profiling.Memory.Experimental.ArrayEntries<string> array)
+        public static Adaptor_String ApiToDatabase(ArrayEntries<string> array)
         {
             return new Adaptor_String(array);
         }
 
-        public static Adaptor_Array<DataT> ApiToDatabase<DataT>(UnityEditor.Profiling.Memory.Experimental.ArrayEntries<DataT[]> array) where DataT : IComparable
+        public static Adaptor_Array<DataT> ApiToDatabase<DataT>(ArrayEntries<DataT[]> array) where DataT : IComparable
         {
             return new Adaptor_Array<DataT>(array);
         }

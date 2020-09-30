@@ -37,6 +37,7 @@ using UnityEngine.Experimental.Networking.PlayerConnection;
 
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
+using Unity.MemoryProfilerForExtension.Editor;
 using Unity.MemoryProfilerForExtension.Editor.UI;
 using Unity.MemoryProfilerForExtension.Editor.Legacy;
 using Unity.MemoryProfilerForExtension.Editor.Legacy.LegacyFormats;
@@ -45,7 +46,7 @@ using Unity.MemoryProfilerForExtension.Editor.EnumerationUtilities;
 [assembly: InternalsVisibleTo("Unity.MemoryProfilerForExtension.Editor.Tests")]
 namespace Unity.MemoryProfilerForExtension.Editor
 {
-    using UnityMemoryProfiler = UnityEngine.Profiling.Memory.Experimental.MemoryProfiler;
+    using QueryMemoryProfiler = UnityEngine.Profiling.Memory.Experimental.MemoryProfiler;
     internal class MemoryProfilerWindow : EditorWindow, UI.IViewPaneEventListener
     {
         static class Content
@@ -93,14 +94,6 @@ namespace Unity.MemoryProfilerForExtension.Editor
             public static readonly string[] MemorySnapshotImportWindowFileExtensions = new string[] { "MemorySnapshot", "snap", "Bitbucket MemorySnapshot", "memsnap,memsnap2,memsnap3" };
         }
 
-        static class Styles
-        {
-            public static readonly GUIStyle ToolbarPopup = new GUIStyle(EditorStyles.toolbarPopup);
-
-            public const int ViewPaneMargin = 2;
-
-            public const int InitialWorkbenchWidth = 200;
-        }
 
         static MemoryProfilerWindow s_MemoryProfilerWindow = null;
         static Dictionary<BuildTarget, string> s_PlatformIconClasses = new Dictionary<BuildTarget, string>();
@@ -146,6 +139,8 @@ namespace Unity.MemoryProfilerForExtension.Editor
 
         [SerializeField]
         Vector2 m_ViewDropdownSize;
+
+        bool m_WindowInitialized = false;
 
         [MenuItem("Dsl资源工具/Memory Profiler", false, 200)]
         public static void ShowWindow()
@@ -240,11 +235,6 @@ namespace Unity.MemoryProfilerForExtension.Editor
         Dictionary<string, GUIContent> m_UIFriendlyViewOptionNames = new Dictionary<string, GUIContent>();
 
         OpenSnapshotsManager m_OpenSnapshots = new OpenSnapshotsManager();
-#if MEMPROFILER_PROFILE
-        [NonSerialized]
-        TaskTimer m_SnapshotTimer;
-#endif
-
 
         public event Action<UIState> UIStateChanged = delegate {};
 
@@ -260,16 +250,15 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 return UIState.CurrentMode.CurrentViewPane;
             }
         }
-        public MemoryProfilerWindow()
+
+        void Init()
         {
             s_MemoryProfilerWindow = this;
+            m_WindowInitialized = true;
+
             UIState = new UI.UIState();
-        }
-
-        void OnEnable()
-        {
+            Styles.Initialize();
             EditorCoroutineUtility.StartCoroutine(UpdateTitle(), this);
-
             MemoryProfilerAnalytics.EnableAnalytics();
             m_MemorySnapshotsCollection = new SnapshotCollection(MemoryProfilerSettings.AbsoluteMemorySnapshotStoragePath);
             m_PrevApplicationFocusState = InternalEditorUtility.isApplicationActive;
@@ -346,7 +335,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
             m_ForwardsInHistoryButton.clickable.clicked += StepForwardsInHistory;
             m_ForwardsInHistoryButton.SetEnabled(false);
 
-            m_ToolbarExtension = root.Query<UnityEditor.Experimental.UIElements.Toolbar>("ToolbarExtension").First();
+            m_ToolbarExtension = root.Query<Toolbar>("ToolbarExtension").First();
 
             // setup the references for the snapshot list to be used for initial filling of the snapshot items as well as new captures and imports
             m_EmptyWorkbenchText = root.Q("emptyWorkbenchText");
@@ -361,14 +350,14 @@ namespace Unity.MemoryProfilerForExtension.Editor
             m_LeftPane = root.Q("sidebar");
             var right = root.Q("mainWindow");
 
-            var splitter = new WorkbenchSplitter(Styles.InitialWorkbenchWidth);
+            var splitter = new WorkbenchSplitter(Styles.General.InitialWorkbenchWidth);
             splitter.LeftPane.Add(m_LeftPane);
             splitter.RightPane.Add(right);
 
             root.Add(splitter);
 
             // setup the open snapshots panel
-            var openSnapshotsPanel = m_OpenSnapshots.InitializeOpenSnapshotsWindow(Styles.InitialWorkbenchWidth);
+            var openSnapshotsPanel = m_OpenSnapshots.InitializeOpenSnapshotsWindow(Styles.General.InitialWorkbenchWidth);
             SidebarWidthChanged += openSnapshotsPanel.UpdateWidth;
             root.Q("sidebar").Add(openSnapshotsPanel);
 
@@ -382,6 +371,14 @@ namespace Unity.MemoryProfilerForExtension.Editor
             UIStateChanged += OnUIStateChanged;
             UIStateChanged += m_OpenSnapshots.RegisterUIState;
             UIStateChanged(UIState);
+        }
+
+        void OnGUI()
+        {
+            if (m_WindowInitialized)
+                return;
+
+            Init();
         }
 
         void StartedCompilationCallback(string msg)
@@ -716,6 +713,8 @@ namespace Unity.MemoryProfilerForExtension.Editor
 
         void OnDisable()
         {
+            m_WindowInitialized = false;
+            Styles.Cleanup();
             ProgressBarDisplay.ClearBar();
             UIStateChanged = delegate {};
             UIState.ClearAllOpenModes();
@@ -830,61 +829,52 @@ namespace Unity.MemoryProfilerForExtension.Editor
 
         void OpenLink(Database.LinkRequest link)
         {
-            using (new Service<Database.DefaultDataFormatter>.ScopeService(new Database.DefaultDataFormatter()))
+            var tableLinkRequest = link as Database.LinkRequestTable;
+            if (tableLinkRequest != null)
             {
-                var tableLinkRequest = link as Database.LinkRequestTable;
-                if (tableLinkRequest != null)
+                try
                 {
-                    try
+                    ProgressBarDisplay.ShowBar("Resolving Link...");
+                    var tableRef = new Database.TableReference(tableLinkRequest.LinkToOpen.TableName, link.Parameters);
+                    var table = UIState.CurrentMode.GetSchema().GetTableByReference(tableRef);
+
+                    ProgressBarDisplay.UpdateProgress(0.0f, "Updating Table...");
+                    if (table.Update())
                     {
-                        ProgressBarDisplay.ShowBar("Resolving Link...");
-                        var tableRef = new Database.TableReference(tableLinkRequest.LinkToOpen.TableName, link.Parameters);
-                        var table = UIState.CurrentMode.GetSchema().GetTableByReference(tableRef);
-
-                        ProgressBarDisplay.UpdateProgress(0.0f, "Updating Table...");
-                        if (table.Update())
-                        {
-                            UIState.CurrentMode.UpdateTableSelectionNames();
-                        }
-
-                        ProgressBarDisplay.UpdateProgress(0.75f, "Opening Table...");
-                        var pane = new UI.SpreadsheetPane(UIState, this);
-                        if (pane.OpenLinkRequest(tableLinkRequest, tableRef, table))
-                        {
-                            UIState.TransitModeToOwningTable(table);
-                            TransitPane(pane);
-                        }
+                        UIState.CurrentMode.UpdateTableSelectionNames();
                     }
-                    finally
+
+                    ProgressBarDisplay.UpdateProgress(0.75f, "Opening Table...");
+                    var pane = new UI.SpreadsheetPane(UIState, this);
+                    if (pane.OpenLinkRequest(tableLinkRequest, tableRef, table))
                     {
-                        ProgressBarDisplay.ClearBar();
+                        UIState.TransitModeToOwningTable(table);
+                        TransitPane(pane);
                     }
                 }
-                else
-                    Debug.LogWarning("Cannot open unknown link '" + link.ToString() + "'");
+                finally
+                {
+                    ProgressBarDisplay.ClearBar();
+                }
             }
+            else
+                Debug.LogWarning("Cannot open unknown link '" + link.ToString() + "'");
         }
 
         void OpenTable(Database.TableReference tableRef, Database.Table table)
         {
-            using (new Service<Database.DefaultDataFormatter>.ScopeService(new Database.DefaultDataFormatter()))
-            {
-                UIState.TransitModeToOwningTable(table);
-                var pane = new UI.SpreadsheetPane(UIState, this);
-                pane.OpenTable(tableRef, table);
-                TransitPane(pane);
-            }
+            UIState.TransitModeToOwningTable(table);
+            var pane = new UI.SpreadsheetPane(UIState, this);
+            pane.OpenTable(tableRef, table);
+            TransitPane(pane);
         }
 
         void OpenTable(Database.TableReference tableRef, Database.Table table, Database.CellPosition pos)
         {
-            using (new Service<Database.DefaultDataFormatter>.ScopeService(new Database.DefaultDataFormatter()))
-            {
-                UIState.TransitModeToOwningTable(table);
-                var pane = new UI.SpreadsheetPane(UIState, this);
-                pane.OpenTable(tableRef, table, pos);
-                TransitPane(pane);
-            }
+            UIState.TransitModeToOwningTable(table);
+            var pane = new UI.SpreadsheetPane(UIState, this);
+            pane.OpenTable(tableRef, table, pos);
+            TransitPane(pane);
         }
 
         void OpenHistoryEvent(UI.HistoryEvent evt)
@@ -913,61 +903,49 @@ namespace Unity.MemoryProfilerForExtension.Editor
 
         void OpenTable(UI.HistoryEvent history)
         {
-            using (new Service<Database.DefaultDataFormatter>.ScopeService(new Database.DefaultDataFormatter()))
-            {
-                var pane = new UI.SpreadsheetPane(UIState, this);
+            var pane = new UI.SpreadsheetPane(UIState, this);
 
-                if (history != null)
-                    pane.OpenHistoryEvent(history as SpreadsheetPane.History);
+            if (history != null)
+                pane.OpenHistoryEvent(history as SpreadsheetPane.History);
 
-                TransitPane(pane);
-            }
+            TransitPane(pane);
         }
 
         void OpenMemoryMap(UI.HistoryEvent history)
         {
-            using (new Service<Database.DefaultDataFormatter>.ScopeService(new Database.DefaultDataFormatter()))
-            {
-                var pane = new UI.MemoryMapPane(UIState, this, m_ToolbarExtension);
+            var pane = new UI.MemoryMapPane(UIState, this, m_ToolbarExtension);
 
-                if (history != null)
-                    pane.RestoreHistoryEvent(history);
+            if (history != null)
+                pane.RestoreHistoryEvent(history);
 
-                TransitPane(pane);
-            }
+            TransitPane(pane);
         }
 
         void OpenMemoryMapDiff(UI.HistoryEvent history)
         {
-            using (new Service<Database.DefaultDataFormatter>.ScopeService(new Database.DefaultDataFormatter()))
-            {
-                var pane = new UI.MemoryMapDiffPane(UIState, this, m_ToolbarExtension);
+            var pane = new UI.MemoryMapDiffPane(UIState, this, m_ToolbarExtension);
 
-                if (history != null)
-                    pane.RestoreHistoryEvent(history);
+            if (history != null)
+                pane.RestoreHistoryEvent(history);
 
-                TransitPane(pane);
-            }
+            TransitPane(pane);
         }
 
         void OpenTreeMap(UI.HistoryEvent history)
         {
-            using (new Service<Database.DefaultDataFormatter>.ScopeService(new Database.DefaultDataFormatter()))
-            {
-                TreeMapPane.History evt = history as TreeMapPane.History;
+            TreeMapPane.History evt = history as TreeMapPane.History;
 
-                if (currentViewPane is UI.TreeMapPane)
+            if (currentViewPane is UI.TreeMapPane)
+            {
+                if (evt != null)
                 {
-                    if (evt != null)
-                    {
-                        (currentViewPane as UI.TreeMapPane).OpenHistoryEvent(evt);
-                        return;
-                    }
+                    (currentViewPane as UI.TreeMapPane).OpenHistoryEvent(evt);
+                    return;
                 }
-                var pane = new UI.TreeMapPane(UIState, this);
-                if (evt != null) pane.OpenHistoryEvent(evt);
-                TransitPane(pane);
             }
+            var pane = new UI.TreeMapPane(UIState, this);
+            if (evt != null) pane.OpenHistoryEvent(evt);
+            TransitPane(pane);
         }
 
         void CopyDataToTexture(Texture2D tex, NativeArray<byte> byteArray)
@@ -1053,12 +1031,12 @@ namespace Unity.MemoryProfilerForExtension.Editor
             if (m_PlayerConnectionState.connectedToTarget == ConnectionTarget.Player || Application.isPlaying)
 
             {
-                UnityMemoryProfiler.TakeSnapshot(basePath, snapshotCaptureFunc, screenshotCaptureFunc, m_CaptureFlags);
+                QueryMemoryProfiler.TakeSnapshot(basePath, snapshotCaptureFunc, screenshotCaptureFunc, m_CaptureFlags);
             }
             else
 #endif
             {
-                UnityMemoryProfiler.TakeSnapshot(basePath, snapshotCaptureFunc, m_CaptureFlags);
+                QueryMemoryProfiler.TakeSnapshot(basePath, snapshotCaptureFunc, m_CaptureFlags);
                 m_ScreenshotInProgress = false; //screenshot is not in progress
             }
 
@@ -1108,7 +1086,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 return;
             }
 
-            if (EditoUtilityCompatibilityHelper.DisplayDialog(Content.HeapWarningWindowTitle, Content.HeapWarningWindowContent, Content.HeapWarningWindowOK, EditoUtilityCompatibilityHelper.DialogOptOutDecisionType.ForThisMachine, MemoryProfilerSettings.HeapWarningWindowOptOutKey))
+            if (EditorUtilityCompatibilityHelper.DisplayDialog(Content.HeapWarningWindowTitle, Content.HeapWarningWindowContent, Content.HeapWarningWindowOK, EditorUtilityCompatibilityHelper.DialogOptOutDecisionType.ForThisMachine, MemoryProfilerSettings.HeapWarningWindowOptOutKey))
             {
                 this.StartCoroutine(DelayedSnapshotRoutine());
             }
@@ -1291,7 +1269,6 @@ namespace Unity.MemoryProfilerForExtension.Editor
 
         void DrawTableSelection()
         {
-            using (new Service<Database.DefaultDataFormatter>.ScopeService(new Database.DefaultDataFormatter()))
             using (new EditorGUI.DisabledGroupScope(UIState.CurrentMode == null || UIState.CurrentMode.CurrentViewPane == null))
             {
                 var dropdownContent = Content.NoneView;
@@ -1319,7 +1296,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 var minSize = EditorStyles.toolbarDropDown.CalcSize(dropdownContent);
                 minSize.y = Mathf.Min(minSize.y, EditorGUIUtility.singleLineHeight);
                 minSize = new Vector2(Mathf.Max(minSize.x, m_ViewDropdownSize.x), Mathf.Max(minSize.y, m_ViewDropdownSize.y));
-                Rect viewDropdownRect = GUILayoutUtility.GetRect(minSize.x, minSize.y, Styles.ToolbarPopup);
+                Rect viewDropdownRect = GUILayoutUtility.GetRect(minSize.x, minSize.y, Styles.General.ToolbarPopup);
                 viewDropdownRect.x--;
 #if UNITY_2019_3_OR_NEWER // Hotfixing theming issues...
                 viewDropdownRect.y--;
@@ -1329,7 +1306,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                     m_ViewSelectorMenu.style.width = minSize.x;
                     m_ViewSelectorMenu.style.height = minSize.y;
                 }
-                if (EditorGUI.DropdownButton(viewDropdownRect, dropdownContent, FocusType.Passive, Styles.ToolbarPopup))
+                if (EditorGUI.DropdownButton(viewDropdownRect, dropdownContent, FocusType.Passive, Styles.General.ToolbarPopup))
                 {
                     int curTableIndex = -1;
                     if (currentViewPane is UI.SpreadsheetPane)
@@ -1430,7 +1407,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                     name = name.Substring(lastSlash + 1);
                 m_UIFriendlyViewOptionNames[tableName] = new GUIContent(name);
 
-                Vector2 potentialViewDropdownSize = Styles.ToolbarPopup.CalcSize(m_UIFriendlyViewOptionNames[tableName]);
+                Vector2 potentialViewDropdownSize = Styles.General.ToolbarPopup.CalcSize(m_UIFriendlyViewOptionNames[tableName]);
                 potentialViewDropdownSize.x = Mathf.Clamp(potentialViewDropdownSize.x, 100, 300);
                 if (m_ViewDropdownSize.x < potentialViewDropdownSize.x)
                 {

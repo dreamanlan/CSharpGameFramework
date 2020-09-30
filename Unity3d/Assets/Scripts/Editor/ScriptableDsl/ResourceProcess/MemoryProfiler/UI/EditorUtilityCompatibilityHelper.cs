@@ -1,10 +1,11 @@
 #if !UNITY_2019_4_OR_NEWER
 using System;
+#endif
 using UnityEngine.Internal;
 
 namespace UnityEditor
 {
-    internal static class EditoUtilityCompatibilityHelper
+    internal static class EditorUtilityCompatibilityHelper
     {
 #if !UNITY_2019_4_OR_NEWER
         static class Content
@@ -113,4 +114,3 @@ namespace UnityEditor
 #endif
     }
 }
-#endif

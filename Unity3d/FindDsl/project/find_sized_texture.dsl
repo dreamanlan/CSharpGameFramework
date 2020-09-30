@@ -17,7 +17,7 @@ input("*.tga","*.png","*.jpg","*.exr")
 }
 filter
 {
-    if(stringcontains(assetpath, filter) && stringnotcontains(assetpath, notfilter) && stringcontainsany(assetpath, anyfilter) && stringnotcontainsany(assetpath, anynotfilter)){
+    if(stringcontains(assetpath, filter) && stringnotcontains(assetpath, notfilter) && stringcontainsany(assetpath, anyfilter) && stringnotcontains(assetpath, anynotfilter)){
     	var(0) = loadasset(assetpath);
     	if(isnull(var(0))){
     		0;

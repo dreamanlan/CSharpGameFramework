@@ -382,10 +382,10 @@ namespace Unity.MemoryProfilerForExtension.Editor
                     var ptr = obj.hostManagedObjectPtr;
                     if (ptr > 0)
                     {
-                        ManagedObjectInfo moi;
-                        if (m_Table.CrawledData.ManagedObjectByAddress.TryGetValue(ptr, out moi))
+                        int idx = 0;
+                        if (m_Table.CrawledData.MangedObjectIndexByAddress.TryGetValue(ptr, out idx))
                         {
-                            return moi.RefCount;
+                            return m_Table.CrawledData.ManagedObjects[idx].RefCount;
                         }
                     }
                     break;
@@ -447,12 +447,11 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 case ObjectDataType.Object:
                 case ObjectDataType.BoxedValue:
                 case ObjectDataType.Array:
-                case ObjectDataType.Value:
-                    return m_Table.Snapshot.typeDescriptions.size[obj.managedTypeIndex];
                 case ObjectDataType.ReferenceArray:
                 case ObjectDataType.ReferenceObject:
-                    return m_Table.Snapshot.virtualMachineInformation.pointerSize;
+                    return obj.GetManagedObject(m_Table.Snapshot).Size;
                 case ObjectDataType.Type:
+                case ObjectDataType.Value:
                     return m_Table.Snapshot.typeDescriptions.size[obj.managedTypeIndex];
                 case ObjectDataType.NativeObject:
                     return (long)m_Table.Snapshot.nativeObjects.size[obj.nativeObjectIndex];
@@ -503,17 +502,10 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 case ObjectDataType.ReferenceObject:
                 {
                     var ptr = obj.GetReferencePointer();
-                    if (ptr == 0) return 0;
-                    ManagedObjectInfo moi;
-                    if (m_Table.CrawledData.ManagedObjectByAddress.TryGetValue(ptr, out moi))
-                    {
-                        return moi.Size;
-                    }
-                    else
-                    {
-                        UnityEngine.Debug.LogWarning("Managed object at address '" + obj.hostManagedObjectPtr + "' not found");
-                        return 0;
-                    }
+                    if (ptr == 0)
+                            return 0;
+                    
+                    return obj.GetManagedObject(m_Table.Snapshot).Size;
                 }
                 case ObjectDataType.NativeObject:
                     return 0;
@@ -633,7 +625,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 if (moi.IsValid() && moi.NativeObjectIndex >= 0)
                 {
                     var instanceId = m_Table.Snapshot.nativeObjects.instanceId[moi.NativeObjectIndex];
-                    if (instanceId == CachedSnapshot.NativeObjectEntriesCache.InstanceID_None) return null;
+                    if (instanceId == CachedSnapshot.NativeObjectEntriesCache.k_InstanceIDNone) return null;
                     return MakeLink(ObjectAllNativeTable.TableName, instanceId, row);
                 }
             }
@@ -645,7 +637,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 int index = obj.GetNativeObjectIndex(m_Table.Snapshot);
                 if (index < 0) return null;
                 var instanceId = m_Table.Snapshot.nativeObjects.instanceId[index];
-                if (instanceId == CachedSnapshot.NativeObjectEntriesCache.InstanceID_None) return null;
+                if (instanceId == CachedSnapshot.NativeObjectEntriesCache.k_InstanceIDNone) return null;
                 return MakeLink(ObjectAllNativeTable.TableName, instanceId, row);
             }
             return null;
@@ -653,18 +645,18 @@ namespace Unity.MemoryProfilerForExtension.Editor
 
         protected ManagedObjectInfo GetInfo(ObjectData obj)
         {
-            ManagedObjectInfo moi;
+            int idx = 0;
             switch (obj.dataType)
             {
                 case ObjectDataType.Object:
-                    m_Table.CrawledData.ManagedObjectByAddress.TryGetValue(obj.hostManagedObjectPtr, out moi);
-                    return moi;
+                    m_Table.CrawledData.MangedObjectIndexByAddress.TryGetValue(obj.hostManagedObjectPtr, out idx);
+                    return m_Table.CrawledData.ManagedObjects[idx];
                 case ObjectDataType.ReferenceObject:
                 {
                     var ptr = obj.GetReferencePointer();
                     if (ptr == 0) return default(ManagedObjectInfo);
-                    m_Table.CrawledData.ManagedObjectByAddress.TryGetValue(ptr, out moi);
-                    return moi;
+                    m_Table.CrawledData.MangedObjectIndexByAddress.TryGetValue(ptr, out idx);
+                    return m_Table.CrawledData.ManagedObjects[idx];
                 }
                 default:
                     return default(ManagedObjectInfo);
@@ -810,7 +802,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
         public override string GetRowValueString(long row, IDataFormatter formatter)
         {
             var l = GetRowValue(row);
-            if (l == CachedSnapshot.NativeObjectEntriesCache.InstanceID_None) return "";
+            if (l == CachedSnapshot.NativeObjectEntriesCache.k_InstanceIDNone) return "";
             return formatter.Format(l);
         }
 
@@ -831,7 +823,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                     }
                     break;
             }
-            return CachedSnapshot.NativeObjectEntriesCache.InstanceID_None;
+            return CachedSnapshot.NativeObjectEntriesCache.k_InstanceIDNone;
         }
 
         public override void SetRowValue(long row, int value)
@@ -859,7 +851,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
         public override string GetRowValueString(long row, IDataFormatter formatter)
         {
             var l = GetRowValue(row);
-            if (l == CachedSnapshot.NativeObjectEntriesCache.InstanceID_None) return "";
+            if (l == CachedSnapshot.NativeObjectEntriesCache.k_InstanceIDNone) return "";
             return formatter.Format(l);
         }
 
@@ -875,7 +867,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 case ObjectDataType.ReferenceObject:
                     throw new System.NotSupportedException("ObjectListNativeInstanceIdColumn is only to be used in native-objects-only-lists. Use ObjectListNativeInstanceIdLinkColumn instead");
             }
-            return CachedSnapshot.NativeObjectEntriesCache.InstanceID_None;
+            return CachedSnapshot.NativeObjectEntriesCache.k_InstanceIDNone;
         }
 
         public override void SetRowValue(long row, int value)

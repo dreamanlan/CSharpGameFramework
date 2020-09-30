@@ -28,11 +28,16 @@ namespace Unity.MemoryProfilerForExtension.Editor.Database
         , IDataFormatter<string>
         , IDataFormatter<Operation.DiffTable.DiffResult>
     {
+
+        static DefaultDataFormatter m_Instance;
         public static DefaultDataFormatter Instance
         {
             get
             {
-                return Service<DefaultDataFormatter>.Current;
+                if (m_Instance == null)
+                    m_Instance = new DefaultDataFormatter();
+
+                return m_Instance;
             }
         }
         string IDataFormatter.Format(object obj)

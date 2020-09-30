@@ -8,7 +8,6 @@ using UnityEditor;
 using UnityEditor.UI;
 using UnityEditor.Animations;
 using UnityEditor.SceneManagement;
-using UnityEditor.MemoryProfiler;
 using UnityEditorInternal;
 using UnityEditor.Profiling.Memory.Experimental;
 using Unity.MemoryProfilerForExtension.Editor;
@@ -313,14 +312,15 @@ public class BatchLoadWindow : EditorWindow
                 if (File.Exists(filePath)) {
                     try {
                         Debug.LogFormat("Loading \"{0}\"", filePath);
-                        var rawSnapshot = UnityEditor.Profiling.Memory.Experimental.PackedMemorySnapshot.Load(filePath);
+                        var rawSnapshot = Unity.MemoryProfilerForExtension.Editor.Format.QueriedMemorySnapshot.Load(filePath);
+                        //var rawSnapshot = UnityEditor.Profiling.Memory.Experimental.PackedMemorySnapshot.Load(filePath);
                         if (null == rawSnapshot) {
                             Debug.LogErrorFormat("MemoryProfiler: Unrecognized memory snapshot format '{0}'.", filePath);
                         }
                         Debug.LogFormat("Completed loading \"{0}\"", filePath);
 
                         Debug.LogFormat("Crawling \"{0}\"", filePath);
-                        ProgressBarDisplay.ShowBar(string.Format("Opening snapshot: {0}", System.IO.Path.GetFileNameWithoutExtension(rawSnapshot.filePath)));
+                        ProgressBarDisplay.ShowBar(string.Format("Opening snapshot: {0}", System.IO.Path.GetFileNameWithoutExtension(filePath)));
 
                         var cachedSnapshot = new CachedSnapshot(rawSnapshot);
                         using (s_CrawlManagedData.Auto()) {
@@ -373,7 +373,8 @@ public class BatchLoadWindow : EditorWindow
                                 int index = -1;
                                 int refCount = 0;
                                 string typeName = string.Empty;
-                                if (cachedSnapshot.CrawledData.ManagedObjectByAddress.TryGetValue(addr, out objInfo)) {
+                                if (cachedSnapshot.CrawledData.MangedObjectIndexByAddress.TryGetValue(addr, out index)) {
+                                    objInfo = cachedSnapshot.CrawledData.ManagedObjects[index];
                                     index = objInfo.ManagedObjectIndex;
                                     refCount = objInfo.RefCount;
                                     if (objInfo.ITypeDescription >= 0 && objInfo.ITypeDescription < cachedSnapshot.typeDescriptions.Count) {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.MemoryProfilerForExtension.Editor.Containers;
 
 namespace Unity.MemoryProfilerForExtension.Editor.Database.Aos
 {
@@ -62,24 +63,24 @@ namespace Unity.MemoryProfilerForExtension.Editor.Database.Aos
             }
         }
 
-        public static ColumnList<StructT, DataT> MakeColumn<StructT, DataT>(List<StructT> list, ColumnList<StructT, DataT>.Getter getter, ColumnList<StructT, DataT>.Setter setter) where DataT : IComparable, new()
+        public static ColumnList<StructT, DataT> MakeColumn<StructT, DataT>(BlockList<StructT> list, ColumnList<StructT, DataT>.Getter getter, ColumnList<StructT, DataT>.Setter setter) where DataT : IComparable, new()
         {
             return new ColumnList<StructT, DataT>(list, getter, setter);
         }
 
-        public static ColumnList<StructT, DataT> MakeColumn<StructT, DataT>(List<StructT> list, ColumnList<StructT, DataT>.Getter getter) where DataT : IComparable, new()
+        public static ColumnList<StructT, DataT> MakeColumn<StructT, DataT>(BlockList<StructT> list, ColumnList<StructT, DataT>.Getter getter) where DataT : IComparable, new()
         {
-            return new ColumnList<StructT, DataT>(list, getter, (List<StructT> l, int index, DataT v) => { throw new Exception("Cannot set value on this column"); });
+            return new ColumnList<StructT, DataT>(list, getter, (BlockList<StructT> l, int index, DataT v) => { throw new Exception("Cannot set value on this column"); });
         }
 
         internal class ColumnList<StructT, DataT> : Database.ColumnTyped<DataT> where DataT : System.IComparable, new()
         {
-            public delegate void Setter(List<StructT> list, int index, DataT v);
+            public delegate void Setter(BlockList<StructT> list, int index, DataT v);
             public delegate DataT Getter(StructT s);
             Setter setter;
             Getter getter;
-            List<StructT> list;
-            public ColumnList(List<StructT> list, Getter getter, Setter setter)
+            BlockList<StructT> list;
+            public ColumnList(BlockList<StructT> list, Getter getter, Setter setter)
             {
                 type = typeof(DataT);
                 this.list = list;

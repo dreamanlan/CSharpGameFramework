@@ -5748,7 +5748,7 @@ class ShortestPathToRootObjectFinder
         _snapshot = snapshot;
         _refbydict = new Dictionary<int, HashSet<ObjectData>>();
 
-        int ct = snapshot.CrawledData.Connections.Count;
+        int ct = (int)snapshot.CrawledData.Connections.Count;
         for (int i = 0; i < ct; ++i) {
             var c = snapshot.CrawledData.Connections[i];
             int objIndex = c.GetUnifiedIndexTo(snapshot);
@@ -5880,16 +5880,16 @@ class ShortestPathToRootObjectFinder
                 return false;
 
             var classID = _snapshot.nativeObjects.nativeTypeArrayIndex[data.nativeObjectIndex];
-            var flags = _snapshot.nativeObjects.flags[data.nativeObjectIndex];
+            var flags = (int)_snapshot.nativeObjects.flags[data.nativeObjectIndex];
             var hideFlags = _snapshot.nativeObjects.hideFlags[data.nativeObjectIndex];
 
-            if ((flags & ObjectFlags.IsPersistent) != 0)
+            if ((flags & (int)ObjectFlags.IsPersistent) != 0)
                 return false;
-            if ((flags & ObjectFlags.IsManager) != 0) {
+            if ((flags & (int)ObjectFlags.IsManager) != 0) {
                 reason = "this is an internal unity'manager' style object, which is a global object that will never be unloaded";
                 return true;
             }
-            if ((flags & ObjectFlags.IsDontDestroyOnLoad) != 0) {
+            if ((flags & (int)ObjectFlags.IsDontDestroyOnLoad) != 0) {
                 reason = "DontDestroyOnLoad() was called on this object, so it will never be unloaded";
                 return true;
             }

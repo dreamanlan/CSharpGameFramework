@@ -37,6 +37,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 var type = yield.GetType();
                 var dataType = DataType.None;
                 double targetTime = -1;
+
                 if(type == typeof(EditorWaitForSeconds))
                 {
                     targetTime = EditorApplication.timeSinceStartup + (yield as EditorWaitForSeconds).WaitTime;
@@ -46,7 +47,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
                 {
                     dataType = DataType.EditorCoroutine;
                 }
-                else if(type == typeof(AsyncOperation))
+                else if(type == typeof(AsyncOperation) || type.IsSubclassOf(typeof(AsyncOperation)))
                 {
                     dataType = DataType.AsyncOP;
                 }

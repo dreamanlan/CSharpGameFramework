@@ -5,7 +5,7 @@ input
     string("class", "Texture2D"){
         native_memory_group;
     };
-	stringlist("filter", "");
+	stringlist("anyfilter", "");
 	float("pathwidth",240){range(20,4096);};
 	feature("source", "snapshot");
 	feature("menu", "6.Memory/slowly find memory assets");
@@ -15,7 +15,7 @@ filter
 {
     String = gettype("System.String");
 	order = memory.size;
-	if(memory.size >= maxSize && memory.className == class && stringcontainsany(memory.name,filter)){
+	if(memory.size >= maxSize && memory.className == class && stringcontainsany(memory.name,anyfilter)){
 		var(0) = findasset(memory.name, memory.className);
 		assetpath = var(0)[0];
 		scenepath = var(0)[1];

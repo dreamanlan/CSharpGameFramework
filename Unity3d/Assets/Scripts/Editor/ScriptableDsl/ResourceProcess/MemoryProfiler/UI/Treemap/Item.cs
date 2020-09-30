@@ -1,181 +1,141 @@
 using System;
-using Unity.MemoryProfilerForExtension.Editor.Database.Operation.Filter;
 using UnityEditor;
 using UnityEngine;
 
 namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
 {
-    internal interface IMetricValue
+    internal enum ObjectMetricType : byte
     {
-        string GetName();
-        long GetValue();
-        string GetGroupName();
-        int GetObjectUID();
+        None = 0,
+        Managed,
+        Native
     }
-    internal class ManagedObjectMetric : IMetricValue
+
+    internal struct ObjectMetric : IEquatable<ObjectMetric>
     {
-        public CachedSnapshot m_Snapshot;
-        public ManagedObjectInfo m_Object;
-        public ManagedObjectMetric(CachedSnapshot snapshot, ManagedObjectInfo obj)
+        const string k_UnknownNativeType = "<invalid native type>";
+        const string k_UnknownManagedType = "<invalid managed type>";
+
+        public ObjectMetricType MetricType { private set; get; }
+        public int ObjectIndex { private set; get; }
+        CachedSnapshot m_CachedSnapshot;
+
+        public ObjectMetric(int objectIndex, CachedSnapshot cachedSnapshot, ObjectMetricType metricType)
         {
-            m_Snapshot = snapshot;
-            m_Object = obj;
+            MetricType = metricType;
+            ObjectIndex = objectIndex;
+            m_CachedSnapshot = cachedSnapshot;
         }
 
         public string GetTypeName()
         {
-            if (m_Object.ITypeDescription >= 0)
+            switch (MetricType)
             {
-                string typeName = m_Snapshot.typeDescriptions.typeDescriptionName[m_Object.ITypeDescription];
-                return typeName;
+                case ObjectMetricType.Managed:
+                    var ITypeDesc = m_CachedSnapshot.CrawledData.ManagedObjects[ObjectIndex].ITypeDescription;
+                    if (ITypeDesc >= 0)
+                    {
+                        return m_CachedSnapshot.typeDescriptions.typeDescriptionName[ITypeDesc];
+                    }
+                    return k_UnknownManagedType;
+                case ObjectMetricType.Native:
+                    var INatTypeDesc = m_CachedSnapshot.nativeObjects.nativeTypeArrayIndex[ObjectIndex];
+                    if (INatTypeDesc > 0)
+                    {
+                        return m_CachedSnapshot.nativeTypes.typeName[INatTypeDesc];
+                    }
+                    return k_UnknownNativeType;
+                default:
+                    return null;
             }
-            return "<uninitialized managed type>";
         }
 
         public string GetName()
         {
-            if (m_Object.NativeObjectIndex >= 0)
+            switch (MetricType)
             {
-                string objName = m_Snapshot.nativeObjects.objectName[m_Object.NativeObjectIndex];
-                if (objName.Length > 0)
-                {
-                    return " \"" + objName + "\" <" + GetTypeName() + ">";
-                }
+                case ObjectMetricType.Managed:
+                    var managedObj = m_CachedSnapshot.CrawledData.ManagedObjects[ObjectIndex];
+                    if (managedObj.NativeObjectIndex >= 0)
+                    {
+                        string objName = m_CachedSnapshot.nativeObjects.objectName[managedObj.NativeObjectIndex];
+                        if (objName.Length > 0)
+                        {
+                            return " \"" + objName + "\" <" + GetTypeName() + ">";
+                        }
+                    }
+                    return string.Format("[0x{0:x16}]", managedObj.PtrObject) + " < " + GetTypeName() + " > ";
+                case ObjectMetricType.Native:
+                    string objectName = m_CachedSnapshot.nativeObjects.objectName[ObjectIndex];
+                    if (objectName.Length > 0)
+                    {
+                        return " \"" + objectName + "\" <" + GetTypeName() + ">";
+                    }
+                    return GetTypeName();
+                default:
+                    return null;
             }
-            return string.Format("[0x{0:x16}]", m_Object.PtrObject) + " < " + GetTypeName() + " > ";
         }
 
-        public bool IsSame(IMetricValue obj)
+        public int GetObjectUID()
         {
-            if (obj is ManagedObjectMetric)
+            switch (MetricType)
             {
-                var o = (ManagedObjectMetric)obj;
-                return o.m_Object == m_Object;
+                case ObjectMetricType.Managed:
+                    return m_CachedSnapshot.ManagedObjectIndexToUnifiedObjectIndex(ObjectIndex);
+                case ObjectMetricType.Native:
+                    return m_CachedSnapshot.NativeObjectIndexToUnifiedObjectIndex(ObjectIndex);
+                default:
+                    return -1;
             }
+        }
+
+        public long GetValue()
+        {
+            switch (MetricType)
+            {
+                case ObjectMetricType.Managed:
+                    return m_CachedSnapshot.CrawledData.ManagedObjects[ObjectIndex].Size;
+                case ObjectMetricType.Native:
+                    return (long)m_CachedSnapshot.nativeObjects.size[ObjectIndex];
+                default:
+                    return -1;
+            }
+        }
+
+        public bool Equals(ObjectMetric other)
+        {
+            if (MetricType == other.MetricType)
+            {
+                return ObjectIndex == other.ObjectIndex;
+            }
+
             return false;
         }
-
-        string IMetricValue.GetName()
-        {
-            return this.GetName();
-        }
-
-        long IMetricValue.GetValue()
-        {
-            return m_Object.Size;
-        }
-
-        string IMetricValue.GetGroupName()
-        {
-            return this.GetTypeName();
-        }
-
-        int IMetricValue.GetObjectUID()
-        {
-            return m_Snapshot.ManagedObjectIndexToUnifiedObjectIndex(m_Object.ManagedObjectIndex);
-        }
     }
-    internal class NativeObjectMetric : IMetricValue
+
+    internal class Item : IComparable<Item>
     {
-        public CachedSnapshot m_Snapshot;
-        public int m_ObjectIndex;
-        public NativeObjectMetric(CachedSnapshot snapshot, int objectIndex)
-        {
-            m_Snapshot = snapshot;
-            m_ObjectIndex = objectIndex;
-        }
-
-        public bool IsSame(IMetricValue obj)
-        {
-            if (obj is NativeObjectMetric)
-            {
-                var o = (NativeObjectMetric)obj;
-                return o.m_ObjectIndex == m_ObjectIndex;
-            }
-            return false;
-        }
-
-        public string GetTypeName()
-        {
-            if (m_Snapshot.nativeObjects.nativeTypeArrayIndex[m_ObjectIndex] > 0)
-            {
-                var typeName = m_Snapshot.nativeTypes.typeName[m_Snapshot.nativeObjects.nativeTypeArrayIndex[m_ObjectIndex]];
-                return typeName;
-            }
-            return "<unknown native type>";
-        }
-
-        public string GetName()
-        {
-            string objectName = m_Snapshot.nativeObjects.objectName[m_ObjectIndex];
-            if (objectName.Length > 0)
-            {
-                return " \"" + objectName + "\" <" + GetTypeName() + ">";
-            }
-            else
-            {
-                return GetTypeName();
-            }
-        }
-
-        string IMetricValue.GetName()
-        {
-            return this.GetName();
-        }
-
-        long IMetricValue.GetValue()
-        {
-            return (long)m_Snapshot.nativeObjects.size[m_ObjectIndex];
-        }
-
-        string IMetricValue.GetGroupName()
-        {
-            return this.GetTypeName();
-        }
-
-        int IMetricValue.GetObjectUID()
-        {
-            return m_Snapshot.NativeObjectIndexToUnifiedObjectIndex(m_ObjectIndex);
-        }
-    }
-    internal class Item : IComparable<Item>, ITreemapRenderable
-    {
-        public Group _group;
-        public Rect _position;
+        public Group Group { private set; get; }
+        public Rect Position;
         //public int _index;
 
-        public IMetricValue _metric;
+        public ObjectMetric Metric { private set; get; }
 
-        public long value { get { return _metric.GetValue(); } }
-        public string name { get { return _metric.GetName(); } }
-        public Color color { get { return _group.color; } }
+        public string Label { private set; get; }
+        public long Value { get { return Metric.GetValue(); } }
+        public Color Color { get { return Group.Color; } }
 
-        public Item(IMetricValue metric, Group group)
+        public Item(ObjectMetric metric, Group group)
         {
-            _metric = metric;
-            _group = group;
+            Metric = metric;
+            Group = group;
+            Label = Metric.GetName() + "\n" + EditorUtility.FormatBytes(Value);
         }
 
         public int CompareTo(Item other)
         {
-            return (int)(_group != other._group ? other._group.totalValue - _group.totalValue : other.value - value);
-        }
-
-        public Color GetColor()
-        {
-            return _group.color;
-        }
-
-        public Rect GetPosition()
-        {
-            return _position;
-        }
-
-        public string GetLabel()
-        {
-            string row1 = _group._name;
-            string row2 = EditorUtility.FormatBytes(value);
-            return row1 + "\n" + row2;
+            return (int)(Group != other.Group ? other.Group.TotalValue - Group.TotalValue : other.Value - Value);
         }
     }
 }

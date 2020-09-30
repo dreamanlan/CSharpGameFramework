@@ -8,28 +8,7 @@ using UnityEditor;
 namespace Unity.MemoryProfilerForExtension.Editor.UI.MemoryMap
 {
     internal abstract class MemoryMapBase
-    {
-        public static class Styles
-        {
-            public static readonly GUIStyle TimelineBar  = "AnimationEventTooltip";
-            public static readonly GUIStyle AddressSub =  "OL Label";
-            public static readonly GUIStyle SeriesLabel = "ProfilerPaneSubLabel";
-            public static readonly GUIStyle ContentToolbar =
-#if UNITY_2019_3_OR_NEWER
-                "ContentToolbar";
-#else
-                EditorStyles.toolbar;
-#endif
-            public static readonly ulong SubAddressStepInRows = 10;
-            public static readonly int   LegendHeight = 20;
-            public static readonly int   VScrollBarWidth = 15;
-            public static readonly float RowPixelHeight = 24.0f;
-            public static readonly float HeaderHeight = 24.0f;
-            public static readonly float HeaderWidth = 128.0f;
-            public static readonly Color LineColor = new Color(0.33f, 0.33f, 0.33f);
-            public static readonly Color SplitLineColor = new Color(0.0f, 0.0f, 0.0f);
-            public static readonly Color MemBackground = new Color(0.0f, 0.0f, 0.0f, 0.0f);
-        }
+    {        
         public const int k_RowCacheSize = 512;       // Height of texture that store visible rows + extra data to preload data.
         protected ulong m_BytesInRow = 8 * 1024 * 1024;
         protected ulong m_HighlightedAddrMin = ulong.MinValue;
@@ -85,7 +64,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.MemoryMap
             public ulong RowsCount;
             public AddressLabel[] Labels;
             public float MinY { get { return RowsOffsetY; } }
-            public float MaxY { get { return RowsOffsetY + (float)RowsCount * Styles.RowPixelHeight; } }
+            public float MaxY { get { return RowsOffsetY + (float)RowsCount * Styles.MemoryMap.RowPixelHeight; } }
             public long RowsStart { get { return (long)RowsOffset; } }
             public long RowsEnd { get { return (long)(RowsOffset + RowsCount); } }
         }
@@ -163,18 +142,18 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.MemoryMap
             MemoryGroup group;
             group.AddressBegin  = (beginRow / m_BytesInRow) * m_BytesInRow;
             group.AddressEnd    = ((endRow + m_BytesInRow - 1) / m_BytesInRow) * m_BytesInRow;
-            group.RowsOffsetY   = prevGroup.RowsOffsetY + prevGroup.RowsCount * Styles.RowPixelHeight +  prevGroupSpace * Styles.HeaderHeight;
+            group.RowsOffsetY   = prevGroup.RowsOffsetY + prevGroup.RowsCount * Styles.MemoryMap.RowPixelHeight +  prevGroupSpace * Styles.MemoryMap.HeaderHeight;
             group.RowsOffset    = prevGroup.RowsOffset + prevGroup.RowsCount;
             group.RowsCount     = (group.AddressEnd - group.AddressBegin) / m_BytesInRow;
 
-            group.Labels = new AddressLabel[1 + (group.RowsCount - 1) / Styles.SubAddressStepInRows];
-            group.Labels[0].TextRect = new Rect(16.0f, group.RowsOffsetY - 0.25f * Styles.HeaderHeight, Styles.HeaderWidth, Styles.HeaderHeight);
+            group.Labels = new AddressLabel[1 + (group.RowsCount - 1) / Styles.MemoryMap.SubAddressStepInRows];
+            group.Labels[0].TextRect = new Rect(16.0f, group.RowsOffsetY - 0.25f * Styles.MemoryMap.HeaderHeight, Styles.MemoryMap.HeaderWidth, Styles.MemoryMap.HeaderHeight);
             group.Labels[0].Text = String.Format("0x{0:X15}", group.AddressBegin);
 
             for (int i = 1; i < group.Labels.Length; ++i)
             {
-                group.Labels[i].TextRect = new Rect(4.0f, group.RowsOffsetY - 0.90f * Styles.HeaderHeight + (float)i * Styles.SubAddressStepInRows * Styles.RowPixelHeight, Styles.HeaderWidth, Styles.HeaderHeight);
-                group.Labels[i].Text = String.Format("0x{0:X15}", group.AddressBegin + (ulong)i * Styles.SubAddressStepInRows * m_BytesInRow);
+                group.Labels[i].TextRect = new Rect(4.0f, group.RowsOffsetY - 0.90f * Styles.MemoryMap.HeaderHeight + (float)i * Styles.MemoryMap.SubAddressStepInRows * Styles.MemoryMap.RowPixelHeight, Styles.MemoryMap.HeaderWidth, Styles.MemoryMap.HeaderHeight);
+                group.Labels[i].Text = String.Format("0x{0:X15}", group.AddressBegin + (ulong)i * Styles.MemoryMap.SubAddressStepInRows * m_BytesInRow);
             }
 
             m_Groups.Add(group);
@@ -184,7 +163,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.MemoryMap
         {
             int minGroup = startGroup;
 
-            while (minGroup < m_Groups.Count && m_Groups[minGroup].RowsOffsetY + m_Groups[minGroup].RowsCount * Styles.RowPixelHeight < yMin)
+            while (minGroup < m_Groups.Count && m_Groups[minGroup].RowsOffsetY + m_Groups[minGroup].RowsCount * Styles.MemoryMap.RowPixelHeight < yMin)
             {
                 minGroup++;
             }
@@ -243,10 +222,10 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.MemoryMap
             for (int slot = 0; slot < m_TextureSlots.Length; ++slot)
                 flushTexture |= (m_TextureSlots[slot] == null || m_TextureSlots[slot].width != (int)MemoryMapRect.width);
 
-            long visibleRows = (long)((yMax - yMin) / Styles.RowPixelHeight);
+            long visibleRows = (long)((yMax - yMin) / Styles.MemoryMap.RowPixelHeight);
 
             int minGroup = FindFirstGroup(yMin, 0);
-            int minGroupRowOffset = (int)((yMin - m_Groups[minGroup].RowsOffsetY) / Styles.RowPixelHeight);
+            int minGroupRowOffset = (int)((yMin - m_Groups[minGroup].RowsOffsetY) / Styles.MemoryMap.RowPixelHeight);
 
             long minRow = (long)m_Groups[minGroup].RowsOffset + minGroupRowOffset;
             long maxRow = Math.Min(minRow + visibleRows, rowsCount);
@@ -479,15 +458,15 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.MemoryMap
             GL.Begin(GL.QUADS);
             for (int i = 0; i < m_Groups.Count; ++i)
             {
-                if (yMin < m_Groups[i].RowsOffsetY + m_Groups[i].RowsCount * Styles.RowPixelHeight && m_Groups[i].RowsOffsetY < yMax)
+                if (yMin < m_Groups[i].RowsOffsetY + m_Groups[i].RowsCount * Styles.MemoryMap.RowPixelHeight && m_Groups[i].RowsOffsetY < yMax)
                 {
                     float v0 = m_Groups[i].RowsStart;
                     float v1 = m_Groups[i].RowsEnd;
                     float s =  m_Groups[i].RowsCount;
 
                     GL.TexCoord3(u1, v0, 0); GL.Vertex3(MemoryMapRect.xMax, m_Groups[i].MinY, 0f);
-                    GL.TexCoord3(u0, v0, 0); GL.Vertex3(Styles.HeaderWidth, m_Groups[i].MinY,  0f);
-                    GL.TexCoord3(u0, v1, s); GL.Vertex3(Styles.HeaderWidth, m_Groups[i].MaxY, 0f);
+                    GL.TexCoord3(u0, v0, 0); GL.Vertex3(Styles.MemoryMap.HeaderWidth, m_Groups[i].MinY,  0f);
+                    GL.TexCoord3(u0, v1, s); GL.Vertex3(Styles.MemoryMap.HeaderWidth, m_Groups[i].MaxY, 0f);
                     GL.TexCoord3(u1, v1, s); GL.Vertex3(MemoryMapRect.xMax,       m_Groups[i].MaxY, 0f);
                 }
             }
@@ -503,13 +482,13 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.MemoryMap
                     return; // Groups are sorted so there is no need to process anymore
                 }
 
-                if (yMin < m_Groups[i].RowsOffsetY + m_Groups[i].RowsCount * Styles.RowPixelHeight)
+                if (yMin < m_Groups[i].RowsOffsetY + m_Groups[i].RowsCount * Styles.MemoryMap.RowPixelHeight)
                 {
-                    GUI.Label(m_Groups[i].Labels[0].TextRect, m_Groups[i].Labels[0].Text, Styles.TimelineBar);
+                    GUI.Label(m_Groups[i].Labels[0].TextRect, m_Groups[i].Labels[0].Text, Styles.MemoryMap.TimelineBar);
 
                     for (int j = 1; j < m_Groups[i].Labels.Length && m_Groups[i].Labels[j].TextRect.yMax < yMax; ++j)
                     {
-                        GUI.Label(m_Groups[i].Labels[j].TextRect, m_Groups[i].Labels[j].Text, Styles.AddressSub);
+                        GUI.Label(m_Groups[i].Labels[j].TextRect, m_Groups[i].Labels[j].Text, Styles.MemoryMap.AddressSub);
                     }
                 }
             }
@@ -529,7 +508,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.MemoryMap
                 if (vCursor.y >= m_Groups[i].MinY)
                 {
                     ulong Addr = m_Groups[i].AddressBegin;
-                    Addr += (ulong)(Math.Floor((vCursor.y - m_Groups[i].MinY) / Styles.RowPixelHeight) * m_BytesInRow);
+                    Addr += (ulong)(Math.Floor((vCursor.y - m_Groups[i].MinY) / Styles.MemoryMap.RowPixelHeight) * m_BytesInRow);
 
                     if (vCursor.x >= MemoryMapRect.x)
                         Addr += (ulong)(((vCursor.x - MemoryMapRect.x) * m_BytesInRow) / MemoryMapRect.width);

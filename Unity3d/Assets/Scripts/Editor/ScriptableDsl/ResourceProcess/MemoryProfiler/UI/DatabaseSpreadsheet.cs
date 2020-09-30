@@ -224,28 +224,6 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
                 return;
             }
             InitFilter(meta.defaultFilter);
-            //database.operation.filter.FilterCloning fc = new database.operation.filter.FilterCloning();
-
-            //var deffilter = meta.defaultFilter.Clone(fc);
-            //if (deffilter != null)
-            //{
-            //    filters = new filter.Multi();
-            //    allLevelSortFilter = (filter.Sort)fc.GetUnique(meta.defaultAllLevelSortFilter);
-            //    filters.filters.Add(deffilter);
-
-            //    if (allLevelSortFilter == null)
-            //    {
-            //        allLevelSortFilter = new filter.Sort();
-            //        var ds = new database.operation.filter.DefaultSort();
-            //        ds.defaultSort = allLevelSortFilter;
-            //        filters.filters.Add(ds);
-            //    }
-            //    UpdateDisplayTable();
-            //}
-            //else
-            //{
-            //    InitEmptyFilter();
-            //}
         }
 
         public Database.CellLink GetLinkToCurrentSelection()
@@ -327,7 +305,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             var sortName = Filter.Sort.GetSortName(sorted);
             str = sortName + str;
 
-            if (!GUI.Button(r, str, Styles.Header))
+            if (!GUI.Button(r, str, Styles.General.Header))
                 return;
 
             var meta = m_TableSource.GetMetaData();
@@ -474,7 +452,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
                     m_GUIState.FirstVisibleRow = fvr;
                     m_GUIState.FirstVisibleRowIndex = fvrIndex;
                     m_GUIState.HeightBeforeFirstVisibleRow = fvrY;
-                    m_DataState.TotalDataHeight = totalh;
+                    m_TotalDataHeight = totalh;
                 }
                 else
                 {
@@ -485,7 +463,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
                     m_GUIState.HeightBeforeFirstVisibleRow = 0;
                     long nextRow;
                     long lastIndex = 0;
-                    m_DataState.TotalDataHeight = GetCumulativeHeight(GetFirstRow(), long.MaxValue, out nextRow, ref lastIndex);
+                    m_TotalDataHeight = GetCumulativeHeight(GetFirstRow(), long.MaxValue, out nextRow, ref lastIndex);
                 }
 
                 m_GUIState.SelectedRow = sel;
@@ -530,8 +508,8 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
                 r.width -= indent;
                 if (s.isExpandable)
                 {
-                    Rect rToggle = new Rect(r.x, r.y, Styles.FoldoutWidth, r.height);
-                    bool newExpanded = GUI.Toggle(rToggle, s.isExpanded, GUIContent.none, Styles.Foldout);
+                    Rect rToggle = new Rect(r.x, r.y, Styles.General.FoldoutWidth, r.height);
+                    bool newExpanded = GUI.Toggle(rToggle, s.isExpanded, GUIContent.none, Styles.General.Foldout);
                     if (newExpanded != s.isExpanded)
                     {
                         pipe.processMouseClick = false;
@@ -555,7 +533,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
                 {
                     var str = column.GetRowValueString(row, m_FormattingOptions.GetFormatter(metaColumn.FormatName));
                     DrawTextEllipsis(str, r,
-                        link == null ? Styles.NumberLabel : Styles.ClickableLabel
+                        link == null ? Styles.General.NumberLabel : Styles.General.ClickableLabel
                         , EllipsisStyleMetricData, selected);
                 }
             }

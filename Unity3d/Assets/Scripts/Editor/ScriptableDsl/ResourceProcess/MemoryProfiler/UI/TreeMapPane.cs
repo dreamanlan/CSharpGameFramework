@@ -24,7 +24,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
         internal class History : HistoryEvent
         {
             string m_GroupName;
-            Treemap.IMetricValue m_SelectedItem;
+            Treemap.ObjectMetric m_SelectedItem;
 
             public History(TreeMapPane pane)
             {
@@ -32,18 +32,18 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
 
                 if (pane.m_TreeMap.SelectedItem != null)
                 {
-                    m_SelectedItem = pane.m_TreeMap.SelectedItem._metric;
-                    m_GroupName = m_SelectedItem.GetGroupName();
+                    m_SelectedItem = pane.m_TreeMap.SelectedItem.Metric;
+                    m_GroupName = m_SelectedItem.GetTypeName();
                 }
                 else if (pane.m_TreeMap.SelectedGroup != null)
                 {
-                    m_GroupName = pane.m_TreeMap.SelectedGroup._name;
+                    m_GroupName = pane.m_TreeMap.SelectedGroup.Name;
                 }
             }
 
             public void Restore(TreeMapPane pane)
             {
-                if (m_SelectedItem != null)
+                if (!m_SelectedItem.Equals(default(Treemap.ObjectMetric)))
                 {
                     if (pane.m_TreeMap.HasMetric(m_SelectedItem))
                     {
@@ -64,7 +64,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
                     }
                     else
                     {
-                        pane.ShowAllObjects(null, true);
+                        pane.ShowAllObjects(default(Treemap.ObjectMetric), true);
                     }
                 }
 
@@ -75,7 +75,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             {
                 string name = Mode.GetSchema().GetDisplayName() + seperator + "Tree Map";
 
-                if (m_SelectedItem != null)
+                if (!m_SelectedItem.Equals(default(Treemap.ObjectMetric)))
                 {
                     name += seperator + m_SelectedItem.GetName();
                 }
@@ -102,7 +102,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
                         m_CurrentCodeType = CodeType.Unknown;
                         break;
                 }
-                ShowAllObjects(null, false);
+                ShowAllObjects(default(Treemap.ObjectMetric), false);
             }
         }
 
@@ -166,24 +166,26 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             m_TreeMap.OnClickGroup = OnClickGroup;
             m_TreeMap.OnOpenItem = OnOpenItem;
 
-            ShowAllObjects(null, false);
+            ShowAllObjects(default(Treemap.ObjectMetric), false);
         }
 
-        public void ShowAllObjects(Treemap.IMetricValue itemCopyToSelect, bool focus)
+        public void ShowAllObjects(Treemap.ObjectMetric itemCopyToSelect, bool focus)
         {
             // TODO: Fix history zooming UX
             focus = false;
 
-            Treemap.IMetricValue itemToSelect = null;
+            Treemap.ObjectMetric itemToSelect = default(Treemap.ObjectMetric);
             m_TreeMap.ClearMetric();
             if (m_CurrentCodeType == CodeType.Unknown || m_CurrentCodeType == CodeType.Managed)
             {
-                foreach (var managedObject in m_UIState.snapshotMode.snapshot.CrawledData.ManagedObjects)
+                var managedObjects = m_UIState.snapshotMode.snapshot.CrawledData.ManagedObjects;
+                for (int i = 0; i < managedObjects.Count; ++i)
                 {
+                    var managedObject = managedObjects[i];
                     if (managedObject.Size > 0)
                     {
-                        var o = new Treemap.ManagedObjectMetric(m_UIState.snapshotMode.snapshot, managedObject);
-                        if (o.IsSame(itemCopyToSelect))
+                        var o = new Treemap.ObjectMetric(managedObject.ManagedObjectIndex, m_UIState.snapshotMode.snapshot, Treemap.ObjectMetricType.Managed);
+                        if (o.Equals(itemCopyToSelect))
                         {
                             itemToSelect = o;
                         }
@@ -197,8 +199,8 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
                 {
                     if (m_UIState.snapshotMode.snapshot.nativeObjects.size[i] > 0)
                     {
-                        var o = new Treemap.NativeObjectMetric(m_UIState.snapshotMode.snapshot, i);
-                        if (o.IsSame(itemCopyToSelect))
+                        var o = new Treemap.ObjectMetric(i, m_UIState.snapshotMode.snapshot, Treemap.ObjectMetricType.Native);
+                        if (o.Equals(itemCopyToSelect))
                         {
                             itemToSelect = o;
                         }
@@ -208,7 +210,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             }
             m_TreeMap.UpdateMetric();
 
-            if (itemToSelect != null)
+            if (!itemToSelect.Equals(default(Treemap.ObjectMetric)))
                 OpenMetricData(itemToSelect, focus);
             else
             {
@@ -237,7 +239,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
         public void OnClickItem(Treemap.Item a)
         {
             m_TreeMap.SelectItem(a);
-            OpenMetricData(a._metric, false);
+            OpenMetricData(a.Metric, false);
         }
 
         public void OnOpenItem(Treemap.Item a)
@@ -259,66 +261,69 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             lr.SourceTable = null;
             lr.SourceColumn = null;
             lr.SourceRow = -1;
-            OpenLinkRequest(lr, false, group._name, false);
+            OpenLinkRequest(lr, false, group.Name, false);
         }
 
-        void OpenMetricData(Treemap.IMetricValue metric, bool focus)
+        void OpenMetricData(Treemap.ObjectMetric metric, bool focus)
         {
-            if (metric is Treemap.ManagedObjectMetric)
+            switch (metric.MetricType)
             {
-                var m = (Treemap.ManagedObjectMetric)metric;
+                case Treemap.ObjectMetricType.Managed:
 
-                if (m_CurrentTableTypeFilter == metric.GetGroupName())
-                {
-                    var builder = new Database.View.Where.Builder("Index", Database.Operation.Operator.Equal, new Database.Operation.Expression.MetaExpression(metric.GetObjectUID().ToString(), true));
-
-                    var whereStatement = builder.Build(null, null, null, null, null, m_Spreadsheet.DisplayTable, null); //yeah we could add a no param Build() too..
-                    var row = whereStatement.GetFirstMatchIndex(-1);
-
-                    if (row > 0)
+                    var metricTypeName = metric.GetTypeName();
+                    if (m_CurrentTableTypeFilter == metricTypeName)
                     {
-                        m_Spreadsheet.Goto(new Database.CellPosition(row, 0));
-                        return;
+                        var builder = new Database.View.Where.Builder("Index", Database.Operation.Operator.Equal, new Database.Operation.Expression.MetaExpression(metric.GetObjectUID().ToString(), true));
+
+                        var whereStatement = builder.Build(null, null, null, null, null, m_Spreadsheet.DisplayTable, null); //yeah we could add a no param Build() too..
+                        var row = whereStatement.GetFirstMatchIndex(-1);
+
+                        if (row > 0)
+                        {
+                            m_Spreadsheet.Goto(new Database.CellPosition(row, 0));
+                            return;
+                        }
                     }
-                }
 
-                var lr = new Database.LinkRequestTable();
-                lr.LinkToOpen = new Database.TableLink();
-                lr.LinkToOpen.TableName = TableName;
-                lr.SourceTable = null;
-                lr.SourceColumn = null;
-                lr.SourceRow = -1;
-                lr.Parameters.AddValue(ObjectTable.ObjParamName, m.m_Object.PtrObject);
-                lr.Parameters.AddValue(ObjectTable.TypeParamName, m.m_Object.ITypeDescription);
-                OpenLinkRequest(lr, focus, metric.GetGroupName());
-            }
-            else if (metric is Treemap.NativeObjectMetric)
-            {
-                var m = (Treemap.NativeObjectMetric)metric;
+                    var lr = new Database.LinkRequestTable();
+                    lr.LinkToOpen = new Database.TableLink();
+                    lr.LinkToOpen.TableName = TableName;
+                    lr.SourceTable = null;
+                    lr.SourceColumn = null;
+                    lr.SourceRow = -1;
+                    var managedObj = m_UIState.snapshotMode.snapshot.CrawledData.ManagedObjects[metric.ObjectIndex];
+                    lr.Parameters.AddValue(ObjectTable.ObjParamName, managedObj.PtrObject);
+                    lr.Parameters.AddValue(ObjectTable.TypeParamName, managedObj.ITypeDescription);
+                    OpenLinkRequest(lr, focus, metricTypeName);
+                    break;
+                case Treemap.ObjectMetricType.Native:
 
-                if (m_CurrentTableTypeFilter == metric.GetGroupName())
-                {
-                    var builder = new Database.View.Where.Builder("NativeInstanceId", Database.Operation.Operator.Equal, new Database.Operation.Expression.MetaExpression(m_UIState.snapshotMode.snapshot.nativeObjects.instanceId[m.m_ObjectIndex].ToString(), true));
-                    var whereStatement = builder.Build(null, null, null, null, null, m_Spreadsheet.DisplayTable, null); //yeah we could add a no param Build() too..
-                    var row = whereStatement.GetFirstMatchIndex(-1);
+                    metricTypeName = metric.GetTypeName();
+                    var instanceId = m_UIState.snapshotMode.snapshot.nativeObjects.instanceId[metric.ObjectIndex];
 
-                    if (row > 0)
+                    if (m_CurrentTableTypeFilter == metricTypeName)
                     {
-                        m_Spreadsheet.Goto(new Database.CellPosition(row, 0));
-                        return;
+                        var builder = new Database.View.Where.Builder("NativeInstanceId", Database.Operation.Operator.Equal, new Database.Operation.Expression.MetaExpression(instanceId.ToString(), true));
+                        var whereStatement = builder.Build(null, null, null, null, null, m_Spreadsheet.DisplayTable, null); //yeah we could add a no param Build() too..
+                        var row = whereStatement.GetFirstMatchIndex(-1);
+
+                        if (row > 0)
+                        {
+                            m_Spreadsheet.Goto(new Database.CellPosition(row, 0));
+                            return;
+                        }
                     }
-                }
-                var lr = new Database.LinkRequestTable();
-                lr.LinkToOpen = new Database.TableLink();
-                lr.LinkToOpen.TableName = TableName;
-                var instanceId = m_UIState.snapshotMode.snapshot.nativeObjects.instanceId[m.m_ObjectIndex];
-                var b = new Database.View.Where.Builder("NativeInstanceId", Database.Operation.Operator.Equal, new Database.Operation.Expression.MetaExpression(instanceId.ToString(), true));
-                lr.LinkToOpen.RowWhere = new System.Collections.Generic.List<Database.View.Where.Builder>();
-                lr.LinkToOpen.RowWhere.Add(b);
-                lr.SourceTable = null;
-                lr.SourceColumn = null;
-                lr.SourceRow = -1;
-                OpenLinkRequest(lr, focus, metric.GetGroupName());
+                    lr = new Database.LinkRequestTable();
+                    lr.LinkToOpen = new Database.TableLink();
+                    lr.LinkToOpen.TableName = TableName;
+                    var b = new Database.View.Where.Builder("NativeInstanceId", Database.Operation.Operator.Equal, new Database.Operation.Expression.MetaExpression(instanceId.ToString(), true));
+                    lr.LinkToOpen.RowWhere = new System.Collections.Generic.List<Database.View.Where.Builder>();
+                    lr.LinkToOpen.RowWhere.Add(b);
+                    lr.SourceTable = null;
+                    lr.SourceColumn = null;
+                    lr.SourceRow = -1;
+                    OpenLinkRequest(lr, focus, metricTypeName);
+                    break;
             }
         }
 

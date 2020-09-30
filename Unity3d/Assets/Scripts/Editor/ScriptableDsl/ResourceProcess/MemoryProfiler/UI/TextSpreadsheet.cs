@@ -16,7 +16,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             get
             {
                 if (m_EllipsisStyleMetricData == null)
-                    m_EllipsisStyleMetricData = new EllipsisStyleMetric(Styles.NumberLabel);
+                    m_EllipsisStyleMetricData = new EllipsisStyleMetric(Styles.General.NumberLabel);
 
                 return m_EllipsisStyleMetricData;
             }
@@ -26,7 +26,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             get
             {
                 if (m_EllipsisStyleMetricHeader == null)
-                    m_EllipsisStyleMetricHeader = new EllipsisStyleMetric(Styles.EntryEven);
+                    m_EllipsisStyleMetricHeader = new EllipsisStyleMetric(Styles.General.EntryEven);
 
                 return m_EllipsisStyleMetricHeader;
             }
@@ -51,19 +51,21 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
 
         protected override void DrawRow(long row, Rect r, long index, bool selected, ref GUIPipelineState pipe)
         {
-            GUILayout.Space(r.height);
+            if(Event.current.type == EventType.Layout)
+                GUILayout.Space(r.height);
+
             if (Event.current.type == EventType.Repaint)
             {
                 // TODO: clean this up when refactoring views to something more reliable when there are multiple MemoryProfilerWindow instances allowed.
                 bool focused = EditorWindow.focusedWindow is MemoryProfilerWindow;
 #if UNITY_2019_3_OR_NEWER
                 if (selected)
-                    Styles.EntrySelected.Draw(r, false, false, true, focused);
+                    Styles.General.EntrySelected.Draw(r, false, false, true, focused);
                 else if(index % 2 == 0)
-                    Styles.EntryEven.Draw(r, GUIContent.none, false, false, false, focused);
+                    Styles.General.EntryEven.Draw(r, GUIContent.none, false, false, false, focused);
 
 #else
-                var background = (index % 2 == 0 ? Styles.EntryEven : Styles.EntryOdd);
+                var background = (index % 2 == 0 ? Styles.General.EntryEven : Styles.General.EntryOdd);
                 background.Draw(r, GUIContent.none, false, false, selected, focused);
 #endif
             }
@@ -71,7 +73,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
 
         protected void DrawTextEllipsis(string text, Rect r, GUIStyle textStyle, EllipsisStyleMetric ellipsisStyle, bool selected)
         {
-            Vector2 tSize = Styles.NumberLabel.CalcSize(new GUIContent(text));
+            Vector2 tSize = Styles.General.NumberLabel.CalcSize(new GUIContent(text));
             if (tSize.x > r.width)
             {
                 Rect rclipped = new Rect(r.x, r.y, r.width - ellipsisStyle.pixelSize.x, r.height);
@@ -129,13 +131,13 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             {
                 string t = "R" + row + "C" + col + "Y" + r.y;
 
-                DrawTextEllipsis(t, r, Styles.NumberLabel, EllipsisStyleMetricData, selected);
+                DrawTextEllipsis(t, r, Styles.General.NumberLabel, EllipsisStyleMetricData, selected);
             }
         }
 
         protected override void DrawHeader(long col, Rect r, ref GUIPipelineState pipe)
         {
-            Styles.Header.Draw(r, "Header" + col, false, false, false, false);
+            Styles.General.Header.Draw(r, "Header" + col, false, false, false, false);
         }
     }
 }

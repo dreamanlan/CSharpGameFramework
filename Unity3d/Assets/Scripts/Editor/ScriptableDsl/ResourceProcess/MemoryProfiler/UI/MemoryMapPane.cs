@@ -364,7 +364,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
 
             GUILayout.BeginArea(r);
 
-            EditorGUILayout.BeginHorizontal(MemoryMapBase.Styles.ContentToolbar);
+            EditorGUILayout.BeginHorizontal(Styles.MemoryMap.ContentToolbar);
 
 
             if (r.width > 200)

@@ -65,15 +65,12 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI
             {
                 try
                 {
-                    using (new Service<Database.DefaultDataFormatter>.ScopeService(new Database.DefaultDataFormatter()))
+                    var rect = m_VisualElements[elementIndex].contentRect;
+                    if (float.IsNaN(rect.width) || float.IsNaN(rect.height))
                     {
-                        var rect = m_VisualElements[elementIndex].contentRect;
-                        if (float.IsNaN(rect.width) || float.IsNaN(rect.height))
-                        {
-                            rect = new Rect(0, 0, 1, 1);
-                        }
-                        m_VisualElementsOnGUICalls[elementIndex](rect);
+                        rect = new Rect(0, 0, 1, 1);
                     }
+                    m_VisualElementsOnGUICalls[elementIndex](rect);
                 }
                 catch (Exception)
                 {

@@ -5,68 +5,63 @@ using UnityEngine;
 
 namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
 {
-    internal class Group : IComparable<Group>, ITreemapRenderable
+    internal class Group : IComparable<Group>
     {
-        public string _name;
-        public Rect _position;
-        public List<Item> _items;
-        private long _totalValue = -1;
+        public string Name;
+        public Rect Position;
+        public List<Item> Items;
+        private long m_TotalValue = -1;
 
-        public long totalValue
+        string m_Label = null;
+        public string Label
         {
             get
             {
-                if (_totalValue != -1)
-                    return _totalValue;
+                if (m_Label == null)
+                    m_Label = string.Format("{0} ({1})", Name, Items != null ? Items.Count : 0) + "\n" + EditorUtility.FormatBytes((long)TotalValue);
+
+                return m_Label;
+            }
+        }
+
+        public long TotalValue
+        {
+            get
+            {
+                if (m_TotalValue != -1)
+                    return m_TotalValue;
 
                 long result = 0;
-                foreach (Item item in _items)
+                foreach (Item item in Items)
                 {
-                    result += item.value;
+                    result += item.Value;
                 }
-                _totalValue = result;
+                m_TotalValue = result;
                 return result;
             }
         }
 
-        public float[] memorySizes
+        public float[] MemorySizes
         {
             get
             {
-                float[] result = new float[_items.Count];
-                for (int i = 0; i < _items.Count; i++)
+                float[] result = new float[Items.Count];
+                for (int i = 0; i < Items.Count; i++)
                 {
-                    result[i] = _items[i].value;
+                    result[i] = Items[i].Value;
                 }
                 return result;
             }
         }
 
-        public Color color
+        public Color Color
         {
-            get { return Utility.GetColorForName(_name); }
+            get { return Utility.GetColorForName(Name); }
         }
 
         public int CompareTo(Group other)
         {
-            return (int)(other.totalValue - totalValue);
-        }
-
-        public Color GetColor()
-        {
-            return color;
-        }
-
-        public Rect GetPosition()
-        {
-            return _position;
-        }
-
-        public string GetLabel()
-        {
-            string row1 = string.Format("{0} ({1})", _name, _items != null ? _items.Count : 0);
-            string row2 = EditorUtility.FormatBytes((long)totalValue);
-            return row1 + "\n" + row2;
+            return (int)(other.TotalValue - TotalValue);
         }
     }
 }

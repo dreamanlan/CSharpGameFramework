@@ -86,7 +86,6 @@ namespace Unity.MemoryProfilerForExtension.Editor.Database
         public virtual bool Validate(bool log)
         {
             bool valid = true;
-            string name = GetName();
 
             if (m_Meta == null)
             {

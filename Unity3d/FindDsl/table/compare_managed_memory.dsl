@@ -10,7 +10,7 @@ input
     script("dict2","buildHashtable");
     string("encoding", "utf-8");
     int("skiprows", 1);
-    stringlist("classcontains", "");
+    stringlist("classcontainsany", "");
     stringlist("classnotcontains", "");
 	int("resultopt",1){
 		toggle(["all","onlyalone","onlynotalone"],[1,2,3]);
@@ -34,7 +34,7 @@ filter
     $addrStr = getcellstring(row, $ix3);
     
     var(99) = 0;
-    if(stringcontains($class, classcontains) && stringnotcontains($class, classnotcontains)){
+    if(stringcontainsany($class, classcontainsany) && stringnotcontains($class, classnotcontains)){
         $row = findrowfromhashtable(dict2, [$class,$addrStr]);
         if(!isnull($row)){
             if(resultopt!=2){

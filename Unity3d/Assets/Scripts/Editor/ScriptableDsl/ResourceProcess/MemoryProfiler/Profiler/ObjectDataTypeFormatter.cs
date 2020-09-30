@@ -83,9 +83,19 @@ namespace Unity.MemoryProfilerForExtension.Editor
     }
     internal class IntPtrTypeDisplay : IObjectDataTypeFormatter
     {
+        const string k_InvalidIntPtr = "Invalid IntPtr";
         bool IObjectDataTypeFormatter.Expandable() { return false; }
         string IObjectDataTypeFormatter.GetTypeName() { return "System.IntPtr"; }
-        string IObjectDataTypeFormatter.Format(CachedSnapshot snapshot, ObjectData od, IDataFormatter formatter) { return formatter.Format(od.managedObjectData.ReadPointer()); }
+        string IObjectDataTypeFormatter.Format(CachedSnapshot snapshot, ObjectData od, IDataFormatter formatter)
+        {
+            ulong ptr;
+            if (od.managedObjectData.TryReadPointer(out ptr) != BytesAndOffset.PtrReadError.Success)
+            {
+                return k_InvalidIntPtr;  
+            }
+
+            return formatter.Format(ptr);
+        }
     }
     internal class ByteTypeDisplay : IObjectDataTypeFormatter
     {

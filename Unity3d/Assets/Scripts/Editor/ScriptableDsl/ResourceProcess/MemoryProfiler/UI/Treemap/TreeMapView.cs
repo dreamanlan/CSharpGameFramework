@@ -44,7 +44,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
 
         public Item GetItemByObjectUID(int objectUID)
         {
-            return _items.Find(x => x._metric.GetObjectUID() == objectUID);
+            return _items.Find(x => x.Metric.GetObjectUID() == objectUID);
         }
 
         public Group FindGroup(string name)
@@ -69,9 +69,11 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
 
             m_ZoomArea.BeginViewGUI();
             GUI.BeginGroup(r);
+            var oldMatrix = Handles.matrix;
             Handles.matrix = m_ZoomArea.worldToViewMatrix;// _ZoomArea.drawingToViewMatrix;
             HandleMouseClick();
             RenderTreemap();
+            Handles.matrix = oldMatrix;
             GUI.EndGroup();
 
             m_ZoomArea.EndViewGUI();
@@ -88,10 +90,10 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
             {
                 if (Event.current.mousePosition.x < m_ZoomArea.m_ViewSpace.width && Event.current.mousePosition.y < m_ZoomArea.m_ViewSpace.height)
                 {
-                    Group group = _groups.Values.FirstOrDefault(i => i._position.Contains(mouseTreemapPosition));
-                    Item item = _items.FirstOrDefault(i => i._position.Contains(mouseTreemapPosition));
+                    Group group = _groups.Values.FirstOrDefault(i => i.Position.Contains(mouseTreemapPosition));
+                    Item item = _items.FirstOrDefault(i => i.Position.Contains(mouseTreemapPosition));
 
-                    if (item != null && _selectedGroup == item._group)
+                    if (item != null && _selectedGroup == item.Group)
                     {
                         switch (Event.current.type)
                         {
@@ -140,9 +142,9 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
             }
         }
 
-        public void SelectThing(IMetricValue thing)
+        public void SelectThing(ObjectMetric thing)
         {
-            var item = _items.First(i => i._metric == thing);
+            var item = _items.First(i => i.Metric.Equals(thing));
             SelectItem(item);
         }
 
@@ -153,11 +155,11 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
             UpdateItemRectOfGroup(_selectedGroup);
             RefreshGroupMesh(_selectedGroup);
 
-            if (group._items.Count == 1)
+            if (group.Items.Count == 1)
             {
                 if (OnClickItem != null)
                 {
-                    OnClickItem(group._items[0]);
+                    OnClickItem(group.Items[0]);
                 }
             }
             RefreshSelectionMesh();
@@ -166,9 +168,9 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
         public void SelectItem(Item item)
         {
             _selectedItem = item;
-            if (_selectedGroup != item._group)
+            if (_selectedGroup != item.Group)
             {
-                _selectedGroup = item._group;
+                _selectedGroup = item.Group;
                 UpdateItemRectOfGroup(_selectedGroup);
                 RefreshGroupMesh(_selectedGroup);
             }
@@ -187,9 +189,9 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
         Item itemToFocus;
         public void FocusOnItem(Item item, bool select)
         {
-            if (_selectedGroup != item._group)
+            if (_selectedGroup != item.Group)
             {
-                UpdateItemRectOfGroup(item._group);
+                UpdateItemRectOfGroup(item.Group);
             }
             if (select)
             {
@@ -201,7 +203,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
             }
             //float minRatioWanted = 0.2f;
             //float maxRatioWanted = 0.5f;
-            var r = item.GetPosition();
+            var r = item.Position;
             var rWorld = m_ZoomArea.m_WorldSpace;
             var xRatio = rWorld.width / r.width;
             var yRatio = rWorld.height / r.height;
@@ -238,32 +240,32 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
             _groups.Clear();
         }
 
-        public bool HasMetric(IMetricValue metric)
+        public bool HasMetric(ObjectMetric metric)
         {
-            var i = _items.FindIndex(x => x._metric == metric);
+            var i = _items.FindIndex(x => x.Metric.Equals(metric));
             return i >= 0;
         }
 
-        public void AddMetric(IMetricValue metric)
+        public void AddMetric(ObjectMetric metric)
         {
-            var groupName = metric.GetGroupName();
+            var groupName = metric.GetTypeName();
             if (!_groups.ContainsKey(groupName))
             {
                 Group newGroup = new Group();
-                newGroup._name = groupName;
-                newGroup._items = new List<Item>();
+                newGroup.Name = groupName;
+                newGroup.Items = new List<Item>();
                 _groups.Add(groupName, newGroup);
             }
             Item item = new Item(metric, _groups[groupName]);
             _items.Add(item);
-            _groups[groupName]._items.Add(item);
+            _groups[groupName].Items.Add(item);
         }
 
         public void UpdateMetric()
         {
             foreach (Group group in _groups.Values)
             {
-                group._items.Sort();
+                group.Items.Sort();
             }
 
             _items.Sort();
@@ -279,14 +281,14 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
             float[] groupTotalValues = new float[groups.Count];
             for (int i = 0; i < groups.Count; i++)
             {
-                groupTotalValues[i] = groups.ElementAt(i).totalValue;
+                groupTotalValues[i] = groups.ElementAt(i).TotalValue;
             }
 
             Rect[] groupRects = Utility.GetTreemapRects(groupTotalValues, space);
             for (int groupIndex = 0; groupIndex < groupRects.Length; groupIndex++)
             {
                 Group group = groups[groupIndex];
-                group._position = groupRects[groupIndex];
+                group.Position = groupRects[groupIndex];
             }
 
             RefreshMesh();
@@ -294,10 +296,10 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
 
         private void UpdateItemRectOfGroup(Group g)
         {
-            Rect[] rects = Utility.GetTreemapRects(g.memorySizes, g._position);
+            Rect[] rects = Utility.GetTreemapRects(g.MemorySizes, g.Position);
             for (int i = 0; i < rects.Length; i++)
             {
-                g._items[i]._position = rects[i];
+                g.Items[i].Position = rects[i];
             }
         }
 
@@ -317,11 +319,11 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
             MeshBuilder mb = new MeshBuilder();
             if (_selectedItem != null)
             {
-                mb.Add(0, new MeshBuilder.Rectangle(_selectedItem._position, Color.white), false);
+                mb.Add(0, new MeshBuilder.Rectangle(_selectedItem.Position, Color.white), false);
             }
             else if (_selectedGroup != null)
             {
-                mb.Add(0, new MeshBuilder.Rectangle(_selectedGroup._position, Color.white * 0.8f), false);
+                mb.Add(0, new MeshBuilder.Rectangle(_selectedGroup.Position, Color.white * 0.8f), false);
             }
             m_SelectionMesh = mb.CreateMesh();
         }
@@ -332,10 +334,10 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
 
             MeshBuilder mb = new MeshBuilder();
 
-            foreach (Item item in group._items)
+            foreach (Item item in group.Items)
             {
-                Rect r = item.GetPosition();
-                var color = item.GetColor();
+                Rect r = item.Position;
+                var color = item.Color;
                 mb.Add(0, new MeshBuilder.Rectangle(r, color, color * 0.75f, color * 0.5f, color * 0.75f), true);
             }
 
@@ -350,8 +352,8 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
 
             foreach (Group group in _groups.Values)
             {
-                Rect r = group.GetPosition();
-                var color = group.GetColor();
+                Rect r = group.Position;
+                var color = group.Color;
                 mb.Add(0, new MeshBuilder.Rectangle(r, color, color * 0.75f, color * 0.5f, color * 0.75f), true);
             }
 
@@ -380,7 +382,7 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
 
             foreach (var group in _groups.Values)
             {
-                if (Utility.IsInside(group._position, m_ZoomArea.ViewInWorldSpace)) //_ZoomArea.shownArea))
+                if (Utility.IsInside(group.Position, m_ZoomArea.ViewInWorldSpace)) //_ZoomArea.shownArea))
                 {
                     if (_selectedGroup == group)
                     {
@@ -401,41 +403,33 @@ namespace Unity.MemoryProfilerForExtension.Editor.UI.Treemap
 
         private void RenderGroupLabel(Group group, ref Matrix4x4 mat)
         {
-            Vector3 p1 = mat.MultiplyPoint(new Vector3(group._position.xMin, group._position.yMin));
-            Vector3 p2 = mat.MultiplyPoint(new Vector3(group._position.xMax, group._position.yMax));
+            Vector3 p1 = mat.MultiplyPoint(new Vector3(group.Position.xMin, group.Position.yMin));
+            Vector3 p2 = mat.MultiplyPoint(new Vector3(group.Position.xMax, group.Position.yMax));
 
             if (p2.x - p1.x > k_MinWidthForLables && p1.y - p2.y > k_MinHeightForLables)
             {
                 Rect rect = new Rect(p1.x, p2.y, p2.x - p1.x, p1.y - p2.y);
-                GUI.Label(rect, group.GetLabel());
+                GUI.Label(rect, group.Label);
             }
         }
 
         private void RenderGroupItems(Group group, ref Matrix4x4 mat)
         {
             var viewInWorldSpace = m_ZoomArea.ViewInWorldSpace;
-            foreach (var item in group._items)
+            foreach (var item in group.Items)
             {
-                if (Utility.IsInside(item._position, viewInWorldSpace))  //_ZoomArea.shownArea))
+                if (Utility.IsInside(item.Position, viewInWorldSpace))  //_ZoomArea.shownArea))
                 {
-                    Vector3 p1 = mat.MultiplyPoint(new Vector3(item._position.xMin, item._position.yMin));
-                    Vector3 p2 = mat.MultiplyPoint(new Vector3(item._position.xMax, item._position.yMax));
+                    Vector3 p1 = mat.MultiplyPoint(new Vector3(item.Position.xMin, item.Position.yMin));
+                    Vector3 p2 = mat.MultiplyPoint(new Vector3(item.Position.xMax, item.Position.yMax));
 
                     if (p2.x - p1.x > k_MinWidthForLables && p1.y - p2.y > k_MinHeightForLables)
                     {
                         Rect rect = new Rect(p1.x, p2.y, p2.x - p1.x, p1.y - p2.y);
-                        //string row1 = item._group._name;
-                        string row1 = item.name;
-                        string row2 = EditorUtility.FormatBytes(item.value);
-                        GUI.Label(rect, row1 + "\n" + row2);
+                        GUI.Label(rect, item.Label);
                     }
                 }
             }
-        }
-
-        public string GetGroupName(IMetricValue thing)
-        {
-            return "MissingGroupName";
         }
     }
 }

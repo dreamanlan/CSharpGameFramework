@@ -331,11 +331,13 @@ namespace Unity.MemoryProfilerForExtension.Editor.Database.Operation
     {
         public Schema m_SchemaBefore;
         public Schema m_SchemaAfter;
-        public DiffSchema(Schema schemaBefore, Schema schemaAfter)
+        public DiffSchema(Schema schemaBefore, Schema schemaAfter, Action onTableCompute = null)
         {
             name = "Diff";
             m_SchemaBefore = schemaBefore;
             m_SchemaAfter = schemaAfter;
+            if (onTableCompute != null)
+                onTableCompute.Invoke();
             ComputeTables();
         }
 

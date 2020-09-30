@@ -7,8 +7,7 @@ using UnityEngine.UIElements;
 #else
 using UnityEngine.Experimental.UIElements;
 #endif
-using UnityEditor.Profiling.Memory.Experimental;
-using UnityEngine.Profiling.Memory.Experimental;
+using Unity.MemoryProfilerForExtension.Editor.Format;
 
 namespace Unity.MemoryProfilerForExtension.Editor
 {
@@ -171,9 +170,7 @@ namespace Unity.MemoryProfilerForExtension.Editor
 
                 m_GuiData.date = new GUIContent(m_GuiData.UtcDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", System.Globalization.CultureInfo.InvariantCulture));
 #if !UNITY_2020_1_OR_NEWER
-#pragma warning disable 618
                 m_GuiData.texture = snapshotMetadata.screenshot;
-#pragma warning restore 618
 #endif
 #if UNITY_2019_3_OR_NEWER
                 RefreshScreenshot();
@@ -191,10 +188,9 @@ namespace Unity.MemoryProfilerForExtension.Editor
             return success;
         }
 
-        public PackedMemorySnapshot LoadSnapshot()
+        public QueriedMemorySnapshot LoadSnapshot()
         {
-            UnityEngine.Assertions.Assert.IsTrue(FileInfo.Exists);
-            return PackedMemorySnapshot.Load(FileInfo.FullName);
+            return QueriedMemorySnapshot.Load(FileInfo.FullName);
         }
 
         internal void RefreshScreenshot()

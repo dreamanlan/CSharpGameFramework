@@ -29,7 +29,7 @@
         /// <summary>
         /// The time to wait in seconds.
         /// </summary>
-        public double WaitTime { get; }
+        public float WaitTime { get; }
 
         /// <summary>
         /// Creates a instruction object for yielding inside a generator function.

@@ -13,10 +13,10 @@ input
     };
     string("fields1", "user,product_version,crash_id,elapsed_time,crash_time,issue_id,is_root,ram,rom,is_new_issue");
     string("fields2", "product_version,user,issue_id,retrace_status,exception_type,process_name,crash_time,crash_id,type,device_id,elapsed_time,is_new_issue,ram,rom,cpu_name,is_root,cpu_type");
-    stringlist("contains1", "");
-    stringlist("contains2", "");
-    stringlist("notcontains1", "");
-    stringlist("notcontains2", "");
+    stringlist("contains", "");
+    stringlist("containsany", "");
+    stringlist("notcontains", "");
+    stringlist("notcontainsany", "");
     float("pathwidth",160){range(20,4096);};
     feature("source", "table");
     feature("menu", "9.Table/find bugly table");
@@ -32,7 +32,7 @@ filter
     };
 	if(isnullorempty($fields)){
 		var(0) = row.GetLine();
-    	if(stringcontainsany(var(0),contains1) && stringcontainsany(var(0),contains2) && stringnotcontainsany(var(0),notcontains1) && stringnotcontainsany(var(0), notcontains2)){
+    	if(stringcontains(var(0),contains) && stringcontainsany(var(0),containsany) && stringnotcontains(var(0),notcontains) && stringnotcontainsany(var(0), notcontainsany)){
     		info = var(0);
     	    value = 0;
     	    1;
@@ -100,7 +100,7 @@ filter
     	    var(0) = rowtoline(row, 0, var(2))+","+$device_id+","+$hardware+","+$uos+","+$cpu_name+","+$exception_type+",,,,,,,,,"+$f_kv+","+$f_stack+","+$f_exception;
     	};
 		
-    	if(stringcontainsany(var(0),contains1) && stringcontainsany(var(0),contains2) && stringnotcontainsany(var(0),notcontains1) && stringnotcontainsany(var(0), notcontains2)){
+    	if(stringcontains(var(0),contains) && stringcontainsany(var(0),containsany) && stringnotcontains(var(0),notcontains) && stringnotcontainsany(var(0), notcontainsany)){
     		info = var(0);
     	    value = 0;
     	    assetpath = var(8);
