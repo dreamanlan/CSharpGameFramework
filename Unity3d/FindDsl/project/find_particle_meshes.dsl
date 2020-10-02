@@ -7,7 +7,7 @@ input("*.prefab")
     stringlist("notfilter", "");
     stringlist("meshfilter", "");
     stringlist("meshnotfilter", "");
-	float("pathwidth",240){range(20,4096);};
+    float("pathwidth",240){range(20,4096);};
     feature("source", "project");
     feature("menu", "1.Project Resources/Find Particle Meshes");
     feature("description", "just so so");

@@ -515,6 +515,13 @@ internal static class ResourceEditUtility
         calc.Register("unescapeurl", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.UnEscapeUrlExp>());
         calc.Register("parseurlargs", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ParseUrlArgsExp>());
         calc.Register("parsebuglyinfo", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ParseBuglyInfoExp>());
+        calc.Register("inthashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.IntHashContainsExp>());
+        calc.Register("uinthashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.UintHashContainsExp>());
+        calc.Register("longhashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LongHashContainsExp>());
+        calc.Register("ulonghashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.UlongHashContainsExp>());
+        calc.Register("floathashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FloatHashContainsExp>());
+        calc.Register("doublehashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.DoubleHashContainsExp>());
+        calc.Register("stringhashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.StringHashContainsExp>());
     }
     internal static object Filter(ItemInfo item, Dictionary<string, object> addVars, List<ItemInfo> results, DslExpression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
@@ -5529,6 +5536,117 @@ namespace ResourceEditApi
             return r;
         }
         private static string[] s_BuglySeperators = new string[] { "\n" };
+    }
+    internal class IntHashContainsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var hash = operands[0] as HashSet<int>;
+                var vobj = operands[1];
+                if (null != hash && null != vobj) {
+                    var v = (int)Convert.ChangeType(vobj, typeof(int));
+                    r = hash.Count == 0 || hash.Contains(v);
+                }
+            }
+            return r;
+        }
+    }
+    internal class UintHashContainsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var hash = operands[0] as HashSet<uint>;
+                var vobj = operands[1];
+                if (null != hash && null != vobj) {
+                    var v = (uint)Convert.ChangeType(vobj, typeof(uint));
+                    r = hash.Count == 0 || hash.Contains(v);
+                }
+            }
+            return r;
+        }
+    }
+    internal class LongHashContainsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var hash = operands[0] as HashSet<long>;
+                var vobj = operands[1];
+                if (null != hash && null != vobj) {
+                    var v = (long)Convert.ChangeType(vobj, typeof(long));
+                    r = hash.Count == 0 || hash.Contains(v);
+                }
+            }
+            return r;
+        }
+    }
+    internal class UlongHashContainsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var hash = operands[0] as HashSet<ulong>;
+                var vobj = operands[1];
+                if (null != hash && null != vobj) {
+                    var v = (ulong)Convert.ChangeType(vobj, typeof(ulong));
+                    r = hash.Count == 0 || hash.Contains(v);
+                }
+            }
+            return r;
+        }
+    }
+    internal class FloatHashContainsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var hash = operands[0] as HashSet<float>;
+                var vobj = operands[1];
+                if (null != hash && null != vobj) {
+                    var v = (float)Convert.ChangeType(vobj, typeof(float));
+                    r = hash.Count == 0 || hash.Contains(v);
+                }
+            }
+            return r;
+        }
+    }
+    internal class DoubleHashContainsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var hash = operands[0] as HashSet<double>;
+                var vobj = operands[1];
+                if (null != hash && null != vobj) {
+                    var v = (double)Convert.ChangeType(vobj, typeof(double));
+                    r = hash.Count == 0 || hash.Contains(v);
+                }
+            }
+            return r;
+        }
+    }
+    internal class StringHashContainsExp : DslExpression.SimpleExpressionBase
+    {
+        protected override object OnCalc(IList<object> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var hash = operands[0] as HashSet<string>;
+                var vstr = operands[1] as string;
+                if (null != hash && null != vstr) {
+                    r = hash.Count == 0 || hash.Contains(vstr);
+                }
+            }
+            return r;
+        }
     }
 }
 #endregion

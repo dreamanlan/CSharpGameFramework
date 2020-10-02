@@ -533,6 +533,88 @@ internal sealed class ResourceEditWindow : EditorWindow
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
                             val.Value = v;
                         }
+                        else if (val.Type == typeof(HashSet<int>)) {
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var hash = new HashSet<int>();
+                            foreach (var str in v) {
+                                int iv;
+                                int.TryParse(str, out iv);
+                                if (!hash.Contains(iv)) {
+                                    hash.Add(iv);
+                                }
+                            }
+                            val.Value = hash;
+                        }
+                        else if (val.Type == typeof(HashSet<uint>)) {
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var hash = new HashSet<uint>();
+                            foreach (var str in v) {
+                                uint iv;
+                                uint.TryParse(str, out iv);
+                                if (!hash.Contains(iv)) {
+                                    hash.Add(iv);
+                                }
+                            }
+                            val.Value = hash;
+                        }
+                        else if (val.Type == typeof(HashSet<long>)) {
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var hash = new HashSet<long>();
+                            foreach (var str in v) {
+                                long iv;
+                                long.TryParse(str, out iv);
+                                if (!hash.Contains(iv)) {
+                                    hash.Add(iv);
+                                }
+                            }
+                            val.Value = hash;
+                        }
+                        else if (val.Type == typeof(HashSet<ulong>)) {
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var hash = new HashSet<ulong>();
+                            foreach (var str in v) {
+                                ulong iv;
+                                ulong.TryParse(str, out iv);
+                                if (!hash.Contains(iv)) {
+                                    hash.Add(iv);
+                                }
+                            }
+                            val.Value = hash;
+                        }
+                        else if (val.Type == typeof(HashSet<float>)) {
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var hash = new HashSet<float>();
+                            foreach (var str in v) {
+                                float fv;
+                                float.TryParse(str, out fv);
+                                if (!hash.Contains(fv)) {
+                                    hash.Add(fv);
+                                }
+                            }
+                            val.Value = hash;
+                        }
+                        else if (val.Type == typeof(HashSet<double>)) {
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var hash = new HashSet<double>();
+                            foreach (var str in v) {
+                                double fv;
+                                double.TryParse(str, out fv);
+                                if (!hash.Contains(fv)) {
+                                    hash.Add(fv);
+                                }
+                            }
+                            val.Value = hash;
+                        }
+                        else if (val.Type == typeof(HashSet<string>)) {
+                            var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+                            var hash = new HashSet<string>();
+                            foreach (var str in v) {
+                                if (!hash.Contains(str)) {
+                                    hash.Add(str);
+                                }
+                            }
+                            val.Value = hash;
+                        }
                         else if (val.Type == typeof(ResourceEditUtility.DataTable)) {
                             val.Value = pair.Value;
                         }
@@ -2806,6 +2888,102 @@ internal sealed class ResourceProcessor
             //stringlist(name, val);
             var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
             m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<string>), Value = v, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "inthash") {
+            //inthash(name, val);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var hash = new HashSet<int>();
+            foreach (var str in v) {
+                int iv;
+                int.TryParse(str, out iv);
+                if (!hash.Contains(iv)) {
+                    hash.Add(iv);
+                }
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<int>), Value = hash, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "uinthash") {
+            //uinthash(name, val);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var hash = new HashSet<uint>();
+            foreach (var str in v) {
+                uint iv;
+                uint.TryParse(str, out iv);
+                if (!hash.Contains(iv)) {
+                    hash.Add(iv);
+                }
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<uint>), Value = hash, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "longhash") {
+            //longhash(name, val);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var hash = new HashSet<long>();
+            foreach (var str in v) {
+                long iv;
+                long.TryParse(str, out iv);
+                if (!hash.Contains(iv)) {
+                    hash.Add(iv);
+                }
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<long>), Value = hash, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "ulonghash") {
+            //ulonghash(name, val);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var hash = new HashSet<ulong>();
+            foreach (var str in v) {
+                ulong iv;
+                ulong.TryParse(str, out iv);
+                if (!hash.Contains(iv)) {
+                    hash.Add(iv);
+                }
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<ulong>), Value = hash, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "floathash") {
+            //floathash(name, val);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var hash = new HashSet<float>();
+            foreach (var str in v) {
+                float fv;
+                float.TryParse(str, out fv);
+                if (!hash.Contains(fv)) {
+                    hash.Add(fv);
+                }
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<float>), Value = hash, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "doublehash") {
+            //doublehash(name, val);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var hash = new HashSet<double>();
+            foreach (var str in v) {
+                double fv;
+                double.TryParse(str, out fv);
+                if (!hash.Contains(fv)) {
+                    hash.Add(fv);
+                }
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<double>), Value = hash, StringValue = val };
+            m_ParamNames.Add(key);
+        }
+        else if (id == "stringhash") {
+            //stringhash(name, val);
+            var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
+            var hash = new HashSet<string>();
+            foreach (var str in v) {
+                if (!hash.Contains(str)) {
+                    hash.Add(str);
+                }
+            }
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<string>), Value = hash, StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "bool") {
