@@ -45,7 +45,7 @@ namespace StorySystem.CommonCommands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             var localInfos = handler.LocalInfoStack.Peek();
             var conditions = localInfos.GetLocalInfo(m_LocalInfoIndex) as List<IStoryValue<int>>;
@@ -53,7 +53,7 @@ namespace StorySystem.CommonCommands
                 conditions[i].Evaluate(instance, handler, iterator, args);
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             var runtime = handler.PeekRuntime();
             if (runtime.CompositeReentry)
@@ -90,7 +90,7 @@ namespace StorySystem.CommonCommands
             runtime = handler.PeekRuntime();
             runtime.Tick(instance, handler, delta);
             if (runtime.CommandQueue.Count == 0) {
-                handler.PopRuntime();
+                handler.PopRuntime(instance);
                 ret = false;
             } else {
                 //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）

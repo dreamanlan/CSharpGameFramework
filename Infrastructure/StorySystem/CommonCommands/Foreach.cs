@@ -28,7 +28,7 @@ namespace StorySystem.CommonCommands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             var localInfos = handler.LocalInfoStack.Peek();
             var localInfo = localInfos.GetLocalInfo(m_LocalInfoIndex) as LocalInfo;
@@ -37,11 +37,11 @@ namespace StorySystem.CommonCommands
                     localInfo.List[i].Evaluate(instance, handler, iterator, args);
                 }
                 for (int i = 0; i < localInfo.List.Count; i++) {
-                    localInfo.Iterators.Enqueue(localInfo.List[i].Value);
+                    localInfo.Iterators.Enqueue(localInfo.List[i].Value.Get<object>());
                 }
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             var runtime = handler.PeekRuntime();
             if (runtime.TryBreakLoop()) {
@@ -64,13 +64,13 @@ namespace StorySystem.CommonCommands
                 if (localInfo.Iterators.Count > 0) {
                     Prepare(handler);
                     runtime = handler.PeekRuntime();
-                    runtime.Iterator = localInfo.Iterators.Dequeue();
+                    runtime.Iterator = BoxedValue.From(localInfo.Iterators.Dequeue());
                     runtime.Arguments = args;
                     ret = true;
                     //没有wait之类命令直接执行
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
-                        handler.PopRuntime();
+                        handler.PopRuntime(instance);
                         if (runtime.TryBreakLoop()) {
                             ret = false;
                             break;
@@ -156,7 +156,7 @@ namespace StorySystem.CommonCommands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             var localInfos = handler.LocalInfoStack.Peek();
             var localInfo = localInfos.GetLocalInfo(m_LocalInfoIndex) as LocalInfo;
@@ -167,7 +167,7 @@ namespace StorySystem.CommonCommands
                 }
             }
         }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             var runtime = handler.PeekRuntime();
             if (runtime.TryBreakLoop()) {
@@ -187,13 +187,13 @@ namespace StorySystem.CommonCommands
                 if (localInfo.Iterators.Count > 0) {
                     Prepare(handler);
                     runtime = handler.PeekRuntime();
-                    runtime.Iterator = localInfo.Iterators.Dequeue();
+                    runtime.Iterator = BoxedValue.From(localInfo.Iterators.Dequeue());
                     runtime.Arguments = args;
                     ret = true;
                     //没有wait之类命令直接执行
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
-                        handler.PopRuntime();
+                        handler.PopRuntime(instance);
                         if (runtime.TryBreakLoop()) {
                             ret = false;
                             break;
@@ -276,13 +276,13 @@ namespace StorySystem.CommonCommands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             var localInfos = handler.LocalInfoStack.Peek();
             var localInfo = localInfos.GetLocalInfo(m_LocalInfoIndex) as LocalInfo;
             localInfo.Count.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             var runtime = handler.PeekRuntime();
             if (runtime.TryBreakLoop()) {
@@ -309,7 +309,7 @@ namespace StorySystem.CommonCommands
                     //没有wait之类命令直接执行
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
-                        handler.PopRuntime();
+                        handler.PopRuntime(instance);
                         if (runtime.TryBreakLoop()) {
                             ret = false;
                             break;

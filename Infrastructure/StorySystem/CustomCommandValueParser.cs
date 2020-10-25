@@ -29,14 +29,17 @@ namespace StorySystem
                         Helper.LogInnerException(ex, sb);
                         LogSystem.Error("{0}", sb.ToString());
                     }
-                } else {
+                }
+                else {
                     try {
                         if (dataFile.Load(file, LogSystem.Log)) {
                             return dataFile;
-                        } else {
+                        }
+                        else {
                             LogSystem.Error("LoadStory file:{0} failed", file);
                         }
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex) {
                         var sb = new System.Text.StringBuilder();
                         sb.AppendFormat("[LoadStory] LoadStory file:{0} Exception:{1}\n{2}", file, ex.Message, ex.StackTrace);
                         sb.AppendLine();
@@ -62,16 +65,19 @@ namespace StorySystem
                     Helper.LogInnerException(ex, sb);
                     LogSystem.Error("{0}", sb.ToString());
                 }
-            } else {
+            }
+            else {
                 string text = Converter.FileContent2Utf8String(bytes);
                 try {
                     Dsl.DslFile dataFile = new Dsl.DslFile();
                     if (dataFile.LoadFromString(text, file, LogSystem.Log)) {
                         return dataFile;
-                    } else {
+                    }
+                    else {
                         LogSystem.Error("LoadStoryText file:{0} failed", file);
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     var sb = new System.Text.StringBuilder();
                     sb.AppendFormat("[LoadStory] LoadStoryText file:{0} Exception:{1}\n{2}", file, ex.Message, ex.StackTrace);
                     sb.AppendLine();
@@ -110,7 +116,7 @@ namespace StorySystem
             }
         }
         public static void FirstParse(Dsl.ISyntaxComponent dslInfo)
-        {            
+        {
             string id = dslInfo.GetId();
             if (id == "command") {
                 StorySystem.CommonCommands.CompositeCommand cmd = new CommonCommands.CompositeCommand();
@@ -159,7 +165,8 @@ namespace StorySystem
                 }
                 //注册
                 StoryCommandManager.Instance.RegisterCommandFactory(cmd.Name, new CommonCommands.CompositeCommandFactory(cmd), true);
-            } else if (id == "value") {
+            }
+            else if (id == "value") {
                 StorySystem.CommonValues.CompositeValue val = new CommonValues.CompositeValue();
                 val.InitSharedData();
                 var first = dslInfo as Dsl.FunctionData;
@@ -262,10 +269,12 @@ namespace StorySystem
                     else {
                         LogSystem.Error("Can't find command {0}'s body", name);
                     }
-                } else {
+                }
+                else {
                     LogSystem.Error("Can't find command {0}'s factory", name);
                 }
-            } else if (id == "value") {
+            }
+            else if (id == "value") {
                 string name = string.Empty;
                 var first = dslInfo as Dsl.FunctionData;
                 var statement = dslInfo as Dsl.StatementData;
@@ -312,10 +321,11 @@ namespace StorySystem
                     else {
                         LogSystem.Error("Can't find value {0}'s body", name);
                     }
-                } else {
+                }
+                else {
                     LogSystem.Error("Can't find value {0}'s factory", name);
                 }
             }
-        }       
+        }
     }
 }

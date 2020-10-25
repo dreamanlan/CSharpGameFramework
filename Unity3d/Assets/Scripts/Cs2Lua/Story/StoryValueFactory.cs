@@ -79,7 +79,7 @@ internal class NativeStoryValue : IStoryValue
         }
         return newObj;
     }    
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
     {
         if (null != m_Plugin) {
             m_Plugin.Evaluate(instance, handler, iterator, args);
@@ -92,7 +92,7 @@ internal class NativeStoryValue : IStoryValue
             return m_Proxy.HaveValue;
         }
     }
-    public object Value
+    public BoxedValue Value
     {
         get
         {
@@ -168,7 +168,7 @@ internal class LuaStoryValue : IStoryValue
         }
         return newObj;
     }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
     {
         if (null != m_Plugin) {
             m_Plugin.Evaluate(instance, handler, iterator, args);
@@ -181,7 +181,7 @@ internal class LuaStoryValue : IStoryValue
             return m_Proxy.HaveValue;
         }
     }
-    public object Value
+    public BoxedValue Value
     {
         get
         {

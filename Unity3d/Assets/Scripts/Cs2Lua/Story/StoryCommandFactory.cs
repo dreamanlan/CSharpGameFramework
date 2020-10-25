@@ -58,7 +58,7 @@ internal class NativeStoryCommand : AbstractStoryCommand
             m_Plugin.ResetState();
         }
     }
-    protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+    protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
     {
         if (null != m_Plugin) {
             m_Plugin.Evaluate(instance, handler, iterator, args);
@@ -122,7 +122,7 @@ internal class LuaStoryCommand : AbstractStoryCommand
             m_Plugin.ResetState();
         }
     }
-    protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+    protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
     {
         if (null != m_Plugin) {
             m_Plugin.Evaluate(instance, handler, iterator, args);
@@ -135,7 +135,7 @@ internal class LuaStoryCommand : AbstractStoryCommand
         }
         return false;
     }
-    protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+    protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
     {
         if (null != m_Plugin) {
             return m_Plugin.ExecCommandWithArgs(instance, handler, delta, iterator, args);

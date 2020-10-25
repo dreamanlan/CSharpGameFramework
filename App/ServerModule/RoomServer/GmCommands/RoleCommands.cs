@@ -13,9 +13,9 @@ namespace GameFramework.GmCommands
   {
     protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int, float, float> _params, long delta)
     {
-      object us;
+      BoxedValue us;
       if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
-        EntityInfo user = us as EntityInfo;
+        EntityInfo user = us.ObjectVal as EntityInfo;
         if (null != user) {
           int objId = _params.Param1Value;
           float x = _params.Param2Value;
@@ -45,9 +45,9 @@ namespace GameFramework.GmCommands
   {
     protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)
     {
-      object us;
+      BoxedValue us;
       if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
-        EntityInfo user = us as EntityInfo;
+        EntityInfo user = us.ObjectVal as EntityInfo;
         if (null != user) {
           int lvl = _params.Param1Value;
           user.Level = lvl;
@@ -60,9 +60,9 @@ namespace GameFramework.GmCommands
   {
     protected override bool ExecCommand(StoryInstance instance, StoryValueParam _params, long delta)
     {
-      object us;
+      BoxedValue us;
       if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
-        EntityInfo user = us as EntityInfo;
+        EntityInfo user = us.ObjectVal as EntityInfo;
         if (null != user) {
           user.Hp = user.HpMax;
           user.Energy = user.EnergyMax;
@@ -75,9 +75,9 @@ namespace GameFramework.GmCommands
   {
     protected override bool ExecCommand(StoryInstance instance, StoryValueParam _params, long delta)
     {
-      object us;
+      BoxedValue us;
       if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
-        EntityInfo user = us as EntityInfo;
+        EntityInfo user = us.ObjectVal as EntityInfo;
         if (null != user) {
         }
       }
@@ -88,9 +88,9 @@ namespace GameFramework.GmCommands
   {
     protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)
     {
-      object us;
+      BoxedValue us;
       if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
-        EntityInfo user = us as EntityInfo;
+        EntityInfo user = us.ObjectVal as EntityInfo;
         if (null != user) {
           int itemId = _params.Param1Value;
         }
@@ -102,9 +102,9 @@ namespace GameFramework.GmCommands
   {
     protected override bool ExecCommand(StoryInstance instance, StoryValueParam _params, long delta)
     {
-      object us;
+      BoxedValue us;
       if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
-        EntityInfo user = us as EntityInfo;
+        EntityInfo user = us.ObjectVal as EntityInfo;
         if (null != user) {
           user.GetSkillStateInfo().RemoveAllSkill();
         }
@@ -116,9 +116,9 @@ namespace GameFramework.GmCommands
   {
     protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)
     {
-      object us;
+      BoxedValue us;
       if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
-        EntityInfo user = us as EntityInfo;
+        EntityInfo user = us.ObjectVal as EntityInfo;
         if (null != user) {
           int skillId = _params.Param1Value;
           SkillInfo skillInfo = new SkillInfo(skillId);
@@ -132,9 +132,9 @@ namespace GameFramework.GmCommands
   {
     protected override bool ExecCommand(StoryInstance instance, StoryValueParam _params, long delta)
     {
-      object us;
+      BoxedValue us;
       if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
-        EntityInfo user = us as EntityInfo;
+        EntityInfo user = us.ObjectVal as EntityInfo;
         if (null != user) {
           user.GetSkillStateInfo().RemoveAllImpact();
         }
@@ -146,9 +146,9 @@ namespace GameFramework.GmCommands
   {
     protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int> _params, long delta)
     {
-      object us;
+      BoxedValue us;
       if (instance.GlobalVariables.TryGetValue("EntityInfo", out us)) {
-        EntityInfo user = us as EntityInfo;
+        EntityInfo user = us.ObjectVal as EntityInfo;
         if (null != user) {
           Scene scene = user.SceneContext.CustomData as Scene;
           if (null != scene) {

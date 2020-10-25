@@ -14,7 +14,7 @@ namespace GameFramework.Story
             StoryInstance instance = GfxStorySystem.Instance.GetStory("main", WindowName);
             if (null != instance) {
                 instance.LocalVariables.Clear();
-                instance.LocalVariables.Add("@window", gameObject);
+                instance.LocalVariables.Add("@window", BoxedValue.From((object)gameObject));
                 GfxStorySystem.Instance.StartStory("main", WindowName);
             }
         }

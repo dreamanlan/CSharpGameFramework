@@ -21,9 +21,9 @@ public class AiSelectTarget : ISimpleStoryValuePlugin
     }
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
-        ArrayList args = _params.Values;
-        int objId = (int)args[0];
-        float dist = (float)System.Convert.ChangeType(args[1], typeof(float));
+        var args = _params.Values;
+        int objId = args[0].Get<int>();
+        float dist = args[1].Get<float>();
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc) {
             EntityInfo entity;
@@ -38,7 +38,7 @@ public class AiSelectTarget : ISimpleStoryValuePlugin
                     npc.GetAiStateInfo().Target = entity.GetId();
                 }
             }
-            m_Proxy.Value = entity;
+            m_Proxy.Value = BoxedValue.From(entity);
         }
     }
 

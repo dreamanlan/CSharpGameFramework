@@ -92,7 +92,7 @@ internal class NativeSimpleStoryCommand : IStoryCommand
         m_LastExecResult = false;
         ResetState();
     }
-    public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+    public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
     {
         if (!m_LastExecResult) {
             //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
@@ -101,7 +101,7 @@ internal class NativeSimpleStoryCommand : IStoryCommand
         m_LastExecResult = ExecCommand(instance, handler, m_Params, delta);
         return m_LastExecResult;
     }
-    public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+    public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
     {
         return false;
     }
@@ -194,7 +194,7 @@ internal class LuaSimpleStoryCommand : IStoryCommand
         m_LastExecResult = false;
         ResetState();
     }
-    public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+    public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
     {
         if (!m_LastExecResult) {
             //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
@@ -203,7 +203,7 @@ internal class LuaSimpleStoryCommand : IStoryCommand
         m_LastExecResult = ExecCommand(instance, handler, m_Params, delta);
         return m_LastExecResult;
     }
-    public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+    public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
     {
         return false;
     }

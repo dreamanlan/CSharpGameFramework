@@ -22,10 +22,10 @@ public class AiGohome : ISimpleStoryCommandPlugin
 
     public bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params, long delta)
     {
-        ArrayList args = _params.Values;
+        var args = _params.Values;
         if (!m_ParamReaded) {
             m_ParamReaded = true;
-            m_ObjId = (int)args[0];
+            m_ObjId = args[0];
         }
         EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);
         if (null != npc) {

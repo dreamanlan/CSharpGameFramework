@@ -17,8 +17,8 @@ namespace StorySystem
         IStoryCommand PrologueCommand { get; }   //用DSL实现的支持递归的command，因为允许跨Tick运行，无法在Tick内进行出栈入栈的操作，借助入口命令与出口命令来维持栈环境。
         IStoryCommand EpilogueCommand { get; }   //用DSL实现的支持递归的command，因为允许跨Tick运行，无法在Tick内进行出栈入栈的操作，借助入口命令与出口命令来维持栈环境。
         void Reset();//复位实例，保证实例状态为初始状态。
-        bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args);//执行命令，包括处理参数、变量及命令逻辑
-        bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args);
+        bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args);//执行命令，包括处理参数、变量及命令逻辑
+        bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args);
     }
     public abstract class AbstractStoryCommand : IStoryCommand
     {
@@ -32,9 +32,7 @@ namespace StorySystem
         }
         public string GetId()
         {
-            if (null == m_Config)
-                return string.Empty;
-            return m_Config.GetId();
+            return m_Id;
         }
         public Dsl.FunctionData GetComments()
         {
@@ -48,11 +46,13 @@ namespace StorySystem
         {
             m_Comments = cloner.GetComments();
             m_Config = cloner.GetConfig();
+            m_Id = cloner.GetId();
         }
         public bool Init(Dsl.ISyntaxComponent config)
         {
             m_LoadSuccess = true;
             m_Config = config;
+            m_Id = config.GetId();
             Dsl.FunctionData funcData = config as Dsl.FunctionData;
             if (null != funcData) {
                 Load(funcData);
@@ -82,6 +82,11 @@ namespace StorySystem
                     //keyword
                 }
             }
+            if (GameFramework.GlobalVariables.Instance.IsDevice) {
+                //在设备上不保留配置信息了
+                m_Comments = null;
+                m_Config = null;
+            }
             return m_LoadSuccess;
         }
         public void Reset()
@@ -91,21 +96,24 @@ namespace StorySystem
             }
             ResetState();
         }
-        public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             if (IsCompositeCommand) {
                 try {
                     return ExecCommand(instance, handler, delta, iterator, args);
-                } catch(Exception ex) {
+                }
+                catch (Exception ex) {
                     GameFramework.LogSystem.Error("AbstractStoryCommand Composite Command ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     return false;
                 }
-            } else {
+            }
+            else {
                 if (!m_LastExecResult) {
                     //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
                     try {
                         Evaluate(instance, handler, iterator, args);
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex) {
                         GameFramework.LogSystem.Error("AbstractStoryCommand Evaluate Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                         return false;
                     }
@@ -114,14 +122,15 @@ namespace StorySystem
                     if (instance.IsDebug && ExecDebugger(instance, handler, delta, iterator, args))
                         return true;
                     m_LastExecResult = ExecCommand(instance, handler, delta);
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     GameFramework.LogSystem.Error("AbstractStoryCommand ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     m_LastExecResult = false;
                 }
                 return m_LastExecResult;
             }
         }
-        public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             if (null != instance.OnExecDebugger) {
                 return instance.OnExecDebugger(instance, handler, this, delta, iterator, args);
@@ -144,12 +153,12 @@ namespace StorySystem
         }
         protected abstract IStoryCommand CloneCommand();
         protected virtual void ResetState() { }
-        protected virtual void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args) { }
+        protected virtual void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args) { }
         protected virtual bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             return false;
         }
-        protected virtual bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        protected virtual bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             return false;
         }
@@ -185,6 +194,7 @@ namespace StorySystem
 
         private Dsl.FunctionData m_Comments;
         private Dsl.ISyntaxComponent m_Config;
+        private string m_Id;
         private bool m_LoadSuccess = true;
         private bool m_LastExecResult = false;
         private bool m_IsCompositeCommand = false;

@@ -173,6 +173,7 @@ function(main)
 	  };
 		stringMap.insert("ServerIp",@ip0);
 	};
+	log("serverType:"+serverType);
 			
 	//加载对应类型服务器的ini文件配置
 	handleIni("./config/DiffConf/"+serverType+".ini");
@@ -207,6 +208,7 @@ function(main)
 		log("找不到userserver机器配置！");
 		return 0;
 	};
+	log("serverType:"+serverType);
 	if(serverType=="userserver"){
   	@startServerTime=cfgTable.getValueByKey(@rIndex,"开服时间");
 	  stringMap.insert("StartServerTime",@startServerTime);

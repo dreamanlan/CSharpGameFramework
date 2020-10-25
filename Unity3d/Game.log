@@ -1,113 +1,667 @@
-13-13-52-907:======GameLog Start (2020年7月15日, 13:13:52)======
-13-13-52-952:[Debug]:table config root = E:/OpenSource/CSharpGameFramework/Unity3d/Assets/StreamingAssets/Tables/
-13-13-52-964:[Info]:binary load 4492 parse 2988, file Tables/Public/Level.dat
-13-13-52-968:[Info]:binary load 559 parse 1059, file Tables/Public/LevelMonster.dat
-13-13-52-975:[Info]:binary load 713 parse 1232, file Tables/Public/Const.dat
-13-13-52-978:[Info]:binary load 702 parse 791, file Tables/Public/AttrDefine.dat
-13-13-52-982:[Info]:binary load 515 parse 1598, file Tables/Public/Actor.dat
-13-13-52-985:[Info]:binary load 506 parse 848, file Tables/Public/Skill.dat
-13-13-52-987:[Info]:binary load 362 parse 459, file Tables/Public/SkillResources.dat
-13-13-52-989:[Info]:binary load 353 parse 807, file Tables/Public/SkillData.dat
-13-13-52-993:[Info]:binary load 684 parse 995, file Tables/Public/ImpactData.dat
-13-13-52-996:[Info]:binary load 548 parse 1069, file Tables/Public/SkillEvent.dat
-13-13-53-008:[Info]:binary load 611 parse 526, file Tables/Client/StoryDlg.dat
-13-13-53-013:[Info]:binary load 658 parse 1790, file Tables/Client/StrDictionary.dat
-13-13-53-016:[Info]:binary load 670 parse 718, file Tables/Client/UI.dat
-13-13-53-020:[Info]:binary load 818 parse 1601, file Tables/Public/Formation.dat
-13-13-53-206:[Info]:SendMessage GameRoot LoadScene TableConfig.Level False
-13-13-53-745:[Debug]:StoryInstance.Init message handler num:6 True
-13-13-53-745:[Info]:ParseStory story_main 0
-13-13-53-749:[Debug]:StoryInstance.Init message handler num:4 True
-13-13-53-749:[Info]:ParseStory local_main 0
-13-13-53-764:[Debug]:StoryInstance.Init message handler num:5 True
-13-13-53-764:[Info]:ParseStory skill_main 0
-13-13-53-765:[Debug]:StoryInstance.Init message handler num:1 True
-13-13-53-765:[Info]:ParseStory auto_story 0
-13-13-53-769:[Warn]:StoryInstance queue message start
-13-13-53-769:[Info]:StartStory local_main
-13-13-53-770:[Warn]:StoryInstance queue message start
-13-13-53-770:[Info]:StartStory story_main
-13-13-53-777:[Debug]:StoryInstance.Init message handler num:3 True
-13-13-53-777:[Info]:ParseStory LoginDlg:main 0
-13-13-53-780:[Debug]:StoryInstance.Init message handler num:3 True
-13-13-53-780:[Info]:ParseStory NicknameDlg:main 0
-13-13-53-788:[Debug]:StoryInstance.Init message handler num:4 True
-13-13-53-788:[Info]:ParseStory StoryDlg:main 0
-13-13-53-795:[Debug]:SkillInstance.Init section num:0 True skill 2110000000
-13-13-53-796:[Debug]:ParseSkill 2110000000
-13-13-53-796:[Debug]:SkillInstance.Init section num:0 True skill 2120000000
-13-13-53-796:[Debug]:ParseSkill 2120000000
-13-13-53-823:[Warn]:StoryInstance queue message start
-13-13-53-823:[Info]:StartStory LoginDlg:main
-13-13-53-829:[Warn]:StoryInstance queue message start
-13-13-53-829:[Info]:StartStory NicknameDlg:main
-13-13-53-845:[Warn]:StoryInstance queue message start
-13-13-53-845:[Info]:StartStory StoryDlg:main
-13-13-53-845:[Info]:SendMessage GameRoot OnLoadMainUiComplete 1 False
-13-13-53-861:[Warn]:NicknameDlg start
-13-13-53-863:[Warn]:LoginDlg start
-13-13-53-863:[Info]:Publish loading_complete ui
-13-13-53-864:[Info]:Publish ge_select_server lobby
-13-13-53-877:[Warn]:StoryInstance queue message show_login
-13-13-53-923:[Info]:StartStory skill_main
-13-13-53-924:[Warn]:StoryInstance queue message start
-13-13-53-924:[Info]:StartStory auto_story
-13-13-53-924:[Info]:Publish ui_hide ui
-13-14-03-466:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
-13-14-04-042:[Info]:Publish gm_execcommand gm
-13-14-04-044:[Debug]:StoryInstance.Init message handler num:1 True
-13-14-04-044:[Info]:ParseStory main 0
-13-14-04-046:[Warn]:StoryInstance queue message start
-13-14-04-046:[Info]:StartStory main
-13-14-04-048:[Warn]:ExecCommand log "test" finish.
-13-14-04-050:[Warn]:test
-13-14-13-462:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
-13-14-17-477:[Info]:Publish gm_execcommand gm
-13-14-17-477:[Debug]:StoryInstance.Init message handler num:1 True
-13-14-17-477:[Info]:ParseStory main 0
-13-14-17-478:[Warn]:StoryInstance queue message start
-13-14-17-478:[Info]:StartStory main
-13-14-17-480:[Warn]:ExecCommand log "{0}" 12345 finish.
-13-14-17-481:[Warn]:12345
-13-14-23-463:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
-13-14-28-134:[Warn]:StoryInstance queue message LoginDlg:on_click
-13-14-28-135:[Warn]:LoginDlg on click
-13-14-28-139:[Warn]:StoryInstance queue message do_login
-13-14-28-139:[Info]:Publish ge_account_login lobby
-13-14-28-140:[Info]:ConnectIfNotOpen at time:34677 ServerAddress:ws://127.0.0.1:9001
-13-14-30-146:[Debug]:QueueActionWithDelegation, Void OnError(System.Exception) GameFramework.Network.UserNetworkSystem, action count 1
-13-14-30-146:[Debug]:QueueActionWithDelegation, Void OnClosed() GameFramework.Network.UserNetworkSystem, action count 2
-13-14-30-159:[Error]:LobbyNetworkSystem.OnError Exception:由于目标计算机积极拒绝，无法连接。
+22-35-39-129:======GameLog Start (2020年10月25日, 22:35:39)======
+22-35-39-188:[Debug]:Time:22-35-39-186:table config root = E:/OpenSource/CSharpGameFramework/Unity3d/Assets/StreamingAssets/Tables/
+22-35-39-227:[Info]:Time:22-35-39-227:binary load 3012 parse 1617, file Tables/Public/Level.dat
+22-35-39-231:[Info]:Time:22-35-39-231:binary load 386 parse 740, file Tables/Public/LevelMonster.dat
+22-35-39-234:[Info]:Time:22-35-39-234:binary load 326 parse 608, file Tables/Public/Const.dat
+22-35-39-236:[Info]:Time:22-35-39-236:binary load 385 parse 380, file Tables/Public/AttrDefine.dat
+22-35-39-239:[Info]:Time:22-35-39-239:binary load 701 parse 617, file Tables/Public/Actor.dat
+22-35-39-241:[Info]:Time:22-35-39-241:binary load 429 parse 856, file Tables/Public/Skill.dat
+22-35-39-243:[Info]:Time:22-35-39-243:binary load 307 parse 401, file Tables/Public/SkillResources.dat
+22-35-39-246:[Info]:Time:22-35-39-246:binary load 337 parse 547, file Tables/Public/SkillData.dat
+22-35-39-248:[Info]:Time:22-35-39-248:binary load 305 parse 442, file Tables/Public/ImpactData.dat
+22-35-39-249:[Info]:Time:22-35-39-249:binary load 267 parse 463, file Tables/Public/SkillEvent.dat
+22-35-39-256:[Info]:Time:22-35-39-256:binary load 350 parse 339, file Tables/Client/StoryDlg.dat
+22-35-39-260:[Info]:Time:22-35-39-260:binary load 353 parse 1058, file Tables/Client/StrDictionary.dat
+22-35-39-262:[Info]:Time:22-35-39-262:binary load 304 parse 373, file Tables/Client/UI.dat
+22-35-39-264:[Info]:Time:22-35-39-264:binary load 445 parse 815, file Tables/Public/Formation.dat
+22-35-39-561:[Info]:Time:22-35-39-560:SendMessage GameRoot LoadScene TableConfig.Level False
+22-35-40-212:[Debug]:Time:22-35-40-212:StoryInstance.Init message handler num:6 True
+22-35-40-212:[Info]:Time:22-35-40-212:ParseStory story_main 0
+22-35-40-230:[Debug]:Time:22-35-40-230:StoryInstance.Init message handler num:4 True
+22-35-40-230:[Info]:Time:22-35-40-230:ParseStory local_main 0
+22-35-40-258:[Debug]:Time:22-35-40-258:StoryInstance.Init message handler num:5 True
+22-35-40-258:[Info]:Time:22-35-40-258:ParseStory skill_main 0
+22-35-40-258:[Debug]:Time:22-35-40-258:StoryInstance.Init message handler num:1 True
+22-35-40-258:[Info]:Time:22-35-40-258:ParseStory auto_story 0
+22-35-40-262:[Warn]:Time:22-35-40-261:StoryInstance queue message start
+22-35-40-262:[Info]:Time:22-35-40-262:StartStory local_main
+22-35-40-263:[Warn]:Time:22-35-40-262:StoryInstance queue message start
+22-35-40-263:[Info]:Time:22-35-40-263:StartStory story_main
+22-35-40-274:[Debug]:Time:22-35-40-274:StoryInstance.Init message handler num:3 True
+22-35-40-274:[Info]:Time:22-35-40-274:ParseStory LoginDlg:main 0
+22-35-40-285:[Debug]:Time:22-35-40-285:StoryInstance.Init message handler num:3 True
+22-35-40-285:[Info]:Time:22-35-40-285:ParseStory NicknameDlg:main 0
+22-35-40-300:[Debug]:Time:22-35-40-300:StoryInstance.Init message handler num:4 True
+22-35-40-300:[Info]:Time:22-35-40-300:ParseStory StoryDlg:main 0
+22-35-40-305:[Debug]:Time:22-35-40-305:SkillInstance.Init section num:0 True skill 2110000000
+22-35-40-306:[Debug]:Time:22-35-40-306:ParseSkill 2110000000
+22-35-40-306:[Debug]:Time:22-35-40-306:SkillInstance.Init section num:0 True skill 2120000000
+22-35-40-306:[Debug]:Time:22-35-40-306:ParseSkill 2120000000
+22-35-40-331:[Warn]:Time:22-35-40-329:StoryInstance queue message start
+22-35-40-331:[Info]:Time:22-35-40-331:StartStory LoginDlg:main
+22-35-40-336:[Warn]:Time:22-35-40-335:StoryInstance queue message start
+22-35-40-336:[Info]:Time:22-35-40-336:StartStory NicknameDlg:main
+22-35-40-353:[Warn]:Time:22-35-40-351:StoryInstance queue message start
+22-35-40-353:[Info]:Time:22-35-40-353:StartStory StoryDlg:main
+22-35-40-353:[Info]:Time:22-35-40-353:SendMessage GameRoot OnLoadMainUiComplete 1 False
+22-35-40-370:[Warn]:Time:22-35-40-369:NicknameDlg start
+22-35-40-373:[Warn]:Time:22-35-40-371:LoginDlg start
+22-35-40-373:[Info]:Time:22-35-40-373:Publish loading_complete ui
+22-35-40-374:[Info]:Time:22-35-40-374:Publish ge_select_server lobby
+22-35-40-389:[Warn]:Time:22-35-40-387:StoryInstance queue message show_login
+22-35-40-431:[Info]:Time:22-35-40-431:StartStory skill_main
+22-35-40-432:[Warn]:Time:22-35-40-431:StoryInstance queue message start
+22-35-40-432:[Info]:Time:22-35-40-432:StartStory auto_story
+22-35-40-432:[Info]:Time:22-35-40-432:Publish ui_hide ui
+22-35-49-962:[Debug]:Time:22-35-49-962:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-35-58-893:[Warn]:Time:22-35-58-891:StoryInstance queue message LoginDlg:on_click
+22-35-58-894:[Warn]:Time:22-35-58-893:LoginDlg on click
+22-35-58-901:[Warn]:Time:22-35-58-899:StoryInstance queue message do_login
+22-35-58-902:[Info]:Time:22-35-58-902:Publish ge_account_login lobby
+22-35-58-903:[Info]:Time:22-35-58-902:ConnectIfNotOpen at time:18936 ServerAddress:ws://127.0.0.1:9001
+22-35-58-940:[Debug]:Time:22-35-58-940:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-35-58-941:[Info]:Time:22-35-58-941:LobbyNetworkSystem.OnLog:VerifyHandshake handshake:HTTP/1.1 101 Switching Protocols
+Upgrade: websocket
+Connection: Upgrade
+Sec-WebSocket-Accept: p6qgo0D+FRmVb/yLma4PjZ7/zLk=, items count:1
+22-35-58-941:[Debug]:Time:22-35-58-941:QueueActionWithDelegation, Void OnOpened() GameFramework.Network.UserNetworkSystem, action count 1
+22-35-58-956:[Info]:Time:22-35-58-956:SendToLobby:3 AwAFAAiBgoQI
+22-35-58-966:[Debug]:Time:22-35-58-966:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-35-58-975:[Info]:Time:22-35-58-975:DecodeNodeMessage:4 BAAAAAgBEAEYACIA
+22-35-58-985:[Info]:Time:22-35-58-985:SendToLobby:19 EwAGAAoEZ2FtZQoEZ2FtZRIEZ2FtZRoA
+22-35-59-196:[Debug]:Time:22-35-59-195:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-35-59-196:[Info]:Time:22-35-59-196:DecodeNodeMessage:20 FAAGAAoEZ2FtZQoEZ2FtZRABGJFO
+22-35-59-199:[Info]:Time:22-35-59-199:SendToLobby:12 DAAGAAoEZ2FtZQ==
+22-35-59-297:[Debug]:Time:22-35-59-297:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-35-59-300:[Info]:Time:22-35-59-299:DecodeNodeMessage:22 FgAGAAoEZ2FtZQoS5Lya5by555C055qE57Ov57GzChLlj6/msJTnmoTonrrkuJ3pkokKD+aCsuaEpOeahOeMq+WSqgoS57qi5p6c5p6c55qE6K+d5qKFCg/pq5jlhbTnmoTlpKfnhooKD+mhveearueahOWnkOWnkAoS54ix5ZSx5q2M55qE57KJ5LidChXlpKfnnLznnZvnmoTph5HmmJ/kuroKFeiDluWYn+WYn+eahOWwj+ixhuixhgoS5aSn55y8552b55qE6Iqx55SfCg/mkJ7mgKrnmoTlp5Dlp5AKEumcuOawlOeahOeglOeptueUnwoP5L2O6LCD55qE6J206J22ChXoo4XlpLHlv4bnmoTmsYnloKHljIUKD+aQnueskeeahOmmmeiViQoS5bCP5b+D55qE5pyo5pif5Lq6Cg/omZrojaPnmoTpppnnk5wKEua4qeaflOeahOWPmOiJsum+mQoP5bCK6LS155qE54+N54+gCg/mgrLmhKTnmoTpuLXpuJ8=
+22-35-59-305:[Warn]:Time:22-35-59-303:StoryInstance queue message show_nickname
+22-35-59-958:[Debug]:Time:22-35-59-958:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-36-02-891:[Warn]:Time:22-36-02-889:StoryInstance queue message NicknameDlg:on_click
+22-36-02-893:[Warn]:Time:22-36-02-892:NicknameDlg on click ok System.String[]
+22-36-02-896:[Warn]:Time:22-36-02-893:StoryInstance queue message do_nickname
+22-36-02-896:[Info]:Time:22-36-02-896:Publish ge_change_name lobby
+22-36-02-897:[Info]:Time:22-36-02-897:SendToLobby:25 GQAGAAoEZ2FtZQoS5Lya5by555C055qE57Ov57Gz
+22-36-03-121:[Debug]:Time:22-36-03-121:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-03-122:[Info]:Time:22-36-03-122:DecodeNodeMessage:29 HQAJAAoEZ2FtZRCRTggAEhLkvJrlvLnnkLTnmoTns6/nsbMYASAAKAAwATgAQAE=
+22-36-03-127:[Warn]:Time:22-36-03-125:StoryInstance queue message start_game
+22-36-03-130:[Warn]:Time:22-36-03-127:StoryInstance queue message show_dlg
+22-36-03-130:[Info]:Time:22-36-03-130:showdlg 1
+22-36-03-135:[Info]:Time:22-36-03-135:SendToLobby:9 CQADAAiRTg==
+22-36-03-136:[Info]:Time:22-36-03-136:Publish ui_hide ui
+22-36-03-138:[Warn]:Time:22-36-03-136:StoryInstance queue message StoryDlg:show_dlg_item
+22-36-03-139:[Warn]:Time:22-36-03-138:First,show_dlg_item:1 0
+22-36-03-168:[Info]:Time:22-36-03-168:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+22-36-03-170:[Warn]:Time:22-36-03-168:show_dlg:1 0 这是一个完全放置的游戏demo
+22-36-03-222:[Debug]:Time:22-36-03-222:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-03-283:[Info]:Time:22-36-03-283:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-06-738:[Warn]:Time:22-36-06-736:StoryInstance queue message StoryDlg:on_click
+22-36-06-741:[Warn]:Time:22-36-06-740:StoryInstance queue message StoryDlg:show_dlg_item
+22-36-06-743:[Warn]:Time:22-36-06-741:on_click,show_dlg_item:1 1
+22-36-06-752:[Info]:Time:22-36-06-752:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+22-36-06-754:[Warn]:Time:22-36-06-752:show_dlg:1 1 服务器的底层架构是比较完整的，应该可以适应开房间与MMO的游戏类型
+22-36-08-136:[Info]:Time:22-36-08-136:SendToLobby:9 CQADAAiRTg==
+22-36-08-255:[Debug]:Time:22-36-08-255:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-08-257:[Info]:Time:22-36-08-257:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-09-964:[Debug]:Time:22-36-09-964:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-36-11-744:[Warn]:Time:22-36-11-742:StoryInstance queue message StoryDlg:show_dlg_item
+22-36-11-746:[Warn]:Time:22-36-11-744:Timeout,show_dlg_item:1 2
+22-36-11-753:[Info]:Time:22-36-11-753:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+22-36-11-755:[Warn]:Time:22-36-11-754:show_dlg:1 2 为了简单，游戏的战斗逻辑完全放到客户端了，RoomServer只提供简单的同步，这一点上与MMO相去甚远
+22-36-13-141:[Info]:Time:22-36-13-141:SendToLobby:9 CQADAAiRTg==
+22-36-13-188:[Debug]:Time:22-36-13-188:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-13-191:[Info]:Time:22-36-13-191:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-16-751:[Warn]:Time:22-36-16-748:StoryInstance queue message StoryDlg:show_dlg_item
+22-36-16-753:[Warn]:Time:22-36-16-751:Timeout,show_dlg_item:1 3
+22-36-16-758:[Info]:Time:22-36-16-758:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+22-36-16-760:[Warn]:Time:22-36-16-758:show_dlg:1 3 战斗是完全单机的形式
+22-36-18-147:[Info]:Time:22-36-18-147:SendToLobby:9 CQADAAiRTg==
+22-36-18-220:[Debug]:Time:22-36-18-220:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-18-221:[Info]:Time:22-36-18-221:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-19-695:[Warn]:Time:22-36-19-693:StoryInstance queue message StoryDlg:on_click
+22-36-19-697:[Warn]:Time:22-36-19-696:StoryInstance queue message StoryDlg:show_dlg_item
+22-36-19-699:[Warn]:Time:22-36-19-697:on_click,show_dlg_item:1 4
+22-36-19-707:[Info]:Time:22-36-19-707:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+22-36-19-709:[Warn]:Time:22-36-19-707:show_dlg:1 4 除底层架构外，游戏逻辑基本上由配表与DSL实现
+22-36-19-970:[Debug]:Time:22-36-19-970:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-36-22-627:[Warn]:Time:22-36-22-623:StoryInstance queue message StoryDlg:on_click
+22-36-22-631:[Warn]:Time:22-36-22-627:StoryInstance queue message StoryDlg:show_dlg_item
+22-36-22-633:[Warn]:Time:22-36-22-631:on_click,show_dlg_item:1 5
+22-36-22-639:[Info]:Time:22-36-22-639:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+22-36-22-641:[Warn]:Time:22-36-22-639:show_dlg:1 5 客户端使用了Cs2Lua来实现部分逻辑的热更新，但lua实现的逻辑仍然属于游戏底层
+22-36-23-149:[Info]:Time:22-36-23-149:SendToLobby:9 CQADAAiRTg==
+22-36-23-270:[Debug]:Time:22-36-23-270:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-23-272:[Info]:Time:22-36-23-272:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-27-633:[Warn]:Time:22-36-27-630:StoryInstance queue message StoryDlg:show_dlg_item
+22-36-27-636:[Warn]:Time:22-36-27-633:Timeout,show_dlg_item:1 6
+22-36-27-644:[Info]:Time:22-36-27-644:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+22-36-27-647:[Warn]:Time:22-36-27-644:show_dlg:1 6 这个Demo是抽空实现的，所以不确定能做到什么程度
+22-36-28-156:[Info]:Time:22-36-28-156:SendToLobby:9 CQADAAiRTg==
+22-36-28-201:[Debug]:Time:22-36-28-200:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-28-201:[Info]:Time:22-36-28-201:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-29-971:[Debug]:Time:22-36-29-971:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-36-32-664:[Warn]:Time:22-36-32-662:StoryInstance queue message StoryDlg:on_click
+22-36-32-667:[Warn]:Time:22-36-32-664:StoryInstance queue message StoryDlg:show_dlg_item
+22-36-32-670:[Warn]:Time:22-36-32-668:on_click,show_dlg_item:1 7
+22-36-32-677:[Info]:Time:22-36-32-677:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+22-36-32-680:[Warn]:Time:22-36-32-677:show_dlg:1 7 有空就会实现一点，修改一点
+22-36-33-160:[Info]:Time:22-36-33-160:SendToLobby:9 CQADAAiRTg==
+22-36-33-232:[Debug]:Time:22-36-33-232:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-33-236:[Info]:Time:22-36-33-236:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-34-587:[Warn]:Time:22-36-34-584:StoryInstance queue message StoryDlg:on_click
+22-36-34-589:[Warn]:Time:22-36-34-587:StoryInstance queue message StoryDlg:show_dlg_item
+22-36-34-591:[Warn]:Time:22-36-34-589:on_click,show_dlg_item:1 8
+22-36-34-597:[Info]:Time:22-36-34-597:SendMessage StoryDlg/Panel/ScrollView/Viewport/Content CallScript System.Object[] False
+22-36-34-600:[Warn]:Time:22-36-34-597:show_dlg:1 8 期望最后能够实现的比较完整吧
+22-36-36-463:[Warn]:Time:22-36-36-461:StoryInstance queue message StoryDlg:on_click
+22-36-36-465:[Warn]:Time:22-36-36-463:StoryInstance queue message StoryDlg:show_dlg_item
+22-36-36-467:[Warn]:Time:22-36-36-465:on_click,show_dlg_item:1 9
+22-36-36-473:[Info]:Time:22-36-36-473:Publish ui_show ui
+22-36-36-476:[Warn]:Time:22-36-36-474:StoryInstance queue message dialog_over:1
+22-36-36-479:[Warn]:Time:22-36-36-477:Finish,show_dlg_item:1 9
+22-36-36-481:[Info]:Time:22-36-36-481:SendToLobby:30 HgADAAiRTghl
+22-36-36-853:[Debug]:Time:22-36-36-853:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-36-857:[Info]:Time:22-36-36-857:DecodeNodeMessage:32 IAADAAiRTggAEgkxMjcuMC4wLjEYuEogo8vXaCgDMGU4Cw==
+22-36-36-860:[Debug]:Time:22-36-36-859:QueueActionWithDelegation, Void TryEnterScene(UInt32, System.String, Int32, Int32, Int32) GameFramework.PluginFramework, action count 1
+22-36-36-918:[Info]:Time:22-36-36-918:NetworkSystem.Start key 219538851 ip 127.0.0.1 port 9528 camp 3 scene 101
+22-36-37-350:[Info]:Time:22-36-37-350:Connect ip:127.0.0.1 port:9528 key:219538851
+NetPeer Statistic:0 connections
+Sent 0 bytes in 0 messages in 0 packets
+Received 0 bytes in 0 messages in 0 packets
+Storage allocated 0 bytes
+Recycled pool 0 bytes
 
-  at System.Net.Sockets.Socket.Connect (System.Net.EndPoint remoteEP) [0x000b6] in <0d3e94ab2a1c4d2a8582ccee7031f5c6>:0 
-  at SuperSocket.ClientEngine.TcpClientSession.DoConnect () [0x0001e] in <b216fd02f561479fafbc377b114497a4>:0 
-13-14-30-159:[Info]:Disconnect(False). CurTime 36697 LastConnectTime 34677
-13-14-30-160:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 2
-13-14-30-161:[Error]:LobbyNetworkSystem.OnClosed
-13-14-30-162:[Info]:LobbyNetworkSystem.OnLog:Close: CloseImmediately False statusCode 1000 m_StateCode 3
-13-14-33-153:[Info]:IsConnected == false. CurTime 39699 LastConnectTime 29697
-13-14-33-153:[Info]:Disconnect(True). CurTime 39699 LastConnectTime 29697
-13-14-33-153:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-13-14-33-153:[Info]:ConnectIfNotOpen at time:39699 ServerAddress:ws://127.0.0.1:9001
-13-14-33-153:[Info]:LobbyNetworkSystem.OnLog:Close: CloseImmediately True statusCode 1000 m_StateCode 3
-13-14-33-464:[Debug]:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
-13-14-35-158:[Debug]:QueueActionWithDelegation, Void OnError(System.Exception) GameFramework.Network.UserNetworkSystem, action count 1
-13-14-35-158:[Debug]:QueueActionWithDelegation, Void OnClosed() GameFramework.Network.UserNetworkSystem, action count 2
-13-14-35-164:[Error]:LobbyNetworkSystem.OnError Exception:由于目标计算机积极拒绝，无法连接。
+22-36-37-390:[Info]:Time:22-36-37-390:Network Status Changed:Connected Reason:Connected to 0835432C3FDF17F4
+Statistic:Sent 16 bytes in 2 messages in 2 packets
+Received 6 bytes in 1 messages in 1 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
 
-  at System.Net.Sockets.Socket.Connect (System.Net.EndPoint remoteEP) [0x000b6] in <0d3e94ab2a1c4d2a8582ccee7031f5c6>:0 
-  at SuperSocket.ClientEngine.TcpClientSession.DoConnect () [0x0001e] in <b216fd02f561479fafbc377b114497a4>:0 
-13-14-35-164:[Info]:Disconnect(False). CurTime 41707 LastConnectTime 39699
-13-14-35-164:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 2
-13-14-35-166:[Error]:LobbyNetworkSystem.OnClosed
-13-14-35-166:[Info]:LobbyNetworkSystem.OnLog:Close: CloseImmediately False statusCode 1000 m_StateCode 3
-13-14-38-162:[Info]:IsConnected == false. CurTime 44708 LastConnectTime 34707
-13-14-38-162:[Info]:Disconnect(True). CurTime 44708 LastConnectTime 34707
-13-14-38-162:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-13-14-38-162:[Info]:ConnectIfNotOpen at time:44708 ServerAddress:ws://127.0.0.1:9001
-13-14-38-163:[Info]:LobbyNetworkSystem.OnLog:Close: CloseImmediately True statusCode 1000 m_StateCode 3
-13-14-39-298:[Info]:SendToLobby:6 BgAFAAoDdGV0
-13-14-39-298:[Info]:Disconnect(False). CurTime 45797 LastConnectTime 44708
-13-14-39-298:[Debug]:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
-13-14-40-167:[Debug]:QueueActionWithDelegation, Void OnError(System.Exception) GameFramework.Network.UserNetworkSystem, action count 2
-13-14-40-167:[Debug]:QueueActionWithDelegation, Void OnClosed() GameFramework.Network.UserNetworkSystem, action count 3
+22-36-37-392:[Info]:Time:22-36-37-392:[Message Count]:
+[Send]:
+[Receive]:
+
+22-36-37-404:[Info]:Time:22-36-37-404:Warning Message: resend delay 0.03666883 127.0.0.1:9528
+22-36-37-404:[Info]:Time:22-36-37-404:Warning Message: Timeout deadline pushed to  16.52863 127.0.0.1:9528
+22-36-37-404:[Info]:Time:22-36-37-404:Warning Message: resend delay 0.03666883 127.0.0.1:9528
+22-36-37-404:Time:22-36-37-404:Wait NetConnectionStatus.Connected ...
+22-36-37-503:Time:22-36-37-503:auth ok !!!
+22-36-37-504:[Debug]:Time:22-36-37-504:QueueActionWithDelegation, Void ChangeScene(Int32) GameFramework.PluginFramework, action count 1
+22-36-37-509:[Info]:Time:22-36-37-509:SendMessage GameRoot LoadScene TableConfig.Level False
+22-36-38-485:[Debug]:Time:22-36-38-485:StoryInstance.Init message handler num:5 True
+22-36-38-485:[Info]:Time:22-36-38-485:ParseStory story_main 0
+22-36-38-487:[Debug]:Time:22-36-38-487:StoryInstance.Init message handler num:4 True
+22-36-38-487:[Info]:Time:22-36-38-487:ParseStory local_main 0
+22-36-38-490:[Debug]:Time:22-36-38-490:StoryInstance.Init message handler num:5 True
+22-36-38-490:[Info]:Time:22-36-38-490:ParseStory skill_main 0
+22-36-38-499:[Debug]:Time:22-36-38-499:StoryInstance.Init message handler num:3 True
+22-36-38-499:[Info]:Time:22-36-38-499:ParseStory auto_story 0
+22-36-38-501:[Warn]:Time:22-36-38-499:StoryInstance queue message start
+22-36-38-501:[Info]:Time:22-36-38-501:StartStory local_main
+22-36-38-507:[Debug]:Time:22-36-38-507:StoryInstance.Init message handler num:5 True
+22-36-38-507:[Info]:Time:22-36-38-507:ParseStory MainUI:main 0
+22-36-38-510:[Debug]:Time:22-36-38-510:StoryInstance.Init message handler num:4 True
+22-36-38-510:[Info]:Time:22-36-38-510:ParseStory StoryDlg:main 0
+22-36-38-529:[Warn]:Time:22-36-38-528:StoryInstance queue message start
+22-36-38-530:[Info]:Time:22-36-38-530:StartStory MainUI:main
+22-36-38-534:[Warn]:Time:22-36-38-531:StoryInstance queue message start
+22-36-38-534:[Info]:Time:22-36-38-534:StartStory StoryDlg:main
+22-36-38-534:[Info]:Time:22-36-38-534:SendMessage GameRoot OnLoadSceneComplete 101 False
+22-36-38-535:Time:22-36-38-534:send Msg_CR_Enter to roomserver
+22-36-38-848:[Info]:Time:22-36-38-848:StartStory skill_main
+22-36-38-850:[Warn]:Time:22-36-38-848:StoryInstance queue message start
+22-36-38-850:[Info]:Time:22-36-38-850:StartStory auto_story
+22-36-39-003:[Info]:Time:22-36-39-003:SendToLobby:9 CQADAAiRTg==
+22-36-39-067:[Debug]:Time:22-36-39-067:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-39-070:[Info]:Time:22-36-39-070:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-39-408:Time:22-36-39-408:NpcCreate:100 unit:10000 ownerid=0
+22-36-39-617:[Info]:Time:22-36-39-617:Publish ui_add_actor ui
+22-36-39-626:[Info]:Time:22-36-39-626:---set 100 hp to 2100/2100
+22-36-39-627:Time:22-36-39-627:NpcCreate:101 unit:10001 ownerid=0
+22-36-39-627:[Info]:Time:22-36-39-627:Publish ui_add_actor ui
+22-36-39-628:[Info]:Time:22-36-39-628:---set 101 hp to 2100/2100
+22-36-39-628:Time:22-36-39-628:NpcCreate:102 unit:10002 ownerid=0
+22-36-39-629:[Info]:Time:22-36-39-629:Publish ui_add_actor ui
+22-36-39-630:[Info]:Time:22-36-39-630:---set 102 hp to 2100/2100
+22-36-39-630:Time:22-36-39-630:NpcCreate:103 unit:10003 ownerid=0
+22-36-39-630:[Info]:Time:22-36-39-630:Publish ui_add_actor ui
+22-36-39-632:[Info]:Time:22-36-39-632:---set 103 hp to 2100/2100
+22-36-39-632:Time:22-36-39-632:NpcCreate:104 unit:10004 ownerid=0
+22-36-39-632:[Info]:Time:22-36-39-632:Publish ui_add_actor ui
+22-36-39-633:[Info]:Time:22-36-39-633:---set 104 hp to 2100/2100
+22-36-39-633:Time:22-36-39-633:NpcCreate:105 unit:10005 ownerid=0
+22-36-39-633:[Info]:Time:22-36-39-633:Publish ui_add_actor ui
+22-36-39-634:[Info]:Time:22-36-39-634:---set 105 hp to 2100/2100
+22-36-39-634:Time:22-36-39-634:NpcCreate:106 unit:10006 ownerid=0
+22-36-39-635:[Info]:Time:22-36-39-635:Publish ui_add_actor ui
+22-36-39-635:[Info]:Time:22-36-39-635:---set 106 hp to 2100/2100
+22-36-39-635:Time:22-36-39-635:NpcCreate:107 unit:10007 ownerid=0
+22-36-39-636:[Info]:Time:22-36-39-636:Publish ui_add_actor ui
+22-36-39-637:[Info]:Time:22-36-39-637:---set 107 hp to 2100/2100
+22-36-39-637:Time:22-36-39-637:NpcCreate:108 unit:10008 ownerid=0
+22-36-39-637:[Info]:Time:22-36-39-637:Publish ui_add_actor ui
+22-36-39-638:[Info]:Time:22-36-39-638:---set 108 hp to 2100/2100
+22-36-39-638:Time:22-36-39-638:NpcCreate:109 unit:10009 ownerid=0
+22-36-39-639:[Info]:Time:22-36-39-639:Publish ui_add_actor ui
+22-36-39-640:[Info]:Time:22-36-39-640:---set 109 hp to 2100/2100
+22-36-39-640:Time:22-36-39-640:NpcCreate:110 unit:10010 ownerid=0
+22-36-39-641:[Info]:Time:22-36-39-641:Publish ui_add_actor ui
+22-36-39-642:[Info]:Time:22-36-39-642:---set 110 hp to 2100/2100
+22-36-39-642:Time:22-36-39-642:NpcCreate:111 unit:10011 ownerid=0
+22-36-39-642:[Info]:Time:22-36-39-642:Publish ui_add_actor ui
+22-36-39-643:[Info]:Time:22-36-39-643:---set 111 hp to 2100/2100
+22-36-39-643:Time:22-36-39-643:NpcCreate:112 unit:10012 ownerid=0
+22-36-39-644:[Info]:Time:22-36-39-644:Publish ui_add_actor ui
+22-36-39-644:[Info]:Time:22-36-39-644:---set 112 hp to 2100/2100
+22-36-39-644:Time:22-36-39-644:NpcCreate:113 unit:10013 ownerid=0
+22-36-39-645:[Info]:Time:22-36-39-645:Publish ui_add_actor ui
+22-36-39-646:[Info]:Time:22-36-39-646:---set 113 hp to 2100/2100
+22-36-39-646:Time:22-36-39-646:NpcCreate:114 unit:10014 ownerid=0
+22-36-39-646:[Info]:Time:22-36-39-646:Publish ui_add_actor ui
+22-36-39-647:[Info]:Time:22-36-39-647:---set 114 hp to 2100/2100
+22-36-39-647:Time:22-36-39-647:NpcCreate:115 unit:10015 ownerid=0
+22-36-39-647:[Info]:Time:22-36-39-647:Publish ui_add_actor ui
+22-36-39-648:[Info]:Time:22-36-39-648:---set 115 hp to 2100/2100
+22-36-39-648:Time:22-36-39-648:NpcCreate:116 unit:100000116 ownerid=0
+22-36-39-649:[Info]:Time:22-36-39-649:Publish ui_add_actor ui
+22-36-39-650:[Info]:Time:22-36-39-650:---set 116 hp to 100100/100100
+22-36-39-668:[Debug]:Time:22-36-39-668:CreateTriger, type:animation triger:AnimationTriger
+22-36-39-669:[Debug]:Time:22-36-39-669:CreateTriger, type:bornfinish triger:BornFinishTriger
+22-36-39-669:[Debug]:Time:22-36-39-669:SkillInstance.Init section num:1 True skill 1
+22-36-39-669:[Debug]:Time:22-36-39-669:ParseSkill 1
+22-36-39-689:[Debug]:Time:22-36-39-689:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-690:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-39-691:[Debug]:Time:22-36-39-691:ChangeToSection:0 duration:100
+22-36-40-388:[Info]:Time:22-36-40-388:Warning Message: resend delay 0.03329195 127.0.0.1:9528
+22-36-40-388:[Info]:Time:22-36-40-388:Warning Message: Timeout deadline pushed to  19.52467 127.0.0.1:9528
+22-36-40-515:[Info]:Time:22-36-40-515:Publish loading_complete ui
+22-36-40-524:[Info]:Time:22-36-40-524:SendMessage GameRoot CameraFollow 116 False
+22-36-40-525:[Info]:Time:22-36-40-525:SendMessage Main Camera LightScreen 3000 False
+22-36-40-934:[Debug]:Time:22-36-40-934:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-36-41-923:[Warn]:Time:22-36-41-921:StoryInstance queue message findnpc
+22-36-41-933:[Warn]:Time:22-36-41-932:findnpc, scene key:_101, index:1, pos:40.2, 0, 19.9
+22-36-43-391:[Info]:Time:22-36-43-391:Warning Message: resend delay 0.03097409 127.0.0.1:9528
+22-36-43-391:[Info]:Time:22-36-43-391:Warning Message: Timeout deadline pushed to  22.52825 127.0.0.1:9528
+22-36-44-069:[Info]:Time:22-36-44-069:SendToLobby:9 CQADAAiRTg==
+22-36-44-197:[Debug]:Time:22-36-44-197:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-44-198:[Info]:Time:22-36-44-198:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-44-499:[Warn]:Time:22-36-44-498:StoryInstance queue message touchnpc
+22-36-44-509:[Warn]:Time:22-36-44-508:touchnpc
+22-36-46-397:[Info]:Time:22-36-46-397:Warning Message: resend delay 0.02930623 127.0.0.1:9528
+22-36-46-397:[Info]:Time:22-36-46-397:Warning Message: Timeout deadline pushed to  25.53414 127.0.0.1:9528
+22-36-49-082:[Info]:Time:22-36-49-082:SendToLobby:9 CQADAAiRTg==
+22-36-49-228:[Debug]:Time:22-36-49-228:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-49-234:[Info]:Time:22-36-49-234:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-49-412:[Info]:Time:22-36-49-412:Warning Message: resend delay 0.02809848 127.0.0.1:9528
+22-36-49-412:[Info]:Time:22-36-49-412:Warning Message: Timeout deadline pushed to  28.54859 127.0.0.1:9528
+22-36-50-936:[Debug]:Time:22-36-50-936:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-36-52-421:[Info]:Time:22-36-52-421:Warning Message: resend delay 0.02730051 127.0.0.1:9528
+22-36-52-421:[Info]:Time:22-36-52-421:Warning Message: Timeout deadline pushed to  31.55713 127.0.0.1:9528
+22-36-54-084:[Info]:Time:22-36-54-084:SendToLobby:9 CQADAAiRTg==
+22-36-54-163:[Debug]:Time:22-36-54-163:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-54-164:[Info]:Time:22-36-54-164:DecodeNodeMessage:9 CQADAAiRTg==
+22-36-54-507:[Warn]:Time:22-36-54-505:StoryInstance queue message MainUI:on_click
+22-36-54-509:[Warn]:Time:22-36-54-507:MainUI on click btn1
+22-36-55-270:[Warn]:Time:22-36-55-268:StoryInstance queue message MainUI:on_click
+22-36-55-272:[Warn]:Time:22-36-55-270:MainUI on click btn1
+22-36-55-426:[Info]:Time:22-36-55-426:Warning Message: resend delay 0.02675696 127.0.0.1:9528
+22-36-55-426:[Info]:Time:22-36-55-426:Warning Message: Timeout deadline pushed to  34.56307 127.0.0.1:9528
+22-36-58-435:[Info]:Time:22-36-58-435:Warning Message: resend delay 0.02633441 127.0.0.1:9528
+22-36-58-435:[Info]:Time:22-36-58-435:Warning Message: Timeout deadline pushed to  37.57127 127.0.0.1:9528
+22-36-59-091:[Info]:Time:22-36-59-091:SendToLobby:9 CQADAAiRTg==
+22-36-59-197:[Debug]:Time:22-36-59-197:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-36-59-198:[Info]:Time:22-36-59-197:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-00-939:[Debug]:Time:22-37-00-939:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-37-01-445:[Info]:Time:22-37-01-445:Warning Message: resend delay 0.02608189 127.0.0.1:9528
+22-37-01-445:[Info]:Time:22-37-01-445:Warning Message: Timeout deadline pushed to  40.58116 127.0.0.1:9528
+22-37-04-092:[Info]:Time:22-37-04-092:SendToLobby:9 CQADAAiRTg==
+22-37-04-228:[Debug]:Time:22-37-04-228:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-04-230:[Info]:Time:22-37-04-230:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-04-459:[Info]:Time:22-37-04-459:Warning Message: resend delay 0.02587508 127.0.0.1:9528
+22-37-04-459:[Info]:Time:22-37-04-459:Warning Message: Timeout deadline pushed to  43.59503 127.0.0.1:9528
+22-37-07-471:[Info]:Time:22-37-07-471:Warning Message: resend delay 0.02580963 127.0.0.1:9528
+22-37-07-471:[Info]:Time:22-37-07-471:Warning Message: Timeout deadline pushed to  46.60754 127.0.0.1:9528
+22-37-09-096:[Info]:Time:22-37-09-096:SendToLobby:9 CQADAAiRTg==
+22-37-09-159:[Debug]:Time:22-37-09-159:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-09-166:[Info]:Time:22-37-09-166:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-10-483:[Info]:Time:22-37-10-483:Warning Message: resend delay 0.02571334 127.0.0.1:9528
+22-37-10-483:[Info]:Time:22-37-10-483:Warning Message: Timeout deadline pushed to  49.61885 127.0.0.1:9528
+22-37-10-941:[Debug]:Time:22-37-10-941:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-37-13-487:[Info]:Time:22-37-13-487:Warning Message: resend delay 0.02568198 127.0.0.1:9528
+22-37-13-487:[Info]:Time:22-37-13-487:Warning Message: Timeout deadline pushed to  52.62377 127.0.0.1:9528
+22-37-14-119:[Info]:Time:22-37-14-119:SendToLobby:9 CQADAAiRTg==
+22-37-14-194:[Debug]:Time:22-37-14-194:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-14-195:[Info]:Time:22-37-14-195:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-16-500:[Info]:Time:22-37-16-500:Warning Message: resend delay 0.02564081 127.0.0.1:9528
+22-37-16-500:[Info]:Time:22-37-16-500:Warning Message: Timeout deadline pushed to  55.63642 127.0.0.1:9528
+22-37-19-127:[Info]:Time:22-37-19-127:SendToLobby:9 CQADAAiRTg==
+22-37-19-225:[Debug]:Time:22-37-19-225:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 0
+22-37-19-225:[Info]:Time:22-37-19-225:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-19-506:[Info]:Time:22-37-19-506:Warning Message: resend delay 0.02563602 127.0.0.1:9528
+22-37-19-506:[Info]:Time:22-37-19-506:Warning Message: Timeout deadline pushed to  58.64227 127.0.0.1:9528
+22-37-20-948:[Debug]:Time:22-37-20-948:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-37-22-519:[Info]:Time:22-37-22-519:Warning Message: resend delay 0.02563267 127.0.0.1:9528
+22-37-22-519:[Info]:Time:22-37-22-519:Warning Message: Timeout deadline pushed to  61.65518 127.0.0.1:9528
+22-37-24-129:[Info]:Time:22-37-24-129:SendToLobby:9 CQADAAiRTg==
+22-37-24-190:[Debug]:Time:22-37-24-190:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-24-198:[Info]:Time:22-37-24-198:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-25-527:[Info]:Time:22-37-25-527:Warning Message: resend delay 0.02581297 127.0.0.1:9528
+22-37-25-528:[Info]:Time:22-37-25-527:Warning Message: Timeout deadline pushed to  64.66273 127.0.0.1:9528
+22-37-28-540:[Info]:Time:22-37-28-540:Warning Message: resend delay 0.02571808 127.0.0.1:9528
+22-37-28-540:[Info]:Time:22-37-28-540:Warning Message: Timeout deadline pushed to  67.67606 127.0.0.1:9528
+22-37-29-139:[Info]:Time:22-37-29-139:SendToLobby:9 CQADAAiRTg==
+22-37-29-222:[Debug]:Time:22-37-29-222:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-29-226:[Info]:Time:22-37-29-226:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-30-952:[Debug]:Time:22-37-30-952:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-37-31-540:[Info]:Time:22-37-31-540:Warning Message: resend delay 0.02567569 127.0.0.1:9528
+22-37-31-540:[Info]:Time:22-37-31-540:Warning Message: Timeout deadline pushed to  70.67621 127.0.0.1:9528
+22-37-34-140:[Info]:Time:22-37-34-140:SendToLobby:9 CQADAAiRTg==
+22-37-34-253:[Debug]:Time:22-37-34-253:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-34-259:[Info]:Time:22-37-34-259:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-34-546:[Info]:Time:22-37-34-546:Warning Message: resend delay 0.02558834 127.0.0.1:9528
+22-37-34-546:[Info]:Time:22-37-34-546:Warning Message: Timeout deadline pushed to  73.68162 127.0.0.1:9528
+22-37-37-549:[Info]:Time:22-37-37-549:Warning Message: resend delay 0.02554402 127.0.0.1:9528
+22-37-37-549:[Info]:Time:22-37-37-549:Warning Message: Timeout deadline pushed to  76.68453 127.0.0.1:9528
+22-37-39-144:[Info]:Time:22-37-39-144:SendToLobby:9 CQADAAiRTg==
+22-37-39-285:[Debug]:Time:22-37-39-285:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-39-290:[Info]:Time:22-37-39-290:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-40-558:[Info]:Time:22-37-40-558:Warning Message: resend delay 0.02554904 127.0.0.1:9528
+22-37-40-558:[Info]:Time:22-37-40-558:Warning Message: Timeout deadline pushed to  79.69395 127.0.0.1:9528
+22-37-40-957:[Debug]:Time:22-37-40-957:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-37-43-567:[Info]:Time:22-37-43-567:Warning Message: resend delay 0.02551411 127.0.0.1:9528
+22-37-43-567:[Info]:Time:22-37-43-567:Warning Message: Timeout deadline pushed to  82.70291 127.0.0.1:9528
+22-37-44-155:[Info]:Time:22-37-44-154:SendToLobby:9 CQADAAiRTg==
+22-37-44-318:[Debug]:Time:22-37-44-318:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-44-323:[Info]:Time:22-37-44-323:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-46-567:[Info]:Time:22-37-46-567:Warning Message: resend delay 0.02549926 127.0.0.1:9528
+22-37-46-567:[Info]:Time:22-37-46-567:Warning Message: Timeout deadline pushed to  85.70297 127.0.0.1:9528
+22-37-49-161:[Info]:Time:22-37-49-161:SendToLobby:9 CQADAAiRTg==
+22-37-49-250:[Debug]:Time:22-37-49-250:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-49-254:[Info]:Time:22-37-49-254:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-49-568:[Info]:Time:22-37-49-568:Warning Message: resend delay 0.02548407 127.0.0.1:9528
+22-37-49-568:[Info]:Time:22-37-49-568:Warning Message: Timeout deadline pushed to  88.70377 127.0.0.1:9528
+22-37-50-957:[Debug]:Time:22-37-50-957:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-37-52-581:[Info]:Time:22-37-52-581:Warning Message: resend delay 0.02548304 127.0.0.1:9528
+22-37-52-581:[Info]:Time:22-37-52-581:Warning Message: Timeout deadline pushed to  91.71622 127.0.0.1:9528
+22-37-54-165:[Info]:Time:22-37-54-165:SendToLobby:9 CQADAAiRTg==
+22-37-54-282:[Debug]:Time:22-37-54-282:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-54-289:[Info]:Time:22-37-54-289:DecodeNodeMessage:9 CQADAAiRTg==
+22-37-55-594:[Info]:Time:22-37-55-594:Warning Message: resend delay 0.02552078 127.0.0.1:9528
+22-37-55-594:[Info]:Time:22-37-55-594:Warning Message: Timeout deadline pushed to  94.7297 127.0.0.1:9528
+22-37-58-607:[Info]:Time:22-37-58-607:Warning Message: resend delay 0.02553758 127.0.0.1:9528
+22-37-58-607:[Info]:Time:22-37-58-607:Warning Message: Timeout deadline pushed to  97.74213 127.0.0.1:9528
+22-37-59-176:[Info]:Time:22-37-59-176:SendToLobby:9 CQADAAiRTg==
+22-37-59-218:[Debug]:Time:22-37-59-218:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-37-59-220:[Info]:Time:22-37-59-220:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-00-963:[Debug]:Time:22-38-00-963:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-38-01-610:[Info]:Time:22-38-01-610:Warning Message: resend delay 0.02553011 127.0.0.1:9528
+22-38-01-610:[Info]:Time:22-38-01-610:Warning Message: Timeout deadline pushed to  100.7455 127.0.0.1:9528
+22-38-04-177:[Info]:Time:22-38-04-177:SendToLobby:9 CQADAAiRTg==
+22-38-04-248:[Debug]:Time:22-38-04-248:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-04-251:[Info]:Time:22-38-04-251:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-04-623:[Info]:Time:22-38-04-623:Warning Message: resend delay 0.02555853 127.0.0.1:9528
+22-38-04-623:[Info]:Time:22-38-04-623:Warning Message: Timeout deadline pushed to  103.7583 127.0.0.1:9528
+22-38-07-635:[Info]:Time:22-38-07-635:Warning Message: resend delay 0.02553517 127.0.0.1:9528
+22-38-07-635:[Info]:Time:22-38-07-635:Warning Message: Timeout deadline pushed to  106.7698 127.0.0.1:9528
+22-38-09-182:[Info]:Time:22-38-09-182:SendToLobby:9 CQADAAiRTg==
+22-38-09-281:[Debug]:Time:22-38-09-281:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-09-287:[Info]:Time:22-38-09-287:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-10-639:[Info]:Time:22-38-10-639:Warning Message: resend delay 0.02552843 127.0.0.1:9528
+22-38-10-639:[Info]:Time:22-38-10-639:Warning Message: Timeout deadline pushed to  109.7746 127.0.0.1:9528
+22-38-10-965:[Debug]:Time:22-38-10-965:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-38-13-643:[Info]:Time:22-38-13-643:Warning Message: resend delay 0.02552371 127.0.0.1:9528
+22-38-13-643:[Info]:Time:22-38-13-643:Warning Message: Timeout deadline pushed to  112.7785 127.0.0.1:9528
+22-38-14-187:[Info]:Time:22-38-14-187:SendToLobby:9 CQADAAiRTg==
+22-38-14-312:[Debug]:Time:22-38-14-312:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-14-314:[Info]:Time:22-38-14-314:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-16-655:[Info]:Time:22-38-16-655:Warning Message: resend delay 0.02550598 127.0.0.1:9528
+22-38-16-655:[Info]:Time:22-38-16-655:Warning Message: Timeout deadline pushed to  115.7904 127.0.0.1:9528
+22-38-19-193:[Info]:Time:22-38-19-193:SendToLobby:9 CQADAAiRTg==
+22-38-19-242:[Debug]:Time:22-38-19-242:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-19-249:[Info]:Time:22-38-19-249:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-19-666:[Info]:Time:22-38-19-666:Warning Message: resend delay 0.02548397 127.0.0.1:9528
+22-38-19-666:[Info]:Time:22-38-19-666:Warning Message: Timeout deadline pushed to  118.8013 127.0.0.1:9528
+22-38-20-970:[Debug]:Time:22-38-20-970:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-38-22-671:[Info]:Time:22-38-22-671:Warning Message: resend delay 0.025507 127.0.0.1:9528
+22-38-22-671:[Info]:Time:22-38-22-671:Warning Message: Timeout deadline pushed to  121.8061 127.0.0.1:9528
+22-38-24-195:[Info]:Time:22-38-24-195:SendToLobby:9 CQADAAiRTg==
+22-38-24-282:[Debug]:Time:22-38-24-282:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-24-285:[Info]:Time:22-38-24-285:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-25-683:[Info]:Time:22-38-25-683:Warning Message: resend delay 0.02550391 127.0.0.1:9528
+22-38-25-683:[Info]:Time:22-38-25-683:Warning Message: Timeout deadline pushed to  124.8183 127.0.0.1:9528
+22-38-28-684:[Info]:Time:22-38-28-684:Warning Message: resend delay 0.0254777 127.0.0.1:9528
+22-38-28-684:[Info]:Time:22-38-28-684:Warning Message: Timeout deadline pushed to  127.8186 127.0.0.1:9528
+22-38-29-203:[Info]:Time:22-38-29-203:SendToLobby:9 CQADAAiRTg==
+22-38-29-311:[Debug]:Time:22-38-29-311:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-29-317:[Info]:Time:22-38-29-317:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-30-974:[Debug]:Time:22-38-30-974:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-38-31-707:[Info]:Time:22-38-31-707:Warning Message: resend delay 0.02616111 127.0.0.1:9528
+22-38-31-707:[Info]:Time:22-38-31-707:Warning Message: Timeout deadline pushed to  130.8418 127.0.0.1:9528
+22-38-34-207:[Info]:Time:22-38-34-207:SendToLobby:9 CQADAAiRTg==
+22-38-34-343:[Debug]:Time:22-38-34-343:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-34-344:[Info]:Time:22-38-34-344:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-34-706:[Info]:Time:22-38-34-706:Warning Message: resend delay 0.02591852 127.0.0.1:9528
+22-38-34-706:[Info]:Time:22-38-34-706:Warning Message: Timeout deadline pushed to  133.8411 127.0.0.1:9528
+22-38-37-707:[Info]:Time:22-38-37-707:Warning Message: resend delay 0.02584003 127.0.0.1:9528
+22-38-37-707:[Info]:Time:22-38-37-707:Warning Message: Timeout deadline pushed to  136.8417 127.0.0.1:9528
+22-38-39-211:[Info]:Time:22-38-39-211:SendToLobby:9 CQADAAiRTg==
+22-38-39-276:[Debug]:Time:22-38-39-276:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-39-280:[Info]:Time:22-38-39-280:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-40-717:[Info]:Time:22-38-40-717:Warning Message: resend delay 0.02567454 127.0.0.1:9528
+22-38-40-717:[Info]:Time:22-38-40-717:Warning Message: Timeout deadline pushed to  139.8517 127.0.0.1:9528
+22-38-40-978:[Debug]:Time:22-38-40-978:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-38-43-721:[Info]:Time:22-38-43-721:Warning Message: resend delay 0.02565483 127.0.0.1:9528
+22-38-43-721:[Info]:Time:22-38-43-721:Warning Message: Timeout deadline pushed to  142.8553 127.0.0.1:9528
+22-38-44-215:[Info]:Time:22-38-44-215:SendToLobby:9 CQADAAiRTg==
+22-38-44-306:[Debug]:Time:22-38-44-306:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-44-309:[Info]:Time:22-38-44-309:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-46-733:[Info]:Time:22-38-46-733:Warning Message: resend delay 0.02561219 127.0.0.1:9528
+22-38-46-733:[Info]:Time:22-38-46-733:Warning Message: Timeout deadline pushed to  145.8671 127.0.0.1:9528
+22-38-49-221:[Info]:Time:22-38-49-221:SendToLobby:9 CQADAAiRTg==
+22-38-49-339:[Debug]:Time:22-38-49-339:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-49-346:[Info]:Time:22-38-49-346:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-49-740:[Info]:Time:22-38-49-740:Warning Message: resend delay 0.0255535 127.0.0.1:9528
+22-38-49-740:[Info]:Time:22-38-49-740:Warning Message: Timeout deadline pushed to  148.8744 127.0.0.1:9528
+22-38-50-980:[Debug]:Time:22-38-50-980:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-38-52-745:[Info]:Time:22-38-52-745:Warning Message: resend delay 0.02549319 127.0.0.1:9528
+22-38-52-745:[Info]:Time:22-38-52-745:Warning Message: Timeout deadline pushed to  151.8789 127.0.0.1:9528
+22-38-54-222:[Info]:Time:22-38-54-222:SendToLobby:9 CQADAAiRTg==
+22-38-54-369:[Debug]:Time:22-38-54-369:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-54-372:[Info]:Time:22-38-54-372:DecodeNodeMessage:9 CQADAAiRTg==
+22-38-55-759:[Info]:Time:22-38-55-759:Warning Message: resend delay 0.02548943 127.0.0.1:9528
+22-38-55-759:[Info]:Time:22-38-55-759:Warning Message: Timeout deadline pushed to  154.8937 127.0.0.1:9528
+22-38-57-334:[Info]:Time:22-38-57-334:Publish ui_lock_target ui
+22-38-58-771:[Info]:Time:22-38-58-771:Warning Message: resend delay 0.02561177 127.0.0.1:9528
+22-38-58-771:[Info]:Time:22-38-58-771:Warning Message: Timeout deadline pushed to  157.9053 127.0.0.1:9528
+22-38-59-223:[Info]:Time:22-38-59-223:SendToLobby:9 CQADAAiRTg==
+22-38-59-298:[Debug]:Time:22-38-59-298:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-38-59-305:[Info]:Time:22-38-59-305:DecodeNodeMessage:9 CQADAAiRTg==
+22-39-00-775:[Info]:Time:22-39-00-775:Publish ui_lock_target ui
+22-39-00-988:[Debug]:Time:22-39-00-988:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-39-01-781:[Info]:Time:22-39-01-781:Warning Message: resend delay 0.02553398 127.0.0.1:9528
+22-39-01-781:[Info]:Time:22-39-01-781:Warning Message: Timeout deadline pushed to  160.9151 127.0.0.1:9528
+22-39-04-224:[Info]:Time:22-39-04-224:SendToLobby:9 CQADAAiRTg==
+22-39-04-329:[Debug]:Time:22-39-04-329:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-39-04-337:[Info]:Time:22-39-04-337:DecodeNodeMessage:9 CQADAAiRTg==
+22-39-04-794:[Info]:Time:22-39-04-794:Warning Message: resend delay 0.02549876 127.0.0.1:9528
+22-39-04-794:[Info]:Time:22-39-04-794:Warning Message: Timeout deadline pushed to  163.9278 127.0.0.1:9528
+22-39-06-514:[Info]:Time:22-39-06-514:Publish ui_lock_target ui
+22-39-07-802:[Info]:Time:22-39-07-802:Warning Message: resend delay 0.02551255 127.0.0.1:9528
+22-39-07-802:[Info]:Time:22-39-07-802:Warning Message: Timeout deadline pushed to  166.9358 127.0.0.1:9528
+22-39-09-231:[Info]:Time:22-39-09-231:SendToLobby:9 CQADAAiRTg==
+22-39-09-361:[Debug]:Time:22-39-09-361:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-39-09-366:[Info]:Time:22-39-09-366:DecodeNodeMessage:9 CQADAAiRTg==
+22-39-10-806:[Info]:Time:22-39-10-806:Warning Message: resend delay 0.02548376 127.0.0.1:9528
+22-39-10-806:[Info]:Time:22-39-10-806:Warning Message: Timeout deadline pushed to  169.94 127.0.0.1:9528
+22-39-10-989:[Debug]:Time:22-39-10-989:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-39-13-810:[Info]:Time:22-39-13-810:Warning Message: resend delay 0.02550205 127.0.0.1:9528
+22-39-13-810:[Info]:Time:22-39-13-810:Warning Message: Timeout deadline pushed to  172.9439 127.0.0.1:9528
+22-39-14-233:[Info]:Time:22-39-14-233:SendToLobby:9 CQADAAiRTg==
+22-39-14-292:[Debug]:Time:22-39-14-292:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-39-14-296:[Info]:Time:22-39-14-296:DecodeNodeMessage:9 CQADAAiRTg==
+22-39-16-818:[Info]:Time:22-39-16-818:Warning Message: resend delay 0.0255437 127.0.0.1:9528
+22-39-16-818:[Info]:Time:22-39-16-818:Warning Message: Timeout deadline pushed to  175.9525 127.0.0.1:9528
+22-39-19-241:[Info]:Time:22-39-19-241:SendToLobby:9 CQADAAiRTg==
+22-39-19-324:[Debug]:Time:22-39-19-324:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-39-19-325:[Info]:Time:22-39-19-325:DecodeNodeMessage:9 CQADAAiRTg==
+22-39-19-824:[Info]:Time:22-39-19-824:Warning Message: resend delay 0.0255344 127.0.0.1:9528
+22-39-19-824:[Info]:Time:22-39-19-824:Warning Message: Timeout deadline pushed to  178.9583 127.0.0.1:9528
+22-39-20-992:[Debug]:Time:22-39-20-992:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-39-22-835:[Info]:Time:22-39-22-835:Warning Message: resend delay 0.02557595 127.0.0.1:9528
+22-39-22-835:[Info]:Time:22-39-22-835:Warning Message: Timeout deadline pushed to  181.9687 127.0.0.1:9528
+22-39-24-166:[Warn]:Time:22-39-24-164:StoryInstance queue message MainUI:on_click
+22-39-24-168:[Warn]:Time:22-39-24-166:MainUI on click btn1
+22-39-24-247:[Info]:Time:22-39-24-247:SendToLobby:9 CQADAAiRTg==
+22-39-24-372:[Debug]:Time:22-39-24-372:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-39-24-381:[Info]:Time:22-39-24-381:DecodeNodeMessage:9 CQADAAiRTg==
+22-39-24-835:[Warn]:Time:22-39-24-832:StoryInstance queue message MainUI:on_click
+22-39-24-838:[Warn]:Time:22-39-24-835:MainUI on click btn2
+22-39-25-494:[Warn]:Time:22-39-25-492:StoryInstance queue message MainUI:on_click
+22-39-25-496:[Warn]:Time:22-39-25-494:MainUI on click btn4
+22-39-25-835:[Info]:Time:22-39-25-835:Warning Message: resend delay 0.02567233 127.0.0.1:9528
+22-39-25-835:[Info]:Time:22-39-25-835:Warning Message: Timeout deadline pushed to  184.969 127.0.0.1:9528
+22-39-26-306:[Warn]:Time:22-39-26-304:StoryInstance queue message MainUI:on_click
+22-39-26-309:[Warn]:Time:22-39-26-307:MainUI on click btn3
+22-39-28-849:[Info]:Time:22-39-28-849:Warning Message: resend delay 0.02561483 127.0.0.1:9528
+22-39-28-849:[Info]:Time:22-39-28-849:Warning Message: Timeout deadline pushed to  187.9826 127.0.0.1:9528
+22-39-29-255:[Info]:Time:22-39-29-255:SendToLobby:9 CQADAAiRTg==
+22-39-29-403:[Debug]:Time:22-39-29-403:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-39-29-411:[Info]:Time:22-39-29-411:DecodeNodeMessage:9 CQADAAiRTg==
+22-39-30-994:[Debug]:Time:22-39-30-994:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
+22-39-31-849:[Info]:Time:22-39-31-849:Warning Message: resend delay 0.02553612 127.0.0.1:9528
+22-39-31-849:[Info]:Time:22-39-31-849:Warning Message: Timeout deadline pushed to  190.9827 127.0.0.1:9528
+22-39-34-263:[Info]:Time:22-39-34-263:SendToLobby:9 CQADAAiRTg==
+22-39-34-335:[Debug]:Time:22-39-34-334:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-39-34-336:[Info]:Time:22-39-34-336:DecodeNodeMessage:9 CQADAAiRTg==
+22-39-34-852:[Info]:Time:22-39-34-852:Warning Message: resend delay 0.02553871 127.0.0.1:9528
+22-39-34-852:[Info]:Time:22-39-34-852:Warning Message: Timeout deadline pushed to  193.9859 127.0.0.1:9528
+22-39-37-864:[Info]:Time:22-39-37-864:Warning Message: resend delay 0.02548284 127.0.0.1:9528
+22-39-37-864:[Info]:Time:22-39-37-864:Warning Message: Timeout deadline pushed to  196.9977 127.0.0.1:9528
+22-39-39-271:[Info]:Time:22-39-39-271:SendToLobby:9 CQADAAiRTg==
+22-39-39-365:[Debug]:Time:22-39-39-365:QueueActionWithDelegation, Void OnMessageReceived(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-39-39-371:[Info]:Time:22-39-39-371:DecodeNodeMessage:9 CQADAAiRTg==
+22-39-40-493:[Info]:Time:22-39-40-493:SendToLobby:7 BwADAAiRTg==
+22-39-40-494:[Info]:Time:22-39-40-494:SendToLobby:6 BgAGAAoEZ2FtZQ==
+22-39-40-494:[Info]:Time:22-39-40-494:Disconnect(False). CurTime 239583 LastConnectTime 18936
+22-39-40-495:[Debug]:Time:22-39-40-495:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+22-39-40-501:[Info]:Time:22-39-40-501:Network Status Changed:Disconnecting Reason:bye for quit passive
+Statistic:Sent 11093 bytes in 914 messages in 911 packets
+Received 18763 bytes in 948 messages in 886 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
+
+22-39-40-502:[Info]:Time:22-39-40-502:[Message Count]:
+[Send]:
+=>4:1 6 GameFrameworkMessage.Msg_CR_ShakeHands
+=>1:37 185 GameFrameworkMessage.Msg_Ping
+=>7:1 1 GameFrameworkMessage.Msg_CR_Enter
+=>9:359 4667 GameFrameworkMessage.Msg_CR_UserMoveToPos
+=>32:1 11 GameFrameworkMessage.Msg_CRC_StoryMessage
+[Receive]:
+=>5:1 3 GameFrameworkMessage.Msg_RC_ShakeHands_Ret
+=>2:37 333 GameFrameworkMessage.Msg_Pong
+=>30:1 5 GameFrameworkMessage.Msg_RC_CampChanged
+=>14:17 500 GameFrameworkMessage.Msg_RC_CreateNpc
+=>26:17 223 GameFrameworkMessage.Msg_RC_SyncProperty
+=>33:1 25 GameFrameworkMessage.Msg_RC_PublishEvent
+=>34:2 75 GameFrameworkMessage.Msg_RC_SendGfxMessage
+=>17:353 11296 GameFrameworkMessage.Msg_RC_NpcMove
+
+22-39-40-502:[Info]:Time:22-39-40-502:Network Status Changed:Disconnected Reason:bye for quit passive
+Statistic:Sent 11093 bytes in 914 messages in 911 packets
+Received 18763 bytes in 948 messages in 886 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
+
+22-39-40-502:[Info]:Time:22-39-40-502:[Message Count]:
+[Send]:
+=>4:1 6 GameFrameworkMessage.Msg_CR_ShakeHands
+=>1:37 185 GameFrameworkMessage.Msg_Ping
+=>7:1 1 GameFrameworkMessage.Msg_CR_Enter
+=>9:359 4667 GameFrameworkMessage.Msg_CR_UserMoveToPos
+=>32:1 11 GameFrameworkMessage.Msg_CRC_StoryMessage
+[Receive]:
+=>5:1 3 GameFrameworkMessage.Msg_RC_ShakeHands_Ret
+=>2:37 333 GameFrameworkMessage.Msg_Pong
+=>30:1 5 GameFrameworkMessage.Msg_RC_CampChanged
+=>14:17 500 GameFrameworkMessage.Msg_RC_CreateNpc
+=>26:17 223 GameFrameworkMessage.Msg_RC_SyncProperty
+=>33:1 25 GameFrameworkMessage.Msg_RC_PublishEvent
+=>34:2 75 GameFrameworkMessage.Msg_RC_SendGfxMessage
+=>17:353 11296 GameFrameworkMessage.Msg_RC_NpcMove
+
+22-39-40-502:[Info]:Time:22-39-40-502:Connect ip:127.0.0.1 port:9528 key:219538851
+NetPeer Statistic:0 connections
+Sent 11156 bytes in 917 messages in 914 packets
+Received 18791 bytes in 949 messages in 887 packets
+Storage allocated 891 bytes
+Recycled pool 812 bytes
+
+22-39-40-504:[Info]:Time:22-39-40-504:Network Status Changed:Connected Reason:Connected to 0835432C3FDF17F4
+Statistic:Sent 6 bytes in 1 messages in 1 packets
+Received 0 bytes in 0 messages in 0 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
+
+22-39-40-504:[Info]:Time:22-39-40-504:[Message Count]:
+[Send]:
+=>4:1 6 GameFrameworkMessage.Msg_CR_ShakeHands
+=>1:37 185 GameFrameworkMessage.Msg_Ping
+=>7:1 1 GameFrameworkMessage.Msg_CR_Enter
+=>9:359 4667 GameFrameworkMessage.Msg_CR_UserMoveToPos
+=>32:1 11 GameFrameworkMessage.Msg_CRC_StoryMessage
+[Receive]:
+=>5:1 3 GameFrameworkMessage.Msg_RC_ShakeHands_Ret
+=>2:37 333 GameFrameworkMessage.Msg_Pong
+=>30:1 5 GameFrameworkMessage.Msg_RC_CampChanged
+=>14:17 500 GameFrameworkMessage.Msg_RC_CreateNpc
+=>26:17 223 GameFrameworkMessage.Msg_RC_SyncProperty
+=>33:1 25 GameFrameworkMessage.Msg_RC_PublishEvent
+=>34:2 75 GameFrameworkMessage.Msg_RC_SendGfxMessage
+=>17:353 11296 GameFrameworkMessage.Msg_RC_NpcMove
+
+22-39-40-504:[Info]:Time:22-39-40-504:Warning Message: resend delay 0.0255127 127.0.0.1:9528
+22-39-40-504:[Info]:Time:22-39-40-504:Warning Message: Timeout deadline pushed to  199.638 127.0.0.1:9528
+22-39-40-504:[Info]:Time:22-39-40-504:Warning Message: resend delay 0.0255127 127.0.0.1:9528
+22-39-40-505:Time:22-39-40-504:Wait NetConnectionStatus.Connected ...
+22-39-41-503:[Info]:Time:22-39-41-503:Network Status Changed:Disconnected Reason:bye
+Statistic:Sent 35 bytes in 4 messages in 4 packets
+Received 32 bytes in 4 messages in 3 packets
+Unsent messages: 0
+Stored messages: 0
+Withheld messages: 0
+
+22-39-41-504:[Info]:Time:22-39-41-504:[Message Count]:
+[Send]:
+=>4:2 12 GameFrameworkMessage.Msg_CR_ShakeHands
+=>1:37 185 GameFrameworkMessage.Msg_Ping
+=>7:1 1 GameFrameworkMessage.Msg_CR_Enter
+=>9:359 4667 GameFrameworkMessage.Msg_CR_UserMoveToPos
+=>32:1 11 GameFrameworkMessage.Msg_CRC_StoryMessage
+[Receive]:
+=>5:1 3 GameFrameworkMessage.Msg_RC_ShakeHands_Ret
+=>2:37 333 GameFrameworkMessage.Msg_Pong
+=>30:1 5 GameFrameworkMessage.Msg_RC_CampChanged
+=>14:17 500 GameFrameworkMessage.Msg_RC_CreateNpc
+=>26:17 223 GameFrameworkMessage.Msg_RC_SyncProperty
+=>33:1 25 GameFrameworkMessage.Msg_RC_PublishEvent
+=>34:2 75 GameFrameworkMessage.Msg_RC_SendGfxMessage
+=>17:353 11296 GameFrameworkMessage.Msg_RC_NpcMove
+

@@ -25,7 +25,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_TypeName.Evaluate(instance, handler, iterator, args);
@@ -33,15 +33,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -51,15 +49,15 @@ namespace StorySystem.CommonValues
             if (m_TypeName.HaveValue) {
                 m_HaveValue = true;
                 string typeName = m_TypeName.Value;
-                m_Value = Type.GetType(typeName);
-                if (null == m_Value) {
+                m_Value = BoxedValue.From(Type.GetType(typeName));
+                if (null == m_Value.ObjectVal) {
                     GameFramework.LogSystem.Warn("null == Type.GetType({0})", typeName);
                 }
             }
         }
         private IStoryValue<string> m_TypeName = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class DotnetCallValue : IStoryValue
     {
@@ -91,7 +89,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_Object.Evaluate(instance, handler, iterator, args);
@@ -103,15 +101,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -121,7 +117,8 @@ namespace StorySystem.CommonValues
             bool canCalc = true;
             if (!m_Object.HaveValue || !m_Method.HaveValue) {
                 canCalc = false;
-            } else {
+            }
+            else {
                 for (int i = 0; i < m_Args.Count; i++) {
                     if (!m_Args[i].HaveValue) {
                         canCalc = false;
@@ -131,13 +128,13 @@ namespace StorySystem.CommonValues
             }
             if (canCalc) {
                 m_HaveValue = true;
-                m_Value = null;
-                object obj = m_Object.Value;
-                object methodObj = m_Method.Value;
-                string method = methodObj as string;
+                m_Value = BoxedValue.NullObject;
+                object obj = m_Object.Value.Get<object>();
+                var methodObj = m_Method.Value;
+                string method = methodObj.IsString ? methodObj.StringVal : null;
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_Args.Count; i++) {
-                    arglist.Add(m_Args[i].Value);
+                    arglist.Add(m_Args[i].Value.Get<object>());
                 }
                 object[] args = arglist.ToArray();
                 if (null != obj) {
@@ -146,51 +143,58 @@ namespace StorySystem.CommonValues
                         if (null != dict && dict.Contains(method) && dict[method] is Delegate) {
                             var d = dict[method] as Delegate;
                             if (null != d) {
-                                m_Value = d.DynamicInvoke(args);
+                                m_Value = BoxedValue.From(d.DynamicInvoke(args));
                             }
-                        } else {
+                        }
+                        else {
                             Type t = obj as Type;
                             if (null != t) {
                                 try {
                                     BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
                                     GameFramework.Converter.CastArgsForCall(t, method, flags, args);
-                                    m_Value = t.InvokeMember(method, flags, null, null, args);
-                                } catch (Exception ex) {
-                                    GameFramework.LogSystem.Warn("DotnetCall {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
-                                    m_Value = null;
+                                    m_Value = BoxedValue.From(t.InvokeMember(method, flags, null, null, args));
                                 }
-                            } else {
+                                catch (Exception ex) {
+                                    GameFramework.LogSystem.Warn("DotnetCall {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                                    m_Value = BoxedValue.NullObject;
+                                }
+                            }
+                            else {
                                 t = obj.GetType();
                                 if (null != t) {
                                     try {
                                         BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
                                         GameFramework.Converter.CastArgsForCall(t, method, flags, args);
-                                        m_Value = t.InvokeMember(method, flags, null, obj, args);
-                                    } catch (Exception ex) {
+                                        m_Value = BoxedValue.From(t.InvokeMember(method, flags, null, obj, args));
+                                    }
+                                    catch (Exception ex) {
                                         GameFramework.LogSystem.Warn("DotnetCall {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
-                                        m_Value = null;
+                                        m_Value = BoxedValue.NullObject;
                                     }
                                 }
                             }
                         }
-                    } else {
+                    }
+                    else {
                         IDictionary dict = obj as IDictionary;
-                        if (null != dict && dict.Contains(methodObj)) {
-                            var d = dict[methodObj] as Delegate;
+                        var mobj = methodObj.Get<object>();
+                        if (null != dict && dict.Contains(mobj)) {
+                            var d = dict[mobj] as Delegate;
                             if (null != d) {
-                                m_Value = d.DynamicInvoke(args);
+                                m_Value = BoxedValue.From(d.DynamicInvoke(args));
                             }
-                        } else {
+                        }
+                        else {
                             IEnumerable enumer = obj as IEnumerable;
-                            if (null != enumer && methodObj is int) {
-                                int index = (int)methodObj;
+                            if (null != enumer && methodObj.IsInteger) {
+                                int index = methodObj.Get<int>();
                                 var e = enumer.GetEnumerator();
                                 for (int i = 0; i <= index; ++i) {
                                     e.MoveNext();
                                 }
                                 var d = e.Current as Delegate;
                                 if (null != d) {
-                                    m_Value = d.DynamicInvoke(args);
+                                    m_Value = BoxedValue.From(d.DynamicInvoke(args));
                                 }
                             }
                         }
@@ -202,7 +206,7 @@ namespace StorySystem.CommonValues
         private IStoryValue m_Method = new StoryValue();
         private List<IStoryValue> m_Args = new List<IStoryValue>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class DotnetGetValue : IStoryValue
     {
@@ -234,7 +238,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_Object.Evaluate(instance, handler, iterator, args);
@@ -246,15 +250,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -264,7 +266,8 @@ namespace StorySystem.CommonValues
             bool canCalc = true;
             if (!m_Object.HaveValue || !m_Method.HaveValue) {
                 canCalc = false;
-            } else {
+            }
+            else {
                 for (int i = 0; i < m_Args.Count; i++) {
                     if (!m_Args[i].HaveValue) {
                         canCalc = false;
@@ -274,58 +277,65 @@ namespace StorySystem.CommonValues
             }
             if (canCalc) {
                 m_HaveValue = true;
-                m_Value = null;
-                object obj = m_Object.Value;
-                object methodObj = m_Method.Value;
-                string method = methodObj as string;
+                m_Value = BoxedValue.NullObject;
+                object obj = m_Object.Value.Get<object>();
+                var methodObj = m_Method.Value;
+                string method = methodObj.IsString ? methodObj.StringVal : null;
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_Args.Count; i++) {
-                    arglist.Add(m_Args[i].Value);
+                    arglist.Add(m_Args[i].Value.Get<object>());
                 }
                 object[] args = arglist.ToArray();
                 if (null != obj) {
                     if (null != method) {
                         IDictionary dict = obj as IDictionary;
                         if (null != dict && dict.Contains(method)) {
-                            m_Value = dict[method];
-                        } else {
+                            m_Value = BoxedValue.From(dict[method]);
+                        }
+                        else {
                             Type t = obj as Type;
                             if (null != t) {
                                 try {
                                     BindingFlags flags = BindingFlags.Static | BindingFlags.GetField | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic;
                                     GameFramework.Converter.CastArgsForGet(t, method, flags, args);
-                                    m_Value = t.InvokeMember(method, flags, null, null, args);
-                                } catch (Exception ex) {
-                                    GameFramework.LogSystem.Warn("DotnetGet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
-                                    m_Value = null;
+                                    m_Value = BoxedValue.From(t.InvokeMember(method, flags, null, null, args));
                                 }
-                            } else {
+                                catch (Exception ex) {
+                                    GameFramework.LogSystem.Warn("DotnetGet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                                    m_Value = BoxedValue.NullObject;
+                                }
+                            }
+                            else {
                                 t = obj.GetType();
                                 if (null != t) {
                                     try {
                                         BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.GetField | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic;
                                         GameFramework.Converter.CastArgsForGet(t, method, flags, args);
-                                        m_Value = t.InvokeMember(method, flags, null, obj, args);
-                                    } catch (Exception ex) {
+                                        m_Value = BoxedValue.From(t.InvokeMember(method, flags, null, obj, args));
+                                    }
+                                    catch (Exception ex) {
                                         GameFramework.LogSystem.Warn("DotnetGet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
-                                        m_Value = null;
+                                        m_Value = BoxedValue.NullObject;
                                     }
                                 }
                             }
                         }
-                    } else {
+                    }
+                    else {
                         IDictionary dict = obj as IDictionary;
-                        if (null != dict && dict.Contains(methodObj)) {
-                            m_Value = dict[methodObj];
-                        } else {
+                        var mobj = methodObj.Get<object>();
+                        if (null != dict && dict.Contains(mobj)) {
+                            m_Value = BoxedValue.From(dict[mobj]);
+                        }
+                        else {
                             IEnumerable enumer = obj as IEnumerable;
-                            if (null != enumer && methodObj is int) {
-                                int index = (int)methodObj;
+                            if (null != enumer && methodObj.IsInteger) {
+                                int index = methodObj.Get<int>();
                                 var e = enumer.GetEnumerator();
                                 for (int i = 0; i <= index; ++i) {
                                     e.MoveNext();
                                 }
-                                m_Value = e.Current;
+                                m_Value = BoxedValue.From(e.Current);
                             }
                         }
                     }
@@ -336,7 +346,7 @@ namespace StorySystem.CommonValues
         private IStoryValue m_Method = new StoryValue();
         private List<IStoryValue> m_Args = new List<IStoryValue>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class ChangeTypeValue : IStoryValue
     {
@@ -360,7 +370,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_Object.Evaluate(instance, handler, iterator, args);
@@ -369,15 +379,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -386,59 +394,80 @@ namespace StorySystem.CommonValues
         {
             if (m_Object.HaveValue && m_Type.HaveValue) {
                 m_HaveValue = true;
-                object obj = m_Object.Value;
-                object objType = m_Type.Value;
+                var obj = m_Object.Value;
+                var objType = m_Type.Value;
                 try {
-                    string type = objType as string;
+                    string type = objType.IsString ? objType.StringVal : null;
                     if (null != type) {
                         if (0 == type.CompareTo("sbyte")) {
-                            m_Value = StoryValueHelper.CastTo<sbyte>(obj);
-                        } else if (0 == type.CompareTo("byte")) {
-                            m_Value = StoryValueHelper.CastTo<byte>(obj);
-                        } else if (0 == type.CompareTo("short")) {
-                            m_Value = StoryValueHelper.CastTo<short>(obj);
-                        } else if (0 == type.CompareTo("ushort")) {
-                            m_Value = StoryValueHelper.CastTo<ushort>(obj);
-                        } else if (0 == type.CompareTo("int")) {
-                            m_Value = StoryValueHelper.CastTo<int>(obj);
-                        } else if (0 == type.CompareTo("uint")) {
-                            m_Value = StoryValueHelper.CastTo<uint>(obj);
-                        } else if (0 == type.CompareTo("long")) {
-                            m_Value = StoryValueHelper.CastTo<long>(obj);
-                        } else if (0 == type.CompareTo("ulong")) {
-                            m_Value = StoryValueHelper.CastTo<ulong>(obj);
-                        } else if (0 == type.CompareTo("float")) {
-                            m_Value = StoryValueHelper.CastTo<float>(obj);
-                        } else if (0 == type.CompareTo("double")) {
-                            m_Value = StoryValueHelper.CastTo<double>(obj);
-                        } else if (0 == type.CompareTo("string")) {
-                            m_Value = StoryValueHelper.CastTo<string>(obj);
-                        } else if (0 == type.CompareTo("bool")) {
-                            m_Value = StoryValueHelper.CastTo<bool>(obj);
-                        } else {
+                            m_Value = obj.Get<sbyte>();
+                        }
+                        else if (0 == type.CompareTo("byte")) {
+                            m_Value = obj.Get<byte>();
+                        }
+                        else if (0 == type.CompareTo("short")) {
+                            m_Value = obj.Get<short>();
+                        }
+                        else if (0 == type.CompareTo("ushort")) {
+                            m_Value = obj.Get<ushort>();
+                        }
+                        else if (0 == type.CompareTo("int")) {
+                            m_Value = obj.Get<int>();
+                        }
+                        else if (0 == type.CompareTo("uint")) {
+                            m_Value = obj.Get<uint>();
+                        }
+                        else if (0 == type.CompareTo("long")) {
+                            m_Value = obj.Get<long>();
+                        }
+                        else if (0 == type.CompareTo("ulong")) {
+                            m_Value = obj.Get<ulong>();
+                        }
+                        else if (0 == type.CompareTo("float")) {
+                            m_Value = obj.Get<float>();
+                        }
+                        else if (0 == type.CompareTo("double")) {
+                            m_Value = obj.Get<double>();
+                        }
+                        else if (0 == type.CompareTo("decimal")) {
+                            m_Value = obj.Get<decimal>();
+                        }
+                        else if (0 == type.CompareTo("bool")) {
+                            m_Value = obj.Get<bool>();
+                        }
+                        else if (0 == type.CompareTo("char")) {
+                            m_Value = obj.Get<char>();
+                        }
+                        else if (0 == type.CompareTo("string")) {
+                            m_Value = obj.Get<string>();
+                        }
+                        else {
                             Type t = Type.GetType(type);
                             if (null != t) {
-                                m_Value = Convert.ChangeType(obj, t);
-                            } else {
+                                m_Value = BoxedValue.From(Convert.ChangeType(obj, t));
+                            }
+                            else {
                                 GameFramework.LogSystem.Warn("null == Type.GetType({0})", type);
                             }
                         }
-                    } else {
-                        var t = objType as Type;
+                    }
+                    else {
+                        var t = objType.IsObject ? objType.ObjectVal as Type : null;
                         if (null != t) {
-                            m_Value = Convert.ChangeType(obj, t);
+                            m_Value = BoxedValue.From(Convert.ChangeType(obj, t));
                         }
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
-                    m_Value = null;
+                    m_Value = BoxedValue.NullObject;
                 }
             }
         }
         private IStoryValue m_Object = new StoryValue();
         private IStoryValue m_Type = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class ParseEnumValue : IStoryValue
     {
@@ -462,7 +491,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_Type.Evaluate(instance, handler, iterator, args);
@@ -471,15 +500,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -488,29 +515,31 @@ namespace StorySystem.CommonValues
         {
             if (m_Type.HaveValue && m_Val.HaveValue) {
                 m_HaveValue = true;
-                object objType = m_Type.Value;
+                var objType = m_Type.Value;
                 string val = m_Val.Value;
                 try {
-                    var t = objType as Type;
-                    string type = objType as string;
+                    var t = objType.IsObject ? objType.ObjectVal as Type : null;
+                    string type = objType.IsString ? objType.StringVal : null;
                     if (null == t && null != type) {
                         t = Type.GetType(type);
                     }
                     if (null != t) {
-                        m_Value = Enum.Parse(t, val, true);
-                    } else {
+                        m_Value = BoxedValue.From(Enum.Parse(t, val, true));
+                    }
+                    else {
                         GameFramework.LogSystem.Warn("null == Type.GetType({0})", type);
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     GameFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
-                    m_Value = null;
+                    m_Value = BoxedValue.NullObject;
                 }
             }
         }
         private IStoryValue m_Type = new StoryValue();
         private IStoryValue<string> m_Val = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class PgrepValue : IStoryValue
     {
@@ -531,7 +560,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_Filter.Evaluate(instance, handler, iterator, args);
@@ -539,15 +568,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -570,11 +597,13 @@ namespace StorySystem.CommonValues
                                     ++ct;
                                 }
                             }
-                        } catch {
+                        }
+                        catch {
                         }
                     }
                     m_Value = ct;
-                } catch {
+                }
+                catch {
                     m_Value = 0;
                 }
             }
@@ -582,7 +611,7 @@ namespace StorySystem.CommonValues
 
         private IStoryValue<string> m_Filter = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class PlistValue : IStoryValue
     {
@@ -603,7 +632,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_Filter.Evaluate(instance, handler, iterator, args);
@@ -611,15 +640,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -641,17 +668,19 @@ namespace StorySystem.CommonValues
                                 pss.Add(p.ProcessName);
                             }
                         }
-                    } catch {
+                    }
+                    catch {
                     }
                 }
                 m_Value = string.Join(",", pss.ToArray());
-            } catch {
+            }
+            catch {
                 m_Value = "";
             }
         }
 
         private IStoryValue<string> m_Filter = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
 }

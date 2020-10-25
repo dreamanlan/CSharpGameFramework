@@ -119,7 +119,13 @@ namespace GameFramework
             info.SceneContext = m_SceneContext;
             AddCareList(info);
             if (newUser.IsEntered) {
-                m_StorySystem.SendMessage("user_enter_scene", info.GetId(), info.GetUnitId(), info.GetCampId(), info.GetMovementStateInfo().PositionX, info.GetMovementStateInfo().PositionZ);
+                var args = m_StorySystem.NewBoxedValueList();
+                args.Add(info.GetId());
+                args.Add(info.GetUnitId());
+                args.Add(info.GetCampId());
+                args.Add(info.GetMovementStateInfo().PositionX);
+                args.Add(info.GetMovementStateInfo().PositionZ);
+                m_StorySystem.SendMessage("user_enter_scene", args);
             }
         }
 
@@ -130,7 +136,13 @@ namespace GameFramework
             EntityInfo info = user.Info;
             if (null != info) {
                 RemoveCareList(info);
-                m_StorySystem.SendMessage("user_leave_scene", info.GetId(), info.GetUnitId(), info.GetCampId(), info.GetMovementStateInfo().PositionX, info.GetMovementStateInfo().PositionZ);
+                var args = m_StorySystem.NewBoxedValueList();
+                args.Add(info.GetId());
+                args.Add(info.GetUnitId());
+                args.Add(info.GetCampId());
+                args.Add(info.GetMovementStateInfo().PositionX);
+                args.Add(info.GetMovementStateInfo().PositionZ);
+                m_StorySystem.SendMessage("user_leave_scene", args);
                 user.SetHpArmor(info.Hp, info.Energy);
                 info.NeedDelete = true;
                 user.Info = null;

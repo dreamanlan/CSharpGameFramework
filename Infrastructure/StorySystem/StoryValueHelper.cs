@@ -8,12 +8,17 @@ namespace StorySystem
         public const int c_MaxWaitCommandTime = 3600000;
         public static T CastTo<T>(object obj)
         {
-            if (obj is T) {
+            if (obj is BoxedValue) {
+                return ((BoxedValue)obj).Get<T>();
+            }
+            else if (obj is T) {
                 return (T)obj;
-            } else {
+            }
+            else {
                 try {
                     return (T)Convert.ChangeType(obj, typeof(T));
-                } catch {
+                }
+                catch {
                     return default(T);
                 }
             }
@@ -25,17 +30,15 @@ namespace StorySystem
             Type st = obj.GetType();
             if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
                 return obj;
-            } else {
+            }
+            else {
                 try {
                     return Convert.ChangeType(obj, t);
-                } catch {
+                }
+                catch {
                     return null;
                 }
             }
-        }
-        public static IStoryValue AdaptFrom<T>(IStoryValue<T> original)
-        {
-            return new StoryValueAdapter<T>(original);
         }
     }
     public sealed class StoryValueResult
@@ -49,35 +52,31 @@ namespace StorySystem
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
-            set
-            {
+            set {
                 m_HaveValue = value;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
-            set
-            {
+            set {
                 m_HaveValue = true;
                 m_Value = value;
             }
         }
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     public interface IStoryValueParam
     {
         Dsl.FunctionData InitFromDsl(Dsl.ISyntaxComponent param, int startIndex, bool enableComments);
         IStoryValueParam Clone();
-        void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args);
+        void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args);
         bool HaveValue { get; }
     }
     public sealed class StoryValueParam : IStoryValueParam
@@ -103,8 +102,8 @@ namespace StorySystem
             StoryValueParam val = new StoryValueParam();
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
-        {  }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        { }
         public bool HaveValue
         {
             get { return true; }
@@ -139,10 +138,10 @@ namespace StorySystem
             val.m_P1 = m_P1.Clone();
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_P1.Evaluate(instance, handler, iterator, args);
-        
+
         }
         public bool HaveValue
         {
@@ -185,11 +184,11 @@ namespace StorySystem
             val.m_P2 = m_P2.Clone();
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_P1.Evaluate(instance, handler, iterator, args);
             m_P2.Evaluate(instance, handler, iterator, args);
-        
+
         }
         public bool HaveValue
         {
@@ -239,12 +238,12 @@ namespace StorySystem
             val.m_P3 = m_P3.Clone();
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_P1.Evaluate(instance, handler, iterator, args);
             m_P2.Evaluate(instance, handler, iterator, args);
             m_P3.Evaluate(instance, handler, iterator, args);
-        
+
         }
         public bool HaveValue
         {
@@ -301,13 +300,13 @@ namespace StorySystem
             val.m_P4 = m_P4.Clone();
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_P1.Evaluate(instance, handler, iterator, args);
             m_P2.Evaluate(instance, handler, iterator, args);
             m_P3.Evaluate(instance, handler, iterator, args);
             m_P4.Evaluate(instance, handler, iterator, args);
-        
+
         }
         public bool HaveValue
         {
@@ -371,14 +370,14 @@ namespace StorySystem
             val.m_P5 = m_P5.Clone();
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_P1.Evaluate(instance, handler, iterator, args);
             m_P2.Evaluate(instance, handler, iterator, args);
             m_P3.Evaluate(instance, handler, iterator, args);
             m_P4.Evaluate(instance, handler, iterator, args);
             m_P5.Evaluate(instance, handler, iterator, args);
-        
+
         }
         public bool HaveValue
         {
@@ -449,7 +448,7 @@ namespace StorySystem
             val.m_P6 = m_P6.Clone();
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_P1.Evaluate(instance, handler, iterator, args);
             m_P2.Evaluate(instance, handler, iterator, args);
@@ -457,7 +456,7 @@ namespace StorySystem
             m_P4.Evaluate(instance, handler, iterator, args);
             m_P5.Evaluate(instance, handler, iterator, args);
             m_P6.Evaluate(instance, handler, iterator, args);
-        
+
         }
         public bool HaveValue
         {
@@ -535,7 +534,7 @@ namespace StorySystem
             val.m_P7 = m_P7.Clone();
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_P1.Evaluate(instance, handler, iterator, args);
             m_P2.Evaluate(instance, handler, iterator, args);
@@ -544,7 +543,7 @@ namespace StorySystem
             m_P5.Evaluate(instance, handler, iterator, args);
             m_P6.Evaluate(instance, handler, iterator, args);
             m_P7.Evaluate(instance, handler, iterator, args);
-        
+
         }
         public bool HaveValue
         {
@@ -629,7 +628,7 @@ namespace StorySystem
             val.m_P8 = m_P8.Clone();
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_P1.Evaluate(instance, handler, iterator, args);
             m_P2.Evaluate(instance, handler, iterator, args);
@@ -639,7 +638,7 @@ namespace StorySystem
             m_P6.Evaluate(instance, handler, iterator, args);
             m_P7.Evaluate(instance, handler, iterator, args);
             m_P8.Evaluate(instance, handler, iterator, args);
-        
+
         }
         public bool HaveValue
         {
@@ -724,13 +723,13 @@ namespace StorySystem
             }
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<P> val = m_Args[i];
                 val.Evaluate(instance, handler, iterator, args);
             }
-        
+
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue<P> val = m_Args[i];
                 m_Values[i] = val.Value;
@@ -738,8 +737,7 @@ namespace StorySystem
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 bool ret = true;
                 for (int i = 0; i < m_Args.Count; ++i) {
                     IStoryValue<P> val = m_Args[i];
@@ -753,8 +751,7 @@ namespace StorySystem
         }
         public List<P> Values
         {
-            get
-            {
+            get {
                 return m_Values;
             }
         }
@@ -784,7 +781,7 @@ namespace StorySystem
                     StoryValue val = new StoryValue();
                     val.InitFromDsl(callData.GetParam(i));
                     m_Args.Add(val);
-                    m_Values.Add(null);
+                    m_Values.Add(BoxedValue.NullObject);
                 }
             }
             return ret;
@@ -795,11 +792,11 @@ namespace StorySystem
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue arg = m_Args[i];
                 val.m_Args.Add(arg.Clone());
-                val.m_Values.Add(null);
+                val.m_Values.Add(BoxedValue.NullObject);
             }
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue val = m_Args[i];
@@ -813,8 +810,7 @@ namespace StorySystem
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 bool ret = true;
                 for (int i = 0; i < m_Args.Count; ++i) {
                     IStoryValue val = m_Args[i];
@@ -826,14 +822,13 @@ namespace StorySystem
                 return ret;
             }
         }
-        public ArrayList Values
+        public BoxedValueList Values
         {
-            get
-            {
+            get {
                 return m_Values;
             }
         }
         private List<IStoryValue> m_Args = new List<IStoryValue>();
-        private ArrayList m_Values = new ArrayList();
+        private BoxedValueList m_Values = new BoxedValueList();
     }
 }

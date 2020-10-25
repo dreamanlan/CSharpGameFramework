@@ -21,8 +21,8 @@ public class AiSelectSkillByDistance : ISimpleStoryValuePlugin
     }
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
-        ArrayList args = _params.Values;
-        int objId = (int)args[0];
+        var args = _params.Values;
+        int objId = args[0];
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc) {
             int targetId = npc.GetAiStateInfo().Target;
@@ -46,14 +46,14 @@ public class AiSelectSkillByDistance : ISimpleStoryValuePlugin
                         }
                     }
                     if (null != targetSkillInfo)
-                        m_Proxy.Value = targetSkillInfo;
+                        m_Proxy.Value = BoxedValue.From(targetSkillInfo);
                     else
-                        m_Proxy.Value = maxSkillInfo;
+                        m_Proxy.Value = BoxedValue.From(maxSkillInfo);
                     return;
                 }
             }
         }
-        m_Proxy.Value = null;
+        m_Proxy.Value = BoxedValue.NullObject;
     }
 
     private StoryValueResult m_Proxy = null;

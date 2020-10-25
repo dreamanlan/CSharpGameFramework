@@ -19,7 +19,7 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
         
         }
@@ -50,7 +50,7 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_AttrName.Evaluate(instance, handler, iterator, args);
             m_Value.Evaluate(instance, handler, iterator, args);
@@ -61,7 +61,7 @@ namespace GameFramework.Story.Commands
             Scene scene = instance.Context as Scene;
             if (null != scene) {
                 string name = m_AttrName.Value;
-                object value = m_Value.Value;
+                object value = m_Value.Value.Get<object>();
                 scene.SceneContext.BlackBoard.SetVariable(name, value);
             }
             return false;
@@ -99,7 +99,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserId)
                 m_UserId.Evaluate(instance, handler, iterator, args);
@@ -197,7 +197,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserId)
                 m_UserId.Evaluate(instance, handler, iterator, args);
@@ -296,7 +296,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserId)
                 m_UserId.Evaluate(instance, handler, iterator, args);
@@ -307,9 +307,9 @@ namespace GameFramework.Story.Commands
         {
             Scene scene = instance.Context as Scene;
             if (null != scene) {
-                object obj = m_Arg.Value;
-                if (obj is int) {
-                    int unitId = (int)obj;
+                var obj = m_Arg.Value;
+                if (obj.IsInteger) {
+                    int unitId = obj.Get<int>();
                     EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                     if (null != entity) {
                         Vector3 pos = entity.GetMovementStateInfo().GetPosition3D();
@@ -342,7 +342,7 @@ namespace GameFramework.Story.Commands
                         }
                     }
                 } else {
-                    Vector3 pos = (Vector3)obj;
+                    Vector3 pos = obj.Get<Vector3>();
                     Msg_RC_SendGfxMessage msg = new GameFrameworkMessage.Msg_RC_SendGfxMessage();
                     msg.name = "GameRoot";
                     msg.msg = "CameraLook";
@@ -424,7 +424,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserId)
                 m_UserId.Evaluate(instance, handler, iterator, args);
@@ -501,7 +501,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserId)
                 m_UserId.Evaluate(instance, handler, iterator, args);
@@ -583,7 +583,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_ParamNum > 1) {
                 m_ObjId.Evaluate(instance, handler, iterator, args);
@@ -640,7 +640,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserId)
                 m_UserId.Evaluate(instance, handler, iterator, args);
@@ -724,7 +724,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Pos.Evaluate(instance, handler, iterator, args);
             m_Radius.Evaluate(instance, handler, iterator, args);
@@ -766,8 +766,8 @@ namespace GameFramework.Story.Commands
                     });
                 }
                 string varName = m_SetVar.Value;
-                object varVal = m_SetVal.Value;
-                object elseVal = m_ElseSetVal.Value;
+                var varVal = m_SetVal.Value;
+                var elseVal = m_ElseSetVal.Value;
                 if (triggered) {
                     instance.SetVariable(varName, varVal);
                 } else {

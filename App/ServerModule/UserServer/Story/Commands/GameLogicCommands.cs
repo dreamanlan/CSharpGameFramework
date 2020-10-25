@@ -34,7 +34,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Receiver.Evaluate(instance, handler, iterator, args);
             m_Title.Evaluate(instance, handler, iterator, args);
@@ -136,7 +136,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
         }
@@ -181,7 +181,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
             m_TableId.Evaluate(instance, handler, iterator, args);
@@ -237,7 +237,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
             m_MemberId.Evaluate(instance, handler, iterator, args);
@@ -248,11 +248,11 @@ namespace GameFramework.Story.Commands
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = m_UserGuid.Value;
-                object id = m_MemberId.Value;
+                var id = m_MemberId.Value;
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
-                    if (id is ulong) {
-                        ulong memberGuid = (ulong)id;
+                    if (id.Type == BoxedValue.c_ULongType) {
+                        ulong memberGuid = id.Get<ulong>();
                         MemberInfo mi = ui.MemberInfos.Find(info => info.MemberGuid == memberGuid);
                         if (null != mi) {
                             mi.Deleted = true;
@@ -261,7 +261,7 @@ namespace GameFramework.Story.Commands
                         }
                     } else {
                         try {
-                            int heroId = (int)id;
+                            int heroId = id.Get<int>();
                             MemberInfo mi = ui.MemberInfos.Find(info => info.HeroId == heroId);
                             if (null != mi) {
                                 mi.Deleted = true;
@@ -304,7 +304,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
         }
@@ -344,7 +344,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
         }
@@ -389,7 +389,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
             m_ItemId.Evaluate(instance, handler, iterator, args);
@@ -442,7 +442,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
             m_ItemId.Evaluate(instance, handler, iterator, args);
@@ -494,7 +494,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
             m_ItemId.Evaluate(instance, handler, iterator, args);
@@ -505,15 +505,15 @@ namespace GameFramework.Story.Commands
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 ulong guid = m_UserGuid.Value;
-                object id = m_ItemId.Value;
+                var id = m_ItemId.Value;
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
-                    if (id is ulong) {
-                        ulong itemGuid = (ulong)id;
+                    if (id.Type == BoxedValue.c_ULongType) {
+                        ulong itemGuid = id.Get<ulong>();
                         ui.ItemBag.DelItemData(itemGuid);
                     } else {
                         try {
-                            int itemId = (int)id;
+                            int itemId = id.Get<int>();
                             ui.ItemBag.DelItemData(itemId);
                         } catch {
 
@@ -551,7 +551,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
         }
@@ -591,7 +591,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
         }
@@ -638,7 +638,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
             m_Key.Evaluate(instance, handler, iterator, args);
@@ -651,23 +651,23 @@ namespace GameFramework.Story.Commands
             if (null != userThread) {
                 ulong guid = m_UserGuid.Value;
                 string key = m_Key.Value;
-                object val = m_Value.Value;
+                var val = m_Value.Value;
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
-                    if (val is int) {
-                        int v = (int)val;
+                    if (val.IsInteger) {
+                        int v = val.Get<int>();
                         if (ui.IntDatas.ContainsKey(key))
                             ui.IntDatas[key] = v;
                         else
                             ui.IntDatas.Add(key, v);
-                    } else if (val is float) {
-                        float v = (float)val;
+                    } else if (val.IsFloat) {
+                        float v = val.Get<float>();
                         if (ui.FloatDatas.ContainsKey(key))
                             ui.FloatDatas[key] = v;
                         else
                             ui.FloatDatas.Add(key, v);
                     } else {
-                        string v = val as string;
+                        string v = val.StringVal;
                         if (null == v)
                             v = string.Empty;
                         if (ui.StringDatas.ContainsKey(key))
@@ -711,7 +711,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
             m_Key.Evaluate(instance, handler, iterator, args);
@@ -767,7 +767,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
         
         }
@@ -804,7 +804,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Key.Evaluate(instance, handler, iterator, args);
             m_Value.Evaluate(instance, handler, iterator, args);
@@ -815,15 +815,15 @@ namespace GameFramework.Story.Commands
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 string key = m_Key.Value;
-                object val = m_Value.Value;
-                if (val is int) {
-                    int v = (int)val;
+                var val = m_Value.Value;
+                if (val.IsInteger) {
+                    int v = val.Get<int>();
                     GlobalData.Instance.AddInt(key, v);
-                } else if (val is float) {
-                    float v = (float)val;
+                } else if (val.IsFloat) {
+                    float v = val.Get<float>();
                     GlobalData.Instance.AddFloat(key, v);
                 } else {
-                    string v = val as string;
+                    string v = val.StringVal;
                     if (null == v)
                         v = string.Empty;
                     GlobalData.Instance.AddStr(key, v);
@@ -860,7 +860,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Key.Evaluate(instance, handler, iterator, args);
             m_Type.Evaluate(instance, handler, iterator, args);

@@ -22,7 +22,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -35,7 +35,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -50,12 +50,12 @@ namespace GameFramework.Story.Values
                 if (m_UserGuid.HaveValue) {
                     ulong userGuid = m_UserGuid.Value;
                     m_HaveValue = true;
-                    m_Value = UserServer.Instance.UserProcessScheduler.GetUserInfo(userGuid);
+                    m_Value = BoxedValue.From(UserServer.Instance.UserProcessScheduler.GetUserInfo(userGuid));
                 }
             }
         }
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
 }

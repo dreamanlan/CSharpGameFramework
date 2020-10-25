@@ -137,7 +137,7 @@ namespace GameFramework
                 return m_StoryLogicInfos.Count;
             }
         }
-        public Dictionary<string, object> GlobalVariables
+        public StrBoxedValueDict GlobalVariables
         {
             get { return m_GlobalVariables; }
         }
@@ -379,39 +379,85 @@ namespace GameFramework
                 }
             }
         }
-        public void SendMessage(string msgId, params object[] args)
+        public BoxedValueList NewBoxedValueList()
         {
-            int ct = m_StoryLogicInfos.Count;
-            for (int ix = ct - 1; ix >= 0; --ix) {
-                StoryInstance info = m_StoryLogicInfos[ix];
-                info.SendMessage(msgId, args);
-            }
-            foreach (var pair in m_AiStoryInstancePool) {
-                var infos = pair.Value;
-                int aiCt = infos.Count;
-                for (int ix = aiCt - 1; ix >= 0; --ix) {
-                    if (infos[ix].m_IsUsed && null != infos[ix].m_StoryInstance) {
-                        infos[ix].m_StoryInstance.SendMessage(msgId, args);
-                    }
-                }
-            }
+            var args = m_BoxedValueListPool.Alloc();
+            args.Clear();
+            return args;
         }
-        public void SendConcurrentMessage(string msgId, params object[] args)
+        public void SendMessage(string msgId)
+        {
+            var args = NewBoxedValueList();
+            SendMessage(msgId, args);
+        }
+        public void SendMessage(string msgId, BoxedValue arg1)
+        {
+            var args = NewBoxedValueList();
+            args.Add(arg1);
+            SendMessage(msgId, args);
+        }
+        public void SendMessage(string msgId, BoxedValue arg1, BoxedValue arg2)
+        {
+            var args = NewBoxedValueList();
+            args.Add(arg1);
+            args.Add(arg2);
+            SendMessage(msgId, args);
+        }
+        public void SendMessage(string msgId, BoxedValue arg1, BoxedValue arg2, BoxedValue arg3)
+        {
+            var args = NewBoxedValueList();
+            args.Add(arg1);
+            args.Add(arg2);
+            args.Add(arg3);
+            SendMessage(msgId, args);
+        }
+        public void SendMessage(string msgId, BoxedValueList args)
         {
             int ct = m_StoryLogicInfos.Count;
             for (int ix = ct - 1; ix >= 0; --ix) {
                 StoryInstance info = m_StoryLogicInfos[ix];
-                info.SendConcurrentMessage(msgId, args);
+                var newArgs = info.NewBoxedValueList();
+                newArgs.AddRange(args);
+                info.SendMessage(msgId, newArgs);
             }
-            foreach (var pair in m_AiStoryInstancePool) {
-                var infos = pair.Value;
-                int aiCt = infos.Count;
-                for (int ix = aiCt - 1; ix >= 0; --ix) {
-                    if (infos[ix].m_IsUsed && null != infos[ix].m_StoryInstance) {
-                        infos[ix].m_StoryInstance.SendConcurrentMessage(msgId, args);
-                    }
-                }
+            m_BoxedValueListPool.Recycle(args);
+        }
+        public void SendConcurrentMessage(string msgId)
+        {
+            var args = NewBoxedValueList();
+            SendConcurrentMessage(msgId, args);
+        }
+        public void SendConcurrentMessage(string msgId, BoxedValue arg1)
+        {
+            var args = NewBoxedValueList();
+            args.Add(arg1);
+            SendConcurrentMessage(msgId, args);
+        }
+        public void SendConcurrentMessage(string msgId, BoxedValue arg1, BoxedValue arg2)
+        {
+            var args = NewBoxedValueList();
+            args.Add(arg1);
+            args.Add(arg2);
+            SendConcurrentMessage(msgId, args);
+        }
+        public void SendConcurrentMessage(string msgId, BoxedValue arg1, BoxedValue arg2, BoxedValue arg3)
+        {
+            var args = NewBoxedValueList();
+            args.Add(arg1);
+            args.Add(arg2);
+            args.Add(arg3);
+            SendConcurrentMessage(msgId, args);
+        }
+        public void SendConcurrentMessage(string msgId, BoxedValueList args)
+        {
+            int ct = m_StoryLogicInfos.Count;
+            for (int ix = ct - 1; ix >= 0; --ix) {
+                StoryInstance info = m_StoryLogicInfos[ix];
+                var newArgs = info.NewBoxedValueList();
+                newArgs.AddRange(args);
+                info.SendConcurrentMessage(msgId, newArgs);
             }
+            m_BoxedValueListPool.Recycle(args);
         }
         public int CountMessage(string msgId)
         {
@@ -499,7 +545,9 @@ namespace GameFramework
 
         public ServerStorySystem() { }
 
-        private StrObjDict m_GlobalVariables = new StrObjDict();
+        private StrBoxedValueDict m_GlobalVariables = new StrBoxedValueDict();
+        private SimpleObjectPool<BoxedValueList> m_BoxedValueListPool = new SimpleObjectPool<BoxedValueList>();
+
         private List<StoryInstance> m_StoryLogicInfos = new List<StoryInstance>();
         private Dictionary<string, StoryInstance> m_StoryInstancePool = new Dictionary<string, StoryInstance>();
         private Dictionary<string, List<AiStoryInstanceInfo>> m_AiStoryInstancePool = new Dictionary<string, List<AiStoryInstanceInfo>>();

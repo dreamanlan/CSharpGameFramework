@@ -21,11 +21,11 @@ public class AiGetSkills : ISimpleStoryValuePlugin
     }
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
-        ArrayList args = _params.Values;
-        int objId = (int)args[0];
+        var args = _params.Values;
+        int objId = args[0].Get<int>();
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc) {
-            m_Proxy.Value = npc.GetSkillStateInfo().GetAllSkill();
+            m_Proxy.Value = BoxedValue.From(npc.GetSkillStateInfo().GetAllSkill());
         }
     }
 

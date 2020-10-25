@@ -245,7 +245,7 @@ namespace GameFramework.Network
             GameFrameworkMessage.RequestNicknameResult protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.RequestNicknameResult;
             if (null == protoMsg)
                 return;
-            GfxStorySystem.Instance.SendMessage("show_nickname", protoMsg.m_Nicknames);
+            GfxStorySystem.Instance.SendMessage("show_nickname", BoxedValue.From(protoMsg.m_Nicknames));
         }
         private void HandleChangeNameResult(NodeMessage lobbyMsg)
         {

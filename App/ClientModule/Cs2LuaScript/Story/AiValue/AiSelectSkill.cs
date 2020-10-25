@@ -21,12 +21,12 @@ public class AiSelectSkill : ISimpleStoryValuePlugin
     }
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
-        ArrayList args = _params.Values;
-        int objId = (int)args[0];
+        var args = _params.Values;
+        int objId = args[0];
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc) {
             SkillInfo skillInfo = AiLogicUtility.NpcFindCanUseSkill(npc);
-            m_Proxy.Value = skillInfo;
+            m_Proxy.Value = BoxedValue.From(skillInfo);
         }
     }
 

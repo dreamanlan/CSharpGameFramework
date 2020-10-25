@@ -191,10 +191,10 @@ namespace StorySystem
                                 return CalcValue(newCall);
                             }
                             else if (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
-                                callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                                callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                                callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                                callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
+                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                              callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
                                 //obj.property or obj[property] or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
                                 Dsl.FunctionData newCall = new Dsl.FunctionData();
                                 newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
@@ -264,7 +264,7 @@ namespace StorySystem
             IStoryValueFactory handler;
             lock (m_Lock) {
                 string substId;
-                if(m_Substitutes.TryGetValue(id, out substId)) {
+                if (m_Substitutes.TryGetValue(id, out substId)) {
                     id = substId;
                 }
                 if (!m_ValueFactories.TryGetValue(id, out handler)) {

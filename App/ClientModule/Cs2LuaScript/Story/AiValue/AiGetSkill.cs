@@ -21,9 +21,9 @@ public class AiGetSkill : ISimpleStoryValuePlugin
     }
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
-        ArrayList args = _params.Values;
-        int objId = (int)args[0];
-        int index = (int)System.Convert.ChangeType(args[1], typeof(int));
+        var args = _params.Values;
+        int objId = args[0];
+        int index = args[1].Get<int>();
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc) {
             int skillId = 0;
@@ -65,9 +65,9 @@ public class AiGetSkill : ISimpleStoryValuePlugin
                     skillInfo = new SkillInfo(skillId);
                     npc.GetSkillStateInfo().AddSkill(skillInfo);
                 }
-                m_Proxy.Value = skillInfo;
+                m_Proxy.Value = BoxedValue.From(skillInfo);
             } else {
-                m_Proxy.Value = null;
+                m_Proxy.Value = BoxedValue.NullObject;
             }
         }
     }

@@ -813,7 +813,7 @@ namespace GameFramework
                 if (npDamage != 0) {
                     float mp = (float)entity.Energy / entity.EnergyMax;
                     Utility.EventSystem.Publish("ui_actor_mp", "ui", entity.GetId(), mp, -npDamage);
-                    //ClientModuleUtility.EventSystem.Publish("ui_show_mp_num", "ui", entity.GetId(), -npDamage);
+                    //PluginFrameworkUtility.EventSystem.Publish("ui_show_mp_num", "ui", entity.GetId(), -npDamage);
                 }
             }
         }

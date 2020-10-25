@@ -20,7 +20,7 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Object.Evaluate(instance, handler, iterator, args);
             m_Method.Evaluate(instance, handler, iterator, args);
@@ -30,12 +30,12 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object obj = m_Object.Value;
-            object methodObj = m_Method.Value;
-            string method = methodObj as string;
+            object obj = m_Object.Value.Get<object>();
+            var methodObj = m_Method.Value;
+            string method = methodObj.IsString ? methodObj.StringVal : null;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
-                arglist.Add(m_Args[i].Value);
+                arglist.Add(m_Args[i].Value.Get<object>());
             }
             object[] args = arglist.ToArray();
             if (null != obj) {
@@ -71,15 +71,16 @@ namespace StorySystem.CommonCommands
                     }
                 } else {
                     IDictionary dict = obj as IDictionary;
-                    if (null != dict && dict.Contains(methodObj)) {
-                        var d = dict[methodObj] as Delegate;
+                    var mobj = methodObj.Get<object>();
+                    if (null != dict && dict.Contains(mobj)) {
+                        var d = dict[mobj] as Delegate;
                         if (null != d) {
                             d.DynamicInvoke(args);
                         }
                     } else {
                         IEnumerable enumer = obj as IEnumerable;
-                        if (null != enumer && methodObj is int) {
-                            int index = (int)methodObj;
+                        if (null != enumer && methodObj.IsInteger) {
+                            int index = methodObj.Get<int>();
                             var e = enumer.GetEnumerator();
                             for (int i = 0; i <= index; ++i) {
                                 e.MoveNext();
@@ -126,7 +127,7 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Object.Evaluate(instance, handler, iterator, args);
             m_Method.Evaluate(instance, handler, iterator, args);
@@ -136,12 +137,12 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object obj = m_Object.Value;
-            object methodObj = m_Method.Value;
-            string method = methodObj as string;
+            object obj = m_Object.Value.Get<object>();
+            var methodObj = m_Method.Value;
+            string method = methodObj.IsString ? methodObj.StringVal : null;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
-                arglist.Add(m_Args[i].Value);
+                arglist.Add(m_Args[i].Value.Get<object>());
             }
             object[] args = arglist.ToArray();
             if (null != obj) {
@@ -174,12 +175,13 @@ namespace StorySystem.CommonCommands
                     }
                 } else {
                     IDictionary dict = obj as IDictionary;
-                    if (null != dict && dict.Contains(methodObj)) {
-                        dict[methodObj] = args[0];
+                    var mobj = methodObj.Get<object>();
+                    if (null != dict && dict.Contains(mobj)) {
+                        dict[mobj] = args[0];
                     } else {
                         IList list = obj as IList;
-                        if (null != list && methodObj is int) {
-                            int index = (int)methodObj;
+                        if (null != list && methodObj.IsInteger) {
+                            int index = methodObj.Get<int>();
                             if (index >= 0 && index < list.Count) {
                                 list[index] = args[0];
                             }
@@ -218,7 +220,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Arguments = m_Arguments.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_FileName.Evaluate(instance, handler, iterator, args);
             m_Arguments.Evaluate(instance, handler, iterator, args);

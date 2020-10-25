@@ -21,20 +21,20 @@ public class AiGetTarget : ISimpleStoryValuePlugin
     }
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
-        ArrayList args = _params.Values;
-        int objId = (int)args[0];
+        var args = _params.Values;
+        int objId = args[0];
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc) {
             int targetId = npc.GetAiStateInfo().Target;
             if (targetId > 0) {
                 EntityInfo entity = PluginFramework.Instance.GetEntityById(targetId);
                 if (null != entity && !entity.IsDead()) {
-                    m_Proxy.Value = entity;
+                    m_Proxy.Value = BoxedValue.From(entity);
                 } else {
-                    m_Proxy.Value = null;
+                    m_Proxy.Value = BoxedValue.NullObject;
                 }
             } else {
-                m_Proxy.Value = null;
+                m_Proxy.Value = BoxedValue.NullObject;
             }
         }
     }

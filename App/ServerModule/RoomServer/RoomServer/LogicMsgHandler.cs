@@ -34,7 +34,13 @@ namespace GameFramework
                     if (null != userInfo) {
                         if (scene.SceneState == SceneState.Running) {
                             scene.SyncForNewUser(user);
-                            scene.StorySystem.SendMessage("user_enter_scene", userInfo.GetId(), userInfo.GetUnitId(), userInfo.GetCampId(), userInfo.GetMovementStateInfo().PositionX, userInfo.GetMovementStateInfo().PositionZ);
+                            var args = scene.StorySystem.NewBoxedValueList();
+                            args.Add(userInfo.GetId());
+                            args.Add(userInfo.GetUnitId());
+                            args.Add(userInfo.GetCampId());
+                            args.Add(userInfo.GetMovementStateInfo().PositionX);
+                            args.Add(userInfo.GetMovementStateInfo().PositionZ);
+                            scene.StorySystem.SendMessage("user_enter_scene", args);
                         }
                     }
                 }
@@ -183,9 +189,9 @@ namespace GameFramework
                         //resetdsl
                         scene.GmStorySystem.Reset();
                         if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                            scene.GmStorySystem.GlobalVariables["EntityInfo"] = user.Info;
+                            scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.From(user.Info);
                         } else {
-                            scene.GmStorySystem.GlobalVariables.Add("EntityInfo", user.Info);
+                            scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.From(user.Info));
                         }
                         StorySystem.StoryConfigManager.Instance.Clear();
                         scene.StorySystem.ClearStoryInstancePool();
@@ -198,9 +204,9 @@ namespace GameFramework
                         if (null != cmdMsg.content) {
                             scene.GmStorySystem.Reset();
                             if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                                scene.GmStorySystem.GlobalVariables["EntityInfo"] = user.Info;
+                                scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.From(user.Info);
                             } else {
-                                scene.GmStorySystem.GlobalVariables.Add("EntityInfo", user.Info);
+                                scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.From(user.Info));
                             }
                             scene.GmStorySystem.LoadStory(cmdMsg.content);
                             scene.GmStorySystem.StartStory("main");
@@ -210,45 +216,15 @@ namespace GameFramework
                         //command
                         if (null != cmdMsg.content) {
                             string cmd = cmdMsg.content;
-                            int stIndex = cmd.IndexOf('(');
-                            if (stIndex > 0) {
-#if DEBUG
-                                scene.GmStorySystem.Reset();
-                                if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                                    scene.GmStorySystem.GlobalVariables["EntityInfo"] = user.Info;
-                                } else {
-                                    scene.GmStorySystem.GlobalVariables.Add("EntityInfo", user.Info);
-                                }
-                                scene.GmStorySystem.LoadStoryText(System.Text.Encoding.UTF8.GetBytes("script(main){onmessage(\"start\"){" + cmd + "}}"));
-                                scene.GmStorySystem.StartStory("main");
-#else
-                if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                  scene.GmStorySystem.GlobalVariables["EntityInfo"] = user.Info;
-                } else {
-                  scene.GmStorySystem.GlobalVariables.Add("EntityInfo", user.Info);
-                }
-                int edIndex = cmd.IndexOf(')');
-                if (edIndex > 0) {
-                  string msgId = cmd.Substring(0, stIndex);
-                  string[] args = cmd.Substring(stIndex + 1, edIndex - stIndex).Split(',');
-                  scene.GmStorySystem.SendMessage(msgId, args);
-                }
-#endif
-                            } else {
-                                if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                                    scene.GmStorySystem.GlobalVariables["EntityInfo"] = user.Info;
-                                } else {
-                                    scene.GmStorySystem.GlobalVariables.Add("EntityInfo", user.Info);
-                                }
-                                stIndex = cmd.IndexOf(' ');
-                                if (stIndex > 0) {
-                                    string msgId = cmd.Substring(0, stIndex);
-                                    string[] args = cmd.Substring(stIndex + 1).Split(new char[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries);
-                                    scene.GmStorySystem.SendMessage(msgId, args);
-                                } else {
-                                    scene.GmStorySystem.SendMessage(cmd);
-                                }
+                            scene.GmStorySystem.Reset();
+                            if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
+                                scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.From(user.Info);
                             }
+                            else {
+                                scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.From(user.Info));
+                            }
+                            scene.GmStorySystem.LoadStoryText(System.Text.Encoding.UTF8.GetBytes("script(main){onmessage(\"start\"){" + cmd + "}}"));
+                            scene.GmStorySystem.StartStory("main");
                         }
                         break;
                 }

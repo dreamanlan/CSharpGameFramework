@@ -10,7 +10,7 @@ namespace StorySystem
     {
         void InitFromDsl(Dsl.ISyntaxComponent param);//从DSL语言初始化值实例
         IStoryValue<T> Clone();//克隆一个新实例，每个值只从DSL语言初始化一次，之后的实例由克隆产生，提升性能
-        void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args);//参数替换为参数值并计算StoryValue的值
+        void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args);//参数替换为参数值并计算StoryValue的值
         bool HaveValue { get; }//是否已经有值，对常量初始化后即产生值，对参数、变量与函数则在Evaluate后产生值
         T Value { get; }//具体的值
     }
@@ -18,9 +18,9 @@ namespace StorySystem
     {
         void InitFromDsl(Dsl.ISyntaxComponent param);//从DSL语言初始化值实例
         IStoryValue Clone();//克隆一个新实例，每个值只从DSL语言初始化一次，之后的实例由克隆产生，提升性能
-        void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args);//参数替换为参数值并计算StoryValue的值
+        void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args);//参数替换为参数值并计算StoryValue的值
         bool HaveValue { get; }//是否已经有值，对常量初始化后即产生值，对参数、变量与函数则在Evaluate后产生值
-        object Value { get; }//具体的值
+        BoxedValue Value { get; }//具体的值
     }
     public class StoryValue : IStoryValue
     {
@@ -66,11 +66,11 @@ namespace StorySystem
             obj.CopyFrom(this);
             return obj;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (IsConst)
                 return;
-            if (m_ArgIndex >= 0 && m_ArgIndex < args.Length) {
+            if (m_ArgIndex >= 0 && m_ArgIndex < args.Count) {
                 m_Value = args[m_ArgIndex];
                 m_HaveValue = true;
             }
@@ -110,7 +110,7 @@ namespace StorySystem
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get {
                 return m_Value;
@@ -150,7 +150,7 @@ namespace StorySystem
             m_GlobalName = null;
             m_StackName = null;
             m_Proxy = null;
-            m_Value = null;
+            m_Value = BoxedValue.NullObject;
             m_IsConst = false;
         }
         private void SetLocal(string name)
@@ -161,7 +161,7 @@ namespace StorySystem
             m_GlobalName = null;
             m_StackName = null;
             m_Proxy = null;
-            m_Value = null;
+            m_Value = BoxedValue.NullObject;
             m_IsConst = false;
         }
         private void SetGlobal(string name)
@@ -172,7 +172,7 @@ namespace StorySystem
             m_GlobalName = name;
             m_StackName = null;
             m_Proxy = null;
-            m_Value = null;
+            m_Value = BoxedValue.NullObject;
             m_IsConst = false;
         }
         private void SetStack(string name)
@@ -183,7 +183,7 @@ namespace StorySystem
             m_GlobalName = null;
             m_StackName = name;
             m_Proxy = null;
-            m_Value = null;
+            m_Value = BoxedValue.NullObject;
             m_IsConst = false;
         }
         private void SetProxy(IStoryValue proxy)
@@ -194,10 +194,15 @@ namespace StorySystem
             m_GlobalName = null;
             m_StackName = null;
             m_Proxy = proxy;
-            m_Value = null;
+            m_Value = BoxedValue.NullObject;
             m_IsConst = false;
         }
-        private void SetValue(object val)
+        private void SetValue<T>(T val)
+        {
+            PreSetValue();
+            m_Value.Set(val);
+        }
+        private void PreSetValue()
         {
             m_HaveValue = true;
             m_ArgIndex = c_NotArg;
@@ -205,7 +210,6 @@ namespace StorySystem
             m_GlobalName = null;
             m_StackName = null;
             m_Proxy = null;
-            m_Value = val;
             m_IsConst = true;
         }
         private void CalcInitValue(Dsl.ISyntaxComponent param)
@@ -252,7 +256,7 @@ namespace StorySystem
         private string m_GlobalName = null;
         private string m_StackName = null;
         private IStoryValue m_Proxy = null;
-        private object m_Value;
+        private BoxedValue m_Value;
         private bool m_HaveValue = false;
         private bool m_IsConst = false;
     }
@@ -300,22 +304,22 @@ namespace StorySystem
             obj.CopyFrom(this);
             return obj;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (IsConst)
                 return;
-            if (m_ArgIndex >= 0 && m_ArgIndex < args.Length) {
-                m_Value = StoryValueHelper.CastTo<T>(args[m_ArgIndex]);
+            if (m_ArgIndex >= 0 && m_ArgIndex < args.Count) {
+                m_Value = args[m_ArgIndex].Get<T>();
                 m_HaveValue = true;
             }
             else if (m_ArgIndex == c_Iterator) {
-                m_Value = StoryValueHelper.CastTo<T>(iterator);
+                m_Value = iterator.Get<T>();
                 m_HaveValue = true;
             }
             else if (null != m_Proxy) {
                 m_Proxy.Evaluate(instance, handler, iterator, args);
                 if (m_Proxy.HaveValue) {
-                    m_Value = StoryValueHelper.CastTo<T>(m_Proxy.Value);
+                    m_Value = m_Proxy.Value.Get<T>();
                     m_HaveValue = true;
                 }
                 else {
@@ -334,10 +338,10 @@ namespace StorySystem
                     name = m_StackName;
                 }
                 if (!string.IsNullOrEmpty(name)) {
-                    object val;
+                    BoxedValue val;
                     m_HaveValue = instance.TryGetVariable(name, out val);
                     if (m_HaveValue) {
-                        m_Value = StoryValueHelper.CastTo<T>(val);
+                        m_Value = val.Get<T>();
                     }
                 }
             }
@@ -450,7 +454,7 @@ namespace StorySystem
             if (null != val) {
                 //对初始化即能求得值的函数，不需要再记录函数表达式，直接转换为常量值。
                 if (val.HaveValue) {
-                    SetValue(StoryValueHelper.CastTo<T>(val.Value));
+                    SetValue(val.Value.Get<T>());
                 }
                 else {
                     SetProxy(val);
@@ -491,40 +495,5 @@ namespace StorySystem
         private IStoryValue m_Proxy = null;
         private T m_Value;
         private bool m_IsConst = false;
-    }
-    internal sealed class StoryValueAdapter<T> : IStoryValue
-    {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
-        {
-            m_Original.InitFromDsl(param);
-        }
-        public IStoryValue Clone()
-        {
-            IStoryValue<T> newOriginal = m_Original.Clone();
-            StoryValueAdapter<T> val = new StoryValueAdapter<T>(newOriginal);
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
-        {
-            m_Original.Evaluate(instance, handler, iterator, args);
-
-        }
-        public bool HaveValue
-        {
-            get {
-                return m_Original.HaveValue;
-            }
-        }
-        public object Value
-        {
-            get {
-                return m_Original.Value;
-            }
-        }
-        public StoryValueAdapter(IStoryValue<T> original)
-        {
-            m_Original = original;
-        }
-        private IStoryValue<T> m_Original = null;
     }
 }

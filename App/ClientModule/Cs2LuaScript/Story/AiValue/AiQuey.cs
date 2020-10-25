@@ -34,27 +34,28 @@ public class AiQuery : IStoryValuePlugin
         return newObj;
     }
 
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
     {
         if (null != m_Select && null != m_From) {
             m_From.Evaluate(instance, handler, iterator, args);
             ArrayList coll = new ArrayList();
 
             //筛选
-            IEnumerable enumer = m_From.Value as IEnumerable;
+            IEnumerable enumer = m_From.Value.ObjectVal as IEnumerable;
             if (null != enumer) {
                 var enumerator = enumer.GetEnumerator();
                 while (enumerator.MoveNext()) {
                     var v = enumerator.Current;
+                    var bv = BoxedValue.From(v);
                     if (null != m_Where) {
-                        m_Where.Evaluate(instance, handler, v, args);
+                        m_Where.Evaluate(instance, handler, bv, args);
                         object wvObj = m_Where.Value;
                         int wv = (int)System.Convert.ChangeType(wvObj, typeof(int));
                         if (wv != 0) {
-                            AddRow(coll, v, instance, handler, args);
+                            AddRow(coll, bv, instance, handler, args);
                         }
                     } else {
-                        AddRow(coll, v, instance, handler, args);
+                        AddRow(coll, bv, instance, handler, args);
                     }
                 }
             }
@@ -113,18 +114,18 @@ public class AiQuery : IStoryValuePlugin
         }
     }
 
-    private void AddRow(ArrayList coll, object v, StoryInstance instance, StoryMessageHandler handler, object[] args)
+    private void AddRow(ArrayList coll, BoxedValue v, StoryInstance instance, StoryMessageHandler handler, BoxedValueList args)
     {
         ArrayList row = new ArrayList();
         coll.Add(row);
 
         m_Select.Evaluate(instance, handler, v, args);
-        row.Add(m_Select.Value);
+        row.Add(m_Select.Value.Get<object>());
 
         for (int i = 0; i < m_OrderBy.Count; ++i) {
             var val = m_OrderBy[i];
             val.Evaluate(instance, handler, v, args);
-            row.Add(val.Value);
+            row.Add(val.Value.Get<object>());
         }
     }
 

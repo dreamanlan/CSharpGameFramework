@@ -51,7 +51,7 @@ namespace StorySystem.CommonCommands
             m_OptArgs = new Dictionary<string, ISyntaxComponent>();
             m_InitialCommands = new List<IStoryCommand>();
         }
-        internal void PreCall(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        internal void PreCall(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             //command的执行不像函数，它支持类似协程的机制，允许暂时挂起，稍后继续，这意味着并非每次调用ExecCommand都对应语义上的一次过程调用
             //，因此栈的创建不能在ExecCommand里进行（事实上，在ExecCommand里无法区分本次执行是一次新的过程调用还是一次挂起后的继续执行）。
@@ -73,7 +73,7 @@ namespace StorySystem.CommonCommands
             //实参处理完，进入函数体执行，创建新的栈
             PushStack(instance, handler, stackInfo);
         }
-        internal void PostCall(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        internal void PostCall(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             PopStack(instance, handler);
         }
@@ -107,11 +107,11 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             //PreCall do all things, so do nothing here.
         }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             var runtime = handler.PeekRuntime();
             if (runtime.CompositeReentry) {
@@ -123,7 +123,7 @@ namespace StorySystem.CommonCommands
                 if (i < stackInfo.Args.Count) {
                     instance.SetVariable(m_ArgNames[i], stackInfo.Args[i].Value);
                 } else {
-                    instance.SetVariable(m_ArgNames[i], null);
+                    instance.SetVariable(m_ArgNames[i], BoxedValue.NullObject);
                 }
             }
             foreach (var pair in stackInfo.OptArgs) {
@@ -131,15 +131,16 @@ namespace StorySystem.CommonCommands
             }
             Prepare(handler);
             runtime = handler.PeekRuntime();
-            runtime.Arguments = new object[stackInfo.Args.Count];
+            runtime.Arguments = instance.NewBoxedValueList();
+            runtime.Arguments.Capacity = stackInfo.Args.Count;
             for (int i = 0; i < stackInfo.Args.Count; i++) {
-                runtime.Arguments[i] = stackInfo.Args[i].Value;
+                runtime.Arguments.Add(stackInfo.Args[i].Value);
             }
             runtime.Iterator = stackInfo.Args.Count;
             //没有wait之类命令直接执行
             runtime.Tick(instance, handler, delta);
             if (runtime.CommandQueue.Count == 0) {
-                handler.PopRuntime();
+                handler.PopRuntime(instance);
             } else {
                 //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
                 ret = true;
@@ -253,7 +254,7 @@ namespace StorySystem.CommonCommands
         {
             return null;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Cmd.PreCall(instance, handler, iterator, args);
         }
@@ -269,7 +270,7 @@ namespace StorySystem.CommonCommands
         {
             return null;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Cmd.PostCall(instance, handler, iterator, args);
         }
@@ -287,7 +288,7 @@ namespace StorySystem.CommonCommands
             cmd.m_SubstId = m_SubstId.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Id.Evaluate(instance, handler, iterator, args);
             m_SubstId.Evaluate(instance, handler, iterator, args);
@@ -325,7 +326,7 @@ namespace StorySystem.CommonCommands
             ClearCmdSubstsCommand cmd = new ClearCmdSubstsCommand();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
@@ -350,7 +351,7 @@ namespace StorySystem.CommonCommands
             cmd.m_SubstId = m_SubstId.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Id.Evaluate(instance, handler, iterator, args);
             m_SubstId.Evaluate(instance, handler, iterator, args);
@@ -388,7 +389,7 @@ namespace StorySystem.CommonCommands
             ClearValSubstsCommand cmd = new ClearValSubstsCommand();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)

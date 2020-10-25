@@ -25,13 +25,13 @@ namespace StorySystem.CommonCommands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             var localInfos = handler.LocalInfoStack.Peek();
             var condition = localInfos.GetLocalInfo(m_LocalInfoIndex) as IStoryValue<int>;
             condition.Evaluate(instance, handler, iterator, args);
         }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             var runtime = handler.PeekRuntime();
             if (runtime.TryBreakLoop()) {
@@ -55,7 +55,7 @@ namespace StorySystem.CommonCommands
                     //没有wait之类命令直接执行
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
-                        handler.PopRuntime();
+                        handler.PopRuntime(instance);
                         if (runtime.TryBreakLoop()) {
                             ret = false;
                             break;

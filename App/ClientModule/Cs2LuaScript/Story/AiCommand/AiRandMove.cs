@@ -24,13 +24,13 @@ public class AiRandMove : ISimpleStoryCommandPlugin
 
     public bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params, long delta)
     {
-        ArrayList args = _params.Values;
+        var args = _params.Values;
         if (!m_ParamReaded) {
             m_ParamReaded = true;
 
-            m_ObjId = (int)args[0];
-            m_Time = (int)System.Convert.ChangeType(args[1], typeof(int));
-            m_Radius = (int)System.Convert.ChangeType(args[2], typeof(int));
+            m_ObjId = args[0].Get<int>();
+            m_Time = args[1].Get<int>();
+            m_Radius = args[2].Get<int>();
 
             EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);
             if (null != npc && !npc.IsUnderControl()) {

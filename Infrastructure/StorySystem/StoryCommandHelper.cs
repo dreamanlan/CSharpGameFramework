@@ -20,26 +20,24 @@ namespace StorySystem
             val.m_Result = m_Result.Clone();
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Result.HaveValue = false;
             {
                 m_Params.Evaluate(instance, handler, iterator, args);
             }
-        
+
             TryUpdateValue(instance);
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_Result.HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Result.Value;
             }
         }
@@ -64,13 +62,21 @@ namespace StorySystem
         {
             m_Comments = m_Params.InitFromDsl(config, 0, true);
             m_Config = config;
+            m_Id = config.GetId();
+            if (GameFramework.GlobalVariables.Instance.IsDevice) {
+                //在设备上不保留配置信息了
+                m_Comments = null;
+                m_Config = null;
+            }
             return config is Dsl.FunctionData;
         }
         public IStoryCommand Clone()
         {
             SubClassType cmd = new SubClassType();
             cmd.m_Params = m_Params.Clone();
+            cmd.m_Comments = m_Comments;
             cmd.m_Config = m_Config;
+            cmd.m_Id = m_Id;
             return cmd;
         }
         public IStoryCommand PrologueCommand
@@ -83,9 +89,7 @@ namespace StorySystem
         }
         public string GetId()
         {
-            if (null == m_Config)
-                return string.Empty;
-            return m_Config.GetId();
+            return m_Id;
         }
         public Dsl.FunctionData GetComments()
         {
@@ -99,19 +103,21 @@ namespace StorySystem
         {
             m_Comments = cloner.GetComments();
             m_Config = cloner.GetConfig();
+            m_Id = cloner.GetId();
         }
         public void Reset()
         {
             m_LastExecResult = false;
             ResetState();
         }
-        public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             if (!m_LastExecResult) {
                 //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
                 try {
                     m_Params.Evaluate(instance, handler, iterator, args);
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     GameFramework.LogSystem.Error("SimpleStoryCommand Evaluate Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     return false;
                 }
@@ -120,13 +126,14 @@ namespace StorySystem
                 if (instance.IsDebug && ExecDebugger(instance, handler, delta, iterator, args))
                     return true;
                 m_LastExecResult = ExecCommand(instance, (ValueParamType)m_Params, delta);
-            } catch (Exception ex) {
+            }
+            catch (Exception ex) {
                 GameFramework.LogSystem.Error("SimpleStoryCommand ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 m_LastExecResult = false;
             }
             return m_LastExecResult;
         }
-        public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, object iterator, object[] args)
+        public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             if (null != instance.OnExecDebugger) {
                 return instance.OnExecDebugger(instance, handler, this, delta, iterator, args);
@@ -142,5 +149,6 @@ namespace StorySystem
         private IStoryValueParam m_Params = new ValueParamType();
         private Dsl.FunctionData m_Comments;
         private Dsl.ISyntaxComponent m_Config;
+        private string m_Id;
     }
 }

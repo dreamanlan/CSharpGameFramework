@@ -21,7 +21,7 @@ namespace GameFramework.Story.Commands
         }
         protected override void ResetState()
         { }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_StoryId.Evaluate(instance, handler, iterator, args);
             m_Multiple.Evaluate(instance, handler, iterator, args);
@@ -81,7 +81,7 @@ namespace GameFramework.Story.Commands
         }
         protected override void ResetState()
         { }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_StoryId.Evaluate(instance, handler, iterator, args);
             m_Multiple.Evaluate(instance, handler, iterator, args);
@@ -147,7 +147,7 @@ namespace GameFramework.Story.Commands
         {
             m_CurTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_StoryIds.Count; i++) {
                 m_StoryIds[i].Evaluate(instance, handler, iterator, args);
@@ -176,7 +176,7 @@ namespace GameFramework.Story.Commands
                 if (ct <= 0) {
 	                if (m_HaveSet) {
 	                    string varName = m_SetVar.Value;
-	                    object varVal = m_SetVal.Value;
+	                    var varVal = m_SetVal.Value;
 	                    instance.SetVariable(varName, varVal);
 	                }
 	            } else {
@@ -187,7 +187,7 @@ namespace GameFramework.Story.Commands
 	                    ret = true;
 	                } else if (m_HaveSet) {
 	                    string varName = m_TimeoutSetVar.Value;
-	                    object varVal = m_TimeoutSetVal.Value;
+	                    var varVal = m_TimeoutSetVal.Value;
 	                    instance.SetVariable(varName, varVal);
 	                }
 	            }
@@ -286,7 +286,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_StoryIds.Count; i++) {
                 m_StoryIds[i].Evaluate(instance, handler, iterator, args);
@@ -353,7 +353,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_StoryIds.Count; i++) {
                 m_StoryIds[i].Evaluate(instance, handler, iterator, args);
@@ -426,7 +426,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_MsgId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_MsgArgs.Count; ++i) {
@@ -440,12 +440,11 @@ namespace GameFramework.Story.Commands
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 string msgId = m_MsgId.Value;
-                ArrayList arglist = new ArrayList();
+                var args = userThread.StorySystem.NewBoxedValueList();
                 for (int i = 0; i < m_MsgArgs.Count; ++i) {
                     IStoryValue val = m_MsgArgs[i];
-                    arglist.Add(val.Value);
+                    args.Add(val.Value);
                 }
-                object[] args = arglist.ToArray();
                 if (m_IsConcurrent)
                     userThread.StorySystem.SendConcurrentMessage(msgId, args);
                 else
@@ -511,7 +510,7 @@ namespace GameFramework.Story.Commands
             m_StartTime = 0;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
                 m_MsgIds[i].Evaluate(instance, handler, iterator, args);
@@ -544,7 +543,7 @@ namespace GameFramework.Story.Commands
                 }
                 if (triggered) {
                     string varName = m_SetVar.Value;
-                    object varVal = m_SetVal.Value;
+                    var varVal = m_SetVal.Value;
                     instance.SetVariable(varName, varVal);
                 } else {
                     int curTime = m_CurTime;
@@ -553,7 +552,7 @@ namespace GameFramework.Story.Commands
                         ret = true;
                     } else {
                         string varName = m_TimeoutSetVar.Value;
-                        object varVal = m_TimeoutSetVal.Value;
+                        var varVal = m_TimeoutSetVal.Value;
                         instance.SetVariable(varName, varVal);
                     }
                 }
@@ -641,7 +640,7 @@ namespace GameFramework.Story.Commands
             m_CurTime = 0;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
                 m_MsgIds[i].Evaluate(instance, handler, iterator, args);
@@ -666,7 +665,7 @@ namespace GameFramework.Story.Commands
                 }
                 if (ct <= 0) {
                     string varName = m_SetVar.Value;
-                    object varVal = m_SetVal.Value;
+                    var varVal = m_SetVal.Value;
                     instance.SetVariable(varName, varVal);
                 } else {
                     int curTime = m_CurTime;
@@ -675,7 +674,7 @@ namespace GameFramework.Story.Commands
                         ret = true;
                     } else {
                         string varName = m_TimeoutSetVar.Value;
-                        object varVal = m_TimeoutSetVal.Value;
+                        var varVal = m_TimeoutSetVal.Value;
                         instance.SetVariable(varName, varVal);
                     }
                 }
@@ -755,7 +754,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
                 m_MsgIds[i].Evaluate(instance, handler, iterator, args);
@@ -803,7 +802,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_MsgIds.Count; i++) {
                 m_MsgIds[i].Evaluate(instance, handler, iterator, args);
@@ -851,7 +850,7 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserGuid)
                 m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -873,21 +872,21 @@ namespace GameFramework.Story.Commands
 
                 for (int i = 0; i < m_Args.Count; ++i) {
                     IStoryValue val = m_Args[i];
-                    object v = val.Value;
-                    if (null == v) {
+                    var v = val.Value;
+                    if (v.IsNullObject) {
                         Msg_LRL_StoryMessage.MessageArg arg = new Msg_LRL_StoryMessage.MessageArg();
                         arg.val_type = Msg_LRL_StoryMessage.ArgType.NULL;
                         arg.str_val = "";
                         msg.Args.Add(arg);
-                    } else if (v is int) {
+                    } else if (v.IsInteger) {
                         Msg_LRL_StoryMessage.MessageArg arg = new Msg_LRL_StoryMessage.MessageArg();
                         arg.val_type = Msg_LRL_StoryMessage.ArgType.INT;
-                        arg.str_val = ((int)v).ToString();
+                        arg.str_val = v.Get<int>().ToString();
                         msg.Args.Add(arg);
-                    } else if (v is float) {
+                    } else if (v.IsFloat) {
                         Msg_LRL_StoryMessage.MessageArg arg = new Msg_LRL_StoryMessage.MessageArg();
                         arg.val_type = Msg_LRL_StoryMessage.ArgType.FLOAT;
-                        arg.str_val = ((float)v).ToString();
+                        arg.str_val = v.Get<float>().ToString();
                         msg.Args.Add(arg);
                     } else {
                         Msg_LRL_StoryMessage.MessageArg arg = new Msg_LRL_StoryMessage.MessageArg();
@@ -963,7 +962,7 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserGuid)
                 m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -985,21 +984,21 @@ namespace GameFramework.Story.Commands
 
                 for (int i = 0; i < m_Args.Count; ++i) {
                     IStoryValue val = m_Args[i];
-                    object v = val.Value;
-                    if (null == v) {
+                    var v = val.Value;
+                    if (v.IsNullObject) {
                         Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
                         arg.val_type = LobbyArgType.NULL;
                         arg.str_val = "";
                         msg.m_Args.Add(arg);
-                    } else if (v is int) {
+                    } else if (v.IsInteger) {
                         Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
                         arg.val_type = LobbyArgType.INT;
-                        arg.str_val = ((int)v).ToString();
+                        arg.str_val = v.Get<int>().ToString();
                         msg.m_Args.Add(arg);
-                    } else if (v is float) {
+                    } else if (v.IsFloat) {
                         Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
                         arg.val_type = LobbyArgType.FLOAT;
-                        arg.str_val = ((float)v).ToString();
+                        arg.str_val = v.Get<float>().ToString();
                         msg.m_Args.Add(arg);
                     } else {
                         Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
@@ -1075,7 +1074,7 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserGuid)
                 m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -1101,21 +1100,21 @@ namespace GameFramework.Story.Commands
 
                 for (int i = 0; i < m_Args.Count; ++i) {
                     IStoryValue val = m_Args[i];
-                    object v = val.Value;
-                    if (null == v) {
+                    var v = val.Value;
+                    if (v.IsNullObject) {
                         Msg_LC_PublishEvent.EventArg arg = new Msg_LC_PublishEvent.EventArg();
                         arg.val_type = LobbyArgType.NULL;
                         arg.str_val = "";
                         msg.args.Add(arg);
-                    } else if (v is int) {
+                    } else if (v.IsInteger) {
                         Msg_LC_PublishEvent.EventArg arg = new Msg_LC_PublishEvent.EventArg();
                         arg.val_type = LobbyArgType.INT;
-                        arg.str_val = ((int)v).ToString();
+                        arg.str_val = v.Get<int>().ToString();
                         msg.args.Add(arg);
-                    } else if (v is float) {
+                    } else if (v.IsFloat) {
                         Msg_LC_PublishEvent.EventArg arg = new Msg_LC_PublishEvent.EventArg();
                         arg.val_type = LobbyArgType.FLOAT;
-                        arg.str_val = ((float)v).ToString();
+                        arg.str_val = v.Get<float>().ToString();
                         msg.args.Add(arg);
                     } else {
                         Msg_LC_PublishEvent.EventArg arg = new Msg_LC_PublishEvent.EventArg();
@@ -1193,7 +1192,7 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserGuid)
                 m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -1219,21 +1218,21 @@ namespace GameFramework.Story.Commands
 
                 for (int i = 0; i < m_Args.Count; ++i) {
                     IStoryValue val = m_Args[i];
-                    object v = val.Value;
-                    if (null == v) {
+                    var v = val.Value;
+                    if (v.IsNullObject) {
                         Msg_LC_SendGfxMessage.EventArg arg = new Msg_LC_SendGfxMessage.EventArg();
                         arg.val_type = LobbyArgType.NULL;
                         arg.str_val = "";
                         msg.args.Add(arg);
-                    } else if (v is int) {
+                    } else if (v.IsInteger) {
                         Msg_LC_SendGfxMessage.EventArg arg = new Msg_LC_SendGfxMessage.EventArg();
                         arg.val_type = LobbyArgType.INT;
-                        arg.str_val = ((int)v).ToString();
+                        arg.str_val = v.Get<int>().ToString();
                         msg.args.Add(arg);
-                    } else if (v is float) {
+                    } else if (v.IsFloat) {
                         Msg_LC_SendGfxMessage.EventArg arg = new Msg_LC_SendGfxMessage.EventArg();
                         arg.val_type = LobbyArgType.FLOAT;
-                        arg.str_val = ((float)v).ToString();
+                        arg.str_val = v.Get<float>().ToString();
                         msg.args.Add(arg);
                     } else {
                         Msg_LC_SendGfxMessage.EventArg arg = new Msg_LC_SendGfxMessage.EventArg();
@@ -1311,7 +1310,7 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveUserGuid)
                 m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -1337,21 +1336,21 @@ namespace GameFramework.Story.Commands
 
                 for (int i = 0; i < m_Args.Count; ++i) {
                     IStoryValue val = m_Args[i];
-                    object v = val.Value;
-                    if (null == v) {
+                    var v = val.Value;
+                    if (v.IsNullObject) {
                         Msg_LC_SendGfxMessage.EventArg arg = new Msg_LC_SendGfxMessage.EventArg();
                         arg.val_type = LobbyArgType.NULL;
                         arg.str_val = "";
                         msg.args.Add(arg);
-                    } else if (v is int) {
+                    } else if (v.IsInteger) {
                         Msg_LC_SendGfxMessage.EventArg arg = new Msg_LC_SendGfxMessage.EventArg();
                         arg.val_type = LobbyArgType.INT;
-                        arg.str_val = ((int)v).ToString();
+                        arg.str_val = v.Get<int>().ToString();
                         msg.args.Add(arg);
-                    } else if (v is float) {
+                    } else if (v.IsFloat) {
                         Msg_LC_SendGfxMessage.EventArg arg = new Msg_LC_SendGfxMessage.EventArg();
                         arg.val_type = LobbyArgType.FLOAT;
-                        arg.str_val = ((float)v).ToString();
+                        arg.str_val = v.Get<float>().ToString();
                         msg.args.Add(arg);
                     } else {
                         Msg_LC_SendGfxMessage.EventArg arg = new Msg_LC_SendGfxMessage.EventArg();
@@ -1430,7 +1429,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         { }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UserGuid.Evaluate(instance, handler, iterator, args);
             m_DictId.Evaluate(instance, handler, iterator, args);
@@ -1449,7 +1448,7 @@ namespace GameFramework.Story.Commands
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_DictArgs.Count; ++i) {
                     IStoryValue val = m_DictArgs[i];
-                    arglist.Add(val.Value);
+                    arglist.Add(val.Value.Get<object>());
                 }
                 object[] args = arglist.ToArray();
 

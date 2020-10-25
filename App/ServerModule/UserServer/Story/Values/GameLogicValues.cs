@@ -23,7 +23,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -36,7 +36,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -60,7 +60,7 @@ namespace GameFramework.Story.Values
         }
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetMemberInfoValue : IStoryValue
     {
@@ -81,7 +81,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -95,7 +95,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -114,9 +114,9 @@ namespace GameFramework.Story.Values
                     UserInfo ui = userThread.GetUserInfo(userGuid);
                     if (null != ui) {
                         if (index >= 0 && index < ui.MemberInfos.Count) {
-                            m_Value = ui.MemberInfos[index];
+                            m_Value = BoxedValue.From(ui.MemberInfos[index]);
                         } else {
-                            m_Value = null;
+                            m_Value = BoxedValue.NullObject;
                         }
                     }
                 }
@@ -125,7 +125,7 @@ namespace GameFramework.Story.Values
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private IStoryValue<int> m_Index = new StoryValue<int>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetFriendCountValue : IStoryValue
     {
@@ -144,7 +144,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -157,7 +157,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -181,7 +181,7 @@ namespace GameFramework.Story.Values
         }
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetFriendInfoValue : IStoryValue
     {
@@ -202,7 +202,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -216,7 +216,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -230,23 +230,23 @@ namespace GameFramework.Story.Values
             if (null != userThread) {
                 if (m_UserGuid.HaveValue && m_Index.HaveValue) {
                     ulong userGuid = m_UserGuid.Value;
-                    object id = m_Index.Value;
+                    var id = m_Index.Value;
                     m_HaveValue = true;
                     UserInfo ui = userThread.GetUserInfo(userGuid);
                     if (null != ui) {
-                        if (id is ulong) {
-                            ulong guid = (ulong)id;
-                            m_Value = ui.FriendInfos.Find(fi => fi.FriendGuid == guid);
+                        if (id.Type == BoxedValue.c_ULongType) {
+                            ulong guid = id.Get<ulong>();
+                            m_Value = BoxedValue.From(ui.FriendInfos.Find(fi => fi.FriendGuid == guid));
                         } else {
                             try {
-                                int index = (int)id;
+                                int index = id.Get<int>();
                                 if (index >= 0 && index < ui.MemberInfos.Count) {
-                                    m_Value = ui.FriendInfos[index];
+                                    m_Value = BoxedValue.From(ui.FriendInfos[index]);
                                 } else {
-                                    m_Value = null;
+                                    m_Value = BoxedValue.NullObject;
                                 }
                             } catch {
-                                m_Value = null;
+                                m_Value = BoxedValue.NullObject;
                             }
                         }
                     }
@@ -256,7 +256,7 @@ namespace GameFramework.Story.Values
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private IStoryValue m_Index = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetItemCountValue : IStoryValue
     {
@@ -275,7 +275,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -288,7 +288,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -314,7 +314,7 @@ namespace GameFramework.Story.Values
         }
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetFreeItemCountValue : IStoryValue
     {
@@ -333,7 +333,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -346,7 +346,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -372,7 +372,7 @@ namespace GameFramework.Story.Values
         }
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetItemInfoValue : IStoryValue
     {
@@ -393,7 +393,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -407,7 +407,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -421,23 +421,23 @@ namespace GameFramework.Story.Values
             if (null != userThread) {
                 if (m_UserGuid.HaveValue && m_Index.HaveValue) {
                     ulong userGuid = m_UserGuid.Value;
-                    object id = m_Index.Value;
+                    var id = m_Index.Value;
                     m_HaveValue = true;
                     UserInfo ui = userThread.GetUserInfo(userGuid);
                     if (null != ui) {
-                        if (id is ulong) {
-                            ulong guid = (ulong)id;
-                            m_Value = ui.ItemBag.GetItemData(guid);
+                        if (id.Type == BoxedValue.c_ULongType) {
+                            ulong guid = id.Get<ulong>();
+                            m_Value = BoxedValue.From(ui.ItemBag.GetItemData(guid));
                         } else {
                             try {
-                                int index = (int)id;
+                                int index = id.Get<int>();
                                 if (index >= 0 && index < ui.MemberInfos.Count) {
-                                    m_Value = ui.FriendInfos[index];
+                                    m_Value = BoxedValue.From(ui.FriendInfos[index]);
                                 } else {
-                                    m_Value = null;
+                                    m_Value = BoxedValue.NullObject;
                                 }
                             } catch {
-                                m_Value = null;
+                                m_Value = BoxedValue.NullObject;
                             }
                         }
                     }
@@ -447,7 +447,7 @@ namespace GameFramework.Story.Values
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private IStoryValue m_Index = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class FindItemInfoValue : IStoryValue
     {
@@ -468,7 +468,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -482,7 +482,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -496,19 +496,19 @@ namespace GameFramework.Story.Values
             if (null != userThread) {
                 if (m_UserGuid.HaveValue && m_Index.HaveValue) {
                     ulong userGuid = m_UserGuid.Value;
-                    object id = m_Index.Value;
+                    var id = m_Index.Value;
                     m_HaveValue = true;
                     UserInfo ui = userThread.GetUserInfo(userGuid);
                     if (null != ui) {
-                        if (id is ulong) {
-                            ulong guid = (ulong)id;
-                            m_Value = ui.ItemBag.GetItemData(guid);
+                        if (id.Type == BoxedValue.c_ULongType) {
+                            ulong guid = id.Get<ulong>();
+                            m_Value = BoxedValue.From(ui.ItemBag.GetItemData(guid));
                         } else {
                             try {
-                                int itemId = (int)id;
-                                m_Value = ui.ItemBag.GetItemData(itemId);
+                                int itemId = id.Get<int>();
+                                m_Value = BoxedValue.From(ui.ItemBag.GetItemData(itemId));
                             } catch {
-                                m_Value = null;
+                                m_Value = BoxedValue.NullObject;
                             }
                         }
                     }
@@ -518,7 +518,7 @@ namespace GameFramework.Story.Values
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private IStoryValue m_Index = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class CalcItemNumValue : IStoryValue
     {
@@ -539,7 +539,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -553,7 +553,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -581,7 +581,7 @@ namespace GameFramework.Story.Values
         private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
         private IStoryValue<int> m_ItemId = new StoryValue<int>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetUserDataValue : IStoryValue
     {
@@ -604,7 +604,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_UserGuid.Evaluate(instance, handler, iterator, args);
@@ -619,7 +619,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -661,7 +661,7 @@ namespace GameFramework.Story.Values
         private IStoryValue<string> m_Key = new StoryValue<string>();
         private IStoryValue<string> m_Type = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetGlobalDataValue : IStoryValue
     {
@@ -682,7 +682,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;        
             m_Key.Evaluate(instance, handler, iterator, args);
@@ -696,7 +696,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -725,6 +725,6 @@ namespace GameFramework.Story.Values
         private IStoryValue<string> m_Key = new StoryValue<string>();
         private IStoryValue<string> m_Type = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
 }

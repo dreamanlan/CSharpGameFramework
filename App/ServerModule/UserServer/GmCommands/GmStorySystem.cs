@@ -28,7 +28,7 @@ namespace GameFramework.GmCommands
         return m_StoryLogicInfos.Count;
       }
     }
-    internal Dictionary<string, object> GlobalVariables
+    internal StrBoxedValueDict GlobalVariables
     {
       get { return m_GlobalVariables; }
     }
@@ -135,7 +135,7 @@ namespace GameFramework.GmCommands
       return info;
     }
 
-    private StrObjDict m_GlobalVariables = new StrObjDict();
+    private StrBoxedValueDict m_GlobalVariables = new StrBoxedValueDict();
     
     private List<StoryInstance> m_StoryLogicInfos = new List<StoryInstance>();
     private Dictionary<string, StoryInstance> m_StoryInstancePool = new Dictionary<string, StoryInstance>();

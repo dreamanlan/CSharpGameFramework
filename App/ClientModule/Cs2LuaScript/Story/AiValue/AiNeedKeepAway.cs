@@ -21,10 +21,10 @@ public class AiNeedKeepAway : ISimpleStoryValuePlugin
     }
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
-        ArrayList args = _params.Values;
-        int objId = (int)args[0];
-        SkillInfo skillInfo = args[1] as SkillInfo;
-        float ratio = (float)System.Convert.ChangeType(args[2], typeof(float));
+        var args = _params.Values;
+        int objId = args[0].Get<int>();
+        SkillInfo skillInfo = args[1].ObjectVal as SkillInfo;
+        float ratio = args[2].Get<float>();
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc && null != skillInfo) {
             int targetId = npc.GetAiStateInfo().Target;

@@ -34,7 +34,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_ParamNum >= 5) {
                 m_UnitId.Evaluate(instance, handler, iterator, args);
@@ -162,7 +162,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
         }
@@ -203,7 +203,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_ObjId.Evaluate(instance, handler, iterator, args);
         }
@@ -244,7 +244,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_Dir.Evaluate(instance, handler, iterator, args);
@@ -307,7 +307,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_Pos.Evaluate(instance, handler, iterator, args);
@@ -369,7 +369,7 @@ namespace GameFramework.Story.Commands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_WayPoints.Evaluate(instance, handler, iterator, args);
@@ -435,7 +435,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
         }
@@ -489,7 +489,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_TargetUnitId.Evaluate(instance, handler, iterator, args);
@@ -541,7 +541,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_FormationIndex.Evaluate(instance, handler, iterator, args);
@@ -585,7 +585,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_Enable.Evaluate(instance, handler, iterator, args);
@@ -630,7 +630,7 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_AiLogic.Evaluate(instance, handler, iterator, args);
@@ -687,7 +687,7 @@ namespace GameFramework.Story.Commands
             return cmd;
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_TargetId.Evaluate(instance, handler, iterator, args);
@@ -736,7 +736,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_Anim.Evaluate(instance, handler, iterator, args);
@@ -807,7 +807,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_Params.Count; ++i) {
@@ -828,15 +828,15 @@ namespace GameFramework.Story.Commands
                         var param = m_Params[i];
                         string type = param.Type;
                         string key = param.Key.Value;
-                        object val = param.Value.Value;
+                        var val = param.Value.Value;
                         if (type == "int") {
-                            int v = (int)Convert.ChangeType(val, typeof(int));
+                            int v = val.Get<int>();
                             animator.SetInteger(key, v);
                         } else if (type == "float") {
-                            float v = (float)Convert.ChangeType(val, typeof(float));
+                            float v = val.Get<float>();
                             animator.SetFloat(key, v);
                         } else if (type == "bool") {
-                            bool v = (bool)Convert.ChangeType(val, typeof(bool));
+                            bool v = val.Get<bool>();
                             animator.SetBool(key, v);
                         } else if (type == "trigger") {
                             string v = val.ToString();
@@ -938,7 +938,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_ImpactId.Evaluate(instance, handler, iterator, args);
@@ -958,8 +958,8 @@ namespace GameFramework.Story.Commands
             int seq = 0;
             Dictionary<string, object> locals = new Dictionary<string, object>();
             for (int i = 0; i < m_Args.Count - 1; i += 2) {
-                string key = m_Args[i].Value as string;
-                object val = m_Args[i + 1].Value;
+                string key = m_Args[i].Value;
+                object val = m_Args[i + 1].Value.Get<object>();
                 if (!string.IsNullOrEmpty(key)) {
                     locals.Add(key, val);
                 }
@@ -1040,7 +1040,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_Seq.Evaluate(instance, handler, iterator, args);
@@ -1094,7 +1094,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_SkillId.Evaluate(instance, handler, iterator, args);
@@ -1110,8 +1110,8 @@ namespace GameFramework.Story.Commands
             int skillId = m_SkillId.Value;
             Dictionary<string, object> locals = new Dictionary<string, object>();
             for (int i = 0; i < m_Args.Count - 1; i += 2) {
-                string key = m_Args[i].Value as string;
-                object val = m_Args[i + 1].Value;
+                string key = m_Args[i].Value;
+                object val = m_Args[i + 1].Value.Get<object>();
                 if (!string.IsNullOrEmpty(key)) {
                     locals.Add(key, val);
                 }
@@ -1160,7 +1160,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
         }
@@ -1204,7 +1204,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_Event.Evaluate(instance, handler, iterator, args);
@@ -1260,7 +1260,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_CampId.Evaluate(instance, handler, iterator, args);
@@ -1305,7 +1305,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_SummonerId.Evaluate(instance, handler, iterator, args);
@@ -1350,7 +1350,7 @@ namespace GameFramework.Story.Commands
         {
         }
 
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_SummonSkillId.Evaluate(instance, handler, iterator, args);

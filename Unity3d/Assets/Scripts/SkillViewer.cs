@@ -267,7 +267,7 @@ public class SkillViewer : MonoBehaviour
                                 AddViewedSkill(skillId, skillRecords.records);
                             }
 
-                            GfxStorySystem.Instance.SendMessage("reload", actorId, targetId, args);
+                            GfxStorySystem.Instance.SendMessage("reload", actorId, targetId, BoxedValue.From(args));
                         }
                     }
                 }
@@ -388,7 +388,7 @@ public class SkillViewer : MonoBehaviour
                     }
 
                     if (args.Count > 1) {
-                        GfxStorySystem.Instance.SendMessage("reload", actorId, targetId, args);
+                        GfxStorySystem.Instance.SendMessage("reload", actorId, targetId, BoxedValue.From(args));
                     }
                 }
             }

@@ -24,7 +24,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_String.Evaluate(instance, handler, iterator, args);
@@ -37,7 +37,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -49,16 +49,16 @@ namespace StorySystem.CommonValues
             if (m_String.HaveValue) {
                 string str = m_String.Value;
                 m_HaveValue = true;
-                m_Value = null;
+                m_Value = BoxedValue.NullObject;
                 if (File.Exists(str)) {
-                    m_Value = File.ReadAllLines(str);
+                    m_Value = BoxedValue.From(File.ReadAllLines(str));
                 }
             }
         }
 
         private IStoryValue<string> m_String = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class ReadFileValue : IStoryValue
     {
@@ -78,7 +78,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_String.Evaluate(instance, handler, iterator, args);
@@ -91,7 +91,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -103,7 +103,7 @@ namespace StorySystem.CommonValues
             if (m_String.HaveValue) {
                 string str = m_String.Value;
                 m_HaveValue = true;
-                m_Value = null;
+                m_Value = BoxedValue.NullObject;
                 if (File.Exists(str)) {
                     m_Value = File.ReadAllText(str);
                 }
@@ -112,7 +112,7 @@ namespace StorySystem.CommonValues
 
         private IStoryValue<string> m_String = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class ToJsonValue : IStoryValue
     {
@@ -132,7 +132,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_Hashtable.Evaluate(instance, handler, iterator, args);
@@ -145,7 +145,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -156,7 +156,7 @@ namespace StorySystem.CommonValues
         {
             if (m_Hashtable.HaveValue) {
                 m_HaveValue = true;
-                object obj = m_Hashtable.Value;
+                object obj = m_Hashtable.Value.Get<object>();
                 if (null != obj) {
                     JsonData json = ToJson(obj);
                     m_Value = JsonMapper.ToJson(json);
@@ -168,7 +168,7 @@ namespace StorySystem.CommonValues
 
         private IStoryValue m_Hashtable = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
 
         private static JsonData ToJson(object obj)
         {
@@ -229,7 +229,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_String.Evaluate(instance, handler, iterator, args);
@@ -242,7 +242,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -255,13 +255,13 @@ namespace StorySystem.CommonValues
                 string str = m_String.Value;
                 m_HaveValue = true;
                 var json = JsonMapper.ToObject(str);
-                m_Value = ToValue(json, null);
+                m_Value = BoxedValue.From(ToValue(json, null));
             }
         }
 
         private IStoryValue<string> m_String = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
 
         private static object ToValue(JsonData data, object defVal)
         {
@@ -312,7 +312,7 @@ namespace StorySystem.CommonValues
                 pair.m_Value = m_Value.Clone();
                 return pair;
             }
-            internal void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+            internal void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
             {
                 m_Key.Evaluate(instance, handler, iterator, args);
                 m_Value.Evaluate(instance, handler, iterator, args);
@@ -347,7 +347,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             for (int i = 0; i < m_Args.Count; i++) {
@@ -362,7 +362,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -395,18 +395,18 @@ namespace StorySystem.CommonValues
                 var dict = new Hashtable();
                 for (int i = 0; i < m_Args.Count; i++) {
                     Pair pair = m_Args[i];
-                    var key = pair.m_Key.Value;
+                    var key = pair.m_Key.Value.ToString();
                     if (null != key) {
-                        dict.Add(key, pair.m_Value.Value);
+                        dict.Add(key, pair.m_Value.Value.Get<object>());
                     }
                 }
-                m_Value = dict;
+                m_Value = BoxedValue.From(dict);
             }
         }
 
         private List<Pair> m_Args = new List<Pair>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class HashtableGetValue : IStoryValue
     {
@@ -434,7 +434,7 @@ namespace StorySystem.CommonValues
             cmd.m_DefValue = m_DefValue.Clone();
             return cmd;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 1) {
@@ -454,7 +454,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -465,10 +465,10 @@ namespace StorySystem.CommonValues
         private void TryUpdateValue()
         {
             if (m_Var.HaveValue && m_Key.HaveValue && (m_ParamNum <= 2 || m_DefValue.HaveValue)) {
-                object obj = m_Var.Value;
+                object obj = m_Var.Value.Get<object>();
                 var dict = obj as IDictionary;
-                object key = m_Key.Value;
-                object defVal = null;
+                object key = m_Key.Value.Get<object>();
+                BoxedValue defVal = BoxedValue.NullObject;
                 if (m_ParamNum > 2) {
                     defVal = m_DefValue.Value;
                 }
@@ -476,7 +476,7 @@ namespace StorySystem.CommonValues
                 if (null != dict && null != key) {
                     try {
                         if (dict.Contains(key)) {
-                            m_Value = dict[key];
+                            m_Value = BoxedValue.From(dict[key]);
                         } else {
                             m_Value = defVal;
                         }
@@ -494,7 +494,7 @@ namespace StorySystem.CommonValues
         private IStoryValue m_Key = new StoryValue();
         private IStoryValue m_DefValue = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class HashtableSizeValue : IStoryValue
     {
@@ -516,7 +516,7 @@ namespace StorySystem.CommonValues
             cmd.m_Var = m_Var.Clone();
             return cmd;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 0) {
@@ -531,7 +531,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -542,7 +542,7 @@ namespace StorySystem.CommonValues
         private void TryUpdateValue()
         {
             if (m_Var.HaveValue) {
-                object obj = m_Var.Value;
+                object obj = m_Var.Value.Get<object>();
                 var dict = obj as IDictionary;
                 m_HaveValue = true;
                 if (null != dict) {
@@ -556,7 +556,7 @@ namespace StorySystem.CommonValues
         private int m_ParamNum = 0;
         private IStoryValue m_Var = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class HashtableKeysValue : IStoryValue
     {
@@ -578,7 +578,7 @@ namespace StorySystem.CommonValues
             cmd.m_Var = m_Var.Clone();
             return cmd;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 0) {
@@ -593,7 +593,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -604,15 +604,15 @@ namespace StorySystem.CommonValues
         private void TryUpdateValue()
         {
             if (m_Var.HaveValue) {
-                object obj = m_Var.Value;
+                object obj = m_Var.Value.Get<object>();
                 var dict = obj as IDictionary;
                 m_HaveValue = true;
                 if (null != dict) {
                     ArrayList list = new ArrayList();
                     list.AddRange(dict.Keys);
-                    m_Value = list;
+                    m_Value = BoxedValue.From(list);
                 } else {
-                    m_Value = null;
+                    m_Value.SetNullObject();
                 }
             }
         }
@@ -620,7 +620,7 @@ namespace StorySystem.CommonValues
         private int m_ParamNum = 0;
         private IStoryValue m_Var = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class HashtableValuesValue : IStoryValue
     {
@@ -642,7 +642,7 @@ namespace StorySystem.CommonValues
             cmd.m_Var = m_Var.Clone();
             return cmd;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             if (m_ParamNum > 0) {
@@ -657,7 +657,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -668,15 +668,15 @@ namespace StorySystem.CommonValues
         private void TryUpdateValue()
         {
             if (m_Var.HaveValue) {
-                object obj = m_Var.Value;
+                object obj = m_Var.Value.Get<object>();
                 var dict = obj as IDictionary;
                 m_HaveValue = true;
                 if (null != dict) {
                     ArrayList list = new ArrayList();
                     list.AddRange(dict.Values);
-                    m_Value = list;
+                    m_Value = BoxedValue.From(list);
                 } else {
-                    m_Value = null;
+                    m_Value.SetNullObject();
                 }
             }
         }
@@ -684,6 +684,6 @@ namespace StorySystem.CommonValues
         private int m_ParamNum = 0;
         private IStoryValue m_Var = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
 }

@@ -10,7 +10,7 @@ namespace GameFramework.Plugin
     {
         IStoryCommandPlugin Clone();
         void ResetState();
-        void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args);
+        void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args);
         bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta);
         bool ExecCommandWithArgs(StoryInstance instance, long delta, object iterator, object[] args);
         void LoadCallData(Dsl.FunctionData callData);

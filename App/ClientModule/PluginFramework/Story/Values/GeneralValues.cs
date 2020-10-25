@@ -20,7 +20,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
         
@@ -36,7 +36,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -51,7 +51,7 @@ namespace GameFramework.Story.Values
         }
 
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetTimeScaleValue : IStoryValue
     {
@@ -68,7 +68,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
         
@@ -84,7 +84,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -99,7 +99,7 @@ namespace GameFramework.Story.Values
         }
 
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class IsActiveValue : IStoryValue
     {
@@ -121,7 +121,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -134,7 +134,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -146,9 +146,9 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue) {
                 m_HaveValue = true;
-                object o = m_ObjPath.Value;
-                string objPath = o as string;
-                var uobj = o as UnityEngine.GameObject;
+                var o = m_ObjPath.Value;
+                string objPath = o.IsString ? o.StringVal : null;
+                UnityEngine.GameObject uobj = o.IsObject ? o.ObjectVal as UnityEngine.GameObject : null;
                 if (null != objPath) {
                     UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
                     if (null != obj) {
@@ -160,7 +160,7 @@ namespace GameFramework.Story.Values
                     m_Value = uobj.activeSelf ? 1 : 0;
                 } else {
                     try {
-                        int objId = (int)o;
+                        int objId = o.Get<int>();
                         UnityEngine.GameObject obj = PluginFramework.Instance.GetGameObject(objId);
                         if (null != obj) {
                             m_Value = obj.activeSelf ? 1 : 0;
@@ -175,7 +175,7 @@ namespace GameFramework.Story.Values
         }
         private IStoryValue m_ObjPath = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class IsReallyActiveValue : IStoryValue
     {
@@ -197,7 +197,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -210,7 +210,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -222,9 +222,9 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue) {
                 m_HaveValue = true;
-                object o = m_ObjPath.Value;
-                string objPath = o as string;
-                var uobj = o as UnityEngine.GameObject;
+                var o = m_ObjPath.Value;
+                string objPath = o.IsString ? o.StringVal : null;
+                UnityEngine.GameObject uobj = o.IsObject ? o.ObjectVal as UnityEngine.GameObject : null;
                 if (null != objPath) {
                     UnityEngine.GameObject obj = UnityEngine.GameObject.Find(objPath);
                     if (null != obj) {
@@ -236,7 +236,7 @@ namespace GameFramework.Story.Values
                     m_Value = uobj.activeInHierarchy ? 1 : 0;
                 } else {
                     try {
-                        int objId = (int)o;
+                        int objId = o.Get<int>();
                         UnityEngine.GameObject obj = PluginFramework.Instance.GetGameObject(objId);
                         if (null != obj) {
                             m_Value = obj.activeInHierarchy ? 1 : 0;
@@ -251,7 +251,7 @@ namespace GameFramework.Story.Values
         }
         private IStoryValue m_ObjPath = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class IsVisibleValue : IStoryValue
     {
@@ -273,7 +273,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -286,7 +286,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -297,15 +297,15 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue) {
                 m_HaveValue = true;
-                object o = m_ObjPath.Value;
-                string objPath = o as string;
-                var uobj = o as UnityEngine.GameObject;
+                var o = m_ObjPath.Value;
+                string objPath = o.IsString ? o.StringVal : null;
+                UnityEngine.GameObject uobj = o.IsObject ? o.ObjectVal as UnityEngine.GameObject : null;
                 if (null != uobj) {
                     if (null != objPath) {
                         uobj = UnityEngine.GameObject.Find(objPath);
                     } else {
                         try {
-                            int objId = (int)o;
+                            int objId = o.Get<int>();
                             uobj = PluginFramework.Instance.GetGameObject(objId);
                         } catch {
                             uobj = null;
@@ -313,7 +313,7 @@ namespace GameFramework.Story.Values
                     }
                 }
                 if (null != uobj) {
-                    var renderer = uobj.GetComponent<UnityEngine.Renderer>();
+                    var renderer = uobj.GetComponentInChildren<UnityEngine.Renderer>();
                     if (null != renderer) {
                         m_Value = renderer.isVisible ? 1 : 0;
                     } else {
@@ -326,7 +326,7 @@ namespace GameFramework.Story.Values
         }
         private IStoryValue m_ObjPath = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class IsNavmeshAgentEnabledValue : IStoryValue
     {
@@ -348,7 +348,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -361,7 +361,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -372,9 +372,9 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue) {
                 m_HaveValue = true;
-                object o = m_ObjPath.Value;
-                string objPath = o as string;
-                var uobj = o as UnityEngine.GameObject;
+                var o = m_ObjPath.Value;
+                string objPath = o.IsString ? o.StringVal : null;
+                var uobj = o.IsObject ? o.ObjectVal as UnityEngine.GameObject : null;
                 if (null != uobj) {
                     if (null != objPath) {
                         uobj = UnityEngine.GameObject.Find(objPath);
@@ -401,7 +401,7 @@ namespace GameFramework.Story.Values
         }
         private IStoryValue m_ObjPath = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetComponentValue : IStoryValue
     {
@@ -425,7 +425,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -439,7 +439,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -451,16 +451,16 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
                 m_HaveValue = true;
-                object objPath = m_ObjPath.Value;
-                object componentType = m_ComponentType.Value;
-                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                var objPath = m_ObjPath.Value;
+                var componentType = m_ComponentType.Value;
+                UnityEngine.GameObject obj = objPath.IsObject ? objPath.ObjectVal as UnityEngine.GameObject : null;
                 if (null == obj) {
-                    string path = objPath as string;
+                    string path = objPath.IsString ? objPath.StringVal : null;
                     if (null != path) {
                         obj = UnityEngine.GameObject.Find(path);
                     } else {
                         try {
-                            int objId = (int)objPath;
+                            int objId = objPath.Get<int>();
                             obj = PluginFramework.Instance.GetGameObject(objId);
                         } catch {
                             obj = null;
@@ -468,15 +468,15 @@ namespace GameFramework.Story.Values
                     }
                 }
                 if (null != obj) {
-                    Type t = componentType as Type;
+                    Type t = componentType.IsObject ? componentType.ObjectVal as Type : null;
                     if (null != t) {
                         UnityEngine.Component component = obj.GetComponent(t);
-                        m_Value = component;
+                        m_Value = BoxedValue.From((object)component);
                     } else {
-                        string name = componentType as string;
+                        string name = componentType.IsString ? componentType.StringVal : null;
                         if (null != name) {
                             UnityEngine.Component component = obj.GetComponent(name);
-                            m_Value = component;
+                            m_Value = BoxedValue.From((object)component);
                         }
                     }
                 }
@@ -485,7 +485,7 @@ namespace GameFramework.Story.Values
         private IStoryValue m_ObjPath = new StoryValue();
         private IStoryValue m_ComponentType = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetComponentInParentValue : IStoryValue
     {
@@ -509,7 +509,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -522,7 +522,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get {
                 return m_Value;
@@ -532,17 +532,17 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
                 m_HaveValue = true;
-                object objPath = m_ObjPath.Value;
-                object componentType = m_ComponentType.Value;
-                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                var objPath = m_ObjPath.Value;
+                var componentType = m_ComponentType.Value;
+                UnityEngine.GameObject obj = objPath.IsObject ? objPath.ObjectVal as UnityEngine.GameObject : null;
                 if (null == obj) {
-                    string path = objPath as string;
+                    string path = objPath.IsString ? objPath.StringVal : null;
                     if (null != path) {
                         obj = UnityEngine.GameObject.Find(path);
                     }
                     else {
                         try {
-                            int objId = (int)objPath;
+                            int objId = objPath.Get<int>();
                             obj = PluginFramework.Instance.GetGameObject(objId);
                         }
                         catch {
@@ -551,20 +551,20 @@ namespace GameFramework.Story.Values
                     }
                 }
                 if (null != obj) {
-                    Type t = componentType as Type;
+                    Type t = componentType.IsObject ? componentType.ObjectVal as Type : null;
                     if (null != t) {
                         UnityEngine.Component component = obj.GetComponentInParent(t);
-                        m_Value = component;
+                        m_Value = BoxedValue.From((object)component);
                     }
                     else {
-                        string name = componentType as string;
+                        string name = componentType.IsString ? componentType.StringVal : null;
                         if (null != name) {
                             t = Utility.GetType(name);
                             if (null != t) {
                                 UnityEngine.Component component = obj.GetComponentInParent(t);
-                                m_Value = component;
+                                m_Value = BoxedValue.From((object)component);
                             } else {
-                                m_Value = null;
+                                m_Value = BoxedValue.NullObject;
                             }
                         }
                     }
@@ -574,7 +574,7 @@ namespace GameFramework.Story.Values
         private IStoryValue m_ObjPath = new StoryValue();
         private IStoryValue m_ComponentType = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetComponentInChildrenValue : IStoryValue
     {
@@ -603,7 +603,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -619,7 +619,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get {
                 return m_Value;
@@ -629,21 +629,21 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
                 m_HaveValue = true;
-                object objPath = m_ObjPath.Value;
-                object componentType = m_ComponentType.Value;
+                var objPath = m_ObjPath.Value;
+                var componentType = m_ComponentType.Value;
                 int includeInactive = 1;
                 if (m_ParamNum > 2) {
                     includeInactive = m_IncludeInactive.Value;
                 }
-                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                UnityEngine.GameObject obj = objPath.IsObject ? objPath.ObjectVal as UnityEngine.GameObject : null;
                 if (null == obj) {
-                    string path = objPath as string;
+                    string path = objPath.IsString ? objPath.StringVal : null;
                     if (null != path) {
                         obj = UnityEngine.GameObject.Find(path);
                     }
                     else {
                         try {
-                            int objId = (int)objPath;
+                            int objId = objPath.Get<int>();
                             obj = PluginFramework.Instance.GetGameObject(objId);
                         }
                         catch {
@@ -652,20 +652,20 @@ namespace GameFramework.Story.Values
                     }
                 }
                 if (null != obj) {
-                    Type t = componentType as Type;
+                    Type t = componentType.IsObject ? componentType.ObjectVal as Type : null;
                     if (null != t) {
                         UnityEngine.Component component = obj.GetComponentInChildren(t, includeInactive != 0);
-                        m_Value = component;
+                        m_Value = BoxedValue.From((object)component);
                     }
                     else {
-                        string name = componentType as string;
+                        string name = componentType.IsString ? componentType.StringVal : null;
                         if (null != name) {
                             t = Utility.GetType(name);
                             if (null != t) {
                                 UnityEngine.Component component = obj.GetComponentInChildren(t, includeInactive != 0);
-                                m_Value = component;
+                                m_Value = BoxedValue.From((object)component);
                             } else {
-                                m_Value = null;
+                                m_Value = BoxedValue.NullObject;
                             }
                         }
                     }
@@ -678,7 +678,7 @@ namespace GameFramework.Story.Values
         private IStoryValue m_ComponentType = new StoryValue();
         private IStoryValue<int> m_IncludeInactive = new StoryValue<int>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetComponentsValue : IStoryValue
     {
@@ -702,7 +702,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -715,7 +715,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get {
                 return m_Value;
@@ -725,17 +725,17 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
                 m_HaveValue = true;
-                object objPath = m_ObjPath.Value;
-                object componentType = m_ComponentType.Value;
-                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                var objPath = m_ObjPath.Value;
+                var componentType = m_ComponentType.Value;
+                UnityEngine.GameObject obj = objPath.IsObject ? objPath.ObjectVal as UnityEngine.GameObject : null;
                 if (null == obj) {
-                    string path = objPath as string;
+                    string path = objPath.IsString ? objPath.StringVal : null;
                     if (null != path) {
                         obj = UnityEngine.GameObject.Find(path);
                     }
                     else {
                         try {
-                            int objId = (int)objPath;
+                            int objId = objPath.Get<int>();
                             obj = PluginFramework.Instance.GetGameObject(objId);
                         }
                         catch {
@@ -744,16 +744,16 @@ namespace GameFramework.Story.Values
                     }
                 }
                 if (null != obj) {
-                    Type t = componentType as Type;
+                    Type t = componentType.IsObject ? componentType.ObjectVal as Type : null;
                     if (null != t) {
                         var comps = obj.GetComponents(t);
                         if (null != comps)
                             m_Value = comps;
                         else
-                            m_Value = new List<UnityEngine.Component>();
+                            m_Value = BoxedValue.From(new List<UnityEngine.Component>());
                     }
                     else {
-                        string name = componentType as string;
+                        string name = componentType.IsString ? componentType.StringVal : null;
                         if (null != name) {
                             t = Utility.GetType(name);
                             if (null != t) {
@@ -761,9 +761,9 @@ namespace GameFramework.Story.Values
                                 if (null != comps)
                                     m_Value = comps;
                                 else
-                                    m_Value = new List<UnityEngine.Component>();
+                                    m_Value = BoxedValue.From(new List<UnityEngine.Component>());
                             } else {
-                                m_Value = new List<UnityEngine.Component>();
+                                m_Value = BoxedValue.From(new List<UnityEngine.Component>());
                             }
                         }
                     }
@@ -773,7 +773,7 @@ namespace GameFramework.Story.Values
         private IStoryValue m_ObjPath = new StoryValue();
         private IStoryValue m_ComponentType = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetComponentsInParentValue : IStoryValue
     {
@@ -802,7 +802,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -818,7 +818,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get {
                 return m_Value;
@@ -828,15 +828,15 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
                 m_HaveValue = true;
-                object objPath = m_ObjPath.Value;
-                object componentType = m_ComponentType.Value;
+                var objPath = m_ObjPath.Value;
+                var componentType = m_ComponentType.Value;
                 int includeInactive = 1;
                 if (m_ParamNum > 2) {
                     includeInactive = m_IncludeInactive.Value;
                 }
-                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                UnityEngine.GameObject obj = objPath.IsObject ? objPath.ObjectVal as UnityEngine.GameObject : null;
                 if (null == obj) {
-                    string path = objPath as string;
+                    string path = objPath.IsString ? objPath.StringVal : null;
                     if (null != path) {
                         obj = UnityEngine.GameObject.Find(path);
                     }
@@ -851,16 +851,16 @@ namespace GameFramework.Story.Values
                     }
                 }
                 if (null != obj) {
-                    Type t = componentType as Type;
+                    Type t = componentType.IsObject ? componentType.ObjectVal as Type : null;
                     if (null != t) {
                         var comps = obj.GetComponentsInParent(t, includeInactive != 0);
                         if (null != comps)
                             m_Value = comps;
                         else
-                            m_Value = new List<UnityEngine.Component>();
+                            m_Value = BoxedValue.From(new List<UnityEngine.Component>());
                     }
                     else {
-                        string name = componentType as string;
+                        string name = componentType.IsString ? componentType.StringVal : null;
                         if (null != name) {
                             t = Utility.GetType(name);
                             if (null != t) {
@@ -868,10 +868,10 @@ namespace GameFramework.Story.Values
                                 if (null != comps)
                                     m_Value = comps;
                                 else
-                                    m_Value = new List<UnityEngine.Component>();
+                                    m_Value = BoxedValue.From(new List<UnityEngine.Component>());
                             }
                             else {
-                                m_Value = new List<UnityEngine.Component>();
+                                m_Value = BoxedValue.From(new List<UnityEngine.Component>());
                             }
                         }
                     }
@@ -884,7 +884,7 @@ namespace GameFramework.Story.Values
         private IStoryValue m_ComponentType = new StoryValue();
         private IStoryValue<int> m_IncludeInactive = new StoryValue<int>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetComponentsInChildrenValue : IStoryValue
     {
@@ -913,7 +913,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -929,7 +929,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get {
                 return m_Value;
@@ -939,21 +939,21 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue && m_ComponentType.HaveValue) {
                 m_HaveValue = true;
-                object objPath = m_ObjPath.Value;
-                object componentType = m_ComponentType.Value;
+                var objPath = m_ObjPath.Value;
+                var componentType = m_ComponentType.Value;
                 int includeInactive = 1;
                 if (m_ParamNum > 2) {
                     includeInactive = m_IncludeInactive.Value;
                 }
-                UnityEngine.GameObject obj = objPath as UnityEngine.GameObject;
+                UnityEngine.GameObject obj = objPath.IsObject ? objPath.ObjectVal as UnityEngine.GameObject : null;
                 if (null == obj) {
-                    string path = objPath as string;
+                    string path = objPath.IsString ? objPath.StringVal : null;
                     if (null != path) {
                         obj = UnityEngine.GameObject.Find(path);
                     }
                     else {
                         try {
-                            int objId = (int)objPath;
+                            int objId = objPath.Get<int>();
                             obj = PluginFramework.Instance.GetGameObject(objId);
                         }
                         catch {
@@ -962,16 +962,16 @@ namespace GameFramework.Story.Values
                     }
                 }
                 if (null != obj) {
-                    Type t = componentType as Type;
+                    Type t = componentType.IsObject ? componentType.ObjectVal as Type : null;
                     if (null != t) {
                         var comps = obj.GetComponentsInChildren(t, includeInactive != 0);
                         if (null != comps)
                             m_Value = comps;
                         else
-                            m_Value = new List<UnityEngine.Component>();
+                            m_Value = BoxedValue.From(new List<UnityEngine.Component>());
                     }
                     else {
-                        string name = componentType as string;
+                        string name = componentType.IsString ? componentType.StringVal : null;
                         if (null != name) {
                             t = Utility.GetType(name);
                             if (null != t) {
@@ -979,10 +979,10 @@ namespace GameFramework.Story.Values
                                 if (null != comps)
                                     m_Value = comps;
                                 else
-                                    m_Value = new List<UnityEngine.Component>();
+                                    m_Value = BoxedValue.From(new List<UnityEngine.Component>());
                             }
                             else {
-                                m_Value = new List<UnityEngine.Component>();
+                                m_Value = BoxedValue.From(new List<UnityEngine.Component>());
                             }
                         }
                     }
@@ -995,7 +995,7 @@ namespace GameFramework.Story.Values
         private IStoryValue m_ComponentType = new StoryValue();
         private IStoryValue<int> m_IncludeInactive = new StoryValue<int>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetGameObjectValue : IStoryValue
     {
@@ -1020,7 +1020,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -1039,7 +1039,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1051,8 +1051,8 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue) {
                 m_HaveValue = true;
-                object o = m_ObjPath.Value;
-                string objPath = o as string;
+                var o = m_ObjPath.Value;
+                string objPath = o.IsString ? o.StringVal : null;
 
                 StrList disables = new StrList();
                 for (int i = 0; i < m_DisableComponents.Count; ++i) {
@@ -1066,17 +1066,17 @@ namespace GameFramework.Story.Values
                 if (null != objPath) {
                     obj = UnityEngine.GameObject.Find(objPath);
                     if (null != obj) {
-                        m_Value = obj;
+                        m_Value = BoxedValue.From((object)obj);
                     } else {
-                        m_Value = null;
+                        m_Value = BoxedValue.NullObject;
                     }
                 } else {
                     try {
-                        int objId = (int)o;
+                        int objId = o.Get<int>();
                         obj = PluginFramework.Instance.GetGameObject(objId);
-                        m_Value = obj;
+                        m_Value = BoxedValue.From((object)obj);
                     } catch {
-                        m_Value = null;
+                        m_Value = BoxedValue.NullObject;
                     }
                 }
                 if (null != obj) {
@@ -1104,11 +1104,9 @@ namespace GameFramework.Story.Values
         }
         private void Load(Dsl.FunctionData funcData)
         {
-            if (funcData.IsHighOrder) {
-                LoadCall(funcData.LowerOrderFunction);
-            }
-            else if (funcData.HaveParam()) {
-                LoadCall(funcData);
+            var callData = funcData.ThisOrLowerOrderCall;
+            if (callData.IsValid()) {
+                LoadCall(callData);
             }
             if (funcData.HaveStatement()) {
                 foreach (var comp in funcData.Params) {
@@ -1150,7 +1148,7 @@ namespace GameFramework.Story.Values
         private List<IStoryValue<string>> m_DisableComponents = new List<IStoryValue<string>>();
         private List<IStoryValue<string>> m_RemoveComponents = new List<IStoryValue<string>>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetParentValue : IStoryValue
     {
@@ -1172,7 +1170,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -1185,7 +1183,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1196,40 +1194,40 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue) {
                 m_HaveValue = true;
-                object o = m_ObjPath.Value;
-                string objPath = o as string;
-                var uobj = o as UnityEngine.GameObject;
+                var o = m_ObjPath.Value;
+                string objPath = o.IsString ? o.StringVal : null;
+                UnityEngine.GameObject uobj = o.IsObject ? o.ObjectVal as UnityEngine.GameObject : null;
                 if (null != objPath) {
                     var obj = UnityEngine.GameObject.Find(objPath);
                     if (null != obj && null != obj.transform.parent) {
-                        m_Value = obj.transform.parent.gameObject;
+                        m_Value = BoxedValue.From((object)obj.transform.parent.gameObject);
                     } else {
-                        m_Value = null;
+                        m_Value = BoxedValue.NullObject;
                     }
                 } else if (null != uobj) {
                     if (null != uobj.transform.parent) {
-                        m_Value = uobj.transform.parent.gameObject;
+                        m_Value = BoxedValue.From((object)uobj.transform.parent.gameObject);
                     } else {
-                        m_Value = null;
+                        m_Value = BoxedValue.NullObject;
                     }
                 } else {
                     try {
-                        int objId = (int)o;
+                        int objId = o.Get<int>();
                         var obj = PluginFramework.Instance.GetGameObject(objId);
                         if (null != obj && null != obj.transform.parent) {
-                            m_Value = obj.transform.parent.gameObject;
+                            m_Value = BoxedValue.From((object)obj.transform.parent.gameObject);
                         } else {
-                            m_Value = null;
+                            m_Value = BoxedValue.NullObject;
                         }
                     } catch {
-                        m_Value = null;
+                        m_Value = BoxedValue.NullObject;
                     }
                 }
             }
         }
         private IStoryValue m_ObjPath = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class FindChildValue : IStoryValue
     {
@@ -1253,7 +1251,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -1267,7 +1265,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1278,31 +1276,46 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue && m_ChildPath.HaveValue) {
                 m_HaveValue = true;
-                object o = m_ObjPath.Value;
+                var o = m_ObjPath.Value;
                 string childPath = m_ChildPath.Value;
-                string objPath = o as string;
-                var uobj = o as UnityEngine.GameObject;
-                if (null == uobj) {
-                    if (null != objPath) {
-                        uobj = UnityEngine.GameObject.Find(objPath);
-                    } else {
-                        try {
-                            int objId = (int)o;
-                            uobj = PluginFramework.Instance.GetGameObject(objId);
-                        } catch {
-                            uobj = null;
+                string objPath = o.IsString ? o.StringVal : null;
+                UnityEngine.GameObject uobj = o.IsObject ? o.ObjectVal as UnityEngine.GameObject : null;
+                if (null != objPath) {
+                    var obj = UnityEngine.GameObject.Find(objPath);
+                    if (null != obj) {
+                        var t = Utility.FindChildRecursive(obj.transform, childPath);
+                        if (null != t) {
+                            m_Value = BoxedValue.From((object)t.gameObject);
+                        } else {
+                            m_Value = BoxedValue.NullObject;
                         }
+                    } else {
+                        m_Value = BoxedValue.NullObject;
                     }
-                }
-                if (null != uobj) {
+                } else if (null != uobj) {
                     var t = Utility.FindChildRecursive(uobj.transform, childPath);
                     if (null != t) {
-                        m_Value = t.gameObject;
+                        m_Value = BoxedValue.From((object)t.gameObject);
                     } else {
-                        m_Value = null;
+                        m_Value = BoxedValue.NullObject;
                     }
                 } else {
-                    m_Value = null;
+                    try {
+                        int objId = o.Get<int>();
+                        var obj = PluginFramework.Instance.GetGameObject(objId);
+                        if (null != obj) {
+                            var t = Utility.FindChildRecursive(obj.transform, childPath);
+                            if (null != t) {
+                                m_Value = BoxedValue.From((object)t.gameObject);
+                            } else {
+                                m_Value = BoxedValue.NullObject;
+                            }
+                        } else {
+                            m_Value = BoxedValue.NullObject;
+                        }
+                    } catch {
+                        m_Value = BoxedValue.NullObject;
+                    }
                 }
             }
         }
@@ -1310,7 +1323,7 @@ namespace GameFramework.Story.Values
         private IStoryValue m_ObjPath = new StoryValue();
         private IStoryValue<string> m_ChildPath = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetChildCountValue : IStoryValue
     {
@@ -1332,7 +1345,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -1345,7 +1358,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1356,9 +1369,9 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue) {
                 m_HaveValue = true;
-                object o = m_ObjPath.Value;
-                string objPath = o as string;
-                var uobj = o as UnityEngine.GameObject;
+                var o = m_ObjPath.Value;
+                string objPath = o.IsString ? o.StringVal : null;
+                var uobj = o.IsObject ? o.ObjectVal as UnityEngine.GameObject : null;
                 if (null == uobj) {
                     if (null != objPath) {
                         uobj = UnityEngine.GameObject.Find(objPath);
@@ -1381,7 +1394,7 @@ namespace GameFramework.Story.Values
 
         private IStoryValue m_ObjPath = new StoryValue();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetChildValue : IStoryValue
     {
@@ -1405,7 +1418,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
@@ -1419,7 +1432,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1430,10 +1443,10 @@ namespace GameFramework.Story.Values
         {
             if (m_ObjPath.HaveValue && m_ChildIndex.HaveValue) {
                 m_HaveValue = true;
-                object o = m_ObjPath.Value;
+                var o = m_ObjPath.Value;
                 int index = m_ChildIndex.Value;
-                string objPath = o as string;
-                var uobj = o as UnityEngine.GameObject;
+                string objPath = o.IsString ? o.StringVal : null;
+                var uobj = o.IsObject ? o.ObjectVal as UnityEngine.GameObject : null;
                 if (null == uobj) {
                     if (null != objPath) {
                         uobj = UnityEngine.GameObject.Find(objPath);
@@ -1449,12 +1462,12 @@ namespace GameFramework.Story.Values
                 if (null != uobj) {
                     var t = uobj.transform.GetChild(index);
                     if (null != t) {
-                        m_Value = t.gameObject;
+                        m_Value = BoxedValue.From((object)t.gameObject);
                     } else {
-                        m_Value = null;
+                        m_Value = BoxedValue.NullObject;
                     }
                 } else {
-                    m_Value = null;
+                    m_Value = BoxedValue.NullObject;
                 }
             }
         }
@@ -1462,7 +1475,7 @@ namespace GameFramework.Story.Values
         private IStoryValue m_ObjPath = new StoryValue();
         private IStoryValue<int> m_ChildIndex = new StoryValue<int>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetUnityTypeValue : IStoryValue
     {
@@ -1484,7 +1497,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_TypeName.Evaluate(instance, handler, iterator, args);
@@ -1497,7 +1510,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1518,17 +1531,17 @@ namespace GameFramework.Story.Values
                     if (null != t) {
                         m_Value = t;
                     } else {
-                        m_Value = null;
+                        m_Value = BoxedValue.NullObject;
                     }
                 } else {
-                    m_Value = null;
+                    m_Value = BoxedValue.NullObject;
                 }
             }
         }
 
         private IStoryValue<string> m_TypeName = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetUnityUiTypeValue : IStoryValue
     {
@@ -1550,7 +1563,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_TypeName.Evaluate(instance, handler, iterator, args);
@@ -1563,7 +1576,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1584,16 +1597,16 @@ namespace GameFramework.Story.Values
                     if (null != t) {
                         m_Value = t;
                     } else {
-                        m_Value = null;
+                        m_Value = BoxedValue.NullObject;
                     }
                 } else {
-                    m_Value = null;
+                    m_Value = BoxedValue.NullObject;
                 }
             }
         }
         private IStoryValue<string> m_TypeName = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetScriptTypeValue : IStoryValue
     {
@@ -1615,7 +1628,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_TypeName.Evaluate(instance, handler, iterator, args);
@@ -1628,7 +1641,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1646,16 +1659,16 @@ namespace GameFramework.Story.Values
                     if (null != t) {
                         m_Value = t;
                     } else {
-                        m_Value = null;
+                        m_Value = BoxedValue.NullObject;
                     }
                 } else {
-                    m_Value = null;
+                    m_Value = BoxedValue.NullObject;
                 }
             }
         }
         private IStoryValue<string> m_TypeName = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetEntityInfoValue : IStoryValue
     {
@@ -1674,7 +1687,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjId.Evaluate(instance, handler, iterator, args);
@@ -1687,7 +1700,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1700,13 +1713,13 @@ namespace GameFramework.Story.Values
             if (m_ObjId.HaveValue) {
                 int objId = m_ObjId.Value;
                 m_HaveValue = true;
-                m_Value = PluginFramework.Instance.GetEntityById(objId);
+                m_Value = BoxedValue.From(PluginFramework.Instance.GetEntityById(objId));
             }
         }
 
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetEntityViewValue : IStoryValue
     {
@@ -1725,7 +1738,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjId.Evaluate(instance, handler, iterator, args);
@@ -1738,7 +1751,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1751,13 +1764,13 @@ namespace GameFramework.Story.Values
             if (m_ObjId.HaveValue) {
                 int objId = m_ObjId.Value;
                 m_HaveValue = true;
-                m_Value = EntityController.Instance.GetEntityViewById(objId);
+                m_Value = BoxedValue.From(EntityController.Instance.GetEntityViewById(objId));
             }
         }
 
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetGlobalValue : IStoryValue
     {
@@ -1774,7 +1787,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             TryUpdateValue(instance);
@@ -1786,7 +1799,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1796,13 +1809,13 @@ namespace GameFramework.Story.Values
         private void TryUpdateValue(StoryInstance instance)
         {
             m_HaveValue = true;
-            m_Value = GlobalVariables.Instance;
+            m_Value = BoxedValue.From(GlobalVariables.Instance);
         }
 
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
-    internal sealed class ClientModuleValue : IStoryValue
+    internal sealed class PluginFrameworkValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -1812,12 +1825,12 @@ namespace GameFramework.Story.Values
         }
         public IStoryValue Clone()
         {
-            ClientModuleValue val = new ClientModuleValue();
+            PluginFrameworkValue val = new PluginFrameworkValue();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             TryUpdateValue(instance);
@@ -1829,7 +1842,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -1839,10 +1852,10 @@ namespace GameFramework.Story.Values
         private void TryUpdateValue(StoryInstance instance)
         {
             m_HaveValue = true;
-            m_Value = PluginFramework.Instance;
+            m_Value = BoxedValue.From(PluginFramework.Instance);
         }
 
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
 }

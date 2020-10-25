@@ -18,7 +18,7 @@ namespace StorySystem.CommonCommands
             }
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Format.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_FormatArgs.Count; i++) {
@@ -27,21 +27,18 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object formatObj = m_Format.Value;
-            string format = formatObj as string;
+            var formatObj = m_Format.Value;
+            string format = formatObj.IsString ? formatObj.StringVal : null;
             if (!string.IsNullOrEmpty(format) && m_FormatArgs.Count > 0) {
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_FormatArgs.Count; i++) {
-                    arglist.Add(m_FormatArgs[i].Value);
+                    arglist.Add(m_FormatArgs[i].Value.Get<object>());
                 }
                 object[] args = arglist.ToArray();
                 LogSystem.Warn(format, args);
             }
-            else if (!string.IsNullOrEmpty(format)) {
-                LogSystem.Warn(format);
-            }
             else {
-                LogSystem.Warn("{0}", formatObj);
+                LogSystem.Warn("{0}", formatObj.ToString());
             }
             return false;
         }

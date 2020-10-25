@@ -20,7 +20,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
         
@@ -36,7 +36,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -53,7 +53,7 @@ namespace GameFramework.Story.Values
             }
         }
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     public sealed class GetTimeScaleValue : IStoryValue
     {
@@ -70,7 +70,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
         
@@ -86,7 +86,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -103,7 +103,7 @@ namespace GameFramework.Story.Values
             }
         }
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     public sealed class GetEntityInfoValue : IStoryValue
     {
@@ -122,7 +122,7 @@ namespace GameFramework.Story.Values
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_ObjId.Evaluate(instance, handler, iterator, args);
@@ -135,7 +135,7 @@ namespace GameFramework.Story.Values
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get
             {
@@ -150,12 +150,12 @@ namespace GameFramework.Story.Values
                 if (m_ObjId.HaveValue) {
                     int objId = m_ObjId.Value;
                     m_HaveValue = true;
-                    m_Value = scene.SceneContext.GetEntityById(objId);
+                    m_Value = BoxedValue.From(scene.SceneContext.GetEntityById(objId));
                 }
             }
         }
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
 }

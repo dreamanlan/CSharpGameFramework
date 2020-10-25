@@ -19,7 +19,7 @@ namespace StorySystem.CommonCommands
         {
             m_CurTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Time.Evaluate(instance, handler, iterator, args);
             if (m_HaveCondition)
@@ -86,7 +86,7 @@ namespace StorySystem.CommonCommands
         {
             m_RealStartTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Time.Evaluate(instance, handler, iterator, args);
             if (m_HaveCondition)
@@ -155,7 +155,7 @@ namespace StorySystem.CommonCommands
         {
             m_CurTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Time.Evaluate(instance, handler, iterator, args);
             if (m_HaveCondition)
@@ -228,7 +228,7 @@ namespace StorySystem.CommonCommands
         {
             m_RealStartTime = 0;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Time.Evaluate(instance, handler, iterator, args);
             if (m_HaveCondition)
@@ -298,7 +298,7 @@ namespace StorySystem.CommonCommands
         protected override void ResetState()
         {
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             if (m_HaveCondition)
                 m_Condition.Evaluate(instance, handler, iterator, args);

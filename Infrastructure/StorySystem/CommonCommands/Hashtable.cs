@@ -17,7 +17,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Val = m_Val.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_File.Evaluate(instance, handler, iterator, args);
             m_Val.Evaluate(instance, handler, iterator, args);
@@ -27,7 +27,7 @@ namespace StorySystem.CommonCommands
         {
             if (m_File.HaveValue && m_Val.HaveValue) {
                 string file = m_File.Value;
-                IList vals = m_Val.Value as IList;
+                IList vals = m_Val.Value.ObjectVal as IList;
                 if (!string.IsNullOrEmpty(file) && null != vals) {
                     List<string> lines = new List<string>();
                     foreach (var obj in vals) {
@@ -63,7 +63,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Val = m_Val.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_File.Evaluate(instance, handler, iterator, args);
             m_Val.Evaluate(instance, handler, iterator, args);
@@ -74,7 +74,7 @@ namespace StorySystem.CommonCommands
             if (m_File.HaveValue && m_Val.HaveValue) {
                 string file = m_File.Value;
                 var val = m_Val.Value;
-                if (!string.IsNullOrEmpty(file) && null != val) {
+                if (!string.IsNullOrEmpty(file)) {
                     File.WriteAllText(file, val.ToString());
                 }
             }
@@ -104,7 +104,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Var.Evaluate(instance, handler, iterator, args);
             m_Key.Evaluate(instance, handler, iterator, args);
@@ -113,9 +113,9 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue && m_Key.HaveValue && m_Value.HaveValue) {
-                object obj = m_Var.Value;
-                object key = m_Key.Value;
-                object val = m_Value.Value;
+                object obj = m_Var.Value.Get<object>();
+                object key = m_Key.Value.Get<object>();
+                object val = m_Value.Value.Get<object>();
                 var dict = obj as IDictionary;
                 if (null != dict && null != key) {
                     dict.Add(key, val);
@@ -149,7 +149,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Var.Evaluate(instance, handler, iterator, args);
             m_Key.Evaluate(instance, handler, iterator, args);
@@ -159,9 +159,9 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue && m_Key.HaveValue && m_Value.HaveValue) {
-                object obj = m_Var.Value;
-                object key = m_Key.Value;
-                object val = m_Value.Value;
+                object obj = m_Var.Value.Get<object>();
+                object key = m_Key.Value.Get<object>();
+                object val = m_Value.Value.Get<object>();
                 var dict = obj as IDictionary;
                 if (null != dict && null != key) {
                     dict[key] = val;
@@ -195,7 +195,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Key = m_Key.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Var.Evaluate(instance, handler, iterator, args);
             m_Key.Evaluate(instance, handler, iterator, args);
@@ -204,8 +204,8 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue && m_Key.HaveValue) {
-                object obj = m_Var.Value;
-                object key = m_Key.Value;
+                object obj = m_Var.Value.Get<object>();
+                object key = m_Key.Value.Get<object>();
                 var dict = obj as IDictionary;
                 if (null != dict && null != key) {
                     dict.Remove(key);
@@ -235,7 +235,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Var = m_Var.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Var.Evaluate(instance, handler, iterator, args);
 
@@ -243,7 +243,7 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue) {
-                object obj = m_Var.Value;
+                object obj = m_Var.Value.Get<object>();
                 var dict = obj as IDictionary;
                 if (null != dict) {
                     dict.Clear();

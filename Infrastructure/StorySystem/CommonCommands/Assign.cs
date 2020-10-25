@@ -19,7 +19,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Value.Evaluate(instance, handler, iterator, args);
         }
@@ -58,7 +58,7 @@ namespace StorySystem.CommonCommands
             cmd.m_ParamNum = m_ParamNum;
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Value.Evaluate(instance, handler, iterator, args);
         }
@@ -67,11 +67,11 @@ namespace StorySystem.CommonCommands
             if (m_VarName.StartsWith("@@")) {
                 if (null != instance.GlobalVariables) {
                     if (instance.GlobalVariables.ContainsKey(m_VarName)) {
-                        object oval = instance.GlobalVariables[m_VarName];
-                        if (oval is int) {
-                            int ov = StoryValueHelper.CastTo<int>(oval);
+                        var oval = instance.GlobalVariables[m_VarName];
+                        if (oval.IsInteger) {
+                            int ov = oval.Get<int>();
                             if (m_ParamNum > 1 && m_Value.HaveValue) {
-                                int v = StoryValueHelper.CastTo<int>(m_Value.Value);
+                                int v = m_Value.Value;
                                 ov += v;
                                 instance.GlobalVariables[m_VarName] = ov;
                             } else {
@@ -79,9 +79,9 @@ namespace StorySystem.CommonCommands
                                 instance.GlobalVariables[m_VarName] = ov;
                             }
                         } else {
-                            float ov = StoryValueHelper.CastTo<float>(oval);
+                            float ov = oval.Get<float>();
                             if (m_ParamNum > 1 && m_Value.HaveValue) {
-                                float v = StoryValueHelper.CastTo<float>(m_Value.Value);
+                                float v = m_Value.Value;
                                 ov += v;
                                 instance.GlobalVariables[m_VarName] = ov;
                             } else {
@@ -93,11 +93,11 @@ namespace StorySystem.CommonCommands
                 }
             } else if (m_VarName.StartsWith("@")) {
                 if (instance.LocalVariables.ContainsKey(m_VarName)) {
-                    object oval = instance.LocalVariables[m_VarName];
-                    if (oval is int) {
-                        int ov = StoryValueHelper.CastTo<int>(oval);
+                    var oval = instance.LocalVariables[m_VarName];
+                    if (oval.IsInteger) {
+                        int ov = oval.Get<int>();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
-                            int v = StoryValueHelper.CastTo<int>(m_Value.Value);
+                            int v = m_Value.Value;
                             ov += v;
                             instance.LocalVariables[m_VarName] = ov;
                         } else {
@@ -105,9 +105,9 @@ namespace StorySystem.CommonCommands
                             instance.LocalVariables[m_VarName] = ov;
                         }
                     } else {
-                        float ov = StoryValueHelper.CastTo<float>(oval);
+                        float ov = oval.Get<float>();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
-                            float v = StoryValueHelper.CastTo<float>(m_Value.Value);
+                            float v = m_Value.Value;
                             ov += v;
                             instance.LocalVariables[m_VarName] = ov;
                         } else {
@@ -118,11 +118,11 @@ namespace StorySystem.CommonCommands
                 }
             } else if (m_VarName.StartsWith("$")) {
                 if (instance.StackVariables.ContainsKey(m_VarName)) {
-                    object oval = instance.StackVariables[m_VarName];
-                    if (oval is int) {
-                        int ov = StoryValueHelper.CastTo<int>(oval);
+                    var oval = instance.StackVariables[m_VarName];
+                    if (oval.IsInteger) {
+                        int ov = oval.Get<int>();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
-                            int v = StoryValueHelper.CastTo<int>(m_Value.Value);
+                            int v = m_Value.Value;
                             ov += v;
                             instance.StackVariables[m_VarName] = ov;
                         } else {
@@ -130,9 +130,9 @@ namespace StorySystem.CommonCommands
                             instance.StackVariables[m_VarName] = ov;
                         }
                     } else {
-                        float ov = StoryValueHelper.CastTo<float>(oval);
+                        float ov = oval.Get<float>();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
-                            float v = StoryValueHelper.CastTo<float>(m_Value.Value);
+                            float v = m_Value.Value;
                             ov += v;
                             instance.StackVariables[m_VarName] = ov;
                         } else {
@@ -176,7 +176,7 @@ namespace StorySystem.CommonCommands
             cmd.m_ParamNum = m_ParamNum;
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_Value.Evaluate(instance, handler, iterator, args);
         }
@@ -185,11 +185,11 @@ namespace StorySystem.CommonCommands
             if (m_VarName.StartsWith("@@")) {
                 if (null != instance.GlobalVariables) {
                     if (instance.GlobalVariables.ContainsKey(m_VarName)) {
-                        object oval = instance.GlobalVariables[m_VarName];
-                        if (oval is int) {
-                            int ov = StoryValueHelper.CastTo<int>(oval);
+                        var oval = instance.GlobalVariables[m_VarName];
+                        if (oval.IsInteger) {
+                            int ov = oval.Get<int>();
                             if (m_ParamNum > 1 && m_Value.HaveValue) {
-                                int v = StoryValueHelper.CastTo<int>(m_Value.Value);
+                                int v = m_Value.Value;
                                 ov -= v;
                                 instance.GlobalVariables[m_VarName] = ov;
                             } else {
@@ -197,9 +197,9 @@ namespace StorySystem.CommonCommands
                                 instance.GlobalVariables[m_VarName] = ov;
                             }
                         } else {
-                            float ov = StoryValueHelper.CastTo<float>(oval);
+                            float ov = oval.Get<float>();
                             if (m_ParamNum > 1 && m_Value.HaveValue) {
-                                float v = StoryValueHelper.CastTo<float>(m_Value.Value);
+                                float v = m_Value.Value;
                                 ov -= v;
                                 instance.GlobalVariables[m_VarName] = ov;
                             } else {
@@ -211,11 +211,11 @@ namespace StorySystem.CommonCommands
                 }
             } else if (m_VarName.StartsWith("@")) {
                 if (instance.LocalVariables.ContainsKey(m_VarName)) {
-                    object oval = instance.LocalVariables[m_VarName];
-                    if (oval is int) {
-                        int ov = StoryValueHelper.CastTo<int>(oval);
+                    var oval = instance.LocalVariables[m_VarName];
+                    if (oval.IsInteger) {
+                        int ov = oval.Get<int>();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
-                            int v = StoryValueHelper.CastTo<int>(m_Value.Value);
+                            int v = m_Value.Value;
                             ov -= v;
                             instance.LocalVariables[m_VarName] = ov;
                         } else {
@@ -223,9 +223,9 @@ namespace StorySystem.CommonCommands
                             instance.LocalVariables[m_VarName] = ov;
                         }
                     } else {
-                        float ov = StoryValueHelper.CastTo<float>(oval);
+                        float ov = oval.Get<float>();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
-                            float v = StoryValueHelper.CastTo<float>(m_Value.Value);
+                            float v = m_Value.Value;
                             ov -= v;
                             instance.LocalVariables[m_VarName] = ov;
                         } else {
@@ -236,11 +236,11 @@ namespace StorySystem.CommonCommands
                 }
             } else if (m_VarName.StartsWith("$")) {
                 if (instance.StackVariables.ContainsKey(m_VarName)) {
-                    object oval = instance.StackVariables[m_VarName];
-                    if (oval is int) {
-                        int ov = StoryValueHelper.CastTo<int>(oval);
+                    var oval = instance.StackVariables[m_VarName];
+                    if (oval.IsInteger) {
+                        int ov = oval.Get<int>();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
-                            int v = StoryValueHelper.CastTo<int>(m_Value.Value);
+                            int v = m_Value.Value;
                             ov -= v;
                             instance.StackVariables[m_VarName] = ov;
                         } else {
@@ -248,9 +248,9 @@ namespace StorySystem.CommonCommands
                             instance.StackVariables[m_VarName] = ov;
                         }
                     } else {
-                        float ov = StoryValueHelper.CastTo<float>(oval);
+                        float ov = oval.Get<float>();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
-                            float v = StoryValueHelper.CastTo<float>(m_Value.Value);
+                            float v = m_Value.Value;
                             ov -= v;
                             instance.StackVariables[m_VarName] = ov;
                         } else {
@@ -289,7 +289,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_VarName.Evaluate(instance, handler, iterator, args);
             m_Value.Evaluate(instance, handler, iterator, args);
@@ -326,7 +326,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_ListValue.Evaluate(instance, handler, iterator, args);
             m_IndexValue.Evaluate(instance, handler, iterator, args);
@@ -337,7 +337,7 @@ namespace StorySystem.CommonCommands
             if (m_ListValue.HaveValue && m_IndexValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
                 int index = m_IndexValue.Value;
-                object val = m_Value.Value;
+                object val = m_Value.Value.Get<object>();
                 int ct = listValue.Count;
                 if (index >= 0 && index < ct) {
                     listValue[index] = val;
@@ -372,7 +372,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_ListValue.Evaluate(instance, handler, iterator, args);
             m_Value.Evaluate(instance, handler, iterator, args);
@@ -381,7 +381,7 @@ namespace StorySystem.CommonCommands
         {
             if (m_ListValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
-                object val = m_Value.Value;
+                object val = m_Value.Value.Get<object>();
                 listValue.Add(val);
             }
             return false;
@@ -409,7 +409,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_ListValue.Evaluate(instance, handler, iterator, args);
             m_Value.Evaluate(instance, handler, iterator, args);
@@ -418,7 +418,7 @@ namespace StorySystem.CommonCommands
         {
             if (m_ListValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
-                object val = m_Value.Value;
+                object val = m_Value.Value.Get<object>();
                 listValue.Remove(val);
             }
             return false;
@@ -447,7 +447,7 @@ namespace StorySystem.CommonCommands
             cmd.m_Value = m_Value.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_ListValue.Evaluate(instance, handler, iterator, args);
             m_IndexValue.Evaluate(instance, handler, iterator, args);
@@ -458,7 +458,7 @@ namespace StorySystem.CommonCommands
             if (m_ListValue.HaveValue && m_IndexValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
                 int index = m_IndexValue.Value;
-                object val = m_Value.Value;
+                object val = m_Value.Value.Get<object>();
                 listValue.Insert(index, val);
             }
             return false;
@@ -488,7 +488,7 @@ namespace StorySystem.CommonCommands
             cmd.m_IndexValue = m_IndexValue.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_ListValue.Evaluate(instance, handler, iterator, args);
             m_IndexValue.Evaluate(instance, handler, iterator, args);
@@ -524,7 +524,7 @@ namespace StorySystem.CommonCommands
             cmd.m_ListValue = m_ListValue.Clone();
             return cmd;
         }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_ListValue.Evaluate(instance, handler, iterator, args);
         }

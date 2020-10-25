@@ -30,21 +30,25 @@ namespace StorySystem
                     try {
                         dataFile.LoadBinaryFile(file);
                         Load(dataFile, sceneId, _namespace, file);
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex) {
                         var sb = new System.Text.StringBuilder();
                         sb.AppendFormat("[LoadStory] LoadStory file:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
                         sb.AppendLine();
                         Helper.LogInnerException(ex, sb);
                         LogSystem.Error("{0}", sb.ToString());
                     }
-                } else {
+                }
+                else {
                     try {
                         if (dataFile.Load(file, LogSystem.Log)) {
                             Load(dataFile, sceneId, _namespace, file);
-                        } else {
+                        }
+                        else {
                             LogSystem.Error("[LoadStory] LoadStory file:{0} scene:{1} failed", file, sceneId);
                         }
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex) {
                         var sb = new System.Text.StringBuilder();
                         sb.AppendFormat("[LoadStory] LoadStory file:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
                         sb.AppendLine();
@@ -61,23 +65,27 @@ namespace StorySystem
                     Dsl.DslFile dataFile = new Dsl.DslFile();
                     dataFile.LoadBinaryCode(bytes);
                     Load(dataFile, sceneId, _namespace, file);
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     var sb = new System.Text.StringBuilder();
                     sb.AppendFormat("[LoadStory] LoadStoryText file:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
                     sb.AppendLine();
                     Helper.LogInnerException(ex, sb);
                     LogSystem.Error("{0}", sb.ToString());
                 }
-            } else {
+            }
+            else {
                 try {
                     string text = Converter.FileContent2Utf8String(bytes);
                     Dsl.DslFile dataFile = new Dsl.DslFile();
                     if (dataFile.LoadFromString(text, file, LogSystem.Log)) {
                         Load(dataFile, sceneId, _namespace, file);
-                    } else {
+                    }
+                    else {
                         LogSystem.Error("[LoadStory] LoadStoryText file:{0} scene:{1} failed", file, sceneId);
                     }
-                } catch (Exception ex) {
+                }
+                catch (Exception ex) {
                     var sb = new System.Text.StringBuilder();
                     sb.AppendFormat("[LoadStory] LoadStoryText file:{0} scene:{1} Exception:{2}\n{3}", file, sceneId, ex.Message, ex.StackTrace);
                     sb.AppendLine();
@@ -171,11 +179,13 @@ namespace StorySystem
                 if (!m_StoryInstances.TryGetValue(sceneId, out storyInstances)) {
                     storyInstances = new Dictionary<string, StoryInstance>(existStoryInstances);
                     m_StoryInstances.Add(sceneId, storyInstances);
-                } else {
+                }
+                else {
                     foreach (var pair in existStoryInstances) {
                         if (!storyInstances.ContainsKey(pair.Key)) {
                             storyInstances.Add(pair.Key, pair.Value);
-                        } else {
+                        }
+                        else {
                             storyInstances[pair.Key] = pair.Value;
                         }
                     }
@@ -198,7 +208,7 @@ namespace StorySystem
         private object m_Lock = new object();
         private Dictionary<int, Dictionary<string, StoryInstance>> m_StoryInstances = new Dictionary<int, Dictionary<string, StoryInstance>>();
         private Dictionary<string, Dictionary<string, StoryInstance>> m_StoryInstancePool = new Dictionary<string, Dictionary<string, StoryInstance>>();
-        
+
         public static StoryConfigManager NewInstance()
         {
             return new StoryConfigManager();

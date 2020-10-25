@@ -76,7 +76,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             var stackInfo = StoryLocalInfo.New();
             var runtime = StoryRuntime.New();
@@ -87,10 +87,11 @@ namespace StorySystem.CommonValues
             foreach (var pair in m_LoadedOptArgs) {
                 stackInfo.OptArgs.Add(pair.Key, pair.Value.Clone());
             }
-            runtime.Arguments = new object[stackInfo.Args.Count];
+            runtime.Arguments = instance.NewBoxedValueList();
+            runtime.Arguments.Capacity = stackInfo.Args.Count;
             for (int i = 0; i < stackInfo.Args.Count; i++) {
                 stackInfo.Args[i].Evaluate(instance, handler, iterator, args);
-                runtime.Arguments[i] = stackInfo.Args[i].Value;
+                runtime.Arguments.Add(stackInfo.Args[i].Value);
             }
             runtime.Iterator = stackInfo.Args.Count;
             foreach (var pair in stackInfo.OptArgs) {
@@ -103,7 +104,7 @@ namespace StorySystem.CommonValues
                     if (i < stackInfo.Args.Count) {
                         instance.SetVariable(m_ArgNames[i], stackInfo.Args[i].Value);
                     } else {
-                        instance.SetVariable(m_ArgNames[i], null);
+                        instance.SetVariable(m_ArgNames[i], BoxedValue.NullObject);
                     }
                 }
                 foreach (var pair in stackInfo.OptArgs) {
@@ -112,7 +113,7 @@ namespace StorySystem.CommonValues
                 Prepare(runtime);
                 stackInfo.HaveValue = true;
                 runtime.Tick(instance, handler, long.MaxValue);
-                object val;
+                BoxedValue val;
                 instance.TryGetVariable(m_ReturnName, out val);
                 stackInfo.Value = val;
             } finally {
@@ -125,7 +126,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get {
                 return m_Value;
@@ -189,10 +190,10 @@ namespace StorySystem.CommonValues
         }
         private void PopStack(StoryInstance instance, StoryMessageHandler handler)
         {
-            handler.PopRuntime();
+            handler.PopRuntime(instance);
             var old = handler.PeekLocalInfo();
             bool haveVal = old.HaveValue;
-            object val = old.Value;
+            var val = old.Value;
             handler.PopLocalInfo();
             if (handler.LocalInfoStack.Count > 0) {
                 var info = handler.PeekLocalInfo();
@@ -207,7 +208,7 @@ namespace StorySystem.CommonValues
         }
 
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
         private List<IStoryValue> m_LoadedArgs = null;
         private Dictionary<string, IStoryValue> m_LoadedOptArgs = null;
 
@@ -247,7 +248,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_Id.Evaluate(instance, handler, iterator, args);
@@ -259,7 +260,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get {
                 return m_Value;
@@ -275,14 +276,14 @@ namespace StorySystem.CommonValues
                     m_Value = substId;
                 }
                 else {
-                    m_Value = null;
+                    m_Value = BoxedValue.NullObject;
                 }
             }
         }
 
         private IStoryValue<string> m_Id = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
     internal sealed class GetValSubstValue : IStoryValue
     {
@@ -302,7 +303,7 @@ namespace StorySystem.CommonValues
             val.m_Value = m_Value;
             return val;
         }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, object iterator, object[] args)
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             m_HaveValue = false;
             m_Id.Evaluate(instance, handler, iterator, args);
@@ -314,7 +315,7 @@ namespace StorySystem.CommonValues
                 return m_HaveValue;
             }
         }
-        public object Value
+        public BoxedValue Value
         {
             get {
                 return m_Value;
@@ -330,13 +331,13 @@ namespace StorySystem.CommonValues
                     m_Value = substId;
                 }
                 else {
-                    m_Value = null;
+                    m_Value = BoxedValue.NullObject;
                 }
             }
         }
 
         private IStoryValue<string> m_Id = new StoryValue<string>();
         private bool m_HaveValue;
-        private object m_Value;
+        private BoxedValue m_Value;
     }
 }

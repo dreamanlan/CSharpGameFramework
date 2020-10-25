@@ -12,45 +12,45 @@ namespace GameFramework.Story
     {
         internal void OnInputHandler(string tag, string val)
         {
-            ArrayList args = new ArrayList();
+            BoxedValueList args = GfxStorySystem.Instance.NewBoxedValueList();
             args.Add(tag);
             args.Add(val);
             BuildInputArgs(args);
-            GfxStorySystem.Instance.SendMessage(string.Format("{0}:on_input", WindowName), args.ToArray());
+            GfxStorySystem.Instance.SendMessage(string.Format("{0}:on_input", WindowName), args);
         }
         internal void OnSliderHandler(string tag, float val)
         {
-            ArrayList args = new ArrayList();
+            BoxedValueList args = GfxStorySystem.Instance.NewBoxedValueList();
             args.Add(tag);
             args.Add(val);
             BuildInputArgs(args);
-            GfxStorySystem.Instance.SendMessage(string.Format("{0}:on_slider", WindowName), args.ToArray());
+            GfxStorySystem.Instance.SendMessage(string.Format("{0}:on_slider", WindowName), args);
         }
         internal void OnDropdownHandler(string tag, int val)
         {
-            ArrayList args = new ArrayList();
+            BoxedValueList args = GfxStorySystem.Instance.NewBoxedValueList();
             args.Add(tag);
             args.Add(val);
             BuildInputArgs(args);
-            GfxStorySystem.Instance.SendMessage(string.Format("{0}:on_dropdown", WindowName), args.ToArray());
+            GfxStorySystem.Instance.SendMessage(string.Format("{0}:on_dropdown", WindowName), args);
         }
         internal void OnToggleHandler(string tag, bool val)
         {
-            ArrayList args = new ArrayList();
+            BoxedValueList args = GfxStorySystem.Instance.NewBoxedValueList();
             args.Add(tag);
             args.Add(val ? 1 : 0);
             BuildInputArgs(args);
-            GfxStorySystem.Instance.SendMessage(string.Format("{0}:on_toggle", WindowName), args.ToArray());
+            GfxStorySystem.Instance.SendMessage(string.Format("{0}:on_toggle", WindowName), args);
         }
         internal void OnClickHandler(string tag)
         {
-            ArrayList args = new ArrayList();
+            BoxedValueList args = GfxStorySystem.Instance.NewBoxedValueList();
             args.Add(tag);
             BuildInputArgs(args);
-            GfxStorySystem.Instance.SendMessage(string.Format("{0}:on_click", WindowName), args.ToArray());
+            GfxStorySystem.Instance.SendMessage(string.Format("{0}:on_click", WindowName), args);
         }
 
-        private void BuildInputArgs(ArrayList args)
+        private void BuildInputArgs(BoxedValueList args)
         {
             string[] strVals = null;
             int[] boolVals = null;
@@ -63,7 +63,7 @@ namespace GameFramework.Story
                     strVals[i] = InputLabels[i].text;
                 }
                 if (strCt > 0) {
-                    args.Add(strVals);
+                    args.Add(BoxedValue.From(strVals));
                 }
             }
             if (null != InputToggles) {
@@ -73,7 +73,7 @@ namespace GameFramework.Story
                     boolVals[i] = InputToggles[i].isOn ? 1 : 0;
                 }
                 if (boolCt > 0) {
-                    args.Add(boolVals);
+                    args.Add(BoxedValue.From(boolVals));
                 }
             }
             if (null != InputSliders) {
@@ -83,7 +83,7 @@ namespace GameFramework.Story
                     floatVals[i] = InputSliders[i].value;
                 }
                 if (floatCt > 0) {
-                    args.Add(floatVals);
+                    args.Add(BoxedValue.From(floatVals));
                 }
             }
             if (null != InputDropdowns) {
@@ -93,7 +93,7 @@ namespace GameFramework.Story
                     dropdownVals[i] = InputDropdowns[i].value;
                 }
                 if (dropdownCt > 0) {
-                    args.Add(dropdownVals);
+                    args.Add(BoxedValue.From(dropdownVals));
                 }
             }
         }
