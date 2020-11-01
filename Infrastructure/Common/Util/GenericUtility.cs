@@ -957,6 +957,56 @@ public struct BoxedValue
         return v.ObjectVal as ArrayList;
     }
 
+    public string GetTypeName()
+    {
+        switch (Type) {
+            case c_ObjectType:
+                return "object";
+            case c_StringType:
+                return "string";
+            case c_BoolType:
+                return "bool";
+            case c_CharType:
+                return "char";
+            case c_SByteType:
+                return "sbyte";
+            case c_ShortType:
+                return "short";
+            case c_IntType:
+                return "int";
+            case c_LongType:
+                return "long";
+            case c_ByteType:
+                return "byte";
+            case c_UShortType:
+                return "ushort";
+            case c_UIntType:
+                return "uint";
+            case c_ULongType:
+                return "ulong";
+            case c_FloatType:
+                return "float";
+            case c_DoubleType:
+                return "double";
+            case c_DecimalType:
+                return "decimal";
+            case c_Vector2Type:
+                return "Vector2";
+            case c_Vector3Type:
+                return "Vector3";
+            case c_Vector4Type:
+                return "Vector4";
+            case c_QuaternionType:
+                return "Quaternion";
+            case c_ColorType:
+                return "Color";
+            case c_Color32Type:
+                return "Color32";
+            default:
+                return "Unknown";
+        }
+    }
+
     public bool IsNullObject
     {
         get { return Type == c_ObjectType && ObjectVal == null; }
@@ -1330,13 +1380,25 @@ public struct BoxedValue
         bv.Set(v);
         return bv;
     }
+    public static BoxedValue FromNumber(double v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue FromString(string v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
     public static BoxedValue FromObject(object v)
     {
         BoxedValue bv = new BoxedValue();
         bv.Set(v);
         return bv;
     }
-    
+
     private void Set<T>(Type t, T v)
     {
         if (typeof(T) == typeof(object)) {
@@ -1712,7 +1774,7 @@ public struct BoxedValue
         get { return s_EmptyString; }
     }
     private static BoxedValue s_NullObject = BoxedValue.FromObject(null);
-    private static BoxedValue s_EmptyString = BoxedValue.From(string.Empty);
+    private static BoxedValue s_EmptyString = BoxedValue.FromString(string.Empty);
 }
 
 public class BoxedValueList : List<BoxedValue>
@@ -1720,6 +1782,22 @@ public class BoxedValueList : List<BoxedValue>
     public BoxedValueList() { }
     public BoxedValueList(int capacity) : base(capacity) { }
     public BoxedValueList(IEnumerable<BoxedValue> coll) : base(coll) { }
+    public void AddBool(bool v)
+    {
+        Add(BoxedValue.FromBool(v));
+    }
+    public void AddNumber(double v)
+    {
+        Add(BoxedValue.FromNumber(v));
+    }
+    public void AddString(string v)
+    {
+        Add(BoxedValue.FromString(v));
+    }
+    public void AddObject(object v)
+    {
+        Add(BoxedValue.FromObject(v));
+    }
 }
 
 public class StrBoxedValueDict : Dictionary<string, BoxedValue>
@@ -1727,4 +1805,20 @@ public class StrBoxedValueDict : Dictionary<string, BoxedValue>
     public StrBoxedValueDict() { }
     public StrBoxedValueDict(int capacity) : base(capacity) { }
     public StrBoxedValueDict(IDictionary<string, BoxedValue> dict) : base(dict) { }
+    public void AddBool(string k, bool v)
+    {
+        Add(k, BoxedValue.FromBool(v));
+    }
+    public void AddNumber(string k, double v)
+    {
+        Add(k, BoxedValue.FromNumber(v));
+    }
+    public void AddString(string k, string v)
+    {
+        Add(k, BoxedValue.FromString(v));
+    }
+    public void AddObject(string k, object v)
+    {
+        Add(k, BoxedValue.FromObject(v));
+    }
 }
