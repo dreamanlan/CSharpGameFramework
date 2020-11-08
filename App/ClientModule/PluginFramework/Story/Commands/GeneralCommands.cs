@@ -2029,7 +2029,7 @@ namespace GameFramework.Story.Commands
                     obj = UnityEngine.GameObject.Find(objPath);
                 } else {
                     try {
-                        int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                        int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                         obj = PluginFramework.Instance.GetGameObject(id);
                     } catch {
                         obj = null;
@@ -2118,7 +2118,7 @@ namespace GameFramework.Story.Commands
                 }
                 else {
                     try {
-                        int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                        int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                         obj = PluginFramework.Instance.GetGameObject(id);
                     }
                     catch {

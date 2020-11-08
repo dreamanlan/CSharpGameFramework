@@ -295,7 +295,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -381,7 +381,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -467,7 +467,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -553,7 +553,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -639,7 +639,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -725,7 +725,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -811,7 +811,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -897,7 +897,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -976,7 +976,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -1050,7 +1050,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -1124,7 +1124,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {
@@ -1198,7 +1198,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int id = objPathVal.IsInteger ? (int)objPathVal.ToLong() : -1;
+                            int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
                             obj = PluginFramework.Instance.GetGameObject(id);
                         }
                         catch {

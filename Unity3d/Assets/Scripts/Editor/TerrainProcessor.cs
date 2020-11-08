@@ -10,6 +10,7 @@ using System.Text;
 using System.IO;
 using System.Drawing;
 using GameFramework;
+using DslExpression;
 
 public sealed class TerrainEditWindow : EditorWindow
 {
@@ -37,6 +38,17 @@ public sealed class TerrainEditWindow : EditorWindow
         }
         if (GUILayout.Button("处理选中场景地形")) {
             ProcessSelectedSceneNodes();
+        }
+        EditorGUILayout.EndHorizontal();
+
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Label("列表文件", GUILayout.Width(60));
+        GUILayout.TextField(m_ListFile, 1024);
+        if (GUILayout.Button("选择", GUILayout.Width(60))) {
+            string path = EditorUtility.SaveFilePanel("请选择要保存对象列表的文件", string.Empty, "objlist", "txt");
+            if (!string.IsNullOrEmpty(path)) {
+                m_ListFile = TerrainEditUtility.PathToAssetPath(path);
+            }
         }
         EditorGUILayout.EndHorizontal();
 
@@ -81,13 +93,12 @@ public sealed class TerrainEditWindow : EditorWindow
                 m_DslFile = file;
 
                 m_Samplers.Clear();
-                foreach (var syntaxComponent in m_DslFile.DslInfos) {
-                    var func = syntaxComponent as Dsl.FunctionData;
-                    var info = syntaxComponent as Dsl.StatementData;
-                    if (null == func && null != info) {
-                        func = info.First;
-                    }
-                    foreach (var comp in func.Params) {
+                foreach(var info in m_DslFile.DslInfos) {
+                    var dslInfo = info as Dsl.StatementData;
+                    if (null == dslInfo)
+                        continue;
+                    var func = dslInfo.First;
+                    foreach(var comp in func.Params) {
                         var callData = comp as Dsl.FunctionData;
                         string id = callData.GetId();
                         if (id == "sampler") {
@@ -104,6 +115,8 @@ public sealed class TerrainEditWindow : EditorWindow
                             int w = int.Parse(callData.GetParamId(1));
                             int h = int.Parse(callData.GetParamId(2));
                             m_Caches.Add(key, new Size(w, h));
+                        } else if (id == "list") {
+                            m_ListFile = callData.GetParamId(0);
                         }
                     }
                 }
@@ -116,8 +129,9 @@ public sealed class TerrainEditWindow : EditorWindow
 
     private void SelectImage(string key, string val)
     {
-        string path = EditorUtility.OpenFilePanelWithFilters("请选择要执行的dsl文件", val, new[] { "Image files", "png,jpg,jpeg,bmp,gif", "All files", "*" });
+        string path = EditorUtility.OpenFilePanelWithFilters("请选择要图形文件", val, new[] { "Image files", "png,jpg,tga,bmp", "All files", "*" });
         if (!string.IsNullOrEmpty(path) && File.Exists(path)) {
+            path = TerrainEditUtility.PathToAssetPath(path);
             m_EditedSamplers[key] = path;
         }
     }
@@ -126,27 +140,72 @@ public sealed class TerrainEditWindow : EditorWindow
     {
         Dictionary<string, Color32[,]> samplers = new Dictionary<string, Color32[,]>();
         foreach (var pair in m_Samplers) {
-            var bitmap = System.Drawing.Image.FromFile(pair.Value) as Bitmap;
+            var bitmap = AssetDatabase.LoadAssetAtPath<Texture2D>(pair.Value);
             if (null != bitmap) {
-                var colors = new Color32[bitmap.Width, bitmap.Height];
-                for (int i = 0; i < bitmap.Width; ++i) {
-                    for (int j = 0; j < bitmap.Height; ++j) {
-                        System.Drawing.Color c = bitmap.GetPixel(i, j);
-                        colors[i, j] = new Color32(c.R, c.G, c.B, c.A);
+                var colors = new Color32[bitmap.width, bitmap.height];
+                for (int i = 0; i < bitmap.width; ++i) {
+                    for (int j = 0; j < bitmap.height; ++j) {
+                        Color c = bitmap.GetPixel(i, j);
+                        colors[i, j] = c;
                     }
                 }
                 samplers.Add(pair.Key, colors);
             }
         }
+        List<ObjectInfo> objects = new List<ObjectInfo>();
         foreach (GameObject obj in Selection.gameObjects) {
-            TerrainEditUtility.Process(obj, m_DslFile, samplers, m_Caches);
+            TerrainEditUtility.Process(obj, m_DslFile, samplers, m_Caches, objects);
             Debug.Log("handle " + obj.name);
+        }
+        if (objects.Count > 0) {
+            var root = GameObject.Find("objs");
+            ObjectDetector objDetector;
+            if (null == root) {
+                root = new GameObject("objs");
+                objDetector = root.AddComponent<ObjectDetector>();
+            } else {
+                objDetector = root.GetComponent<ObjectDetector>();
+            }
+
+            List<UnityEngine.GameObject> objList = new List<GameObject>();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("[");
+            int ct = objects.Count;
+            for (int i = 0; i < ct; ++i) {
+                var objInfo = objects[i];
+                string name = string.Format("obj{0}", i);
+                sb.Append("[");
+                sb.AppendFormat("\"{0}\", {1}, {2}, {3}", name, objInfo.X, objInfo.Y, objInfo.Z);
+                if (i < ct - 1) {
+                    sb.AppendLine("],");
+                } else {
+                    sb.AppendLine("]");
+                }
+
+                var prefab = Resources.Load(objInfo.Prefab);
+                var obj = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+                obj.name = name;
+                obj.transform.SetParent(root.transform);
+                obj.transform.SetPositionAndRotation(new Vector3(objInfo.X, objInfo.Y, objInfo.Z), Quaternion.identity);
+                objList.Add(obj);
+
+                if (TerrainEditUtility.DisplayCancelableProgressBar("创建场景对象", i + 1, ct))
+                    break;
+            }
+            sb.AppendLine("]");
+            var list = sb.ToString();
+            var file = TerrainEditUtility.AssetPathToPath(m_ListFile);
+            File.WriteAllText(file, list);
+            objDetector.Objects = objList.ToArray();
+            objDetector.MessageName = "notify_player";
+            EditorUtility.ClearProgressBar();
         }
         EditorUtility.DisplayDialog("提示", "处理完成", "ok");
     }
 
     private Vector2 m_Pos = Vector2.zero;
     private string m_Text = string.Empty;
+    private string m_ListFile = string.Empty;
     private Dsl.DslFile m_DslFile = null;
     private Dictionary<string, string> m_Samplers = new Dictionary<string, string>();
     private Dictionary<string, string> m_EditedSamplers = new Dictionary<string, string>();
@@ -160,8 +219,93 @@ internal class DetailInfo
     internal int Val;
 }
 
+internal struct Size
+{
+    internal int Width;
+    internal int Height;
+
+    internal Size(int w, int h)
+    {
+        Width = w;
+        Height = h;
+    }
+}
+
+internal class ObjectInfo
+{
+    internal float X;
+    internal float Y;
+    internal float Z;
+    internal string Prefab;
+}
+
 internal static class TerrainEditUtility
 {
+    internal static int MaxObjectCount
+    {
+        get { return s_MaxObjectCount; }
+    }
+    internal static void DisplayProgressBar(string title, int resultCount, int curCount, int totalCount)
+    {
+        DisplayProgressBar(title, resultCount, curCount, totalCount, true);
+    }
+    internal static void DisplayProgressBar(string title, int resultCount, int curCount, int totalCount, bool batch)
+    {
+        if (batch && totalCount > 1000) {
+            if (curCount % 10 == 0) {
+                EditorUtility.DisplayProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
+            }
+        } else {
+            EditorUtility.DisplayProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
+        }
+    }
+
+    internal static void DisplayProgressBar(string title, int curCount, int totalCount)
+    {
+        DisplayProgressBar(title, curCount, totalCount, true);
+    }
+    internal static void DisplayProgressBar(string title, int curCount, int totalCount, bool batch)
+    {
+        if (batch && totalCount > 1000) {
+            if (curCount % 10 == 0) {
+                EditorUtility.DisplayProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
+            }
+        } else {
+            EditorUtility.DisplayProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
+        }
+    }
+
+    internal static bool DisplayCancelableProgressBar(string title, int resultCount, int curCount, int totalCount)
+    {
+        return DisplayCancelableProgressBar(title, resultCount, curCount, totalCount, true);
+    }
+    internal static bool DisplayCancelableProgressBar(string title, int resultCount, int curCount, int totalCount, bool batch)
+    {
+        if (batch && totalCount > 1000) {
+            if (curCount % 10 == 0) {
+                return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
+            }
+        } else {
+            return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0} in {1}/{2}", resultCount, curCount, totalCount), curCount * 1.0f / totalCount);
+        }
+        return false;
+    }
+
+    internal static bool DisplayCancelableProgressBar(string title, int curCount, int totalCount)
+    {
+        return DisplayCancelableProgressBar(title, curCount, totalCount, true);
+    }
+    internal static bool DisplayCancelableProgressBar(string title, int curCount, int totalCount, bool batch)
+    {
+        if (batch && totalCount > 1000) {
+            if (curCount % 10 == 0) {
+                return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
+            }
+        } else {
+            return EditorUtility.DisplayCancelableProgressBar(title, string.Format("{0}/{1}", curCount, totalCount), curCount * 1.0f / totalCount);
+        }
+        return false;
+    }
     internal static void GenerateInfo(StringBuilder sb, GameObject root)
     {
         var terrain = root.GetComponent<Terrain>();
@@ -169,7 +313,7 @@ internal static class TerrainEditUtility
             WriteTerrainInfo(sb, 0, terrain);
         }
     }
-    internal static void Process(GameObject root, Dsl.DslFile file, Dictionary<string, Color32[,]> samplers, Dictionary<string, Size> cacheInfos)
+    internal static void Process(GameObject root, Dsl.DslFile file, Dictionary<string, Color32[,]> samplers, Dictionary<string, Size> cacheInfos, List<ObjectInfo> objects)
     {
         if (null != file) {
             List<TreeInstance> trees = new List<TreeInstance>();
@@ -202,29 +346,29 @@ internal static class TerrainEditUtility
             calc.Register("getcache", new DslExpression.ExpressionFactoryHelper<GetCacheExp>());
             calc.Register("setcache", new DslExpression.ExpressionFactoryHelper<SetCacheExp>());
             calc.Register("addtree", new DslExpression.ExpressionFactoryHelper<AddTreeExp>());
-            calc.SetGlobalVariable("samplers", samplers);
-            calc.SetGlobalVariable("caches", caches);
-            calc.SetGlobalVariable("trees", trees);
+            calc.Register("addobject", new DslExpression.ExpressionFactoryHelper<AddObjectExp>());
+            calc.SetGlobalVariable("samplers", CalculatorValue.FromObject(samplers));
+            calc.SetGlobalVariable("caches", CalculatorValue.FromObject(caches));
+            calc.SetGlobalVariable("trees", CalculatorValue.FromObject(trees));
+            calc.SetGlobalVariable("objects", CalculatorValue.FromObject(objects));
             calc.SetGlobalVariable("heightscalex", terrainData.heightmapScale.x);
             calc.SetGlobalVariable("heightscaley", terrainData.heightmapScale.y);
             calc.SetGlobalVariable("heightscalez", terrainData.heightmapScale.z);
-            calc.SetGlobalVariable("heights", datas);
-            calc.SetGlobalVariable("alphamaps", alphamaps);
-            calc.SetGlobalVariable("alphanum", alphanum);
-            calc.SetGlobalVariable("details", details);
+            calc.SetGlobalVariable("heights", CalculatorValue.FromObject(datas));
+            calc.SetGlobalVariable("alphamaps", CalculatorValue.FromObject(alphamaps));
+            calc.SetGlobalVariable("alphanum", CalculatorValue.FromObject(alphanum));
+            calc.SetGlobalVariable("details", CalculatorValue.FromObject(details));
             calc.SetGlobalVariable("height", 0.0f);
-            calc.SetGlobalVariable("alphas", new float[alphanum]);
+            calc.SetGlobalVariable("alphas", CalculatorValue.FromObject(new float[alphanum]));
             calc.SetGlobalVariable("detail", 0);
             bool resetTrees = false;
             bool canContinue = true;
-            foreach (var syntaxComponent in file.DslInfos) {
-                var func = syntaxComponent as Dsl.FunctionData;
-                var info = syntaxComponent as Dsl.StatementData;
-                if (null == func && null != info) {
-                    func = info.First;
-                }
-                int num = null != info ? info.GetFunctionNum() : 1;
-                bool check = false;
+            foreach (var comp in file.DslInfos) {
+                var info = comp as Dsl.StatementData;
+                if (null == info)
+                    continue;
+                bool check=false;
+                int num = info.GetFunctionNum();
                 if (num >= 2) {
                     string firstId = info.First.GetId();
                     if(firstId=="input"){
@@ -246,8 +390,8 @@ internal static class TerrainEditUtility
             }
             if (canContinue) {
                 int ix = 0;
-                foreach (var syntaxComponent in file.DslInfos) {
-                    var info = syntaxComponent as Dsl.StatementData;
+                foreach (var comp in file.DslInfos) {
+                    var info = comp as Dsl.StatementData;
                     if (null == info)
                         continue;
                     for (int i = 1; i < info.GetFunctionNum(); ++i) {
@@ -256,8 +400,8 @@ internal static class TerrainEditUtility
                     }
                 }
                 int ix2 = 0;
-                foreach (var syntaxComponent in file.DslInfos) {
-                    var info = syntaxComponent as Dsl.StatementData;
+                foreach (var comp in file.DslInfos) {
+                    var info = comp as Dsl.StatementData;
                     if (null == info)
                         continue;
                     for (int i = 1; i < info.GetFunctionNum(); ++i) {
@@ -292,6 +436,8 @@ internal static class TerrainEditUtility
                         string id = callData.GetId();
                         if (id == "resettrees") {
                             resetTrees = bool.Parse(callData.GetParamId(0));
+                        } else if (id == "maxcount") {
+                            s_MaxObjectCount = int.Parse(callData.GetParamId(0));
                         } else if (id == "rect") {
                             int x = int.Parse(callData.GetParamId(0));
                             int y = int.Parse(callData.GetParamId(1));
@@ -314,6 +460,8 @@ internal static class TerrainEditUtility
                         string id = callData.GetId();
                         if (id == "resettrees") {
                             resetTrees = bool.Parse(callData.GetParamId(0));
+                        } else if (id == "maxcount") {
+                            s_MaxObjectCount = int.Parse(callData.GetParamId(0));
                         } else if (id == "rect") {
                             int x = int.Parse(callData.GetParamId(0));
                             int y = int.Parse(callData.GetParamId(1));
@@ -335,6 +483,8 @@ internal static class TerrainEditUtility
                         string id = callData.GetId();
                         if (id == "resettrees") {
                             resetTrees = bool.Parse(callData.GetParamId(0));
+                        } else if (id == "maxcount") {
+                            s_MaxObjectCount = int.Parse(callData.GetParamId(0));
                         } else if (id == "rect") {
                             int x = int.Parse(callData.GetParamId(0));
                             int y = int.Parse(callData.GetParamId(1));
@@ -359,11 +509,16 @@ internal static class TerrainEditUtility
             for (int iy = 0; iy < h; ++iy) {
                 int xi = x + ix;
                 int yi = y + iy;
-                calc.SetVariable("height", datas[yi, xi]);
+                calc.SetGlobalVariable("height", datas[yi, xi]);
                 calc.Calc(proc, xi, yi);
-                datas[yi, xi] = (float)Convert.ChangeType(calc.GetVariable("height"), typeof(float));
+                datas[yi, xi] = calc.GetGlobalVariable("height").Get<float>();
             }
+
+            if (DisplayCancelableProgressBar("生成高度与对象数据", ix * h, w * h))
+                goto quit;
         }
+        quit:
+        EditorUtility.ClearProgressBar();
     }
     private static void ProcessHeights(float[,] datas, DslExpression.DslCalculator calc, string proc, int cx, int cy, int r)
     {
@@ -379,12 +534,17 @@ internal static class TerrainEditUtility
                 int dx = xi - cx;
                 int dy = yi - cy;
                 if (dx * dx + dy * dy <= r2) {
-                    calc.SetVariable("height", datas[yi, xi]);
+                    calc.SetGlobalVariable("height", datas[yi, xi]);
                     calc.Calc(proc, xi, yi);
-                    datas[yi, xi] = (float)Convert.ChangeType(calc.GetVariable("height"), typeof(float));
+                    datas[yi, xi] = calc.GetGlobalVariable("height").Get<float>();
                 }
             }
+
+            if (DisplayCancelableProgressBar("生成高度与对象数据", ix * h, w * h))
+                goto quit;
         }
+        quit:
+        EditorUtility.ClearProgressBar();
     }
     private static void ProcessAlphamaps(float[,,] alphamaps, DslExpression.DslCalculator calc, string proc, int x, int y, int w, int h)
     {
@@ -393,7 +553,7 @@ internal static class TerrainEditUtility
             for (int iy = 0; iy < h; ++iy) {
                 int xi = x + ix;
                 int yi = y + iy;
-                float[] alphas = calc.GetVariable("alphas") as float[];
+                float[] alphas = calc.GetGlobalVariable("alphas").As<float[]>();
                 for (int i = 0; i < alphanum; ++i) {
                     alphas[i] = alphamaps[xi, yi, i];
                 }
@@ -402,7 +562,12 @@ internal static class TerrainEditUtility
                     alphamaps[xi, yi, i] = alphas[i];
                 }
             }
+
+            if (DisplayCancelableProgressBar("生成alphamap数据", ix * h, w * h))
+                goto quit;
         }
+        quit:
+        EditorUtility.ClearProgressBar();
     }
     private static void ProcessAlphamaps(float[,,] alphamaps, DslExpression.DslCalculator calc, string proc, int cx, int cy, int r)
     {
@@ -419,7 +584,7 @@ internal static class TerrainEditUtility
                 int dx = xi - cx;
                 int dy = yi - cy;
                 if (dx * dx + dy * dy <= r2) {
-                    float[] alphas = calc.GetVariable("alphas") as float[];
+                    float[] alphas = calc.GetGlobalVariable("alphas").As<float[]>();
                     for (int i = 0; i < alphanum; ++i) {
                         alphas[i] = alphamaps[xi, yi, i];
                     }
@@ -429,7 +594,12 @@ internal static class TerrainEditUtility
                     }
                 }
             }
+
+            if (DisplayCancelableProgressBar("生成alphamap数据", ix * h, w * h))
+                goto quit;
         }
+        quit:
+        EditorUtility.ClearProgressBar();
     }
     private static void ProcessDetails(Dictionary<int, int[,]> details, DslExpression.DslCalculator calc, string proc, int x, int y, int w, int h)
     {
@@ -440,12 +610,17 @@ internal static class TerrainEditUtility
                 foreach (var pair in details) {
                     int layer = pair.Key;
                     var detail = pair.Value[xi, yi];
-                    calc.SetVariable("detail", detail);
+                    calc.SetGlobalVariable("detail", detail);
                     calc.Calc(proc, xi, yi, layer);
-                    pair.Value[xi, yi] = (int)Convert.ChangeType(calc.GetVariable("detail"), typeof(int));
+                    pair.Value[xi, yi] = calc.GetGlobalVariable("detail").Get<int>();
                 }
             }
+
+            if (DisplayCancelableProgressBar("生成detail数据", ix * h, w * h))
+                goto quit;
         }
+        quit:
+        EditorUtility.ClearProgressBar();
     }
     private static void ProcessDetails(Dictionary<int, int[,]> details, DslExpression.DslCalculator calc, string proc, int cx, int cy, int r)
     {
@@ -464,13 +639,18 @@ internal static class TerrainEditUtility
                     foreach (var pair in details) {
                         int layer = pair.Key;
                         var detail = pair.Value[xi, yi];
-                        calc.SetVariable("detail", detail);
+                        calc.SetGlobalVariable("detail", detail);
                         calc.Calc(proc, xi, yi, layer);
-                        pair.Value[xi, yi] = (int)Convert.ChangeType(calc.GetVariable("detail"), typeof(int));
+                        pair.Value[xi, yi] = calc.GetGlobalVariable("detail").Get<int>();
                     }
                 }
             }
+
+            if (DisplayCancelableProgressBar("生成detail数据", ix * h, w * h))
+                goto quit;
         }
+        quit:
+        EditorUtility.ClearProgressBar();
     }
 
     private static void WriteTerrainInfo(StringBuilder sb, int indent, Terrain terrain)
@@ -489,8 +669,8 @@ internal static class TerrainEditUtility
         AppendLine(sb, "{0}alphamap(size({1}, {2}), resolution({3}), layers({4}))", GetIndent(indent), data.alphamapWidth, data.alphamapHeight, data.alphamapResolution, data.alphamapLayers);
         AppendLine(sb, "{0}{{", GetIndent(indent));
         ++indent;
-        foreach(var sp in data.splatPrototypes) {
-            AppendLine(sb, "{0}splat(texture(\"{1}\", {2}, {3}), normalmap{4}, tilesize({5}), tileoffset({6}), specular({7}), metallic({8}), smoothness({9}));", GetIndent(indent), sp.texture.name, sp.texture.width, sp.texture.height, null != sp.normalMap ? string.Format("(\"{1}\", {2}, {3})", sp.normalMap.name, sp.normalMap.width, sp.normalMap.height) : "()", sp.tileSize, sp.tileOffset, sp.specular, sp.metallic, sp.smoothness);
+        foreach(var tl in data.terrainLayers) {
+            AppendLine(sb, "{0}terrainlayer(texture(\"{1}\", {2}, {3}), normalmap{4}, tilesize({5}), tileoffset({6}), specular({7}), metallic({8}), smoothness({9}));", GetIndent(indent), tl.diffuseTexture.name, tl.diffuseTexture.width, tl.diffuseTexture.height, null != tl.normalMapTexture ? string.Format("(\"{1}\", {2}, {3})", tl.normalMapTexture.name, tl.normalMapTexture.width, tl.normalMapTexture.height) : "()", tl.tileSize, tl.tileOffset, tl.specular, tl.metallic, tl.smoothness);
         }
         --indent;
         AppendLine(sb, "{0}}};", GetIndent(indent));
@@ -554,12 +734,83 @@ internal static class TerrainEditUtility
         --indent;
         AppendLine(sb, "{0}}};", GetIndent(indent));
     }
+
     private static void AppendLine(StringBuilder sb, string format, params object[] args)
     {
         sb.AppendFormat(format, args);
         sb.AppendLine();
     }
 
+    internal static bool IsPathMatch(string path, string filter)
+    {
+        string ext = Path.GetExtension(path);
+        if (ext == ".meta") {
+            return false;
+        }
+        List<string> infos;
+        if (!s_PathMatchInfos.TryGetValue(filter, out infos)) {
+            string[] filters = filter.Split(new char[] { '*' }, StringSplitOptions.RemoveEmptyEntries);
+            infos = new List<string>(filters);
+            s_PathMatchInfos.Add(filter, infos);
+        }
+        string fileName = Path.GetFileName(path);
+        bool match = true;
+        int startIx = 0;
+        for (int i = 0; i < infos.Count; ++i) {
+            var info = infos[i];
+            var ix = fileName.IndexOf(info, startIx, StringComparison.CurrentCultureIgnoreCase);
+            if (ix >= 0) {
+                startIx = ix + info.Length;
+            } else {
+                match = false;
+                break;
+            }
+        }
+        return match;
+    }
+    internal static bool IsAssetPath(string path)
+    {
+        string rootPath = Application.dataPath.Replace('\\', '/');
+        path = path.Replace('\\', '/');
+        if (path.StartsWith(rootPath)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    internal static string PathToAssetPath(string path)
+    {
+        return FilePathToRelativePath(path);
+    }
+    internal static string AssetPathToPath(string assetPath)
+    {
+        return RelativePathToFilePath(assetPath);
+    }
+    internal static string FilePathToRelativePath(string path)
+    {
+        string rootPath = GetRootPath();
+        path = path.Replace('\\', '/');
+        if (path.StartsWith(rootPath)) {
+            path = path.Substring(rootPath.Length);
+        }
+        return path;
+    }
+    internal static string RelativePathToFilePath(string path)
+    {
+        string rootPath = GetRootPath();
+        path = path.Replace('\\', '/');
+        return rootPath + path;
+    }
+    internal static string GetRootPath()
+    {
+        const string c_AssetsDir = "Assets";
+        if (string.IsNullOrEmpty(s_RootPath)) {
+            s_RootPath = Application.dataPath.Replace('\\', '/');
+            if (s_RootPath.EndsWith(c_AssetsDir))
+                s_RootPath = s_RootPath.Substring(0, s_RootPath.Length - c_AssetsDir.Length);
+        }
+        return s_RootPath;
+    }
     private static GameObject FindRoot(GameObject obj)
     {
         GameObject ret = null;
@@ -593,18 +844,21 @@ internal static class TerrainEditUtility
         return string.Join("\r\n", lines);
     }
 
+    private static int s_MaxObjectCount = 2048;
+    private static Dictionary<string, List<string>> s_PathMatchInfos = new Dictionary<string, List<string>>();
+    private static string s_RootPath = string.Empty;
     private const string c_IndentString = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
 }
 
 internal class GetHeightExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = null;
+        float r = 0;
         if (operands.Count >= 2) {
-            var datas = Calculator.GetVariable("heights") as float[,];
-            var x = ToLong(operands[0]);
-            var y = ToLong(operands[1]);
+            var datas = Calculator.GetGlobalVariable("heights").As<float[,]>();
+            var x = operands[0].Get<long>();
+            var y = operands[1].Get<long>();
             r = datas[y, x];
         }
         return r;
@@ -612,14 +866,14 @@ internal class GetHeightExp : DslExpression.SimpleExpressionBase
 }
 internal class GetAlphamapExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = null;
+        float r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetVariable("alphamaps") as float[, ,];
-            var x = ToLong(operands[0]);
-            var y = ToLong(operands[1]);
-            var ix = ToLong(operands[2]);
+            var datas = Calculator.GetGlobalVariable("alphamaps").As<float[, ,]>();
+            var x = operands[0].Get<long>();
+            var y = operands[1].Get<long>();
+            var ix = operands[2].Get<long>();
             r = datas[x, y, ix];
         }
         return r;
@@ -627,12 +881,12 @@ internal class GetAlphamapExp : DslExpression.SimpleExpressionBase
 }
 internal class GetAlphaExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = null;
+        float r = 0;
         if (operands.Count >= 1) {
-            var datas = Calculator.GetVariable("alphas") as float[];
-            var ix = ToLong(operands[0]);
+            var datas = Calculator.GetGlobalVariable("alphas").As<float[]>();
+            var ix = operands[0].Get<long>();
             r = datas[ix];
         }
         return r;
@@ -640,13 +894,13 @@ internal class GetAlphaExp : DslExpression.SimpleExpressionBase
 }
 internal class SetAlphaExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = null;
+        double r = 0;
         if (operands.Count >= 2) {
-            var datas = Calculator.GetVariable("alphas") as float[];
-            var ix = ToLong(operands[0]);
-            var v = ToDouble(operands[1]);
+            var datas = Calculator.GetGlobalVariable("alphas").As<float[]>();
+            var ix = operands[0].Get<long>();
+            var v = operands[1].Get<double>();
             datas[ix] = (float)v;
             r = v;
         }
@@ -655,14 +909,14 @@ internal class SetAlphaExp : DslExpression.SimpleExpressionBase
 }
 internal class GetDetailExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = null;
+        int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetVariable("details") as Dictionary<int, int[,]>;
-            var x = ToLong(operands[0]);
-            var y = ToLong(operands[1]);
-            var ix = ToLong(operands[2]);
+            var datas = Calculator.GetGlobalVariable("details").As<Dictionary<int, int[,]>>();
+            var x = operands[0].Get<long>();
+            var y = operands[1].Get<long>();
+            var ix = operands[2].Get<long>();
             int[,] v;
             if (datas.TryGetValue((int)ix, out v)) {
                 r = v[x, y];
@@ -673,14 +927,14 @@ internal class GetDetailExp : DslExpression.SimpleExpressionBase
 }
 internal class SampleRedExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = 0;
+        int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetVariable("samplers") as Dictionary<string, Color32[,]>;
-            var key = operands[0] as string;
-            var x = ToLong(operands[1]);
-            var y = ToLong(operands[2]);
+            var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
+            var key = operands[0].AsString;
+            var x = operands[1].Get<long>();
+            var y = operands[2].Get<long>();
             Color32[,] colors;
             if (datas.TryGetValue(key, out colors)) {
                 if (x >= 0 && x < colors.GetLength(0)) {
@@ -695,14 +949,14 @@ internal class SampleRedExp : DslExpression.SimpleExpressionBase
 }
 internal class SampleGreenExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = 0;
+        int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetVariable("samplers") as Dictionary<string, Color32[,]>;
-            var key = operands[0] as string;
-            var x = ToLong(operands[1]);
-            var y = ToLong(operands[2]);
+            var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
+            var key = operands[0].AsString;
+            var x = operands[1].Get<long>();
+            var y = operands[2].Get<long>();
             Color32[,] colors;
             if (datas.TryGetValue(key, out colors)) {
                 if (x >= 0 && x < colors.GetLength(0)) {
@@ -717,14 +971,14 @@ internal class SampleGreenExp : DslExpression.SimpleExpressionBase
 }
 internal class SampleBlueExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = 0;
+        int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetVariable("samplers") as Dictionary<string, Color32[,]>;
-            var key = operands[0] as string;
-            var x = ToLong(operands[1]);
-            var y = ToLong(operands[2]);
+            var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
+            var key = operands[0].AsString;
+            var x = operands[1].Get<long>();
+            var y = operands[2].Get<long>();
             Color32[,] colors;
             if (datas.TryGetValue(key, out colors)) {
                 if (x >= 0 && x < colors.GetLength(0)) {
@@ -739,14 +993,14 @@ internal class SampleBlueExp : DslExpression.SimpleExpressionBase
 }
 internal class SampleAlphaExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = 0;
+        int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetVariable("samplers") as Dictionary<string, Color32[,]>;
-            var key = operands[0] as string;
-            var x = ToLong(operands[1]);
-            var y = ToLong(operands[2]);
+            var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
+            var key = operands[0].AsString;
+            var x = operands[1].Get<long>();
+            var y = operands[2].Get<long>();
             Color32[,] colors;
             if (datas.TryGetValue(key, out colors)) {
                 if (x >= 0 && x < colors.GetLength(0)) {
@@ -761,14 +1015,14 @@ internal class SampleAlphaExp : DslExpression.SimpleExpressionBase
 }
 internal class GetCacheExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = 0;
+        int r = 0;
         if (operands.Count >= 3) {
-            var datas = Calculator.GetVariable("caches") as Dictionary<string, int[,]>;
-            var key = operands[0] as string;
-            var x = ToLong(operands[1]);
-            var y = ToLong(operands[2]);
+            var datas = Calculator.GetGlobalVariable("caches").As<Dictionary<string, int[,]>>();
+            var key = operands[0].AsString;
+            var x = operands[1].Get<long>();
+            var y = operands[2].Get<long>();
             int[,] vals;
             if (datas.TryGetValue(key, out vals)) {
                 if (x >= 0 && x < vals.GetLength(0)) {
@@ -783,15 +1037,15 @@ internal class GetCacheExp : DslExpression.SimpleExpressionBase
 }
 internal class SetCacheExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = 0;
+        long r = 0;
         if (operands.Count >= 4) {
-            var datas = Calculator.GetVariable("caches") as Dictionary<string, int[,]>;
-            var key = operands[0] as string;
-            var x = ToLong(operands[1]);
-            var y = ToLong(operands[2]);
-            var v = ToLong(operands[3]);
+            var datas = Calculator.GetGlobalVariable("caches").As<Dictionary<string, int[,]>>();
+            var key = operands[0].AsString;
+            var x = operands[1].Get<long>();
+            var y = operands[2].Get<long>();
+            var v = operands[3].Get<long>();
             int[,] vals;
             if (datas.TryGetValue(key, out vals)) {
                 if (x >= 0 && x < vals.GetLength(0)) {
@@ -807,26 +1061,45 @@ internal class SetCacheExp : DslExpression.SimpleExpressionBase
 }
 internal class AddTreeExp : DslExpression.SimpleExpressionBase
 {
-    protected override object OnCalc(IList<object> operands)
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
     {
-        object r = 0;
+        long r = 0;
         if (operands.Count >= 9) {
-            var trees = Calculator.GetVariable("trees") as List<TreeInstance>;
-            var ix = ToLong(operands[0]);
-            var x = ToDouble(operands[1]);
-            var y = ToDouble(operands[2]);
-            var z = ToDouble(operands[3]);
-            var rot = ToDouble(operands[4]);
-            var w_scale = ToDouble(operands[5]);
-            var h_scale = ToDouble(operands[6]);
-            var color = (uint)ToLong(operands[7]);
-            var lightmap = (uint)ToLong(operands[8]);
+            var trees = Calculator.GetGlobalVariable("trees").As<List<TreeInstance>>();
+            var ix = operands[0].Get<long>();
+            var x = operands[1].Get<double>();
+            var y = operands[2].Get<double>();
+            var z = operands[3].Get<double>();
+            var rot = operands[4].Get<double>();
+            var w_scale = operands[5].Get<double>();
+            var h_scale = operands[6].Get<double>();
+            var color = operands[7].Get<uint>();
+            var lightmap = operands[8].Get<uint>();
             if (null != trees) {
                 Color32 c = new Color32((byte)((color & 0xff000000) >> 24), (byte)((color & 0xff0000) >> 16), (byte)((color & 0xff00) >> 8), (byte)(color & 0xff));
                 Color32 l = new Color32((byte)((lightmap & 0xff000000) >> 24), (byte)((lightmap & 0xff0000) >> 16), (byte)((lightmap & 0xff00) >> 8), (byte)(lightmap & 0xff));
                 trees.Add(new TreeInstance { prototypeIndex = (int)ix, position = new Vector3((float)x, (float)y, (float)z), widthScale = (float)w_scale, heightScale = (float)h_scale, rotation = (float)rot, color = c, lightmapColor = l });
             }
             r = ix;
+        }
+        return r;
+    }
+}
+internal class AddObjectExp : DslExpression.SimpleExpressionBase
+{
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    {
+        string r = string.Empty;
+        if (operands.Count >= 4) {
+            var objects = Calculator.GetGlobalVariable("objects").As<List<ObjectInfo>>();
+            var x = operands[0].Get<float>();
+            var y = operands[1].Get<float>();
+            var z = operands[2].Get<float>();
+            var m = operands[3].AsString;
+            if (null != objects && objects.Count < TerrainEditUtility.MaxObjectCount) {
+                objects.Add(new ObjectInfo { X = x, Y = y, Z = z, Prefab = m });
+            }
+            r = m;
         }
         return r;
     }
