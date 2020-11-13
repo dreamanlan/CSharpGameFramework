@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -38,18 +38,23 @@ public class BatchResourceProcessWindow : EditorWindow
         int deleteIndex = -1;
         EditorGUILayout.BeginHorizontal();
         ResourceEditUtility.EnableSaveAndReimport = EditorGUILayout.Toggle("允许SaveAndReimport", ResourceEditUtility.EnableSaveAndReimport);
+        ResourceEditUtility.UseSpecificSettingDB = EditorGUILayout.Toggle("使用特殊设置DB数据", ResourceEditUtility.UseSpecificSettingDB);
         ResourceEditUtility.ForceSaveAndReimport = EditorGUILayout.Toggle("强制SaveAndReimport", ResourceEditUtility.ForceSaveAndReimport);
         EditorGUILayout.EndHorizontal();
         var rt = EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("加载", EditorStyles.toolbarButton)) {
             DeferAction(w => Load());
         }
+        if (GUILayout.Button("导入", EditorStyles.toolbarButton)) {
+            DeferAction(w => Import());
+        }
         if (GUILayout.Button("添加", EditorStyles.toolbarButton)) {
             m_IsReady = false;
             if (m_List.Count > 0) {
                 var last = m_List[m_List.Count - 1];
                 m_List.Add(new ResourceEditUtility.BatchProcessInfo { DslPath = last.DslPath, ResPath = last.ResPath });
-            } else {
+            }
+            else {
                 m_List.Add(new ResourceEditUtility.BatchProcessInfo());
             }
             m_IsReady = true;
@@ -68,7 +73,8 @@ public class BatchResourceProcessWindow : EditorWindow
                     if (!string.IsNullOrEmpty(res)) {
                         if (IsAssetPath(res)) {
                             info.ResPath = FilePathToRelativePath(res);
-                        } else {
+                        }
+                        else {
                             EditorUtility.DisplayDialog("错误", "必须选择本unity工程的资源路径！", "确定");
                         }
                     }
@@ -94,6 +100,9 @@ public class BatchResourceProcessWindow : EditorWindow
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("保存", EditorStyles.toolbarButton)) {
             DeferAction(w => Save());
+        }
+        if (GUILayout.Button("导出", EditorStyles.toolbarButton)) {
+            DeferAction(w => Export());
         }
         if (GUILayout.Button("处理", EditorStyles.toolbarButton)) {
             handle = true;
@@ -209,7 +218,42 @@ public class BatchResourceProcessWindow : EditorWindow
             m_IsReady = true;
         }
     }
-    
+
+    private void Import()
+    {
+        m_IsReady = false;
+        try {
+            m_List.Clear();
+            for (int i = 0; i < AssetProcessorDB.DBInstance.Count; ++i) {
+                var info = AssetProcessorDB.DBInstance[i];
+                m_List.Add(new ResourceEditUtility.BatchProcessInfo { ResPath = info.ResPath, DslPath = info.DslPath });
+            }
+        }
+        finally {
+            m_IsReady = true;
+        }
+    }
+
+    private void Export()
+    {
+        m_IsReady = false;
+        try {
+            AssetProcessorDB.DBInstance.Clear();
+            foreach (var info in m_List) {
+                if (!string.IsNullOrEmpty(info.DslPath)) {
+                    var item = new AssetProcessorInfo();
+                    item.ResPath = info.ResPath;
+                    item.DslPath = info.DslPath;
+                    AssetProcessorDB.DBInstance.Add(item);
+                }
+            }
+            AssetProcessorDB.DBInstance.Save();
+        }
+        finally {
+            m_IsReady = true;
+        }
+    }
+
     private bool IsAssetPath(string path)
     {
         return ResourceEditUtility.IsAssetPath(path);
@@ -536,7 +580,7 @@ public class BatchLoadWindow : EditorWindow
     private List<string> m_List = new List<string>();
     private Vector2 m_Pos = Vector2.zero;
 
-    private static HashSet<string> s_ManagedGroupNames = new HashSet<string> { "CsLibrary", "PluginFramework", "SkillDisplayer", "DisplayerConfigInDll", "TableConfig", "MessageDefine", "StorySystem", "Dsl", "WeTest", "PigeonCoopToolkit", "SLua", "Mono", "Wup", "Cinemachine", "Apollo", "FairyGUI", "UnityEngine", "FMOD", "SevenZip", "System" };
+    private static HashSet<string> s_ManagedGroupNames = new HashSet<string> { "GameFramework", "PluginFramework", "SkillDisplayer", "DisplayerConfigInDll", "TableConfig", "MessageDefine", "StorySystem", "Dsl", "WeTest", "PigeonCoopToolkit", "SLua", "Mono", "Wup", "Cinemachine", "Apollo", "FairyGUI", "UnityEngine", "FMOD", "SevenZip", "System" };
     private static ProfilerMarker s_CrawlManagedData = new ProfilerMarker("CrawlManagedData");
     
     private static string CleanStrings(string text)
@@ -547,14 +591,14 @@ public class BatchLoadWindow : EditorWindow
 
 public class ResourceCommandWindow : EditorWindow
 {
-    internal static void InitWindow(ResourceEditWindow resEdit, string content, object obj, object item)
+    internal static void InitWindow(ResourceEditWindow resEdit, string content, DslExpression.CalculatorValue obj, DslExpression.CalculatorValue item)
     {
         ResourceCommandWindow window = (ResourceCommandWindow)EditorWindow.GetWindow(typeof(ResourceCommandWindow));
         window.Init(resEdit, content, obj, item);
         window.Show();
     }
 
-    private void Init(ResourceEditWindow resEdit, string content, object obj, object item)
+    private void Init(ResourceEditWindow resEdit, string content, DslExpression.CalculatorValue obj, DslExpression.CalculatorValue item)
     {
         m_ResourceEditWindow = resEdit;
         m_Content = content;
@@ -600,8 +644,8 @@ public class ResourceCommandWindow : EditorWindow
         m_ScriptableInfo.ResourceEditWindowType = typeof(ResourceEditWindow);
         m_ScriptableInfo.ResourceProcessorType = typeof(ResourceProcessor);
         m_ScriptableInfo.ResourceEditUtilityType = typeof(ResourceEditUtility);
-        var r = ResourceEditUtility.EvalScript(m_Command, ResourceProcessor.Instance.Params, m_Object, m_Item, new Dictionary<string, object> { { "@context", m_ScriptableInfo } });
-        if (null != r) {
+        var r = ResourceEditUtility.EvalScript(m_Command, ResourceProcessor.Instance.Params, m_Object, m_Item, new Dictionary<string, DslExpression.CalculatorValue> { { "@context", DslExpression.CalculatorValue.FromObject(m_ScriptableInfo) } });
+        if (!r.IsNullObject) {
             m_Results.Enqueue(string.Format("cmd:{0} result:{1}", m_Command, r.ToString()));
         }
         else {
@@ -651,8 +695,8 @@ public class ResourceCommandWindow : EditorWindow
     private string m_Content = string.Empty;
     private Queue<string> m_Results = new Queue<string>();
     private string m_Command = string.Empty;
-    private object m_Object = null;
-    private object m_Item = null;
+    private DslExpression.CalculatorValue m_Object = DslExpression.CalculatorValue.NullObject;
+    private DslExpression.CalculatorValue m_Item = DslExpression.CalculatorValue.NullObject;
     private ResourceEditWindow m_ResourceEditWindow = null;
     private Vector2 m_Pos = Vector2.zero;
 }

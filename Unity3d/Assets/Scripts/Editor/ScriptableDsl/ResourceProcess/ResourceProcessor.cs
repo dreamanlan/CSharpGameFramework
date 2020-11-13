@@ -27,7 +27,7 @@ using GameFramework;
 
 internal sealed class ResourceEditWindow : EditorWindow
 {
-    [MenuItem("Dsl资源工具/资源处理")]
+    [MenuItem("Dsl资源工具/资源处理", false, 200)]
     internal static void InitWindow()
     {
         ResourceEditWindow window = (ResourceEditWindow)EditorWindow.GetWindow(typeof(ResourceEditWindow));
@@ -49,6 +49,7 @@ internal sealed class ResourceEditWindow : EditorWindow
     }
     internal void QueueProcessEnd()
     {
+        m_BatchActions.Enqueue(w => SpecificBatchAction());
         m_BatchActions.Enqueue(w => w.Focus());
     }
     internal void QueueProcess(string dslPath, IDictionary<string, string> args)
@@ -65,8 +66,10 @@ internal sealed class ResourceEditWindow : EditorWindow
     {
         bool oldRichText = GUI.skin.button.richText;
         GUI.skin.button.richText = true;
+
         EditorGUILayout.BeginHorizontal();
         ResourceEditUtility.EnableSaveAndReimport = EditorGUILayout.Toggle("允许SaveAndReimport", ResourceEditUtility.EnableSaveAndReimport);
+        ResourceEditUtility.UseSpecificSettingDB = EditorGUILayout.Toggle("跳过特殊设置DB数据里的资源", ResourceEditUtility.UseSpecificSettingDB);
         ResourceEditUtility.ForceSaveAndReimport = EditorGUILayout.Toggle("强制SaveAndReimport", ResourceEditUtility.ForceSaveAndReimport);
         ResourceEditUtility.SaveResultWithXrefs = EditorGUILayout.Toggle("结果保存包含引用数据", ResourceEditUtility.SaveResultWithXrefs);
         EditorGUILayout.EndHorizontal();
@@ -188,7 +191,7 @@ internal sealed class ResourceEditWindow : EditorWindow
             DeferAction(obj => { obj.CopyToClipboard(); });
         }
         if (GUILayout.Button("命令", EditorStyles.toolbarButton)) {
-            DeferAction(obj => { ResourceCommandWindow.InitWindow(obj, string.Empty, null, null); });
+            DeferAction(obj => { ResourceCommandWindow.InitWindow(obj, string.Empty, DslExpression.CalculatorValue.NullObject, DslExpression.CalculatorValue.NullObject); });
         }
         GUILayout.Space(20);
         if (GUILayout.Button("批处理", EditorStyles.toolbarButton)) {
@@ -209,9 +212,9 @@ internal sealed class ResourceEditWindow : EditorWindow
                     if (!string.IsNullOrEmpty(info.Script)) {
                         double curTime = EditorApplication.timeSinceStartup;
                         if (info.NextRunScriptTime <= curTime) {
-                            var r = ResourceProcessor.Instance.CallScript(null, info.Script, info);
-                            if (null != r) {
-                                info.NextRunScriptTime = curTime + (double)Convert.ChangeType(r, typeof(double));
+                            var r = ResourceProcessor.Instance.CallScript(null, info.Script, DslExpression.CalculatorValue.FromObject(info));
+                            if (!r.IsNullObject) {
+                                info.NextRunScriptTime = curTime + r.Get<double>();
                             }
                         }
                     }
@@ -258,7 +261,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         newVal = v ? "true" : "false";
                     }
                     else if (info.Type == typeof(int)) {
-                        if (null != info.MinValue && null != info.MaxValue) {
+                        if (!info.MinValue.IsNullObject && !info.MaxValue.IsNullObject) {
                             int min = (int)info.MinValue;
                             int max = (int)info.MaxValue;
                             int v = EditorGUILayout.IntSlider((int)info.Value, min, max, GUILayout.MaxWidth(1024));
@@ -270,7 +273,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                     }
                     else if (info.Type == typeof(uint)) {
-                        if (null != info.MinValue && null != info.MaxValue) {
+                        if (!info.MinValue.IsNullObject && !info.MaxValue.IsNullObject) {
                             int min = (int)info.MinValue;
                             int max = (int)info.MaxValue;
                             int v = EditorGUILayout.IntSlider((int)info.Value, min, max, GUILayout.MaxWidth(1024));
@@ -282,7 +285,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                     }
                     else if (info.Type == typeof(long)) {
-                        if (null != info.MinValue && null != info.MaxValue) {
+                        if (!info.MinValue.IsNullObject && !info.MaxValue.IsNullObject) {
                             int min = (int)info.MinValue;
                             int max = (int)info.MaxValue;
                             int v = EditorGUILayout.IntSlider((int)(long)info.Value, min, max, GUILayout.MaxWidth(1024));
@@ -294,7 +297,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                     }
                     else if (info.Type == typeof(ulong)) {
-                        if (null != info.MinValue && null != info.MaxValue) {
+                        if (!info.MinValue.IsNullObject && !info.MaxValue.IsNullObject) {
                             int min = (int)info.MinValue;
                             int max = (int)info.MaxValue;
                             int v = EditorGUILayout.IntSlider((int)(long)info.Value, min, max, GUILayout.MaxWidth(1024));
@@ -306,7 +309,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                     }
                     else if (info.Type == typeof(float)) {
-                        if (null != info.MinValue && null != info.MaxValue) {
+                        if (!info.MinValue.IsNullObject && !info.MaxValue.IsNullObject) {
                             float min = (float)info.MinValue;
                             float max = (float)info.MaxValue;
                             float v = EditorGUILayout.Slider((float)info.Value, min, max, GUILayout.MaxWidth(1024));
@@ -318,7 +321,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                     }
                     else if (info.Type == typeof(double)) {
-                        if (null != info.MinValue && null != info.MaxValue) {
+                        if (!info.MinValue.IsNullObject && !info.MaxValue.IsNullObject) {
                             float min = (float)info.MinValue;
                             float max = (float)info.MaxValue;
                             float v = EditorGUILayout.Slider((float)(double)info.Value, min, max, GUILayout.MaxWidth(1024));
@@ -391,7 +394,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         val.StringValue = pair.Value;
                         if (val.Type == typeof(int)) {
                             int v = int.Parse(pair.Value);
-                            if (null != val.MinValue && null != val.MaxValue) {
+                            if (!val.MinValue.IsNullObject && !val.MaxValue.IsNullObject) {
                                 int min = (int)val.MinValue;
                                 int max = (int)val.MaxValue;
                                 if (v < min) v = min;
@@ -401,7 +404,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                         if (val.Type == typeof(uint)) {
                             uint v = uint.Parse(pair.Value);
-                            if (null != val.MinValue && null != val.MaxValue) {
+                            if (!val.MinValue.IsNullObject && !val.MaxValue.IsNullObject) {
                                 uint min = (uint)(int)val.MinValue;
                                 uint max = (uint)(int)val.MaxValue;
                                 if (v < min) v = min;
@@ -411,7 +414,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                         else if (val.Type == typeof(long)) {
                             long v = long.Parse(pair.Value);
-                            if (null != val.MinValue && null != val.MaxValue) {
+                            if (!val.MinValue.IsNullObject && !val.MaxValue.IsNullObject) {
                                 int min = (int)val.MinValue;
                                 int max = (int)val.MaxValue;
                                 if (v < min) v = min;
@@ -421,7 +424,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                         else if (val.Type == typeof(ulong)) {
                             ulong v = ulong.Parse(pair.Value);
-                            if (null != val.MinValue && null != val.MaxValue) {
+                            if (!val.MinValue.IsNullObject && !val.MaxValue.IsNullObject) {
                                 ulong min = (ulong)(int)val.MinValue;
                                 ulong max = (ulong)(int)val.MaxValue;
                                 if (v < min) v = min;
@@ -431,7 +434,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                         else if (val.Type == typeof(float)) {
                             float v = float.Parse(pair.Value);
-                            if (null != val.MinValue && null != val.MaxValue) {
+                            if (!val.MinValue.IsNullObject && !val.MaxValue.IsNullObject) {
                                 float min = (float)val.MinValue;
                                 float max = (float)val.MaxValue;
                                 if (v < min) v = min;
@@ -441,7 +444,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                         else if (val.Type == typeof(double)) {
                             double v = double.Parse(pair.Value);
-                            if (null != val.MinValue && null != val.MaxValue) {
+                            if (!val.MinValue.IsNullObject && !val.MaxValue.IsNullObject) {
                                 float min = (float)val.MinValue;
                                 float max = (float)val.MaxValue;
                                 if (v < min) v = min;
@@ -451,7 +454,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                         else if (val.Type == typeof(string)) {
                             string v = pair.Value;
-                            if (null != val.MinValue && null != val.MaxValue) {
+                            if (!val.MinValue.IsNullObject && !val.MaxValue.IsNullObject) {
                                 string min = (string)val.MinValue;
                                 string max = (string)val.MaxValue;
                                 if (v.CompareTo(min) < 0) v = min;
@@ -461,7 +464,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                         }
                         else if (val.Type == typeof(bool)) {
                             bool v = bool.Parse(pair.Value);
-                            if (null != val.MinValue && null != val.MaxValue) {
+                            if (!val.MinValue.IsNullObject && !val.MaxValue.IsNullObject) {
                                 bool min = (bool)val.MinValue;
                                 bool max = (bool)val.MaxValue;
                                 if (v.CompareTo(min) < 0) v = min;
@@ -477,7 +480,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                 int.TryParse(str, out iv);
                                 list.Add(iv);
                             }
-                            val.Value = list;
+                            val.Value = DslExpression.CalculatorValue.FromObject(list);
                         }
                         else if (val.Type == typeof(List<uint>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -487,7 +490,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                 uint.TryParse(str, out iv);
                                 list.Add(iv);
                             }
-                            val.Value = list;
+                            val.Value = DslExpression.CalculatorValue.FromObject(list);
                         }
                         else if (val.Type == typeof(List<long>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -497,7 +500,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                 long.TryParse(str, out iv);
                                 list.Add(iv);
                             }
-                            val.Value = list;
+                            val.Value = DslExpression.CalculatorValue.FromObject(list);
                         }
                         else if (val.Type == typeof(List<ulong>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -507,7 +510,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                 ulong.TryParse(str, out iv);
                                 list.Add(iv);
                             }
-                            val.Value = list;
+                            val.Value = DslExpression.CalculatorValue.FromObject(list);
                         }
                         else if (val.Type == typeof(List<float>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -517,7 +520,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                 float.TryParse(str, out fv);
                                 list.Add(fv);
                             }
-                            val.Value = list;
+                            val.Value = DslExpression.CalculatorValue.FromObject(list);
                         }
                         else if (val.Type == typeof(List<double>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -527,11 +530,11 @@ internal sealed class ResourceEditWindow : EditorWindow
                                 double.TryParse(str, out fv);
                                 list.Add(fv);
                             }
-                            val.Value = list;
+                            val.Value = DslExpression.CalculatorValue.FromObject(list);
                         }
                         else if (val.Type == typeof(List<string>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
-                            val.Value = v;
+                            val.Value = DslExpression.CalculatorValue.FromObject(v);
                         }
                         else if (val.Type == typeof(HashSet<int>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -543,7 +546,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                     hash.Add(iv);
                                 }
                             }
-                            val.Value = hash;
+                            val.Value = DslExpression.CalculatorValue.FromObject(hash);
                         }
                         else if (val.Type == typeof(HashSet<uint>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -555,7 +558,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                     hash.Add(iv);
                                 }
                             }
-                            val.Value = hash;
+                            val.Value = DslExpression.CalculatorValue.FromObject(hash);
                         }
                         else if (val.Type == typeof(HashSet<long>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -567,7 +570,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                     hash.Add(iv);
                                 }
                             }
-                            val.Value = hash;
+                            val.Value = DslExpression.CalculatorValue.FromObject(hash);
                         }
                         else if (val.Type == typeof(HashSet<ulong>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -579,7 +582,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                     hash.Add(iv);
                                 }
                             }
-                            val.Value = hash;
+                            val.Value = DslExpression.CalculatorValue.FromObject(hash);
                         }
                         else if (val.Type == typeof(HashSet<float>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -591,7 +594,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                     hash.Add(fv);
                                 }
                             }
-                            val.Value = hash;
+                            val.Value = DslExpression.CalculatorValue.FromObject(hash);
                         }
                         else if (val.Type == typeof(HashSet<double>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -603,7 +606,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                     hash.Add(fv);
                                 }
                             }
-                            val.Value = hash;
+                            val.Value = DslExpression.CalculatorValue.FromObject(hash);
                         }
                         else if (val.Type == typeof(HashSet<string>)) {
                             var v = pair.Value.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -613,7 +616,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                                     hash.Add(str);
                                 }
                             }
-                            val.Value = hash;
+                            val.Value = DslExpression.CalculatorValue.FromObject(hash);
                         }
                         else if (val.Type == typeof(ResourceEditUtility.DataTable)) {
                             val.Value = pair.Value;
@@ -650,7 +653,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                 else {
                     ResourceEditUtility.ParamInfo val;
                     if (paramInfos.TryGetValue("pathwidth", out val)) {
-                        m_PathWidth = (float)Convert.ChangeType(val.Value, typeof(float));
+                        m_PathWidth = val.Value.Get<float>();
                     }
                     if (m_UnfilteredGroupCount <= 0) {
                         ListItem();
@@ -807,6 +810,14 @@ internal sealed class ResourceEditWindow : EditorWindow
         ResourceProcessor.Instance.SelectAll();
         ResourceProcessor.Instance.Process(true);
     }
+    private void SpecificBatchAction()
+    {
+        if (ResourceEditUtility.UseSpecificSettingDB) {
+            TextureImporterParamsDB.UpdateAllTextures();
+            ModelImporterParamsDB.UpdateAllModels();
+            PrefabParamsDB.UpdateAllPrefabs();
+        }
+    }
     private void RedirectAction(string dslPath, IDictionary<string, string> args)
     {
         ResourceProcessor.Instance.SelectDsl(dslPath);
@@ -881,7 +892,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                     IEnumerator<string> refByEnumer = null;
                     if (null != refbys)
                         refByEnumer = refbys.GetEnumerator();
-                    IEnumerator<KeyValuePair<string, object>> extraEnumer = null;
+                    IEnumerator<KeyValuePair<string, DslExpression.CalculatorValue>> extraEnumer = null;
                     if (null != item.ExtraList)
                         extraEnumer = item.ExtraList.GetEnumerator();
                     if (ct == 0) {
@@ -943,7 +954,7 @@ internal sealed class ResourceEditWindow : EditorWindow
                     IEnumerator<string> refByEnumer = null;
                     if (null != refbys)
                         refByEnumer = refbys.GetEnumerator();
-                    IEnumerator<KeyValuePair<string, object>> extraEnumer = null;
+                    IEnumerator<KeyValuePair<string, DslExpression.CalculatorValue>> extraEnumer = null;
                     if (null != item.ExtraList)
                         extraEnumer = item.ExtraList.GetEnumerator();
                     if (ct == 0) {
@@ -1076,7 +1087,7 @@ internal sealed class ResourceEditWindow : EditorWindow
         bool showReferences = false;
         float rightWidth = 0;
         if (null != m_SelectedItem && null == m_SelectedItem.ExtraList && !string.IsNullOrEmpty(m_SelectedItem.ExtraListBuildScript)) {
-            m_SelectedItem.ExtraList = ResourceProcessor.Instance.CallScript(null, m_SelectedItem.ExtraListBuildScript, m_SelectedItem) as IList<KeyValuePair<string, object>>;
+            m_SelectedItem.ExtraList = ResourceProcessor.Instance.CallScript(null, m_SelectedItem.ExtraListBuildScript, DslExpression.CalculatorValue.FromObject(m_SelectedItem)).As<IList<KeyValuePair<string, DslExpression.CalculatorValue>>>();
         }
         if (!string.IsNullOrEmpty(m_SelectedAssetPath) && (ResourceProcessor.Instance.ReferenceAssets.Count > 0 || ResourceProcessor.Instance.ReferenceByAssets.Count > 0) ||
             null != m_SelectedItem && null != m_SelectedItem.ExtraList) {
@@ -1216,14 +1227,14 @@ internal sealed class ResourceEditWindow : EditorWindow
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     if (GUILayout.Button(new GUIContent(info, icon, info), GUILayout.MinWidth(80), GUILayout.MaxWidth(rightWidth))) {
                         if (!string.IsNullOrEmpty(m_SelectedItem.ExtraListClickScript)) {
-                            ResourceProcessor.Instance.CallScript(null, m_SelectedItem.ExtraListClickScript, pair, m_SelectedItem);
+                            ResourceProcessor.Instance.CallScript(null, m_SelectedItem.ExtraListClickScript, DslExpression.CalculatorValue.FromObject(pair), DslExpression.CalculatorValue.FromObject(m_SelectedItem));
                         }
-                        else if (pair.Value is ObjectData) {
-                            var data = (ObjectData)pair.Value;
+                        else if (pair.Value.IsObject && pair.Value.ObjectVal is ObjectData) {
+                            var data = (ObjectData)pair.Value.ObjectVal;
                             ResourceProcessor.Instance.OpenLink(data);
                         }
                         else {
-                            ResourceCommandWindow.InitWindow(this, info, pair, m_SelectedItem);
+                            ResourceCommandWindow.InitWindow(this, info, DslExpression.CalculatorValue.FromObject(pair), DslExpression.CalculatorValue.FromObject(m_SelectedItem));
                         }
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -1273,7 +1284,7 @@ internal sealed class ResourceEditWindow : EditorWindow
         bool showReferences = false;
         float rightWidth = 0;
         if (null != m_SelectedGroup && null == m_SelectedGroup.ExtraList && !string.IsNullOrEmpty(m_SelectedGroup.ExtraListBuildScript)) {
-            m_SelectedGroup.ExtraList = ResourceProcessor.Instance.CallScript(null, m_SelectedGroup.ExtraListBuildScript, m_SelectedGroup) as IList<KeyValuePair<string, object>>;
+            m_SelectedGroup.ExtraList = ResourceProcessor.Instance.CallScript(null, m_SelectedGroup.ExtraListBuildScript, DslExpression.CalculatorValue.FromObject(m_SelectedGroup)).As<IList<KeyValuePair<string, DslExpression.CalculatorValue>>>();
         }
         if (!string.IsNullOrEmpty(m_SelectedAssetPath) && (ResourceProcessor.Instance.ReferenceAssets.Count > 0 || ResourceProcessor.Instance.ReferenceByAssets.Count > 0) ||
             null != m_SelectedGroup && null != m_SelectedGroup.ExtraList) {
@@ -1407,14 +1418,14 @@ internal sealed class ResourceEditWindow : EditorWindow
                     GUI.skin.button.alignment = TextAnchor.MiddleLeft;
                     if (GUILayout.Button(new GUIContent(info, icon, info), GUILayout.MinWidth(80), GUILayout.MaxWidth(rightWidth))) {
                         if (!string.IsNullOrEmpty(m_SelectedGroup.ExtraListClickScript)) {
-                            ResourceProcessor.Instance.CallScript(null, m_SelectedGroup.ExtraListClickScript, pair, m_SelectedGroup);
+                            ResourceProcessor.Instance.CallScript(null, m_SelectedGroup.ExtraListClickScript, DslExpression.CalculatorValue.FromObject(pair), DslExpression.CalculatorValue.FromObject(m_SelectedGroup));
                         }
-                        else if (pair.Value is ObjectData) {
-                            var data = (ObjectData)pair.Value;
+                        else if (pair.Value.IsObject && pair.Value.GetObject() is ObjectData) {
+                            var data = (ObjectData)pair.Value.GetObject();
                             ResourceProcessor.Instance.OpenLink(data);
                         }
                         else {
-                            ResourceCommandWindow.InitWindow(this, info, pair, m_SelectedGroup);
+                            ResourceCommandWindow.InitWindow(this, info, DslExpression.CalculatorValue.FromObject(pair), DslExpression.CalculatorValue.FromObject(m_SelectedGroup));
                         }
                     }
                     GUI.skin.button.alignment = oldAlignment;
@@ -1850,18 +1861,18 @@ internal sealed class ResourceProcessor
         }
         EditorUtility.ClearProgressBar();
     }
-    internal IList<KeyValuePair<string, object>> FindShortestPathToRoot(ulong addr)
+    internal IList<KeyValuePair<string, DslExpression.CalculatorValue>> FindShortestPathToRoot(ulong addr)
     {
         var data = ObjectDataFromAddress(addr);
         return FindShortestPathToRoot(data);
     }
-    internal IList<KeyValuePair<string, object>> FindShortestPathToRoot(ObjectData obj)
+    internal IList<KeyValuePair<string, DslExpression.CalculatorValue>> FindShortestPathToRoot(ObjectData obj)
     {
-        var list = new List<KeyValuePair<string, object>>();
+        var list = new List<KeyValuePair<string, DslExpression.CalculatorValue>>();
         if (null != s_ShortestPathToRootFinder) {
             var refbys = s_ShortestPathToRootFinder.FindFor(obj);
             if (null != refbys) {
-                list.Add(new KeyValuePair<string, object>("=ShortestPathToRoot=", null));
+                list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>("=ShortestPathToRoot=", DslExpression.CalculatorValue.NullObject));
                 foreach (var data in refbys) {
                     if (data.IsField()) {
                         var parent = data.m_Parent.obj;
@@ -1869,7 +1880,7 @@ internal sealed class ResourceProcessor
                         if (parent.managedTypeIndex >= 0 && parent.managedTypeIndex < s_CachedSnapshot.typeDescriptions.Count) {
                             name = s_CachedSnapshot.typeDescriptions.typeDescriptionName[parent.managedTypeIndex];
                         }
-                        list.Add(new KeyValuePair<string, object>(string.Format("{0}.{1}", name, data.GetFieldName(s_CachedSnapshot)), data.displayObject));
+                        list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>(string.Format("{0}.{1}", name, data.GetFieldName(s_CachedSnapshot)), DslExpression.CalculatorValue.FromObject(data.displayObject)));
                     }
                     else if (data.IsArrayItem()) {
                         var parent = data.m_Parent.obj;
@@ -1881,14 +1892,14 @@ internal sealed class ResourceProcessor
                             }
                             string rank = arrInfo.ArrayRankToString();
                             var indexStr = arrInfo.IndexToRankedString(data.arrayIndex);
-                            list.Add(new KeyValuePair<string, object>(string.Format("{0}(rank:{1})[{2}]", type, rank, indexStr), data.displayObject));
+                            list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>(string.Format("{0}(rank:{1})[{2}]", type, rank, indexStr), DslExpression.CalculatorValue.FromObject(data.displayObject)));
                         }
                         else {
                             string name = string.Empty;
                             if (data.managedTypeIndex >= 0 && data.managedTypeIndex < s_CachedSnapshot.typeDescriptions.Count) {
                                 name = s_CachedSnapshot.typeDescriptions.typeDescriptionName[data.managedTypeIndex];
                             }
-                            list.Add(new KeyValuePair<string, object>(string.Format("{0}[{1}]", name, parent.arrayIndex), data.displayObject));
+                            list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>(string.Format("{0}[{1}]", name, parent.arrayIndex), DslExpression.CalculatorValue.FromObject(data.displayObject)));
                         }
                     }
                     else if(data.isManaged) {
@@ -1896,7 +1907,7 @@ internal sealed class ResourceProcessor
                         if (data.managedTypeIndex >= 0 && data.managedTypeIndex < s_CachedSnapshot.typeDescriptions.Count) {
                             name = s_CachedSnapshot.typeDescriptions.typeDescriptionName[data.managedTypeIndex];
                         }
-                        list.Add(new KeyValuePair<string, object>(name, data.displayObject));
+                        list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>(name, DslExpression.CalculatorValue.FromObject(data.displayObject)));
                     }
                     else if (data.isNative) {
                         string name = string.Empty;
@@ -1908,22 +1919,22 @@ internal sealed class ResourceProcessor
                                 type = s_CachedSnapshot.nativeTypes.typeName[typeIndex];
                             }
                         }
-                        list.Add(new KeyValuePair<string, object>(name + "(" + type + ")", data.displayObject));
+                        list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>(name + "(" + type + ")", DslExpression.CalculatorValue.FromObject(data.displayObject)));
                     }
                     else {
-                        list.Add(new KeyValuePair<string, object>(data.ToString(), data.displayObject));
+                        list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>(data.ToString(), DslExpression.CalculatorValue.FromObject(data.displayObject)));
                     }
                 }
                 string reason;
                 s_ShortestPathToRootFinder.IsRoot(refbys.Last(), out reason);
-                list.Add(new KeyValuePair<string, object>("This is a root because:" + reason, null));
+                list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>("This is a root because:" + reason, DslExpression.CalculatorValue.NullObject));
             }
             else {
-                list.Add(new KeyValuePair<string, object>("No root is keeping this object alive.It will be collected next UnloadUnusedAssets() or scene load", null));
+                list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>("No root is keeping this object alive.It will be collected next UnloadUnusedAssets() or scene load", DslExpression.CalculatorValue.NullObject));
             }
         }
-        list.Add(new KeyValuePair<string, object>(string.Empty, null));
-        list.Add(new KeyValuePair<string, object>("[goto self]", obj.displayObject));
+        list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>(string.Empty, DslExpression.CalculatorValue.NullObject));
+        list.Add(new KeyValuePair<string, DslExpression.CalculatorValue>("[goto self]", DslExpression.CalculatorValue.FromObject(obj.displayObject)));
         return list;
     }
     internal HashSet<ObjectData> GetObjectDataRefByHash(ulong addr)
@@ -2401,7 +2412,7 @@ internal sealed class ResourceProcessor
                                 IEnumerator<string> refByEnumer = null;
                                 if (null != refbys)
                                     refByEnumer = refbys.GetEnumerator();
-                                IEnumerator<KeyValuePair<string, object>> extraEnumer = null;
+                                IEnumerator<KeyValuePair<string, DslExpression.CalculatorValue>> extraEnumer = null;
                                 if (null != item.ExtraList)
                                     extraEnumer = item.ExtraList.GetEnumerator();
                                 if (ct == 0) {
@@ -2461,7 +2472,7 @@ internal sealed class ResourceProcessor
                                 IEnumerator<string> refByEnumer = null;
                                 if (null != refbys)
                                     refByEnumer = refbys.GetEnumerator();
-                                IEnumerator<KeyValuePair<string, object>> extraEnumer = null;
+                                IEnumerator<KeyValuePair<string, DslExpression.CalculatorValue>> extraEnumer = null;
                                 if (null != item.ExtraList)
                                     extraEnumer = item.ExtraList.GetEnumerator();
                                 if (ct == 0) {
@@ -2520,7 +2531,7 @@ internal sealed class ResourceProcessor
                 ResourceEditUtility.ItemInfo lastItem = null;
                 HashSet<string> refs = new HashSet<string>();
                 HashSet<string> refbys = new HashSet<string>();
-                List<KeyValuePair<string, object>> extraList = new List<KeyValuePair<string, object>>();
+                List<KeyValuePair<string, DslExpression.CalculatorValue>> extraList = new List<KeyValuePair<string, DslExpression.CalculatorValue>>();
                 for (i = 1; i < lines.Length; ++i) {
                     var fields = lines[i].Split('\t');
                     var assetPath = fields[0];
@@ -2540,7 +2551,7 @@ internal sealed class ResourceProcessor
                         if (!string.IsNullOrEmpty(refByAsset))
                             refbys.Add(refByAsset);
                         if (!string.IsNullOrEmpty(extraKeyVal))
-                            extraList.Add(new KeyValuePair<string, object>(extraKeyVal, extraKeyVal));
+                            extraList.Add(new KeyValuePair<string, DslExpression.CalculatorValue>(extraKeyVal, extraKeyVal));
                     }
 
                     if (null == lastItem || !lastItem.IsEqual(assetPath, scenePath, info, order, value)) {
@@ -2557,7 +2568,7 @@ internal sealed class ResourceProcessor
 
                         refs = new HashSet<string>();
                         refbys = new HashSet<string>();
-                        extraList = new List<KeyValuePair<string, object>>();
+                        extraList = new List<KeyValuePair<string, DslExpression.CalculatorValue>>();
 
                         m_ItemList.Add(item);
                         lastItem = item;
@@ -2582,6 +2593,7 @@ internal sealed class ResourceProcessor
         m_CanRefresh = false;
         m_DslFile = null;
         m_SearchSource = string.Empty;
+        m_AssetProcessors.Clear();
         m_TypeOrExtList.Clear();
         m_TypeList.Clear();
         m_ParamNames.Clear();
@@ -2609,6 +2621,7 @@ internal sealed class ResourceProcessor
                 m_NextFilterIndex = 0;
                 m_NextGroupIndex = 0;
                 m_NextProcessIndex = 0;
+                m_AssetProcessors.Clear();
                 m_ScriptCalculator = new DslExpression.DslCalculator();
                 m_FilterCalculator = new DslExpression.DslCalculator();
                 m_GroupCalculator = new DslExpression.DslCalculator();
@@ -2641,7 +2654,7 @@ internal sealed class ResourceProcessor
                             check = true;
                             m_ScriptCalculator.LoadDsl(info);
                         }
-                        else if (firstId == "input" && (secondId == "filter" || secondId == "process")) {
+                        else if (firstId == "input" && (secondId == "filter" || secondId == "process" || secondId == "assetprocessor")) {
                             check = true;
 
                             if (secondId == "filter") {
@@ -2652,13 +2665,16 @@ internal sealed class ResourceProcessor
                                 m_ProcessCalculator.LoadDsl(m_NextProcessIndex.ToString(), info.Second);
                                 ++m_NextProcessIndex;
                             }
+                            else {
+                                ParseAssetProcessor(info.Second);
+                            }
                         }
                     }
                     else if (num == 3) {
                         string firstId = info.First.GetId();
                         string secondId = info.Second.GetId();
                         string thirdId = info.Last.GetId();
-                        if (firstId == "input" && secondId == "filter" && (thirdId == "group" || thirdId == "process")) {
+                        if (firstId == "input" && secondId == "filter" && (thirdId == "group" || thirdId == "process" || thirdId == "assetprocessor")) {
                             check = true;
 
                             m_FilterCalculator.LoadDsl(m_NextFilterIndex.ToString(), info.Second);
@@ -2671,6 +2687,9 @@ internal sealed class ResourceProcessor
                                 m_ProcessCalculator.LoadDsl(m_NextProcessIndex.ToString(), info.Last);
                                 ++m_NextProcessIndex;
                             }
+                            else {
+                                ParseAssetProcessor(info.Last);
+                            }
                         }
                     }
                     else if (num == 4) {
@@ -2679,7 +2698,7 @@ internal sealed class ResourceProcessor
                         string thirdId = info.Functions[2].GetId();
                         string fourthId = info.Last.GetId();
 
-                        if (firstId == "input" && secondId == "filter" && thirdId == "group" && fourthId == "process") {
+                        if (firstId == "input" && secondId == "filter" && thirdId == "group" && (fourthId == "process" || fourthId == "assetprocessor")) {
                             check = true;
 
                             m_FilterCalculator.LoadDsl(m_NextFilterIndex.ToString(), info.Second);
@@ -2689,6 +2708,9 @@ internal sealed class ResourceProcessor
                             if (fourthId == "process") {
                                 m_ProcessCalculator.LoadDsl(m_NextProcessIndex.ToString(), info.Last);
                                 ++m_NextProcessIndex;
+                            }
+                            else {
+                                ParseAssetProcessor(info.Last);
                             }
                         }
                     }
@@ -2821,7 +2843,7 @@ internal sealed class ResourceProcessor
                 int.TryParse(str, out iv);
                 list.Add(iv);
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<int>), Value = list, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<int>), Value = DslExpression.CalculatorValue.FromObject(list), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "uintlist") {
@@ -2833,7 +2855,7 @@ internal sealed class ResourceProcessor
                 uint.TryParse(str, out iv);
                 list.Add(iv);
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<uint>), Value = list, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<uint>), Value = DslExpression.CalculatorValue.FromObject(list), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "longlist") {
@@ -2845,7 +2867,7 @@ internal sealed class ResourceProcessor
                 long.TryParse(str, out iv);
                 list.Add(iv);
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<long>), Value = list, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<long>), Value = DslExpression.CalculatorValue.FromObject(list), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "ulonglist") {
@@ -2857,7 +2879,7 @@ internal sealed class ResourceProcessor
                 ulong.TryParse(str, out iv);
                 list.Add(iv);
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<ulong>), Value = list, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<ulong>), Value = DslExpression.CalculatorValue.FromObject(list), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "floatlist") {
@@ -2869,7 +2891,7 @@ internal sealed class ResourceProcessor
                 float.TryParse(str, out fv);
                 list.Add(fv);
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<float>), Value = list, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<float>), Value = DslExpression.CalculatorValue.FromObject(list), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "doublelist") {
@@ -2881,13 +2903,13 @@ internal sealed class ResourceProcessor
                 double.TryParse(str, out fv);
                 list.Add(fv);
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<double>), Value = list, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<double>), Value = DslExpression.CalculatorValue.FromObject(list), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "stringlist") {
             //stringlist(name, val);
             var v = val.Split(new char[] { ';', '|' }, StringSplitOptions.RemoveEmptyEntries);
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<string>), Value = v, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(List<string>), Value = DslExpression.CalculatorValue.FromObject(v), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "inthash") {
@@ -2901,7 +2923,7 @@ internal sealed class ResourceProcessor
                     hash.Add(iv);
                 }
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<int>), Value = hash, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<int>), Value = DslExpression.CalculatorValue.FromObject(hash), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "uinthash") {
@@ -2915,7 +2937,7 @@ internal sealed class ResourceProcessor
                     hash.Add(iv);
                 }
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<uint>), Value = hash, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<uint>), Value = DslExpression.CalculatorValue.FromObject(hash), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "longhash") {
@@ -2929,7 +2951,7 @@ internal sealed class ResourceProcessor
                     hash.Add(iv);
                 }
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<long>), Value = hash, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<long>), Value = DslExpression.CalculatorValue.FromObject(hash), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "ulonghash") {
@@ -2943,7 +2965,7 @@ internal sealed class ResourceProcessor
                     hash.Add(iv);
                 }
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<ulong>), Value = hash, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<ulong>), Value = DslExpression.CalculatorValue.FromObject(hash), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "floathash") {
@@ -2957,7 +2979,7 @@ internal sealed class ResourceProcessor
                     hash.Add(fv);
                 }
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<float>), Value = hash, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<float>), Value = DslExpression.CalculatorValue.FromObject(hash), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "doublehash") {
@@ -2971,7 +2993,7 @@ internal sealed class ResourceProcessor
                     hash.Add(fv);
                 }
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<double>), Value = hash, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<double>), Value = DslExpression.CalculatorValue.FromObject(hash), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "stringhash") {
@@ -2983,7 +3005,7 @@ internal sealed class ResourceProcessor
                     hash.Add(str);
                 }
             }
-            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<string>), Value = hash, StringValue = val };
+            m_Params[key] = new ResourceEditUtility.ParamInfo { Name = key, Type = typeof(HashSet<string>), Value = DslExpression.CalculatorValue.FromObject(hash), StringValue = val };
             m_ParamNames.Add(key);
         }
         else if (id == "bool") {
@@ -3160,7 +3182,58 @@ internal sealed class ResourceProcessor
             }
         }
     }
-    internal object CallScript(DslExpression.DslCalculator calc, string name, params object[] args)
+    internal void ParseAssetProcessor(Dsl.FunctionData funcData)
+    {
+        foreach (var comp in funcData.Params) {
+            string processor = comp.GetId();
+            if (!string.IsNullOrEmpty(processor)) {
+                m_AssetProcessors.Add(processor);
+            }
+        }
+    }
+    internal List<DslExpression.CalculatorValue> NewCalculatorValueList()
+    {
+        return m_ScriptCalculator.NewCalculatorValueList();
+    }
+    internal void RecycleCalculatorValueList(List<DslExpression.CalculatorValue> list)
+    {
+        m_ScriptCalculator.RecycleCalculatorValueList(list);
+    }
+    public DslExpression.CalculatorValue CallScript(DslExpression.DslCalculator calc, string name)
+    {
+        var args = NewCalculatorValueList();
+        var r = CallScript(calc, name, args);
+        RecycleCalculatorValueList(args);
+        return r;
+    }
+    public DslExpression.CalculatorValue CallScript(DslExpression.DslCalculator calc, string name, DslExpression.CalculatorValue arg1)
+    {
+        var args = NewCalculatorValueList();
+        args.Add(arg1);
+        var r = CallScript(calc, name, args);
+        RecycleCalculatorValueList(args);
+        return r;
+    }
+    public DslExpression.CalculatorValue CallScript(DslExpression.DslCalculator calc, string name, DslExpression.CalculatorValue arg1, DslExpression.CalculatorValue arg2)
+    {
+        var args = NewCalculatorValueList();
+        args.Add(arg1);
+        args.Add(arg2);
+        var r = CallScript(calc, name, args);
+        RecycleCalculatorValueList(args);
+        return r;
+    }
+    public DslExpression.CalculatorValue CallScript(DslExpression.DslCalculator calc, string name, DslExpression.CalculatorValue arg1, DslExpression.CalculatorValue arg2, DslExpression.CalculatorValue arg3)
+    {
+        var args = NewCalculatorValueList();
+        args.Add(arg1);
+        args.Add(arg2);
+        args.Add(arg3);
+        var r = CallScript(calc, name, args);
+        RecycleCalculatorValueList(args);
+        return r;
+    }
+    internal DslExpression.CalculatorValue CallScript(DslExpression.DslCalculator calc, string name, List<DslExpression.CalculatorValue> args)
     {
         if (null != m_ScriptCalculator) {
             if (null != calc) {
@@ -3169,7 +3242,7 @@ internal sealed class ResourceProcessor
                 }
             }
             else {
-                m_ScriptCalculator.SetGlobalVariable("params", m_Params);
+                m_ScriptCalculator.SetGlobalVariable("params", DslExpression.CalculatorValue.FromObject(m_Params));
                 foreach (var pair in m_Params) {
                     m_ScriptCalculator.SetGlobalVariable(pair.Key, pair.Value.Value);
                 }
@@ -3183,7 +3256,7 @@ internal sealed class ResourceProcessor
             return ret;
         }
         else {
-            return null;
+            return DslExpression.CalculatorValue.NullObject;
         }
     }
     internal void Collect()
@@ -3201,15 +3274,15 @@ internal sealed class ResourceProcessor
     {
         foreach (var pair in m_Params) {
             var paramInfo = pair.Value;
-            if (paramInfo.Type == typeof(ResourceEditUtility.DataTable) && paramInfo.Value is string) {
-                var file = paramInfo.Value as string;
+            if (paramInfo.Type == typeof(ResourceEditUtility.DataTable) && paramInfo.Value.IsString) {
+                var file = paramInfo.Value.AsString;
                 var ext = Path.GetExtension(file);
                 var table = new ResourceEditUtility.DataTable();
                 table.Load(file, Encoding.GetEncoding(paramInfo.Encoding), ext == ".csv" ? ',' : '\t');
-                paramInfo.Value = table;
+                paramInfo.Value = DslExpression.CalculatorValue.FromObject(table);
             }
-            else if (paramInfo.Type == typeof(NPOI.SS.UserModel.IWorkbook) && paramInfo.Value is string) {
-                var file = paramInfo.Value as string;
+            else if (paramInfo.Type == typeof(NPOI.SS.UserModel.IWorkbook) && paramInfo.Value.IsString) {
+                var file = paramInfo.Value.AsString;
                 var ext = Path.GetExtension(file);
                 NPOI.SS.UserModel.IWorkbook book = null;
                 using (var stream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read)) {
@@ -3220,11 +3293,11 @@ internal sealed class ResourceProcessor
                         book = new NPOI.XSSF.UserModel.XSSFWorkbook(stream);
                     }
                 }
-                paramInfo.Value = book;
+                paramInfo.Value = DslExpression.CalculatorValue.FromObject(book);
             }
             else if (paramInfo.Type == typeof(object)) {
                 var funcName = paramInfo.StringValue;
-                paramInfo.Value = CallScript(null, funcName, paramInfo);
+                paramInfo.Value = CallScript(null, funcName, DslExpression.CalculatorValue.FromObject(paramInfo));
             }
         }
         if (m_SearchSource == "script") {
@@ -3365,7 +3438,7 @@ internal sealed class ResourceProcessor
         m_IsItemListGroupStyle = false;
         ResourceEditUtility.ParamInfo paramInfo;
         if (m_Params.TryGetValue("style", out paramInfo)) {
-            string str = paramInfo.Value as string;
+            string str = paramInfo.Value.AsString;
             if (str == "itemlist") {
                 m_IsItemListGroupStyle = true;
             }
@@ -3424,14 +3497,14 @@ internal sealed class ResourceProcessor
                     itemGroup.Value = item.Value;
                     itemGroup.Selected = false;
                     var ret = ResourceEditUtility.Group(itemGroup, m_GroupCalculator, m_NextGroupIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-                    if (m_NextGroupIndex <= 0 || null != ret && (int)ret > 0) {
+                    if (m_NextGroupIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                         m_GroupList.Add(itemGroup);
                     }
                 }
             }
             else {
                 var ret = ResourceEditUtility.Group(group, m_GroupCalculator, m_NextGroupIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-                if (m_NextGroupIndex <= 0 || null != ret && (int)ret > 0) {
+                if (m_NextGroupIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                     m_GroupList.Add(group);
                 }
             }
@@ -3481,9 +3554,9 @@ internal sealed class ResourceProcessor
                 EditorUtility.DisplayDialog("错误", "请先选择dsl !", "ok");
             return -1;
         }
-        if (null == m_ProcessCalculator || m_NextProcessIndex <= 0) {
+        if ((null == m_ProcessCalculator || m_NextProcessIndex <= 0) && m_AssetProcessors.Count <= 0) {
             if (!isBatch)
-                EditorUtility.DisplayDialog("错误", "当前dsl没有配置process !", "ok");
+                EditorUtility.DisplayDialog("错误", "当前dsl没有配置process或assetprocessor !", "ok");
             return -1;
         }
         if (!isBatch) {
@@ -3494,48 +3567,167 @@ internal sealed class ResourceProcessor
 
             int totalSelectedCount = 0;
             int index = 0;
-            if (m_UnfilteredGroupCount <= 0) {
-                foreach (var item in m_ItemList) {
-                    if (item.Selected) {
-                        ++totalSelectedCount;
+            if (m_AssetProcessors.Count <= 0) {
+                if (m_UnfilteredGroupCount <= 0) {
+                    foreach (var item in m_ItemList) {
+                        if (item.Selected) {
+                            ++totalSelectedCount;
+                        }
                     }
-                }
-                foreach (var item in m_ItemList) {
-                    if (item.Selected) {
-                        if (!m_ProcessedAssets.Contains(item.AssetPath)) {
-                            if (!string.IsNullOrEmpty(item.AssetPath))
-                                m_ProcessedAssets.Add(item.AssetPath);
-                            object o = ResourceEditUtility.Process(item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-                            if (null != o && (bool)Convert.ChangeType(o, typeof(bool))) {
-                            	++ct;
+                    foreach (var item in m_ItemList) {
+                        if (item.Selected) {
+                            if (!m_ProcessedAssets.Contains(item.AssetPath)) {
+                                if (!string.IsNullOrEmpty(item.AssetPath))
+                                    m_ProcessedAssets.Add(item.AssetPath);
+                                if (!ResourceEditUtility.UseSpecificSettingDB || !TextureImporterParamsDB.DBInstance.Data.Contains(item.AssetPath) && !ModelImporterParamsDB.DBInstance.Data.Contains(item.AssetPath) && !PrefabParamsDB.DBInstance.Data.Contains(item.AssetPath)) {
+                                    var o = ResourceEditUtility.Process(item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+                                    if (!o.IsNullObject && o.Get<bool>()) {
+                                        ++ct;
+                                    }
+                                }
+                            }
+                            ++index;
+                            if (DisplayCancelableProgressBar("处理进度", index, totalSelectedCount)) {
+                                break;
                             }
                         }
-                        ++index;
-                        if (DisplayCancelableProgressBar("处理进度", index, totalSelectedCount)) {
-                            break;
+                    }
+                }
+                else {
+                    foreach (var item in m_GroupList) {
+                        if (item.Selected) {
+                            ++totalSelectedCount;
+                        }
+                    }
+                    foreach (var item in m_GroupList) {
+                        if (item.Selected) {
+                            if (!m_ProcessedAssets.Contains(item.AssetPath)) {
+                                if (!string.IsNullOrEmpty(item.AssetPath))
+                                    m_ProcessedAssets.Add(item.AssetPath);
+                                if (!ResourceEditUtility.UseSpecificSettingDB || !TextureImporterParamsDB.DBInstance.Data.Contains(item.AssetPath) && !ModelImporterParamsDB.DBInstance.Data.Contains(item.AssetPath) && !PrefabParamsDB.DBInstance.Data.Contains(item.AssetPath)) {
+                                    var o = ResourceEditUtility.GroupProcess(item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+                                    if (!o && o.Get<bool>()) {
+                                        ++ct;
+                                    }
+                                }
+                            }
+                            ++index;
+                            if (DisplayCancelableProgressBar("处理进度", index, totalSelectedCount)) {
+                                break;
+                            }
                         }
                     }
                 }
             }
             else {
-                foreach (var item in m_GroupList) {
-                    if (item.Selected) {
-                        ++totalSelectedCount;
+                var enumNames = Enum.GetNames(typeof(AssetProcessorEnum));
+                var enumValues = Enum.GetValues(typeof(AssetProcessorEnum));
+                var handlers = new List<AssetProcessorDB.AssetImporterProcesserHanlder>();
+                foreach (string processor in m_AssetProcessors) {
+                    int ix = Array.IndexOf<string>(enumNames, processor);
+                    if (ix >= 0) {
+                        var e = (AssetProcessorEnum)enumValues.GetValue(ix);
+                        var handler = AssetProcessorDB.GetHandler(e);
+                        if (null != handler) {
+                            handlers.Add(handler);
+                        }
                     }
                 }
-                foreach (var item in m_GroupList) {
-                    if (item.Selected) {
-                        if (!m_ProcessedAssets.Contains(item.AssetPath)) {
-                            if (!string.IsNullOrEmpty(item.AssetPath))
-                                m_ProcessedAssets.Add(item.AssetPath);
-                            object o = ResourceEditUtility.GroupProcess(item, m_ProcessCalculator, m_NextProcessIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-                            if (null != o && (bool)Convert.ChangeType(o, typeof(bool))) {
-                            	++ct;
+                if (m_UnfilteredGroupCount <= 0) {
+                    foreach (var item in m_ItemList) {
+                        if (item.Selected) {
+                            ++totalSelectedCount;
+                        }
+                    }
+                    foreach (var item in m_ItemList) {
+                        if (item.Selected) {
+                            if (!m_ProcessedAssets.Contains(item.AssetPath)) {
+                                if (!string.IsNullOrEmpty(item.AssetPath))
+                                    m_ProcessedAssets.Add(item.AssetPath);
+                                if (!ResourceEditUtility.UseSpecificSettingDB || !TextureImporterParamsDB.DBInstance.Data.Contains(item.AssetPath) && !ModelImporterParamsDB.DBInstance.Data.Contains(item.AssetPath) && !PrefabParamsDB.DBInstance.Data.Contains(item.AssetPath)) {
+                                    if (null == item.Importer) {
+                                        item.Importer = AssetImporter.GetAtPath(item.AssetPath);
+                                    }
+                                    if (null == item.Importer && null == item.Object || Path.GetExtension(item.AssetPath) == ".prefab") {
+                                        item.Importer = null;
+                                        item.Object = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(item.AssetPath);
+                                    }
+                                    if (null != item.Importer) {
+                                        bool handled = false;
+                                        foreach (var handler in handlers) {
+                                            handled = handler(item.Importer, false, handled);
+                                        }
+
+                                        if (handled) {
+                                            ++ct;
+                                            Debug.Log("handle success:" + item.AssetPath);
+                                        }
+                                    }
+                                    else if (null != item.Object) {
+                                        bool handled = false;
+                                        foreach (var handler in handlers) {
+                                            handled = handler(item.Object, false, handled);
+                                        }
+
+                                        if (handled) {
+                                            ++ct;
+                                            Debug.Log("handle success:" + item.AssetPath);
+                                        }
+                                    }
+                                }
+                            }
+                            ++index;
+                            if (DisplayCancelableProgressBar("处理进度", index, totalSelectedCount)) {
+                                break;
                             }
                         }
-                        ++index;
-                        if (DisplayCancelableProgressBar("处理进度", index, totalSelectedCount)) {
-                            break;
+                    }
+                }
+                else {
+                    foreach (var item in m_GroupList) {
+                        if (item.Selected) {
+                            ++totalSelectedCount;
+                        }
+                    }
+                    foreach (var item in m_GroupList) {
+                        if (item.Selected) {
+                            if (!m_ProcessedAssets.Contains(item.AssetPath)) {
+                                if (!string.IsNullOrEmpty(item.AssetPath))
+                                    m_ProcessedAssets.Add(item.AssetPath);
+                                if (!ResourceEditUtility.UseSpecificSettingDB || !TextureImporterParamsDB.DBInstance.Data.Contains(item.AssetPath) && !ModelImporterParamsDB.DBInstance.Data.Contains(item.AssetPath) && !PrefabParamsDB.DBInstance.Data.Contains(item.AssetPath)) {
+                                    var importer = AssetImporter.GetAtPath(item.AssetPath);
+                                    UnityEngine.Object obj = null;
+                                    if (null == importer) {
+                                        obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(item.AssetPath);
+                                    }
+                                    if (null != importer) {
+                                        bool handled = false;
+                                        foreach (var handler in handlers) {
+                                            handled = handler(importer, false, handled);
+                                        }
+
+                                        if (handled) {
+                                            ++ct;
+                                            Debug.Log("handle success:" + item.AssetPath);
+                                        }
+                                    }
+                                    else if (null != obj) {
+                                        bool handled = false;
+                                        foreach (var handler in handlers) {
+                                            handled = handler(obj, false, handled);
+                                        }
+
+                                        if (handled) {
+                                            ++ct;
+                                            Debug.Log("handle success:" + item.AssetPath);
+                                        }
+                                    }
+                                }
+                            }
+                            ++index;
+                            if (DisplayCancelableProgressBar("处理进度", index, totalSelectedCount)) {
+                                break;
+                            }
                         }
                     }
                 }
@@ -3638,7 +3830,7 @@ internal sealed class ResourceProcessor
             var importer = AssetImporter.GetAtPath(assetPath);
             var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = string.Empty, Importer = importer, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
             var ret = ResourceEditUtility.Filter(item, null, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+            if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                 m_ItemList.AddRange(m_Results);
             }
             canceled = DisplayCancelableProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount);
@@ -3703,7 +3895,7 @@ internal sealed class ResourceProcessor
                 var importer = AssetImporter.GetAtPath(assetPath);
                 var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = string.Empty, Importer = importer, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
                 var ret = ResourceEditUtility.Filter(item, null, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-                if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+                if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                     m_ItemList.AddRange(m_Results);
                 }
                 if (DisplayCancelableProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount)) {
@@ -3743,7 +3935,7 @@ internal sealed class ResourceProcessor
             var importer = AssetImporter.GetAtPath(assetPath);
             var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = string.Empty, Importer = importer, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
             var ret = ResourceEditUtility.Filter(item, null, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+            if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                 m_ItemList.AddRange(m_Results);
             }
             if (DisplayCancelableProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount)) {
@@ -3778,7 +3970,7 @@ internal sealed class ResourceProcessor
                     var importer = AssetImporter.GetAtPath(assetPath);
                     var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = string.Empty, Importer = importer, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
                     var ret = ResourceEditUtility.Filter(item, null, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-                    if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+                    if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                         m_ItemList.AddRange(m_Results);
                     }
                     if (DisplayCancelableProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount)) {
@@ -3842,7 +4034,7 @@ internal sealed class ResourceProcessor
                     }
                     var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = path, Importer = importer, Object = comp, Info = key, Order = m_ItemList.Count, Group = key, Selected = false };
                     var ret = ResourceEditUtility.Filter(item, null, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-                    if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+                    if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                         m_ItemList.AddRange(m_Results);
                     }
                 }
@@ -3895,7 +4087,7 @@ internal sealed class ResourceProcessor
             }
             var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = path, Importer = importer, Object = obj, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
             var ret = ResourceEditUtility.Filter(item, null, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+            if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                 m_ItemList.AddRange(m_Results);
             }
         }
@@ -3975,7 +4167,7 @@ internal sealed class ResourceProcessor
         if (m_Params.TryGetValue("excel", out info)) {
             string sheetName = string.Empty;
             ResourceEditUtility.ParamInfo sheetNameInfo;
-            if (m_Params.TryGetValue("sheetname", out sheetNameInfo) && null != sheetNameInfo.Value) {
+            if (m_Params.TryGetValue("sheetname", out sheetNameInfo) && !sheetNameInfo.Value.IsNullObject) {
                 sheetName = sheetNameInfo.Value.ToString();
             }
             if (string.IsNullOrEmpty(sheetName)) {
@@ -3983,10 +4175,10 @@ internal sealed class ResourceProcessor
             }
             int skipRowNum = 5;
             ResourceEditUtility.ParamInfo skipInfo;
-            if (m_Params.TryGetValue("skiprows", out skipInfo) && null != skipInfo.Value) {
+            if (m_Params.TryGetValue("skiprows", out skipInfo) && !skipInfo.Value.IsNullObject) {
                 int.TryParse(skipInfo.Value.ToString(), out skipRowNum);
             }
-            var file = info.Value as string;
+            var file = info.Value.AsString;
             var path = file;
             if (!File.Exists(path)) {
                 path = Path.Combine("../../Product/Excel", file);
@@ -4017,7 +4209,7 @@ internal sealed class ResourceProcessor
         if (null != m_WorkBook) {
             string sheetName = string.Empty;
             ResourceEditUtility.ParamInfo sheetNameInfo;
-            if (m_Params.TryGetValue("sheetname", out sheetNameInfo) && null != sheetNameInfo.Value) {
+            if (m_Params.TryGetValue("sheetname", out sheetNameInfo) && !sheetNameInfo.Value.IsNullObject) {
                 sheetName = sheetNameInfo.Value.ToString();
             }
             if (string.IsNullOrEmpty(sheetName)) {
@@ -4025,7 +4217,7 @@ internal sealed class ResourceProcessor
             }
             int skipRowNum = 5;
             ResourceEditUtility.ParamInfo skipInfo;
-            if (m_Params.TryGetValue("skiprows", out skipInfo) && null != skipInfo.Value) {
+            if (m_Params.TryGetValue("skiprows", out skipInfo) && !skipInfo.Value.IsNullObject) {
                 int.TryParse(skipInfo.Value.ToString(), out skipRowNum);
             }
             var book = m_WorkBook;
@@ -4037,8 +4229,8 @@ internal sealed class ResourceProcessor
                         var row = sheet.GetRow(i);
                         if (null != row) {
                             var item = new ResourceEditUtility.ItemInfo { AssetPath = string.Empty, ScenePath = string.Empty, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
-                            var ret = ResourceEditUtility.Filter(item, new Dictionary<string, object> { { "book", book }, { "sheet", sheet }, { "row", row } }, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-                            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+                            var ret = ResourceEditUtility.Filter(item, new Dictionary<string, DslExpression.CalculatorValue> { { "book", DslExpression.CalculatorValue.FromObject(book) }, { "sheet", DslExpression.CalculatorValue.FromObject(sheet) }, { "row", DslExpression.CalculatorValue.FromObject(row) } }, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+                            if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                                 m_ItemList.AddRange(m_Results);
                             }
                             if (DisplayCancelableProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount)) {
@@ -4060,17 +4252,17 @@ internal sealed class ResourceProcessor
             string encoding = "utf-8";
             int skipRowNum = 1;
             ResourceEditUtility.ParamInfo encodingInfo;
-            if (m_Params.TryGetValue("encoding", out encodingInfo) && null != encodingInfo.Value) {
+            if (m_Params.TryGetValue("encoding", out encodingInfo) && !encodingInfo.Value.IsNullObject) {
                 encoding = encodingInfo.Value.ToString();
             }
             ResourceEditUtility.ParamInfo skipInfo;
-            if (m_Params.TryGetValue("skiprows", out skipInfo) && null != skipInfo.Value) {
+            if (m_Params.TryGetValue("skiprows", out skipInfo) && !skipInfo.Value.IsNullObject) {
                 int.TryParse(skipInfo.Value.ToString(), out skipRowNum);
             }
-            var file = info.Value as string;
+            var file = info.Value.AsString;
             var path = file;
             if (!File.Exists(path)) {
-                path = Path.Combine("../../Product/Table", file);
+                path = Path.Combine("../../Server/resources/Table", file);
             }
             if (File.Exists(path)) {
                 var ext = Path.GetExtension(file);
@@ -4086,7 +4278,7 @@ internal sealed class ResourceProcessor
         if (null != m_DataTable) {
             int skipRowNum = 5;
             ResourceEditUtility.ParamInfo skipInfo;
-            if (m_Params.TryGetValue("skiprows", out skipInfo) && null != skipInfo.Value) {
+            if (m_Params.TryGetValue("skiprows", out skipInfo) && !skipInfo.Value.IsNullObject) {
                 int.TryParse(skipInfo.Value.ToString(), out skipRowNum);
             }
             var table = m_DataTable;
@@ -4096,8 +4288,8 @@ internal sealed class ResourceProcessor
                     var row = table[i];
                     if (null != row) {
                         var item = new ResourceEditUtility.ItemInfo { AssetPath = string.Empty, ScenePath = string.Empty, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
-                        var ret = ResourceEditUtility.Filter(item, new Dictionary<string, object> { { "sheet", table }, { "row", row } }, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-                        if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+                        var ret = ResourceEditUtility.Filter(item, new Dictionary<string, DslExpression.CalculatorValue> { { "sheet", DslExpression.CalculatorValue.FromObject(table) }, { "row", DslExpression.CalculatorValue.FromObject(row) } }, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+                        if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                             m_ItemList.AddRange(m_Results);
                         }
                         if (DisplayCancelableProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount)) {
@@ -4115,9 +4307,9 @@ internal sealed class ResourceProcessor
         m_TotalSearchCount = 0;
         ResourceEditUtility.ParamInfo info;
         if (m_Params.TryGetValue("script", out info)) {
-            var funcName = info.Value as string;
+            var funcName = info.Value.AsString;
             if (!string.IsNullOrEmpty(funcName)) {
-                var list = CallScript(null, funcName, info) as IList;
+                var list = CallScript(null, funcName, DslExpression.CalculatorValue.FromObject(info)).As<IList>();
                 if (null != list) {
                     foreach (var pathObj in list) {
                         var path = pathObj as string;
@@ -4142,7 +4334,7 @@ internal sealed class ResourceProcessor
                             }
                             var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = scenePath, Importer = importer, Object = obj, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
                             var ret = ResourceEditUtility.Filter(item, null, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-                            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+                            if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                                 m_ItemList.AddRange(m_Results);
                             }
                         }
@@ -4174,7 +4366,7 @@ internal sealed class ResourceProcessor
             }
             var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = scenePath, Importer = importer, Object = obj, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
             var ret = ResourceEditUtility.Filter(item, null, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+            if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                 m_ItemList.AddRange(m_Results);
             }
         }
@@ -4185,12 +4377,12 @@ internal sealed class ResourceProcessor
         string category = string.Empty;
         ResourceEditUtility.ParamInfo categoryParamInfo;
         if (m_Params.TryGetValue("category", out categoryParamInfo)) {
-            category = categoryParamInfo.Value as string;
+            category = categoryParamInfo.Value.AsString;
         }
         string _class = string.Empty;
         ResourceEditUtility.ParamInfo classParamInfo;
         if (m_Params.TryGetValue("class", out classParamInfo)) {
-            _class = classParamInfo.Value as string;
+            _class = classParamInfo.Value.AsString;
         }
         if (null == s_CachedSnapshot) {
             s_CachedSnapshot = Unity.MemoryProfilerForExtension.Editor.MemoryProfilerWindow.GetCurCachedSnapshot();
@@ -4336,8 +4528,8 @@ internal sealed class ResourceProcessor
                 assetObj = AssetDatabase.LoadMainAssetAtPath(assetPath);
         }
         var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = scenePath, Importer = importer, Object = assetObj, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
-        var ret = ResourceEditUtility.Filter(item, new Dictionary<string, object> { { "memory", memory }, { "group_info", groupInfo }, { "all_groups", infos } }, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-        if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+        var ret = ResourceEditUtility.Filter(item, new Dictionary<string, DslExpression.CalculatorValue> { { "memory", DslExpression.CalculatorValue.FromObject(memory) }, { "group_info", DslExpression.CalculatorValue.FromObject(groupInfo) }, { "all_groups", DslExpression.CalculatorValue.FromObject(infos) } }, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+        if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
             m_ItemList.AddRange(m_Results);
         }
     }
@@ -4356,8 +4548,8 @@ internal sealed class ResourceProcessor
                 assetObj = AssetDatabase.LoadMainAssetAtPath(assetPath);
         }
         var item = new ResourceEditUtility.ItemInfo { AssetPath = assetPath, ScenePath = scenePath, Importer = importer, Object = assetObj, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
-        var ret = ResourceEditUtility.Filter(item, new Dictionary<string, object> { { "group_info", groupInfo }, { "all_groups", infos } }, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-        if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+        var ret = ResourceEditUtility.Filter(item, new Dictionary<string, DslExpression.CalculatorValue> { { "group_info", DslExpression.CalculatorValue.FromObject(groupInfo) }, { "all_groups", DslExpression.CalculatorValue.FromObject(infos) } }, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+        if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
             m_ItemList.AddRange(m_Results);
         }
     }
@@ -4371,8 +4563,8 @@ internal sealed class ResourceProcessor
             var info = pair.Value;
             ++m_CurSearchCount;
             var item = new ResourceEditUtility.ItemInfo { AssetPath = string.Empty, ScenePath = string.Empty, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
-            var ret = ResourceEditUtility.Filter(item, new Dictionary<string, object> { { "instrument", info } }, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-            if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+            var ret = ResourceEditUtility.Filter(item, new Dictionary<string, DslExpression.CalculatorValue> { { "instrument", DslExpression.CalculatorValue.FromObject(info) } }, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
+            if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
                 m_ItemList.AddRange(m_Results);
             }
             if (DisplayCancelableProgressBar("采集进度", m_ItemList.Count, m_CurSearchCount, m_TotalSearchCount)) {
@@ -4426,9 +4618,9 @@ internal sealed class ResourceProcessor
         }
 
         var item = new ResourceEditUtility.ItemInfo { AssetPath = string.Empty, ScenePath = string.Empty, Info = string.Empty, Order = m_ItemList.Count, Selected = false };
-        var addVars = new Dictionary<string, object> { { "instrument", info } };
+        var addVars = new Dictionary<string, DslExpression.CalculatorValue> { { "instrument", DslExpression.CalculatorValue.FromObject(info) } };
         var ret = ResourceEditUtility.Filter(item, addVars, m_Results, m_FilterCalculator, m_NextFilterIndex, m_Params, m_SceneDeps, m_ReferenceAssets, m_ReferenceByAssets);
-        if (m_NextFilterIndex <= 0 || null != ret && (int)ret > 0) {
+        if (m_NextFilterIndex <= 0 || !ret.IsNullObject && ret.Get<int>() > 0) {
             m_InstrumentInfos[index] = info;
             return true;
         }
@@ -4594,6 +4786,7 @@ internal sealed class ResourceProcessor
     private string m_DslMenu = string.Empty;
     private string m_DslDescription = string.Empty;
     private string m_SearchSource = string.Empty;
+    private List<string> m_AssetProcessors = new List<string>();
     private List<string> m_TypeOrExtList = new List<string>();
     private List<Type> m_TypeList = new List<Type>();
     private List<string> m_ParamNames = new List<string>();

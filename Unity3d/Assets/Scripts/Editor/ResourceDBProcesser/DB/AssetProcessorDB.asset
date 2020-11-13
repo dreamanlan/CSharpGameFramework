@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44316520e0bddd4448dbaa449dba48c3, type: 3}
+  m_Name: AssetProcessorDB
+  m_EditorClassIdentifier: 
+  m_Processers:
+  - ResPath: Assets/ResourceAB/Animations
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Character
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Character_lv3
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/CharacterMaker
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/CharacterAnimEditData
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Characters
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Decals
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/DropItems
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Effects
+    DslPath: ProcessDsl/assetprocessor/effect_texture.dsl
+  - ResPath: Assets/ResourceAB/InformalAudioClip
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/InSkin
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/LogicScenes
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Prefab
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Prefab_lv3
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/RenderTexture
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Scene_effect
+    DslPath: ProcessDsl/assetprocessor/effect_texture.dsl
+  - ResPath: Assets/ResourceAB/SceneAudios
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Shaders
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/ShaderVariants
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Skybox
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Textures
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Weather
+    DslPath: ProcessDsl/assetprocessor/texture.dsl
+  - ResPath: Assets/ResourceAB/Character
+    DslPath: ProcessDsl/assetprocessor/texture_bias.dsl
+  - ResPath: Assets/SceneRes/Models
+    DslPath: ProcessDsl/assetprocessor/scene_texture.dsl
+  - ResPath: Assets/SceneRes/PrivateModels
+    DslPath: ProcessDsl/assetprocessor/scene_texture.dsl
+  - ResPath: Assets/SceneRes/Scenes
+    DslPath: ProcessDsl/assetprocessor/scene_texture.dsl
+  - ResPath: Assets/SceneRes/Scenes_lv3
+    DslPath: ProcessDsl/assetprocessor/scene_texture.dsl
+  - ResPath: Assets/SceneRes/ScenesEffect
+    DslPath: ProcessDsl/assetprocessor/effect_texture.dsl
+  - ResPath: Assets/SceneRes
+    DslPath: ProcessDsl/assetprocessor/lightmap_texture.dsl
+  - ResPath: Assets/M1Tool
+    DslPath: ProcessDsl/assetprocessor/m1tool_texture.dsl
+  - ResPath: Assets/SceneRes/Textures/SKY_Textures
+    DslPath: ProcessDsl/assetprocessor/scene_texture.dsl
+  - ResPath: Assets/SceneRes/Textures/Terrain_Textures
+    DslPath: ProcessDsl/assetprocessor/terrain_texture.dsl
+  - ResPath: Assets/FBXAction
+    DslPath: ProcessDsl/assetprocessor/fbx.dsl
+  - ResPath: Assets/ResourceAB/Character
+    DslPath: ProcessDsl/assetprocessor/fbx.dsl
+  - ResPath: Assets/ResourceAB/Character_lv3
+    DslPath: ProcessDsl/assetprocessor/fbx.dsl
+  - ResPath: Assets/ResourceAB/Effects
+    DslPath: ProcessDsl/assetprocessor/effect_fbx.dsl
+  - ResPath: Assets/SceneRes/Models
+    DslPath: ProcessDsl/assetprocessor/scene_fbx.dsl
+  - ResPath: Assets/SceneRes/PrivateModels
+    DslPath: ProcessDsl/assetprocessor/scene_fbx.dsl
+  - ResPath: Assets/SceneRes/Scenes
+    DslPath: ProcessDsl/assetprocessor/scene_fbx.dsl
+  - ResPath: Assets/SceneRes/Scenes_lv3
+    DslPath: ProcessDsl/assetprocessor/scene_fbx.dsl
+  - ResPath: Assets/SceneRes/ScenesEffect
+    DslPath: ProcessDsl/assetprocessor/effect_fbx.dsl
+  - ResPath: Assets/ResourceAB/Character
+    DslPath: ProcessDsl/assetprocessor/texture_size.dsl

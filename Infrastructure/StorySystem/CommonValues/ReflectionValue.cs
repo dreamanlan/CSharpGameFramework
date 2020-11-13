@@ -397,64 +397,114 @@ namespace StorySystem.CommonValues
                 var obj = m_Object.Value;
                 var objType = m_Type.Value;
                 try {
+                    string str = obj.AsString;
                     string type = objType.IsString ? objType.StringVal : null;
                     if (null != type) {
-                        if (0 == type.CompareTo("sbyte")) {
-                            m_Value = obj.Get<sbyte>();
-                        }
-                        else if (0 == type.CompareTo("byte")) {
-                            m_Value = obj.Get<byte>();
-                        }
-                        else if (0 == type.CompareTo("short")) {
-                            m_Value = obj.Get<short>();
-                        }
-                        else if (0 == type.CompareTo("ushort")) {
-                            m_Value = obj.Get<ushort>();
-                        }
-                        else if (0 == type.CompareTo("int")) {
-                            m_Value = obj.Get<int>();
-                        }
-                        else if (0 == type.CompareTo("uint")) {
-                            m_Value = obj.Get<uint>();
-                        }
-                        else if (0 == type.CompareTo("long")) {
-                            m_Value = obj.Get<long>();
-                        }
-                        else if (0 == type.CompareTo("ulong")) {
-                            m_Value = obj.Get<ulong>();
-                        }
-                        else if (0 == type.CompareTo("float")) {
-                            m_Value = obj.Get<float>();
-                        }
-                        else if (0 == type.CompareTo("double")) {
-                            m_Value = obj.Get<double>();
-                        }
-                        else if (0 == type.CompareTo("decimal")) {
-                            m_Value = obj.Get<decimal>();
-                        }
-                        else if (0 == type.CompareTo("bool")) {
-                            m_Value = obj.Get<bool>();
-                        }
-                        else if (0 == type.CompareTo("char")) {
-                            m_Value = obj.Get<char>();
-                        }
-                        else if (0 == type.CompareTo("string")) {
-                            m_Value = obj.Get<string>();
-                        }
-                        else {
-                            Type t = Type.GetType(type);
-                            if (null != t) {
-                                m_Value = BoxedValue.From(Convert.ChangeType(obj, t));
+                        if (obj.IsString) {
+                            if (0 == type.CompareTo("sbyte")) {
+                                m_Value = StoryValueHelper.CastTo<sbyte>(str);
+                            }
+                            else if (0 == type.CompareTo("byte")) {
+                                m_Value = StoryValueHelper.CastTo<byte>(str);
+                            }
+                            else if (0 == type.CompareTo("short")) {
+                                m_Value = StoryValueHelper.CastTo<short>(str);
+                            }
+                            else if (0 == type.CompareTo("ushort")) {
+                                m_Value = StoryValueHelper.CastTo<ushort>(str);
+                            }
+                            else if (0 == type.CompareTo("int")) {
+                                m_Value = StoryValueHelper.CastTo<int>(str);
+                            }
+                            else if (0 == type.CompareTo("uint")) {
+                                m_Value = StoryValueHelper.CastTo<uint>(str);
+                            }
+                            else if (0 == type.CompareTo("long")) {
+                                m_Value = StoryValueHelper.CastTo<long>(str);
+                            }
+                            else if (0 == type.CompareTo("ulong")) {
+                                m_Value = StoryValueHelper.CastTo<ulong>(str);
+                            }
+                            else if (0 == type.CompareTo("float")) {
+                                m_Value = StoryValueHelper.CastTo<float>(str);
+                            }
+                            else if (0 == type.CompareTo("double")) {
+                                m_Value = StoryValueHelper.CastTo<double>(str);
+                            }
+                            else if (0 == type.CompareTo("string")) {
+                                m_Value = str;
+                            }
+                            else if (0 == type.CompareTo("bool")) {
+                                m_Value = StoryValueHelper.CastTo<bool>(str);
                             }
                             else {
-                                GameFramework.LogSystem.Warn("null == Type.GetType({0})", type);
+                                Type t = Type.GetType(type);
+                                if (null != t) {
+                                    m_Value = BoxedValue.FromObject(StoryValueHelper.CastTo(t, str));
+                                }
+                                else {
+                                    GameFramework.LogSystem.Warn("null == Type.GetType({0})", type);
+                                }
+                            }
+                        }
+                        else {
+                            if (0 == type.CompareTo("sbyte")) {
+                                m_Value = obj.Get<sbyte>();
+                            }
+                            else if (0 == type.CompareTo("byte")) {
+                                m_Value = obj.Get<byte>();
+                            }
+                            else if (0 == type.CompareTo("short")) {
+                                m_Value = obj.Get<short>();
+                            }
+                            else if (0 == type.CompareTo("ushort")) {
+                                m_Value = obj.Get<ushort>();
+                            }
+                            else if (0 == type.CompareTo("int")) {
+                                m_Value = obj.Get<int>();
+                            }
+                            else if (0 == type.CompareTo("uint")) {
+                                m_Value = obj.Get<uint>();
+                            }
+                            else if (0 == type.CompareTo("long")) {
+                                m_Value = obj.Get<long>();
+                            }
+                            else if (0 == type.CompareTo("ulong")) {
+                                m_Value = obj.Get<ulong>();
+                            }
+                            else if (0 == type.CompareTo("float")) {
+                                m_Value = obj.Get<float>();
+                            }
+                            else if (0 == type.CompareTo("double")) {
+                                m_Value = obj.Get<double>();
+                            }
+                            else if (0 == type.CompareTo("decimal")) {
+                                m_Value = obj.Get<decimal>();
+                            }
+                            else if (0 == type.CompareTo("bool")) {
+                                m_Value = obj.Get<bool>();
+                            }
+                            else if (0 == type.CompareTo("char")) {
+                                m_Value = obj.Get<char>();
+                            }
+                            else if (0 == type.CompareTo("string")) {
+                                m_Value = obj.Get<string>();
+                            }
+                            else {
+                                Type t = Type.GetType(type);
+                                if (null != t) {
+                                    m_Value = BoxedValue.FromObject(obj.Get(t));
+                                }
+                                else {
+                                    GameFramework.LogSystem.Warn("null == Type.GetType({0})", type);
+                                }
                             }
                         }
                     }
                     else {
                         var t = objType.IsObject ? objType.ObjectVal as Type : null;
                         if (null != t) {
-                            m_Value = BoxedValue.From(Convert.ChangeType(obj, t));
+                            m_Value = BoxedValue.From(StoryValueHelper.CastTo(t, obj.GetObject()));
                         }
                     }
                 }

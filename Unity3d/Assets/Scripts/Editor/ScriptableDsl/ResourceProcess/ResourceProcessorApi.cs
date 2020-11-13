@@ -18,6 +18,7 @@ using System.Text.RegularExpressions;
 using System.IO;
 using System.Linq;
 using GameFramework;
+using DslExpression;
 
 internal static class ResourceEditUtility
 {
@@ -30,11 +31,11 @@ internal static class ResourceEditUtility
     {
         internal string Name;
         internal Type Type;
-        internal object Value;
+        internal CalculatorValue Value;
         internal string StringValue = string.Empty;
         internal string Encoding;
-        internal object MinValue;
-        internal object MaxValue;
+        internal CalculatorValue MinValue;
+        internal CalculatorValue MaxValue;
         internal List<string> OptionNames = new List<string>();
         internal Dictionary<string, string> Options = new Dictionary<string, string>();
         internal string OptionStyle = string.Empty;
@@ -57,8 +58,8 @@ internal static class ResourceEditUtility
         internal double Order;
         internal double Value;
         internal string Group;
-        internal IList<KeyValuePair<string, object>> ExtraList = null;
-        internal object ExtraObject = null;
+        internal IList<KeyValuePair<string, CalculatorValue>> ExtraList = null;
+        internal CalculatorValue ExtraObject = CalculatorValue.NullObject;
         internal string ExtraListBuildScript = string.Empty;
         internal string ExtraListClickScript = string.Empty;
         internal string RedirectDsl = string.Empty;
@@ -97,8 +98,8 @@ internal static class ResourceEditUtility
         internal string AssetPath;
         internal string ScenePath;
         internal string Info;
-        internal IList<KeyValuePair<string, object>> ExtraList = null;
-        internal object ExtraObject = null;
+        internal IList<KeyValuePair<string, CalculatorValue>> ExtraList = null;
+        internal CalculatorValue ExtraObject = CalculatorValue.NullObject;
         internal string ExtraListBuildScript = string.Empty;
         internal string ExtraListClickScript = string.Empty;
         internal string RedirectDsl = string.Empty;
@@ -402,154 +403,164 @@ internal static class ResourceEditUtility
 
         private DataRow[] m_Rows = null;
     }
-    internal static void InitCalculator(DslExpression.DslCalculator calc)
+    internal static void InitCalculator(DslCalculator calc)
     {
         calc.Init();
-        calc.Register("callscript", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CallScriptExp>());
-        calc.Register("setredirect", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetRedirectExp>());
-        calc.Register("newitem", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.NewItemExp>());
-        calc.Register("newextralist", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.NewExtraListExp>());
-        calc.Register("extralistadd", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ExtraListAddExp>());
-        calc.Register("extralistclear", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ExtraListClearExp>());
-        calc.Register("getreferenceassets", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetReferenceAssetsExp>());
-        calc.Register("getreferencebyassets", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetReferenceByAssetsExp>());
-        calc.Register("calcrefcount", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcRefCountExp>());
-        calc.Register("calcrefbycount", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcRefByCountExp>());
-        calc.Register("findasset", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindAssetExp>());
-        calc.Register("findshortestpathtoroot", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindShortestPathToRootExp>());
-        calc.Register("getobjdatarefbyhash", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetObjectDataRefByHashExp>());
-        calc.Register("getobjdatarefbylist", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetObjectDataRefByListExp>());
-        calc.Register("openlink", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.OpenLinkExp>());
-        calc.Register("openreferencelink", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.OpenReferenceLinkExp>());
-        calc.Register("openlinkincurrenttable", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.OpenLinkInCurrentTableExp>());
-        calc.Register("getcurrenttablenames", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableNamesExp>());
-        calc.Register("getcurrenttablecount", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableCountExp>());
-        calc.Register("getcurrenttablename", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableNameExp>());
-        calc.Register("getcurrenttable", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableExp>());
-        calc.Register("objdatafromaddress", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromAddressExp>());
-        calc.Register("objdatafromunifiedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromUnifiedObjectIndexExp>());
-        calc.Register("objdatafromnativeindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromNativeObjectIndexExp>());
-        calc.Register("objdatafrommanagedindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromManagedObjectIndexExp>());
-        calc.Register("loadidaprosymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadIdaproSymbolsExp>());
-        calc.Register("loadxcodesymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadXcodeSymbolsExp>());
-        calc.Register("loadbuglyandroidsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadBuglyAndroidSymbolsExp>());
-        calc.Register("loadbuglyiossymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadBuglyIosSymbolsExp>());
-        calc.Register("converttorelativeaddrs", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ConvertToRelativeAddrsExp>());
-        calc.Register("mapbuglyandroidsymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapBuglyAndroidSymbolsExp>());
-        calc.Register("mapbuglyiossymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapBuglyIosSymbolsExp>());
-        calc.Register("mapmyhooksymbols", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MapMyhookSymbolsExp>());
-        calc.Register("grep", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GrepExp>());
-        calc.Register("subst", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SubstExp>());
-        calc.Register("setclipboard", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetClipboardExp>());
-        calc.Register("getclipboard", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetClipboardExp>());
-        calc.Register("selectobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectObjectExp>());
-        calc.Register("selectprojectobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectProjectObjectExp>());
-        calc.Register("selectsceneobject", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SelectSceneObjectExp>());
-        calc.Register("saveandreimport", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SaveAndReimportExp>());
-        calc.Register("setdirty", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetDirtyExp>());
-        calc.Register("getdefaulttexturesetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetDefaultTextureSettingExp>());
-        calc.Register("gettexturesetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetTextureSettingExp>());
-        calc.Register("settexturesetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetTextureSettingExp>());
-        calc.Register("isastctexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.IsAstcTextureExp>());
-        calc.Register("setastctexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetAstcTextureExp>());
-        calc.Register("issceneastctexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.IsSceneAstcTextureExp>());
-        calc.Register("setsceneastctexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetSceneAstcTextureExp>());
-        calc.Register("istexturenoalphasource", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.IsTextureNoAlphaSourceExp>());
-        calc.Register("doestexturehavealpha", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.DoesTextureHaveAlphaExp>());
-        calc.Register("correctnonealphatexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CorrectNoneAlphaTextureExp>());
-        calc.Register("setnonealphatexture", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetNoneAlphaTextureExp>());
-        calc.Register("gettexturecompression", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetTextureCompressionExp>());
-        calc.Register("settexturecompression", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetTextureCompressionExp>());
-        calc.Register("getmeshcompression", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetMeshCompressionExp>());
-        calc.Register("setmeshcompression", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetMeshCompressionExp>());
-        calc.Register("setmeshimportexternalmaterials", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetMeshImportExternalMaterialsExp>());
-        calc.Register("setmeshimportinprefabmaterials", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetMeshImportInPrefabMaterialsExp>());
-        calc.Register("closemeshanimationifnoanimation", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CloseMeshAnimationIfNoAnimationExp>());
-        calc.Register("collectmeshes", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CollectMeshesExp>());
-        calc.Register("collectmeshinfo", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CollectMeshInfoExp>());
-        calc.Register("collectanimatorcontrollerinfo", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CollectAnimatorControllerInfoExp>());
-        calc.Register("collectprefabinfo", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CollectPrefabInfoExp>());
-        calc.Register("getanimationclipinfo", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationClipInfoExp>());
-        calc.Register("getanimationcompression", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationCompressionExp>());
-        calc.Register("setanimationcompression", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetAnimationCompressionExp>());
-        calc.Register("getanimationtype", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetAnimationTypeExp>());
-        calc.Register("setanimationtype", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetAnimationTypeExp>());
-        calc.Register("setextraexposedtransformpaths", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetExtraExposedTransformPathsExp>());
-        calc.Register("clearanimationscalecurve", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ClearAnimationScaleCurveExp>());
-        calc.Register("getaudiosetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetAudioSettingExp>());
-        calc.Register("setaudiosetting", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.SetAudioSettingExp>());
-        calc.Register("calcmeshvertexcomponentcount", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMeshVertexComponentCountExp>());
-        calc.Register("calcmeshtexratio", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMeshTexRatioExp>());
-        calc.Register("calcassetmd5", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcAssetMd5Exp>());
-        calc.Register("calcassetsize", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcAssetSizeExp>());
-        calc.Register("deleteasset", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.DeleteAssetExp>());
-        calc.Register("getshaderutil", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetShaderUtilExp>());
-        calc.Register("getshaderpropertycount", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetShaderPropertyCountExp>());
-        calc.Register("getshaderpropertynames", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetShaderPropertyNamesExp>());
-        calc.Register("getshadervariants", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetShaderVariantsExp>());
-        calc.Register("addshadertocollection", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.AddShaderToCollectionExp>());
-        calc.Register("findrowindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindRowIndexExp>());
-        calc.Register("findrowindexes", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindRowIndexesExp>());
-        calc.Register("findcellindex", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindCellIndexExp>());
-        calc.Register("findcellindexes", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindCellIndexesExp>());
-        calc.Register("getcellvalue", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCellValueExp>());
-        calc.Register("getcellstring", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCellStringExp>());
-        calc.Register("getcellnumeric", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.GetCellNumericExp>());
-        calc.Register("rowtoline", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.RowToLineExp>());
-        calc.Register("tabletohashtable", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.TableToHashtableExp>());
-        calc.Register("findrowfromhashtable", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindRowFromHashtableExp>());
-        calc.Register("loadmanagedheaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadManagedHeapsExp>());
-        calc.Register("findmanagedheaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindManagedHeapsExp>());
-        calc.Register("matchmanagedheaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MatchManagedHeapsExp>());
-        calc.Register("calcmatchedmanagedheapsdiff", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMatchedManagedHeapsDiffExp>());
-        calc.Register("loadmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadMapsExp>());
-        calc.Register("findmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindMapsExp>());
-        calc.Register("matchmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MatchMapsExp>());
-        calc.Register("calcmatchedmapsdiff", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMatchedMapsDiffExp>());
-        calc.Register("loadsmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadSmapsExp>());
-        calc.Register("findsmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FindSmapsExp>());
-        calc.Register("matchsmaps", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.MatchSmapsExp>());
-        calc.Register("calcmatchedsmapsdiff", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.CalcMatchedSmapsDiffExp>());
-        calc.Register("loadaddrs", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LoadAddrsExp>());
-        calc.Register("escapeurl", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.EscapeUrlExp>());
-        calc.Register("unescapeurl", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.UnEscapeUrlExp>());
-        calc.Register("parseurlargs", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ParseUrlArgsExp>());
-        calc.Register("parsebuglyinfo", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.ParseBuglyInfoExp>());
-        calc.Register("inthashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.IntHashContainsExp>());
-        calc.Register("uinthashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.UintHashContainsExp>());
-        calc.Register("longhashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.LongHashContainsExp>());
-        calc.Register("ulonghashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.UlongHashContainsExp>());
-        calc.Register("floathashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.FloatHashContainsExp>());
-        calc.Register("doublehashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.DoubleHashContainsExp>());
-        calc.Register("stringhashcontains", new DslExpression.ExpressionFactoryHelper<ResourceEditApi.StringHashContainsExp>());
+        calc.Register("setparamstomodel", new ExpressionFactoryHelper<ResourceEditApi.SetParamsToModelExp>());
+        calc.Register("getparamsfrommodel", new ExpressionFactoryHelper<ResourceEditApi.GetParamsFromModelExp>());
+        calc.Register("setparamstotexture", new ExpressionFactoryHelper<ResourceEditApi.SetParamsToTextureExp>());
+        calc.Register("getparamsfromtexture", new ExpressionFactoryHelper<ResourceEditApi.GetParamsFromTextureExp>());
+        calc.Register("setparamstoprefab", new ExpressionFactoryHelper<ResourceEditApi.SetParamsToPrefabExp>());
+        calc.Register("getparamsfromprefab", new ExpressionFactoryHelper<ResourceEditApi.GetParamsFromPrefabExp>());
+        calc.Register("updatemodeldb", new ExpressionFactoryHelper<ResourceEditApi.UpdateModelDbExp>());
+        calc.Register("updatetexturedb", new ExpressionFactoryHelper<ResourceEditApi.UpdateTextureDbExp>());
+        calc.Register("updateprefabdb", new ExpressionFactoryHelper<ResourceEditApi.UpdatePrefabDbExp>());
+        calc.Register("callscript", new ExpressionFactoryHelper<ResourceEditApi.CallScriptExp>());
+        calc.Register("setredirect", new ExpressionFactoryHelper<ResourceEditApi.SetRedirectExp>());
+        calc.Register("newitem", new ExpressionFactoryHelper<ResourceEditApi.NewItemExp>());
+        calc.Register("newextralist", new ExpressionFactoryHelper<ResourceEditApi.NewExtraListExp>());
+        calc.Register("extralistadd", new ExpressionFactoryHelper<ResourceEditApi.ExtraListAddExp>());
+        calc.Register("extralistclear", new ExpressionFactoryHelper<ResourceEditApi.ExtraListClearExp>());
+        calc.Register("getreferenceassets", new ExpressionFactoryHelper<ResourceEditApi.GetReferenceAssetsExp>());
+        calc.Register("getreferencebyassets", new ExpressionFactoryHelper<ResourceEditApi.GetReferenceByAssetsExp>());
+        calc.Register("calcrefcount", new ExpressionFactoryHelper<ResourceEditApi.CalcRefCountExp>());
+        calc.Register("calcrefbycount", new ExpressionFactoryHelper<ResourceEditApi.CalcRefByCountExp>());
+        calc.Register("findasset", new ExpressionFactoryHelper<ResourceEditApi.FindAssetExp>());
+        calc.Register("findshortestpathtoroot", new ExpressionFactoryHelper<ResourceEditApi.FindShortestPathToRootExp>());
+        calc.Register("getobjdatarefbyhash", new ExpressionFactoryHelper<ResourceEditApi.GetObjectDataRefByHashExp>());
+        calc.Register("getobjdatarefbylist", new ExpressionFactoryHelper<ResourceEditApi.GetObjectDataRefByListExp>());
+        calc.Register("openlink", new ExpressionFactoryHelper<ResourceEditApi.OpenLinkExp>());
+        calc.Register("openreferencelink", new ExpressionFactoryHelper<ResourceEditApi.OpenReferenceLinkExp>());
+        calc.Register("openlinkincurrenttable", new ExpressionFactoryHelper<ResourceEditApi.OpenLinkInCurrentTableExp>());
+        calc.Register("getcurrenttablenames", new ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableNamesExp>());
+        calc.Register("getcurrenttablecount", new ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableCountExp>());
+        calc.Register("getcurrenttablename", new ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableNameExp>());
+        calc.Register("getcurrenttable", new ExpressionFactoryHelper<ResourceEditApi.GetCurrentTableExp>());
+        calc.Register("objdatafromaddress", new ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromAddressExp>());
+        calc.Register("objdatafromunifiedindex", new ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromUnifiedObjectIndexExp>());
+        calc.Register("objdatafromnativeindex", new ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromNativeObjectIndexExp>());
+        calc.Register("objdatafrommanagedindex", new ExpressionFactoryHelper<ResourceEditApi.ObjectDataFromManagedObjectIndexExp>());
+        calc.Register("loadidaprosymbols", new ExpressionFactoryHelper<ResourceEditApi.LoadIdaproSymbolsExp>());
+        calc.Register("loadxcodesymbols", new ExpressionFactoryHelper<ResourceEditApi.LoadXcodeSymbolsExp>());
+        calc.Register("loadbuglyandroidsymbols", new ExpressionFactoryHelper<ResourceEditApi.LoadBuglyAndroidSymbolsExp>());
+        calc.Register("loadbuglyiossymbols", new ExpressionFactoryHelper<ResourceEditApi.LoadBuglyIosSymbolsExp>());
+        calc.Register("converttorelativeaddrs", new ExpressionFactoryHelper<ResourceEditApi.ConvertToRelativeAddrsExp>());
+        calc.Register("mapbuglyandroidsymbols", new ExpressionFactoryHelper<ResourceEditApi.MapBuglyAndroidSymbolsExp>());
+        calc.Register("mapbuglyiossymbols", new ExpressionFactoryHelper<ResourceEditApi.MapBuglyIosSymbolsExp>());
+        calc.Register("mapmyhooksymbols", new ExpressionFactoryHelper<ResourceEditApi.MapMyhookSymbolsExp>());
+        calc.Register("grep", new ExpressionFactoryHelper<ResourceEditApi.GrepExp>());
+        calc.Register("subst", new ExpressionFactoryHelper<ResourceEditApi.SubstExp>());
+        calc.Register("setclipboard", new ExpressionFactoryHelper<ResourceEditApi.SetClipboardExp>());
+        calc.Register("getclipboard", new ExpressionFactoryHelper<ResourceEditApi.GetClipboardExp>());
+        calc.Register("selectobject", new ExpressionFactoryHelper<ResourceEditApi.SelectObjectExp>());
+        calc.Register("selectprojectobject", new ExpressionFactoryHelper<ResourceEditApi.SelectProjectObjectExp>());
+        calc.Register("selectsceneobject", new ExpressionFactoryHelper<ResourceEditApi.SelectSceneObjectExp>());
+        calc.Register("saveandreimport", new ExpressionFactoryHelper<ResourceEditApi.SaveAndReimportExp>());
+        calc.Register("setdirty", new ExpressionFactoryHelper<ResourceEditApi.SetDirtyExp>());
+        calc.Register("getdefaulttexturesetting", new ExpressionFactoryHelper<ResourceEditApi.GetDefaultTextureSettingExp>());
+        calc.Register("gettexturesetting", new ExpressionFactoryHelper<ResourceEditApi.GetTextureSettingExp>());
+        calc.Register("settexturesetting", new ExpressionFactoryHelper<ResourceEditApi.SetTextureSettingExp>());
+        calc.Register("isastctexture", new ExpressionFactoryHelper<ResourceEditApi.IsAstcTextureExp>());
+        calc.Register("setastctexture", new ExpressionFactoryHelper<ResourceEditApi.SetAstcTextureExp>());
+        calc.Register("issceneastctexture", new ExpressionFactoryHelper<ResourceEditApi.IsSceneAstcTextureExp>());
+        calc.Register("setsceneastctexture", new ExpressionFactoryHelper<ResourceEditApi.SetSceneAstcTextureExp>());
+        calc.Register("istexturenoalphasource", new ExpressionFactoryHelper<ResourceEditApi.IsTextureNoAlphaSourceExp>());
+        calc.Register("doestexturehavealpha", new ExpressionFactoryHelper<ResourceEditApi.DoesTextureHaveAlphaExp>());
+        calc.Register("correctnonealphatexture", new ExpressionFactoryHelper<ResourceEditApi.CorrectNoneAlphaTextureExp>());
+        calc.Register("setnonealphatexture", new ExpressionFactoryHelper<ResourceEditApi.SetNoneAlphaTextureExp>());
+        calc.Register("gettexturecompression", new ExpressionFactoryHelper<ResourceEditApi.GetTextureCompressionExp>());
+        calc.Register("settexturecompression", new ExpressionFactoryHelper<ResourceEditApi.SetTextureCompressionExp>());
+        calc.Register("getmeshcompression", new ExpressionFactoryHelper<ResourceEditApi.GetMeshCompressionExp>());
+        calc.Register("setmeshcompression", new ExpressionFactoryHelper<ResourceEditApi.SetMeshCompressionExp>());
+        calc.Register("setmeshimportexternalmaterials", new ExpressionFactoryHelper<ResourceEditApi.SetMeshImportExternalMaterialsExp>());
+        calc.Register("setmeshimportinprefabmaterials", new ExpressionFactoryHelper<ResourceEditApi.SetMeshImportInPrefabMaterialsExp>());
+        calc.Register("closemeshanimationifnoanimation", new ExpressionFactoryHelper<ResourceEditApi.CloseMeshAnimationIfNoAnimationExp>());
+        calc.Register("collectmeshes", new ExpressionFactoryHelper<ResourceEditApi.CollectMeshesExp>());
+        calc.Register("collectmeshinfo", new ExpressionFactoryHelper<ResourceEditApi.CollectMeshInfoExp>());
+        calc.Register("collectanimatorcontrollerinfo", new ExpressionFactoryHelper<ResourceEditApi.CollectAnimatorControllerInfoExp>());
+        calc.Register("collectprefabinfo", new ExpressionFactoryHelper<ResourceEditApi.CollectPrefabInfoExp>());
+        calc.Register("getanimationclipinfo", new ExpressionFactoryHelper<ResourceEditApi.GetAnimationClipInfoExp>());
+        calc.Register("getanimationcompression", new ExpressionFactoryHelper<ResourceEditApi.GetAnimationCompressionExp>());
+        calc.Register("setanimationcompression", new ExpressionFactoryHelper<ResourceEditApi.SetAnimationCompressionExp>());
+        calc.Register("getanimationtype", new ExpressionFactoryHelper<ResourceEditApi.GetAnimationTypeExp>());
+        calc.Register("setanimationtype", new ExpressionFactoryHelper<ResourceEditApi.SetAnimationTypeExp>());
+        calc.Register("setextraexposedtransformpaths", new ExpressionFactoryHelper<ResourceEditApi.SetExtraExposedTransformPathsExp>());
+        calc.Register("clearanimationscalecurve", new ExpressionFactoryHelper<ResourceEditApi.ClearAnimationScaleCurveExp>());
+        calc.Register("getaudiosetting", new ExpressionFactoryHelper<ResourceEditApi.GetAudioSettingExp>());
+        calc.Register("setaudiosetting", new ExpressionFactoryHelper<ResourceEditApi.SetAudioSettingExp>());
+        calc.Register("splitanimationreference", new ExpressionFactoryHelper<ResourceEditApi.SplitAnimationReferenceExp>());
+        calc.Register("calcmeshvertexcomponentcount", new ExpressionFactoryHelper<ResourceEditApi.CalcMeshVertexComponentCountExp>());
+        calc.Register("calcmeshtexratio", new ExpressionFactoryHelper<ResourceEditApi.CalcMeshTexRatioExp>());
+        calc.Register("calcassetmd5", new ExpressionFactoryHelper<ResourceEditApi.CalcAssetMd5Exp>());
+        calc.Register("calcassetsize", new ExpressionFactoryHelper<ResourceEditApi.CalcAssetSizeExp>());
+        calc.Register("deleteasset", new ExpressionFactoryHelper<ResourceEditApi.DeleteAssetExp>());
+        calc.Register("getshaderutil", new ExpressionFactoryHelper<ResourceEditApi.GetShaderUtilExp>());
+        calc.Register("getshaderpropertycount", new ExpressionFactoryHelper<ResourceEditApi.GetShaderPropertyCountExp>());
+        calc.Register("getshaderpropertynames", new ExpressionFactoryHelper<ResourceEditApi.GetShaderPropertyNamesExp>());
+        calc.Register("getshadervariants", new ExpressionFactoryHelper<ResourceEditApi.GetShaderVariantsExp>());
+        calc.Register("addshadertocollection", new ExpressionFactoryHelper<ResourceEditApi.AddShaderToCollectionExp>());
+        calc.Register("findrowindex", new ExpressionFactoryHelper<ResourceEditApi.FindRowIndexExp>());
+        calc.Register("findrowindexes", new ExpressionFactoryHelper<ResourceEditApi.FindRowIndexesExp>());
+        calc.Register("findcellindex", new ExpressionFactoryHelper<ResourceEditApi.FindCellIndexExp>());
+        calc.Register("findcellindexes", new ExpressionFactoryHelper<ResourceEditApi.FindCellIndexesExp>());
+        calc.Register("getcellvalue", new ExpressionFactoryHelper<ResourceEditApi.GetCellValueExp>());
+        calc.Register("getcellstring", new ExpressionFactoryHelper<ResourceEditApi.GetCellStringExp>());
+        calc.Register("getcellnumeric", new ExpressionFactoryHelper<ResourceEditApi.GetCellNumericExp>());
+        calc.Register("rowtoline", new ExpressionFactoryHelper<ResourceEditApi.RowToLineExp>());
+        calc.Register("tabletohashtable", new ExpressionFactoryHelper<ResourceEditApi.TableToHashtableExp>());
+        calc.Register("findrowfromhashtable", new ExpressionFactoryHelper<ResourceEditApi.FindRowFromHashtableExp>());
+        calc.Register("loadmanagedheaps", new ExpressionFactoryHelper<ResourceEditApi.LoadManagedHeapsExp>());
+        calc.Register("findmanagedheaps", new ExpressionFactoryHelper<ResourceEditApi.FindManagedHeapsExp>());
+        calc.Register("matchmanagedheaps", new ExpressionFactoryHelper<ResourceEditApi.MatchManagedHeapsExp>());
+        calc.Register("calcmatchedmanagedheapsdiff", new ExpressionFactoryHelper<ResourceEditApi.CalcMatchedManagedHeapsDiffExp>());
+        calc.Register("loadmaps", new ExpressionFactoryHelper<ResourceEditApi.LoadMapsExp>());
+        calc.Register("findmaps", new ExpressionFactoryHelper<ResourceEditApi.FindMapsExp>());
+        calc.Register("matchmaps", new ExpressionFactoryHelper<ResourceEditApi.MatchMapsExp>());
+        calc.Register("calcmatchedmapsdiff", new ExpressionFactoryHelper<ResourceEditApi.CalcMatchedMapsDiffExp>());
+        calc.Register("loadsmaps", new ExpressionFactoryHelper<ResourceEditApi.LoadSmapsExp>());
+        calc.Register("findsmaps", new ExpressionFactoryHelper<ResourceEditApi.FindSmapsExp>());
+        calc.Register("matchsmaps", new ExpressionFactoryHelper<ResourceEditApi.MatchSmapsExp>());
+        calc.Register("calcmatchedsmapsdiff", new ExpressionFactoryHelper<ResourceEditApi.CalcMatchedSmapsDiffExp>());
+        calc.Register("loadaddrs", new ExpressionFactoryHelper<ResourceEditApi.LoadAddrsExp>());
+        calc.Register("escapeurl", new ExpressionFactoryHelper<ResourceEditApi.EscapeUrlExp>());
+        calc.Register("unescapeurl", new ExpressionFactoryHelper<ResourceEditApi.UnEscapeUrlExp>());
+        calc.Register("parseurlargs", new ExpressionFactoryHelper<ResourceEditApi.ParseUrlArgsExp>());
+        calc.Register("parsebuglyinfo", new ExpressionFactoryHelper<ResourceEditApi.ParseBuglyInfoExp>());
+        calc.Register("inthashcontains", new ExpressionFactoryHelper<ResourceEditApi.IntHashContainsExp>());
+        calc.Register("uinthashcontains", new ExpressionFactoryHelper<ResourceEditApi.UintHashContainsExp>());
+        calc.Register("longhashcontains", new ExpressionFactoryHelper<ResourceEditApi.LongHashContainsExp>());
+        calc.Register("ulonghashcontains", new ExpressionFactoryHelper<ResourceEditApi.UlongHashContainsExp>());
+        calc.Register("floathashcontains", new ExpressionFactoryHelper<ResourceEditApi.FloatHashContainsExp>());
+        calc.Register("doublehashcontains", new ExpressionFactoryHelper<ResourceEditApi.DoubleHashContainsExp>());
+        calc.Register("stringhashcontains", new ExpressionFactoryHelper<ResourceEditApi.StringHashContainsExp>());
     }
-    internal static object Filter(ItemInfo item, Dictionary<string, object> addVars, List<ItemInfo> results, DslExpression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
+    internal static CalculatorValue Filter(ItemInfo item, Dictionary<string, CalculatorValue> addVars, List<ItemInfo> results, DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
         try {
             item.PrepareShowInfo();
             results.Clear();
-            object ret = null;
+            var ret = CalculatorValue.NullObject;
             if (null != calc) {
                 calc.SetGlobalVariable("assetpath", item.AssetPath);
                 calc.SetGlobalVariable("scenepath", item.ScenePath);
-                calc.SetGlobalVariable("importer", item.Importer);
-                calc.SetGlobalVariable("object", item.Object);
+                calc.SetGlobalVariable("importer", CalculatorValue.FromObject(item.Importer));
+                calc.SetGlobalVariable("object", CalculatorValue.FromObject(item.Object));
                 calc.SetGlobalVariable("info", item.Info);
                 calc.SetGlobalVariable("order", item.Order);
                 calc.SetGlobalVariable("value", item.Value);
-                calc.SetGlobalVariable("results", results);
-                calc.SetGlobalVariable("scenedeps", sceneDeps);
-                calc.SetGlobalVariable("refdict", refDict);
-                calc.SetGlobalVariable("refbydict", refByDict);
+                calc.SetGlobalVariable("results", CalculatorValue.FromObject(results));
+                calc.SetGlobalVariable("scenedeps", CalculatorValue.FromObject(sceneDeps));
+                calc.SetGlobalVariable("refdict", CalculatorValue.FromObject(refDict));
+                calc.SetGlobalVariable("refbydict", CalculatorValue.FromObject(refByDict));
                 if (null != addVars) {
                     foreach (var pair in addVars) {
                         calc.SetGlobalVariable(pair.Key, pair.Value);
                     }
                 }
-                calc.SetGlobalVariable("params", args);
+                calc.SetGlobalVariable("params", CalculatorValue.FromObject(args));
                 foreach (var pair in args) {
                     var p = pair.Value;
-                    calc.SetGlobalVariable(p.Name, p.Value);
+                    calc.SetGlobalVariable(p.Name, CalculatorValue.FromObject(p.Value));
                 }
                 calc.RemoveGlobalVariable("group");
                 calc.RemoveGlobalVariable("extralist");
@@ -558,55 +569,55 @@ internal static class ResourceEditUtility
                     ret = calc.Calc(i.ToString());
                 }
 
-                object v;
+                CalculatorValue v;
                 if (calc.TryGetGlobalVariable("assetpath", out v)) {
-                    var path = v as string;
+                    var path = v.AsString;
                     if (!string.IsNullOrEmpty(path))
                         item.AssetPath = path;
                 }
                 if (calc.TryGetGlobalVariable("scenepath", out v)) {
-                    var path = v as string;
+                    var path = v.AsString;
                     if (!string.IsNullOrEmpty(path))
                         item.ScenePath = path;
                 }
                 if (calc.TryGetGlobalVariable("importer", out v)) {
-                    if (null != v) {
-                        item.Importer = v as AssetImporter;
+                    if (!v.IsNullObject) {
+                        item.Importer = v.As<AssetImporter>();
                     }
                 }
                 if (calc.TryGetGlobalVariable("object", out v)) {
-                    if (null != v) {
-                        item.Object = v as UnityEngine.Object;
+                    if (!v.IsNullObject) {
+                        item.Object = v.As<UnityEngine.Object>();
                     }
                 }
                 if (calc.TryGetGlobalVariable("info", out v)) {
-                    item.Info = v as string;
+                    item.Info = v.AsString;
                     if (null == item.Info) {
                         item.Info = string.Empty;
                     }
                 }
                 if (calc.TryGetGlobalVariable("order", out v)) {
-                    if (null != v) {
-                        item.Order = (double)Convert.ChangeType(v, typeof(double));
+                    if (!v.IsNullObject) {
+                        item.Order = v.Get<double>();
                     }
                 }
                 if (calc.TryGetGlobalVariable("value", out v)) {
-                    if (null != v) {
-                        item.Value = (double)Convert.ChangeType(v, typeof(double));
+                    if (!v.IsNullObject) {
+                        item.Value = v.Get<double>();
                     }
                 }
                 if (calc.TryGetGlobalVariable("group", out v)) {
-                    item.Group = v as string;
+                    item.Group = v.AsString;
                     if (null == item.Group) {
                         item.Group = string.Empty;
                     }
                 }
                 if (calc.TryGetGlobalVariable("extralist", out v)) {
-                    var list = v as IList;
+                    var list = v.As<IList>();
                     if (null != list) {
-                        var pairList = new List<KeyValuePair<string, object>>();
+                        var pairList = new List<KeyValuePair<string, CalculatorValue>>();
                         foreach (var pair in list) {
-                            var keyObj = (KeyValuePair<string, object>)pair;
+                            var keyObj = (KeyValuePair<string, CalculatorValue>)pair;
                             pairList.Add(keyObj);
                         }
                         item.ExtraList = pairList;
@@ -619,7 +630,7 @@ internal static class ResourceEditUtility
                     item.ExtraObject = v;
                 }
                 if (calc.TryGetGlobalVariable("extralistbuild", out v)) {
-                    string scp = v as string;
+                    string scp = v.AsString;
                     if (!string.IsNullOrEmpty(scp)) {
                         item.ExtraListBuildScript = scp;
                     }
@@ -628,7 +639,7 @@ internal static class ResourceEditUtility
                     }
                 }
                 if (calc.TryGetGlobalVariable("extralistclick", out v)) {
-                    string scp = v as string;
+                    string scp = v.AsString;
                     if (!string.IsNullOrEmpty(scp)) {
                         item.ExtraListClickScript = scp;
                     }
@@ -637,10 +648,10 @@ internal static class ResourceEditUtility
                     }
                 }
                 if (calc.TryGetGlobalVariable("redirectdsl", out v)) {
-                    item.RedirectDsl = v as string;
+                    item.RedirectDsl = v.AsString;
                 }
                 if (calc.TryGetGlobalVariable("redirectargs", out v)) {
-                    var dict = v as IDictionary;
+                    var dict = v.As<IDictionary>();
                     if (null != dict) {
                         var strDict = new Dictionary<string, string>();
                         var enumer = dict.GetEnumerator();
@@ -666,26 +677,26 @@ internal static class ResourceEditUtility
         }
         catch (Exception ex) {
             Debug.LogErrorFormat("filter {0} exception:{1}\n{2}", item.AssetPath, ex.Message, ex.StackTrace);
-            return null;
+            return CalculatorValue.NullObject;
         }
     }
-    internal static object Process(ItemInfo item, DslExpression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
+    internal static CalculatorValue Process(ItemInfo item, DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
         try {
             item.PrepareShowInfo();
-            object ret = null;
+            var ret = CalculatorValue.NullObject;
             if (null != calc) {
                 calc.SetGlobalVariable("assetpath", item.AssetPath);
                 calc.SetGlobalVariable("scenepath", item.ScenePath);
-                calc.SetGlobalVariable("importer", item.Importer);
-                calc.SetGlobalVariable("object", item.Object);
+                calc.SetGlobalVariable("importer", CalculatorValue.FromObject(item.Importer));
+                calc.SetGlobalVariable("object", CalculatorValue.FromObject(item.Object));
                 calc.SetGlobalVariable("info", item.Info);
                 calc.SetGlobalVariable("order", item.Order);
                 calc.SetGlobalVariable("value", item.Value);
-                calc.SetGlobalVariable("scenedeps", sceneDeps);
-                calc.SetGlobalVariable("refdict", refDict);
-                calc.SetGlobalVariable("refbydict", refByDict);
-                calc.SetGlobalVariable("params", args);
+                calc.SetGlobalVariable("scenedeps", CalculatorValue.FromObject(sceneDeps));
+                calc.SetGlobalVariable("refdict", CalculatorValue.FromObject(refDict));
+                calc.SetGlobalVariable("refbydict", CalculatorValue.FromObject(refByDict));
+                calc.SetGlobalVariable("params", CalculatorValue.FromObject(args));
                 foreach (var pair in args) {
                     var p = pair.Value;
                     calc.SetGlobalVariable(p.Name, p.Value);
@@ -699,17 +710,17 @@ internal static class ResourceEditUtility
         }
         catch (Exception ex) {
             Debug.LogErrorFormat("process {0} exception:{1}\n{2}", item.AssetPath, ex.Message, ex.StackTrace);
-            return null;
+            return CalculatorValue.NullObject;
         }
     }
-    internal static object Group(GroupInfo item, DslExpression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
+    internal static CalculatorValue Group(GroupInfo item, DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
         try {
             item.PrepareShowInfo();
-            object ret = null;
+            var ret = CalculatorValue.NullObject;
             if (null != calc) {
                 calc.SetGlobalVariable("group", item.Group);
-                calc.SetGlobalVariable("items", item.Items);
+                calc.SetGlobalVariable("items", CalculatorValue.FromObject(item.Items));
                 calc.SetGlobalVariable("sum", item.Sum);
                 calc.SetGlobalVariable("max", item.Max);
                 calc.SetGlobalVariable("min", item.Min);
@@ -720,10 +731,10 @@ internal static class ResourceEditUtility
                 calc.SetGlobalVariable("info", item.Info);
                 calc.SetGlobalVariable("order", item.Order);
                 calc.SetGlobalVariable("value", item.Value);
-                calc.SetGlobalVariable("scenedeps", sceneDeps);
-                calc.SetGlobalVariable("refdict", refDict);
-                calc.SetGlobalVariable("refbydict", refByDict);
-                calc.SetGlobalVariable("params", args);
+                calc.SetGlobalVariable("scenedeps", CalculatorValue.FromObject(sceneDeps));
+                calc.SetGlobalVariable("refdict", CalculatorValue.FromObject(refDict));
+                calc.SetGlobalVariable("refbydict", CalculatorValue.FromObject(refByDict));
+                calc.SetGlobalVariable("params", CalculatorValue.FromObject(args));
                 foreach (var pair in args) {
                     var p = pair.Value;
                     calc.SetGlobalVariable(p.Name, p.Value);
@@ -734,39 +745,39 @@ internal static class ResourceEditUtility
                     ret = calc.Calc(i.ToString());
                 }
 
-                object v;
+                CalculatorValue v;
                 if (calc.TryGetGlobalVariable("assetpath", out v)) {
-                    var path = v as string;
+                    var path = v.AsString;
                     if (!string.IsNullOrEmpty(path))
                         item.AssetPath = path;
                 }
                 if (calc.TryGetGlobalVariable("scenepath", out v)) {
-                    var path = v as string;
+                    var path = v.AsString;
                     if (!string.IsNullOrEmpty(path))
                         item.ScenePath = path;
                 }
                 if (calc.TryGetGlobalVariable("info", out v)) {
-                    item.Info = v as string;
+                    item.Info = v.AsString;
                     if (null == item.Info) {
                         item.Info = string.Empty;
                     }
                 }
                 if (calc.TryGetGlobalVariable("order", out v)) {
-                    if (null != v) {
-                        item.Order = (double)Convert.ChangeType(v, typeof(double));
+                    if (!v.IsNullObject) {
+                        item.Order = v.Get<double>();
                     }
                 }
                 if (calc.TryGetGlobalVariable("value", out v)) {
-                    if (null != v) {
-                        item.Value = (double)Convert.ChangeType(v, typeof(double));
+                    if (!v.IsNullObject) {
+                        item.Value = v.Get<double>();
                     }
                 }
                 if (calc.TryGetGlobalVariable("extralist", out v)) {
-                    var list = v as IList;
+                    var list = v.As<IList>();
                     if (null != list) {
-                        var pairList = new List<KeyValuePair<string, object>>();
+                        var pairList = new List<KeyValuePair<string, CalculatorValue>>();
                         foreach (var pair in list) {
-                            var keyObj = (KeyValuePair<string, object>)pair;
+                            var keyObj = (KeyValuePair<string, CalculatorValue>)pair;
                             pairList.Add(keyObj);
                         }
                         item.ExtraList = pairList;
@@ -779,7 +790,7 @@ internal static class ResourceEditUtility
                     item.ExtraObject = v;
                 }
                 if (calc.TryGetGlobalVariable("extralistbuild", out v)) {
-                    string scp = v as string;
+                    string scp = v.AsString;
                     if (!string.IsNullOrEmpty(scp)) {
                         item.ExtraListBuildScript = scp;
                     }
@@ -788,7 +799,7 @@ internal static class ResourceEditUtility
                     }
                 }
                 if (calc.TryGetGlobalVariable("extralistclick", out v)) {
-                    string scp = v as string;
+                    string scp = v.AsString;
                     if (!string.IsNullOrEmpty(scp)) {
                         item.ExtraListClickScript = scp;
                     }
@@ -797,10 +808,10 @@ internal static class ResourceEditUtility
                     }
                 }
                 if (calc.TryGetGlobalVariable("redirectdsl", out v)) {
-                    item.RedirectDsl = v as string;
+                    item.RedirectDsl = v.AsString;
                 }
                 if (calc.TryGetGlobalVariable("redirectargs", out v)) {
-                    var dict = v as IDictionary;
+                    var dict = v.As<IDictionary>();
                     if (null != dict) {
                         var strDict = new Dictionary<string, string>();
                         var enumer = dict.GetEnumerator();
@@ -819,17 +830,17 @@ internal static class ResourceEditUtility
         }
         catch (Exception ex) {
             Debug.LogErrorFormat("group {0} exception:{1}\n{2}", item.AssetPath, ex.Message, ex.StackTrace);
-            return null;
+            return CalculatorValue.NullObject;
         }
     }
-    internal static object GroupProcess(GroupInfo item, DslExpression.DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
+    internal static CalculatorValue GroupProcess(GroupInfo item, DslCalculator calc, int indexCount, Dictionary<string, ParamInfo> args, SceneDepInfo sceneDeps, Dictionary<string, HashSet<string>> refDict, Dictionary<string, HashSet<string>> refByDict)
     {
         try {
             item.PrepareShowInfo();
-            object ret = null;
+            var ret = CalculatorValue.NullObject;
             if (null != calc) {
                 calc.SetGlobalVariable("group", item.Group);
-                calc.SetGlobalVariable("items", item.Items);
+                calc.SetGlobalVariable("items", CalculatorValue.FromObject(item.Items));
                 calc.SetGlobalVariable("sum", item.Sum);
                 calc.SetGlobalVariable("max", item.Max);
                 calc.SetGlobalVariable("min", item.Min);
@@ -840,10 +851,10 @@ internal static class ResourceEditUtility
                 calc.SetGlobalVariable("info", item.Info);
                 calc.SetGlobalVariable("order", item.Order);
                 calc.SetGlobalVariable("value", item.Value);
-                calc.SetGlobalVariable("scenedeps", sceneDeps);
-                calc.SetGlobalVariable("refdict", refDict);
-                calc.SetGlobalVariable("refbydict", refByDict);
-                calc.SetGlobalVariable("params", args);
+                calc.SetGlobalVariable("scenedeps", CalculatorValue.FromObject(sceneDeps));
+                calc.SetGlobalVariable("refdict", CalculatorValue.FromObject(refDict));
+                calc.SetGlobalVariable("refbydict", CalculatorValue.FromObject(refByDict));
+                calc.SetGlobalVariable("params", CalculatorValue.FromObject(args));
                 foreach (var pair in args) {
                     var p = pair.Value;
                     calc.SetGlobalVariable(p.Name, p.Value);
@@ -857,16 +868,44 @@ internal static class ResourceEditUtility
         }
         catch (Exception ex) {
             Debug.LogErrorFormat("group process {0} exception:{1}\n{2}", item.AssetPath, ex.Message, ex.StackTrace);
-            return null;
+            return CalculatorValue.NullObject;
         }
+    }
+    internal static void ResetResourceParamsCalculator()
+    {
+        s_ResourceParamsCalculator = null;
+    }
+    internal static bool SetParamsToResource(string proc, ResourceParams resParams, UnityEngine.Object obj)
+    {
+        bool ret = false;
+        var calc = GetResourceParamsCalculator();
+        if (null != calc) {
+            var r = calc.Calc(proc, CalculatorValue.FromObject(resParams), CalculatorValue.FromObject(obj));
+            if (!r.IsNullObject) {
+                ret = r.Get<bool>();
+            }
+        }
+        return ret;
+    }
+    internal static bool GetParamsFromResource(string proc, ResourceParams resParams, UnityEngine.Object obj)
+    {
+        bool ret = false;
+        var calc = GetResourceParamsCalculator();
+        if (null != calc) {
+            var r = calc.Calc(proc, CalculatorValue.FromObject(resParams), CalculatorValue.FromObject(obj));
+            if (!r.IsNullObject) {
+                ret = r.Get<bool>();
+            }
+        }
+        return ret;
     }
     internal static void ResetCommandCalculator()
     {
         s_CommandCalculator = null;
     }
-    internal static object EvalScript(string code, Dictionary<string, ParamInfo> args, object obj, object item, Dictionary<string, object> addVars)
+    internal static CalculatorValue EvalScript(string code, Dictionary<string, ParamInfo> args, CalculatorValue obj, CalculatorValue item, Dictionary<string, CalculatorValue> addVars)
     {
-        object r = null;
+        var r = CalculatorValue.NullObject;
         string procCode = string.Format("script{{ {0}; }};", code);
         var file = new Dsl.DslFile();
         if (file.LoadFromString(procCode, "command", msg => { Console.WriteLine("{0}", msg); })) {
@@ -878,7 +917,7 @@ internal static class ResourceEditUtility
             }
             if (null != func) {
                 var calc = GetCommandCalculator();
-                calc.SetGlobalVariable("params", args);
+                calc.SetGlobalVariable("params", CalculatorValue.FromObject(args));
                 foreach (var pair in args) {
                     var p = pair.Value;
                     calc.SetGlobalVariable(p.Name, p.Value);
@@ -1149,6 +1188,11 @@ internal static class ResourceEditUtility
         get { return s_ForceSaveAndReimport; }
         set { s_ForceSaveAndReimport = value; }
     }
+    internal static bool UseSpecificSettingDB
+    {
+        get { return s_UseSpecificSettingDB; }
+        set { s_UseSpecificSettingDB = value; }
+    }
     internal static bool SaveResultWithXrefs
     {
         get { return s_SaveResultWithXrefs; }
@@ -1223,10 +1267,19 @@ internal static class ResourceEditUtility
         }
         return null;
     }
-    private static DslExpression.DslCalculator GetCommandCalculator()
+    private static DslCalculator GetResourceParamsCalculator()
+    {
+        if (null == s_ResourceParamsCalculator && File.Exists(s_ResourceParamsDslFile)) {
+            s_ResourceParamsCalculator = new DslCalculator();
+            InitCalculator(s_ResourceParamsCalculator);
+            s_ResourceParamsCalculator.LoadDsl(s_ResourceParamsDslFile);
+        }
+        return s_ResourceParamsCalculator;
+    }
+    private static DslCalculator GetCommandCalculator()
     {
         if (null == s_CommandCalculator) {
-            s_CommandCalculator = new DslExpression.DslCalculator();
+            s_CommandCalculator = new DslCalculator();
             InitCalculator(s_CommandCalculator);
         }
         return s_CommandCalculator;
@@ -1252,6 +1305,7 @@ internal static class ResourceEditUtility
 
     private static bool s_EnableSaveAndReimport = true;
     private static bool s_ForceSaveAndReimport = false;
+    private static bool s_UseSpecificSettingDB = true;
     private static bool s_SaveResultWithXrefs = true;
 
     private static Dictionary<string, Regex> s_Regexes = new Dictionary<string, Regex>();
@@ -1259,7 +1313,8 @@ internal static class ResourceEditUtility
     private static string s_RootPath = string.Empty;
     private const string c_IndentString = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
 
-    private static DslExpression.DslCalculator s_CommandCalculator = null;
+    private static DslCalculator s_ResourceParamsCalculator = null;
+    private static DslCalculator s_CommandCalculator = null;
     private static string s_ResourceParamsDslFile = "resourceparams.dsl";
 }
 
@@ -1440,78 +1495,425 @@ namespace ResourceEditApi
             }
         }
     }
-    internal class CallScriptExp : DslExpression.SimpleExpressionBase
+    internal class SetParamsToModelExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
-            if (operands.Count >= 1) {
-                var proc = operands[0] as string;
-                if (null != proc) {
-                    ArrayList arrayList = new ArrayList();
-                    for (int i = 1; i < operands.Count; ++i) {
-                        arrayList.Add(operands[i]);
+            bool r = false;
+            if (operands.Count >= 2) {
+                var param = operands[0].As<ResourceParams>();
+                var importer = operands[1].As<ModelImporter>();
+
+                string val;
+                if (param.TryGetValue("compression", out val)) {
+                    var v = (ModelImporterAnimationCompression)Enum.Parse(typeof(ModelImporterAnimationCompression), val);
+                    if (v != importer.animationCompression) {
+                        importer.animationCompression = v;
+                        r = true;
                     }
-                    r = ResourceProcessor.Instance.CallScript(Calculator, proc, arrayList.ToArray());
+                }
+                if (param.TryGetValue("rotationError", out val)) {
+                    var v = float.Parse(val);
+                    if (Math.Abs(v - importer.animationRotationError) > Geometry.c_FloatPrecision) {
+                        importer.animationRotationError = v;
+                        r = true;
+                    }
+                }
+                if (param.TryGetValue("posistionError", out val)) {
+                    var v = float.Parse(val);
+                    if (Math.Abs(v - importer.animationPositionError) > Geometry.c_FloatPrecision) {
+                        importer.animationPositionError = v;
+                        r = true;
+                    }
+                }
+                if (param.TryGetValue("scaleError", out val)) {
+                    var v = float.Parse(val);
+                    if (Math.Abs(v - importer.animationScaleError) > Geometry.c_FloatPrecision) {
+                        importer.animationScaleError = v;
+                        r = true;
+                    }
+                }
+                if (param.TryGetValue("meshCompression", out val)) {
+                    var v = (ModelImporterMeshCompression)Enum.Parse(typeof(ModelImporterMeshCompression), val);
+                    if (v != importer.meshCompression) {
+                        importer.meshCompression = v;
+                        r = true;
+                    }
+                }
+                if (param.TryGetValue("optimizeMesh", out val)) {
+                    var v = bool.Parse(val);
+                    if (v != importer.optimizeMesh) {
+                        importer.optimizeMesh = v;
+                        r = true;
+                    }
+                }
+                if (param.TryGetValue("isReadable", out val)) {
+                    var v = bool.Parse(val);
+                    if (v != importer.isReadable) {
+                        importer.isReadable = v;
+                        r = true;
+                    }
                 }
             }
             return r;
         }
     }
-    internal class SetRedirectExp : DslExpression.SimpleExpressionBase
+    internal class GetParamsFromModelExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            bool r = true;
+            if (operands.Count >= 2) {
+                var param = operands[0].As<ResourceParams>();
+                var importer = operands[1].As<ModelImporter>();
+
+                param.AddOrUpdate("compression", importer.animationCompression.ToString());
+                param.AddOrUpdate("rotationError", importer.animationRotationError.ToString());
+                param.AddOrUpdate("posistionError", importer.animationPositionError.ToString());
+                param.AddOrUpdate("scaleError", importer.animationScaleError.ToString());
+                param.AddOrUpdate("meshCompression", importer.meshCompression.ToString());
+                param.AddOrUpdate("optimizeMesh", importer.optimizeMesh.ToString());
+                param.AddOrUpdate("isReadable", importer.isReadable.ToString());
+            }
+            return r;
+        }
+    }
+    internal class SetParamsToTextureExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var param = operands[0].As<ResourceParams>();
+                var importer = operands[1].As<TextureImporter>();
+
+                string val;
+                if (param.TryGetValue("isReadable", out val)) {
+                    var v = bool.Parse(val);
+                    if (v != importer.isReadable) {
+                        importer.isReadable = v;
+                        r = true;
+                    }
+                }
+                if (param.TryGetValue("mipmapEnabled", out val)) {
+                    var v = bool.Parse(val);
+                    if (v != importer.mipmapEnabled) {
+                        importer.mipmapEnabled = v;
+                        r = true;
+                    }
+                }
+                if (param.TryGetValue("streamingMipmaps", out val)) {
+                    var v = bool.Parse(val);
+                    if (v != importer.streamingMipmaps) {
+                        importer.streamingMipmaps = v;
+                        r = true;
+                    }
+                }
+                if (param.TryGetValue("filterMode", out val))
+                {
+                    FilterMode v;
+
+                    if (string.IsNullOrEmpty(val) || !Enum.TryParse<FilterMode>(val, out v))
+                    {
+                        v = FilterMode.Bilinear;
+                    }
+
+                    if (v != importer.filterMode)
+                    {
+                        importer.filterMode = v;
+                        r = true;
+                    }
+                }
+                var def = importer.GetDefaultPlatformTextureSettings();
+                r = r || SetParamsToSettings(param, "Default.", def);
+                importer.SetPlatformTextureSettings(def);
+                var standalone = importer.GetPlatformTextureSettings("Standalone");
+                r = r || SetParamsToSettings(param, "Standalone.", standalone);
+                importer.SetPlatformTextureSettings(standalone);
+                var ios = importer.GetPlatformTextureSettings("Android");
+                r = r || SetParamsToSettings(param, "Android.", ios);
+                importer.SetPlatformTextureSettings(ios);
+                var android = importer.GetPlatformTextureSettings("iPhone");
+                r = r || SetParamsToSettings(param, "iPhone.", android);
+                importer.SetPlatformTextureSettings(android);
+            }
+            return r;
+        }
+        private static bool SetParamsToSettings(ResourceParams param, string category, TextureImporterPlatformSettings settings)
+        {
+            bool r = false;
+            string val;
+            if (param.TryGetValue(category + "name", out val)) {
+                var v = val;
+                if (v != settings.name) {
+                    settings.name = v;
+                    r = true;
+                }
+            }
+            if (param.TryGetValue(category + "overridden", out val)) {
+                var v = bool.Parse(val);
+                if (v != settings.overridden) {
+                    settings.overridden = v;
+                    r = true;
+                }
+            }
+            if (param.TryGetValue(category + "maxTextureSize", out val)) {
+                var v = int.Parse(val);
+                if (v != settings.maxTextureSize) {
+                    settings.maxTextureSize = v;
+                    r = true;
+                }
+            }
+            if (param.TryGetValue(category + "resizeAlgorithm", out val)) {
+                var v = (TextureResizeAlgorithm)Enum.Parse(typeof(TextureResizeAlgorithm), val);
+                if (v != settings.resizeAlgorithm) {
+                    settings.resizeAlgorithm = v;
+                    r = true;
+                }
+            }
+            if (param.TryGetValue(category + "format", out val)) {
+                var v = (TextureImporterFormat)Enum.Parse(typeof(TextureImporterFormat), val);
+                if (v != settings.format) {
+                    settings.format = v;
+                    r = true;
+                }
+            }
+            if (param.TryGetValue(category + "textureCompression", out val)) {
+                var v = (TextureImporterCompression)Enum.Parse(typeof(TextureImporterCompression), val);
+                if (v != settings.textureCompression) {
+                    settings.textureCompression = v;
+                    r = true;
+                }
+            }
+            if (param.TryGetValue(category + "compressionQuality", out val)) {
+                var v = int.Parse(val);
+                if (v != settings.compressionQuality) {
+                    settings.compressionQuality = v;
+                    r = true;
+                }
+            }
+            if (param.TryGetValue(category + "crunchedCompression", out val)) {
+                var v = bool.Parse(val);
+                if (v != settings.crunchedCompression) {
+                    settings.crunchedCompression = v;
+                    r = true;
+                }
+            }
+            if (param.TryGetValue(category + "allowsAlphaSplitting", out val)) {
+                var v = bool.Parse(val);
+                if (v != settings.allowsAlphaSplitting) {
+                    settings.allowsAlphaSplitting = v;
+                    r = true;
+                }
+            }
+            return r;
+        }
+    }
+    internal class GetParamsFromTextureExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            bool r = true;
+            if (operands.Count >= 2) {
+                var param = operands[0].As<ResourceParams>();
+                var importer = operands[1].As<TextureImporter>();
+
+                param.AddOrUpdate("isReadable", importer.isReadable.ToString());
+                param.AddOrUpdate("mipmapEnabled", importer.mipmapEnabled.ToString());
+                param.AddOrUpdate("streamingMipmaps", importer.streamingMipmaps.ToString());
+                param.AddOrUpdate("filterMode", importer.filterMode.ToString());
+                var def = importer.GetDefaultPlatformTextureSettings();
+                GetParamsFromSettings(param, "Default.", def);
+                var standalone = importer.GetPlatformTextureSettings("Standalone");
+                GetParamsFromSettings(param, "Standalone.", standalone);
+                var ios = importer.GetPlatformTextureSettings("Android");
+                GetParamsFromSettings(param, "Android.", ios);
+                var android = importer.GetPlatformTextureSettings("iPhone");
+                GetParamsFromSettings(param, "iPhone.", android);
+            }
+            return r;
+        }
+        private static void GetParamsFromSettings(ResourceParams param, string category, TextureImporterPlatformSettings settings)
+        {
+            param.AddOrUpdate(category + "name", settings.name);
+            param.AddOrUpdate(category + "overridden", settings.overridden.ToString());
+            param.AddOrUpdate(category + "maxTextureSize", settings.maxTextureSize.ToString());
+            param.AddOrUpdate(category + "resizeAlgorithm", settings.resizeAlgorithm.ToString());
+            param.AddOrUpdate(category + "format", settings.format.ToString());
+            param.AddOrUpdate(category + "textureCompression", settings.textureCompression.ToString());
+            param.AddOrUpdate(category + "compressionQuality", settings.compressionQuality.ToString());
+            param.AddOrUpdate(category + "crunchedCompression", settings.crunchedCompression.ToString());
+            param.AddOrUpdate(category + "allowsAlphaSplitting", settings.allowsAlphaSplitting.ToString());
+        }
+    }
+    internal class SetParamsToPrefabExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var param = operands[0].As<ResourceParams>();
+                var prefab = operands[1].As<UnityEngine.GameObject>();
+
+                string val;
+                if (param.TryGetValue("cullingMode", out val)) {
+                    var v = (AnimatorCullingMode)Enum.Parse(typeof(AnimatorCullingMode), val);
+                    var anis = prefab.GetComponentsInChildren<Animator>();
+                    foreach (var ani in anis) {
+                        if (ani.cullingMode != v) {
+                            ani.cullingMode = v;
+                            r = true;
+                        }
+                    }
+                }
+            }
+            return r;
+        }
+    }
+    internal class GetParamsFromPrefabExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            bool r = true;
+            if (operands.Count >= 2) {
+                var param = operands[0].As<ResourceParams>();
+                var prefab = operands[1].As<UnityEngine.GameObject>();
+
+                AnimatorCullingMode v = AnimatorCullingMode.AlwaysAnimate;
+                var anis = prefab.GetComponentsInChildren<Animator>();
+                foreach (var ani in anis) {
+                    if (v != ani.cullingMode) {
+                        v = ani.cullingMode;
+                        r = true;
+                    }
+                }
+
+                param.AddOrUpdate("cullingMode", v.ToString());
+            }
+            return r;
+        }
+    }
+    internal class UpdateModelDbExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var assetPath = operands[0].AsString;
+                var importer = operands[1].As<ModelImporter>();
+                if (!string.IsNullOrEmpty(assetPath) && null != importer) {
+                    r = ModelImporterParamsDB.UpdateDB(assetPath, importer);
+                    EditorUtility.SetDirty(ModelImporterParamsDB.DBInstance);
+                }
+            }
+            return r;
+        }
+    }
+    internal class UpdateTextureDbExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var assetPath = operands[0].AsString;
+                var importer = operands[1].As<TextureImporter>();
+                if (!string.IsNullOrEmpty(assetPath) && null != importer) {
+                    r = TextureImporterParamsDB.UpdateDB(assetPath, importer);
+                    EditorUtility.SetDirty(TextureImporterParamsDB.DBInstance);
+                }
+            }
+            return r;
+        }
+    }
+    internal class UpdatePrefabDbExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            bool r = false;
+            if (operands.Count >= 2) {
+                var assetPath = operands[0].AsString;
+                var prefab = operands[1].As<UnityEngine.GameObject>();
+                if (!string.IsNullOrEmpty(assetPath) && null != prefab) {
+                    r = PrefabParamsDB.UpdateDB(assetPath, prefab);
+                    EditorUtility.SetDirty(PrefabParamsDB.DBInstance);
+                }
+            }
+            return r;
+        }
+    }
+    internal class CallScriptExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var dsl = operands[0] as string;
+                var proc = operands[0].AsString;
+                if (null != proc) {
+                    var args = ResourceProcessor.Instance.NewCalculatorValueList();
+                    for (int i = 1; i < operands.Count; ++i) {
+                        args.Add(operands[i]);
+                    }
+                    r = ResourceProcessor.Instance.CallScript(Calculator, proc, args);
+                    ResourceProcessor.Instance.RecycleCalculatorValueList(args);
+                }
+            }
+            return r;
+        }
+    }
+    internal class SetRedirectExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            var r = CalculatorValue.NullObject;
+            if (operands.Count >= 1) {
+                var dsl = operands[0].AsString;
                 if (!string.IsNullOrEmpty(dsl)) {
                     var args = new Dictionary<string, string>();
                     for (int i = 1; i < operands.Count - 1; i += 2) {
-                        var key = operands[i] as string;
-                        var val = operands[i + 1] as string;
+                        var key = operands[i].AsString;
+                        var val = operands[i + 1].AsString;
                         if (!string.IsNullOrEmpty(key)) {
                             args.Add(key, val);
                         }
                     }
-                    Calculator.SetGlobalVariable("redirectdsl", dsl);
-                    Calculator.SetGlobalVariable("redirectargs", args);
+                    Calculator.SetGlobalVariable("redirectdsl", CalculatorValue.FromObject(dsl));
+                    Calculator.SetGlobalVariable("redirectargs", CalculatorValue.FromObject(args));
                 }
             }
             return r;
         }
     }
-    internal class NewItemExp : DslExpression.SimpleExpressionBase
+    internal class NewItemExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                var results = Calculator.GetVariable("results") as List<ResourceEditUtility.ItemInfo>;
+                var results = Calculator.GetVariable("results").As<List<ResourceEditUtility.ItemInfo>>();
                 if (null != results) {
                     var item = new ResourceEditUtility.ItemInfo();
                     item.PrepareShowInfo();
                     results.Add(item);
-                    r = item;
+                    r = CalculatorValue.FromObject(item);
                 }
             }
             return r;
         }
     }
-    internal class NewExtraListExp : DslExpression.AbstractExpression
+    internal class NewExtraListExp : AbstractExpression
     {
-        protected override object DoCalc()
+        protected override CalculatorValue DoCalc()
         {
-            object r = null;
-            var list = new List<KeyValuePair<string, object>>();
+            var r = CalculatorValue.NullObject;
+            var list = new List<KeyValuePair<string, CalculatorValue>>();
             for (int i = 0; i < m_Expressions.Count - 1; i += 2) {
-                var key = m_Expressions[i].Calc() as string;
+                var key = m_Expressions[i].Calc().AsString;
                 var val = m_Expressions[i + 1].Calc();
                 if (null != key) {
-                    list.Add(new KeyValuePair<string, object>(key, val));
+                    list.Add(new KeyValuePair<string, CalculatorValue>(key, val));
                 }
             }
-            r = list;
+            r = CalculatorValue.FromObject(list);
             return r;
         }
         protected override bool Load(Dsl.FunctionData funcData)
@@ -1549,31 +1951,31 @@ namespace ResourceEditApi
             return true;
         }
 
-        private List<DslExpression.IExpression> m_Expressions = new List<DslExpression.IExpression>();
+        private List<IExpression> m_Expressions = new List<IExpression>();
     }
-    internal class ExtraListAddExp : DslExpression.SimpleExpressionBase
+    internal class ExtraListAddExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 3) {
-                var list = operands[0] as List<KeyValuePair<string, object>>;
-                string key = operands[1] as string;
-                object val = operands[2];
+                var list = operands[0].As<List<KeyValuePair<string, CalculatorValue>>>();
+                string key = operands[1].AsString;
+                var val = operands[2];
                 if (null != list && null != key) {
-                    list.Add(new KeyValuePair<string, object>(key, val));
+                    list.Add(new KeyValuePair<string, CalculatorValue>(key, val));
                 }
             }
             return r;
         }
     }
-    internal class ExtraListClearExp : DslExpression.SimpleExpressionBase
+    internal class ExtraListClearExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var list = operands[0] as List<KeyValuePair<string, object>>;
+                var list = operands[0].As<List<KeyValuePair<string, CalculatorValue>>>();
                 if (null != list) {
                     list.Clear();
                 }
@@ -1581,56 +1983,56 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetReferenceAssetsExp : DslExpression.SimpleExpressionBase
+    internal class GetReferenceAssetsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var dict = Calculator.GetVariable("refdict") as Dictionary<string, HashSet<string>>;
-                var path = operands[0] as string;
+                var dict = Calculator.GetVariable("refdict").As<Dictionary<string, HashSet<string>>>();
+                var path = operands[0].AsString;
                 if (null != dict && !string.IsNullOrEmpty(path)) {
                     HashSet<string> refbyset;
                     if (dict.TryGetValue(path, out refbyset)) {
-                        r = refbyset.ToArray();
+                        r = CalculatorValue.FromObject(refbyset.ToArray());
                     }
                     else {
-                        r = new List<string>();
+                        r = CalculatorValue.FromObject(new List<string>());
                     }
                 }
             }
             return r;
         }
     }
-    internal class GetReferenceByAssetsExp : DslExpression.SimpleExpressionBase
+    internal class GetReferenceByAssetsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var dict = Calculator.GetVariable("refbydict") as Dictionary<string, HashSet<string>>;
-                var path = operands[0] as string;
+                var dict = Calculator.GetVariable("refbydict").As<Dictionary<string, HashSet<string>>>();
+                var path = operands[0].AsString;
                 if (null != dict && !string.IsNullOrEmpty(path)) {
                     HashSet<string> refbyset;
                     if (dict.TryGetValue(path, out refbyset)) {
-                        r = refbyset.ToArray();
+                        r = CalculatorValue.FromObject(refbyset.ToArray());
                     }
                     else {
-                        r = new List<string>();
+                        r = CalculatorValue.FromObject(new List<string>());
                     }
                 }
             }
             return r;
         }
     }
-    internal class CalcRefCountExp : DslExpression.SimpleExpressionBase
+    internal class CalcRefCountExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var refDict = Calculator.GetVariable("refdict") as Dictionary<string, HashSet<string>>;
-                var file = operands[0] as string;
+                var refDict = Calculator.GetVariable("refdict").As<Dictionary<string, HashSet<string>>>();
+                var file = operands[0].AsString;
                 if (null != file) {
                     HashSet<string> hash;
                     if (refDict.TryGetValue(file, out hash)) {
@@ -1644,14 +2046,14 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class CalcRefByCountExp : DslExpression.SimpleExpressionBase
+    internal class CalcRefByCountExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var refByDict = Calculator.GetVariable("refbydict") as Dictionary<string, HashSet<string>>;
-                var file = operands[0] as string;
+                var refByDict = Calculator.GetVariable("refbydict").As<Dictionary<string, HashSet<string>>>();
+                var file = operands[0].AsString;
                 if (null != file) {
                     HashSet<string> hash;
                     if (refByDict.TryGetValue(file, out hash)) {
@@ -1665,15 +2067,15 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class FindAssetExp : DslExpression.SimpleExpressionBase
+    internal class FindAssetExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var sceneDeps = Calculator.GetVariable("scenedeps") as ResourceEditUtility.SceneDepInfo;
-                var asset = operands[0] as string;
-                var type = operands[1] as string;
+                var sceneDeps = Calculator.GetVariable("scenedeps").As<ResourceEditUtility.SceneDepInfo>();
+                var asset = operands[0].AsString;
+                var type = operands[1].AsString;
                 var assetPath = string.Empty;
                 var scenePath = string.Empty;
                 UnityEngine.Object sceneObj = null;
@@ -1728,26 +2130,26 @@ namespace ResourceEditApi
                         }
                     }
                 }
-                r = new object[] { assetPath, scenePath, sceneObj };
+                r = CalculatorValue.FromObject(new object[] { assetPath, scenePath, sceneObj });
             }
             return r;
         }
     }
-    internal class FindShortestPathToRootExp : DslExpression.SimpleExpressionBase
+    internal class FindShortestPathToRootExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
                 var obj = operands[0];
-                if (obj is ObjectData) {
-                    var data = (ObjectData)obj;
-                    r = ResourceProcessor.Instance.FindShortestPathToRoot(data);
+                if (obj.IsObject && obj.GetObject() is ObjectData) {
+                    var data = (ObjectData)obj.GetObject();
+                    r = CalculatorValue.FromObject(ResourceProcessor.Instance.FindShortestPathToRoot(data));
                 }
-                else if (null != obj) {
+                else {
                     try {
-                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
-                        r = ResourceProcessor.Instance.FindShortestPathToRoot(addr);
+                        ulong addr = obj.Get<ulong>();
+                        r = CalculatorValue.FromObject(ResourceProcessor.Instance.FindShortestPathToRoot(addr));
                     }
                     catch {
                     }
@@ -1756,21 +2158,21 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetObjectDataRefByHashExp : DslExpression.SimpleExpressionBase
+    internal class GetObjectDataRefByHashExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
                 var obj = operands[0];
-                if (obj is ObjectData) {
-                    var data = (ObjectData)obj;
-                    r = ResourceProcessor.Instance.GetObjectDataRefByHash(data);
+                if (obj.IsObject && obj.GetObject() is ObjectData) {
+                    var data = (ObjectData)obj.GetObject();
+                    r = CalculatorValue.FromObject(ResourceProcessor.Instance.GetObjectDataRefByHash(data));
                 }
-                else if (null != obj) {
+                else {
                     try {
-                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
-                        r = ResourceProcessor.Instance.GetObjectDataRefByHash(addr);
+                        ulong addr = obj.Get<ulong>();
+                        r = CalculatorValue.FromObject(ResourceProcessor.Instance.GetObjectDataRefByHash(addr));
                     }
                     catch {
                     }
@@ -1779,21 +2181,21 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetObjectDataRefByListExp : DslExpression.SimpleExpressionBase
+    internal class GetObjectDataRefByListExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
                 var obj = operands[0];
-                if (obj is ObjectData) {
-                    var data = (ObjectData)obj;
-                    r = ResourceProcessor.Instance.GetObjectDataRefByList(data);
+                if (obj.IsObject && obj.GetObject() is ObjectData) {
+                    var data = (ObjectData)obj.GetObject();
+                    r = CalculatorValue.FromObject(ResourceProcessor.Instance.GetObjectDataRefByList(data));
                 }
-                else if (null != obj) {
+                else {
                     try {
-                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
-                        r = ResourceProcessor.Instance.GetObjectDataRefByList(addr);
+                        ulong addr = obj.Get<ulong>();
+                        r = CalculatorValue.FromObject(ResourceProcessor.Instance.GetObjectDataRefByList(addr));
                     }
                     catch {
                     }
@@ -1802,20 +2204,20 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class OpenLinkExp : DslExpression.SimpleExpressionBase
+    internal class OpenLinkExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
                 var obj = operands[0];
-                if (obj is ObjectData) {
-                    var data = (ObjectData)obj;
+                if (obj.IsObject && obj.GetObject() is ObjectData) {
+                    var data = (ObjectData)obj.GetObject();
                     ResourceProcessor.Instance.OpenLink(data);
                 }
-                else if (null != obj) {
+                else {
                     try {
-                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
+                        ulong addr = obj.Get<ulong>();
                         ResourceProcessor.Instance.OpenLink(addr);
                     }
                     catch {
@@ -1825,20 +2227,20 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class OpenReferenceLinkExp : DslExpression.SimpleExpressionBase
+    internal class OpenReferenceLinkExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
                 var obj = operands[0];
-                if (obj is ObjectData) {
-                    var data = (ObjectData)obj;
+                if (obj.IsObject && obj.GetObject() is ObjectData) {
+                    var data = (ObjectData)obj.GetObject();
                     ResourceProcessor.Instance.OpenReferenceLink(data);
                 }
-                else if (null != obj) {
+                else {
                     try {
-                        ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
+                        ulong addr = obj.Get<ulong>();
                         ResourceProcessor.Instance.OpenReferenceLink(addr);
                     }
                     catch {
@@ -1848,16 +2250,16 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class OpenLinkInCurrentTableExp : DslExpression.SimpleExpressionBase
+    internal class OpenLinkInCurrentTableExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var index = (int)Convert.ChangeType(operands[0], typeof(int));
+                var index = operands[0].Get<int>();
                 List<string> list = new List<string>();
                 for (int i = 1; i < operands.Count; ++i) {
-                    string str = operands[i] as string;
+                    string str = operands[i].AsString;
                     list.Add(str);
                 }
                 ResourceProcessor.Instance.OpenLinkInCurrentTable(index, list);
@@ -1865,9 +2267,9 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetCurrentTableNamesExp : DslExpression.SimpleExpressionBase
+    internal class GetCurrentTableNamesExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             var sb = new StringBuilder();
             int ct = ResourceProcessor.Instance.GetCurrentTableCount();
@@ -1882,97 +2284,97 @@ namespace ResourceEditApi
             return sb.ToString();
         }
     }
-    internal class GetCurrentTableCountExp : DslExpression.SimpleExpressionBase
+    internal class GetCurrentTableCountExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = ResourceProcessor.Instance.GetCurrentTableCount();
+            int r = ResourceProcessor.Instance.GetCurrentTableCount();
             return r;
         }
     }
-    internal class GetCurrentTableNameExp : DslExpression.SimpleExpressionBase
+    internal class GetCurrentTableNameExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var index = (int)Convert.ChangeType(operands[0], typeof(int));
+                var index = operands[0].Get<int>();
                 r = ResourceProcessor.Instance.GetCurrentTableName(index);
             }
             return r;
         }
     }
-    internal class GetCurrentTableExp : DslExpression.SimpleExpressionBase
+    internal class GetCurrentTableExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var index = (int)Convert.ChangeType(operands[0], typeof(int));
-                r = ResourceProcessor.Instance.GetCurrentTable(index);
+                var index = operands[0].Get<int>();
+                r = CalculatorValue.FromObject(ResourceProcessor.Instance.GetCurrentTable(index));
             }
             return r;
         }
     }
-    internal class ObjectDataFromAddressExp : DslExpression.SimpleExpressionBase
+    internal class ObjectDataFromAddressExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
                 var obj = operands[0];
-                ulong addr = (ulong)Convert.ChangeType(obj, typeof(ulong));
-                r = ResourceProcessor.Instance.ObjectDataFromAddress(addr);
+                ulong addr = obj.Get<ulong>();
+                r = CalculatorValue.FromObject(ResourceProcessor.Instance.ObjectDataFromAddress(addr));
             }
             return r;
         }
     }
-    internal class ObjectDataFromUnifiedObjectIndexExp : DslExpression.SimpleExpressionBase
+    internal class ObjectDataFromUnifiedObjectIndexExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
                 var obj = operands[0];
-                int index = (int)Convert.ChangeType(obj, typeof(int));
-                r = ResourceProcessor.Instance.ObjectDataFromUnifiedObjectIndex(index);
+                int index = obj.Get<int>();
+                r = CalculatorValue.FromObject(ResourceProcessor.Instance.ObjectDataFromUnifiedObjectIndex(index));
             }
             return r;
         }
     }
-    internal class ObjectDataFromNativeObjectIndexExp : DslExpression.SimpleExpressionBase
+    internal class ObjectDataFromNativeObjectIndexExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
                 var obj = operands[0];
-                int index = (int)Convert.ChangeType(obj, typeof(int));
-                r = ResourceProcessor.Instance.ObjectDataFromNativeObjectIndex(index);
+                int index = obj.Get<int>();
+                r = CalculatorValue.FromObject(ResourceProcessor.Instance.ObjectDataFromNativeObjectIndex(index));
             }
             return r;
         }
     }
-    internal class ObjectDataFromManagedObjectIndexExp : DslExpression.SimpleExpressionBase
+    internal class ObjectDataFromManagedObjectIndexExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
                 var obj = operands[0];
-                int index = (int)Convert.ChangeType(obj, typeof(int));
-                r = ResourceProcessor.Instance.ObjectDataFromManagedObjectIndex(index);
+                int index = obj.Get<int>();
+                r = CalculatorValue.FromObject(ResourceProcessor.Instance.ObjectDataFromManagedObjectIndex(index));
             }
             return r;
         }
     }
-    internal class LoadIdaproSymbolsExp : DslExpression.SimpleExpressionBase
+    internal class LoadIdaproSymbolsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 if (!string.IsNullOrEmpty(file)) {
                     var fileName = Path.GetFileName(file);
                     var symbols = new List<ResourceEditUtility.SymbolInfo>();
@@ -1999,7 +2401,7 @@ namespace ResourceEditApi
                             }
                         }
                     }
-                    r = symbols;
+                    r = CalculatorValue.FromObject(symbols);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -2007,13 +2409,13 @@ namespace ResourceEditApi
         }
         private static Regex s_Address = new Regex(@"^ [0-9a-fA-F]+:([0-9a-fA-F]+)       (.*)", RegexOptions.Compiled);
     }
-    internal class LoadXcodeSymbolsExp : DslExpression.SimpleExpressionBase
+    internal class LoadXcodeSymbolsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 if (!string.IsNullOrEmpty(file)) {
                     var fileName = Path.GetFileName(file);
                     var symbols = new List<ResourceEditUtility.SymbolInfo>();
@@ -2055,7 +2457,7 @@ namespace ResourceEditApi
                             }
                         }
                     }
-                    r = symbols;
+                    r = CalculatorValue.FromObject(symbols);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -2085,13 +2487,13 @@ namespace ResourceEditApi
         private static Regex s_Section = new Regex(@"^0x([0-9a-fA-F]+)	0x([0-9a-fA-F]+)	__TEXT	", RegexOptions.Compiled);
         private static Regex s_Address = new Regex(@"^0x([0-9a-fA-F]+)	0x([0-9a-fA-F]+)	\[[0-9]+\] (.*)", RegexOptions.Compiled);
     }
-    internal class LoadBuglyAndroidSymbolsExp : DslExpression.SimpleExpressionBase
+    internal class LoadBuglyAndroidSymbolsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 if (!string.IsNullOrEmpty(file)) {
                     var fileName = Path.GetFileName(file);
                     var symbols = new List<ResourceEditUtility.SymbolInfo>();
@@ -2147,7 +2549,7 @@ namespace ResourceEditApi
                         }
                         fs.Close();
                     }
-                    r = symbols;
+                    r = CalculatorValue.FromObject(symbols);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -2157,13 +2559,13 @@ namespace ResourceEditApi
         private const int c_max_name_length = 1024;
         private static byte[] s_NameBuffer = new byte[c_max_name_length];
     }
-    internal class LoadBuglyIosSymbolsExp : DslExpression.SimpleExpressionBase
+    internal class LoadBuglyIosSymbolsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 if (!string.IsNullOrEmpty(file)) {
                     var fileName = Path.GetFileName(file);
                     var symbols = new List<ResourceEditUtility.SymbolInfo>();
@@ -2188,7 +2590,7 @@ namespace ResourceEditApi
                             }
                         }
                     }
-                    r = symbols;
+                    r = CalculatorValue.FromObject(symbols);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -2196,15 +2598,15 @@ namespace ResourceEditApi
         }
         private static Regex s_Address = new Regex(@"^([0-9a-fA-F]+)\s+[0-9a-fA-F]+\s+(.*)", RegexOptions.Compiled);
     }
-    internal class ConvertToRelativeAddrsExp : DslExpression.SimpleExpressionBase
+    internal class ConvertToRelativeAddrsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 3) {
-                var lines = operands[0] as IList<string>;
-                var key = operands[1] as string;
-                var baseAddr = (ulong)Convert.ChangeType(operands[2], typeof(ulong));
+                var lines = operands[0].As<IList<string>>();
+                var key = operands[1].AsString;
+                var baseAddr = operands[2].Get<ulong>();
                 if (null != lines && null != key && baseAddr > 0) {
                     for (int i = 0; i < lines.Count; ++i) {
                         lines[i] = lines[i].TrimEnd();
@@ -2229,7 +2631,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = lines;
+                    r = CalculatorValue.FromObject(lines);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -2237,15 +2639,15 @@ namespace ResourceEditApi
         }
         private static Regex s_Address = new Regex(@"^[0-9]+\s+#[0-9]+\s+pc\s+([0-9a-fA-F]+)\s+(\S+)", RegexOptions.Compiled);
     }
-    internal class MapBuglyAndroidSymbolsExp : DslExpression.SimpleExpressionBase
+    internal class MapBuglyAndroidSymbolsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 3) {
-                var lines = operands[0] as IList<string>;
-                var symbols = operands[1] as IList<ResourceEditUtility.SymbolInfo>;
-                var key = operands[2] as string;
+                var lines = operands[0].As<IList<string>>();
+                var symbols = operands[1].As<IList<ResourceEditUtility.SymbolInfo>>();
+                var key = operands[2].AsString;
                 if (null != lines && null != symbols && null != key) {
                     for (int i = 0; i < lines.Count; ++i) {
                         lines[i] = lines[i].TrimEnd();
@@ -2296,7 +2698,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = lines;
+                    r = CalculatorValue.FromObject(lines);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -2306,15 +2708,15 @@ namespace ResourceEditApi
         private static Regex s_Address2 = new Regex(@"^[0-9]+\s+(\S+)\.([0-9a-fA-F]+).*", RegexOptions.Compiled);
         private static Regex s_Remove = new Regex(@"/[^=]*==", RegexOptions.Compiled);
     }
-    internal class MapBuglyIosSymbolsExp : DslExpression.SimpleExpressionBase
+    internal class MapBuglyIosSymbolsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 3) {
-                var lines = operands[0] as IList<string>;
-                var symbols = operands[1] as IList<ResourceEditUtility.SymbolInfo>;
-                var key = operands[2] as string;
+                var lines = operands[0].As<IList<string>>();
+                var symbols = operands[1].As<IList<ResourceEditUtility.SymbolInfo>>();
+                var key = operands[2].AsString;
                 if (null != lines && null != symbols && null != key) {
                     for (int i = 0; i < lines.Count; ++i) {
                         lines[i] = lines[i].TrimEnd();
@@ -2354,7 +2756,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = lines;
+                    r = CalculatorValue.FromObject(lines);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -2362,19 +2764,19 @@ namespace ResourceEditApi
         }
         private static Regex s_Address = new Regex(@"^[0-9]+\s+(\S+)\s+0x[0-9a-fA-F]+ 0x[0-9a-fA-F]+ \+ ([0-9]+)", RegexOptions.Compiled);
     }
-    internal class MapMyhookSymbolsExp : DslExpression.SimpleExpressionBase
+    internal class MapMyhookSymbolsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 4) {
-                var lines = operands[0] as IList<string>;
-                var section_start = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
-                var section_end = (ulong)Convert.ChangeType(operands[2], typeof(ulong));
-                var symbols = operands[3] as IList<ResourceEditUtility.SymbolInfo>;
+                var lines = operands[0].As<IList<string>>();
+                var section_start = operands[1].Get<ulong>();
+                var section_end = operands[2].Get<ulong>();
+                var symbols = operands[3].As<IList<ResourceEditUtility.SymbolInfo>>();
                 var key = string.Empty;
                 if (operands.Count >= 5)
-                    key = operands[4] as string;
+                    key = operands[4].AsString;
                 if (null != lines && null != symbols && null != key) {
                     for (int i = 0; i < lines.Count; ++i) {
                         lines[i] = lines[i].TrimEnd();
@@ -2434,7 +2836,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = lines;
+                    r = CalculatorValue.FromObject(lines);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -2466,16 +2868,16 @@ namespace ResourceEditApi
         private static Regex s_Address2 = new Regex(@"#[0-9]+:0x([0-9a-fA-F]+)", RegexOptions.Compiled);
         private static Regex s_Remove = new Regex(@"\|[^=]*==", RegexOptions.Compiled);
     }
-    internal class GrepExp : DslExpression.SimpleExpressionBase
+    internal class GrepExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var lines = operands[0] as IList<string>;
+                var lines = operands[0].As<IList<string>>();
                 Regex regex = null;
                 if (operands.Count >= 2)
-                    regex = new Regex(operands[1] as string, RegexOptions.Compiled);
+                    regex = new Regex(operands[1].AsString, RegexOptions.Compiled);
                 var outLines = new List<string>();
                 if (null != lines) {
                     int ct = lines.Count;
@@ -2502,25 +2904,25 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = outLines;
+                    r = CalculatorValue.FromObject(outLines);
                 }
             }
             EditorUtility.ClearProgressBar();
             return r;
         }
     }
-    internal class SubstExp : DslExpression.SimpleExpressionBase
+    internal class SubstExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 3) {
-                var lines = operands[0] as IList<string>;
-                Regex regex = new Regex(operands[1] as string, RegexOptions.Compiled);
-                string subst = operands[2] as string;
+                var lines = operands[0].As<IList<string>>();
+                Regex regex = new Regex(operands[1].AsString, RegexOptions.Compiled);
+                string subst = operands[2].AsString;
                 int count = -1;
                 if (operands.Count >= 4)
-                    count = (int)Convert.ChangeType(operands[3], typeof(int));
+                    count = operands[3].Get<int>();
                 var outLines = new List<string>();
                 if (null != lines && null != regex && null != subst) {
                     int ct = lines.Count;
@@ -2541,20 +2943,20 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = outLines;
+                    r = CalculatorValue.FromObject(outLines);
                 }
             }
             EditorUtility.ClearProgressBar();
             return r;
         }
     }
-    internal class SetClipboardExp : DslExpression.SimpleExpressionBase
+    internal class SetClipboardExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var str = operands[0] as string;
+                var str = operands[0].AsString;
                 if (null != str) {
                     GUIUtility.systemCopyBuffer = str;
                     r = str;
@@ -2563,21 +2965,21 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetClipboardExp : DslExpression.SimpleExpressionBase
+    internal class GetClipboardExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = GUIUtility.systemCopyBuffer;
+            string r = GUIUtility.systemCopyBuffer;
             return r;
         }
     }
-    internal class SelectObjectExp : DslExpression.SimpleExpressionBase
+    internal class SelectObjectExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = false;
+            bool r = false;
             if (operands.Count >= 1) {
-                var obj = operands[0] as UnityEngine.Object;
+                var obj = operands[0].As<UnityEngine.Object>();
                 if (null != obj) {
                     ResourceEditUtility.SelectObject(obj);
                     r = true;
@@ -2586,13 +2988,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SelectProjectObjectExp : DslExpression.SimpleExpressionBase
+    internal class SelectProjectObjectExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = false;
+            bool r = false;
             if (operands.Count >= 1) {
-                var path = operands[0] as string;
+                var path = operands[0].AsString;
                 if (!string.IsNullOrEmpty(path)) {
                     ResourceEditUtility.SelectProjectObject(path);
                     r = true;
@@ -2601,13 +3003,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SelectSceneObjectExp : DslExpression.SimpleExpressionBase
+    internal class SelectSceneObjectExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = false;
+            bool r = false;
             if (operands.Count >= 1) {
-                var path = operands[0] as string;
+                var path = operands[0].AsString;
                 if (!string.IsNullOrEmpty(path)) {
                     ResourceEditUtility.SelectSceneObject(path);
                     r = true;
@@ -2616,13 +3018,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SaveAndReimportExp : DslExpression.SimpleExpressionBase
+    internal class SaveAndReimportExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as AssetImporter;
+                var importer = Calculator.GetVariable("importer").As<AssetImporter>();
                 if (null != importer && ResourceEditUtility.EnableSaveAndReimport) {
                     //importer.SaveAndReimport();
                     //ResourceProcessor::Process会统一执行StartAssetEditing/StopAssetEditing
@@ -2632,13 +3034,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetDirtyExp : DslExpression.SimpleExpressionBase
+    internal class SetDirtyExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var obj = operands[0] as UnityEngine.Object;
+                var obj = operands[0].As<UnityEngine.Object>();
                 if (null != obj) {
                     EditorUtility.SetDirty(obj);
                 }
@@ -2646,59 +3048,59 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetDefaultTextureSettingExp : DslExpression.SimpleExpressionBase
+    internal class GetDefaultTextureSettingExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
                 if (null != importer) {
-                    r = importer.GetDefaultPlatformTextureSettings();
+                    r = CalculatorValue.FromObject(importer.GetDefaultPlatformTextureSettings());
                 }
             }
             return r;
         }
     }
-    internal class GetTextureSettingExp : DslExpression.SimpleExpressionBase
+    internal class GetTextureSettingExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
-                var platform = operands[0] as string;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
+                var platform = operands[0].AsString;
                 if (null != importer) {
-                    r = importer.GetPlatformTextureSettings(platform);
+                    r = CalculatorValue.FromObject(importer.GetPlatformTextureSettings(platform));
                 }
             }
             return r;
         }
     }
-    internal class SetTextureSettingExp : DslExpression.SimpleExpressionBase
+    internal class SetTextureSettingExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
-                var setting = operands[0] as TextureImporterPlatformSettings;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
+                var setting = operands[0].As<TextureImporterPlatformSettings>();
                 if (null != importer && null != setting) {
                     importer.SetPlatformTextureSettings(setting);
-                    r = setting;
+                    r = CalculatorValue.FromObject(setting);
                 }
             }
             return r;
         }
     }
-    internal class IsAstcTextureExp : DslExpression.SimpleExpressionBase
+    internal class IsAstcTextureExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = 0;
+            int r = 0;
             if (operands.Count >= 1) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
-                var setting = operands[0] as TextureImporterPlatformSettings;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
+                var setting = operands[0].As<TextureImporterPlatformSettings>();
                 var sizeNoAlpha = 8;
                 var sizeAlpha = 8;
                 if (null != importer && null != setting) {
@@ -2763,18 +3165,19 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetAstcTextureExp : DslExpression.SimpleExpressionBase
+    internal class SetAstcTextureExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
-                var setting = operands[0] as TextureImporterPlatformSettings;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
+                var setting = operands[0].As<TextureImporterPlatformSettings>();
                 var sizeNoAlpha = 8;
                 var sizeAlpha = 8;
                 if (null != importer && null != setting) {
-                    if (importer.textureType == TextureImporterType.NormalMap && importer.maxTextureSize > 512) {
+                    string fileName = Path.GetFileNameWithoutExtension(importer.assetPath).ToLower();
+                    if (importer.textureType == TextureImporterType.NormalMap || fileName.EndsWith("_nm")) {
                         sizeNoAlpha = 6;
                         sizeAlpha = 6;
                     }
@@ -2835,14 +3238,14 @@ namespace ResourceEditApi
 
         private static int[] s_AstcSizes = new int[] { 4, 5, 6, 8, 10, 12 };
     }
-    internal class IsSceneAstcTextureExp : DslExpression.SimpleExpressionBase
+    internal class IsSceneAstcTextureExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = 0;
+            int r = 0;
             if (operands.Count >= 1) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
-                var setting = operands[0] as TextureImporterPlatformSettings;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
+                var setting = operands[0].As<TextureImporterPlatformSettings>();
                 var sizeNoAlpha = 8;
                 var sizeAlpha = 8;
                 if (null != importer && null != setting) {
@@ -2903,14 +3306,14 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetSceneAstcTextureExp : DslExpression.SimpleExpressionBase
+    internal class SetSceneAstcTextureExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
-                var setting = operands[0] as TextureImporterPlatformSettings;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
+                var setting = operands[0].As<TextureImporterPlatformSettings>();
                 var sizeNoAlpha = 8;
                 var sizeAlpha = 8;
                 if (null != importer && null != setting) {
@@ -2971,13 +3374,13 @@ namespace ResourceEditApi
 
         private static int[] s_AstcSizes = new int[] { 4, 5, 6, 8, 10, 12 };
     }
-    internal class IsTextureNoAlphaSourceExp : DslExpression.SimpleExpressionBase
+    internal class IsTextureNoAlphaSourceExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = false;
+            bool r = false;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
                 if (null != importer) {
                     r = importer.alphaSource == TextureImporterAlphaSource.None;
                 }
@@ -2985,13 +3388,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class DoesTextureHaveAlphaExp : DslExpression.SimpleExpressionBase
+    internal class DoesTextureHaveAlphaExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = false;
+            bool r = false;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
                 if (null != importer) {
                     r = importer.DoesSourceTextureHaveAlpha();
                 }
@@ -2999,13 +3402,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class CorrectNoneAlphaTextureExp : DslExpression.SimpleExpressionBase
+    internal class CorrectNoneAlphaTextureExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = false;
+            bool r = false;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
                 if (null != importer && !importer.DoesSourceTextureHaveAlpha()) {
                     importer.alphaSource = TextureImporterAlphaSource.None;
                     r = true;
@@ -3014,13 +3417,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetNoneAlphaTextureExp : DslExpression.SimpleExpressionBase
+    internal class SetNoneAlphaTextureExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = false;
+            bool r = false;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as TextureImporter;
+                var importer = Calculator.GetVariable("importer").As<TextureImporter>();
                 if (null != importer) {
                     importer.alphaSource = TextureImporterAlphaSource.None;
                     r = true;
@@ -3029,13 +3432,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetTextureCompressionExp : DslExpression.SimpleExpressionBase
+    internal class GetTextureCompressionExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var setting = operands[0] as TextureImporterPlatformSettings;
+                var setting = operands[0].As<TextureImporterPlatformSettings>();
                 if (null != setting) {
                     switch (setting.textureCompression) {
                         case TextureImporterCompression.Uncompressed:
@@ -3056,14 +3459,14 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetTextureCompressionExp : DslExpression.SimpleExpressionBase
+    internal class SetTextureCompressionExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var setting = operands[0] as TextureImporterPlatformSettings;
-                var type = operands[1] as string;
+                var setting = operands[0].As<TextureImporterPlatformSettings>();
+                var type = operands[1].AsString;
                 if (null != setting && null != type) {
                     r = type;
                     if (type == "none")
@@ -3079,13 +3482,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetMeshCompressionExp : DslExpression.SimpleExpressionBase
+    internal class GetMeshCompressionExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as ModelImporter;
+                var importer = Calculator.GetVariable("importer").As<ModelImporter>();
                 if (null != importer) {
                     switch (importer.meshCompression) {
                         case ModelImporterMeshCompression.Off:
@@ -3106,14 +3509,14 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetMeshCompressionExp : DslExpression.SimpleExpressionBase
+    internal class SetMeshCompressionExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var importer = Calculator.GetVariable("importer") as ModelImporter;
-                var type = operands[0] as string;
+                var importer = Calculator.GetVariable("importer").As<ModelImporter>();
+                var type = operands[0].AsString;
                 if (null != importer && null != type) {
                     r = type;
                     if (type == "off")
@@ -3129,13 +3532,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetMeshImportExternalMaterialsExp : DslExpression.SimpleExpressionBase
+    internal class SetMeshImportExternalMaterialsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as ModelImporter;
+                var importer = Calculator.GetVariable("importer").As<ModelImporter>();
                 if (null != importer) {
                     r = true;
                     importer.importMaterials = true;
@@ -3147,13 +3550,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetMeshImportInPrefabMaterialsExp : DslExpression.SimpleExpressionBase
+    internal class SetMeshImportInPrefabMaterialsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as ModelImporter;
+                var importer = Calculator.GetVariable("importer").As<ModelImporter>();
                 if (null != importer) {
                     r = true;
                     importer.importMaterials = true;
@@ -3163,13 +3566,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class CloseMeshAnimationIfNoAnimationExp : DslExpression.SimpleExpressionBase
+    internal class CloseMeshAnimationIfNoAnimationExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as ModelImporter;
+                var importer = Calculator.GetVariable("importer").As<ModelImporter>();
                 if (null != importer) {
                     if (importer.importedTakeInfos.Length <= 0 && importer.defaultClipAnimations.Length <= 0 && importer.clipAnimations.Length <= 0) {
                         importer.animationType = ModelImporterAnimationType.None;
@@ -3179,7 +3582,7 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class CollectMeshesExp : DslExpression.SimpleExpressionBase
+    internal class CollectMeshesExp : SimpleExpressionBase
     {
         internal enum ScopeEnum : int
         {
@@ -3188,17 +3591,17 @@ namespace ResourceEditApi
             Particle = 2,
             All = 3,
         }
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             if (operands.Count >= 1) {
-                var obj0 = operands[0] as GameObject;
+                var obj0 = operands[0].As<GameObject>();
                 bool includeChildren = false;
                 if (operands.Count >= 2) {
-                    includeChildren = (bool)Convert.ChangeType(operands[1], typeof(bool));
+                    includeChildren = operands[1].Get<bool>();
                 }
                 int scope = (int)ScopeEnum.All; //0--none 1--non particle 2--particle 3--all
                 if (operands.Count >= 3) {
-                    scope = (int)Convert.ChangeType(operands[2], typeof(int));
+                    scope = operands[2].Get<int>();
                 }
                 if (null != obj0) {
                     List<GameObject> list = new List<GameObject>();
@@ -3245,22 +3648,22 @@ namespace ResourceEditApi
                             }
                         }
                     }
-                    return results;
+                    return CalculatorValue.FromObject(results);
                 }
             }
-            return new List<Mesh>();
+            return CalculatorValue.FromObject(new List<Mesh>());
         }
     }
-    internal class CollectMeshInfoExp : DslExpression.SimpleExpressionBase
+    internal class CollectMeshInfoExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var obj = operands[0] as UnityEngine.GameObject;
+                var obj = operands[0].As<UnityEngine.GameObject>();
                 ModelImporter importer = null;
                 if (operands.Count >= 2)
-                    importer = operands[1] as ModelImporter;
+                    importer = operands[1].As<ModelImporter>();
                 if (null != obj) {
                     var info = new MeshInfo();
                     info.maxTexWidth = 0;
@@ -3341,19 +3744,19 @@ namespace ResourceEditApi
                             }
                         }
                     }
-                    r = info;
+                    r = CalculatorValue.FromObject(info);
                 }
             }
             return r;
         }
     }
-    internal class CollectAnimatorControllerInfoExp : DslExpression.SimpleExpressionBase
+    internal class CollectAnimatorControllerInfoExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var ctrl = operands[0] as RuntimeAnimatorController;
+                var ctrl = operands[0].As<RuntimeAnimatorController>();
                 if (null != ctrl) {
                     var info = new AnimatorControllerInfo();
                     info.maxKeyFrameCount = 0;
@@ -3384,7 +3787,7 @@ namespace ResourceEditApi
                             info.CollectClip(clip);
                         }
                     }
-                    r = info;
+                    r = CalculatorValue.FromObject(info);
                 }
             }
             return r;
@@ -3408,13 +3811,13 @@ namespace ResourceEditApi
             return ct;
         }
     }
-    internal class CollectPrefabInfoExp : DslExpression.SimpleExpressionBase
+    internal class CollectPrefabInfoExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var obj = operands[0] as UnityEngine.GameObject;
+                var obj = operands[0].As<UnityEngine.GameObject>();
                 if (null != obj) {
                     var info = new MeshInfo();
                     info.maxTexWidth = 0;
@@ -3504,19 +3907,19 @@ namespace ResourceEditApi
                         }
                     }
                     info.clipCount = clipCount;
-                    r = info;
+                    r = CalculatorValue.FromObject(info);
                 }
             }
             return r;
         }
     }
-    internal class GetAnimationClipInfoExp : DslExpression.SimpleExpressionBase
+    internal class GetAnimationClipInfoExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                string assetPath = Calculator.GetVariable("assetpath") as string;
+                string assetPath = Calculator.GetVariable("assetpath").AsString;
                 if (!string.IsNullOrEmpty(assetPath)) {
                     var obj = AssetDatabase.LoadMainAssetAtPath(assetPath);
                     if (null != obj) {
@@ -3538,7 +3941,7 @@ namespace ResourceEditApi
                             }
                             clipInfo.maxKeyFrameCount = maxKfc;
                             clipInfo.maxKeyFrameCurveName = curveName;
-                            r = clipInfo;
+                            r = CalculatorValue.FromObject(clipInfo);
                         }
                         Resources.UnloadAsset(obj);
                     }
@@ -3547,13 +3950,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetAnimationCompressionExp : DslExpression.SimpleExpressionBase
+    internal class GetAnimationCompressionExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as ModelImporter;
+                var importer = Calculator.GetVariable("importer").As<ModelImporter>();
                 if (null != importer) {
                     switch (importer.animationCompression) {
                         case ModelImporterAnimationCompression.Off:
@@ -3574,14 +3977,14 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetAnimationCompressionExp : DslExpression.SimpleExpressionBase
+    internal class SetAnimationCompressionExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var importer = Calculator.GetVariable("importer") as ModelImporter;
-                var type = operands[0] as string;
+                var importer = Calculator.GetVariable("importer").As<ModelImporter>();
+                var type = operands[0].AsString;
                 if (null != importer && null != type) {
                     r = type;
                     if (type == "off")
@@ -3597,13 +4000,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetAnimationTypeExp : DslExpression.SimpleExpressionBase
+    internal class GetAnimationTypeExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                var importer = Calculator.GetVariable("importer") as ModelImporter;
+                var importer = Calculator.GetVariable("importer").As<ModelImporter>();
                 if (null != importer) {
                     switch (importer.animationType) {
                         case ModelImporterAnimationType.None:
@@ -3624,14 +4027,14 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetAnimationTypeExp : DslExpression.SimpleExpressionBase
+    internal class SetAnimationTypeExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var importer = Calculator.GetVariable("importer") as ModelImporter;
-                var type = operands[0] as string;
+                var importer = Calculator.GetVariable("importer").As<ModelImporter>();
+                var type = operands[0].AsString;
                 if (null != importer && null != type) {
                     r = type;
                     if (type == "none")
@@ -3647,18 +4050,18 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class SetExtraExposedTransformPathsExp : DslExpression.SimpleExpressionBase
+    internal class SetExtraExposedTransformPathsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var importer = Calculator.GetVariable("importer") as ModelImporter;
-                var obj = operands[0] as UnityEngine.GameObject;
+                var importer = Calculator.GetVariable("importer").As<ModelImporter>();
+                var obj = operands[0].As<UnityEngine.GameObject>();
                 if (null != importer && null != obj) {
                     List<string> paths = new List<string>();
                     for (int i = 1; i < operands.Count; ++i) {
-                        var name = operands[i] as string;
+                        var name = operands[i].AsString;
                         if (!string.IsNullOrEmpty(name)) {
                             if (name == "*") {
                                 var boneListPath = ResourceEditUtility.AssetPathToPath("Assets/StreamingAssets/BoneList.txt");
@@ -3697,13 +4100,13 @@ namespace ResourceEditApi
             return string.Join("/", names.ToArray());
         }
     }
-    internal class ClearAnimationScaleCurveExp : DslExpression.SimpleExpressionBase
+    internal class ClearAnimationScaleCurveExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 0) {
-                var path = Calculator.GetVariable("assetpath") as string;
+                var path = Calculator.GetVariable("assetpath").AsString;
                 if (null != path) {
                     GameObject obj = AssetDatabase.LoadMainAssetAtPath(path) as GameObject;
                     bool modified = false;
@@ -3725,47 +4128,126 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetAudioSettingExp : DslExpression.SimpleExpressionBase
+    internal class GetAudioSettingExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var importer = Calculator.GetVariable("importer") as AudioImporter;
-                var platform = operands[0] as string;
+                var importer = Calculator.GetVariable("importer").As<AudioImporter>();
+                var platform = operands[0].AsString;
                 if (null != importer) {
-                    r = importer.GetOverrideSampleSettings(platform);
+                    r = CalculatorValue.FromObject(importer.GetOverrideSampleSettings(platform));
                 }
             }
             return r;
         }
     }
-    internal class SetAudioSettingExp : DslExpression.SimpleExpressionBase
+    internal class SetAudioSettingExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var importer = Calculator.GetVariable("importer") as AudioImporter;
-                var platform = operands[0] as string;
-                var setting = (AudioImporterSampleSettings)operands[1];
+                var importer = Calculator.GetVariable("importer").As<AudioImporter>();
+                var platform = operands[0].AsString;
+                var setting = (AudioImporterSampleSettings)operands[1].GetObject();
                 if (null != importer) {
                     importer.SetOverrideSampleSettings(platform, setting);
-                    r = setting;
+                    r = CalculatorValue.FromObject(setting);
                 }
             }
             return r;
         }
     }
-    internal class CalcMeshVertexComponentCountExp : DslExpression.SimpleExpressionBase
+    internal class SplitAnimationReferenceExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            var r = CalculatorValue.NullObject;
+#if QINSHI
+            if (operands.Count >= 1) {
+                var path = Calculator.GetVariable("assetpath").AsString;
+                var reference = AssetDatabase.LoadAssetAtPath<AnimationReference>(path);
+                if (null != reference && reference.split) {
+                    HashSet<string> hashset = new HashSet<string>();
+                    foreach (var item in reference.items) {
+                        hashset.Add(item.name);
+                    }
+                    int lastIndex = operands.Count;
+                    for (int i = 0; i < operands.Count; ++i) {
+                        var list = operands[i].As<IList>();
+                        if (null != list) {
+                            SplitFile(reference, hashset, list, path, i);
+                        }
+                        else {
+                            var key = operands[i].AsString;
+                            if (!string.IsNullOrEmpty(key) && key == "*") {
+                                lastIndex = i;
+                            }
+                        }
+                    }
+                    SplitFile(reference, hashset, hashset, path, lastIndex);
+                }
+                AnimationReferenceInspector.GenerateAnimationPathGroup(reference);
+            }
+#endif
+            return r;
+        }
+#if QINSHI
+        private static void SplitFile(AnimationReference refs, HashSet<string> hashset, IEnumerable coll, string path, int ix)
+        {
+            var split = UnityEngine.ScriptableObject.CreateInstance<AnimationReference>();
+            split.animator = refs.animator;
+            foreach (var obj in coll) {
+                var name = obj as string;
+                if (name.Contains(".*")) {
+                    AddMatchedItems(refs, hashset, name, split);
+                }
+                else {
+                    if (coll != hashset) {
+                        hashset.Remove(name);
+                    }
+                    var item = refs.FindByName(name);
+                    split.items.Add(item);
+                }
+            }
+            var newPath = GenFilePath(path, ix);
+            var filePath = ResourceEditUtility.AssetPathToPath(newPath);
+            if (File.Exists(filePath)) {
+                AssetDatabase.DeleteAsset(newPath);
+            }
+            AssetDatabase.CreateAsset(split, newPath);
+        }
+        private static void AddMatchedItems(AnimationReference refs, HashSet<string> hashset, string regex, AnimationReference split)
+        {
+            var regexObj = ResourceEditUtility.GetRegex(regex);
+            var items = refs.items;
+            for (int i = 0; i < items.Count; ++i) {
+                var item = items[i];
+                if (regexObj.IsMatch(item.name)) {
+                    hashset.Remove(item.name);
+                    split.items.Add(item);
+                }
+            }
+        }
+        private static string GenFilePath(string path, int ix)
+        {
+            var dir = Path.GetDirectoryName(path);
+            var fileName = Path.GetFileNameWithoutExtension(path);
+            return Path.Combine(dir, fileName + "_" + ix + "_split" + ".asset").Replace('\\', '/');
+        }
+#endif
+    }
+    internal class CalcMeshVertexComponentCountExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             if (operands.Count >= 1) {
-                var obj0 = operands[0] as GameObject;
+                var obj0 = operands[0].As<GameObject>();
                 bool includeChildren = false;
                 if (operands.Count >= 2) {
-                    includeChildren = (bool)Convert.ChangeType(operands[1], typeof(bool));
+                    includeChildren = operands[1].Get<bool>();
                 }
                 if (null != obj0) {
                     List<GameObject> list = new List<GameObject>();
@@ -3798,10 +4280,10 @@ namespace ResourceEditApi
                             }
                         }
                     }
-                    return pairList;
+                    return CalculatorValue.FromObject(pairList);
                 }
             }
-            return null;
+            return CalculatorValue.NullObject;
         }
         private KeyValuePair<string, int> CalcOneMesh(string name, Mesh mesh)
         {
@@ -3850,16 +4332,16 @@ namespace ResourceEditApi
             return new KeyValuePair<string, int>(sb.ToString(), ct);
         }
     }
-    internal class CalcMeshTexRatioExp : DslExpression.SimpleExpressionBase
+    internal class CalcMeshTexRatioExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             object ret = new object[] { string.Empty, 0 };
             if (operands.Count >= 1) {
-                var obj0 = operands[0] as GameObject;
+                var obj0 = operands[0].As<GameObject>();
                 bool includeChildren = false;
                 if (operands.Count >= 2) {
-                    includeChildren = (bool)Convert.ChangeType(operands[1], typeof(bool));
+                    includeChildren = operands[1].Get<bool>();
                 }
                 if (null != obj0) {
                     List<GameObject> list = new List<GameObject>();
@@ -3941,16 +4423,16 @@ namespace ResourceEditApi
                     ret = new object[] { info, maxVal, firstRatio1, firstRatio2 };
                 }
             }
-            return ret;
+            return CalculatorValue.FromObject(ret);
         }
     }
-    internal class CalcAssetMd5Exp : DslExpression.SimpleExpressionBase
+    internal class CalcAssetMd5Exp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 if (null != file) {
                     file = ResourceEditUtility.AssetPathToPath(file);
                     byte[] buffer = File.ReadAllBytes(file);
@@ -3966,13 +4448,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class CalcAssetSizeExp : DslExpression.SimpleExpressionBase
+    internal class CalcAssetSizeExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 if (null != file) {
                     file = ResourceEditUtility.AssetPathToPath(file);
                     var fileInfo = new FileInfo(file);
@@ -3982,13 +4464,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class DeleteAssetExp : DslExpression.SimpleExpressionBase
+    internal class DeleteAssetExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 if (null != file) {
                     r = AssetDatabase.DeleteAsset(file);
                 }
@@ -3996,24 +4478,24 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetShaderUtilExp : DslExpression.SimpleExpressionBase
+    internal class GetShaderUtilExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = typeof(ShaderUtil);
+            var r = typeof(ShaderUtil);
             return r;
         }
     }
-    internal class GetShaderPropertyCountExp : DslExpression.SimpleExpressionBase
+    internal class GetShaderPropertyCountExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var shader = operands[0] as Shader;
+                var shader = operands[0].As<Shader>();
                 if (null != shader) {
                     if (operands.Count >= 2) {
-                        int type = (int)Convert.ChangeType(operands[1], typeof(int));
+                        int type = operands[1].Get<int>();
                         int count = 0;
                         int ct = ShaderUtil.GetPropertyCount(shader);
                         for (int i = 0; i < ct; ++i) {
@@ -4032,16 +4514,16 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetShaderPropertyNamesExp : DslExpression.SimpleExpressionBase
+    internal class GetShaderPropertyNamesExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var shader = operands[0] as Shader;
+                var shader = operands[0].As<Shader>();
                 int type = (int)ShaderUtil.ShaderPropertyType.TexEnv;
                 if (operands.Count >= 2) {
-                    type = (int)Convert.ChangeType(operands[1], typeof(int));
+                    type = operands[1].Get<int>();
                 }
                 if (null != shader) {
                     List<string> list = new List<string>();
@@ -4053,19 +4535,19 @@ namespace ResourceEditApi
                             list.Add(name);
                         }
                     }
-                    r = list;
+                    r = CalculatorValue.FromObject(list);
                 }
             }
             return r;
         }
     }
-    internal class GetShaderVariantsExp : DslExpression.SimpleExpressionBase
+    internal class GetShaderVariantsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var shader = operands[0] as Shader;
+                var shader = operands[0].As<Shader>();
                 if (null != shader) {
                     if (null == s_EmptyShaderVariants) {
                         s_EmptyShaderVariants = Resources.Load("EmptyShaderVariants") as ShaderVariantCollection;
@@ -4076,7 +4558,7 @@ namespace ResourceEditApi
                         t.InvokeMember("GetShaderVariantEntries", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, null, args);
                         var types = args[2] as int[];
                         var keywords = args[3] as string[];
-                        r = new object[] { types, keywords };
+                        r = DslExpression.CalculatorValue.FromObject(new object[] { types, keywords });
                     }
                 }
             }
@@ -4084,16 +4566,16 @@ namespace ResourceEditApi
         }
         private static ShaderVariantCollection s_EmptyShaderVariants = null;
     }
-    internal class AddShaderToCollectionExp : DslExpression.SimpleExpressionBase
+    internal class AddShaderToCollectionExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var shader = operands[0] as Shader;
+                var shader = operands[0].As<Shader>();
                 ShaderVariantCollection coll = null;
                 if (operands.Count >= 2) {
-                    coll = operands[1] as ShaderVariantCollection;
+                    coll = operands[1].As<ShaderVariantCollection>();
                 }
                 else {
                     if (null == s_DefaultShaderVariants) {
@@ -4104,7 +4586,7 @@ namespace ResourceEditApi
                 if (null != shader && null != coll) {
                     var t = typeof(ShaderUtil);
                     var args = new object[] { shader, coll };
-                    r = t.InvokeMember("AddNewShaderToCollection", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, null, args);
+                    r = CalculatorValue.FromObject(t.InvokeMember("AddNewShaderToCollection", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.InvokeMethod, null, null, args));
                     EditorUtility.SetDirty(coll);
                 }
             }
@@ -4113,16 +4595,16 @@ namespace ResourceEditApi
 
         private static ShaderVariantCollection s_DefaultShaderVariants = null;
     }
-    internal class FindRowIndexExp : DslExpression.SimpleExpressionBase
+    internal class FindRowIndexExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             int r = -1;
             if (operands.Count >= 3) {
-                var sheet = operands[0] as NPOI.SS.UserModel.ISheet;
+                var sheet = operands[0].As<NPOI.SS.UserModel.ISheet>();
                 var dict = new Dictionary<int, string>();
                 for (int ix = 1; ix < operands.Count - 1; ix += 2) {
-                    var index = ToInt(operands[ix]);
+                    var index = operands[ix].Get<int>();
                     var val = operands[ix + 1].ToString();
                     dict.Add(index, val);
                 }
@@ -4146,7 +4628,7 @@ namespace ResourceEditApi
                     }
                 }
                 else {
-                    var tb = operands[0] as ResourceEditUtility.DataTable;
+                    var tb = operands[0].As<ResourceEditUtility.DataTable>();
                     if (null != tb) {
                         for (int i = 0; i < tb.RowCount; ++i) {
                             var trow = tb.GetRow(i);
@@ -4170,16 +4652,16 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class FindRowIndexesExp : DslExpression.SimpleExpressionBase
+    internal class FindRowIndexesExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             var list = new List<int>();
             if (operands.Count >= 3) {
-                var sheet = operands[0] as NPOI.SS.UserModel.ISheet;
+                var sheet = operands[0].As<NPOI.SS.UserModel.ISheet>();
                 var dict = new Dictionary<int, Regex>();
                 for (int ix = 1; ix < operands.Count - 1; ix += 2) {
-                    var index = ToInt(operands[ix]);
+                    var index = operands[ix].Get<int>();
                     var val = ResourceEditUtility.GetRegex(operands[ix + 1].ToString());
                     dict.Add(index, val);
                 }
@@ -4202,7 +4684,7 @@ namespace ResourceEditApi
                     }
                 }
                 else {
-                    var tb = operands[0] as ResourceEditUtility.DataTable;
+                    var tb = operands[0].As<ResourceEditUtility.DataTable>();
                     if (null != tb) {
                         for (int i = 0; i < tb.RowCount; ++i) {
                             var trow = tb.GetRow(i);
@@ -4222,17 +4704,17 @@ namespace ResourceEditApi
                     }
                 }
             }
-            return list;
+            return CalculatorValue.FromObject(list);
         }
     }
-    internal class FindCellIndexExp : DslExpression.SimpleExpressionBase
+    internal class FindCellIndexExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             int r = -1;
             if (operands.Count >= 2) {
-                var row = operands[0] as NPOI.SS.UserModel.IRow;
-                var name = operands[1] as string;
+                var row = operands[0].As<NPOI.SS.UserModel.IRow>();
+                var name = operands[1].AsString;
                 if (!string.IsNullOrEmpty(name)) {
                     if (null != row) {
                         for (int i = row.FirstCellNum; i <= row.LastCellNum; ++i) {
@@ -4244,7 +4726,7 @@ namespace ResourceEditApi
                         }
                     }
                     else {
-                        var trow = operands[0] as ResourceEditUtility.DataRow;
+                        var trow = operands[0].As<ResourceEditUtility.DataRow>();
                         if (null != trow) {
                             for (int i = 0; i < trow.CellCount; ++i) {
                                 var val = trow.GetCell(i);
@@ -4260,21 +4742,21 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class FindCellIndexesExp : DslExpression.SimpleExpressionBase
+    internal class FindCellIndexesExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             IList<int> r = null;
             if (operands.Count >= 2) {
-                var row = operands[0] as NPOI.SS.UserModel.IRow;
-                var nameObjs = operands[1] as IList;
+                var row = operands[0].As<NPOI.SS.UserModel.IRow>();
+                var nameObjs = operands[1].As<IList>();
                 var markChars = string.Empty;
                 List<NPOI.SS.UserModel.IRow> markRows = null;
                 if (operands.Count >= 4) {
-                    markChars = operands[2] as string;
+                    markChars = operands[2].AsString;
                     markRows = new List<NPOI.SS.UserModel.IRow>();
                     for (int ix = 3; ix < operands.Count; ++ix) {
-                        var markRow = operands[ix] as NPOI.SS.UserModel.IRow;
+                        var markRow = operands[ix].As<NPOI.SS.UserModel.IRow>();
                         if (null != markRow) {
                             markRows.Add(markRow);
                         }
@@ -4302,7 +4784,7 @@ namespace ResourceEditApi
                         }
                     }
                     else {
-                        var trow = operands[0] as ResourceEditUtility.DataRow;
+                        var trow = operands[0].As<ResourceEditUtility.DataRow>();
                         if (null != trow) {
                             r = new List<int>();
                             int curIx = 0;
@@ -4330,7 +4812,7 @@ namespace ResourceEditApi
                         }
                     }
                     else {
-                        var trow = operands[0] as ResourceEditUtility.DataRow;
+                        var trow = operands[0].As<ResourceEditUtility.DataRow>();
                         if (null != trow) {
                             r = new List<int>();
                             for (int i = 0; i < trow.CellCount; ++i) {
@@ -4344,7 +4826,7 @@ namespace ResourceEditApi
             if (null == r) {
                 r = new List<int>();
             }
-            return r;
+            return CalculatorValue.FromObject(r);
         }
         private static bool IsValidColumn(int ix, string markChars, IList<NPOI.SS.UserModel.IRow> markRows)
         {
@@ -4364,13 +4846,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetCellValueExp : DslExpression.SimpleExpressionBase
+    internal class GetCellValueExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var row = operands[0] as NPOI.SS.UserModel.IRow;
+                var row = operands[0].As<NPOI.SS.UserModel.IRow>();
                 var ix = CastTo<int>(operands[1]);
                 if (ix >= 0) {
                     if (null != row) {
@@ -4398,7 +4880,7 @@ namespace ResourceEditApi
                                             r = cell.StringCellValue;
                                             break;
                                         default:
-                                            r = null;
+                                            r = CalculatorValue.NullObject;
                                             break;
                                     }
                                     break;
@@ -4406,13 +4888,13 @@ namespace ResourceEditApi
                                     r = string.Empty;
                                     break;
                                 default:
-                                    r = null;
+                                    r = CalculatorValue.NullObject;
                                     break;
                             }
                         }
                     }
                     else {
-                        var trow = operands[0] as ResourceEditUtility.DataRow;
+                        var trow = operands[0].As<ResourceEditUtility.DataRow>();
                         if (null != trow) {
                             r = trow.GetCell(ix);
                         }
@@ -4422,13 +4904,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetCellStringExp : DslExpression.SimpleExpressionBase
+    internal class GetCellStringExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             string r = string.Empty;
             if (operands.Count >= 2) {
-                var row = operands[0] as NPOI.SS.UserModel.IRow;
+                var row = operands[0].As<NPOI.SS.UserModel.IRow>();
                 var ix = CastTo<int>(operands[1]);
                 if (ix >= 0) {
                     if (null != row) {
@@ -4436,7 +4918,7 @@ namespace ResourceEditApi
                         r = ResourceEditUtility.CellToString(cell);
                     }
                     else {
-                        var trow = operands[0] as ResourceEditUtility.DataRow;
+                        var trow = operands[0].As<ResourceEditUtility.DataRow>();
                         if (null != trow) {
                             r = trow.GetCell(ix);
                         }
@@ -4446,13 +4928,13 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class GetCellNumericExp : DslExpression.SimpleExpressionBase
+    internal class GetCellNumericExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             double r = 0.0;
             if (operands.Count >= 2) {
-                var row = operands[0] as NPOI.SS.UserModel.IRow;
+                var row = operands[0].As<NPOI.SS.UserModel.IRow>();
                 var ix = CastTo<int>(operands[1]);
                 if (ix >= 0) {
                     if (null != row) {
@@ -4460,7 +4942,7 @@ namespace ResourceEditApi
                         r = ResourceEditUtility.CellToNumeric(cell);
                     }
                     else {
-                        var trow = operands[0] as ResourceEditUtility.DataRow;
+                        var trow = operands[0].As<ResourceEditUtility.DataRow>();
                         if (null != trow) {
                             var v = trow.GetCell(ix);
                             double.TryParse(v, out r);
@@ -4471,24 +4953,24 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class RowToLineExp : DslExpression.SimpleExpressionBase
+    internal class RowToLineExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             string r = string.Empty;
             if (operands.Count >= 1) {
-                var row = operands[0] as NPOI.SS.UserModel.IRow;
+                var row = operands[0].As<NPOI.SS.UserModel.IRow>();
                 int skipCols = 0;
                 List<int> colIndexes = null;
                 if (operands.Count >= 2) {
-                    skipCols = ToInt(operands[1]);
+                    skipCols = operands[1].Get<int>();
                 }
                 if (operands.Count >= 3) {
-                    var colObjs = operands[2] as IList;
+                    var colObjs = operands[2].As<IList>();
                     if (null != colObjs) {
                         colIndexes = new List<int>();
                         foreach (var colObj in colObjs) {
-                            colIndexes.Add(ToInt(colObj));
+                            colIndexes.Add(CastTo<int>(colObj));
                         }
                     }
                 }
@@ -4515,7 +4997,7 @@ namespace ResourceEditApi
                     }
                 }
                 else {
-                    var trow = operands[0] as ResourceEditUtility.DataRow;
+                    var trow = operands[0].As<ResourceEditUtility.DataRow>();
                     if (null != trow) {
                         r = trow.GetLine(skipCols, colIndexes);
                     }
@@ -4524,19 +5006,19 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class TableToHashtableExp : DslExpression.SimpleExpressionBase
+    internal class TableToHashtableExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 3) {
-                var sheet = operands[0] as NPOI.SS.UserModel.ISheet;
-                int skipRows = ToInt(operands[1]);
+                var sheet = operands[0].As<NPOI.SS.UserModel.ISheet>();
+                int skipRows = operands[1].Get<int>();
                 List<int> colIndexes = new List<int>();
-                var colObjs = operands[2] as IList;
+                var colObjs = operands[2].As<IList>();
                 if (null != colObjs) {
                     foreach (var colObj in colObjs) {
-                        colIndexes.Add(ToInt(colObj));
+                        colIndexes.Add(CastTo<int>(colObj));
                     }
                 }
                 if (colIndexes.Count > 0) {
@@ -4561,10 +5043,10 @@ namespace ResourceEditApi
                             }
                             temp.Add(i.ToString(), row);
                         }
-                        r = dict;
+                        r = CalculatorValue.FromObject(dict);
                     }
                     else {
-                        var table = operands[0] as ResourceEditUtility.DataTable;
+                        var table = operands[0].As<ResourceEditUtility.DataTable>();
                         if (null != table) {
                             var dict = new Dictionary<string, object>();
                             for (int i = skipRows; i < table.RowCount; ++i) {
@@ -4585,7 +5067,7 @@ namespace ResourceEditApi
                                 }
                                 temp.Add(i.ToString(), row);
                             }
-                            r = dict;
+                            r = CalculatorValue.FromObject(dict);
                         }
                     }
                 }
@@ -4593,15 +5075,15 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class FindRowFromHashtableExp : DslExpression.SimpleExpressionBase
+    internal class FindRowFromHashtableExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var hash = operands[0] as Dictionary<string, object>;
+                var hash = operands[0].As<Dictionary<string, object>>();
                 List<string> keys = new List<string>();
-                var keyObjs = operands[1] as IList;
+                var keyObjs = operands[1].As<IList>();
                 if (null != keyObjs) {
                     foreach (var keyObj in keyObjs) {
                         var str = keyObj as string;
@@ -4622,25 +5104,25 @@ namespace ResourceEditApi
                     }
                     if (null != temp) {
                         foreach (var pair in temp) {
-                            r = pair.Value;
+                            r = CalculatorValue.FromObject(pair.Value);
                             break;
                         }
                     }
                     else {
-                        r = null;
+                        r = CalculatorValue.NullObject;
                     }
                 }
             }
             return r;
         }
     }
-    internal class LoadManagedHeapsExp : DslExpression.SimpleExpressionBase
+    internal class LoadManagedHeapsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 var list = new List<ResourceEditUtility.SectionInfo>();
                 var lines = File.ReadAllLines(file);
                 foreach (var line in lines) {
@@ -4667,19 +5149,19 @@ namespace ResourceEditApi
                     else
                         return 0;
                 });
-                r = list;
+                r = CalculatorValue.FromObject(list);
             }
             return r;
         }
     }
-    internal class FindManagedHeapsExp : DslExpression.SimpleExpressionBase
+    internal class FindManagedHeapsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var list = operands[0] as List<ResourceEditUtility.SectionInfo>;
-                var addr = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
+                var list = operands[0].As<List<ResourceEditUtility.SectionInfo>>();
+                var addr = operands[1].Get<ulong>();
                 if (null != list && addr > 0) {
                     var low = 0;
                     var high = list.Count - 1;
@@ -4692,7 +5174,7 @@ namespace ResourceEditApi
                         else if (addr >= ve)
                             low = cur + 1;
                         else {
-                            r = list[cur];
+                            r = CalculatorValue.FromObject(list[cur]);
                             break;
                         }
                     }
@@ -4701,14 +5183,14 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class MatchManagedHeapsExp : DslExpression.SimpleExpressionBase
+    internal class MatchManagedHeapsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var list1 = operands[0] as List<ResourceEditUtility.SectionInfo>;
-                var list2 = operands[1] as List<ResourceEditUtility.SectionInfo>;
+                var list1 = operands[0].As<List<ResourceEditUtility.SectionInfo>>();
+                var list2 = operands[1].As<List<ResourceEditUtility.SectionInfo>>();
                 if (null != list1 && null != list2) {
                     int ct = list1.Count + list2.Count;
                     int delta = 1;
@@ -4762,7 +5244,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = list;
+                    r = CalculatorValue.FromObject(list);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -4779,14 +5261,14 @@ namespace ResourceEditApi
             }
         }
     }
-    internal class CalcMatchedManagedHeapsDiffExp : DslExpression.SimpleExpressionBase
+    internal class CalcMatchedManagedHeapsDiffExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var list = operands[0] as List<ResourceEditUtility.SectionInfo[]>;
-                int index = (int)Convert.ChangeType(operands[1], typeof(int));
+                var list = operands[0].As<List<ResourceEditUtility.SectionInfo[]>>();
+                int index = operands[1].Get<int>();
                 if (null != list && index >= 0) {
                     int ct = list.Count;
                     int delta = 1;
@@ -4820,7 +5302,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = results;
+                    r = CalculatorValue.FromObject(results);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -4837,13 +5319,13 @@ namespace ResourceEditApi
             }
         }
     }
-    internal class LoadMapsExp : DslExpression.SimpleExpressionBase
+    internal class LoadMapsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 var list = new List<ResourceEditUtility.MapsInfo>();
                 var lines = File.ReadAllLines(file);
                 foreach (var line in lines) {
@@ -4888,19 +5370,19 @@ namespace ResourceEditApi
                     else
                         return 0;
                 });
-                r = list;
+                r = CalculatorValue.FromObject(list);
             }
             return r;
         }
     }
-    internal class FindMapsExp : DslExpression.SimpleExpressionBase
+    internal class FindMapsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var list = operands[0] as List<ResourceEditUtility.MapsInfo>;
-                var addr = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
+                var list = operands[0].As<List<ResourceEditUtility.MapsInfo>>();
+                var addr = operands[1].Get<ulong>();
                 if (null != list && addr > 0) {
                     var low = 0;
                     var high = list.Count - 1;
@@ -4913,7 +5395,7 @@ namespace ResourceEditApi
                         else if (addr >= ve)
                             low = cur + 1;
                         else {
-                            r = list[cur];
+                            r = CalculatorValue.FromObject(list[cur]);
                             break;
                         }
                     }
@@ -4922,14 +5404,14 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class MatchMapsExp : DslExpression.SimpleExpressionBase
+    internal class MatchMapsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var list1 = operands[0] as List<ResourceEditUtility.MapsInfo>;
-                var list2 = operands[1] as List<ResourceEditUtility.MapsInfo>;
+                var list1 = operands[0].As<List<ResourceEditUtility.MapsInfo>>();
+                var list2 = operands[1].As<List<ResourceEditUtility.MapsInfo>>();
                 if (null != list1 && null != list2) {
                     int ct = list1.Count + list2.Count;
                     int delta = 1;
@@ -4983,7 +5465,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = list;
+                    r = CalculatorValue.FromObject(list);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -5000,14 +5482,14 @@ namespace ResourceEditApi
             }
         }
     }
-    internal class CalcMatchedMapsDiffExp : DslExpression.SimpleExpressionBase
+    internal class CalcMatchedMapsDiffExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var list = operands[0] as List<ResourceEditUtility.MapsInfo[]>;
-                int index = (int)Convert.ChangeType(operands[1], typeof(int));
+                var list = operands[0].As<List<ResourceEditUtility.MapsInfo[]>>();
+                int index = operands[1].Get<int>();
                 if (null != list && index >= 0) {
                     int ct = list.Count;
                     int delta = 1;
@@ -5041,7 +5523,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = results;
+                    r = CalculatorValue.FromObject(results);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -5058,13 +5540,13 @@ namespace ResourceEditApi
             }
         }
     }
-    internal class LoadSmapsExp : DslExpression.SimpleExpressionBase
+    internal class LoadSmapsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 var list = new List<ResourceEditUtility.SmapsInfo>();
                 ResourceEditUtility.SmapsInfo curInfo = null;
                 var lines = File.ReadAllLines(file);
@@ -5151,19 +5633,19 @@ namespace ResourceEditApi
                     else
                         return 0;
                 });
-                r = list;
+                r = CalculatorValue.FromObject(list);
             }
             return r;
         }
     }
-    internal class FindSmapsExp : DslExpression.SimpleExpressionBase
+    internal class FindSmapsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var list = operands[0] as List<ResourceEditUtility.SmapsInfo>;
-                var addr = (ulong)Convert.ChangeType(operands[1], typeof(ulong));
+                var list = operands[0].As<List<ResourceEditUtility.SmapsInfo>>();
+                var addr = operands[1].Get<ulong>();
                 if (null != list && addr > 0) {
                     var low = 0;
                     var high = list.Count - 1;
@@ -5176,7 +5658,7 @@ namespace ResourceEditApi
                         else if (addr >= ve)
                             low = cur + 1;
                         else {
-                            r = list[cur];
+                            r = CalculatorValue.FromObject(list[cur]);
                             break;
                         }
                     }
@@ -5185,14 +5667,14 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class MatchSmapsExp : DslExpression.SimpleExpressionBase
+    internal class MatchSmapsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var list1 = operands[0] as List<ResourceEditUtility.SmapsInfo>;
-                var list2 = operands[1] as List<ResourceEditUtility.SmapsInfo>;
+                var list1 = operands[0].As<List<ResourceEditUtility.SmapsInfo>>();
+                var list2 = operands[1].As<List<ResourceEditUtility.SmapsInfo>>();
                 if (null != list1 && null != list2) {
                     int ct = list1.Count + list2.Count;
                     int delta = 1;
@@ -5246,7 +5728,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = list;
+                    r = CalculatorValue.FromObject(list);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -5263,14 +5745,14 @@ namespace ResourceEditApi
             }
         }
     }
-    internal class CalcMatchedSmapsDiffExp : DslExpression.SimpleExpressionBase
+    internal class CalcMatchedSmapsDiffExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
-                var list = operands[0] as List<ResourceEditUtility.SmapsInfo[]>;
-                int index = (int)Convert.ChangeType(operands[1], typeof(int));
+                var list = operands[0].As<List<ResourceEditUtility.SmapsInfo[]>>();
+                int index = operands[1].Get<int>();
                 if (null != list && index >= 0) {
                     int ct = list.Count;
                     int delta = 1;
@@ -5304,7 +5786,7 @@ namespace ResourceEditApi
                             break;
                         }
                     }
-                    r = results;
+                    r = CalculatorValue.FromObject(results);
                 }
             }
             EditorUtility.ClearProgressBar();
@@ -5321,20 +5803,20 @@ namespace ResourceEditApi
             }
         }
     }
-    internal class LoadAddrsExp : DslExpression.SimpleExpressionBase
+    internal class LoadAddrsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var file = operands[0] as string;
+                var file = operands[0].AsString;
                 bool isHex = true;
                 Regex regex = null;
                 if (operands.Count >= 2) {
-                    isHex = (bool)Convert.ChangeType(operands[1], typeof(bool));
+                    isHex = operands[1].Get<bool>();
                 }
                 if (operands.Count >= 3) {
-                    var str = operands[2] as string;
+                    var str = operands[2].AsString;
                     if (!string.IsNullOrEmpty(str)) {
                         regex = new Regex(str, RegexOptions.Compiled);
                     }
@@ -5368,22 +5850,22 @@ namespace ResourceEditApi
                     }
                 }
                 list.Sort();
-                r = list;
+                r = CalculatorValue.FromObject(list);
             }
             EditorUtility.ClearProgressBar();
             return r;
         }
     }
-    internal class EscapeUrlExp : DslExpression.SimpleExpressionBase
+    internal class EscapeUrlExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var txt = operands[0] as string;
+                var txt = operands[0].AsString;
                 var space = string.Empty;
                 if (operands.Count >= 2) {
-                    var str = operands[1] as string;
+                    var str = operands[1].AsString;
                     if (!string.IsNullOrEmpty(str)) {
                         space = str;
                     }
@@ -5402,16 +5884,16 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class UnEscapeUrlExp : DslExpression.SimpleExpressionBase
+    internal class UnEscapeUrlExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var txt = operands[0] as string;
+                var txt = operands[0].AsString;
                 var space = string.Empty;
                 if (operands.Count >= 2) {
-                    var str = operands[1] as string;
+                    var str = operands[1].AsString;
                     if (!string.IsNullOrEmpty(str)) {
                         space = str;
                     }
@@ -5431,23 +5913,23 @@ namespace ResourceEditApi
             return r;
         }
     }
-    internal class ParseUrlArgsExp : DslExpression.SimpleExpressionBase
+    internal class ParseUrlArgsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var txt = operands[0] as string;
+                var txt = operands[0].AsString;
                 var space = string.Empty;
                 if (operands.Count >= 2) {
-                    var str = operands[1] as string;
+                    var str = operands[1].AsString;
                     if (!string.IsNullOrEmpty(str)) {
                         space = str;
                     }
                 }
                 var kvSep = s_KeyValueSeperator;
                 if (operands.Count >= 3) {
-                    var str = operands[2] as string;
+                    var str = operands[2].AsString;
                     if (!string.IsNullOrEmpty(str)) {
                         kvSep = str;
                     }
@@ -5462,7 +5944,7 @@ namespace ResourceEditApi
                 if (operands.Count >= 4) {
                     var list = new List<string>();
                     for (int i = 3; i < operands.Count; ++i) {
-                        var str = operands[i] as string;
+                        var str = operands[i].AsString;
                         if (!string.IsNullOrEmpty(str)) {
                             list.Add(str);
                         }
@@ -5491,10 +5973,10 @@ namespace ResourceEditApi
                             }
                         }
                     }
-                    r = hash;
+                    r = CalculatorValue.FromObject(hash);
                 }
                 else {
-                    r = fields;
+                    r = CalculatorValue.FromObject(fields);
                 }
             }
             return r;
@@ -5502,16 +5984,16 @@ namespace ResourceEditApi
         private static string s_KeyValueSeperator = "=";
         private static string[] s_BuglySeperators = new string[] { ";" };
     }
-    internal class ParseBuglyInfoExp : DslExpression.SimpleExpressionBase
+    internal class ParseBuglyInfoExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
-            object r = null;
+            var r = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var txt = operands[0] as string;
+                var txt = operands[0].AsString;
                 var space = string.Empty;
                 if (operands.Count >= 2) {
-                    var str = operands[1] as string;
+                    var str = operands[1].AsString;
                     if (!string.IsNullOrEmpty(str)) {
                         space = str;
                     }
@@ -5520,7 +6002,7 @@ namespace ResourceEditApi
                 if (operands.Count >= 3) {
                     var list = new List<string>();
                     for (int i = 2; i < operands.Count; ++i) {
-                        var str = operands[i] as string;
+                        var str = operands[i].AsString;
                         if (!string.IsNullOrEmpty(str)) {
                             list.Add(str);
                         }
@@ -5531,116 +6013,116 @@ namespace ResourceEditApi
                 if (!string.IsNullOrEmpty(space))
                     newTxt = newTxt.Replace(space, " ");
                 var fields = newTxt.Split(sep, StringSplitOptions.RemoveEmptyEntries);
-                r = fields;
+                r = CalculatorValue.FromObject(fields);
             }
             return r;
         }
         private static string[] s_BuglySeperators = new string[] { "\n" };
     }
-    internal class IntHashContainsExp : DslExpression.SimpleExpressionBase
+    internal class IntHashContainsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             bool r = false;
             if (operands.Count >= 2) {
-                var hash = operands[0] as HashSet<int>;
+                var hash = operands[0].As<HashSet<int>>();
                 var vobj = operands[1];
-                if (null != hash && null != vobj) {
-                    var v = (int)Convert.ChangeType(vobj, typeof(int));
+                if (null != hash && !vobj.IsNullObject) {
+                    var v = vobj.Get<int>();
                     r = hash.Count == 0 || hash.Contains(v);
                 }
             }
             return r;
         }
     }
-    internal class UintHashContainsExp : DslExpression.SimpleExpressionBase
+    internal class UintHashContainsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             bool r = false;
             if (operands.Count >= 2) {
-                var hash = operands[0] as HashSet<uint>;
+                var hash = operands[0].As<HashSet<uint>>();
                 var vobj = operands[1];
-                if (null != hash && null != vobj) {
-                    var v = (uint)Convert.ChangeType(vobj, typeof(uint));
+                if (null != hash && !vobj.IsNullObject) {
+                    var v = vobj.Get<uint>();
                     r = hash.Count == 0 || hash.Contains(v);
                 }
             }
             return r;
         }
     }
-    internal class LongHashContainsExp : DslExpression.SimpleExpressionBase
+    internal class LongHashContainsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             bool r = false;
             if (operands.Count >= 2) {
-                var hash = operands[0] as HashSet<long>;
+                var hash = operands[0].As<HashSet<long>>();
                 var vobj = operands[1];
-                if (null != hash && null != vobj) {
-                    var v = (long)Convert.ChangeType(vobj, typeof(long));
+                if (null != hash && !vobj.IsNullObject) {
+                    var v = vobj.Get<long>();
                     r = hash.Count == 0 || hash.Contains(v);
                 }
             }
             return r;
         }
     }
-    internal class UlongHashContainsExp : DslExpression.SimpleExpressionBase
+    internal class UlongHashContainsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             bool r = false;
             if (operands.Count >= 2) {
-                var hash = operands[0] as HashSet<ulong>;
+                var hash = operands[0].As<HashSet<ulong>>();
                 var vobj = operands[1];
-                if (null != hash && null != vobj) {
-                    var v = (ulong)Convert.ChangeType(vobj, typeof(ulong));
+                if (null != hash && !vobj.IsNullObject) {
+                    var v = vobj.Get<ulong>();
                     r = hash.Count == 0 || hash.Contains(v);
                 }
             }
             return r;
         }
     }
-    internal class FloatHashContainsExp : DslExpression.SimpleExpressionBase
+    internal class FloatHashContainsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             bool r = false;
             if (operands.Count >= 2) {
-                var hash = operands[0] as HashSet<float>;
+                var hash = operands[0].As<HashSet<float>>();
                 var vobj = operands[1];
-                if (null != hash && null != vobj) {
-                    var v = (float)Convert.ChangeType(vobj, typeof(float));
+                if (null != hash && !vobj.IsNullObject) {
+                    var v = vobj.Get<float>();
                     r = hash.Count == 0 || hash.Contains(v);
                 }
             }
             return r;
         }
     }
-    internal class DoubleHashContainsExp : DslExpression.SimpleExpressionBase
+    internal class DoubleHashContainsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             bool r = false;
             if (operands.Count >= 2) {
-                var hash = operands[0] as HashSet<double>;
+                var hash = operands[0].As<HashSet<double>>();
                 var vobj = operands[1];
-                if (null != hash && null != vobj) {
-                    var v = (double)Convert.ChangeType(vobj, typeof(double));
+                if (null != hash && !vobj.IsNullObject) {
+                    var v = vobj.Get<double>();
                     r = hash.Count == 0 || hash.Contains(v);
                 }
             }
             return r;
         }
     }
-    internal class StringHashContainsExp : DslExpression.SimpleExpressionBase
+    internal class StringHashContainsExp : SimpleExpressionBase
     {
-        protected override object OnCalc(IList<object> operands)
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
         {
             bool r = false;
             if (operands.Count >= 2) {
-                var hash = operands[0] as HashSet<string>;
-                var vstr = operands[1] as string;
+                var hash = operands[0].As<HashSet<string>>();
+                var vstr = operands[1].AsString;
                 if (null != hash && null != vstr) {
                     r = hash.Count == 0 || hash.Contains(vstr);
                 }

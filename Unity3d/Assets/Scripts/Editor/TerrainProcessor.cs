@@ -8,7 +8,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using System.Drawing;
 using GameFramework;
 using DslExpression;
 
@@ -156,49 +155,6 @@ public sealed class TerrainEditWindow : EditorWindow
         foreach (GameObject obj in Selection.gameObjects) {
             TerrainEditUtility.Process(obj, m_DslFile, samplers, m_Caches, objects);
             Debug.Log("handle " + obj.name);
-        }
-        if (objects.Count > 0) {
-            var root = GameObject.Find("objs");
-            ObjectDetector objDetector;
-            if (null == root) {
-                root = new GameObject("objs");
-                objDetector = root.AddComponent<ObjectDetector>();
-            } else {
-                objDetector = root.GetComponent<ObjectDetector>();
-            }
-
-            List<UnityEngine.GameObject> objList = new List<GameObject>();
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("[");
-            int ct = objects.Count;
-            for (int i = 0; i < ct; ++i) {
-                var objInfo = objects[i];
-                string name = string.Format("obj{0}", i);
-                sb.Append("[");
-                sb.AppendFormat("\"{0}\", {1}, {2}, {3}", name, objInfo.X, objInfo.Y, objInfo.Z);
-                if (i < ct - 1) {
-                    sb.AppendLine("],");
-                } else {
-                    sb.AppendLine("]");
-                }
-
-                var prefab = Resources.Load(objInfo.Prefab);
-                var obj = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
-                obj.name = name;
-                obj.transform.SetParent(root.transform);
-                obj.transform.SetPositionAndRotation(new Vector3(objInfo.X, objInfo.Y, objInfo.Z), Quaternion.identity);
-                objList.Add(obj);
-
-                if (TerrainEditUtility.DisplayCancelableProgressBar("创建场景对象", i + 1, ct))
-                    break;
-            }
-            sb.AppendLine("]");
-            var list = sb.ToString();
-            var file = TerrainEditUtility.AssetPathToPath(m_ListFile);
-            File.WriteAllText(file, list);
-            objDetector.Objects = objList.ToArray();
-            objDetector.MessageName = "notify_player";
-            EditorUtility.ClearProgressBar();
         }
         EditorUtility.DisplayDialog("提示", "处理完成", "ok");
     }

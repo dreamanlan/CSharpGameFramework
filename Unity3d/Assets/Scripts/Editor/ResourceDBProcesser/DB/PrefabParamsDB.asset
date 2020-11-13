@@ -1,0 +1,151 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8374d87d98f9764bbea659d4a20891e, type: 3}
+  m_Name: PrefabParamsDB
+  m_EditorClassIdentifier: 
+  m_Data:
+    m_Count: 19
+    m_Keys:
+    - 3076f2b038ce4c04f91f9aa8c11e1893
+    - de22848da0d047640a9b51f6ab4662b4
+    - 0052c761e7f307a4baa3e58ad70a39b5
+    - d6396ee95ae274145bdf8e1c6f227b1f
+    - eec30b862a2ad2649a1639c19d3e82f5
+    - bcdbeb4a5421f454f8902200de2ee1fc
+    - 3724664b018d3bc4981dcad87518439f
+    - d71760f3436075747a3ddf0594dbd862
+    - 04d831714ddb15942b14980261152c5c
+    - 3007af622c29ffa49abe25501806f23f
+    - a46674ae56cc54748b49c43bdf223a09
+    - fd258f6ea21a5aa4294d0ba1b2956a3d
+    - 2207f668a7c79bb45b94fe6ba02a50d2
+    - e70ceb69ca758354488f3f93ee1846b8
+    - 617459b362e80fd4a8b469361bca2f18
+    - 972be9241df3a0e4aafe4d14bf702169
+    - b6b22fc520a08d14883adc77e9ed60d0
+    - 3bee78d197cbe5b4bb651450b50833b5
+    - 87cafcdfd13e2b944bc518f041aba55b
+    m_Vals:
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_yijia/Ep_Yijia01_Skill5_newchufa.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_daojia/pDj_F_Jump4.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - CullCompletely
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/boss/s_weizhuang/Ep_weizhuang_skill05_02.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/boss/s_weizhuang/Ep_weizhuang_skill04_03.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_rujia/Ep_rj_bs_01.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_bingjia/Ep_bingjia1_skill2_2ci.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_bingjia/Ep_bingjia1_skill3_1L.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_bingjia/Ep_bingjia1_skill4_1dun.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_bingjia/Ep_bingjia1_skill4_3ci.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_bingjia/Ep_bingjia1_skill1_2.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - CullCompletely
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_bingjia/Ep_bingjia1_skill4_3ground.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - CullCompletely
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/boss/a_yanlu/Ep_yl_skill1_02.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/item/Ep_pao_hit_ice.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/item/Ep_pao_hit_wind.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/item/Ep_pao_hit_fire.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_bingjia/Ep_bingjia2_skill4_2a.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_yijia/Ep_Yijia01_Skill3.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/timeline/tl_canyuegu/EP_8B_long02.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate
+    - m_Resource: Assets/ResourceAB/Effects/prefabs/character/a_bingjia/Ep_bingjia1_skill4_2daoguangc.prefab
+      m_Count: 1
+      m_Keys:
+      - cullingMode
+      m_Vals:
+      - AlwaysAnimate

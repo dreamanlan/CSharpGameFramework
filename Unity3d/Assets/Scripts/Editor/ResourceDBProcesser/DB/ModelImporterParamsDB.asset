@@ -1,0 +1,870 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00763198cd54897419d7d384f595a545, type: 3}
+  m_Name: ModelImporterParamsDB
+  m_EditorClassIdentifier: 
+  m_Data:
+    m_Count: 46
+    m_Keys:
+    - 7ed0a6201a7d09946b4690cc99e59065
+    - 56b02a63246506f47b99f5a4cb72777a
+    - cde827b4032a9b64187efa38fc266cc6
+    - 26c29328bddc90542b1d5414abde364e
+    - 7a64a8fb73ceea540a0f3f0799cb37f9
+    - 9c0d2f7c7221fbd49ab95000fd643199
+    - fc5daa670b22aac4fa786efa7db995f6
+    - 034c9ea3f0ff80e40a9cf881e488c991
+    - 9453b275b2e8ce2428fe2e94189c27dc
+    - 077391f3fb474044ca4398eb62faf009
+    - 656753b986a3d334c82b12a51725c40a
+    - 82010f489202d414eb375c2ef0121fbc
+    - fd417f7cf69b5e1438805deb2d3a1ed2
+    - f0b81cac872182d48a2a095e9b20cd29
+    - 690a5d3b1d4c635498150b021831216f
+    - 3a4f0fb5c0c587548b06dbd88943d993
+    - d7aad892ac6dd1245955d03e0989f05f
+    - 66a807995673984478d7be58d1b8861f
+    - 9067f478d5a0db8408e195444bd2a8c4
+    - 9483248b3bb24d449aaa9c84bb212b1d
+    - c2d23214b5815a942856e1c04b79a2a5
+    - 3e2d39af5b06b644a894c16444d15419
+    - ad8244a1067c1e443b4b134b3b2572af
+    - 9a47f5e880aa448428cf85e429d0142b
+    - 013695ef1f0606b46a445eb1d3ddcfe9
+    - aceb6670293e271409159a558f0abfa7
+    - bd09b808fa51e6e40ba3507339b20889
+    - c8963f39e0cd5a34f86ef2dcbe412218
+    - 1bffc1e9333eb604a86d4dc82f088cb7
+    - b5dddeebb2bdd8944beec7aa422f91ce
+    - 1933f04bbdfab804a89148f95b7213dc
+    - 8c7922ad2445609468e3642111f95b09
+    - 1e272fa97f23878488df7c98fca727c8
+    - 8db3c6bbf8b0c7341b1598a1e791be42
+    - e5870eacbb0a4684b9205a9ab23daebb
+    - 50731a2b2beed2346b21a0b39e21dc43
+    - f1d674e6c24a6f24fb1411ffd038152e
+    - b55607a53b185c040b020f34ad712eec
+    - c1d11f958783792479ef09ae51f11e96
+    - d09593777e7166d4892db61022b73c6b
+    - 9f86d5db36e98064bad5b2119b610c77
+    - d57ffaf35a3d27345be8251c2220bda3
+    - c1684270c5937a342b377f1247a41dba
+    - 2ceaee6dcfd952c4e9760468ebe7c5aa
+    - c6b48b437b9691843adf0345175e8d51
+    - 5e8aaefab4381f54393a5262542e9e75
+    m_Vals:
+    - m_Resource: Assets/ResourceAB/Character/Monster/m3a0_ShaoNv/m3a0_ShaoNv.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Low
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/SceneRes/PrivateModels/DaoJiaZhiYe/Building/DJ_B_daojiazhujian_01.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Off
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/ResourceAB/Character/NPC/t_TianMing/t_TianMing_High.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Medium
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/ResourceAB/Character/NPC/t_PoTuSanLang/t_PoTuSanLang.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Medium
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/ResourceAB/Character/NPC/t_PoTuSanLang/t_PoTuSanLang_body.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Medium
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/ResourceAB/Character/NPC/t_PoTuSanLang/t_PoTuSanLang_broken_lefthand.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Medium
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/ResourceAB/Character/NPC/t_PoTuSanLang/t_PoTuSanLang_broken_rightleg.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Medium
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/ResourceAB/Character/NPC/t_PoTuSanLang/t_PoTuSanLang_broken_tail.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Medium
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/ResourceAB/Character/NPC/t_PoTuSanLang/t_PoTuSanLang_lefthand.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Medium
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/ResourceAB/Character/NPC/t_PoTuSanLang/t_PoTuSanLang_rightleg.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Medium
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/ResourceAB/Character/NPC/t_PoTuSanLang/t_PoTuSanLang_tail.FBX
+      m_Count: 6
+      m_Keys:
+      - compression
+      - isReadable
+      - meshCompression
+      - posistionError
+      - rotationError
+      - scaleError
+      m_Vals:
+      - Optimal
+      - False
+      - Medium
+      - 0.5
+      - 0.5
+      - 0.5
+    - m_Resource: Assets/SceneRes/PrivateModels/sanghaicheng/Building/SHC_B_zhudao_01.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/sanghaicheng/Building/SHC_B_zhudao_03.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_qiaoji.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_langqiao.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_05.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_MTJZ_02.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_MTJZ_01.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_07.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_08.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_04.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_04_a.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_03.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_02.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_01.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_06_02a.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_06_02.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_06_01.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_06_01a.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_YC_06_02b.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_houyuan_04.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_yizhuangqianyuan_01.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_yizhuangqianyuan_03.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - isReadable
+      - optimizeMesh
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/DaoJiaZhiYe/Building/DJ_B_tiantai_02_b.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JiGuanCheng/Building/JGC_B_Shuichi_01.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - False
+      - False
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/jh04_p_changzhenmu_02.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - True
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/jh04_p_changzhenmu_01.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - True
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_dijishiti_01.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - True
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_XDMQ_01.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - True
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/JH04_B_shidi_02.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - True
+    - m_Resource: Assets/SceneRes/PrivateModels/JH04/Building/jh04_p_changzhenmu_03.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - True
+    - m_Resource: Assets/ResourceAB/Character/Player/Face/Male_Face_03/Male_Face_nielian_03_Lod.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - True
+    - m_Resource: Assets/ResourceAB/Character/Player/Face/Female_Face/Female_Face_nielian_01_Lod.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - True
+    - m_Resource: Assets/ResourceAB/Character_lv3/Player/Face/Male_Face_03/Male_Face_nielian_03_Lv3.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - True
+    - m_Resource: Assets/ResourceAB/Character_lv3/Player/Face/Female_Face/Female_Face_nielian_01_Lv3.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - True
+    - m_Resource: Assets/SceneRes/PrivateModels/Canyuegu/Building/CYG_B_dibang_01.FBX
+      m_Count: 7
+      m_Keys:
+      - compression
+      - rotationError
+      - posistionError
+      - scaleError
+      - meshCompression
+      - optimizeMesh
+      - isReadable
+      m_Vals:
+      - Optimal
+      - 0.5
+      - 0.5
+      - 0.5
+      - Off
+      - True
+      - False

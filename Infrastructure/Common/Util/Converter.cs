@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace GameFramework
 {
-    public class Converter
+    public static class Converter
     {
         private static string[] s_ListSplitString = new string[] { ";", " ", "|" };
 
@@ -337,12 +337,17 @@ namespace GameFramework
         }
         public static T CastTo<T>(object obj)
         {
-            if (obj is T) {
+            if (obj is BoxedValue) {
+                return ((BoxedValue)obj).Get<T>();
+            }
+            else if (obj is T) {
                 return (T)obj;
-            } else {
+            }
+            else {
                 try {
                     return (T)Convert.ChangeType(obj, typeof(T));
-                } catch {
+                }
+                catch {
                     return default(T);
                 }
             }
@@ -352,21 +357,26 @@ namespace GameFramework
             if (null == obj)
                 return null;
             Type st = obj.GetType();
-            if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
+            if (obj is BoxedValue) {
+                return ((BoxedValue)obj).Get(t);
+            }
+            else if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
                 return obj;
-            } else {
+            }
+            else {
                 try {
                     return Convert.ChangeType(obj, t);
-                } catch {
+                }
+                catch {
                     return null;
                 }
             }
         }
         public static string FileContent2Utf8String(byte[] bytes)
         {
-            if(null==bytes)
+            if (null == bytes)
                 return string.Empty;
-            if(bytes.Length>=3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
+            if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
                 return System.Text.Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
             } else {
                 return System.Text.Encoding.UTF8.GetString(bytes);
