@@ -1507,6 +1507,20 @@ public struct BoxedValue
             var obj = ToObject();
             return GenericValueConverter.CastTo<T>(obj);
         }
+        else if (Type == c_StringType) {
+            if (t == typeof(BoxedValue)) {
+                return GenericValueConverter.From<T>(this);
+            }
+            else if (t == typeof(string)) {
+                return GenericValueConverter.From<T>(StringVal);
+            }
+            else if (t == typeof(object)) {
+                return GenericValueConverter.From<T>(ObjectVal);
+            }
+            else {
+                return GenericValueConverter.CastTo<T>(ObjectVal);
+            }
+        }
         else {
             if (t == typeof(BoxedValue)) {
                 return GenericValueConverter.From<T>(this);
