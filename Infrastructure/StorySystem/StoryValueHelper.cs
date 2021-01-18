@@ -28,7 +28,10 @@ namespace StorySystem
             if (null == obj)
                 return null;
             Type st = obj.GetType();
-            if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
+            if (obj is BoxedValue) {
+                return ((BoxedValue)obj).Get(t);
+            }
+            else if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
                 return obj;
             }
             else {

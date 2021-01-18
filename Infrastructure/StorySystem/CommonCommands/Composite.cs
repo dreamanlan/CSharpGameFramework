@@ -139,6 +139,7 @@ namespace StorySystem.CommonCommands
             runtime.Iterator = stackInfo.Args.Count;
             //没有wait之类命令直接执行
             runtime.Tick(instance, handler, delta);
+            instance.RecycleBoxedValueList(runtime.Arguments);
             if (runtime.CommandQueue.Count == 0) {
                 handler.PopRuntime(instance);
             } else {

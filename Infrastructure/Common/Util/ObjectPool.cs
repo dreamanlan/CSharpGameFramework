@@ -9,29 +9,34 @@ namespace GameFramework
         T Downcast();
     }
 
-    public class ObjectPool<T> where T : IPoolAllocatedObject<T>, new()
-    {
-        public ObjectPool()
-        {
-            m_UnusedObjects = new Queue<T>();
-        }
-        public ObjectPool(int initPoolSize)
-        {
-            m_UnusedObjects = new Queue<T>(initPoolSize);
-            Init(initPoolSize);
-        }
-        public void Init(int initPoolSize)
-        {
-            for (int i = 0; i < initPoolSize; ++i) {
-                T t = new T();
-                t.InitPool(this);
-                m_UnusedObjects.Enqueue(t);
+	public class ObjectPool<T> where T : IPoolAllocatedObject<T>, new()
+	{
+		private int initPoolSize;
+		public ObjectPool()
+		{
+			m_UnusedObjects = new Queue<T>();
+		}
+		public ObjectPool(int initPoolSize)
+		{
+			m_UnusedObjects = new Queue<T>(initPoolSize);
+			Init(initPoolSize);
+		}
+		public void Init(int initPoolSize)
+		{
+			this.initPoolSize = initPoolSize;
+			for (int i = 0; i < initPoolSize; ++i) {
+				T t = new T();
+				t.InitPool(this);
+				Recycle(t);
+			}
+		}
+		public T Alloc()
+		{
+            if (m_UnusedObjects.Count > 0) {
+                var t = m_UnusedObjects.Dequeue();
+                m_HashCodes.Remove(t.GetHashCode());
+                return t;
             }
-        }
-        public T Alloc()
-        {
-            if (m_UnusedObjects.Count > 0)
-                return m_UnusedObjects.Dequeue();
             else {
                 T t = new T();
                 if (null != t) {
@@ -39,17 +44,35 @@ namespace GameFramework
                 }
                 return t;
             }
-        }
-        public void Recycle(IPoolAllocatedObject<T> t)
-        {
-            if (null != t) {
-                m_UnusedObjects.Enqueue(t.Downcast());
+		}
+		public void Recycle(IPoolAllocatedObject<T> t)
+		{
+            if (null != t && m_UnusedObjects.Count < m_PoolSize) {
+                int hashCode = t.GetHashCode();
+                if (!m_HashCodes.Contains(hashCode)) {
+                    m_HashCodes.Add(hashCode);
+                    m_UnusedObjects.Enqueue(t.Downcast());
+                }
             }
         }
         public void Clear()
-        {
-            m_UnusedObjects.Clear();
-        }
+		{
+            m_HashCodes.Clear();
+			m_UnusedObjects.Clear();
+		}
+		public void ReInit()
+		{
+			while (m_UnusedObjects.Count < initPoolSize)
+			{
+				T t = new T();
+				t.InitPool(this);
+				m_UnusedObjects.Enqueue(t);
+			}
+			while (m_UnusedObjects.Count > initPoolSize)
+			{
+				m_UnusedObjects.Dequeue();
+			}
+		}
         public int Count
         {
             get
@@ -57,7 +80,10 @@ namespace GameFramework
                 return m_UnusedObjects.Count;
             }
         }
+
+        private HashSet<int> m_HashCodes = new HashSet<int>();
         private Queue<T> m_UnusedObjects = null;
+        private int m_PoolSize = 4096;
     }
 
     public interface IPoolAllocatedObjectEx<T> where T : IPoolAllocatedObjectEx<T>
@@ -86,13 +112,16 @@ namespace GameFramework
             for (int i = 0; i < initPoolSize; ++i) {
                 T t = creater();
                 t.InitPool(this);
-                m_UnusedObjects.Enqueue(t);
+                Recycle(t);
             }
         }
         public T Alloc()
         {
-            if (m_UnusedObjects.Count > 0)
-                return m_UnusedObjects.Dequeue();
+            if (m_UnusedObjects.Count > 0) {
+                var t = m_UnusedObjects.Dequeue();
+                m_HashCodes.Remove(t.GetHashCode());
+                return t;
+            }
             else {
                 T t = m_Creater();
                 if (null != t) {
@@ -103,8 +132,12 @@ namespace GameFramework
         }
         public void Recycle(IPoolAllocatedObjectEx<T> t)
         {
-            if (null != t) {
-                m_UnusedObjects.Enqueue(t.Downcast());
+            if (null != t && m_UnusedObjects.Count < m_PoolSize) {
+                int hashCode = t.GetHashCode();
+                if (!m_HashCodes.Contains(hashCode)) {
+                    m_HashCodes.Add(hashCode);
+                    m_UnusedObjects.Enqueue(t.Downcast());
+                }
             }
         }
         public void Clear()
@@ -114,6 +147,7 @@ namespace GameFramework
                     m_Destroyer(item);
                 }
             }
+            m_HashCodes.Clear();
             m_UnusedObjects.Clear();
         }
         public int Count
@@ -124,8 +158,10 @@ namespace GameFramework
             }
         }
 
+        private HashSet<int> m_HashCodes = new HashSet<int>();
         private Queue<T> m_UnusedObjects = null;
         private Func<T> m_Creater = null;
         private Action<T> m_Destroyer = null;
+        private int m_PoolSize = 4096;
     }
 }

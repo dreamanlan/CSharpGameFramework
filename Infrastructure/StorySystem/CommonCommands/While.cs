@@ -5,7 +5,8 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// while($val<10)
     /// {
-    ///   createnpc($$);
+    ///   createnpc(1000+$val);
+    ///   inc($val);
     ///   wait(100);
     /// };
     /// </summary>

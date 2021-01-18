@@ -117,6 +117,7 @@ namespace StorySystem.CommonValues
                 instance.TryGetVariable(m_ReturnName, out val);
                 stackInfo.Value = val;
             } finally {
+                instance.RecycleBoxedValueList(runtime.Arguments);
                 PopStack(instance, handler);
             }
         }

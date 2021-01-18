@@ -321,11 +321,9 @@ namespace StorySystem
                 newRuntime.IsBreak = runtime.IsBreak;
                 newRuntime.IsContinue = runtime.IsContinue;
                 newRuntime.IsReturn = runtime.IsReturn;
-                instance.RecycleBoxedValueList(newRuntime.Arguments);
                 StoryRuntime.Recycle(runtime);
             }
             else {
-                instance.RecycleBoxedValueList(runtime.Arguments);
                 runtime.Reset();
             }
         }
@@ -439,7 +437,10 @@ namespace StorySystem
             while (RuntimeStack.Count > 0) {
                 PopRuntime(instance);
             }
-            m_Arguments = null;
+            if (null != m_Arguments) {
+                instance.RecycleBoxedValueList(m_Arguments);
+                m_Arguments = null;
+            }
         }
         public void Prepare(StoryInstance instance)
         {
@@ -466,7 +467,7 @@ namespace StorySystem
                 var runtime = RuntimeStack.Peek();
                 runtime.Tick(instance, this, delta);
                 bool isReturn = runtime.IsReturn;
-                if (runtime.CommandQueue.Count == 0) {
+                if (RuntimeStack.Count > 0 && runtime.CommandQueue.Count == 0) {
                     PopRuntime(instance);
                     if (RuntimeStack.Count > 0) {
                         RuntimeStack.Peek().CompositeReentry = true;
@@ -474,6 +475,7 @@ namespace StorySystem
                 }
                 if (RuntimeStack.Count <= 0 || isReturn || m_CanSkip && (GameFramework.GlobalVariables.Instance.IsStorySkipped)) {
                     m_IsTriggered = false;
+                    //这里不用Reset，调用方会调用
                 }
             }
             finally {

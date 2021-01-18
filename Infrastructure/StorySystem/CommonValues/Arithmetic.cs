@@ -1048,7 +1048,7 @@ namespace StorySystem.CommonValues
             bool canCalc = true;
             for (int i = 0; i < m_List.Count; i++) {
                 if (m_List[i].HaveValue) {
-                    if (!(m_List[i].Value is int)) {
+                    if (!(m_List[i].Value.IsInteger)) {
                         isInt = false;
                     }
                 } else {
@@ -1136,7 +1136,7 @@ namespace StorySystem.CommonValues
             bool canCalc = true;
             for (int i = 0; i < m_List.Count; i++) {
                 if (m_List[i].HaveValue) {
-                    if (!(m_List[i].Value is int)) {
+                    if (!(m_List[i].Value.IsInteger)) {
                         isInt = false;
                     }
                 } else {
