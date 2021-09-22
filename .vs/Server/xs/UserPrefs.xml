@@ -1,10 +1,26 @@
 ﻿<Properties StartupConfiguration="{A8080D47-00A0-40B7-B353-71153D2E6663}|Default">
-  <MonoDevelop.Ide.Workbench />
+  <MonoDevelop.Ide.Workbench ActiveDocument="App/ServerModule/UserServer/Story/Commands/GeneralCommands.cs">
+    <Files>
+      <File FileName="App/ServerModule/RoomServer/Story/Commands/GameLogicCommands.cs" Line="564" Column="25" />
+      <File FileName="App/ServerModule/RoomServer/Story/Commands/GeneralCommands.cs" Line="1454" Column="25" />
+      <File FileName="App/ServerModule/RoomServer/Story/Commands/NpcCommands.cs" Line="903" Column="25" />
+      <File FileName="App/ServerModule/RoomServer/Story/Commands/ObjectCommands.cs" Line="730" Column="25" />
+      <File FileName="App/ServerModule/UserServer/Story/Commands/GameLogicCommands.cs" Line="908" Column="25" />
+      <File FileName="App/ServerModule/UserServer/Story/Commands/GeneralCommands.cs" Line="1063" Column="25" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State name="__root__">
+          <Node name="Server" expanded="True" />
+        </State>
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.App.RoomServer PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.ItemProperties.App.RoomServer PreferredExecutionTarget="MonoDevelop.Default" />
   <MultiItemStartupConfigurations />
 </Properties>

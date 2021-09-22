@@ -52,7 +52,7 @@ namespace StorySystem.CommonCommands
                 instance.SendMessage(msgId, args);
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -63,6 +63,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgArgs.Add(val);
             }
+            return true;
         }
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
         private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
@@ -123,7 +124,7 @@ namespace StorySystem.CommonCommands
                 instance.SendMessage(msgId, args);
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -134,6 +135,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgArgs.Add(val);
             }
+            return true;
         }
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
         private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
@@ -181,7 +183,7 @@ namespace StorySystem.CommonCommands
             instance.ClearMessage(arglist);
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -189,6 +191,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
@@ -262,7 +265,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -270,8 +273,9 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
                 Dsl.FunctionData first = statementData.First;
@@ -284,6 +288,7 @@ namespace StorySystem.CommonCommands
                     LoadTimeoutSet(third);
                 }
             }
+            return true;
         }
         private void LoadSet(Dsl.FunctionData callData)
         {
@@ -373,7 +378,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -381,8 +386,9 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
                 Dsl.FunctionData first = statementData.First;
@@ -395,6 +401,7 @@ namespace StorySystem.CommonCommands
                     LoadTimeoutSet(third);
                 }
             }
+            return true;
         }
         private void LoadSet(Dsl.FunctionData callData)
         {
@@ -492,7 +499,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -500,8 +507,9 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
                 Dsl.FunctionData first = statementData.First;
@@ -514,6 +522,7 @@ namespace StorySystem.CommonCommands
                     LoadTimeoutSet(third);
                 }
             }
+            return true;
         }
         private void LoadSet(Dsl.FunctionData callData)
         {
@@ -603,7 +612,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -611,8 +620,9 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
                 Dsl.FunctionData first = statementData.First;
@@ -625,6 +635,7 @@ namespace StorySystem.CommonCommands
                     LoadTimeoutSet(third);
                 }
             }
+            return true;
         }
         private void LoadSet(Dsl.FunctionData callData)
         {
@@ -681,7 +692,7 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -689,6 +700,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
@@ -721,7 +733,7 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -729,6 +741,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
@@ -774,7 +787,7 @@ namespace StorySystem.CommonCommands
                 instance.SendMessage(msgId, args);
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -785,6 +798,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgArgs.Add(val);
             }
+            return true;
         }
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
         private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
@@ -849,7 +863,7 @@ namespace StorySystem.CommonCommands
                 instance.SendMessage(msgId, args);
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -860,6 +874,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgArgs.Add(val);
             }
+            return true;
         }
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
         private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
@@ -914,7 +929,7 @@ namespace StorySystem.CommonCommands
             instance.ClearMessage(arglist);
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -922,6 +937,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
@@ -1005,7 +1021,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -1013,8 +1029,9 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
                 Dsl.FunctionData first = statementData.First;
@@ -1027,6 +1044,7 @@ namespace StorySystem.CommonCommands
                     LoadTimeoutSet(third);
                 }
             }
+            return true;
         }
         private void LoadSet(Dsl.FunctionData callData)
         {
@@ -1122,7 +1140,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -1130,8 +1148,9 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
                 Dsl.FunctionData first = statementData.First;
@@ -1144,6 +1163,7 @@ namespace StorySystem.CommonCommands
                     LoadTimeoutSet(third);
                 }
             }
+            return true;
         }
         private void LoadSet(Dsl.FunctionData callData)
         {
@@ -1252,7 +1272,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -1260,8 +1280,9 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
                 Dsl.FunctionData first = statementData.First;
@@ -1274,6 +1295,7 @@ namespace StorySystem.CommonCommands
                     LoadTimeoutSet(third);
                 }
             }
+            return true;
         }
         private void LoadSet(Dsl.FunctionData callData)
         {
@@ -1370,7 +1392,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -1378,8 +1400,9 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
                 Dsl.FunctionData first = statementData.First;
@@ -1392,6 +1415,7 @@ namespace StorySystem.CommonCommands
                     LoadTimeoutSet(third);
                 }
             }
+            return true;
         }
         private void LoadSet(Dsl.FunctionData callData)
         {
@@ -1455,7 +1479,7 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -1463,6 +1487,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }
@@ -1502,7 +1527,7 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -1510,6 +1535,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
     }

@@ -38,14 +38,15 @@ namespace StorySystem.CommonCommands
             else
                 return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_Time.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
                 Dsl.FunctionData first = statementData.First;
@@ -55,6 +56,7 @@ namespace StorySystem.CommonCommands
                     LoadCondition(second);
                 }
             }
+            return true;
         }
         private void LoadCondition(Dsl.FunctionData callData)
         {
@@ -107,14 +109,15 @@ namespace StorySystem.CommonCommands
             else
                 return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_Time.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
                 Dsl.FunctionData first = statementData.First;
@@ -124,6 +127,7 @@ namespace StorySystem.CommonCommands
                     LoadCondition(second);
                 }
             }
+            return true;
         }
         private void LoadCondition(Dsl.FunctionData callData)
         {
@@ -180,14 +184,15 @@ namespace StorySystem.CommonCommands
             else
                 return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_Time.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
                 Dsl.FunctionData first = statementData.First;
@@ -197,6 +202,7 @@ namespace StorySystem.CommonCommands
                     LoadCondition(second);
                 }
             }
+            return true;
         }
         private void LoadCondition(Dsl.FunctionData callData)
         {
@@ -255,14 +261,15 @@ namespace StorySystem.CommonCommands
             else
                 return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_Time.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
                 Dsl.FunctionData first = statementData.First;
@@ -272,6 +279,7 @@ namespace StorySystem.CommonCommands
                     LoadCondition(second);
                 }
             }
+            return true;
         }
         private void LoadCondition(Dsl.FunctionData callData)
         {
@@ -320,13 +328,14 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_HaveCondition = true;
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
 
         private IStoryValue<int> m_Condition = new StoryValue<int>();

@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using GameFramework;
 
-[assembly: UnityEngine.Scripting.Preserve]
-
 namespace StorySystem
 {
     public sealed class StoryConfigManager
@@ -31,7 +29,7 @@ namespace StorySystem
                 var id = System.Text.Encoding.ASCII.GetString(bytes);
                 if (id == Dsl.DslFile.c_BinaryIdentity) {
                     try {
-                        dataFile.LoadBinaryFile(file);
+                        dataFile.LoadBinaryFile(file, StoryConfigManager.ReuseKeyBuffer, StoryConfigManager.ReuseIdBuffer);
                         Load(dataFile, sceneId, _namespace, file);
                     }
                     catch (Exception ex) {
@@ -66,7 +64,7 @@ namespace StorySystem
             if (Dsl.DslFile.IsBinaryDsl(bytes, 0)) {
                 try {
                     Dsl.DslFile dataFile = new Dsl.DslFile();
-                    dataFile.LoadBinaryCode(bytes);
+                    dataFile.LoadBinaryCode(bytes, StoryConfigManager.ReuseKeyBuffer, StoryConfigManager.ReuseIdBuffer);
                     Load(dataFile, sceneId, _namespace, file);
                 }
                 catch (Exception ex) {
@@ -97,6 +95,25 @@ namespace StorySystem
                 }
             }
         }
+        public void FreeStory(string storyId)
+        {
+            lock (m_Lock) {
+                foreach (var pair in m_StoryInstances) {
+                    pair.Value.Remove(storyId);
+                }
+
+                string remKey = "";
+                foreach(var pair in m_StoryInstancePool) {
+                    pair.Value.Remove(storyId);
+
+                    if (pair.Value.Count == 0)
+                        remKey = pair.Key;
+                }
+
+                if (!string.IsNullOrEmpty(remKey))
+                    m_StoryInstancePool.Remove(remKey);
+            }
+        }
         public Dictionary<string, StoryInstance> GetStories(int sceneId)
         {
             Dictionary<string, StoryInstance> ret;
@@ -113,6 +130,7 @@ namespace StorySystem
             }
             return ret;
         }
+
         public StoryInstance NewStoryInstance(string storyId, int sceneId)
         {
             StoryInstance instance = null;
@@ -133,51 +151,53 @@ namespace StorySystem
         {
             lock (m_Lock) {
                 Dictionary<string, StoryInstance> existStoryInstances;
-                if (!m_StoryInstancePool.TryGetValue(resourceName, out existStoryInstances)) {
-                    List<Dsl.ISyntaxComponent> cmdOrValList = new List<Dsl.ISyntaxComponent>();
+                if (!m_StoryInstancePool.TryGetValue(resourceName, out existStoryInstances))
+                {
                     existStoryInstances = new Dictionary<string, StoryInstance>();
                     m_StoryInstancePool.Add(resourceName, existStoryInstances);
-                    for (int i = 0; i < dataFile.DslInfos.Count; i++) {
-                        var comp = dataFile.DslInfos[i];
-                        string id = comp.GetId();
-                        if (id == "story" || id == "script") {
-                            var funcData = comp as Dsl.FunctionData;
-                            if (null != funcData && funcData.IsHighOrder) {
-                                Dsl.FunctionData callData = funcData.LowerOrderFunction;
-                                if (null != callData && callData.HaveParam()) {
-                                    StoryInstance instance = new StoryInstance();
-                                    if (!string.IsNullOrEmpty(_namespace)) {
-                                        instance.Namespace = _namespace;
-                                    }
-                                    instance.Init(funcData);
-                                    string storyId;
-                                    if (string.IsNullOrEmpty(_namespace)) {
-                                        storyId = instance.StoryId;
-                                    }
-                                    else {
-                                        storyId = string.Format("{0}:{1}", _namespace, instance.StoryId);
-                                        instance.StoryId = storyId;
-                                    }
-                                    if (!existStoryInstances.ContainsKey(storyId)) {
-                                        existStoryInstances.Add(storyId, instance);
-                                    }
-                                    else {
-                                        existStoryInstances[storyId] = instance;
-                                    }
-                                    LogSystem.Info("ParseStory {0} {1}", storyId, sceneId);
+                }
+                List<Dsl.ISyntaxComponent> cmdOrValList = new List<Dsl.ISyntaxComponent>();
+                for (int i = 0; i < dataFile.DslInfos.Count; i++) {
+                    var comp = dataFile.DslInfos[i];
+                    string id = comp.GetId();
+                    if (id == "story" || id == "script") {
+                        var funcData = comp as Dsl.FunctionData;
+                        if (null != funcData && funcData.IsHighOrder) {
+                            Dsl.FunctionData callData = funcData.LowerOrderFunction;
+                            if (null != callData && callData.HaveParam()) {
+                                StoryInstance instance = new StoryInstance();
+                                if (!string.IsNullOrEmpty(_namespace)) {
+                                    instance.Namespace = _namespace;
                                 }
+                                instance.Init(funcData);
+                                string storyId;
+                                if (string.IsNullOrEmpty(_namespace)) {
+                                    storyId = instance.StoryId;
+                                }
+                                else {
+                                    storyId = string.Format("{0}:{1}", _namespace, instance.StoryId);
+                                    instance.StoryId = storyId;
+                                }
+                                if (!existStoryInstances.ContainsKey(storyId)) {
+                                    existStoryInstances.Add(storyId, instance);
+                                }
+                                else {
+                                    existStoryInstances[storyId] = instance;
+                                }
+                                LogSystem.Info("ParseStory {0} {1}", storyId, sceneId);
                             }
                         }
-                        else if (id == "command" || id == "value") {
-                            cmdOrValList.Add(comp);
-                        }
-                        else {
-                            LogSystem.Error("[LoadStory] Unknown story keyword '{0}'", id);
-                        }
                     }
-                    CustomCommandValueParser.FirstParse(cmdOrValList);
-                    CustomCommandValueParser.FinalParse(cmdOrValList);
+                    else if (id == "command" || id == "value") {
+                        cmdOrValList.Add(comp);
+                    }
+                    else {
+                        LogSystem.Error("[LoadStory] Unknown story keyword '{0}'", id);
+                    }
                 }
+                CustomCommandValueParser.FirstParse(cmdOrValList);
+                CustomCommandValueParser.FinalParse(cmdOrValList);
+                
                 Dictionary<string, StoryInstance> storyInstances;
                 if (!m_StoryInstances.TryGetValue(sceneId, out storyInstances)) {
                     storyInstances = new Dictionary<string, StoryInstance>(existStoryInstances);
@@ -212,6 +232,22 @@ namespace StorySystem
         private Dictionary<int, Dictionary<string, StoryInstance>> m_StoryInstances = new Dictionary<int, Dictionary<string, StoryInstance>>();
         private Dictionary<string, Dictionary<string, StoryInstance>> m_StoryInstancePool = new Dictionary<string, Dictionary<string, StoryInstance>>();
 
+        public static List<string> ReuseKeyBuffer
+        {
+            get {
+                if (null == s_ReuseKeyBuffer)
+                    s_ReuseKeyBuffer = new List<string>();
+                return s_ReuseKeyBuffer;
+            }
+        }
+        public static List<string> ReuseIdBuffer
+        {
+            get {
+                if (null == s_ReuseIdBuffer)
+                    s_ReuseIdBuffer = new List<string>();
+                return s_ReuseIdBuffer;
+            }
+        }
         public static StoryConfigManager NewInstance()
         {
             return new StoryConfigManager();
@@ -221,5 +257,10 @@ namespace StorySystem
             get { return s_Instance; }
         }
         private static StoryConfigManager s_Instance = new StoryConfigManager();
+
+        [ThreadStatic]
+        private static List<string> s_ReuseKeyBuffer = null;
+        [ThreadStatic]
+        private static List<string> s_ReuseIdBuffer = null;
     }
 }

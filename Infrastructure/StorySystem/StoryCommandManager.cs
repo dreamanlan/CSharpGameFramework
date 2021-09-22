@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ScriptRuntime;
 using GameFramework;
 
 namespace StorySystem
@@ -169,7 +168,7 @@ namespace StorySystem
                         GameFramework.LogSystem.Error("{0}", err);
                         throw new Exception(err);
 #else
-                        GameFramework.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
+                GameFramework.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
 #endif
                     }
                     if (null != command) {
@@ -181,7 +180,7 @@ namespace StorySystem
                         GameFramework.LogSystem.Error("{0}", err);
                         throw new Exception(err);
 #else
-                        GameFramework.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
+                GameFramework.LogSystem.Error("[LoadStory] CreateCommand failed, type:{0} line:{1}", type, commandConfig.GetLine());
 #endif
                     }
                 }
@@ -306,6 +305,8 @@ namespace StorySystem
             StoryValueManager.Instance.RegisterValueFactory("namespace", new StoryValueFactoryHelper<CommonValues.NamespaceValue>());
             StoryValueManager.Instance.RegisterValueFactory("storyid", new StoryValueFactoryHelper<CommonValues.StoryIdValue>());
             StoryValueManager.Instance.RegisterValueFactory("messageid", new StoryValueFactoryHelper<CommonValues.MessageIdValue>());
+            StoryValueManager.Instance.RegisterValueFactory("countcommand", new StoryValueFactoryHelper<CommonValues.CountCommandValue>());
+            StoryValueManager.Instance.RegisterValueFactory("counthandlercommand", new StoryValueFactoryHelper<CommonValues.CountHandlerCommandValue>());
             StoryValueManager.Instance.RegisterValueFactory("propget", new StoryValueFactoryHelper<CommonValues.PropGetValue>());
             StoryValueManager.Instance.RegisterValueFactory("rndint", new StoryValueFactoryHelper<CommonValues.RandomIntValue>());
             StoryValueManager.Instance.RegisterValueFactory("rndfloat", new StoryValueFactoryHelper<CommonValues.RandomFloatValue>());
@@ -371,9 +372,6 @@ namespace StorySystem
             StoryValueManager.Instance.RegisterValueFactory("str2upper", new StoryValueFactoryHelper<CommonValues.Str2UpperValue>());
             StoryValueManager.Instance.RegisterValueFactory("str2int", new StoryValueFactoryHelper<CommonValues.Str2IntValue>());
             StoryValueManager.Instance.RegisterValueFactory("str2float", new StoryValueFactoryHelper<CommonValues.Str2FloatValue>());
-            StoryValueManager.Instance.RegisterValueFactory("dictformat", new StoryValueFactoryHelper<CommonValues.DictFormatValue>());
-            StoryValueManager.Instance.RegisterValueFactory("dictget", new StoryValueFactoryHelper<CommonValues.DictGetValue>());
-            StoryValueManager.Instance.RegisterValueFactory("dictparse", new StoryValueFactoryHelper<CommonValues.DictParseValue>());
             StoryValueManager.Instance.RegisterValueFactory("time", new StoryValueFactoryHelper<CommonValues.TimeValue>());
             StoryValueManager.Instance.RegisterValueFactory("isnull", new StoryValueFactoryHelper<CommonValues.IsNullOperator>());
             StoryValueManager.Instance.RegisterValueFactory("gettype", new StoryValueFactoryHelper<CommonValues.GetTypeValue>());

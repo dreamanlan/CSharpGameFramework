@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using ScriptRuntime;
+using StorySystem;
 
 namespace StorySystem.CommonValues
 {
@@ -239,6 +241,114 @@ namespace StorySystem.CommonValues
         {
             m_HaveValue = true;
             m_Value = handler.MessageId;
+        }
+        private bool m_HaveValue;
+        private BoxedValue m_Value;
+    }
+    internal sealed class CountCommandValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            if (null != callData) {
+                m_ParamNum = callData.GetParamNum();
+                if (m_ParamNum > 0)
+                    m_Level.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        public IStoryValue Clone()
+        {
+            CountCommandValue val = new CountCommandValue();
+            val.m_ParamNum = m_ParamNum;
+            val.m_Level = m_Level.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_HaveValue = false;
+            if (m_ParamNum > 0)
+                m_Level.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue(instance, handler);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public BoxedValue Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance, StoryMessageHandler handler)
+        {
+            m_HaveValue = true;
+            int level = 0;
+            if (m_ParamNum > 0) {
+                level = m_Level.Value;
+            }
+            if (level <= 0)
+                m_Value = handler.PeekRuntime().CountCommand();
+            else {
+                var stack = handler.RuntimeStack;
+                int i = 0;
+                foreach(var runtime in stack) {
+                    if (i == level) {
+                        m_Value = runtime.CountCommand();
+                        break;
+                    }
+                    ++i;
+                }
+            }
+        }
+        private int m_ParamNum = 0;
+        private IStoryValue<int> m_Level = new StoryValue<int>();
+        private bool m_HaveValue;
+        private BoxedValue m_Value;
+    }
+    internal sealed class CountHandlerCommandValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            if (null != callData) {
+            }
+        }
+        public IStoryValue Clone()
+        {
+            CountHandlerCommandValue val = new CountHandlerCommandValue();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_HaveValue = false;
+
+            TryUpdateValue(instance, handler);
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public BoxedValue Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance, StoryMessageHandler handler)
+        {
+            m_HaveValue = true;
+            m_Value = handler.CountCommand();
         }
         private bool m_HaveValue;
         private BoxedValue m_Value;
@@ -509,7 +619,7 @@ namespace StorySystem.CommonValues
         {
             if (m_X.HaveValue && m_Y.HaveValue) {
                 m_HaveValue = true;
-                m_Value = new ScriptRuntime.Vector2(m_X.Value, m_Y.Value);
+                m_Value = new Vector2(m_X.Value, m_Y.Value);
             }
         }
         private IStoryValue<float> m_X = new StoryValue<float>();
@@ -566,7 +676,7 @@ namespace StorySystem.CommonValues
         {
             if (m_X.HaveValue && m_Y.HaveValue && m_Z.HaveValue) {
                 m_HaveValue = true;
-                m_Value = new ScriptRuntime.Vector3(m_X.Value, m_Y.Value, m_Z.Value);
+                m_Value = new Vector3(m_X.Value, m_Y.Value, m_Z.Value);
             }
         }
         private IStoryValue<float> m_X = new StoryValue<float>();
@@ -627,7 +737,7 @@ namespace StorySystem.CommonValues
         {
             if (m_X.HaveValue && m_Y.HaveValue && m_Z.HaveValue && m_W.HaveValue) {
                 m_HaveValue = true;
-                m_Value = new ScriptRuntime.Vector4(m_X.Value, m_Y.Value, m_Z.Value, m_W.Value);
+                m_Value = new Vector4(m_X.Value, m_Y.Value, m_Z.Value, m_W.Value);
             }
         }
         private IStoryValue<float> m_X = new StoryValue<float>();
@@ -689,7 +799,7 @@ namespace StorySystem.CommonValues
         {
             if (m_X.HaveValue && m_Y.HaveValue && m_Z.HaveValue && m_W.HaveValue) {
                 m_HaveValue = true;
-                m_Value = new ScriptRuntime.Quaternion(m_X.Value, m_Y.Value, m_Z.Value, m_W.Value);
+                m_Value = new Quaternion(m_X.Value, m_Y.Value, m_Z.Value, m_W.Value);
             }
         }
         private IStoryValue<float> m_X = new StoryValue<float>();
@@ -748,7 +858,7 @@ namespace StorySystem.CommonValues
         {
             if (m_X.HaveValue && m_Y.HaveValue && m_Z.HaveValue) {
                 m_HaveValue = true;
-                m_Value = ScriptRuntime.Quaternion.CreateFromYawPitchRoll(m_X.Value, m_Y.Value, m_Z.Value);
+                m_Value = Quaternion.CreateFromYawPitchRoll(m_X.Value, m_Y.Value, m_Z.Value);
             }
         }
         private IStoryValue<float> m_X = new StoryValue<float>();
@@ -806,8 +916,8 @@ namespace StorySystem.CommonValues
                 m_Value = (m_Pt1.Value - m_Pt2.Value).Length();
             }
         }
-        private IStoryValue<ScriptRuntime.Vector2> m_Pt1 = new StoryValue<ScriptRuntime.Vector2>();
-        private IStoryValue<ScriptRuntime.Vector2> m_Pt2 = new StoryValue<ScriptRuntime.Vector2>();
+        private IStoryValue<Vector2> m_Pt1 = new StoryValue<Vector2>();
+        private IStoryValue<Vector2> m_Pt2 = new StoryValue<Vector2>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -860,8 +970,8 @@ namespace StorySystem.CommonValues
                 m_Value = GameFramework.Geometry.Distance(m_Pt1.Value, m_Pt2.Value);
             }
         }
-        private IStoryValue<ScriptRuntime.Vector3> m_Pt1 = new StoryValue<ScriptRuntime.Vector3>();
-        private IStoryValue<ScriptRuntime.Vector3> m_Pt2 = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryValue<Vector3> m_Pt1 = new StoryValue<Vector3>();
+        private IStoryValue<Vector3> m_Pt2 = new StoryValue<Vector3>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -908,10 +1018,10 @@ namespace StorySystem.CommonValues
         {
             if (m_Pt.HaveValue) {
                 m_HaveValue = true;
-                m_Value = new ScriptRuntime.Vector3(m_Pt.Value.X, 0, m_Pt.Value.Y);
+                m_Value = new Vector3(m_Pt.Value.X, 0, m_Pt.Value.Y);
             }
         }
-        private IStoryValue<ScriptRuntime.Vector2> m_Pt = new StoryValue<ScriptRuntime.Vector2>();
+        private IStoryValue<Vector2> m_Pt = new StoryValue<Vector2>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -958,10 +1068,10 @@ namespace StorySystem.CommonValues
         {
             if (m_Pt.HaveValue) {
                 m_HaveValue = true;
-                m_Value = new ScriptRuntime.Vector2(m_Pt.Value.X, m_Pt.Value.Z);
+                m_Value = new Vector2(m_Pt.Value.X, m_Pt.Value.Z);
             }
         }
-        private IStoryValue<ScriptRuntime.Vector3> m_Pt = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryValue<Vector3> m_Pt = new StoryValue<Vector3>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -1756,13 +1866,13 @@ namespace StorySystem.CommonValues
             if (m_Pt.HaveValue) {
                 m_HaveValue = true;
                 float r = m_Radius.Value;
-                ScriptRuntime.Vector3 pt = m_Pt.Value;
+                Vector3 pt = m_Pt.Value;
                 float deltaX = (GameFramework.Helper.Random.NextFloat() - 0.5f) * r;
                 float deltaZ = (GameFramework.Helper.Random.NextFloat() - 0.5f) * r;
-                m_Value = new ScriptRuntime.Vector3(pt.X + deltaX, pt.Y, pt.Z + deltaZ);
+                m_Value = new Vector3(pt.X + deltaX, pt.Y, pt.Z + deltaZ);
             }
         }
-        private IStoryValue<ScriptRuntime.Vector3> m_Pt = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryValue<Vector3> m_Pt = new StoryValue<Vector3>();
         private IStoryValue<float> m_Radius = new StoryValue<float>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
@@ -1813,13 +1923,13 @@ namespace StorySystem.CommonValues
             if (m_Pt.HaveValue) {
                 m_HaveValue = true;
                 float r = m_Radius.Value;
-                ScriptRuntime.Vector2 pt = m_Pt.Value;
+                Vector2 pt = m_Pt.Value;
                 float deltaX = (GameFramework.Helper.Random.NextFloat() - 0.5f) * r;
                 float deltaZ = (GameFramework.Helper.Random.NextFloat() - 0.5f) * r;
-                m_Value = new ScriptRuntime.Vector2(pt.X + deltaX, pt.Y + deltaZ);
+                m_Value = new Vector2(pt.X + deltaX, pt.Y + deltaZ);
             }
         }
-        private IStoryValue<ScriptRuntime.Vector2> m_Pt = new StoryValue<ScriptRuntime.Vector2>();
+        private IStoryValue<Vector2> m_Pt = new StoryValue<Vector2>();
         private IStoryValue<float> m_Radius = new StoryValue<float>();
         private bool m_HaveValue;
         private BoxedValue m_Value;

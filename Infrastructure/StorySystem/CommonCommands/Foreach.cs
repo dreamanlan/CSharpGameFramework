@@ -12,6 +12,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class ForeachCommand : AbstractStoryCommand
     {
+        public override bool IsCompositeCommand => true;
         protected override IStoryCommand CloneCommand()
         {
             ForeachCommand retCmd = new ForeachCommand();
@@ -22,7 +23,6 @@ namespace StorySystem.CommonCommands
             for (int i = 0; i < m_LoadedCommands.Count; i++) {
                 retCmd.m_LoadedCommands.Add(m_LoadedCommands[i].Clone());
             }
-            retCmd.IsCompositeCommand = true;
             return retCmd;
         }
         protected override void ResetState()
@@ -85,7 +85,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData functionData)
+        protected override bool Load(Dsl.FunctionData functionData)
         {
             if (functionData.IsHighOrder) {
                 m_LocalInfoIndex = StoryCommandManager.Instance.AllocLocalInfoIndex();
@@ -101,8 +101,8 @@ namespace StorySystem.CommonCommands
                     if (null != cmd)
                         m_LoadedCommands.Add(cmd);
                 }
-                IsCompositeCommand = true;
             }
+            return true;
         }
         private void Prepare(StoryMessageHandler handler)
         {
@@ -142,6 +142,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class LoopListCommand : AbstractStoryCommand
     {
+        public override bool IsCompositeCommand => true;
         protected override IStoryCommand CloneCommand()
         {
             LoopListCommand retCmd = new LoopListCommand();
@@ -150,7 +151,6 @@ namespace StorySystem.CommonCommands
             for (int i = 0; i < m_LoadedCommands.Count; i++) {
                 retCmd.m_LoadedCommands.Add(m_LoadedCommands[i].Clone());
             }
-            retCmd.IsCompositeCommand = true;
             return retCmd;
         }
         protected override void ResetState()
@@ -208,7 +208,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData functionData)
+        protected override bool Load(Dsl.FunctionData functionData)
         {
             if (functionData.IsHighOrder) {
                 m_LocalInfoIndex = StoryCommandManager.Instance.AllocLocalInfoIndex();
@@ -221,8 +221,8 @@ namespace StorySystem.CommonCommands
                     if (null != cmd)
                         m_LoadedCommands.Add(cmd);
                 }
-                IsCompositeCommand = true;
             }
+            return true;
         }
         private void Prepare(StoryMessageHandler handler)
         {
@@ -262,6 +262,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class LoopCommand : AbstractStoryCommand
     {
+        public override bool IsCompositeCommand => true;
         protected override IStoryCommand CloneCommand()
         {
             LoopCommand retCmd = new LoopCommand();
@@ -270,7 +271,6 @@ namespace StorySystem.CommonCommands
             for (int i = 0; i < m_LoadedCommands.Count; i++) {
                 retCmd.m_LoadedCommands.Add(m_LoadedCommands[i].Clone());
             }
-            retCmd.IsCompositeCommand = true;
             return retCmd;
         }
         protected override void ResetState()
@@ -324,7 +324,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData functionData)
+        protected override bool Load(Dsl.FunctionData functionData)
         {
             if (functionData.IsHighOrder) {
                 m_LocalInfoIndex = StoryCommandManager.Instance.AllocLocalInfoIndex();
@@ -338,8 +338,8 @@ namespace StorySystem.CommonCommands
                     if (null != cmd)
                         m_LoadedCommands.Add(cmd);
                 }
-                IsCompositeCommand = true;
             }
+            return true;
         }
         private void Prepare(StoryMessageHandler handler)
         {

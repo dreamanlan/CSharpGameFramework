@@ -132,6 +132,10 @@ namespace StorySystem
             get { return m_IsReturn; }
             set { m_IsReturn = value; }
         }
+        public int CountCommand()
+        {
+            return m_CommandQueue.Count;
+        }
         public void Reset()
         {
             m_Iterator = BoxedValue.NullObject;
@@ -326,6 +330,10 @@ namespace StorySystem
             else {
                 runtime.Reset();
             }
+        }
+        public int CountCommand()
+        {
+            return m_Runtime.CommandQueue.Count;
         }
         public StoryMessageHandler Clone()
         {

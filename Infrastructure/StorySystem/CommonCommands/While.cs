@@ -12,6 +12,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class WhileCommand : AbstractStoryCommand
     {
+        public override bool IsCompositeCommand => true;
         protected override IStoryCommand CloneCommand()
         {
             WhileCommand retCmd = new WhileCommand();
@@ -20,7 +21,6 @@ namespace StorySystem.CommonCommands
             for (int i = 0; i < m_LoadedCommands.Count; i++) {
                 retCmd.m_LoadedCommands.Add(m_LoadedCommands[i].Clone());
             }
-            retCmd.IsCompositeCommand = true;
             return retCmd;
         }
         protected override void ResetState()
@@ -71,7 +71,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData functionData)
+        protected override bool Load(Dsl.FunctionData functionData)
         {
             if (functionData.IsHighOrder) {
                 m_LocalInfoIndex = StoryCommandManager.Instance.AllocLocalInfoIndex();
@@ -87,8 +87,8 @@ namespace StorySystem.CommonCommands
                             m_LoadedCommands.Add(cmd);
                     }
                 }
-                IsCompositeCommand = true;
             }
+            return true;
         }
         private void Prepare(StoryMessageHandler handler)
         {

@@ -95,7 +95,7 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -107,6 +107,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
+            return true;
         }
         private IStoryValue m_Object = new StoryValue();
         private IStoryValue m_Method = new StoryValue();
@@ -191,7 +192,7 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -203,6 +204,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
+            return true;
         }
         private IStoryValue m_Object = new StoryValue();
         private IStoryValue m_Method = new StoryValue();
@@ -235,13 +237,14 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_FileName.InitFromDsl(callData.GetParam(0));
                 m_Arguments.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
         private IStoryValue<string> m_FileName = new StoryValue<string>();
         private IStoryValue<string> m_Arguments = new StoryValue<string>();

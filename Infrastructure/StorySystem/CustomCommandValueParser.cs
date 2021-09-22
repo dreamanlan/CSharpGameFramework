@@ -19,7 +19,7 @@ namespace StorySystem
                 var id = System.Text.Encoding.ASCII.GetString(bytes);
                 if (id == Dsl.DslFile.c_BinaryIdentity) {
                     try {
-                        dataFile.LoadBinaryFile(file);
+                        dataFile.LoadBinaryFile(file, StoryConfigManager.ReuseKeyBuffer, StoryConfigManager.ReuseIdBuffer);
                         return dataFile;
                     }
                     catch (Exception ex) {
@@ -55,7 +55,7 @@ namespace StorySystem
             if (Dsl.DslFile.IsBinaryDsl(bytes, 0)) {
                 try {
                     Dsl.DslFile dataFile = new Dsl.DslFile();
-                    dataFile.LoadBinaryCode(bytes);
+                    dataFile.LoadBinaryCode(bytes, StoryConfigManager.ReuseKeyBuffer, StoryConfigManager.ReuseIdBuffer);
                     return dataFile;
                 }
                 catch (Exception ex) {

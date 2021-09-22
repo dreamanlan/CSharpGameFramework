@@ -21,6 +21,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class IfElseCommand : AbstractStoryCommand
     {
+        public override bool IsCompositeCommand => true;
         protected override IStoryCommand CloneCommand()
         {
             IfElseCommand retCmd = new IfElseCommand();
@@ -39,7 +40,6 @@ namespace StorySystem.CommonCommands
             for (int i = 0; i < m_LoadedElseCommands.Count; i++) {
                 retCmd.m_LoadedElseCommands.Add(m_LoadedElseCommands[i].Clone());
             }
-            retCmd.IsCompositeCommand = true;
             return retCmd;
         }
         protected override void ResetState()
@@ -98,7 +98,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData functionData)
+        protected override bool Load(Dsl.FunctionData functionData)
         {
             if (functionData.IsHighOrder) {
                 m_LocalInfoIndex = StoryCommandManager.Instance.AllocLocalInfoIndex();
@@ -118,10 +118,10 @@ namespace StorySystem.CommonCommands
                     }
                     m_LoadedIfCommands.Add(cmds);
                 }
-                IsCompositeCommand = true;
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             Load(statementData.First);
             int ct = statementData.Functions.Count;
@@ -149,6 +149,7 @@ namespace StorySystem.CommonCommands
                     }
                 }
             }
+            return true;
         }
         private void PrepareIf(int ix, StoryMessageHandler handler)
         {

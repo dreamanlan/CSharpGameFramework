@@ -42,7 +42,7 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -53,6 +53,7 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_FormatArgs.Add(val);
             }
+            return true;
         }
         private IStoryValue m_Format = new StoryValue();
         private List<IStoryValue> m_FormatArgs = new List<IStoryValue>();

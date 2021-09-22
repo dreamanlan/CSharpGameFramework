@@ -1,0 +1,12 @@
+mac osx 与Windows上编译时 protobuf-net的预编译命令参数不一样，编译后处理的precompile命令在mac osx上添加了-f参数来指明dotnet framework的路径。
+在Windows上编译时需要手动将ClientProtoBuf、DataProtoBuf、ServerProtoBuf这三个工程文件里的相应命令修改一下。
+
+ClientProtoBuf工程里的命令行如下：
+..\..\Precompile\precompile.exe ClientProtoBuf.dll -o:..\ProtobufSerializer.dll -t:ProtobufSerializer -f:/Library/Frameworks/Mono.framework/Libraries/mono/4.5
+
+在Windows上应为：
+..\..\Precompile\precompile.exe ClientProtoBuf.dll -o:..\ProtobufSerializer.dll -t:ProtobufSerializer
+
+DataProtoBuf、ServerProtoBuf也应类似修改。
+
+等以后有时间了再研究一下如何统一不同平台的命令行。

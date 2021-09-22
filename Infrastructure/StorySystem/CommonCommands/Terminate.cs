@@ -55,8 +55,10 @@ namespace StorySystem.CommonCommands
             handler.PeekRuntime().IsReturn = true;
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
-        { }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            return true;
+        }
     }
     /// <summary>
     /// suspend();
@@ -73,8 +75,10 @@ namespace StorySystem.CommonCommands
             handler.IsSuspended = true;
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
-        { }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            return true;
+        }
     }
     /// <summary>
     /// terminate();
@@ -91,8 +95,10 @@ namespace StorySystem.CommonCommands
             instance.IsTerminated = true;
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
-        { }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            return true;
+        }
     }
     /// <summary>
     /// pause();
@@ -109,7 +115,9 @@ namespace StorySystem.CommonCommands
             instance.IsPaused = true;
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
-        { }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            return true;
+        }
     }
 }

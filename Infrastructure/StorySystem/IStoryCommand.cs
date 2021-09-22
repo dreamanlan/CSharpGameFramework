@@ -25,10 +25,9 @@ namespace StorySystem
         //此命令是否复合命令。
         //注意：复合命令需要自己手动调用Evaluate方法，系统不为复合命令调用此方法
         //(也就是说此种情形Evaluate只是推荐了一个与其它命令相似的方法接口)！
-        public bool IsCompositeCommand
+        public virtual bool IsCompositeCommand
         {
-            get { return m_IsCompositeCommand; }
-            protected set { m_IsCompositeCommand = value; }
+            get { return false; }
         }
         public string GetId()
         {
@@ -50,7 +49,7 @@ namespace StorySystem
         }
         public bool Init(Dsl.ISyntaxComponent config)
         {
-            m_LoadSuccess = true;
+            bool ret = true;
             m_Config = config;
             m_Id = config.GetId();
             Dsl.FunctionData funcData = config as Dsl.FunctionData;
@@ -63,19 +62,19 @@ namespace StorySystem
                     int funcNum = statementData.GetFunctionNum();
                     var lastFunc = statementData.Last;
                     var id = lastFunc.GetId();
-                    if (funcNum >= 2 && id == "comment" || id == "comments") {
+                    if (funcNum >= 2 && (id == "comment" || id == "comments")) {
                         m_Comments = lastFunc;
                         statementData.Functions.RemoveAt(funcNum - 1);
                         if (statementData.GetFunctionNum() == 1) {
                             funcData = statementData.GetFunction(0);
-                            Load(funcData);
+                            ret = Load(funcData);
                         }
                         else {
-                            Load(statementData);
+                            ret = Load(statementData);
                         }
                     }
                     else {
-                        Load(statementData);
+                        ret = Load(statementData);
                     }
                 }
                 else {
@@ -87,7 +86,7 @@ namespace StorySystem
                 m_Comments = null;
                 m_Config = null;
             }
-            return m_LoadSuccess;
+            return ret;
         }
         public void Reset()
         {
@@ -162,21 +161,23 @@ namespace StorySystem
         {
             return false;
         }
-        protected virtual void Load(Dsl.FunctionData funcData)
+        protected virtual bool Load(Dsl.FunctionData funcData)
         {
+            bool ret = true;
             if (funcData.IsHighOrder) {
                 if (funcData.LowerOrderFunction.GetParamNum() > 0 || funcData.HaveStatement() || funcData.HaveExternScript()) {
-                    m_LoadSuccess = false;
+                    ret = false;
                 }
             }
             else if (funcData.HaveStatement() || funcData.HaveExternScript()) {
-                m_LoadSuccess = false;
+                ret = false;
             }
             else if (funcData.HaveParam()) {
-                m_LoadSuccess = true;
+                ret = true;
             }
+            return ret;
         }
-        protected virtual void Load(Dsl.StatementData statementData)
+        protected virtual bool Load(Dsl.StatementData statementData)
         {
             bool v = true;
             foreach (var func in statementData.Functions) {
@@ -189,14 +190,12 @@ namespace StorySystem
                     v = false;
                 }
             }
-            m_LoadSuccess = v;
+            return v;
         }
 
         private Dsl.FunctionData m_Comments;
         private Dsl.ISyntaxComponent m_Config;
         private string m_Id;
-        private bool m_LoadSuccess = true;
         private bool m_LastExecResult = false;
-        private bool m_IsCompositeCommand = false;
     }
 }

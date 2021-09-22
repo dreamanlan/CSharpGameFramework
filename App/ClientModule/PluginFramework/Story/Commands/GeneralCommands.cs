@@ -40,7 +40,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -48,6 +48,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_ObjResIds.Add(val);
             }
+            return true;
         }
 
         private void PreloadActorAndSkills(int resId)
@@ -105,14 +106,15 @@ namespace GameFramework.Story.Commands
             });
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_StoryId.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First;
@@ -125,6 +127,7 @@ namespace GameFramework.Story.Commands
                     }
                 }
             }
+            return true;
         }
         private IStoryValue<string> m_StoryId = new StoryValue<string>();
         private IStoryValue<int> m_Multiple = new StoryValue<int>();
@@ -157,14 +160,15 @@ namespace GameFramework.Story.Commands
                 GfxStorySystem.Instance.MarkStoriesTerminated(m_StoryId.Value);
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_StoryId.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First;
@@ -177,6 +181,7 @@ namespace GameFramework.Story.Commands
                     }
                 }
             }
+            return true;
         }
         private IStoryValue<string> m_StoryId = new StoryValue<string>();
         private IStoryValue<int> m_Multiple = new StoryValue<int>();
@@ -250,7 +255,7 @@ namespace GameFramework.Story.Commands
             }
             return ret;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -258,8 +263,9 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_StoryIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             int ct = statementData.Functions.Count;
             if (statementData.Functions.Count >= 2) {
@@ -289,6 +295,7 @@ namespace GameFramework.Story.Commands
                     }
                 }
             }
+            return true;
         }
         private void LoadMultiple(Dsl.FunctionData callData)
         {
@@ -363,7 +370,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -371,8 +378,9 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_StoryIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First;
@@ -385,6 +393,7 @@ namespace GameFramework.Story.Commands
                     }
                 }
             }
+            return true;
         }
         private List<IStoryValue<string>> m_StoryIds = new List<IStoryValue<string>>();
         private IStoryValue<int> m_Multiple = new StoryValue<int>();
@@ -427,7 +436,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -435,8 +444,9 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_StoryIds.Add(val);
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
                 var first = statementData.First;
@@ -449,6 +459,7 @@ namespace GameFramework.Story.Commands
                     }
                 }
             }
+            return true;
         }
         private List<IStoryValue<string>> m_StoryIds = new List<IStoryValue<string>>();
         private IStoryValue<int> m_Multiple = new StoryValue<int>();
@@ -509,7 +520,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -520,6 +531,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgArgs.Add(val);
             }
+            return true;
         }
 
         private IStoryValue<string> m_MsgId = new StoryValue<string>();
@@ -614,7 +626,7 @@ namespace GameFramework.Story.Commands
             return ret;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -622,9 +634,10 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
 
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
                 Dsl.FunctionData first = statementData.First;
@@ -638,6 +651,7 @@ namespace GameFramework.Story.Commands
                     LoadTimeoutSet(third);
                 }
             }
+            return true;
         }
 
         private void LoadSet(Dsl.FunctionData callData)
@@ -734,7 +748,7 @@ namespace GameFramework.Story.Commands
             return ret;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -742,9 +756,10 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
 
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
                 Dsl.FunctionData first = statementData.First;
@@ -758,6 +773,7 @@ namespace GameFramework.Story.Commands
                     LoadTimeoutSet(third);
                 }
             }
+            return true;
         }
 
         private void LoadSet(Dsl.FunctionData callData)
@@ -821,7 +837,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -829,6 +845,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
 
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
@@ -866,7 +883,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
@@ -874,6 +891,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_MsgIds.Add(val);
             }
+            return true;
         }
 
         private List<IStoryValue<string>> m_MsgIds = new List<IStoryValue<string>>();
@@ -939,7 +957,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -950,6 +968,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
+            return true;
         }
 
         private IStoryValue<string> m_Msg = new StoryValue<string>();
@@ -1023,7 +1042,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -1034,6 +1053,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
+            return true;
         }
 
         private IStoryValue<string> m_Msg = new StoryValue<string>();
@@ -1080,7 +1100,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -1092,6 +1112,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
+            return true;
         }
 
         private IStoryValue<string> m_EventName = new StoryValue<string>();
@@ -1144,7 +1165,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -1156,6 +1177,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
+            return true;
         }
 
         private IStoryValue<string> m_ObjName = new StoryValue<string>();
@@ -1208,7 +1230,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -1220,6 +1242,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
+            return true;
         }
 
         private IStoryValue<string> m_ObjTag = new StoryValue<string>();
@@ -1281,7 +1304,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -1293,6 +1316,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
+            return true;
         }
         private IStoryValue m_Object = new StoryValue();
         private IStoryValue<string> m_Msg = new StoryValue<string>();
@@ -1347,7 +1371,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 3) {
@@ -1361,6 +1385,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
+            return true;
         }
 
         private IStoryValue<int> m_ActorId = new StoryValue<int>();
@@ -1447,7 +1472,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData funcData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
             if (funcData.IsHighOrder) {
                 LoadCall(funcData.LowerOrderFunction);
@@ -1463,8 +1488,9 @@ namespace GameFramework.Story.Commands
                     }
                 }
             }
+            return true;
         }
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
                 Dsl.FunctionData first = statementData.First;
@@ -1487,6 +1513,7 @@ namespace GameFramework.Story.Commands
                     }
                 }
             }
+            return true;
         }
         private void LoadCall(Dsl.FunctionData callData)
         {
@@ -1597,7 +1624,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData funcData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
             if (funcData.IsHighOrder) {
                 LoadCall(funcData.LowerOrderFunction);
@@ -1613,6 +1640,7 @@ namespace GameFramework.Story.Commands
                     }
                 }
             }
+            return true;
         }
         private void LoadCall(Dsl.FunctionData callData)
         {
@@ -1678,12 +1706,13 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_ObjPath.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
 
         private IStoryValue m_ObjPath = new StoryValue();
@@ -1760,7 +1789,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 2) {
@@ -1768,6 +1797,7 @@ namespace GameFramework.Story.Commands
                 m_Parent.InitFromDsl(callData.GetParam(1));
                 m_StayWorldPos.InitFromDsl(callData.GetParam(2));
             }
+            return true;
         }
 
         private IStoryValue m_ObjPath = new StoryValue();
@@ -1815,13 +1845,14 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_ObjPath.InitFromDsl(callData.GetParam(0));
                 m_Active.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
 
         private IStoryValue m_ObjPath = new StoryValue();
@@ -1876,13 +1907,14 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_ObjPath.InitFromDsl(callData.GetParam(0));
                 m_Visible.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
 
         private IStoryValue m_ObjPath = new StoryValue();
@@ -1928,12 +1960,13 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_ObjPath.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
 
         private IStoryValue m_ObjPath = new StoryValue();
@@ -1982,13 +2015,14 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_ObjPath.InitFromDsl(callData.GetParam(0));
                 m_Visible.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
 
         private IStoryValue m_ObjPath = new StoryValue();
@@ -2056,16 +2090,17 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_ObjPath.InitFromDsl(callData.GetParam(0));
                 m_ComponentType.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
 
-        protected override void Load(Dsl.StatementData statementData)
+        protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
                 Dsl.FunctionData first = statementData.First;
@@ -2075,6 +2110,7 @@ namespace GameFramework.Story.Commands
                     LoadVarName(second);
                 }
             }
+            return true;
         }
 
         private void LoadVarName(Dsl.FunctionData callData)
@@ -2143,13 +2179,14 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_ObjPath.InitFromDsl(callData.GetParam(0));
                 m_ComponentType.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
 
         private IStoryValue m_ObjPath = new StoryValue();
@@ -2198,7 +2235,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 3) {
@@ -2207,6 +2244,7 @@ namespace GameFramework.Story.Commands
                 m_IsTickPlugin.InitFromDsl(callData.GetParam(2));
                 m_UseLuaPlugin.InitFromDsl(callData.GetParam(3));
             }
+            return true;
         }
 
         private IStoryValue<string> m_ObjPath = new StoryValue<string>();
@@ -2257,7 +2295,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 3) {
@@ -2266,6 +2304,7 @@ namespace GameFramework.Story.Commands
                 m_IsTickPlugin.InitFromDsl(callData.GetParam(2));
                 m_UseLuaPlugin.InitFromDsl(callData.GetParam(3));
             }
+            return true;
         }
 
         private IStoryValue<string> m_ObjPath = new StoryValue<string>();
@@ -2299,12 +2338,13 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_Url.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
 
         private IStoryValue<string> m_Url = new StoryValue<string>();
@@ -2331,8 +2371,9 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
+            return true;
         }
     }
     /// <summary>
@@ -2362,12 +2403,13 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_TargetSceneId.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
 
         private IStoryValue<int> m_TargetSceneId = new StoryValue<int>();
@@ -2399,12 +2441,13 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_TargetSceneId.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
 
         private IStoryValue<int> m_TargetSceneId = new StoryValue<int>();
@@ -2436,12 +2479,13 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_TargetSceneId.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
 
         private IStoryValue<int> m_TargetSceneId = new StoryValue<int>();
@@ -2481,7 +2525,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 2) {
@@ -2489,6 +2533,7 @@ namespace GameFramework.Story.Commands
                 m_Logic.InitFromDsl(callData.GetParam(1));
                 m_Params.InitFromDsl(callData.GetParam(2));
             }
+            return true;
         }
 
         private IStoryValue<int> m_ConfigId = new StoryValue<int>();
@@ -2519,12 +2564,13 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_ConfigId.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
 
         private IStoryValue<int> m_ConfigId = new StoryValue<int>();
@@ -2564,13 +2610,14 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_SceneLogicConfigId.InitFromDsl(callData.GetParam(0));
                 m_Enabled.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
 
         private IStoryValue<int> m_SceneLogicConfigId = new StoryValue<int>();
@@ -2622,7 +2669,7 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             m_ParamNum = callData.GetParamNum();
             if (m_ParamNum > 0) {
@@ -2631,6 +2678,7 @@ namespace GameFramework.Story.Commands
             if (m_ParamNum > 1) {
                 m_Timeout.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
 
         private int m_ParamNum = 0;
@@ -2678,7 +2726,7 @@ namespace GameFramework.Story.Commands
             PluginFramework.Instance.HighlightPromptWithDict(dictId, args);
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
@@ -2689,6 +2737,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_DictArgs.Add(val);
             }
+            return true;
         }
         private IStoryValue<string> m_DictId = new StoryValue<string>();
         private List<IStoryValue> m_DictArgs = new List<IStoryValue>();
@@ -2716,12 +2765,13 @@ namespace GameFramework.Story.Commands
             PluginFramework.Instance.HighlightPrompt(info);
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_Info.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
         private IStoryValue<string> m_Info = new StoryValue<string>();
     }
@@ -2756,13 +2806,14 @@ namespace GameFramework.Story.Commands
             return false;
         }
 
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_ObjId.InitFromDsl(callData.GetParam(0));
                 m_Value.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
 
         private IStoryValue<int> m_ObjId = new StoryValue<int>();
@@ -2824,7 +2875,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             m_ParamNum = callData.GetParamNum();
             if (m_ParamNum > 1) {
@@ -2834,6 +2885,7 @@ namespace GameFramework.Story.Commands
             if (m_ParamNum > 2) {
                 m_Time.InitFromDsl(callData.GetParam(2));
             }
+            return true;
         }
         private int m_ParamNum = 0;
         private IStoryValue m_ObjPath = new StoryValue();
@@ -2925,7 +2977,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData funcData)
+        protected override bool Load(Dsl.FunctionData funcData)
         {
             if (funcData.IsHighOrder) {
                 LoadCall(funcData.LowerOrderFunction);
@@ -2944,6 +2996,7 @@ namespace GameFramework.Story.Commands
                     }
                 }
             }
+            return true;
         }
         private void LoadCall(Dsl.FunctionData callData)
         {
@@ -3048,7 +3101,7 @@ namespace GameFramework.Story.Commands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
@@ -3060,6 +3113,7 @@ namespace GameFramework.Story.Commands
                 val.InitFromDsl(callData.GetParam(i));
                 m_Args.Add(val);
             }
+            return true;
         }
         private IStoryValue m_ObjPath = new StoryValue();
         private IStoryValue<int> m_SkillId = new StoryValue<int>();
@@ -3104,12 +3158,13 @@ namespace GameFramework.Story.Commands
             GfxSkillSystem.Instance.StopAllSkillWithGameObject(uobj, true);
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 0) {
                 m_ObjPath.InitFromDsl(callData.GetParam(0));
             }
+            return true;
         }
         private IStoryValue m_ObjPath = new StoryValue();
     }

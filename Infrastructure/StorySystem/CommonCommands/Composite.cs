@@ -28,6 +28,7 @@ namespace StorySystem.CommonCommands
     /// </remarks>
     internal sealed class CompositeCommand : AbstractStoryCommand
     {
+        public override bool IsCompositeCommand => true;
         internal string Name
         {
             get { return m_Name; }
@@ -98,7 +99,6 @@ namespace StorySystem.CommonCommands
             cmd.m_ArgNames = m_ArgNames;
             cmd.m_OptArgs = m_OptArgs;
             cmd.m_InitialCommands = m_InitialCommands;
-            cmd.IsCompositeCommand = true;
             if (null == cmd.m_PrologueCommand) {
                 cmd.m_PrologueCommand = new CompositePrologueCommandHelper(cmd);
             }
@@ -148,7 +148,7 @@ namespace StorySystem.CommonCommands
             }
             return ret;
         }
-        protected override void Load(FunctionData funcData)
+        protected override bool Load(FunctionData funcData)
         {
             if (funcData.IsHighOrder) {
                 var cd = funcData.LowerOrderFunction;
@@ -168,8 +168,9 @@ namespace StorySystem.CommonCommands
                     }
                 }
             }
+            return true;
         }
-        private void LoadCall(Dsl.FunctionData callData)
+        private bool LoadCall(Dsl.FunctionData callData)
         {
             m_LoadedOptArgs = new Dictionary<string, IStoryValue>();
             foreach (var pair in m_OptArgs) {
@@ -184,13 +185,13 @@ namespace StorySystem.CommonCommands
                 val.InitFromDsl(callData.GetParam(i));
                 m_LoadedArgs.Add(val);
             }
-            IsCompositeCommand = true;
             if (null == m_PrologueCommand) {
                 m_PrologueCommand = new CompositePrologueCommandHelper(this);
             }
             if (null == m_EpilogueCommand) {
                 m_EpilogueCommand = new CompositeEpilogueCommandHelper(this);
             }
+            return true;
         }
 
         private void Prepare(StoryMessageHandler handler)
@@ -306,13 +307,14 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_Id.InitFromDsl(callData.GetParam(0));
                 m_SubstId.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
         private IStoryValue<string> m_Id = new StoryValue<string>();
         private IStoryValue<string> m_SubstId = new StoryValue<string>();
@@ -335,9 +337,10 @@ namespace StorySystem.CommonCommands
             StoryCommandManager.Instance.ClearSubstitutes();
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
+            return true;
         }
     }
     /// <summary>
@@ -369,13 +372,14 @@ namespace StorySystem.CommonCommands
             }
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             if (num > 1) {
                 m_Id.InitFromDsl(callData.GetParam(0));
                 m_SubstId.InitFromDsl(callData.GetParam(1));
             }
+            return true;
         }
         private IStoryValue<string> m_Id = new StoryValue<string>();
         private IStoryValue<string> m_SubstId = new StoryValue<string>();
@@ -398,9 +402,10 @@ namespace StorySystem.CommonCommands
             StoryValueManager.Instance.ClearSubstitutes();
             return false;
         }
-        protected override void Load(Dsl.FunctionData callData)
+        protected override bool Load(Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
+            return true;
         }
     }
 }

@@ -68,10 +68,6 @@
     <Reference Include="protobuf-net">
       <HintPath>..\..\..\ExternalLibrary\protobuf-net.dll</HintPath>
     </Reference>
-    <Reference Include="ProtobufSerializer, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ClientProtoBuf\bin\ProtobufSerializer.dll</HintPath>
-    </Reference>
     <Reference Include="ScriptFrameworkLibrary">
       <HintPath>..\..\..\ExternalLibrary\ScriptFrameworkLibrary.dll</HintPath>
     </Reference>
@@ -84,6 +80,9 @@
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\ExternalLibrary\UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="ProtobufSerializer">
+      <HintPath>..\..\ClientProtoBuf\bin\ProtobufSerializer.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

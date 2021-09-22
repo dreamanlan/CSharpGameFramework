@@ -56,7 +56,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>..\..\Precompile\precompile.exe ServerProtoBuf.dll -o:..\ServerProtobufSerializer.dll -t:ServerProtobufSerializer</PostBuildEvent>
+    <PostBuildEvent>..\..\Precompile\precompile.exe ServerProtoBuf.dll -o:..\ServerProtobufSerializer.dll -t:ServerProtobufSerializer -f:/Library/Frameworks/Mono.framework/Libraries/mono/4.5</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
