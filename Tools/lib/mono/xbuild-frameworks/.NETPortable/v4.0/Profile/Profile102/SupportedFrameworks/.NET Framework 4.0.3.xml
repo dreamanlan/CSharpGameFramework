@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Framework
+    Identifier=".NETFramework"
+    Profile="*"
+    MinimumVersion="4.0.3"
+    Family=".NETFramework"
+    MinimumVisualStudioVersion="10.0"
+    DisplayName=".NET Framework"
+    MinimumVersionDisplayName="4.0.3"
+    PlatformArchitectures="AnyCPU;x86;x64" />

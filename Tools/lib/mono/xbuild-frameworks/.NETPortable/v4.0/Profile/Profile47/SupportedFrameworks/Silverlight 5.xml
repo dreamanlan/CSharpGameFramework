@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Framework
+    Identifier="Silverlight"
+    Profile=""
+    MinimumVersion="5.0"
+    Family="Silverlight"
+    MinimumVisualStudioVersion="10.0"
+    DisplayName="Silverlight"
+    MinimumVersionDisplayName="5"
+    PlatformArchitectures="AnyCPU" />

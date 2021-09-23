@@ -26,12 +26,10 @@ set tabledir=%workdir%\Resource\Tables
 set logdir=%workdir%\BuildLog
 set libdir=%workdir%\ExternalLibrary
 
-rem xbuild is copy from mono-3.0.3/lib/mono/4.5
-rem this xbuild will probably not work in a clean machine
-set xbuild=%workdir%\Tools\xbuild\xbuild.exe
+set msbuild=%workdir%\Tools\msbuild\msbuild.exe
 
 rem mdb generator
-set pdb2mdb=%workdir%\Tools\mono\mono.exe %workdir%\Tools\lib\mono\4.0\pdb2mdb.exe
+set pdb2mdb=%workdir%\Tools\mono\mono.exe %workdir%\Tools\lib\mono\4.5\pdb2mdb.exe
 
 rem dsl copy and convert *.dsl from txt to binary (only release version)
 if "%cfg%" EQU "Release" (
@@ -47,15 +45,15 @@ if "%cfg%" EQU "Release" (
   set tablecopy=%workdir%\Tools\TableReaderGenerator\bin\Debug\TableReaderGenerator.exe
 )
 
-rem show xbuild version
-%xbuild% /version
+rem show msbuild version
+%msbuild% /version
 echo.
 
 rem make build log dir
 mkdir %logdir%
 
 echo building Server.sln ...
-%xbuild% /nologo /noconsolelogger /property:Configuration=%cfg% ^
+%msbuild% /m /nologo /noconsolelogger /property:Configuration=%cfg% ^
          /flp:LogFile=%logdir%\Server.sln.log;Encoding=UTF-8 ^
 		     /t:clean;rebuild ^
          %workdir%\Server.sln

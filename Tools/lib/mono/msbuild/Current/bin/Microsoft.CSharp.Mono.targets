@@ -1,0 +1,33 @@
+﻿<!--
+***********************************************************************************************
+Microsoft.CSharp.Mono.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+This file defines the steps in the standard build process specific for C# .NET projects.
+For example, it contains the step that actually calls the C# compiler.  The remainder
+of the build process is defined in Microsoft.Common.targets, which is imported by 
+this file.
+
+Copyright (C) Microsoft Corporation. All rights reserved.
+***********************************************************************************************
+-->
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    <PropertyGroup>
+        <!--
+            These are the extensions that reference resolution will consider when looking for debug files related
+            to resolved references, which can be .pdb or {dll|exe}.mdb files. The same project could have a mix of
+            these, depending on where the references originated.
+        -->
+        <AllowedReferenceRelatedDebugFileExtensions Condition="'$(AllowedReferenceRelatedDebugFileExtensions)' == ''">
+            .pdb;
+            .dll.mdb;
+            .exe.mdb
+        </AllowedReferenceRelatedDebugFileExtensions>
+
+        <CscToolPath Condition="'$(CscToolPath)' == '' and '$(CscToolExe)' == 'mcs.exe'">$(MSBuildFrameworkToolsPath)</CscToolPath>
+    </PropertyGroup>
+</Project>

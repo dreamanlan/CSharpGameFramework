@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Framework
+    Identifier=".NETCore"
+    Profile="*"
+    MinimumVersion="4.5.1"
+    Family="Windows"
+    MinimumVisualStudioVersion="12.0"
+    DisplayName="Windows Store apps (Windows 8.1)"
+    MinimumVersionDisplayName="" />

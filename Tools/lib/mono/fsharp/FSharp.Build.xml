@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+<assembly><name>FSharp.Build</name></assembly>
+<members>
+<member name="M:FSBuild.SR.toolpathUnknown">
+<summary>
+ ToolPath is unknown; specify the path to the tool.
+ (Originally from FSBuild.txt:2)
+</summary>
+</member>
+<member name="P:FSBuild.SR.SwallowResourceText(System.Boolean)">
+<summary>
+ If set to true, then all error messages will just return the filled &apos;holes&apos; delimited by &apos;,,,&apos;s - this is for language-neutral testing (e.g. localization-invariant baselines).
+</summary>
+</member>
+<member name="M:FSBuild.SR.mapSourceRootsPathMustEndWithSlashOrBackslash(System.String)">
+<summary>
+ SourceRoot paths are required to end with a slash or backslash: &apos;%s&apos;
+ (Originally from FSBuild.txt:4)
+</summary>
+</member>
+<member name="M:FSBuild.SR.mapSourceRootsNoTopLevelSourceRoot">
+<summary>
+ SourceRoot items must include at least one top-level (not nested) item when DeterministicSourcePaths is true
+ (Originally from FSBuild.txt:5)
+</summary>
+</member>
+<member name="M:FSBuild.SR.mapSourceRootsNoSuchTopLevelSourceRoot(System.String)">
+<summary>
+ The value of SourceRoot.ContainingRoot was not found in SourceRoot items, or the corresponding item is not a top-level source root: &apos;%s&apos;
+ (Originally from FSBuild.txt:6)
+</summary>
+</member>
+<member name="M:FSBuild.SR.mapSourceRootsContainsDuplicate(System.String,System.String,System.String,System.String)">
+<summary>
+ SourceRoot contains duplicate items &apos;%s&apos; with conflicting metadata &apos;%s&apos;: &apos;%s&apos; and &apos;%s&apos;
+ (Originally from FSBuild.txt:3)
+</summary>
+</member>
+<member name="P:FSBuild.SR.SwallowResourceText">
+<summary>
+ If set to true, then all error messages will just return the filled &apos;holes&apos; delimited by &apos;,,,&apos;s - this is for language-neutral testing (e.g. localization-invariant baselines).
+</summary>
+</member>
+<member name="M:FSBuild.SR.RunStartupValidation">
+<summary>
+ Call this method once to validate that all known resources are valid; throws if not
+</summary>
+</member>
+<member name="P:UtilsStrings.SR.SwallowResourceText(System.Boolean)">
+<summary>
+ If set to true, then all error messages will just return the filled &apos;holes&apos; delimited by &apos;,,,&apos;s - this is for language-neutral testing (e.g. localization-invariant baselines).
+</summary>
+</member>
+<member name="P:UtilsStrings.SR.SwallowResourceText">
+<summary>
+ If set to true, then all error messages will just return the filled &apos;holes&apos; delimited by &apos;,,,&apos;s - this is for language-neutral testing (e.g. localization-invariant baselines).
+</summary>
+</member>
+<member name="M:UtilsStrings.SR.fSharpBannerVersion(System.String,System.String)">
+<summary>
+ %s for F# %s
+ (Originally from ../../utils/UtilsStrings.txt:2)
+</summary>
+</member>
+<member name="M:UtilsStrings.SR.buildProductName(System.String)">
+<summary>
+ Microsoft (R) F# Compiler version %s
+ (Originally from ../../utils/UtilsStrings.txt:1)
+</summary>
+</member>
+<member name="M:UtilsStrings.SR.RunStartupValidation">
+<summary>
+ Call this method once to validate that all known resources are valid; throws if not
+</summary>
+</member>
+<member name="P:Internal.Utilities.FSharpEnvironment.FSharpBannerVersion">
+<summary>
+ The F# version reported in the banner
+</summary>
+</member>
+<member name="M:Internal.Utilities.FSharpEnvironment.Option.ofString(System.String)">
+<summary>
+ Convert string into Option string where null and String.Empty result in None
+</summary>
+</member>
+<member name="M:FSharp.Build.FSharpCommandLineBuilder.ToString">
+<summary>
+ Return a full command line (with quoting for the cmd.exe shell)
+</summary>
+</member>
+<member name="M:FSharp.Build.FSharpCommandLineBuilder.CapturedFilenames">
+<summary>
+ Return a list of the sources (with no quoting for the cmd.exe shell)
+</summary>
+</member>
+<member name="M:FSharp.Build.FSharpCommandLineBuilder.CapturedArguments">
+<summary>
+ Return a list of the arguments (with no quoting for the cmd.exe shell)
+</summary>
+</member>
+<member name="M:FSharp.Build.Fsc.ExecuteTool(System.String,System.String,System.String)">
+<summary>
+ Intercept the call to ExecuteTool to handle the host compile case.
+</summary>
+</member>
+<member name="M:FSharp.Build.Fsi.ExecuteTool(System.String,System.String,System.String)">
+<summary>
+ Intercept the call to ExecuteTool to handle the host compile case.
+</summary>
+</member>
+<member name="F:FSharp.Build.MapSourceRoots.MappedSourceRoots@">
+ <summary>
+ SourceRoot items with <term>MappedPath</term> metadata set.
+ Items listed in <see cref="SourceRoots"/> that have the same ItemSpec will be merged into a single item in this list.
+ </summary>
+</member>
+<member name="F:FSharp.Build.MapSourceRoots.Deterministic@">
+ <summary>
+ True if the mapped paths should be deterministic.
+ </summary>
+</member>
+<member name="F:FSharp.Build.MapSourceRoots.SourceRoots@">
+ <summary>
+ SourceRoot items with the following optional well-known metadata:
+ <list type="bullet">
+   <term>SourceControl</term><description>Indicates name of the source control system the source root is tracked by (e.g. Git, TFVC, etc.), if any.</description>
+   <term>NestedRoot</term><description>If a value is specified the source root is nested (e.g. git submodule). The value is a path to this root relative to the containing root.</description>
+   <term>ContainingRoot</term><description>Identifies another source root item that this source root is nested under.</description>
+ </list>
+ </summary>
+</member>
+<member name="P:FSharp.Build.MapSourceRoots.SourceRoots(Microsoft.Build.Framework.ITaskItem[])">
+ <summary>
+ SourceRoot items with the following optional well-known metadata:
+ <list type="bullet">
+   <term>SourceControl</term><description>Indicates name of the source control system the source root is tracked by (e.g. Git, TFVC, etc.), if any.</description>
+   <term>NestedRoot</term><description>If a value is specified the source root is nested (e.g. git submodule). The value is a path to this root relative to the containing root.</description>
+   <term>ContainingRoot</term><description>Identifies another source root item that this source root is nested under.</description>
+ </list>
+ </summary>
+</member>
+<member name="P:FSharp.Build.MapSourceRoots.MappedSourceRoots(Microsoft.Build.Framework.ITaskItem[])">
+ <summary>
+ SourceRoot items with <term>MappedPath</term> metadata set.
+ Items listed in <see cref="SourceRoots"/> that have the same ItemSpec will be merged into a single item in this list.
+ </summary>
+</member>
+<member name="P:FSharp.Build.MapSourceRoots.Deterministic(System.Boolean)">
+ <summary>
+ True if the mapped paths should be deterministic.
+ </summary>
+</member>
+<member name="P:FSharp.Build.MapSourceRoots.SourceRoots">
+ <summary>
+ SourceRoot items with the following optional well-known metadata:
+ <list type="bullet">
+   <term>SourceControl</term><description>Indicates name of the source control system the source root is tracked by (e.g. Git, TFVC, etc.), if any.</description>
+   <term>NestedRoot</term><description>If a value is specified the source root is nested (e.g. git submodule). The value is a path to this root relative to the containing root.</description>
+   <term>ContainingRoot</term><description>Identifies another source root item that this source root is nested under.</description>
+ </list>
+ </summary>
+</member>
+<member name="P:FSharp.Build.MapSourceRoots.MappedSourceRoots">
+ <summary>
+ SourceRoot items with <term>MappedPath</term> metadata set.
+ Items listed in <see cref="SourceRoots"/> that have the same ItemSpec will be merged into a single item in this list.
+ </summary>
+</member>
+<member name="P:FSharp.Build.MapSourceRoots.Deterministic">
+ <summary>
+ True if the mapped paths should be deterministic.
+ </summary>
+</member>
+<member name="T:FSharp.Build.MapSourceRoots">
+ <summary>
+ Given a list of SourceRoot items produces a list of the same items with added <c>MappedPath</c> metadata that
+ contains calculated deterministic source path for each SourceRoot.
+ </summary>
+ <remarks>
+ Does not perform any path validation.
+
+ The <c>MappedPath</c> is either the path (ItemSpec) itself, when <see cref="Deterministic"/> is false,
+ or a calculated deterministic source path (starting with prefix '/_/', '/_1/', etc.), otherwise.
+ </remarks>
+</member>
+<member name="M:FSharp.Build.Utilities.FixFilePath(System.String)">
+ <summary>
+ Copied from msbuild. ItemSpecs are normalized using this method.
+ </summary>
+</member>
+</members>
+</doc>

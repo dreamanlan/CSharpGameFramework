@@ -5,7 +5,7 @@ set workdir=%~dp0
 cd %workdir%
 
 rem mdb generator
-set pdb2mdb=%workdir%\Tools\mono\mono.exe %workdir%\Tools\lib\mono\4.0\pdb2mdb.exe
+set pdb2mdb=%workdir%\Tools\mono\mono.exe %workdir%\Tools\lib\mono\4.5\pdb2mdb.exe
 
 pushd %workdir%\App\ClientModule\Cs2LuaScript\bin\Debug
 for /r %%i in (*.pdb) do (

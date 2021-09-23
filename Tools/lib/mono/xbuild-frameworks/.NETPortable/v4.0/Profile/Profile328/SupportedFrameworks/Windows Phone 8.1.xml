@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Framework
+    Identifier="WindowsPhoneApp"
+    Profile="*"
+    MinimumVersion="8.1"
+    Family="WindowsPhoneApp"
+    MinimumVisualStudioVersion="12.0"
+    DisplayName="Windows Phone"
+    MinimumVersionDisplayName="8.1"
+    PlatformArchitectures="AnyCPU;x86;ARM">
+    <Platform
+        Identifier="WindowsPhoneApp"
+        MinimumVersion="8.1" />
+</Framework>

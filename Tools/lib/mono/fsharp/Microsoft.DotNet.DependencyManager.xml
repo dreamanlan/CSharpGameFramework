@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+<assembly><name>Microsoft.DotNet.DependencyManager</name></assembly>
+<members>
+<member name="P:DependencyManager.SR.SwallowResourceText(System.Boolean)">
+<summary>
+ If set to true, then all error messages will just return the filled &apos;holes&apos; delimited by &apos;,,,&apos;s - this is for language-neutral testing (e.g. localization-invariant baselines).
+</summary>
+</member>
+<member name="M:DependencyManager.SR.packageManagerUnknown(System.String,System.String,System.String)">
+<summary>
+ Package manager key &apos;%s&apos; was not registered in %s. Currently registered: %s
+ (Originally from DependencyManager.txt:2)
+</summary>
+</member>
+<member name="M:DependencyManager.SR.packageManagerError(System.String)">
+<summary>
+ %s
+ (Originally from DependencyManager.txt:3)
+</summary>
+</member>
+<member name="P:DependencyManager.SR.SwallowResourceText">
+<summary>
+ If set to true, then all error messages will just return the filled &apos;holes&apos; delimited by &apos;,,,&apos;s - this is for language-neutral testing (e.g. localization-invariant baselines).
+</summary>
+</member>
+<member name="M:DependencyManager.SR.couldNotLoadDependencyManagerExtension(System.String,System.String)">
+<summary>
+ The dependency manager extension %s could not be loaded. Message: %s
+ (Originally from DependencyManager.txt:4)
+</summary>
+</member>
+<member name="M:DependencyManager.SR.RunStartupValidation">
+<summary>
+ Call this method once to validate that all known resources are valid; throws if not
+</summary>
+</member>
+<member name="P:UtilsStrings.SR.SwallowResourceText(System.Boolean)">
+<summary>
+ If set to true, then all error messages will just return the filled &apos;holes&apos; delimited by &apos;,,,&apos;s - this is for language-neutral testing (e.g. localization-invariant baselines).
+</summary>
+</member>
+<member name="P:UtilsStrings.SR.SwallowResourceText">
+<summary>
+ If set to true, then all error messages will just return the filled &apos;holes&apos; delimited by &apos;,,,&apos;s - this is for language-neutral testing (e.g. localization-invariant baselines).
+</summary>
+</member>
+<member name="M:UtilsStrings.SR.fSharpBannerVersion(System.String,System.String)">
+<summary>
+ %s for F# %s
+ (Originally from ../../utils/UtilsStrings.txt:2)
+</summary>
+</member>
+<member name="M:UtilsStrings.SR.buildProductName(System.String)">
+<summary>
+ Microsoft (R) F# Compiler version %s
+ (Originally from ../../utils/UtilsStrings.txt:1)
+</summary>
+</member>
+<member name="M:UtilsStrings.SR.RunStartupValidation">
+<summary>
+ Call this method once to validate that all known resources are valid; throws if not
+</summary>
+</member>
+<member name="P:Internal.Utilities.FSharpEnvironment.FSharpBannerVersion">
+<summary>
+ The F# version reported in the banner
+</summary>
+</member>
+<member name="M:Internal.Utilities.FSharpEnvironment.Option.ofString(System.String)">
+<summary>
+ Convert string into Option string where null and String.Empty result in None
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.AssemblyResolveHandler.#ctor(Microsoft.DotNet.DependencyManager.AssemblyResolutionProbe)">
+<summary>
+ Construct a new DependencyProvider
+</summary>
+</member>
+<member name="T:Microsoft.DotNet.DependencyManager.AssemblyResolveHandler">
+<summary>
+ Handle Assembly resolution
+</summary>
+</member>
+<member name="T:Microsoft.DotNet.DependencyManager.AssemblyResolutionProbe">
+<summary>
+ Signature for ResolutionProbe callback
+ host implements this, it&apos;s job is to return a list of assembly paths to probe.
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.NativeDllResolveHandler.#ctor(Microsoft.DotNet.DependencyManager.NativeResolutionProbe)">
+<summary>
+ Construct a new NativeDllResolveHandler
+</summary>
+</member>
+<member name="T:Microsoft.DotNet.DependencyManager.NativeResolutionProbe">
+<summary>
+ Signature for Native library resolution probe callback
+ host implements this, it&apos;s job is to return a list of package roots to probe.
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.DependencyProvider.TryFindDependencyManagerInPath(System.Collections.Generic.IEnumerable{System.String},System.String,Microsoft.DotNet.DependencyManager.ResolvingErrorReport,System.String)">
+<summary>
+ TryFindDependencyManagerInPath - given a #r &quot;key:sometext&quot; go and find a DependencyManager that satisfies the key
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.DependencyProvider.TryFindDependencyManagerByKey(System.Collections.Generic.IEnumerable{System.String},System.String,Microsoft.DotNet.DependencyManager.ResolvingErrorReport,System.String)">
+<summary>
+ Fetch a dependencymanager that supports a specific key
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.DependencyProvider.Resolve(Microsoft.DotNet.DependencyManager.IDependencyManagerProvider,System.String,System.Collections.Generic.IEnumerable{System.Tuple{System.String,System.String}},Microsoft.DotNet.DependencyManager.ResolvingErrorReport,System.String,System.String,System.String,System.String,System.String)">
+<summary>
+ Resolve reference for a list of package manager lines
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.DependencyProvider.GetRegisteredDependencyManagerHelpText(System.Collections.Generic.IEnumerable{System.String},System.String,Microsoft.DotNet.DependencyManager.ResolvingErrorReport)">
+<summary>
+ Returns a formatted help messages for registered dependencymanagers for the host to present
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.DependencyProvider.CreatePackageManagerUnknownError(System.Collections.Generic.IEnumerable{System.String},System.String,System.String,Microsoft.DotNet.DependencyManager.ResolvingErrorReport)">
+<summary>
+ Returns a formatted error message for the host to present
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.DependencyProvider.#ctor(Microsoft.DotNet.DependencyManager.AssemblyResolutionProbe,Microsoft.DotNet.DependencyManager.NativeResolutionProbe)">
+<summary>
+ Construct a new DependencyProvider with managed and native resolution
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.DependencyProvider.#ctor(Microsoft.DotNet.DependencyManager.NativeResolutionProbe)">
+<summary>
+ Construct a new DependencyProvider with only native resolution
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.DependencyProvider.#ctor">
+<summary>
+ Construct a new DependencyProvider with no dynamic load handlers (only for compilation/analysis)
+</summary>
+</member>
+<member name="T:Microsoft.DotNet.DependencyManager.DependencyProvider">
+<summary>
+ Provides DependencyManagement functions.
+
+ The class incrementally collects IDependencyManagerProvider, indexed by key, and 
+ queries them.  These are found and instantiated with respect to the compilerTools and outputDir
+ provided each time the TryFindDependencyManagerByKey and TryFindDependencyManagerInPath are
+ executed, which are assumed to be invariant over the lifetime of the DependencyProvider.
+</summary>
+</member>
+<member name="T:Microsoft.DotNet.DependencyManager.ErrorReportType">
+<summary>
+ Todo describe this API
+</summary>
+</member>
+<member name="P:Microsoft.DotNet.DependencyManager.IDependencyManagerProvider.Name">
+<summary>
+ Name of the dependency manager
+</summary>
+</member>
+<member name="P:Microsoft.DotNet.DependencyManager.IDependencyManagerProvider.Key">
+<summary>
+ Key that identifies the types of dependencies that this DependencyManager operates on
+ E.g
+     nuget: indicates that this DM is for nuget packages
+     paket: indicates that this DM is for paket scripts, which manage nuget packages, github source dependencies etc ...
+</summary>
+</member>
+<member name="P:Microsoft.DotNet.DependencyManager.IDependencyManagerProvider.HelpMessages">
+<summary>
+ The help messages for this dependency manager inster
+</summary>
+</member>
+<member name="M:Microsoft.DotNet.DependencyManager.IDependencyManagerProvider.ResolveDependencies(System.String,System.String,System.String,System.String,System.Collections.Generic.IEnumerable{System.Tuple{System.String,System.String}},System.String,System.String)">
+<summary>
+ Resolve the dependencies, for the given set of arguments, go find the .dll references, scripts and additional include values.
+</summary>
+</member>
+<member name="T:Microsoft.DotNet.DependencyManager.IDependencyManagerProvider">
+<summary>
+ Wraps access to a DependencyManager implementation
+</summary>
+</member>
+<member name="P:Microsoft.DotNet.DependencyManager.IResolveDependenciesResult.Success">
+<summary>
+ Succeded?
+</summary>
+</member>
+<member name="P:Microsoft.DotNet.DependencyManager.IResolveDependenciesResult.StdOut">
+<summary>
+ The resolution output log
+</summary>
+</member>
+<member name="P:Microsoft.DotNet.DependencyManager.IResolveDependenciesResult.StdError">
+<summary>
+ The resolution error log (process stderr)
+</summary>
+</member>
+<member name="P:Microsoft.DotNet.DependencyManager.IResolveDependenciesResult.SourceFiles">
+<summary>
+ The source code file paths
+</summary>
+</member>
+<member name="P:Microsoft.DotNet.DependencyManager.IResolveDependenciesResult.Roots">
+<summary>
+ The roots to package directories
+</summary>
+</member>
+<member name="P:Microsoft.DotNet.DependencyManager.IResolveDependenciesResult.Resolutions">
+<summary>
+ The resolution paths
+</summary>
+</member>
+<member name="T:Microsoft.DotNet.DependencyManager.IResolveDependenciesResult">
+<summary>
+ The results of ResolveDependencies
+</summary>
+</member>
+</members>
+</doc>

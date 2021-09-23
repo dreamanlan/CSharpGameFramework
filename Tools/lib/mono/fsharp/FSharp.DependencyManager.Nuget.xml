@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+<assembly><name>FSharp.DependencyManager.Nuget</name></assembly>
+<members>
+<member name="M:FSDependencyManager.SR.version">
+<summary>
+ version
+ (Originally from FSDependencyManager.txt:7)
+</summary>
+</member>
+<member name="M:FSDependencyManager.SR.unableToApplyImplicitArgument(System.Int32)">
+<summary>
+ Unable to apply implicit argument number %d
+ (Originally from FSDependencyManager.txt:4)
+</summary>
+</member>
+<member name="M:FSDependencyManager.SR.sourceDirectoryDoesntExist(System.String)">
+<summary>
+ The source directory &apos;%s&apos; not found
+ (Originally from FSDependencyManager.txt:9)
+</summary>
+</member>
+<member name="P:FSDependencyManager.SR.SwallowResourceText(System.Boolean)">
+<summary>
+ If set to true, then all error messages will just return the filled &apos;holes&apos; delimited by &apos;,,,&apos;s - this is for language-neutral testing (e.g. localization-invariant baselines).
+</summary>
+</member>
+<member name="M:FSDependencyManager.SR.requiresAValue(System.String)">
+<summary>
+ %s requires a value
+ (Originally from FSDependencyManager.txt:3)
+</summary>
+</member>
+<member name="M:FSDependencyManager.SR.notUsed">
+<summary>
+ Not used
+ (Originally from FSDependencyManager.txt:5)
+</summary>
+</member>
+<member name="M:FSDependencyManager.SR.loadNugetPackage">
+<summary>
+ Load Nuget Package
+ (Originally from FSDependencyManager.txt:6)
+</summary>
+</member>
+<member name="M:FSDependencyManager.SR.highestVersion">
+<summary>
+ with the highest version
+ (Originally from FSDependencyManager.txt:8)
+</summary>
+</member>
+<member name="P:FSDependencyManager.SR.SwallowResourceText">
+<summary>
+ If set to true, then all error messages will just return the filled &apos;holes&apos; delimited by &apos;,,,&apos;s - this is for language-neutral testing (e.g. localization-invariant baselines).
+</summary>
+</member>
+<member name="M:FSDependencyManager.SR.cantReferenceSystemPackage(System.String)">
+<summary>
+ PackageManager can not reference the System Package &apos;%s&apos;
+ (Originally from FSDependencyManager.txt:2)
+</summary>
+</member>
+<member name="M:FSDependencyManager.SR.RunStartupValidation">
+<summary>
+ Call this method once to validate that all known resources are valid; throws if not
+</summary>
+</member>
+<member name="P:FSharp.DependencyManager.Nuget.ResolveDependenciesResult.Success">
+<summary>
+ Succeded?
+</summary>
+</member>
+<member name="P:FSharp.DependencyManager.Nuget.ResolveDependenciesResult.StdOut">
+<summary>
+ The resolution output log
+</summary>
+</member>
+<member name="P:FSharp.DependencyManager.Nuget.ResolveDependenciesResult.StdError">
+<summary>
+ The resolution error log (process stderr)
+</summary>
+</member>
+<member name="P:FSharp.DependencyManager.Nuget.ResolveDependenciesResult.SourceFiles">
+<summary>
+ The source code file paths
+</summary>
+</member>
+<member name="P:FSharp.DependencyManager.Nuget.ResolveDependenciesResult.Roots">
+<summary>
+ The roots to package directories
+</summary>
+</member>
+<member name="P:FSharp.DependencyManager.Nuget.ResolveDependenciesResult.Resolutions">
+<summary>
+ The resolution paths
+</summary>
+</member>
+<member name="T:FSharp.DependencyManager.Nuget.ResolveDependenciesResult">
+<summary>
+ The results of ResolveDependencies
+</summary>
+</member>
+<member name="P:FSharp.DependencyManager.Nuget.Utilities.trimChars">
+<summary>
+ Return a string array delimited by commas
+ Note that a quoted string is not going to be mangled into pieces.
+</summary>
+</member>
+</members>
+</doc>

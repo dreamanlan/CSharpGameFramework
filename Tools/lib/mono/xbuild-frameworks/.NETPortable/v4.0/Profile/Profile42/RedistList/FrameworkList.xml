@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FileList Redist="Microsoft-Windows-CLRCoreComp.PortableLibrary.4.0" Name=".NET Portable Subset (.NET Framework 4.0.3, Silverlight 5, Windows 8)">
+    <File AssemblyName="mscorlib" Version="2.0.5.0" PublicKeyToken="7cec85d7bea7798e" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+    <File AssemblyName="System" Version="2.0.5.0" PublicKeyToken="7cec85d7bea7798e" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+    <File AssemblyName="System.ComponentModel.DataAnnotations" Version="2.0.5.0" PublicKeyToken="ddd0da4d3e678217" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+    <File AssemblyName="System.Core" Version="2.0.5.0" PublicKeyToken="7cec85d7bea7798e" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+    <File AssemblyName="System.Net" Version="2.0.5.0" PublicKeyToken="7cec85d7bea7798e" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+    <File AssemblyName="System.Runtime.Serialization" Version="2.0.5.0" PublicKeyToken="7cec85d7bea7798e" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+    <File AssemblyName="System.ServiceModel" Version="2.0.5.0" PublicKeyToken="31bf3856ad364e35" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+    <File AssemblyName="System.ServiceModel.Web" Version="2.0.5.0" PublicKeyToken="7cec85d7bea7798e" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+    <File AssemblyName="System.Xml" Version="2.0.5.0" PublicKeyToken="7cec85d7bea7798e" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+    <File AssemblyName="System.Xml.Linq" Version="2.0.5.0" PublicKeyToken="31bf3856ad364e35" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+    <File AssemblyName="System.Xml.Serialization" Version="2.0.5.0" PublicKeyToken="31bf3856ad364e35" Culture="neutral" ProcessorArchitecture="MSIL" InGac="true" />
+</FileList>
