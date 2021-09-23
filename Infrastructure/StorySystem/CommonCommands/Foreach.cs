@@ -12,7 +12,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class ForeachCommand : AbstractStoryCommand
     {
-        public override bool IsCompositeCommand => true;
+        public override bool IsCompositeCommand { get { return true; } }
         protected override IStoryCommand CloneCommand()
         {
             ForeachCommand retCmd = new ForeachCommand();
@@ -142,7 +142,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class LoopListCommand : AbstractStoryCommand
     {
-        public override bool IsCompositeCommand => true;
+        public override bool IsCompositeCommand { get { return true; } }
         protected override IStoryCommand CloneCommand()
         {
             LoopListCommand retCmd = new LoopListCommand();
@@ -262,7 +262,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class LoopCommand : AbstractStoryCommand
     {
-        public override bool IsCompositeCommand => true;
+        public override bool IsCompositeCommand { get { return true; } }
         protected override IStoryCommand CloneCommand()
         {
             LoopCommand retCmd = new LoopCommand();

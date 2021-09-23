@@ -12,7 +12,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class WhileCommand : AbstractStoryCommand
     {
-        public override bool IsCompositeCommand => true;
+        public override bool IsCompositeCommand { get { return true; } }
         protected override IStoryCommand CloneCommand()
         {
             WhileCommand retCmd = new WhileCommand();

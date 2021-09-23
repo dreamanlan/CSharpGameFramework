@@ -21,7 +21,7 @@ namespace StorySystem.CommonCommands
     /// </summary>
     internal sealed class IfElseCommand : AbstractStoryCommand
     {
-        public override bool IsCompositeCommand => true;
+        public override bool IsCompositeCommand { get { return true; } }
         protected override IStoryCommand CloneCommand()
         {
             IfElseCommand retCmd = new IfElseCommand();

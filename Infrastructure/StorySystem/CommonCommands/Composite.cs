@@ -28,7 +28,7 @@ namespace StorySystem.CommonCommands
     /// </remarks>
     internal sealed class CompositeCommand : AbstractStoryCommand
     {
-        public override bool IsCompositeCommand => true;
+        public override bool IsCompositeCommand { get { return true; } }
         internal string Name
         {
             get { return m_Name; }
