@@ -7972,28 +7972,7 @@ namespace DslExpression
             }
         }
     }
-#if QINSHI
-    internal class DebugValueExp : SimpleExpressionBase
-    {
-        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
-        {
-            string ret = string.Empty;
-            if (operands.Count >= 1) {
-                string name = operands[0].AsString;
-                if (operands.Count >= 2) {
-                    var val = operands[1];
-                    if (!string.IsNullOrEmpty(name)) {
-                        string valStr = val.AsString;
-                        GameFramework.GmCommands.GlobalDebugValues.SetValue(name, valStr);
-                        ret = valStr;
-                    }
-                } else {
-                    ret = GameFramework.GmCommands.GlobalDebugValues.GetStringValue(name);
-                }
-            }
-            return ret;
-        }
-    }
+#if NOT_USED
     internal class StoryVarExp : SimpleExpressionBase
     {
         protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
@@ -8004,22 +7983,22 @@ namespace DslExpression
                 if (operands.Count >= 2) {
                     var val = operands[1];
                     if (!string.IsNullOrEmpty(name)) {
-                        var instance = CsLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
+                        var instance = GameLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
                         if (null == instance) {
                             string txt = "script(main){onmessage(\"start\"){};};";
-                            CsLibrary.GmCommands.ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
-                            instance = CsLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
+                            GameLibrary.GmCommands.ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
+                            instance = GameLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
                         }
                         instance.SetVariable(name, BoxedValue.FromObject(val.GetObject()));
                         ret = val;
                     }
                 }
                 else {
-                    var instance = CsLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
+                    var instance = GameLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
                     if (null == instance) {
                         string txt = "script(main){onmessage(\"start\"){};};";
-                        CsLibrary.GmCommands.ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
-                        instance = CsLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
+                        GameLibrary.GmCommands.ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
+                        instance = GameLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
                     }
                     BoxedValue bv;
                     instance.TryGetVariable(name, out bv);
@@ -8033,12 +8012,12 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            var instance = CsLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
+            var instance = GameLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
             if (null == instance) {
                 string txt = "script(main){onmessage(\"start\"){};};";
-                GameFramework.GmCommands.ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
-                GameFramework.GmCommands.ClientGmStorySystem.Instance.StartStory("main");
-                instance = GameFramework.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
+                GameLibrary.GmCommands.ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
+                GameLibrary.GmCommands.ClientGmStorySystem.Instance.StartStory("main");
+                instance = GameLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
             }
             var handler = instance.GetMessageHandler("start");
             object ret = null;
@@ -8055,23 +8034,23 @@ namespace DslExpression
             int num = callData.GetParamNum();
             for (int ix = 0; ix < num; ++ix) {
                 Dsl.ISyntaxComponent param = callData.GetParam(ix);
-                var exp = StorySystem.StoryValueManager.Instance.CalcValue(param);
+                var exp = StoryScript.StoryValueManager.Instance.CalcValue(param);
                 m_Values.Add(exp);
             }
             return true;
         }
 
-        private List<StorySystem.IStoryValue> m_Values = new List<StorySystem.IStoryValue>();
+        private List<StoryScript.IStoryValue> m_Values = new List<StoryScript.IStoryValue>();
     }
     internal class StoryCommandExp : AbstractExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            var instance = GameFramework.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
+            var instance = GameLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
             if (null == instance) {
                 string txt = "script(main){onmessage(\"start\"){};};";
-                GameFramework.GmCommands.ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
-                instance = GameFramework.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
+                GameLibrary.GmCommands.ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
+                instance = GameLibrary.GmCommands.ClientGmStorySystem.Instance.GetStory("main");
             }
             var handler = instance.GetMessageHandler("start");
             foreach (var cmd in m_Commands) {
@@ -8087,13 +8066,13 @@ namespace DslExpression
             int num = callData.GetParamNum();
             for (int ix = 0; ix < num; ++ix) {
                 Dsl.ISyntaxComponent param = callData.GetParam(ix);
-                var cmd = StorySystem.StoryCommandManager.Instance.CreateCommand(param);
+                var cmd = StoryScript.StoryCommandManager.Instance.CreateCommand(param);
                 m_Commands.Add(cmd);
             }
             return true;
         }
 
-        private List<StorySystem.IStoryCommand> m_Commands = new List<StorySystem.IStoryCommand>();
+        private List<StoryScript.IStoryCommand> m_Commands = new List<StoryScript.IStoryCommand>();
     }
 #endif
     public enum RunStateEnum
@@ -8354,8 +8333,7 @@ namespace DslExpression
             Register("savefolderpanel", new ExpressionFactoryHelper<SaveFolderPanelExp>());
             Register("displaydialog", new ExpressionFactoryHelper<DisplayDialogExp>());
             Register("calcmd5", new ExpressionFactoryHelper<CalcMd5Exp>());
-#if QINSHI
-            Register("debugvalue", new ExpressionFactoryHelper<DebugValueExp>());
+#if NOT_USED
             Register("storyvar", new ExpressionFactoryHelper<StoryVarExp>());
             Register("storyvalue", new ExpressionFactoryHelper<StoryValueExp>());
             Register("storycommand", new ExpressionFactoryHelper<StoryCommandExp>());
