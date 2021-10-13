@@ -8556,55 +8556,61 @@ namespace DslExpression
             CalculatorValue ret = 0;
             ProcInfo procInfo;
             if (m_Procs.TryGetValue(proc, out procInfo)) {
-                LocalStackPush(args, procInfo);
-                try {
-                    var exps = procInfo.Codes;
-                    for (int i = 0; i < exps.Count; ++i) {
-                        var exp = exps[i];
-                        try {
-                            ret = exp.Calc();
-                            if (m_RunState == RunStateEnum.Return) {
-                                m_RunState = RunStateEnum.Normal;
-                                break;
-                            }
-                            else if (m_RunState == RunStateEnum.Redirect) {
-                                break;
-                            }
+                ret = Calc(args, procInfo);
+            }
+            return ret;
+        }
+        public CalculatorValue Calc(List<CalculatorValue> args, ProcInfo procInfo)
+        {
+            CalculatorValue ret = 0;
+            LocalStackPush(args, procInfo);
+            try {
+                var exps = procInfo.Codes;
+                for (int i = 0; i < exps.Count; ++i) {
+                    var exp = exps[i];
+                    try {
+                        ret = exp.Calc();
+                        if (m_RunState == RunStateEnum.Return) {
+                            m_RunState = RunStateEnum.Normal;
+                            break;
                         }
-                        catch (DirectoryNotFoundException ex5) {
-                            Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex5.Message, ex5.StackTrace);
-                            OutputInnerException(ex5);
-                        }
-                        catch (FileNotFoundException ex4) {
-                            Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex4.Message, ex4.StackTrace);
-                            OutputInnerException(ex4);
-                        }
-                        catch (IOException ex3) {
-                            Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex3.Message, ex3.StackTrace);
-                            OutputInnerException(ex3);
-                            ret = -1;
-                        }
-                        catch (UnauthorizedAccessException ex2) {
-                            Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex2.Message, ex2.StackTrace);
-                            OutputInnerException(ex2);
-                            ret = -1;
-                        }
-                        catch (NotSupportedException ex1) {
-                            Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex1.Message, ex1.StackTrace);
-                            OutputInnerException(ex1);
-                            ret = -1;
-                        }
-                        catch (Exception ex) {
-                            Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex.Message, ex.StackTrace);
-                            OutputInnerException(ex);
-                            ret = -1;
+                        else if (m_RunState == RunStateEnum.Redirect) {
                             break;
                         }
                     }
+                    catch (DirectoryNotFoundException ex5) {
+                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex5.Message, ex5.StackTrace);
+                        OutputInnerException(ex5);
+                    }
+                    catch (FileNotFoundException ex4) {
+                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex4.Message, ex4.StackTrace);
+                        OutputInnerException(ex4);
+                    }
+                    catch (IOException ex3) {
+                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex3.Message, ex3.StackTrace);
+                        OutputInnerException(ex3);
+                        ret = -1;
+                    }
+                    catch (UnauthorizedAccessException ex2) {
+                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex2.Message, ex2.StackTrace);
+                        OutputInnerException(ex2);
+                        ret = -1;
+                    }
+                    catch (NotSupportedException ex1) {
+                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex1.Message, ex1.StackTrace);
+                        OutputInnerException(ex1);
+                        ret = -1;
+                    }
+                    catch (Exception ex) {
+                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex.Message, ex.StackTrace);
+                        OutputInnerException(ex);
+                        ret = -1;
+                        break;
+                    }
                 }
-                finally {
-                    LocalStackPop();
-                }
+            }
+            finally {
+                LocalStackPop();
             }
             return ret;
         }
@@ -8679,22 +8685,6 @@ namespace DslExpression
                 else {
                     SetGlobalVariable(v, val);
                 }
-            }
-        }
-        public void LocalStackPush(List<CalculatorValue> args, ProcInfo procInfo)
-        {
-            var si = StackInfo.New();
-            if (null != args) {
-                si.Args.AddRange(args);
-            }
-            si.Init(procInfo);
-            m_Stack.Push(si);
-        }
-        public void LocalStackPop()
-        {
-            var poped = m_Stack.Pop();
-            if (null != poped) {
-                poped.Recycle();
             }
         }
         public IExpression Load(Dsl.ISyntaxComponent comp)
@@ -9021,6 +9011,22 @@ namespace DslExpression
                 int argIx = -1 - ix;
                 if (argIx >= 0 && argIx < Arguments.Count)
                     Arguments[argIx] = val;
+            }
+        }
+        private void LocalStackPush(List<CalculatorValue> args, ProcInfo procInfo)
+        {
+            var si = StackInfo.New();
+            if (null != args) {
+                si.Args.AddRange(args);
+            }
+            si.Init(procInfo);
+            m_Stack.Push(si);
+        }
+        private void LocalStackPop()
+        {
+            var poped = m_Stack.Pop();
+            if (null != poped) {
+                poped.Recycle();
             }
         }
         private Dsl.ISyntaxComponent ConvertMember(Dsl.ISyntaxComponent p, int paramClass)
