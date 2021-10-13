@@ -14,7 +14,11 @@ namespace GameFramework
             } else {
                 try {
                     return (T)Convert.ChangeType(obj, typeof(T));
-                } catch {
+                }
+                catch (OverflowException) {
+                    return (T)Convert.ChangeType(obj.ToString(), typeof(T));
+                }
+                catch {
                     return default(T);
                 }
             }
@@ -29,7 +33,11 @@ namespace GameFramework
             } else {
                 try {
                     return Convert.ChangeType(obj, type);
-                } catch {
+                }
+                catch (OverflowException) {
+                    return Convert.ChangeType(obj.ToString(), type);
+                }
+                catch {
                     return null;
                 }
             }

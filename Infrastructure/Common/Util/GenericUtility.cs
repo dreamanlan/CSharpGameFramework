@@ -1131,6 +1131,10 @@ public struct BoxedValue
     {
         Set(v);
     }
+    public void SetInteger(long v)
+    {
+        Set(v);
+    }
     public void SetNumber(double v)
     {
         Set(v);
@@ -1146,6 +1150,10 @@ public struct BoxedValue
     public bool GetBool()
     {
         return Get<bool>();
+    }
+    public long GetInteger()
+    {
+        return Get<long>();
     }
     public double GetNumber()
     {
