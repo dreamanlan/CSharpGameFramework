@@ -1664,6 +1664,12 @@ namespace DslExpression
             bv.Set(v);
             return bv;
         }
+        public static CalculatorValue FromInteger(long v)
+        {
+            CalculatorValue bv = new CalculatorValue();
+            bv.Set(v);
+            return bv;
+        }
         public static CalculatorValue FromNumber(double v)
         {
             CalculatorValue bv = new CalculatorValue();
