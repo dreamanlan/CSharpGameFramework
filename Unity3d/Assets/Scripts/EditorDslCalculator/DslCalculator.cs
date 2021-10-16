@@ -1726,6 +1726,13 @@ namespace DslExpression
 
         private Queue<List<CalculatorValue>> m_Pool = null;
     }
+    public interface IObjectDispatch
+    {
+        int GetDispatchId(string name);
+        CalculatorValue GetProperty(int dispId);
+        void SetProperty(int dispId, CalculatorValue val);
+        CalculatorValue InvokeMethod(int dispId, List<CalculatorValue> args);
+    }
     public interface IExpression
     {
         CalculatorValue Calc();
@@ -3986,31 +3993,50 @@ namespace DslExpression
         {
             var ret = CalculatorValue.NullObject;
             object obj = null;
-            object methodObj = null;
             string method = null;
-            ArrayList arglist = new ArrayList();
+            List<CalculatorValue> args = null;
+            ArrayList arglist = null;
+            IObjectDispatch disp = null;
             for (int ix = 0; ix < m_Expressions.Count; ++ix) {
                 var exp = m_Expressions[ix];
                 var v = exp.Calc();
                 if (ix == 0) {
                     obj = v.Get<object>();
+                    disp = obj as IObjectDispatch;
                 }
                 else if (ix == 1) {
-                    methodObj = v.Get<object>();
                     method = v.AsString;
                 }
+                else if (null != disp) {
+                    if (null == args)
+                        args = Calculator.NewCalculatorValueList();
+                    args.Add(v);
+                }
                 else {
+                    if (null == arglist)
+                        arglist = new ArrayList();
                     arglist.Add(v.Get<object>());
                 }
             }
-            object[] _args = arglist.ToArray();
-            if (null != obj) {
-                if (null != method) {
+            if (null != obj && null != method) {
+                if (null != disp) {
+                    if (m_DispId < 0) {
+                        m_DispId = disp.GetDispatchId(method);
+                    }
+                    if (m_DispId >= 0) {
+                        ret = disp.InvokeMethod(m_DispId, args);
+                    }
+                    Calculator.RecycleCalculatorValueList(args);
+                }
+                else {
+                    if (null == arglist)
+                        arglist = new ArrayList();
+                    object[] _args = arglist.ToArray();
                     IDictionary dict = obj as IDictionary;
                     if (null != dict && dict.Contains(method) && dict[method] is Delegate) {
                         var d = dict[method] as Delegate;
                         if (null != d) {
-                            ret = CalculatorValue.FromObject(d.DynamicInvoke());
+                            ret = CalculatorValue.FromObject(d.DynamicInvoke(_args));
                         }
                     }
                     else {
@@ -4022,7 +4048,7 @@ namespace DslExpression
                                 ret = CalculatorValue.FromObject(t.InvokeMember(method, flags, null, null, _args));
                             }
                             catch (Exception ex) {
-                                Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                                Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                             }
                         }
                         else {
@@ -4034,31 +4060,8 @@ namespace DslExpression
                                     ret = CalculatorValue.FromObject(t.InvokeMember(method, flags, null, obj, _args));
                                 }
                                 catch (Exception ex) {
-                                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                                 }
-                            }
-                        }
-                    }
-                }
-                else if (null != methodObj) {
-                    IDictionary dict = obj as IDictionary;
-                    if (null != dict && dict.Contains(methodObj)) {
-                        var d = dict[methodObj] as Delegate;
-                        if (null != d) {
-                            ret = CalculatorValue.FromObject(d.DynamicInvoke());
-                        }
-                    }
-                    else {
-                        IEnumerable enumer = obj as IEnumerable;
-                        if (null != enumer && methodObj is int) {
-                            int index = (int)methodObj;
-                            var e = enumer.GetEnumerator();
-                            for (int i = 0; i <= index; ++i) {
-                                e.MoveNext();
-                            }
-                            var d = e.Current as Delegate;
-                            if (null != d) {
-                                ret = CalculatorValue.FromObject(d.DynamicInvoke());
                             }
                         }
                     }
@@ -4076,6 +4079,7 @@ namespace DslExpression
         }
 
         private List<IExpression> m_Expressions = new List<IExpression>();
+        private int m_DispId = -1;
     }
     internal sealed class DotnetSetExp : AbstractExpression
     {
@@ -4083,26 +4087,41 @@ namespace DslExpression
         {
             var ret = CalculatorValue.NullObject;
             object obj = null;
-            object methodObj = null;
             string method = null;
-            ArrayList arglist = new ArrayList();
+            CalculatorValue argv = CalculatorValue.NullObject;
+            ArrayList arglist = null;
+            IObjectDispatch disp = null;
             for (int ix = 0; ix < m_Expressions.Count; ++ix) {
                 var exp = m_Expressions[ix];
                 var v = exp.Calc();
                 if (ix == 0) {
                     obj = v.Get<object>();
+                    disp = obj as IObjectDispatch;
                 }
                 else if (ix == 1) {
-                    methodObj = v.Get<object>();
                     method = v.AsString;
                 }
+                else if (null != disp) {
+                    argv = v;
+                    break;
+                }
                 else {
+                    if (null == arglist)
+                        arglist = new ArrayList();
                     arglist.Add(v.Get<object>());
                 }
             }
-            object[] _args = arglist.ToArray();
-            if (null != obj) {
-                if (null != method) {
+            if (null != obj && null != method) {
+                if (null != disp) {
+                    if (m_DispId < 0) {
+                        m_DispId = disp.GetDispatchId(method);
+                    }
+                    if (m_DispId >= 0) {
+                        disp.SetProperty(m_DispId, argv);
+                    }
+                }
+                else {
+                    object[] _args = arglist.ToArray();
                     IDictionary dict = obj as IDictionary;
                     if (null != dict && null == obj.GetType().GetMethod(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic)) {
                         dict[method] = _args[0];
@@ -4116,7 +4135,7 @@ namespace DslExpression
                                 ret = CalculatorValue.FromObject(t.InvokeMember(method, flags, null, null, _args));
                             }
                             catch (Exception ex) {
-                                Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                                Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                             }
                         }
                         else {
@@ -4128,23 +4147,8 @@ namespace DslExpression
                                     ret = CalculatorValue.FromObject(t.InvokeMember(method, flags, null, obj, _args));
                                 }
                                 catch (Exception ex) {
-                                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                                 }
-                            }
-                        }
-                    }
-                }
-                else if (null != methodObj) {
-                    IDictionary dict = obj as IDictionary;
-                    if (null != dict && dict.Contains(methodObj)) {
-                        dict[methodObj] = _args[0];
-                    }
-                    else {
-                        IList list = obj as IList;
-                        if (null != list && methodObj is int) {
-                            int index = (int)methodObj;
-                            if (index >= 0 && index < list.Count) {
-                                list[index] = _args[0];
                             }
                         }
                     }
@@ -4162,6 +4166,7 @@ namespace DslExpression
         }
 
         private List<IExpression> m_Expressions = new List<IExpression>();
+        private int m_DispId = -1;
     }
     internal sealed class DotnetGetExp : AbstractExpression
     {
@@ -4169,26 +4174,41 @@ namespace DslExpression
         {
             var ret = CalculatorValue.NullObject;
             object obj = null;
-            object methodObj = null;
             string method = null;
-            ArrayList arglist = new ArrayList();
+            ArrayList arglist = null;
+            IObjectDispatch disp = null;
             for (int ix = 0; ix < m_Expressions.Count; ++ix) {
                 var exp = m_Expressions[ix];
                 var v = exp.Calc();
                 if (ix == 0) {
                     obj = v.Get<object>();
+                    disp = obj as IObjectDispatch;
                 }
                 else if (ix == 1) {
-                    methodObj = v.Get<object>();
                     method = v.AsString;
                 }
+                else if (null != disp) {
+                    break;
+                }
                 else {
+                    if (null == arglist)
+                        arglist = new ArrayList();
                     arglist.Add(v.Get<object>());
                 }
             }
-            object[] _args = arglist.ToArray();
-            if (null != obj) {
-                if (null != method) {
+            if (null != obj && null != method) {
+                if (null != disp) {
+                    if (m_DispId < 0) {
+                        m_DispId = disp.GetDispatchId(method);
+                    }
+                    if (m_DispId >= 0) {
+                        ret = disp.GetProperty(m_DispId);
+                    }
+                }
+                else {
+                    if (null == arglist)
+                        arglist = new ArrayList();
+                    object[] _args = arglist.ToArray();
                     IDictionary dict = obj as IDictionary;
                     if (null != dict && dict.Contains(method)) {
                         ret = CalculatorValue.FromObject(dict[method]);
@@ -4202,7 +4222,7 @@ namespace DslExpression
                                 ret = CalculatorValue.FromObject(t.InvokeMember(method, flags, null, null, _args));
                             }
                             catch (Exception ex) {
-                                Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                                Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                             }
                         }
                         else {
@@ -4214,27 +4234,169 @@ namespace DslExpression
                                     ret = CalculatorValue.FromObject(t.InvokeMember(method, flags, null, obj, _args));
                                 }
                                 catch (Exception ex) {
-                                    Calculator.Log("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                                    Calculator.Log("InvokeMember {0} Exception:{1}\n{2}", method, ex.Message, ex.StackTrace);
                                 }
                             }
                         }
                     }
                 }
-                else if (null != methodObj) {
-                    IDictionary dict = obj as IDictionary;
-                    if (null != dict && dict.Contains(methodObj)) {
-                        ret = CalculatorValue.FromObject(dict[methodObj]);
+            }
+            return ret;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            for (int i = 0; i < callData.GetParamNum(); ++i) {
+                Dsl.ISyntaxComponent param = callData.GetParam(i);
+                m_Expressions.Add(Calculator.Load(param));
+            }
+            return true;
+        }
+
+        private List<IExpression> m_Expressions = new List<IExpression>();
+        private int m_DispId = -1;
+    }
+    internal sealed class CollectionCallExp : AbstractExpression
+    {
+        protected override CalculatorValue DoCalc()
+        {
+            var ret = CalculatorValue.NullObject;
+            object obj = null;
+            object methodObj = null;
+            ArrayList arglist = new ArrayList();
+            for (int ix = 0; ix < m_Expressions.Count; ++ix) {
+                var exp = m_Expressions[ix];
+                var v = exp.Calc();
+                if (ix == 0) {
+                    obj = v.Get<object>();
+                }
+                else if (ix == 1) {
+                    methodObj = v.Get<object>();
+                }
+                else {
+                    arglist.Add(v.Get<object>());
+                }
+            }
+            object[] _args = arglist.ToArray();
+            if (null != obj && null != methodObj) {
+                IDictionary dict = obj as IDictionary;
+                if (null != dict && dict.Contains(methodObj)) {
+                    var d = dict[methodObj] as Delegate;
+                    if (null != d) {
+                        ret = CalculatorValue.FromObject(d.DynamicInvoke(_args));
                     }
-                    else {
-                        IEnumerable enumer = obj as IEnumerable;
-                        if (null != enumer && methodObj is int) {
-                            int index = (int)methodObj;
-                            var e = enumer.GetEnumerator();
-                            for (int i = 0; i <= index; ++i) {
-                                e.MoveNext();
-                            }
-                            ret = CalculatorValue.FromObject(e.Current);
+                }
+                else {
+                    IEnumerable enumer = obj as IEnumerable;
+                    if (null != enumer && methodObj is int) {
+                        int index = (int)methodObj;
+                        var e = enumer.GetEnumerator();
+                        for (int i = 0; i <= index; ++i) {
+                            e.MoveNext();
                         }
+                        var d = e.Current as Delegate;
+                        if (null != d) {
+                            ret = CalculatorValue.FromObject(d.DynamicInvoke(_args));
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            for (int i = 0; i < callData.GetParamNum(); ++i) {
+                Dsl.ISyntaxComponent param = callData.GetParam(i);
+                m_Expressions.Add(Calculator.Load(param));
+            }
+            return true;
+        }
+
+        private List<IExpression> m_Expressions = new List<IExpression>();
+    }
+    internal sealed class CollectionSetExp : AbstractExpression
+    {
+        protected override CalculatorValue DoCalc()
+        {
+            var ret = CalculatorValue.NullObject;
+            object obj = null;
+            object methodObj = null;
+            object arg = null;
+            for (int ix = 0; ix < m_Expressions.Count; ++ix) {
+                var exp = m_Expressions[ix];
+                var v = exp.Calc();
+                if (ix == 0) {
+                    obj = v.Get<object>();
+                }
+                else if (ix == 1) {
+                    methodObj = v.Get<object>();
+                }
+                else {
+                    arg = v.Get<object>();
+                    break;
+                }
+            }
+            if (null != obj && null != methodObj) {
+                IDictionary dict = obj as IDictionary;
+                if (null != dict && dict.Contains(methodObj)) {
+                    dict[methodObj] = arg;
+                }
+                else {
+                    IList list = obj as IList;
+                    if (null != list && methodObj is int) {
+                        int index = (int)methodObj;
+                        if (index >= 0 && index < list.Count) {
+                            list[index] = arg;
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            for (int i = 0; i < callData.GetParamNum(); ++i) {
+                Dsl.ISyntaxComponent param = callData.GetParam(i);
+                m_Expressions.Add(Calculator.Load(param));
+            }
+            return true;
+        }
+
+        private List<IExpression> m_Expressions = new List<IExpression>();
+    }
+    internal sealed class CollectionGetExp : AbstractExpression
+    {
+        protected override CalculatorValue DoCalc()
+        {
+            var ret = CalculatorValue.NullObject;
+            object obj = null;
+            object methodObj = null;
+            for (int ix = 0; ix < m_Expressions.Count; ++ix) {
+                var exp = m_Expressions[ix];
+                var v = exp.Calc();
+                if (ix == 0) {
+                    obj = v.Get<object>();
+                }
+                else if (ix == 1) {
+                    methodObj = v.Get<object>();
+                }
+                else {
+                    break;
+                }
+            }
+            if (null != obj && null != methodObj) {
+                IDictionary dict = obj as IDictionary;
+                if (null != dict && dict.Contains(methodObj)) {
+                    ret = CalculatorValue.FromObject(dict[methodObj]);
+                }
+                else {
+                    IEnumerable enumer = obj as IEnumerable;
+                    if (null != enumer && methodObj is int) {
+                        int index = (int)methodObj;
+                        var e = enumer.GetEnumerator();
+                        for (int i = 0; i <= index; ++i) {
+                            e.MoveNext();
+                        }
+                        ret = CalculatorValue.FromObject(e.Current);
                     }
                 }
             }
@@ -8208,6 +8370,9 @@ namespace DslExpression
             Register("dotnetcall", new ExpressionFactoryHelper<DotnetCallExp>());
             Register("dotnetset", new ExpressionFactoryHelper<DotnetSetExp>());
             Register("dotnetget", new ExpressionFactoryHelper<DotnetGetExp>());
+            Register("collectioncall", new ExpressionFactoryHelper<CollectionCallExp>());
+            Register("collectionset", new ExpressionFactoryHelper<CollectionSetExp>());
+            Register("collectionget", new ExpressionFactoryHelper<CollectionGetExp>());
             Register("linq", new ExpressionFactoryHelper<LinqExp>());
             Register("isnull", new ExpressionFactoryHelper<IsNullExp>());
             Register("dotnetload", new ExpressionFactoryHelper<DotnetLoadExp>());
@@ -8781,7 +8946,10 @@ namespace DslExpression
                                       innerParamClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
                                       innerParamClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
                                         Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                        newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
+                                        if (innerParamClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD)
+                                            newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
+                                        else
+                                            newCall.Name = new Dsl.ValueData("collectionset", Dsl.ValueData.ID_TOKEN);
                                         newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                         if (innerCall.IsHighOrder) {
                                             newCall.Params.Add(innerCall.LowerOrderFunction);
@@ -8832,8 +9000,11 @@ namespace DslExpression
                                         if (member == "orderby" || member == "orderbydesc" || member == "where" || member == "top") {
                                             apiName = "linq";
                                         }
-                                        else {
+                                        else if(innerParamClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD) {
                                             apiName = "dotnetcall";
+                                        }
+                                        else {
+                                            apiName = "collectioncall";
                                         }
                                         Dsl.FunctionData newCall = new Dsl.FunctionData();
                                         newCall.Name = new Dsl.ValueData(apiName, Dsl.ValueData.ID_TOKEN);
@@ -8860,6 +9031,11 @@ namespace DslExpression
                                             callExp.Load(newCall, this);
                                             return callExp;
                                         }
+                                        else if (apiName == "collectioncall") {
+                                            var collCallExp = new CollectionCallExp();
+                                            collCallExp.Load(newCall, this);
+                                            return collCallExp;
+                                        }
                                         else {
                                             var callExp = new LinqExp();
                                             callExp.Load(newCall, this);
@@ -8874,7 +9050,10 @@ namespace DslExpression
                                   paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
                                     //obj.property or obj[property] or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
                                     Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                    newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
+                                    if(paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD)
+                                        newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
+                                    else
+                                        newCall.Name = new Dsl.ValueData("collectionget", Dsl.ValueData.ID_TOKEN);
                                     newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                     if (callData.IsHighOrder) {
                                         newCall.Params.Add(callData.LowerOrderFunction);

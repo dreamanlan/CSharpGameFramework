@@ -99,7 +99,10 @@ namespace StorySystem
                             if (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS) {
                                 //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> execinstance(obj,member,a,b,...)
                                 Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                newCall.Name = new Dsl.ValueData("dotnetexec", Dsl.ValueData.ID_TOKEN);
+                                if(innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD)
+                                    newCall.Name = new Dsl.ValueData("dotnetexec", Dsl.ValueData.ID_TOKEN);
+                                else
+                                    newCall.Name = new Dsl.ValueData("collectionexec", Dsl.ValueData.ID_TOKEN);
                                 newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                 if (innerCall.IsHighOrder) {
                                     newCall.Params.Add(innerCall.LowerOrderFunction);
@@ -121,17 +124,19 @@ namespace StorySystem
                             }
                         }
                     }
-                    else if ((callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_OPERATOR ||
-                        callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
-                        callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
-                        callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
-                        callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) &&
-                        callData.GetId() == "=") {
+                    else if (callData.GetId() == "=") {
                         Dsl.FunctionData innerCall = callData.GetParam(0) as Dsl.FunctionData;
-                        if (null != innerCall) {
+                        if (null != innerCall && (innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
+                            innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET ||
+                            innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACE ||
+                            innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_BRACKET ||
+                            innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS)) {
                             //obj.property = val  or obj[property] = val or obj.(property) = val or obj.[property] = val or obj.{property} = val -> setinstance(obj,property,val)
                             Dsl.FunctionData newCall = new Dsl.FunctionData();
-                            newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
+                            if (innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD)
+                                newCall.Name = new Dsl.ValueData("dotnetset", Dsl.ValueData.ID_TOKEN);
+                            else
+                                newCall.Name = new Dsl.ValueData("collectionset", Dsl.ValueData.ID_TOKEN);
                             newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                             if (innerCall.IsHighOrder) {
                                 newCall.Params.Add(innerCall.LowerOrderFunction);
@@ -288,6 +293,8 @@ namespace StorySystem
             RegisterCommandFactory("listclear", new StoryCommandFactoryHelper<CommonCommands.ListClearCommand>());
             RegisterCommandFactory("dotnetexec", new StoryCommandFactoryHelper<CommonCommands.DotnetExecCommand>());
             RegisterCommandFactory("dotnetset", new StoryCommandFactoryHelper<CommonCommands.DotnetSetCommand>());
+            RegisterCommandFactory("collectionexec", new StoryCommandFactoryHelper<CommonCommands.CollectionExecCommand>());
+            RegisterCommandFactory("collectionset", new StoryCommandFactoryHelper<CommonCommands.CollectionSetCommand>());
             RegisterCommandFactory("system", new StoryCommandFactoryHelper<CommonCommands.SystemCommand>());
             RegisterCommandFactory("writealllines", new StoryCommandFactoryHelper<CommonCommands.WriteAllLinesCommand>());
             RegisterCommandFactory("writefile", new StoryCommandFactoryHelper<CommonCommands.WriteFileCommand>());
@@ -377,6 +384,8 @@ namespace StorySystem
             StoryValueManager.Instance.RegisterValueFactory("gettype", new StoryValueFactoryHelper<CommonValues.GetTypeValue>());
             StoryValueManager.Instance.RegisterValueFactory("dotnetcall", new StoryValueFactoryHelper<CommonValues.DotnetCallValue>());
             StoryValueManager.Instance.RegisterValueFactory("dotnetget", new StoryValueFactoryHelper<CommonValues.DotnetGetValue>());
+            StoryValueManager.Instance.RegisterValueFactory("collectioncall", new StoryValueFactoryHelper<CommonValues.CollectionCallValue>());
+            StoryValueManager.Instance.RegisterValueFactory("collectionget", new StoryValueFactoryHelper<CommonValues.CollectionGetValue>());
             StoryValueManager.Instance.RegisterValueFactory("changetype", new StoryValueFactoryHelper<CommonValues.ChangeTypeValue>());
             StoryValueManager.Instance.RegisterValueFactory("parseenum", new StoryValueFactoryHelper<CommonValues.ParseEnumValue>());
             StoryValueManager.Instance.RegisterValueFactory("pgrep", new StoryValueFactoryHelper<CommonValues.PgrepValue>());

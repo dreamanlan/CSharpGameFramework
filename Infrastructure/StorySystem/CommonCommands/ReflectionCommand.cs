@@ -69,28 +69,6 @@ namespace StorySystem.CommonCommands
                             }
                         }
                     }
-                } else {
-                    IDictionary dict = obj as IDictionary;
-                    var mobj = methodObj.Get<object>();
-                    if (null != dict && dict.Contains(mobj)) {
-                        var d = dict[mobj] as Delegate;
-                        if (null != d) {
-                            d.DynamicInvoke(args);
-                        }
-                    } else {
-                        IEnumerable enumer = obj as IEnumerable;
-                        if (null != enumer && methodObj.IsInteger) {
-                            int index = methodObj.Get<int>();
-                            var e = enumer.GetEnumerator();
-                            for (int i = 0; i <= index; ++i) {
-                                e.MoveNext();
-                            }
-                            var d = e.Current as Delegate;
-                            if (null != d) {
-                                d.DynamicInvoke(args);
-                            }
-                        }
-                    }
                 }
             }
             return false;
@@ -174,18 +152,148 @@ namespace StorySystem.CommonCommands
                             }
                         }
                     }
-                } else {
-                    IDictionary dict = obj as IDictionary;
-                    var mobj = methodObj.Get<object>();
-                    if (null != dict && dict.Contains(mobj)) {
-                        dict[mobj] = args[0];
-                    } else {
-                        IList list = obj as IList;
-                        if (null != list && methodObj.IsInteger) {
-                            int index = methodObj.Get<int>();
-                            if (index >= 0 && index < list.Count) {
-                                list[index] = args[0];
-                            }
+                }
+            }
+            return false;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_Object.InitFromDsl(callData.GetParam(0));
+                m_Method.InitFromDsl(callData.GetParam(1));
+            }
+            for (int i = 2; i < callData.GetParamNum(); ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_Args.Add(val);
+            }
+            return true;
+        }
+        private IStoryValue m_Object = new StoryValue();
+        private IStoryValue m_Method = new StoryValue();
+        private List<IStoryValue> m_Args = new List<IStoryValue>();
+    }
+    /// <summary>
+    /// collectionexec(obj,method,arg1,arg2,...);
+    /// </summary>
+    internal sealed class CollectionExecCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            CollectionExecCommand cmd = new CollectionExecCommand();
+            cmd.m_Object = m_Object.Clone();
+            cmd.m_Method = m_Method.Clone();
+            for (int i = 0; i < m_Args.Count; i++) {
+                cmd.m_Args.Add(m_Args[i].Clone());
+            }
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_Object.Evaluate(instance, handler, iterator, args);
+            m_Method.Evaluate(instance, handler, iterator, args);
+            for (int i = 0; i < m_Args.Count; i++) {
+                m_Args[i].Evaluate(instance, handler, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            object obj = m_Object.Value.Get<object>();
+            var methodObj = m_Method.Value;
+            ArrayList arglist = new ArrayList();
+            for (int i = 0; i < m_Args.Count; i++) {
+                arglist.Add(m_Args[i].Value.Get<object>());
+            }
+            object[] args = arglist.ToArray();
+            if (null != obj) {
+                IDictionary dict = obj as IDictionary;
+                var mobj = methodObj.Get<object>();
+                if (null != dict && dict.Contains(mobj)) {
+                    var d = dict[mobj] as Delegate;
+                    if (null != d) {
+                        d.DynamicInvoke(args);
+                    }
+                }
+                else {
+                    IEnumerable enumer = obj as IEnumerable;
+                    if (null != enumer && methodObj.IsInteger) {
+                        int index = methodObj.Get<int>();
+                        var e = enumer.GetEnumerator();
+                        for (int i = 0; i <= index; ++i) {
+                            e.MoveNext();
+                        }
+                        var d = e.Current as Delegate;
+                        if (null != d) {
+                            d.DynamicInvoke(args);
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_Object.InitFromDsl(callData.GetParam(0));
+                m_Method.InitFromDsl(callData.GetParam(1));
+            }
+            for (int i = 2; i < callData.GetParamNum(); ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_Args.Add(val);
+            }
+            return true;
+        }
+        private IStoryValue m_Object = new StoryValue();
+        private IStoryValue m_Method = new StoryValue();
+        private List<IStoryValue> m_Args = new List<IStoryValue>();
+    }
+    /// <summary>
+    /// collectionset(obj,method,arg1,arg2,...);
+    /// </summary>
+    internal sealed class CollectionSetCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            CollectionSetCommand cmd = new CollectionSetCommand();
+            cmd.m_Object = m_Object.Clone();
+            cmd.m_Method = m_Method.Clone();
+            for (int i = 0; i < m_Args.Count; i++) {
+                cmd.m_Args.Add(m_Args[i].Clone());
+            }
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_Object.Evaluate(instance, handler, iterator, args);
+            m_Method.Evaluate(instance, handler, iterator, args);
+            for (int i = 0; i < m_Args.Count; i++) {
+                m_Args[i].Evaluate(instance, handler, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            object obj = m_Object.Value.Get<object>();
+            var methodObj = m_Method.Value;
+            ArrayList arglist = new ArrayList();
+            for (int i = 0; i < m_Args.Count; i++) {
+                arglist.Add(m_Args[i].Value.Get<object>());
+            }
+            object[] args = arglist.ToArray();
+            if (null != obj) {
+                IDictionary dict = obj as IDictionary;
+                var mobj = methodObj.Get<object>();
+                if (null != dict && dict.Contains(mobj)) {
+                    dict[mobj] = args[0];
+                }
+                else {
+                    IList list = obj as IList;
+                    if (null != list && methodObj.IsInteger) {
+                        int index = methodObj.Get<int>();
+                        if (index >= 0 && index < list.Count) {
+                            list[index] = args[0];
                         }
                     }
                 }

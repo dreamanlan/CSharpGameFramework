@@ -165,8 +165,11 @@ namespace StorySystem
                                 if (method == "orderby" || method == "orderbydesc" || method == "where" || method == "top") {
                                     apiName = "linq";
                                 }
-                                else {
+                                else if(innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD) {
                                     apiName = "dotnetcall";
+                                }
+                                else {
+                                    apiName = "collectioncall";
                                 }
                                 Dsl.FunctionData newCall = new Dsl.FunctionData();
                                 newCall.Name = new Dsl.ValueData(apiName, Dsl.ValueData.ID_TOKEN);
@@ -196,7 +199,10 @@ namespace StorySystem
                               callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD_PARENTHESIS) {
                                 //obj.property or obj[property] or obj.(property) or obj.[property] or obj.{property} -> dotnetget(obj,property)
                                 Dsl.FunctionData newCall = new Dsl.FunctionData();
-                                newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
+                                if(callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD)
+                                    newCall.Name = new Dsl.ValueData("dotnetget", Dsl.ValueData.ID_TOKEN);
+                                else
+                                    newCall.Name = new Dsl.ValueData("collectionget", Dsl.ValueData.ID_TOKEN);
                                 newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                 if (callData.IsHighOrder) {
                                     newCall.Params.Add(callData.LowerOrderFunction);

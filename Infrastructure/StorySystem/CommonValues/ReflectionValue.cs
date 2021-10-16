@@ -175,30 +175,6 @@ namespace StorySystem.CommonValues
                             }
                         }
                     }
-                    else {
-                        IDictionary dict = obj as IDictionary;
-                        var mobj = methodObj.Get<object>();
-                        if (null != dict && dict.Contains(mobj)) {
-                            var d = dict[mobj] as Delegate;
-                            if (null != d) {
-                                m_Value = BoxedValue.From(d.DynamicInvoke(args));
-                            }
-                        }
-                        else {
-                            IEnumerable enumer = obj as IEnumerable;
-                            if (null != enumer && methodObj.IsInteger) {
-                                int index = methodObj.Get<int>();
-                                var e = enumer.GetEnumerator();
-                                for (int i = 0; i <= index; ++i) {
-                                    e.MoveNext();
-                                }
-                                var d = e.Current as Delegate;
-                                if (null != d) {
-                                    m_Value = BoxedValue.From(d.DynamicInvoke(args));
-                                }
-                            }
-                        }
-                    }
                 }
             }
         }
@@ -321,22 +297,216 @@ namespace StorySystem.CommonValues
                             }
                         }
                     }
-                    else {
-                        IDictionary dict = obj as IDictionary;
-                        var mobj = methodObj.Get<object>();
-                        if (null != dict && dict.Contains(mobj)) {
-                            m_Value = BoxedValue.From(dict[mobj]);
+                }
+            }
+        }
+        private IStoryValue m_Object = new StoryValue();
+        private IStoryValue m_Method = new StoryValue();
+        private List<IStoryValue> m_Args = new List<IStoryValue>();
+        private bool m_HaveValue;
+        private BoxedValue m_Value;
+    }
+    internal sealed class CollectionCallValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            if (null != callData) {
+                int num = callData.GetParamNum();
+                if (num > 1) {
+                    m_Object.InitFromDsl(callData.GetParam(0));
+                    m_Method.InitFromDsl(callData.GetParam(1));
+                }
+                for (int i = 2; i < callData.GetParamNum(); ++i) {
+                    StoryValue val = new StoryValue();
+                    val.InitFromDsl(callData.GetParam(i));
+                    m_Args.Add(val);
+                }
+            }
+        }
+        public IStoryValue Clone()
+        {
+            CollectionCallValue val = new CollectionCallValue();
+            val.m_Object = m_Object.Clone();
+            val.m_Method = m_Method.Clone();
+            for (int i = 0; i < m_Args.Count; i++) {
+                val.m_Args.Add(m_Args[i].Clone());
+            }
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_HaveValue = false;
+            m_Object.Evaluate(instance, handler, iterator, args);
+            m_Method.Evaluate(instance, handler, iterator, args);
+            for (int i = 0; i < m_Args.Count; i++) {
+                m_Args[i].Evaluate(instance, handler, iterator, args);
+            }
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public BoxedValue Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue()
+        {
+            bool canCalc = true;
+            if (!m_Object.HaveValue || !m_Method.HaveValue) {
+                canCalc = false;
+            }
+            else {
+                for (int i = 0; i < m_Args.Count; i++) {
+                    if (!m_Args[i].HaveValue) {
+                        canCalc = false;
+                        break;
+                    }
+                }
+            }
+            if (canCalc) {
+                m_HaveValue = true;
+                m_Value = BoxedValue.NullObject;
+                object obj = m_Object.Value.Get<object>();
+                var methodObj = m_Method.Value;
+                ArrayList arglist = new ArrayList();
+                for (int i = 0; i < m_Args.Count; i++) {
+                    arglist.Add(m_Args[i].Value.Get<object>());
+                }
+                object[] args = arglist.ToArray();
+                if (null != obj) {
+                    IDictionary dict = obj as IDictionary;
+                    var mobj = methodObj.Get<object>();
+                    if (null != dict && dict.Contains(mobj)) {
+                        var d = dict[mobj] as Delegate;
+                        if (null != d) {
+                            m_Value = BoxedValue.From(d.DynamicInvoke(args));
                         }
-                        else {
-                            IEnumerable enumer = obj as IEnumerable;
-                            if (null != enumer && methodObj.IsInteger) {
-                                int index = methodObj.Get<int>();
-                                var e = enumer.GetEnumerator();
-                                for (int i = 0; i <= index; ++i) {
-                                    e.MoveNext();
-                                }
-                                m_Value = BoxedValue.From(e.Current);
+                    }
+                    else {
+                        IEnumerable enumer = obj as IEnumerable;
+                        if (null != enumer && methodObj.IsInteger) {
+                            int index = methodObj.Get<int>();
+                            var e = enumer.GetEnumerator();
+                            for (int i = 0; i <= index; ++i) {
+                                e.MoveNext();
                             }
+                            var d = e.Current as Delegate;
+                            if (null != d) {
+                                m_Value = BoxedValue.From(d.DynamicInvoke(args));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private IStoryValue m_Object = new StoryValue();
+        private IStoryValue m_Method = new StoryValue();
+        private List<IStoryValue> m_Args = new List<IStoryValue>();
+        private bool m_HaveValue;
+        private BoxedValue m_Value;
+    }
+    internal sealed class CollectionGetValue : IStoryValue
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            if (null != callData) {
+                int num = callData.GetParamNum();
+                if (num > 1) {
+                    m_Object.InitFromDsl(callData.GetParam(0));
+                    m_Method.InitFromDsl(callData.GetParam(1));
+                }
+                for (int i = 2; i < callData.GetParamNum(); ++i) {
+                    StoryValue val = new StoryValue();
+                    val.InitFromDsl(callData.GetParam(i));
+                    m_Args.Add(val);
+                }
+            }
+        }
+        public IStoryValue Clone()
+        {
+            CollectionGetValue val = new CollectionGetValue();
+            val.m_Object = m_Object.Clone();
+            val.m_Method = m_Method.Clone();
+            for (int i = 0; i < m_Args.Count; i++) {
+                val.m_Args.Add(m_Args[i].Clone());
+            }
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_HaveValue = false;
+            m_Object.Evaluate(instance, handler, iterator, args);
+            m_Method.Evaluate(instance, handler, iterator, args);
+            for (int i = 0; i < m_Args.Count; i++) {
+                m_Args[i].Evaluate(instance, handler, iterator, args);
+            }
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public BoxedValue Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue()
+        {
+            bool canCalc = true;
+            if (!m_Object.HaveValue || !m_Method.HaveValue) {
+                canCalc = false;
+            }
+            else {
+                for (int i = 0; i < m_Args.Count; i++) {
+                    if (!m_Args[i].HaveValue) {
+                        canCalc = false;
+                        break;
+                    }
+                }
+            }
+            if (canCalc) {
+                m_HaveValue = true;
+                m_Value = BoxedValue.NullObject;
+                object obj = m_Object.Value.Get<object>();
+                var methodObj = m_Method.Value;
+                ArrayList arglist = new ArrayList();
+                for (int i = 0; i < m_Args.Count; i++) {
+                    arglist.Add(m_Args[i].Value.Get<object>());
+                }
+                object[] args = arglist.ToArray();
+                if (null != obj) {
+                    IDictionary dict = obj as IDictionary;
+                    var mobj = methodObj.Get<object>();
+                    if (null != dict && dict.Contains(mobj)) {
+                        m_Value = BoxedValue.From(dict[mobj]);
+                    }
+                    else {
+                        IEnumerable enumer = obj as IEnumerable;
+                        if (null != enumer && methodObj.IsInteger) {
+                            int index = methodObj.Get<int>();
+                            var e = enumer.GetEnumerator();
+                            for (int i = 0; i <= index; ++i) {
+                                e.MoveNext();
+                            }
+                            m_Value = BoxedValue.From(e.Current);
                         }
                     }
                 }
