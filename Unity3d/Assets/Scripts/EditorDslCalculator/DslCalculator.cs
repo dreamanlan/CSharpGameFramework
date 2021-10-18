@@ -2054,7 +2054,12 @@ namespace DslExpression
             }
             else if (m_VarId.Length > 0) {
                 m_VarIx = Calculator.GetGlobalVariableIndex(m_VarId);
-                ret = Calculator.GetGlobalVaraibleByIndex(m_VarIx);
+                if (m_VarIx < int.MaxValue) {
+                    ret = Calculator.GetGlobalVaraibleByIndex(m_VarIx);
+                }
+                else {
+                    Calculator.Log("unassigned global var '{0}'", m_VarId);
+                }
             }
             if (ret.IsNullObject && m_VarId.Length > 0 && m_VarId[0] != '@') {
                 ret = Environment.ExpandEnvironmentVariables(m_VarId);
@@ -2107,7 +2112,12 @@ namespace DslExpression
             }
             else if (m_VarId.Length > 0) {
                 m_VarIx = Calculator.GetLocalVariableIndex(m_VarId);
-                ret = Calculator.GetLocalVaraibleByIndex(m_VarIx);
+                if (m_VarIx < int.MaxValue) {
+                    ret = Calculator.GetLocalVaraibleByIndex(m_VarIx);
+                }
+                else {
+                    Calculator.Log("unassigned local var '{0}'", m_VarId);
+                }
             }
             return ret;
         }
@@ -8297,8 +8307,11 @@ namespace DslExpression
         }
 
         public Dsl.DslLogDelegation OnLog;
+        public bool Inited { get { return m_Inited; } }
         public void Init()
         {
+            m_Inited = true;
+
             Register("args", new ExpressionFactoryHelper<ArgsGet>());
             Register("arg", new ExpressionFactoryHelper<ArgGet>());
             Register("argnum", new ExpressionFactoryHelper<ArgNumGet>());
@@ -9335,6 +9348,7 @@ namespace DslExpression
             private static SimpleObjectPool<StackInfo> s_Pool = new SimpleObjectPool<StackInfo>();
         }
 
+        private bool m_Inited = false;
         private RunStateEnum m_RunState = RunStateEnum.Normal;
         private Dictionary<string, ProcInfo> m_Procs = new Dictionary<string, ProcInfo>();
         private Stack<StackInfo> m_Stack = new Stack<StackInfo>();
