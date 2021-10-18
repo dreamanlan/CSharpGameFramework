@@ -8727,14 +8727,20 @@ namespace DslExpression
             CalculatorValue ret = 0;
             ProcInfo procInfo;
             if (m_Procs.TryGetValue(proc, out procInfo)) {
-                ret = Calc(args, procInfo);
+                ret = Calc<object>(args, null, procInfo);
             }
             return ret;
         }
-        public CalculatorValue Calc(List<CalculatorValue> args, ProcInfo procInfo)
+        ///procContext is recorded on the stack and its members can be accessed through custom apis (see parsing of no-argument variables in 'Load')  
+        ///it's like args, but with a fixed parameter name and is mainly used to invoke snippets of code.
+        public CalculatorValue Calc<T>(T procContext, ProcInfo procInfo) where T : class
+        {
+            return Calc(null, procContext, procInfo);
+        }
+        private CalculatorValue Calc<T>(List<CalculatorValue> args, T procContext, ProcInfo procInfo) where T : class
         {
             CalculatorValue ret = 0;
-            LocalStackPush(args, procInfo);
+            LocalStackPush(args, procContext, procInfo);
             try {
                 var exps = procInfo.Codes;
                 for (int i = 0; i < exps.Count; ++i) {
@@ -8801,6 +8807,11 @@ namespace DslExpression
             if (null != OnLog) {
                 OnLog(string.Format("{0}", arg));
             }
+        }
+        public T GetProcContext<T>() where T : class
+        {
+            var stackInfo = m_Stack.Peek();
+            return stackInfo.ProcContext as T;
         }
         public IList<CalculatorValue> Arguments
         {
@@ -9198,13 +9209,14 @@ namespace DslExpression
                     Arguments[argIx] = val;
             }
         }
-        private void LocalStackPush(List<CalculatorValue> args, ProcInfo procInfo)
+
+        private void LocalStackPush<T>(List<CalculatorValue> args, T procContext, ProcInfo procInfo) where T : class
         {
             var si = StackInfo.New();
             if (null != args) {
                 si.Args.AddRange(args);
             }
-            si.Init(procInfo);
+            si.Init(procInfo, procContext);
             m_Stack.Push(si);
         }
         private void LocalStackPop()
@@ -9294,12 +9306,14 @@ namespace DslExpression
         private class StackInfo
         {
             internal ProcInfo ProcInfo = null;
+            internal object ProcContext = null;
             internal List<CalculatorValue> Args = new List<CalculatorValue>();
             internal List<CalculatorValue> LocalVars = new List<CalculatorValue>();
 
-            internal void Init(ProcInfo procInfo)
+            internal void Init(ProcInfo procInfo, object procContext)
             {
                 ProcInfo = procInfo;
+                ProcContext = procContext;
                 LocalVars.Capacity = procInfo.LocalVarIndexes.Count;
                 for (int ix = 0; ix < procInfo.LocalVarIndexes.Count; ++ix) {
                     LocalVars.Add(CalculatorValue.NullObject);
@@ -9308,6 +9322,7 @@ namespace DslExpression
             internal void Recycle()
             {
                 ProcInfo = null;
+                ProcContext = null;
                 Args.Clear();
                 LocalVars.Clear();
 
