@@ -280,6 +280,7 @@ namespace StorySystem.CommonCommands
         {
             var localInfos = handler.LocalInfoStack.Peek();
             var localInfo = localInfos.GetLocalInfo(m_LocalInfoIndex) as LocalInfo;
+            localInfo.CurCount = 0;
             localInfo.Count.Evaluate(instance, handler, iterator, args);
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
