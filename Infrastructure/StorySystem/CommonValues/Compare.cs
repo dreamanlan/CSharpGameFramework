@@ -33,15 +33,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
         public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -92,15 +90,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
         public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -151,15 +147,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
         public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -173,7 +167,13 @@ namespace StorySystem.CommonValues
                     string x = valX.Get<string>();
                     string y = valY.Get<string>();
                     m_Value = (x == y ? 1 : 0);
-                } else {
+                }
+                else if (valX.IsObject && valY.IsObject) {
+                    object x = valX.GetObject();
+                    object y = valY.GetObject();
+                    m_Value = (x == y ? 1 : 0);
+                }
+                else {
                     int x = valX.Get<int>();
                     int y = valY.Get<int>();
                     m_Value = (x == y ? 1 : 0);
@@ -216,15 +216,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
         public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -238,7 +236,13 @@ namespace StorySystem.CommonValues
                     string x = valX.Get<string>();
                     string y = valY.Get<string>();
                     m_Value = (x != y ? 1 : 0);
-                } else {
+                }
+                else if (valX.IsObject && valY.IsObject) {
+                    object x = valX.GetObject();
+                    object y = valY.GetObject();
+                    m_Value = (x != y ? 1 : 0);
+                }
+                else {
                     int x = valX.Get<int>();
                     int y = valY.Get<int>();
                     m_Value = (x != y ? 1 : 0);
@@ -281,15 +285,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
         public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -340,15 +342,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
         public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
@@ -396,15 +396,13 @@ namespace StorySystem.CommonValues
         }
         public bool HaveValue
         {
-            get
-            {
+            get {
                 return m_HaveValue;
             }
         }
         public BoxedValue Value
         {
-            get
-            {
+            get {
                 return m_Value;
             }
         }
