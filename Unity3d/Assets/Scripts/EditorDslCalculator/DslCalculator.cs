@@ -8986,9 +8986,7 @@ namespace DslExpression
                                             newCall.Params.Add(callData.GetParam(1));
                                         }
 
-                                        var setExp = new DotnetSetExp();
-                                        setExp.Load(newCall, this);
-                                        return setExp;
+                                        return Load(newCall);
                                     }
                                 }
                                 IExpression exp = null;
@@ -9050,21 +9048,7 @@ namespace DslExpression
                                             }
                                         }
 
-                                        if (apiName == "dotnetcall") {
-                                            var callExp = new DotnetCallExp();
-                                            callExp.Load(newCall, this);
-                                            return callExp;
-                                        }
-                                        else if (apiName == "collectioncall") {
-                                            var collCallExp = new CollectionCallExp();
-                                            collCallExp.Load(newCall, this);
-                                            return collCallExp;
-                                        }
-                                        else {
-                                            var callExp = new LinqExp();
-                                            callExp.Load(newCall, this);
-                                            return callExp;
-                                        }
+                                        return Load(newCall);
                                     }
                                 }
                                 if (paramClass == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
@@ -9088,9 +9072,7 @@ namespace DslExpression
                                         newCall.Params.Add(ConvertMember(callData.GetParam(0), callData.GetParamClass()));
                                     }
 
-                                    var getExp = new DotnetGetExp();
-                                    getExp.Load(newCall, this);
-                                    return getExp;
+                                    return Load(newCall);
                                 }
                             }
                         }
