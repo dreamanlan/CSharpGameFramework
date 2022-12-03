@@ -1,4 +1,6 @@
 #
+__MACOSX
+.vs
 *.suo
 App/ServerModule/ServerEnv/bin/*.mdb
 App/ServerModule/ServerEnv/bin/log
@@ -96,3 +98,9 @@ Unity3d/obj
 Unity3d/Temp
 Unity3d/Assets/Plugins/*.mdb
 Unity3d/Assets/Plugins/*.pdb
+*.ide-wal
+*.ide
+.vs/Client/v15/Server/sqlite3/storage.ide
+.vs/Client/v15/Server/sqlite3/storage.ide-shm
+.vs/Client/v15/Server/sqlite3/storage.ide-wal
+/.vs

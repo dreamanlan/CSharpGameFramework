@@ -18,78 +18,6 @@ using GameFramework;
 #region 解释器
 namespace DslExpression
 {
-    public struct Float2
-    {
-        public float x;
-        public float y;
-
-        public override string ToString()
-        {
-            return string.Format("{{{0},{1}}}", x, y);
-        }
-        public static Float2 zero = new Float2();
-    }
-    public struct Float3
-    {
-        public float x;
-        public float y;
-        public float z;
-
-        public override string ToString()
-        {
-            return string.Format("{{{0},{1},{2}}}", x, y, z);
-        }
-        public static Float3 zero = new Float3();
-    }
-    public struct Float4
-    {
-        public float x;
-        public float y;
-        public float z;
-        public float w;
-
-        public override string ToString()
-        {
-            return string.Format("{{{0},{1},{2},{3}}}}", x, y, z, w);
-        }
-        public static Float4 zero = new Float4();
-    }
-    public struct Integer2
-    {
-        public int x;
-        public int y;
-
-        public override string ToString()
-        {
-            return string.Format("{{{0},{1}}}", x, y);
-        }
-        public static Integer2 zero = new Integer2();
-    }
-    public struct Integer3
-    {
-        public int x;
-        public int y;
-        public int z;
-
-        public override string ToString()
-        {
-            return string.Format("{{{0},{1},{2}}}", x, y, z);
-        }
-        public static Integer3 zero = new Integer3();
-    }
-    public struct Integer4
-    {
-        public int x;
-        public int y;
-        public int z;
-        public int w;
-
-        public override string ToString()
-        {
-            return string.Format("{{{0},{1},{2},{3}}}", x, y, z, w);
-        }
-        public static Integer4 zero = new Integer4();
-    }
     public static class CalculatorValueConverter
     {
         public static CalculatorValue ToCalculatorValue<T>(T v)
@@ -204,48 +132,6 @@ namespace DslExpression
                 return from(v);
             return 0;
         }
-        public static Float2 ToFloat2<T>(T v)
-        {
-            var from = s_FromFloat2 as FromGenericDelegation<Float2, T>;
-            if (null != from)
-                return from(v);
-            return Float2.zero;
-        }
-        public static Float3 ToFloat3<T>(T v)
-        {
-            var from = s_FromFloat3 as FromGenericDelegation<Float3, T>;
-            if (null != from)
-                return from(v);
-            return Float3.zero;
-        }
-        public static Float4 ToFloat4<T>(T v)
-        {
-            var from = s_FromFloat4 as FromGenericDelegation<Float4, T>;
-            if (null != from)
-                return from(v);
-            return Float4.zero;
-        }
-        public static Integer2 ToInteger2<T>(T v)
-        {
-            var from = s_FromInteger2 as FromGenericDelegation<Integer2, T>;
-            if (null != from)
-                return from(v);
-            return Integer2.zero;
-        }
-        public static Integer3 ToInteger3<T>(T v)
-        {
-            var from = s_FromInteger3 as FromGenericDelegation<Integer3, T>;
-            if (null != from)
-                return from(v);
-            return Integer3.zero;
-        }
-        public static Integer4 ToInteger4<T>(T v)
-        {
-            var from = s_FromInteger4 as FromGenericDelegation<Integer4, T>;
-            if (null != from)
-                return from(v);
-            return Integer4.zero;
-        }
 
         public static T From<T>(CalculatorValue v)
         {
@@ -359,141 +245,6 @@ namespace DslExpression
                 return from(v);
             return default(T);
         }
-        public static T From<T>(Float2 v)
-        {
-            var from = s_FromFloat2 as FromGenericDelegation<T, Float2>;
-            if (null != from)
-                return from(v);
-            return default(T);
-        }
-        public static T From<T>(Float3 v)
-        {
-            var from = s_FromFloat3 as FromGenericDelegation<T, Float3>;
-            if (null != from)
-                return from(v);
-            return default(T);
-        }
-        public static T From<T>(Float4 v)
-        {
-            var from = s_FromFloat4 as FromGenericDelegation<T, Float4>;
-            if (null != from)
-                return from(v);
-            return default(T);
-        }
-        public static T From<T>(Integer2 v)
-        {
-            var from = s_FromInteger2 as FromGenericDelegation<T, Integer2>;
-            if (null != from)
-                return from(v);
-            return default(T);
-        }
-        public static T From<T>(Integer3 v)
-        {
-            var from = s_FromInteger3 as FromGenericDelegation<T, Integer3>;
-            if (null != from)
-                return from(v);
-            return default(T);
-        }
-        public static T From<T>(Integer4 v)
-        {
-            var from = s_FromInteger4 as FromGenericDelegation<T, Integer4>;
-            if (null != from)
-                return from(v);
-            return default(T);
-        }
-
-        public static CalculatorValue ToBoxedValue(Type t, object o)
-        {
-            return CastTo<CalculatorValue>(o);
-        }
-        public static bool ToBool(Type t, object o)
-        {
-            return CastTo<bool>(o);
-        }
-        public static char ToChar(Type t, object o)
-        {
-            return CastTo<char>(o);
-        }
-        public static sbyte ToSByte(Type t, object o)
-        {
-            return CastTo<sbyte>(o);
-        }
-        public static short ToShort(Type t, object o)
-        {
-            return CastTo<short>(o);
-        }
-        public static int ToInt(Type t, object o)
-        {
-            return CastTo<int>(o);
-        }
-        public static long ToLong(Type t, object o)
-        {
-            return CastTo<long>(o);
-        }
-        public static byte ToByte(Type t, object o)
-        {
-            return CastTo<byte>(o);
-        }
-        public static ushort ToUShort(Type t, object o)
-        {
-            return CastTo<ushort>(o);
-        }
-        public static uint ToUInt(Type t, object o)
-        {
-            return CastTo<uint>(o);
-        }
-        public static ulong ToULong(Type t, object o)
-        {
-            return CastTo<ulong>(o);
-        }
-        public static float ToFloat(Type t, object o)
-        {
-            return CastTo<float>(o);
-        }
-        public static double ToDouble(Type t, object o)
-        {
-            return CastTo<double>(o);
-        }
-        public static decimal ToDecimal(Type t, object o)
-        {
-            return CastTo<decimal>(o);
-        }
-        public static string ToString(Type t, object o)
-        {
-            return CastTo<string>(o);
-        }
-        public static object ToObject(Type t, object o)
-        {
-            return o;
-        }
-        public static Float2 ToVector2(Type t, object o)
-        {
-            return CastTo<Float2>(o);
-        }
-        public static Float3 ToVector3(Type t, object o)
-        {
-            return CastTo<Float3>(o);
-        }
-        public static Float4 ToVector4(Type t, object o)
-        {
-            return CastTo<Float4>(o);
-        }
-        public static Integer2 ToQuaternion(Type t, object o)
-        {
-            return CastTo<Integer2>(o);
-        }
-        public static Integer3 ToColor(Type t, object o)
-        {
-            return CastTo<Integer3>(o);
-        }
-        public static Integer4 ToColor32(Type t, object o)
-        {
-            return CastTo<Integer4>(o);
-        }
-        public static object From(Type t, object o)
-        {
-            return o;
-        }
 
         internal static T CastTo<T>(object obj)
         {
@@ -527,12 +278,6 @@ namespace DslExpression
         private static FromGenericDelegation<decimal, decimal> s_FromDecimal = FromHelper<decimal>;
         private static FromGenericDelegation<string, string> s_FromString = FromHelper<string>;
         private static FromGenericDelegation<object, object> s_FromObject = FromHelper<object>;
-        private static FromGenericDelegation<Float2, Float2> s_FromFloat2 = FromHelper<Float2>;
-        private static FromGenericDelegation<Float3, Float3> s_FromFloat3 = FromHelper<Float3>;
-        private static FromGenericDelegation<Float4, Float4> s_FromFloat4 = FromHelper<Float4>;
-        private static FromGenericDelegation<Integer2, Integer2> s_FromInteger2 = FromHelper<Integer2>;
-        private static FromGenericDelegation<Integer3, Integer3> s_FromInteger3 = FromHelper<Integer3>;
-        private static FromGenericDelegation<Integer4, Integer4> s_FromInteger4 = FromHelper<Integer4>;
         private static T FromHelper<T>(T v)
         {
             return v;
@@ -555,12 +300,6 @@ namespace DslExpression
         public const int c_FloatType = 12;
         public const int c_DoubleType = 13;
         public const int c_DecimalType = 14;
-        public const int c_Float2Type = 15;
-        public const int c_Float3Type = 16;
-        public const int c_Float4Type = 17;
-        public const int c_Integer2Type = 18;
-        public const int c_Integer3Type = 19;
-        public const int c_Integer4Type = 20;
 
         [StructLayout(LayoutKind.Explicit)]
         internal struct UnionValue
@@ -591,18 +330,6 @@ namespace DslExpression
             public double DoubleVal;
             [FieldOffset(0)]
             public decimal DecimalVal;
-            [FieldOffset(0)]
-            public Float2 Float2Val;
-            [FieldOffset(0)]
-            public Float3 Float3Val;
-            [FieldOffset(0)]
-            public Float4 Float4Val;
-            [FieldOffset(0)]
-            public Integer2 Integer2Val;
-            [FieldOffset(0)]
-            public Integer3 Integer3Val;
-            [FieldOffset(0)]
-            public Integer4 Integer4Val;
         }
 
         public string StringVal
@@ -620,7 +347,7 @@ namespace DslExpression
         }
         public static implicit operator string(CalculatorValue v)
         {
-            return v.Get<string>();
+            return v.GetString();
         }
         public static implicit operator CalculatorValue(bool v)
         {
@@ -628,7 +355,7 @@ namespace DslExpression
         }
         public static implicit operator bool(CalculatorValue v)
         {
-            return v.Get<bool>();
+            return v.GetBool();
         }
         public static implicit operator CalculatorValue(char v)
         {
@@ -636,7 +363,7 @@ namespace DslExpression
         }
         public static implicit operator char(CalculatorValue v)
         {
-            return v.Get<char>();
+            return v.GetChar();
         }
         public static implicit operator CalculatorValue(sbyte v)
         {
@@ -644,7 +371,7 @@ namespace DslExpression
         }
         public static implicit operator sbyte(CalculatorValue v)
         {
-            return v.Get<sbyte>();
+            return v.GetSByte();
         }
         public static implicit operator CalculatorValue(short v)
         {
@@ -652,7 +379,7 @@ namespace DslExpression
         }
         public static implicit operator short(CalculatorValue v)
         {
-            return v.Get<short>();
+            return v.GetShort();
         }
         public static implicit operator CalculatorValue(int v)
         {
@@ -660,7 +387,7 @@ namespace DslExpression
         }
         public static implicit operator int(CalculatorValue v)
         {
-            return v.Get<int>();
+            return v.GetInt();
         }
         public static implicit operator CalculatorValue(long v)
         {
@@ -668,7 +395,7 @@ namespace DslExpression
         }
         public static implicit operator long(CalculatorValue v)
         {
-            return v.Get<long>();
+            return v.GetLong();
         }
         public static implicit operator CalculatorValue(byte v)
         {
@@ -676,7 +403,7 @@ namespace DslExpression
         }
         public static implicit operator byte(CalculatorValue v)
         {
-            return v.Get<byte>();
+            return v.GetByte();
         }
         public static implicit operator CalculatorValue(ushort v)
         {
@@ -684,7 +411,7 @@ namespace DslExpression
         }
         public static implicit operator ushort(CalculatorValue v)
         {
-            return v.Get<ushort>();
+            return v.GetUShort();
         }
         public static implicit operator CalculatorValue(uint v)
         {
@@ -692,7 +419,7 @@ namespace DslExpression
         }
         public static implicit operator uint(CalculatorValue v)
         {
-            return v.Get<uint>();
+            return v.GetUInt();
         }
         public static implicit operator CalculatorValue(ulong v)
         {
@@ -700,7 +427,7 @@ namespace DslExpression
         }
         public static implicit operator ulong(CalculatorValue v)
         {
-            return v.Get<ulong>();
+            return v.GetULong();
         }
         public static implicit operator CalculatorValue(float v)
         {
@@ -708,7 +435,7 @@ namespace DslExpression
         }
         public static implicit operator float(CalculatorValue v)
         {
-            return v.Get<float>();
+            return v.GetFloat();
         }
         public static implicit operator CalculatorValue(double v)
         {
@@ -716,7 +443,7 @@ namespace DslExpression
         }
         public static implicit operator double(CalculatorValue v)
         {
-            return v.Get<double>();
+            return v.GetDouble();
         }
         public static implicit operator CalculatorValue(decimal v)
         {
@@ -724,60 +451,12 @@ namespace DslExpression
         }
         public static implicit operator decimal(CalculatorValue v)
         {
-            return v.Get<decimal>();
-        }
-        public static implicit operator CalculatorValue(Float2 v)
-        {
-            return CalculatorValue.From(v);
-        }
-        public static implicit operator Float2(CalculatorValue v)
-        {
-            return v.Get<Float2>();
-        }
-        public static implicit operator CalculatorValue(Float3 v)
-        {
-            return CalculatorValue.From(v);
-        }
-        public static implicit operator Float3(CalculatorValue v)
-        {
-            return v.Get<Float3>();
-        }
-        public static implicit operator CalculatorValue(Float4 v)
-        {
-            return CalculatorValue.From(v);
-        }
-        public static implicit operator Float4(CalculatorValue v)
-        {
-            return v.Get<Float4>();
-        }
-        public static implicit operator CalculatorValue(Integer2 v)
-        {
-            return CalculatorValue.From(v);
-        }
-        public static implicit operator Integer2(CalculatorValue v)
-        {
-            return v.Get<Integer2>();
-        }
-        public static implicit operator CalculatorValue(Integer3 v)
-        {
-            return CalculatorValue.From(v);
-        }
-        public static implicit operator Integer3(CalculatorValue v)
-        {
-            return v.Get<Integer3>();
-        }
-        public static implicit operator CalculatorValue(Integer4 v)
-        {
-            return CalculatorValue.From(v);
-        }
-        public static implicit operator Integer4(CalculatorValue v)
-        {
-            return v.Get<Integer4>();
+            return v.GetDecimal();
         }
 
         public static implicit operator CalculatorValue(Type v)
         {
-            return CalculatorValue.From(v);
+            return CalculatorValue.FromObject(v);
         }
         public static implicit operator Type(CalculatorValue v)
         {
@@ -785,7 +464,7 @@ namespace DslExpression
         }
         public static implicit operator CalculatorValue(ArrayList v)
         {
-            return CalculatorValue.From(v);
+            return CalculatorValue.FromObject(v);
         }
         public static implicit operator ArrayList(CalculatorValue v)
         {
@@ -825,18 +504,6 @@ namespace DslExpression
                     return "double";
                 case c_DecimalType:
                     return "decimal";
-                case c_Float2Type:
-                    return "Float2";
-                case c_Float3Type:
-                    return "Float3";
-                case c_Float4Type:
-                    return "Float4";
-                case c_Integer2Type:
-                    return "Integer2";
-                case c_Integer3Type:
-                    return "Integer3";
-                case c_Integer4Type:
-                    return "Integer4";
                 default:
                     return "Unknown";
             }
@@ -892,7 +559,7 @@ namespace DslExpression
                 }
             }
         }
-        public bool IsFloat
+        public bool IsNumber
         {
             get {
                 return Type == c_FloatType || Type == c_DoubleType || Type == c_DecimalType;
@@ -940,64 +607,339 @@ namespace DslExpression
             Type = c_StringType;
             StringVal = string.Empty;
         }
-        public void Set<T>(T v)
+
+        public void Set(bool v)
         {
-            var t = v != null ? v.GetType() : typeof(T);
-            Set<T>(t, v);
+            Type = c_BoolType;
+            Union.BoolVal = v;
         }
-        public void Set(Type t, object v)
+        public void Set(char v)
         {
-            Set<object>(t, v);
+            Type = c_CharType;
+            Union.CharVal = v;
         }
-        public T Get<T>()
+        public void Set(sbyte v)
         {
-            var t = typeof(T);
-            return Get<T>(t);
+            Type = c_SByteType;
+            Union.SByteVal = v;
         }
-        public object Get(Type t)
+        public void Set(short v)
         {
-            return Get<object>(t);
+            Type = c_ShortType;
+            Union.ShortVal = v;
         }
-        //供lua或防止隐式转换出问题时使用
-        public void SetBool(bool v)
+        public void Set(int v)
         {
-            Set(v);
+            Type = c_IntType;
+            Union.IntVal = v;
         }
-        public void SetInteger(long v)
+        public void Set(long v)
         {
-            Set(v);
+            Type = c_LongType;
+            Union.LongVal = v;
         }
-        public void SetNumber(double v)
+        public void Set(byte v)
         {
-            Set(v);
+            Type = c_ByteType;
+            Union.ByteVal = v;
         }
-        public void SetString(string v)
+        public void Set(ushort v)
         {
-            Set(v);
+            Type = c_UShortType;
+            Union.UShortVal = v;
         }
-        public void SetObject(object v)
+        public void Set(uint v)
         {
-            Set(v);
+            Type = c_UIntType;
+            Union.UIntVal = v;
         }
+        public void Set(ulong v)
+        {
+            Type = c_ULongType;
+            Union.ULongVal = v;
+        }
+        public void Set(float v)
+        {
+            Type = c_FloatType;
+            Union.FloatVal = v;
+        }
+        public void Set(double v)
+        {
+            Type = c_DoubleType;
+            Union.DoubleVal = v;
+        }
+        public void Set(decimal v)
+        {
+            Type = c_DecimalType;
+            Union.DecimalVal = v;
+        }
+        public void Set(string v)
+        {
+            Type = c_StringType;
+            StringVal = v;
+        }
+        public void SetObject(object val)
+        {
+            if (null == val) {
+                SetWithObjectType(val);
+                return;
+            }
+            Type t = val.GetType();
+            if (t == typeof(string))
+                Set((string)val);
+            else if (t == typeof(bool))
+                Set((bool)val);
+            else if (t == typeof(char))
+                Set((char)val);
+            else if (t == typeof(sbyte))
+                Set((sbyte)val);
+            else if (t == typeof(short))
+                Set((short)val);
+            else if (t == typeof(int))
+                Set((int)val);
+            else if (t == typeof(long))
+                Set((long)val);
+            else if (t == typeof(byte))
+                Set((byte)val);
+            else if (t == typeof(ushort))
+                Set((ushort)val);
+            else if (t == typeof(uint))
+                Set((uint)val);
+            else if (t == typeof(ulong))
+                Set((ulong)val);
+            else if (t == typeof(float))
+                Set((float)val);
+            else if (t == typeof(double))
+                Set((double)val);
+            else if (t == typeof(decimal))
+                Set((decimal)val);
+            else if (t == typeof(CalculatorValue))
+                this = (CalculatorValue)val;
+            else
+                SetWithObjectType(val);
+        }
+        public void SetWithObjectType(object val)
+        {
+            Type = c_ObjectType;
+            ObjectVal = val;
+        }
+
         public bool GetBool()
         {
-            return Get<bool>();
+            return ToBool();
         }
-        public long GetInteger()
+        public char GetChar()
         {
-            return Get<long>();
+            return ToChar();
         }
-        public double GetNumber()
+        public sbyte GetSByte()
         {
-            return Get<double>();
+            return ToSByte();
+        }
+        public short GetShort()
+        {
+            return ToShort();
+        }
+        public int GetInt()
+        {
+            return ToInt();
+        }
+        public long GetLong()
+        {
+            return ToLong();
+        }
+        public byte GetByte()
+        {
+            return ToByte();
+        }
+        public ushort GetUShort()
+        {
+            return ToUShort();
+        }
+        public uint GetUInt()
+        {
+            return ToUInt();
+        }
+        public ulong GetULong()
+        {
+            return ToULong();
+        }
+        public float GetFloat()
+        {
+            return ToFloat();
+        }
+        public double GetDouble()
+        {
+            return ToDouble();
+        }
+        public decimal GetDecimal()
+        {
+            return ToDecimal();
         }
         public string GetString()
         {
-            return Get<string>();
+            return ToString();
         }
         public object GetObject()
         {
-            return Get<object>();
+            return ToObject();
+        }
+
+        public T CastTo<T>()
+        {
+            Type t = typeof(T);
+            if (t == typeof(string))
+                return CalculatorValueConverter.From<T>(ToString());
+            else if (t == typeof(bool))
+                return CalculatorValueConverter.From<T>(ToBool());
+            else if (t == typeof(char))
+                return CalculatorValueConverter.From<T>(ToChar());
+            else if (t == typeof(sbyte))
+                return CalculatorValueConverter.From<T>(ToSByte());
+            else if (t == typeof(short))
+                return CalculatorValueConverter.From<T>(ToShort());
+            else if (t == typeof(int))
+                return CalculatorValueConverter.From<T>(ToInt());
+            else if (t == typeof(long))
+                return CalculatorValueConverter.From<T>(ToLong());
+            else if (t == typeof(byte))
+                return CalculatorValueConverter.From<T>(ToByte());
+            else if (t == typeof(ushort))
+                return CalculatorValueConverter.From<T>(ToUShort());
+            else if (t == typeof(uint))
+                return CalculatorValueConverter.From<T>(ToUInt());
+            else if (t == typeof(ulong))
+                return CalculatorValueConverter.From<T>(ToULong());
+            else if (t == typeof(float))
+                return CalculatorValueConverter.From<T>(ToFloat());
+            else if (t == typeof(double))
+                return CalculatorValueConverter.From<T>(ToDouble());
+            else if (t == typeof(decimal))
+                return CalculatorValueConverter.From<T>(ToDecimal());
+            else if (t == typeof(CalculatorValue))
+                return CalculatorValueConverter.From<T>(this);
+            else if(t == typeof(object))
+                return CalculatorValueConverter.From<T>(ToObject());
+            else
+                return CalculatorValueConverter.CastTo<T>(ToObject());
+        }
+        public object CastTo(Type t)
+        {
+            if (t == typeof(string))
+                return ToString();
+            else if (t == typeof(bool))
+                return ToBool();
+            else if (t == typeof(char))
+                return ToChar();
+            else if (t == typeof(sbyte))
+                return ToSByte();
+            else if (t == typeof(short))
+                return ToShort();
+            else if (t == typeof(int))
+                return ToInt();
+            else if (t == typeof(long))
+                return ToLong();
+            else if (t == typeof(byte))
+                return ToByte();
+            else if (t == typeof(ushort))
+                return ToUShort();
+            else if (t == typeof(uint))
+                return ToUInt();
+            else if (t == typeof(ulong))
+                return ToULong();
+            else if (t == typeof(float))
+                return ToFloat();
+            else if (t == typeof(double))
+                return ToDouble();
+            else if (t == typeof(decimal))
+                return ToDecimal();
+            else if (t == typeof(CalculatorValue))
+                return this;
+            else if (t == typeof(object))
+                return ToObject();
+            else
+                return Convert.ChangeType(ToObject(), t);
+        }
+        public void GenericSet<T>(T val)
+        {
+            Type t = typeof(T);
+            if (t == typeof(string))
+                Set(CalculatorValueConverter.ToString<T>(val));
+            else if (t == typeof(bool))
+                Set(CalculatorValueConverter.ToBool<T>(val));
+            else if (t == typeof(char))
+                Set(CalculatorValueConverter.ToChar<T>(val));
+            else if (t == typeof(sbyte))
+                Set(CalculatorValueConverter.ToSByte<T>(val));
+            else if (t == typeof(short))
+                Set(CalculatorValueConverter.ToShort<T>(val));
+            else if (t == typeof(int))
+                Set(CalculatorValueConverter.ToInt<T>(val));
+            else if (t == typeof(long))
+                Set(CalculatorValueConverter.ToLong<T>(val));
+            else if (t == typeof(byte))
+                Set(CalculatorValueConverter.ToByte<T>(val));
+            else if (t == typeof(ushort))
+                Set(CalculatorValueConverter.ToUShort<T>(val));
+            else if (t == typeof(uint))
+                Set(CalculatorValueConverter.ToUInt<T>(val));
+            else if (t == typeof(ulong))
+                Set(CalculatorValueConverter.ToULong<T>(val));
+            else if (t == typeof(float))
+                Set(CalculatorValueConverter.ToFloat<T>(val));
+            else if (t == typeof(double))
+                Set(CalculatorValueConverter.ToDouble<T>(val));
+            else if (t == typeof(decimal))
+                Set(CalculatorValueConverter.ToDecimal<T>(val));
+            else if (t == typeof(CalculatorValue))
+                this = CalculatorValueConverter.ToCalculatorValue<T>(val);
+            else if (t == typeof(object))
+                SetWithObjectType(CalculatorValueConverter.ToObject<T>(val));
+            else
+                SetWithObjectType(val);
+        }
+        public void GenericSet(Type t, object val)
+        {
+            if (null == val) {
+                if (t == typeof(string))
+                    Set((string)val);
+                else
+                    SetWithObjectType(val);
+                return;
+            }
+            t = val.GetType();
+            if (t == typeof(string))
+                Set((string)val);
+            else if (t == typeof(bool))
+                Set((bool)val);
+            else if (t == typeof(char))
+                Set((char)val);
+            else if (t == typeof(sbyte))
+                Set((sbyte)val);
+            else if (t == typeof(short))
+                Set((short)val);
+            else if (t == typeof(int))
+                Set((int)val);
+            else if (t == typeof(long))
+                Set((long)val);
+            else if (t == typeof(byte))
+                Set((byte)val);
+            else if (t == typeof(ushort))
+                Set((ushort)val);
+            else if (t == typeof(uint))
+                Set((uint)val);
+            else if (t == typeof(ulong))
+                Set((ulong)val);
+            else if (t == typeof(float))
+                Set((float)val);
+            else if (t == typeof(double))
+                Set((double)val);
+            else if (t == typeof(decimal))
+                Set((decimal)val);
+            else if (t == typeof(CalculatorValue))
+                this = (CalculatorValue)val;
+            else
+                SetWithObjectType(val);
         }
 
         public void CopyFrom(CalculatorValue other)
@@ -1049,24 +991,6 @@ namespace DslExpression
                 case c_DecimalType:
                     Union.DecimalVal = other.Union.DecimalVal;
                     break;
-                case c_Float2Type:
-                    Union.Float2Val = other.Union.Float2Val;
-                    break;
-                case c_Float3Type:
-                    Union.Float3Val = other.Union.Float3Val;
-                    break;
-                case c_Float4Type:
-                    Union.Float4Val = other.Union.Float4Val;
-                    break;
-                case c_Integer2Type:
-                    Union.Integer2Val = other.Union.Integer2Val;
-                    break;
-                case c_Integer3Type:
-                    Union.Integer3Val = other.Union.Integer3Val;
-                    break;
-                case c_Integer4Type:
-                    Union.Integer4Val = other.Union.Integer4Val;
-                    break;
             }
         }
         public override string ToString()
@@ -1102,401 +1026,10 @@ namespace DslExpression
                     return Union.DoubleVal.ToString();
                 case c_DecimalType:
                     return Union.DecimalVal.ToString();
-                case c_Float2Type:
-                    return Union.Float2Val.ToString();
-                case c_Float3Type:
-                    return Union.Float3Val.ToString();
-                case c_Float4Type:
-                    return Union.Float4Val.ToString();
-                case c_Integer2Type:
-                    return Union.Integer2Val.ToString();
-                case c_Integer3Type:
-                    return Union.Integer3Val.ToString();
-                case c_Integer4Type:
-                    return Union.Integer4Val.ToString();
             }
             return string.Empty;
         }
 
-        private void Set<T>(Type t, T v)
-        {
-            if (typeof(T) == typeof(object)) {
-
-                if (t == typeof(CalculatorValue)) {
-                    var cv = (CalculatorValue)(object)v;
-                    CopyFrom(cv);
-                }
-                else if (t == typeof(bool)) {
-                    var cv = (bool)(object)v;
-                    Type = c_BoolType;
-                    Union.BoolVal = cv;
-                }
-                else if (t == typeof(char)) {
-                    var cv = (char)(object)v;
-                    Type = c_CharType;
-                    Union.CharVal = cv;
-                }
-                else if (t == typeof(sbyte)) {
-                    var cv = (sbyte)(object)v;
-                    Type = c_SByteType;
-                    Union.SByteVal = cv;
-                }
-                else if (t == typeof(short)) {
-                    var cv = (short)(object)v;
-                    Type = c_ShortType;
-                    Union.ShortVal = cv;
-                }
-                else if (t == typeof(int)) {
-                    var cv = (int)(object)v;
-                    Type = c_IntType;
-                    Union.IntVal = cv;
-                }
-                else if (t == typeof(long)) {
-                    var cv = (long)(object)v;
-                    Type = c_LongType;
-                    Union.LongVal = cv;
-                }
-                else if (t == typeof(byte)) {
-                    var cv = (byte)(object)v;
-                    Type = c_ByteType;
-                    Union.ByteVal = cv;
-                }
-                else if (t == typeof(ushort)) {
-                    var cv = (ushort)(object)v;
-                    Type = c_UShortType;
-                    Union.UShortVal = cv;
-                }
-                else if (t == typeof(uint)) {
-                    var cv = (uint)(object)v;
-                    Type = c_UIntType;
-                    Union.UIntVal = cv;
-                }
-                else if (t == typeof(ulong)) {
-                    var cv = (ulong)(object)v;
-                    Type = c_ULongType;
-                    Union.ULongVal = cv;
-                }
-                else if (t == typeof(float)) {
-                    var cv = (float)(object)v;
-                    Type = c_FloatType;
-                    Union.FloatVal = cv;
-                }
-                else if (t == typeof(double)) {
-                    var cv = (double)(object)v;
-                    Type = c_DoubleType;
-                    Union.DoubleVal = cv;
-                }
-                else if (t == typeof(decimal)) {
-                    var cv = (decimal)(object)v;
-                    Type = c_DecimalType;
-                    Union.DecimalVal = cv;
-                }
-                else if (t == typeof(Float2)) {
-                    var cv = (Float2)(object)v;
-                    Type = c_Float2Type;
-                    Union.Float2Val = cv;
-                }
-                else if (t == typeof(Float3)) {
-                    var cv = (Float3)(object)v;
-                    Type = c_Float3Type;
-                    Union.Float3Val = cv;
-                }
-                else if (t == typeof(Float4)) {
-                    var cv = (Float4)(object)v;
-                    Type = c_Float4Type;
-                    Union.Float4Val = cv;
-                }
-                else if (t == typeof(Integer2)) {
-                    var cv = (Integer2)(object)v;
-                    Type = c_Integer2Type;
-                    Union.Integer2Val = cv;
-                }
-                else if (t == typeof(Integer3)) {
-                    var cv = (Integer3)(object)v;
-                    Type = c_Integer3Type;
-                    Union.Integer3Val = cv;
-                }
-                else if (t == typeof(Integer4)) {
-                    var cv = (Integer4)(object)v;
-                    Type = c_Integer4Type;
-                    Union.Integer4Val = cv;
-                }
-                else if (t == typeof(string)) {
-                    var cv = (string)(object)v;
-                    Type = c_StringType;
-                    ObjectVal = cv;
-                }
-                else {
-                    object vObj = v;
-                    Type = c_ObjectType;
-                    ObjectVal = vObj;
-                }
-            }
-            else {
-                if (t == typeof(CalculatorValue)) {
-                    var cv = CalculatorValueConverter.ToCalculatorValue(v);
-                    CopyFrom(cv);
-                }
-                else if (t == typeof(bool)) {
-                    var cv = CalculatorValueConverter.ToBool(v);
-                    Type = c_BoolType;
-                    Union.BoolVal = cv;
-                }
-                else if (t == typeof(char)) {
-                    var cv = CalculatorValueConverter.ToChar(v);
-                    Type = c_CharType;
-                    Union.CharVal = cv;
-                }
-                else if (t == typeof(sbyte)) {
-                    var cv = CalculatorValueConverter.ToSByte(v);
-                    Type = c_SByteType;
-                    Union.SByteVal = cv;
-                }
-                else if (t == typeof(short)) {
-                    var cv = CalculatorValueConverter.ToShort(v);
-                    Type = c_ShortType;
-                    Union.ShortVal = cv;
-                }
-                else if (t == typeof(int)) {
-                    var cv = CalculatorValueConverter.ToInt(v);
-                    Type = c_IntType;
-                    Union.IntVal = cv;
-                }
-                else if (t == typeof(long)) {
-                    var cv = CalculatorValueConverter.ToLong(v);
-                    Type = c_LongType;
-                    Union.LongVal = cv;
-                }
-                else if (t == typeof(byte)) {
-                    var cv = CalculatorValueConverter.ToByte(v);
-                    Type = c_ByteType;
-                    Union.ByteVal = cv;
-                }
-                else if (t == typeof(ushort)) {
-                    var cv = CalculatorValueConverter.ToUShort(v);
-                    Type = c_UShortType;
-                    Union.UShortVal = cv;
-                }
-                else if (t == typeof(uint)) {
-                    var cv = CalculatorValueConverter.ToUInt(v);
-                    Type = c_UIntType;
-                    Union.UIntVal = cv;
-                }
-                else if (t == typeof(ulong)) {
-                    var cv = CalculatorValueConverter.ToULong(v);
-                    Type = c_ULongType;
-                    Union.ULongVal = cv;
-                }
-                else if (t == typeof(float)) {
-                    var cv = CalculatorValueConverter.ToFloat(v);
-                    Type = c_FloatType;
-                    Union.FloatVal = cv;
-                }
-                else if (t == typeof(double)) {
-                    var cv = CalculatorValueConverter.ToDouble(v);
-                    Type = c_DoubleType;
-                    Union.DoubleVal = cv;
-                }
-                else if (t == typeof(decimal)) {
-                    var cv = CalculatorValueConverter.ToDecimal(v);
-                    Type = c_DecimalType;
-                    Union.DecimalVal = cv;
-                }
-                else if (t == typeof(Float2)) {
-                    var cv = CalculatorValueConverter.ToFloat2(v);
-                    Type = c_Float2Type;
-                    Union.Float2Val = cv;
-                }
-                else if (t == typeof(Float3)) {
-                    var cv = CalculatorValueConverter.ToFloat3(v);
-                    Type = c_Float3Type;
-                    Union.Float3Val = cv;
-                }
-                else if (t == typeof(Float4)) {
-                    var cv = CalculatorValueConverter.ToFloat4(v);
-                    Type = c_Float4Type;
-                    Union.Float4Val = cv;
-                }
-                else if (t == typeof(Integer2)) {
-                    var cv = CalculatorValueConverter.ToInteger2(v);
-                    Type = c_Integer2Type;
-                    Union.Integer2Val = cv;
-                }
-                else if (t == typeof(Integer3)) {
-                    var cv = CalculatorValueConverter.ToInteger3(v);
-                    Type = c_Integer3Type;
-                    Union.Integer3Val = cv;
-                }
-                else if (t == typeof(Integer4)) {
-                    var cv = CalculatorValueConverter.ToInteger4(v);
-                    Type = c_Integer4Type;
-                    Union.Integer4Val = cv;
-                }
-                else if (t == typeof(string)) {
-                    var cv = CalculatorValueConverter.ToString(v);
-                    Type = c_StringType;
-                    ObjectVal = cv;
-                }
-                else {
-                    object vObj = v;
-                    Type = c_ObjectType;
-                    ObjectVal = vObj;
-                }
-            }
-        }
-        private T Get<T>(Type t)
-        {
-            if (typeof(T) == typeof(object)) {
-                var obj = ToObject();
-                return CalculatorValueConverter.CastTo<T>(obj);
-            }
-            else if (Type == c_StringType) {
-                if (t == typeof(CalculatorValue)) {
-                    return CalculatorValueConverter.From<T>(this);
-                }
-                else if (t == typeof(string)) {
-                    return CalculatorValueConverter.From<T>(StringVal);
-                }
-                else if (t == typeof(object)) {
-                    return CalculatorValueConverter.From<T>(ObjectVal);
-                }
-                else {
-                    return CalculatorValueConverter.CastTo<T>(ObjectVal);
-                }
-            }
-            else {
-                if (t == typeof(CalculatorValue)) {
-                    return CalculatorValueConverter.From<T>(this);
-                }
-                else if (t == typeof(bool) && Type == c_BoolType) {
-                    return CalculatorValueConverter.From<T>(Union.BoolVal);
-                }
-                else if (t == typeof(char) && Type == c_CharType) {
-                    return CalculatorValueConverter.From<T>(Union.CharVal);
-                }
-                else if (t == typeof(sbyte) && Type == c_SByteType) {
-                    return CalculatorValueConverter.From<T>(Union.SByteVal);
-                }
-                else if (t == typeof(short) && Type == c_ShortType) {
-                    return CalculatorValueConverter.From<T>(Union.ShortVal);
-                }
-                else if (t == typeof(int) && Type == c_IntType) {
-                    return CalculatorValueConverter.From<T>(Union.IntVal);
-                }
-                else if (t == typeof(long) && Type == c_LongType) {
-                    return CalculatorValueConverter.From<T>(Union.LongVal);
-                }
-                else if (t == typeof(byte) && Type == c_ByteType) {
-                    return CalculatorValueConverter.From<T>(Union.ByteVal);
-                }
-                else if (t == typeof(ushort) && Type == c_UShortType) {
-                    return CalculatorValueConverter.From<T>(Union.UShortVal);
-                }
-                else if (t == typeof(uint) && Type == c_UIntType) {
-                    return CalculatorValueConverter.From<T>(Union.UIntVal);
-                }
-                else if (t == typeof(ulong) && Type == c_ULongType) {
-                    return CalculatorValueConverter.From<T>(Union.ULongVal);
-                }
-                else if (t == typeof(float) && Type == c_FloatType) {
-                    return CalculatorValueConverter.From<T>(Union.FloatVal);
-                }
-                else if (t == typeof(double) && Type == c_DoubleType) {
-                    return CalculatorValueConverter.From<T>(Union.DoubleVal);
-                }
-                else if (t == typeof(decimal) && Type == c_DecimalType) {
-                    return CalculatorValueConverter.From<T>(Union.DecimalVal);
-                }
-                else if (t == typeof(Float2) && Type == c_Float2Type) {
-                    return CalculatorValueConverter.From<T>(Union.Float2Val);
-                }
-                else if (t == typeof(Float3) && Type == c_Float3Type) {
-                    return CalculatorValueConverter.From<T>(Union.Float3Val);
-                }
-                else if (t == typeof(Float4) && Type == c_Float4Type) {
-                    return CalculatorValueConverter.From<T>(Union.Float4Val);
-                }
-                else if (t == typeof(Integer2) && Type == c_Integer2Type) {
-                    return CalculatorValueConverter.From<T>(Union.Integer2Val);
-                }
-                else if (t == typeof(Integer3) && Type == c_Integer3Type) {
-                    return CalculatorValueConverter.From<T>(Union.Integer3Val);
-                }
-                else if (t == typeof(Integer4) && Type == c_Integer4Type) {
-                    return CalculatorValueConverter.From<T>(Union.Integer4Val);
-                }
-                else if (t == typeof(bool)) {
-                    long v = ToLong();
-                    return CalculatorValueConverter.From<T>(v != 0);
-                }
-                else if (t == typeof(char)) {
-                    long v = ToLong();
-                    return CalculatorValueConverter.From<T>((char)v);
-                }
-                else if (t == typeof(sbyte)) {
-                    long v = ToLong();
-                    return CalculatorValueConverter.From<T>((sbyte)v);
-                }
-                else if (t == typeof(short)) {
-                    long v = ToLong();
-                    return CalculatorValueConverter.From<T>((short)v);
-                }
-                else if (t == typeof(int)) {
-                    long v = ToLong();
-                    return CalculatorValueConverter.From<T>((int)v);
-                }
-                else if (t == typeof(long)) {
-                    long v = ToLong();
-                    return CalculatorValueConverter.From<T>(v);
-                }
-                else if (t == typeof(byte)) {
-                    long v = ToLong();
-                    return CalculatorValueConverter.From<T>((byte)v);
-                }
-                else if (t == typeof(ushort)) {
-                    long v = ToLong();
-                    return CalculatorValueConverter.From<T>((ushort)v);
-                }
-                else if (t == typeof(uint)) {
-                    long v = ToLong();
-                    return CalculatorValueConverter.From<T>((uint)v);
-                }
-                else if (t == typeof(ulong)) {
-                    long v = ToLong();
-                    return CalculatorValueConverter.From<T>((ulong)v);
-                }
-                else if (t == typeof(float)) {
-                    double v = ToDouble();
-                    return CalculatorValueConverter.From<T>((float)v);
-                }
-                else if (t == typeof(double)) {
-                    double v = ToDouble();
-                    return CalculatorValueConverter.From<T>(v);
-                }
-                else if (t == typeof(decimal)) {
-                    double v = ToDouble();
-                    return CalculatorValueConverter.From<T>((decimal)v);
-                }
-                else if (t == typeof(string) && Type == c_StringType) {
-                    return CalculatorValueConverter.From<T>(StringVal);
-                }
-                else if (t == typeof(object) && Type == c_ObjectType) {
-                    return CalculatorValueConverter.From<T>(ObjectVal);
-                }
-                else if (t == typeof(string)) {
-                    var str = ToString();
-                    return CalculatorValueConverter.From<T>(str);
-                }
-                else if (t == typeof(object)) {
-                    var obj = ToObject();
-                    return CalculatorValueConverter.From<T>(obj);
-                }
-                else {
-                    var obj = ToObject();
-                    return CalculatorValueConverter.CastTo<T>(obj);
-                }
-            }
-        }
         private object ToObject()
         {
             switch (Type) {
@@ -1529,34 +1062,243 @@ namespace DslExpression
                     return Union.DoubleVal;
                 case c_DecimalType:
                     return Union.DecimalVal;
-                case c_Float2Type:
-                    return Union.Float2Val;
-                case c_Float3Type:
-                    return Union.Float3Val;
-                case c_Float4Type:
-                    return Union.Float4Val;
-                case c_Integer2Type:
-                    return Union.Integer2Val;
-                case c_Integer3Type:
-                    return Union.Integer3Val;
-                case c_Integer4Type:
-                    return Union.Integer4Val;
             }
             return null;
         }
         private bool ToBool()
         {
-            if (Type == c_BoolType)
-                return Union.BoolVal;
-            else
-                return ToLong() != 0;
+            switch (Type) {
+                case c_StringType:
+                    if (null != StringVal) {
+                        long v;
+                        long.TryParse(StringVal, out v);
+                        return v != 0;
+                    }
+                    else {
+                        return false;
+                    }
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        if (ObjectVal is bool) {
+                            return (bool)ObjectVal;
+                        }
+                        else {
+                            long v = CalculatorValueConverter.CastTo<long>(ObjectVal);
+                            return v != 0;
+                        }
+                    }
+                    else {
+                        return false;
+                    }
+                case c_BoolType:
+                    return Union.BoolVal;
+                case c_CharType:
+                    return Union.CharVal != 0;
+                case c_SByteType:
+                    return Union.SByteVal != 0;
+                case c_ShortType:
+                    return Union.ShortVal != 0;
+                case c_IntType:
+                    return Union.IntVal != 0;
+                case c_LongType:
+                    return Union.LongVal != 0;
+                case c_ByteType:
+                    return Union.ByteVal != 0;
+                case c_UShortType:
+                    return Union.UShortVal != 0;
+                case c_UIntType:
+                    return Union.UIntVal != 0;
+                case c_ULongType:
+                    return Union.ULongVal != 0;
+                case c_FloatType:
+                    return Union.FloatVal != 0;
+                case c_DoubleType:
+                    return Union.DoubleVal != 0;
+                case c_DecimalType:
+                    return Union.DecimalVal != 0;
+            }
+            return false;
         }
         private char ToChar()
         {
-            if (Type == c_CharType)
-                return Union.CharVal;
-            else
-                return (char)(ulong)ToLong();
+            switch (Type) {
+                case c_StringType:
+                    if (null != StringVal && StringVal.Length > 0) {
+                        return StringVal[0];
+                    }
+                    else {
+                        return '\0';
+                    }
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        if (ObjectVal is char) {
+                            return (char)ObjectVal;
+                        }
+                        else {
+                            char v = CalculatorValueConverter.CastTo<char>(ObjectVal);
+                            return v;
+                        }
+                    }
+                    else {
+                        return '\0';
+                    }
+                case c_BoolType:
+                    return Union.BoolVal ? '\x01' : '\0';
+                case c_CharType:
+                    return Union.CharVal;
+                case c_SByteType:
+                    return (char)Union.SByteVal;
+                case c_ShortType:
+                    return (char)Union.ShortVal;
+                case c_IntType:
+                    return (char)Union.IntVal;
+                case c_LongType:
+                    return (char)Union.LongVal;
+                case c_ByteType:
+                    return (char)Union.ByteVal;
+                case c_UShortType:
+                    return (char)Union.UShortVal;
+                case c_UIntType:
+                    return (char)Union.UIntVal;
+                case c_ULongType:
+                    return (char)Union.ULongVal;
+                case c_FloatType:
+                    return (char)(int)Union.FloatVal;
+                case c_DoubleType:
+                    return (char)(long)Union.DoubleVal;
+                case c_DecimalType:
+                    return (char)(int)Union.DecimalVal;
+            }
+            return '\0';
+        }
+        private sbyte ToSByte()
+        {
+            sbyte v = 0;
+            switch (Type) {
+                case c_BoolType:
+                    return (sbyte)(Union.BoolVal ? 1 : 0);
+                case c_CharType:
+                    return (sbyte)Union.CharVal;
+                case c_SByteType:
+                    return Union.SByteVal;
+                case c_ShortType:
+                    return (sbyte)Union.ShortVal;
+                case c_IntType:
+                    return (sbyte)Union.IntVal;
+                case c_LongType:
+                    return (sbyte)Union.LongVal;
+                case c_ByteType:
+                    return (sbyte)Union.ByteVal;
+                case c_UShortType:
+                    return (sbyte)Union.UShortVal;
+                case c_UIntType:
+                    return (sbyte)Union.UIntVal;
+                case c_ULongType:
+                    return (sbyte)Union.ULongVal;
+                case c_FloatType:
+                    return (sbyte)Union.FloatVal;
+                case c_DoubleType:
+                    return (sbyte)Union.DoubleVal;
+                case c_DecimalType:
+                    return (sbyte)Union.DecimalVal;
+                case c_StringType:
+                    if (null != StringVal) {
+                        sbyte.TryParse(StringVal, out v);
+                    }
+                    return v;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = CalculatorValueConverter.CastTo<sbyte>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
+        }
+        private short ToShort()
+        {
+            short v = 0;
+            switch (Type) {
+                case c_BoolType:
+                    return (short)(Union.BoolVal ? 1 : 0);
+                case c_CharType:
+                    return (short)Union.CharVal;
+                case c_SByteType:
+                    return Union.SByteVal;
+                case c_ShortType:
+                    return Union.ShortVal;
+                case c_IntType:
+                    return (short)Union.IntVal;
+                case c_LongType:
+                    return (short)Union.LongVal;
+                case c_ByteType:
+                    return Union.ByteVal;
+                case c_UShortType:
+                    return (short)Union.UShortVal;
+                case c_UIntType:
+                    return (short)Union.UIntVal;
+                case c_ULongType:
+                    return (short)Union.ULongVal;
+                case c_FloatType:
+                    return (short)Union.FloatVal;
+                case c_DoubleType:
+                    return (short)Union.DoubleVal;
+                case c_DecimalType:
+                    return (short)Union.DecimalVal;
+                case c_StringType:
+                    if (null != StringVal) {
+                        short.TryParse(StringVal, out v);
+                    }
+                    return v;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = CalculatorValueConverter.CastTo<short>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
+        }
+        private int ToInt()
+        {
+            int v = 0;
+            switch (Type) {
+                case c_BoolType:
+                    return Union.BoolVal ? 1 : 0;
+                case c_CharType:
+                    return Union.CharVal;
+                case c_SByteType:
+                    return Union.SByteVal;
+                case c_ShortType:
+                    return Union.ShortVal;
+                case c_IntType:
+                    return Union.IntVal;
+                case c_LongType:
+                    return (int)Union.LongVal;
+                case c_ByteType:
+                    return Union.ByteVal;
+                case c_UShortType:
+                    return Union.UShortVal;
+                case c_UIntType:
+                    return (int)Union.UIntVal;
+                case c_ULongType:
+                    return (int)Union.ULongVal;
+                case c_FloatType:
+                    return (int)Union.FloatVal;
+                case c_DoubleType:
+                    return (int)Union.DoubleVal;
+                case c_DecimalType:
+                    return (int)Union.DecimalVal;
+                case c_StringType:
+                    if (null != StringVal) {
+                        int.TryParse(StringVal, out v);
+                    }
+                    return v;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = CalculatorValueConverter.CastTo<int>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
         }
         private long ToLong()
         {
@@ -1596,6 +1338,221 @@ namespace DslExpression
                 case c_ObjectType:
                     if (null != ObjectVal) {
                         v = CalculatorValueConverter.CastTo<long>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
+        }
+        private byte ToByte()
+        {
+            byte v = 0;
+            switch (Type) {
+                case c_BoolType:
+                    return (byte)(Union.BoolVal ? 1 : 0);
+                case c_CharType:
+                    return (byte)Union.CharVal;
+                case c_SByteType:
+                    return (byte)Union.SByteVal;
+                case c_ShortType:
+                    return (byte)Union.ShortVal;
+                case c_IntType:
+                    return (byte)Union.IntVal;
+                case c_LongType:
+                    return (byte)Union.LongVal;
+                case c_ByteType:
+                    return Union.ByteVal;
+                case c_UShortType:
+                    return (byte)Union.UShortVal;
+                case c_UIntType:
+                    return (byte)Union.UIntVal;
+                case c_ULongType:
+                    return (byte)Union.ULongVal;
+                case c_FloatType:
+                    return (byte)Union.FloatVal;
+                case c_DoubleType:
+                    return (byte)Union.DoubleVal;
+                case c_DecimalType:
+                    return (byte)Union.DecimalVal;
+                case c_StringType:
+                    if (null != StringVal) {
+                        byte.TryParse(StringVal, out v);
+                    }
+                    return v;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = CalculatorValueConverter.CastTo<byte>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
+        }
+        private ushort ToUShort()
+        {
+            ushort v = 0;
+            switch (Type) {
+                case c_BoolType:
+                    return (ushort)(Union.BoolVal ? 1 : 0);
+                case c_CharType:
+                    return Union.CharVal;
+                case c_SByteType:
+                    return (ushort)Union.SByteVal;
+                case c_ShortType:
+                    return (ushort)Union.ShortVal;
+                case c_IntType:
+                    return (ushort)Union.IntVal;
+                case c_LongType:
+                    return (ushort)Union.LongVal;
+                case c_ByteType:
+                    return Union.ByteVal;
+                case c_UShortType:
+                    return Union.UShortVal;
+                case c_UIntType:
+                    return (ushort)Union.UIntVal;
+                case c_ULongType:
+                    return (ushort)Union.ULongVal;
+                case c_FloatType:
+                    return (ushort)Union.FloatVal;
+                case c_DoubleType:
+                    return (ushort)Union.DoubleVal;
+                case c_DecimalType:
+                    return (ushort)Union.DecimalVal;
+                case c_StringType:
+                    if (null != StringVal) {
+                        ushort.TryParse(StringVal, out v);
+                    }
+                    return v;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = CalculatorValueConverter.CastTo<ushort>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
+        }
+        private uint ToUInt()
+        {
+            uint v = 0;
+            switch (Type) {
+                case c_BoolType:
+                    return (uint)(Union.BoolVal ? 1 : 0);
+                case c_CharType:
+                    return Union.CharVal;
+                case c_SByteType:
+                    return (uint)Union.SByteVal;
+                case c_ShortType:
+                    return (uint)Union.ShortVal;
+                case c_IntType:
+                    return (uint)Union.IntVal;
+                case c_LongType:
+                    return (uint)Union.LongVal;
+                case c_ByteType:
+                    return Union.ByteVal;
+                case c_UShortType:
+                    return Union.UShortVal;
+                case c_UIntType:
+                    return Union.UIntVal;
+                case c_ULongType:
+                    return (uint)Union.ULongVal;
+                case c_FloatType:
+                    return (uint)Union.FloatVal;
+                case c_DoubleType:
+                    return (uint)Union.DoubleVal;
+                case c_DecimalType:
+                    return (uint)Union.DecimalVal;
+                case c_StringType:
+                    if (null != StringVal) {
+                        uint.TryParse(StringVal, out v);
+                    }
+                    return v;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = CalculatorValueConverter.CastTo<uint>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
+        }
+        private ulong ToULong()
+        {
+            ulong v = 0;
+            switch (Type) {
+                case c_BoolType:
+                    return (ulong)(Union.BoolVal ? 1 : 0);
+                case c_CharType:
+                    return (ulong)Union.CharVal;
+                case c_SByteType:
+                    return (ulong)Union.SByteVal;
+                case c_ShortType:
+                    return (ulong)Union.ShortVal;
+                case c_IntType:
+                    return (ulong)Union.IntVal;
+                case c_LongType:
+                    return (ulong)Union.LongVal;
+                case c_ByteType:
+                    return Union.ByteVal;
+                case c_UShortType:
+                    return Union.UShortVal;
+                case c_UIntType:
+                    return Union.UIntVal;
+                case c_ULongType:
+                    return Union.ULongVal;
+                case c_FloatType:
+                    return (ulong)Union.FloatVal;
+                case c_DoubleType:
+                    return (ulong)Union.DoubleVal;
+                case c_DecimalType:
+                    return (ulong)Union.DecimalVal;
+                case c_StringType:
+                    if (null != StringVal) {
+                        ulong.TryParse(StringVal, out v);
+                    }
+                    return v;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = CalculatorValueConverter.CastTo<ulong>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
+        }
+        private float ToFloat()
+        {
+            float v = 0;
+            switch (Type) {
+                case c_BoolType:
+                    return Union.BoolVal ? 1 : 0;
+                case c_CharType:
+                    return Union.CharVal;
+                case c_SByteType:
+                    return Union.SByteVal;
+                case c_ShortType:
+                    return Union.ShortVal;
+                case c_IntType:
+                    return Union.IntVal;
+                case c_LongType:
+                    return Union.LongVal;
+                case c_ByteType:
+                    return Union.ByteVal;
+                case c_UShortType:
+                    return Union.UShortVal;
+                case c_UIntType:
+                    return Union.UIntVal;
+                case c_ULongType:
+                    return Union.ULongVal;
+                case c_FloatType:
+                    return Union.FloatVal;
+                case c_DoubleType:
+                    return (float)Union.DoubleVal;
+                case c_DecimalType:
+                    return (float)Union.DecimalVal;
+                case c_StringType:
+                    if (null != StringVal) {
+                        float.TryParse(StringVal, out v);
+                    }
+                    return v;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = CalculatorValueConverter.CastTo<float>(ObjectVal);
                     }
                     return v;
             }
@@ -1644,39 +1601,123 @@ namespace DslExpression
             }
             return v;
         }
+        private decimal ToDecimal()
+        {
+            decimal v = 0;
+            switch (Type) {
+                case c_BoolType:
+                    return Union.BoolVal ? 1 : 0;
+                case c_CharType:
+                    return Union.CharVal;
+                case c_SByteType:
+                    return Union.SByteVal;
+                case c_ShortType:
+                    return Union.ShortVal;
+                case c_IntType:
+                    return Union.IntVal;
+                case c_LongType:
+                    return Union.LongVal;
+                case c_ByteType:
+                    return Union.ByteVal;
+                case c_UShortType:
+                    return Union.UShortVal;
+                case c_UIntType:
+                    return Union.UIntVal;
+                case c_ULongType:
+                    return Union.ULongVal;
+                case c_FloatType:
+                    return (decimal)Union.FloatVal;
+                case c_DoubleType:
+                    return (decimal)Union.DoubleVal;
+                case c_DecimalType:
+                    return Union.DecimalVal;
+                case c_StringType:
+                    if (null != StringVal) {
+                        decimal.TryParse(StringVal, out v);
+                    }
+                    return v;
+                case c_ObjectType:
+                    if (null != ObjectVal) {
+                        v = CalculatorValueConverter.CastTo<decimal>(ObjectVal);
+                    }
+                    return v;
+            }
+            return v;
+        }
 
-        public static CalculatorValue From<T>(T v)
+        public static CalculatorValue From(bool v)
         {
             CalculatorValue bv = new CalculatorValue();
             bv.Set(v);
             return bv;
         }
-        public static CalculatorValue From(Type t, object o)
-        {
-            CalculatorValue bv = new CalculatorValue();
-            bv.Set(o);
-            return bv;
-        }
-        //供lua或防止隐式转换出问题时使用
-        public static CalculatorValue FromBool(bool v)
+        public static CalculatorValue From(sbyte v)
         {
             CalculatorValue bv = new CalculatorValue();
             bv.Set(v);
             return bv;
         }
-        public static CalculatorValue FromInteger(long v)
+        public static CalculatorValue From(short v)
         {
             CalculatorValue bv = new CalculatorValue();
             bv.Set(v);
             return bv;
         }
-        public static CalculatorValue FromNumber(double v)
+        public static CalculatorValue From(int v)
         {
             CalculatorValue bv = new CalculatorValue();
             bv.Set(v);
             return bv;
         }
-        public static CalculatorValue FromString(string v)
+        public static CalculatorValue From(long v)
+        {
+            CalculatorValue bv = new CalculatorValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static CalculatorValue From(byte v)
+        {
+            CalculatorValue bv = new CalculatorValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static CalculatorValue From(ushort v)
+        {
+            CalculatorValue bv = new CalculatorValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static CalculatorValue From(uint v)
+        {
+            CalculatorValue bv = new CalculatorValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static CalculatorValue From(ulong v)
+        {
+            CalculatorValue bv = new CalculatorValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static CalculatorValue From(float v)
+        {
+            CalculatorValue bv = new CalculatorValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static CalculatorValue From(double v)
+        {
+            CalculatorValue bv = new CalculatorValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static CalculatorValue From(decimal v)
+        {
+            CalculatorValue bv = new CalculatorValue();
+            bv.Set(v);
+            return bv;
+        }
+        public static CalculatorValue From(string v)
         {
             CalculatorValue bv = new CalculatorValue();
             bv.Set(v);
@@ -1685,7 +1726,7 @@ namespace DslExpression
         public static CalculatorValue FromObject(object v)
         {
             CalculatorValue bv = new CalculatorValue();
-            bv.Set(v);
+            bv.SetObject(v);
             return bv;
         }
 
@@ -1698,7 +1739,7 @@ namespace DslExpression
             get { return s_EmptyString; }
         }
         private static CalculatorValue s_NullObject = CalculatorValue.FromObject(null);
-        private static CalculatorValue s_EmptyString = CalculatorValue.FromString(string.Empty);
+        private static CalculatorValue s_EmptyString = CalculatorValue.From(string.Empty);
     }
     public class CalculatorValueListPool
     {
@@ -1885,7 +1926,7 @@ namespace DslExpression
         protected static T CastTo<T>(object obj)
         {
             if (obj is CalculatorValue) {
-                return ((CalculatorValue)obj).Get<T>();
+                return ((CalculatorValue)obj).CastTo<T>();
             }
             else if (obj is T) {
                 return (T)obj;
@@ -1908,7 +1949,7 @@ namespace DslExpression
                 return null;
             Type st = obj.GetType();
             if (obj is CalculatorValue) {
-                return ((CalculatorValue)obj).Get(t);
+                return ((CalculatorValue)obj).CastTo(t);
             }
             else if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
                 return obj;
@@ -1932,7 +1973,7 @@ namespace DslExpression
                 return Encoding.GetEncoding(name);
             }
             else if (v.IsInteger) {
-                int codePage = v.Get<int>();
+                int codePage = v.GetInt();
                 return Encoding.GetEncoding(codePage);
             }
             else {
@@ -1979,7 +2020,7 @@ namespace DslExpression
         protected override CalculatorValue DoCalc()
         {
             var ret = CalculatorValue.NullObject;
-            var ix = m_ArgIndex.Calc().Get<int>();
+            var ix = m_ArgIndex.Calc().GetInt();
             var args = Calculator.Arguments;
             if (ix >= 0 && ix < args.Count) {
                 ret = args[ix];
@@ -2228,7 +2269,7 @@ namespace DslExpression
                 v = v1.ToString() + v2.ToString();
             }
             else {
-                v = v1.Get<double>() + v2.Get<double>();
+                v = v1.GetDouble() + v2.GetDouble();
             }
             return v;
         }
@@ -2248,7 +2289,7 @@ namespace DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            CalculatorValue v = v1.Get<double>() - v2.Get<double>();
+            CalculatorValue v = v1.GetDouble() - v2.GetDouble();
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2267,7 +2308,7 @@ namespace DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            CalculatorValue v = v1.Get<double>() * v2.Get<double>();
+            CalculatorValue v = v1.GetDouble() * v2.GetDouble();
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2286,7 +2327,7 @@ namespace DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            CalculatorValue v = v1.Get<double>() / v2.Get<double>();
+            CalculatorValue v = v1.GetDouble() / v2.GetDouble();
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2305,7 +2346,7 @@ namespace DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            CalculatorValue v = v1.Get<double>() % v2.Get<double>();
+            CalculatorValue v = v1.GetDouble() % v2.GetDouble();
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2324,7 +2365,7 @@ namespace DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            CalculatorValue v = v1.Get<long>() & v2.Get<long>();
+            CalculatorValue v = v1.GetLong() & v2.GetLong();
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2343,7 +2384,7 @@ namespace DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            CalculatorValue v = v1.Get<long>() | v2.Get<long>();
+            CalculatorValue v = v1.GetLong() | v2.GetLong();
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2362,7 +2403,7 @@ namespace DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            CalculatorValue v = v1.Get<long>() ^ v2.Get<long>();
+            CalculatorValue v = v1.GetLong() ^ v2.GetLong();
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2380,7 +2421,7 @@ namespace DslExpression
         protected override CalculatorValue DoCalc()
         {
             var v1 = m_Op1.Calc();
-            CalculatorValue v = ~v1.Get<long>();
+            CalculatorValue v = ~v1.GetLong();
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2397,7 +2438,7 @@ namespace DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            CalculatorValue v = v1.Get<long>() << v2.Get<int>();
+            CalculatorValue v = v1.GetLong() << v2.GetInt();
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2416,7 +2457,7 @@ namespace DslExpression
         {
             var v1 = m_Op1.Calc();
             var v2 = m_Op2.Calc();
-            CalculatorValue v = v1.Get<long>() >> v2.Get<int>();
+            CalculatorValue v = v1.GetLong() >> v2.GetInt();
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -2433,8 +2474,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
             CalculatorValue v = v1 >= v2 ? v1 : v2;
             return v;
         }
@@ -2452,8 +2493,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
             CalculatorValue v = v1 <= v2 ? v1 : v2;
             return v;
         }
@@ -2471,7 +2512,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = v1 >= 0 ? v1 : -v1;
             return v;
         }
@@ -2487,7 +2528,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.Sin((float)v1);
             return v;
         }
@@ -2503,7 +2544,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.Cos((float)v1);
             return v;
         }
@@ -2519,7 +2560,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.Tan((float)v1);
             return v;
         }
@@ -2535,7 +2576,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.Asin((float)v1);
             return v;
         }
@@ -2551,7 +2592,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.Acos((float)v1);
             return v;
         }
@@ -2567,7 +2608,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.Atan((float)v1);
             return v;
         }
@@ -2583,8 +2624,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.Atan2((float)v1, (float)v2);
             return v;
         }
@@ -2602,7 +2643,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = Math.Sinh(v1);
             return v;
         }
@@ -2618,7 +2659,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = Math.Cosh(v1);
             return v;
         }
@@ -2634,7 +2675,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = Math.Tanh(v1);
             return v;
         }
@@ -2650,8 +2691,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            long v1 = m_Op1.Calc().Get<long>();
-            long v2 = m_Op2.Calc().Get<long>();
+            long v1 = m_Op1.Calc().GetLong();
+            long v2 = m_Op2.Calc().GetLong();
             CalculatorValue v = (long)UnityEngine.Random.Range((int)v1, (int)v2);
             return v;
         }
@@ -2669,8 +2710,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
             CalculatorValue v = (double)UnityEngine.Random.Range((float)v1, (float)v2);
             return v;
         }
@@ -2688,8 +2729,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
             CalculatorValue v = (double)Math.Pow((float)v1, (float)v2);
             return v;
         }
@@ -2707,7 +2748,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
             CalculatorValue v = (double)Math.Sqrt((float)v1);
             return v;
         }
@@ -2723,7 +2764,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
             CalculatorValue v = (double)Math.Log((float)v1);
             return v;
         }
@@ -2739,7 +2780,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
             CalculatorValue v = (double)Math.Log10((float)v1);
             return v;
         }
@@ -2755,7 +2796,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
             CalculatorValue v = Math.Floor(v1);
             return v;
         }
@@ -2771,7 +2812,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
             CalculatorValue v = Math.Ceiling(v1);
             return v;
         }
@@ -2787,9 +2828,9 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
-            double v3 = m_Op3.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
+            double v3 = m_Op3.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.Lerp((float)v1, (float)v2, (float)v3);
             return v;
         }
@@ -2809,9 +2850,9 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
-            double v3 = m_Op3.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
+            double v3 = m_Op3.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.LerpUnclamped((float)v1, (float)v2, (float)v3);
             return v;
         }
@@ -2831,9 +2872,9 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
-            double v3 = m_Op3.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
+            double v3 = m_Op3.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.LerpAngle((float)v1, (float)v2, (float)v3);
             return v;
         }
@@ -2853,7 +2894,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op.Calc().Get<double>();
+            double v1 = m_Op.Calc().GetDouble();
             CalculatorValue v = (double)Mathf.Clamp01((float)v1);
             return v;
         }
@@ -2869,9 +2910,9 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
-            double v3 = m_Op3.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
+            double v3 = m_Op3.Calc().GetDouble();
             CalculatorValue v;
             if (v3 < v1)
                 v = v1;
@@ -2897,8 +2938,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            float v1 = m_Op1.Calc().Get<float>();
-            float v2 = m_Op2.Calc().Get<float>();
+            float v1 = m_Op1.Calc().GetFloat();
+            float v2 = m_Op2.Calc().GetFloat();
             CalculatorValue v = Mathf.Approximately(v1, v2) ? 1 : 0;
             return v;
         }
@@ -2916,7 +2957,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            int v1 = m_Op1.Calc().Get<int>();
+            int v1 = m_Op1.Calc().GetInt();
             int v = Mathf.IsPowerOfTwo(v1) ? 1 : 0;
             return v;
         }
@@ -2932,7 +2973,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            int v1 = m_Op1.Calc().Get<int>();
+            int v1 = m_Op1.Calc().GetInt();
             int v = Mathf.ClosestPowerOfTwo(v1);
             return v;
         }
@@ -2948,7 +2989,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            int v1 = m_Op1.Calc().Get<int>();
+            int v1 = m_Op1.Calc().GetInt();
             int v = Mathf.NextPowerOfTwo(v1);
             return v;
         }
@@ -2964,10 +3005,10 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            float x1 = (float)m_Op1.Calc().Get<double>();
-            float y1 = (float)m_Op2.Calc().Get<double>();
-            float x2 = (float)m_Op3.Calc().Get<double>();
-            float y2 = (float)m_Op4.Calc().Get<double>();
+            float x1 = (float)m_Op1.Calc().GetDouble();
+            float y1 = (float)m_Op2.Calc().GetDouble();
+            float x2 = (float)m_Op3.Calc().GetDouble();
+            float y2 = (float)m_Op4.Calc().GetDouble();
             CalculatorValue v = Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
             return v;
         }
@@ -2989,10 +3030,10 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            float x1 = (float)m_Op1.Calc().Get<double>();
-            float y1 = (float)m_Op2.Calc().Get<double>();
-            float x2 = (float)m_Op3.Calc().Get<double>();
-            float y2 = (float)m_Op4.Calc().Get<double>();
+            float x1 = (float)m_Op1.Calc().GetDouble();
+            float y1 = (float)m_Op2.Calc().GetDouble();
+            float x2 = (float)m_Op3.Calc().GetDouble();
+            float y2 = (float)m_Op4.Calc().GetDouble();
             CalculatorValue v = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
             return v;
         }
@@ -3014,8 +3055,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
             CalculatorValue v = v1 > v2 ? 1 : 0;
             return v;
         }
@@ -3033,8 +3074,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
             CalculatorValue v = v1 >= v2 ? 1 : 0;
             return v;
         }
@@ -3052,8 +3093,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
             CalculatorValue v = v1 < v2 ? 1 : 0;
             return v;
         }
@@ -3071,8 +3112,8 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            double v1 = m_Op1.Calc().Get<double>();
-            double v2 = m_Op2.Calc().Get<double>();
+            double v1 = m_Op1.Calc().GetDouble();
+            double v2 = m_Op2.Calc().GetDouble();
             CalculatorValue v = v1 <= v2 ? 1 : 0;
             return v;
         }
@@ -3128,9 +3169,9 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            long v1 = m_Op1.Calc().Get<long>();
+            long v1 = m_Op1.Calc().GetLong();
             long v2 = 0;
-            CalculatorValue v = v1 != 0 && (v2 = m_Op2.Calc().Get<long>()) != 0 ? 1 : 0;
+            CalculatorValue v = v1 != 0 && (v2 = m_Op2.Calc().GetLong()) != 0 ? 1 : 0;
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -3147,9 +3188,9 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            long v1 = m_Op1.Calc().Get<long>();
+            long v1 = m_Op1.Calc().GetLong();
             long v2 = 0;
-            CalculatorValue v = v1 != 0 || (v2 = m_Op2.Calc().Get<long>()) != 0 ? 1 : 0;
+            CalculatorValue v = v1 != 0 || (v2 = m_Op2.Calc().GetLong()) != 0 ? 1 : 0;
             return v;
         }
         protected override bool Load(IList<IExpression> exps)
@@ -3166,7 +3207,7 @@ namespace DslExpression
     {
         protected override CalculatorValue DoCalc()
         {
-            long val = m_Op.Calc().Get<long>();
+            long val = m_Op.Calc().GetLong();
             CalculatorValue v = val == 0 ? 1 : 0;
             return v;
         }
@@ -3185,13 +3226,13 @@ namespace DslExpression
             var v1 = m_Op1.Calc();
             var v2 = CalculatorValue.NullObject;
             CalculatorValue v3 = CalculatorValue.NullObject;
-            CalculatorValue v = v1.Get<long>() != 0 ? v2 = m_Op2.Calc() : v3 = m_Op3.Calc();
+            CalculatorValue v = v1.GetLong() != 0 ? v2 = m_Op2.Calc() : v3 = m_Op3.Calc();
             return v;
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            Dsl.FunctionData funcData1 = statementData.First;
-            Dsl.FunctionData funcData2 = statementData.Second;
+            Dsl.FunctionData funcData1 = statementData.First.AsFunction;
+            Dsl.FunctionData funcData2 = statementData.Second.AsFunction;
             if (funcData1.IsHighOrder && funcData1.HaveLowerOrderParam() && funcData2.GetId() == ":" && funcData2.HaveParamOrStatement()) {
                 Dsl.ISyntaxComponent cond = funcData1.LowerOrderFunction.GetParam(0);
                 Dsl.ISyntaxComponent op1 = funcData1.GetParam(0);
@@ -3220,7 +3261,7 @@ namespace DslExpression
                 var clause = m_Clauses[ix];
                 if (null != clause.Condition) {
                     var condVal = clause.Condition.Calc();
-                    if (condVal.Get<long>() != 0) {
+                    if (condVal.GetLong() != 0) {
                         for (int index = 0; index < clause.Expressions.Count; ++index) {
                             v = clause.Expressions[index].Calc();
                             if (Calculator.RunState != RunStateEnum.Normal) {
@@ -3265,8 +3306,8 @@ namespace DslExpression
             //简化语法if(exp) func(args);语法的处理
             int funcNum = statementData.GetFunctionNum();
             if (funcNum == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 var firstId = first.GetId();
                 var secondId = second.GetId();
                 if (firstId == "if" && !first.HaveStatement() && !first.HaveExternScript() &&
@@ -3287,7 +3328,8 @@ namespace DslExpression
                 }
             }
             //标准if语句的处理
-            foreach (var fData in statementData.Functions) {
+            foreach (var fd in statementData.Functions) {
+                var fData = fd.AsFunction;
                 if (fData.GetId() == "if" || fData.GetId() == "elseif") {
                     IfExp.Clause item = new IfExp.Clause();
                     if (fData.IsHighOrder && fData.LowerOrderFunction.GetParamNum() > 0) {
@@ -3341,7 +3383,7 @@ namespace DslExpression
             CalculatorValue v = 0;
             for (; ; ) {
                 var condVal = m_Condition.Calc();
-                if (condVal.Get<long>() != 0) {
+                if (condVal.GetLong() != 0) {
                     for (int index = 0; index < m_Expressions.Count; ++index) {
                         v = m_Expressions[index].Calc();
                         if (Calculator.RunState == RunStateEnum.Continue) {
@@ -3381,8 +3423,8 @@ namespace DslExpression
         {
             //简化语法while(exp) func(args);语法的处理
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 var firstId = first.GetId();
                 var secondId = second.GetId();
                 if (firstId == "while" && !first.HaveStatement() && !first.HaveExternScript() &&
@@ -3412,7 +3454,7 @@ namespace DslExpression
         {
             CalculatorValue v = 0;
             var count = m_Count.Calc();
-            long ct = count.Get<long>();
+            long ct = count.GetLong();
             for (int i = 0; i < ct; ++i) {
                 Calculator.SetVariable("$$", i);
                 for (int index = 0; index < m_Expressions.Count; ++index) {
@@ -3450,8 +3492,8 @@ namespace DslExpression
         {
             //简化语法loop(exp) func(args);语法的处理
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 var firstId = first.GetId();
                 var secondId = second.GetId();
                 if (firstId == "loop" && !first.HaveStatement() && !first.HaveExternScript() &&
@@ -3523,8 +3565,8 @@ namespace DslExpression
         {
             //简化语法looplist(exp) func(args);语法的处理
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 var firstId = first.GetId();
                 var secondId = second.GetId();
                 if (firstId == "looplist" && !first.HaveStatement() && !first.HaveExternScript() &&
@@ -3555,7 +3597,7 @@ namespace DslExpression
             CalculatorValue v = 0;
             List<object> list = new List<object>();
             for (int ix = 0; ix < m_Elements.Count; ++ix) {
-                object val = m_Elements[ix].Calc().Get<object>();
+                object val = m_Elements[ix].Calc().GetObject();
                 list.Add(val);
             }
             IEnumerator enumer = list.GetEnumerator();
@@ -3600,8 +3642,8 @@ namespace DslExpression
         {
             //简化语法foreach(exp1,exp2,...) func(args);语法的处理
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 var firstId = first.GetId();
                 var secondId = second.GetId();
                 if (firstId == "foreach" && !first.HaveStatement() && !first.HaveExternScript() &&
@@ -3876,40 +3918,40 @@ namespace DslExpression
                     }
                     else {
                         if (0 == type.CompareTo("sbyte")) {
-                            ret = obj.Get<sbyte>();
+                            ret = obj.GetSByte();
                         }
                         else if (0 == type.CompareTo("byte")) {
-                            ret = obj.Get<byte>();
+                            ret = obj.GetByte();
                         }
                         else if (0 == type.CompareTo("short")) {
-                            ret = obj.Get<short>();
+                            ret = obj.GetShort();
                         }
                         else if (0 == type.CompareTo("ushort")) {
-                            ret = obj.Get<ushort>();
+                            ret = obj.GetUShort();
                         }
                         else if (0 == type.CompareTo("int")) {
-                            ret = obj.Get<int>();
+                            ret = obj.GetInt();
                         }
                         else if (0 == type.CompareTo("uint")) {
-                            ret = obj.Get<uint>();
+                            ret = obj.GetUInt();
                         }
                         else if (0 == type.CompareTo("long")) {
-                            ret = obj.Get<long>();
+                            ret = obj.GetLong();
                         }
                         else if (0 == type.CompareTo("ulong")) {
-                            ret = obj.Get<ulong>();
+                            ret = obj.GetULong();
                         }
                         else if (0 == type.CompareTo("float")) {
-                            ret = obj.Get<float>();
+                            ret = obj.GetFloat();
                         }
                         else if (0 == type.CompareTo("double")) {
-                            ret = obj.Get<double>();
+                            ret = obj.GetDouble();
                         }
                         else if (0 == type.CompareTo("string")) {
-                            ret = obj.Get<string>();
+                            ret = obj.GetString();
                         }
                         else if (0 == type.CompareTo("bool")) {
-                            ret = obj.Get<bool>();
+                            ret = obj.GetBool();
                         }
                         else {
                             Type t = Type.GetType("UnityEngine." + type + ", UnityEngine");
@@ -3926,7 +3968,7 @@ namespace DslExpression
                                 t = Type.GetType(type);
                             }
                             if (null != t) {
-                                ret = CalculatorValue.FromObject(obj.Get(t));
+                                ret = CalculatorValue.FromObject(obj.CastTo(t));
                             }
                             else {
                                 Calculator.Log("null == Type.GetType({0})", type);
@@ -4011,7 +4053,7 @@ namespace DslExpression
                 var exp = m_Expressions[ix];
                 var v = exp.Calc();
                 if (ix == 0) {
-                    obj = v.Get<object>();
+                    obj = v.GetObject();
                     disp = obj as IObjectDispatch;
                 }
                 else if (ix == 1) {
@@ -4025,7 +4067,7 @@ namespace DslExpression
                 else {
                     if (null == arglist)
                         arglist = new ArrayList();
-                    arglist.Add(v.Get<object>());
+                    arglist.Add(v.GetObject());
                 }
             }
             if (null != obj && null != method) {
@@ -4105,7 +4147,7 @@ namespace DslExpression
                 var exp = m_Expressions[ix];
                 var v = exp.Calc();
                 if (ix == 0) {
-                    obj = v.Get<object>();
+                    obj = v.GetObject();
                     disp = obj as IObjectDispatch;
                 }
                 else if (ix == 1) {
@@ -4118,7 +4160,7 @@ namespace DslExpression
                 else {
                     if (null == arglist)
                         arglist = new ArrayList();
-                    arglist.Add(v.Get<object>());
+                    arglist.Add(v.GetObject());
                 }
             }
             if (null != obj && null != method) {
@@ -4191,7 +4233,7 @@ namespace DslExpression
                 var exp = m_Expressions[ix];
                 var v = exp.Calc();
                 if (ix == 0) {
-                    obj = v.Get<object>();
+                    obj = v.GetObject();
                     disp = obj as IObjectDispatch;
                 }
                 else if (ix == 1) {
@@ -4203,7 +4245,7 @@ namespace DslExpression
                 else {
                     if (null == arglist)
                         arglist = new ArrayList();
-                    arglist.Add(v.Get<object>());
+                    arglist.Add(v.GetObject());
                 }
             }
             if (null != obj && null != method) {
@@ -4277,13 +4319,13 @@ namespace DslExpression
                 var exp = m_Expressions[ix];
                 var v = exp.Calc();
                 if (ix == 0) {
-                    obj = v.Get<object>();
+                    obj = v.GetObject();
                 }
                 else if (ix == 1) {
-                    methodObj = v.Get<object>();
+                    methodObj = v.GetObject();
                 }
                 else {
-                    arglist.Add(v.Get<object>());
+                    arglist.Add(v.GetObject());
                 }
             }
             object[] _args = arglist.ToArray();
@@ -4335,13 +4377,13 @@ namespace DslExpression
                 var exp = m_Expressions[ix];
                 var v = exp.Calc();
                 if (ix == 0) {
-                    obj = v.Get<object>();
+                    obj = v.GetObject();
                 }
                 else if (ix == 1) {
-                    methodObj = v.Get<object>();
+                    methodObj = v.GetObject();
                 }
                 else {
-                    arg = v.Get<object>();
+                    arg = v.GetObject();
                     break;
                 }
             }
@@ -4384,10 +4426,10 @@ namespace DslExpression
                 var exp = m_Expressions[ix];
                 var v = exp.Calc();
                 if (ix == 0) {
-                    obj = v.Get<object>();
+                    obj = v.GetObject();
                 }
                 else if (ix == 1) {
-                    methodObj = v.Get<object>();
+                    methodObj = v.GetObject();
                 }
                 else {
                     break;
@@ -4428,8 +4470,8 @@ namespace DslExpression
         protected override CalculatorValue DoCalc()
         {
             CalculatorValue v = 0;
-            var list = m_List.Calc().Get<object>();
-            var method = m_Method.Calc().Get<string>();
+            var list = m_List.Calc().GetObject();
+            var method = m_Method.Calc().GetString();
             IEnumerable obj = list as IEnumerable;
             if (null != obj && !string.IsNullOrEmpty(method)) {
                 if (method == "orderby" || method == "orderbydesc") {
@@ -4453,11 +4495,11 @@ namespace DslExpression
                         }
                         int r = 0;
                         if (r1.IsString && r2.IsString) {
-                            r = r1.Get<string>().CompareTo(r2.Get<string>());
+                            r = r1.GetString().CompareTo(r2.GetString());
                         }
                         else {
-                            double rd1 = r1.Get<double>();
-                            double rd2 = r2.Get<double>();
+                            double rd1 = r1.GetDouble();
+                            double rd2 = r2.GetDouble();
                             r = rd1.CompareTo(rd2);
                         }
                         if (desc)
@@ -4477,7 +4519,7 @@ namespace DslExpression
                         for (int index = 0; index < m_Expressions.Count; ++index) {
                             r = m_Expressions[index].Calc();
                         }
-                        if (r.Get<long>() != 0) {
+                        if (r.GetLong() != 0) {
                             results.Add(val);
                         }
                     }
@@ -4488,7 +4530,7 @@ namespace DslExpression
                     for (int index = 0; index < m_Expressions.Count; ++index) {
                         r = m_Expressions[index].Calc();
                     }
-                    long ct = r.Get<long>();
+                    long ct = r.GetLong();
                     List<object> results = new List<object>();
                     IEnumerator enumer = obj.GetEnumerator();
                     while (enumer.MoveNext()) {
@@ -4571,7 +4613,7 @@ namespace DslExpression
                 if (null != assem && !string.IsNullOrEmpty(typeName)) {
                     var al = new ArrayList();
                     for (int i = 2; i < operands.Count; ++i) {
-                        al.Add(operands[i].Get<object>());
+                        al.Add(operands[i].GetObject());
                     }
                     r = CalculatorValue.FromObject(assem.CreateInstance(typeName, false, BindingFlags.CreateInstance, null, al.ToArray(), System.Globalization.CultureInfo.CurrentCulture, null));
                 }
@@ -4807,7 +4849,7 @@ namespace DslExpression
                 var obj = operands[0].As<UnityEngine.Object>();
                 bool modifyAsset = false;
                 if (operands.Count >= 2) {
-                    modifyAsset = operands[1].Get<bool>();
+                    modifyAsset = operands[1].GetBool();
                 }
                 if (null != obj) {
                     UnityEngine.Object.DestroyImmediate(obj, modifyAsset);
@@ -4937,7 +4979,7 @@ namespace DslExpression
                     if (i == 1)
                         fmt = operands[i].AsString;
                     else
-                        al.Add(operands[i].Get<object>());
+                        al.Add(operands[i].GetObject());
                 }
                 if (null != sb && !string.IsNullOrEmpty(fmt)) {
                     sb.AppendFormat(fmt, al.ToArray());
@@ -4960,7 +5002,7 @@ namespace DslExpression
                     if (i == 1)
                         fmt = operands[i].AsString;
                     else
-                        al.Add(operands[i].Get<object>());
+                        al.Add(operands[i].GetObject());
                 }
                 if (null != sb) {
                     if (string.IsNullOrEmpty(fmt)) {
@@ -5140,7 +5182,7 @@ namespace DslExpression
                     chars.Add(c);
                 }
                 else {
-                    char c = operands[i].Get<char>();
+                    char c = operands[i].GetChar();
                     chars.Add(c);
                 }
             }
@@ -5498,7 +5540,7 @@ namespace DslExpression
         {
             object[] r = new object[operands.Count];
             for (int i = 0; i < operands.Count; ++i) {
-                r[i] = operands[i].Get<object>();
+                r[i] = operands[i].GetObject();
             }
             return CalculatorValue.FromObject(r);
         }
@@ -5545,7 +5587,7 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             ArrayList al = new ArrayList();
             for (int i = 0; i < operands.Count; ++i) {
-                al.Add(operands[i].Get<object>());
+                al.Add(operands[i].GetObject());
             }
             r = al;
             return r;
@@ -5558,7 +5600,7 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
-                var index = operands[1].Get<int>();
+                var index = operands[1].GetInt();
                 var defVal = CalculatorValue.NullObject;
                 if (operands.Count >= 3) {
                     defVal = operands[2];
@@ -5582,11 +5624,11 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             if (operands.Count >= 3) {
                 var list = operands[0].As<IList>();
-                var index = operands[1].Get<int>();
+                var index = operands[1].GetInt();
                 var val = operands[2];
                 if (null != list) {
                     if (index >= 0 && index < list.Count) {
-                        list[index] = val.Get<object>();
+                        list[index] = val.GetObject();
                     }
                 }
             }
@@ -5645,8 +5687,8 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             if (operands.Count >= 3) {
                 var list = operands[0].As<IList>();
-                var index = operands[1].Get<int>();
-                object val = operands[2].Get<object>();
+                var index = operands[1].GetInt();
+                object val = operands[2].GetObject();
                 if (null != list) {
                     list.Insert(index, val);
                 }
@@ -5661,7 +5703,7 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
                 var list = operands[0].As<IList>();
-                var index = operands[1].Get<int>();
+                var index = operands[1].GetInt();
                 if (null != list) {
                     list.RemoveAt(index);
                 }
@@ -5690,7 +5732,7 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
                 var enumer = operands[0].As<IEnumerable>();
-                var ct = operands[1].Get<int>();
+                var ct = operands[1].GetInt();
                 if (null != enumer) {
                     var e = enumer.GetEnumerator();
                     if (null != e) {
@@ -5739,8 +5781,8 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             Hashtable dict = new Hashtable();
             for (int i = 0; i < m_Expressions.Count - 1; i += 2) {
-                var key = m_Expressions[i].Calc().Get<object>();
-                var val = m_Expressions[i + 1].Calc().Get<object>();
+                var key = m_Expressions[i].Calc().GetObject();
+                var val = m_Expressions[i + 1].Calc().GetObject();
                 dict.Add(key, val);
             }
             r = CalculatorValue.FromObject(dict);
@@ -5769,7 +5811,7 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
-                var index = operands[1].Get<object>();
+                var index = operands[1].GetObject();
                 var defVal = CalculatorValue.NullObject;
                 if (operands.Count >= 3) {
                     defVal = operands[2];
@@ -5791,8 +5833,8 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             if (operands.Count >= 3) {
                 var dict = operands[0].As<IDictionary>();
-                var index = operands[1].Get<object>();
-                object val = operands[2].Get<object>();
+                var index = operands[1].GetObject();
+                object val = operands[2].GetObject();
                 if (null != dict) {
                     dict[index] = val;
                 }
@@ -5902,7 +5944,7 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             if (operands.Count >= 2) {
                 var dict = operands[0].As<IDictionary>();
-                var ct = operands[1].Get<int>();
+                var ct = operands[1].GetInt();
                 if (null != dict) {
                     var e = dict.GetEnumerator();
                     if (null != e) {
@@ -5970,7 +6012,7 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             var stack = new Stack<object>();
             for (int i = 0; i < operands.Count; ++i) {
-                stack.Push(operands[i].Get<object>());
+                stack.Push(operands[i].GetObject());
             }
             r = CalculatorValue.FromObject(stack);
             return r;
@@ -6040,7 +6082,7 @@ namespace DslExpression
             CalculatorValue r = CalculatorValue.NullObject;
             var queue = new Queue<object>();
             for (int i = 0; i < operands.Count; ++i) {
-                queue.Enqueue(operands[i].Get<object>());
+                queue.Enqueue(operands[i].GetObject());
             }
             r = CalculatorValue.FromObject(queue);
             return r;
@@ -6399,16 +6441,16 @@ namespace DslExpression
                     if (operands.Count > 1 && null != fmt) {
                         ArrayList arrayList = new ArrayList();
                         for (int i = 1; i < operands.Count; ++i) {
-                            arrayList.Add(operands[i].Get<object>());
+                            arrayList.Add(operands[i].GetObject());
                         }
                         Debug.LogFormat(fmt, arrayList.ToArray());
                     }
                     else {
-                        Debug.Log(obj.Get<object>());
+                        Debug.Log(obj.GetObject());
                     }
                 }
                 else {
-                    Debug.Log(obj.Get<object>());
+                    Debug.Log(obj.GetObject());
                 }
             }
             return r;
@@ -6423,7 +6465,7 @@ namespace DslExpression
                 var fmt = operands[0].AsString;
                 ArrayList al = new ArrayList();
                 for (int i = 1; i < operands.Count; ++i) {
-                    al.Add(operands[i].Get<object>());
+                    al.Add(operands[i].GetObject());
                 }
                 Debug.LogWarningFormat(fmt, al.ToArray());
             }
@@ -6439,7 +6481,7 @@ namespace DslExpression
                 var fmt = operands[0].AsString;
                 ArrayList al = new ArrayList();
                 for (int i = 1; i < operands.Count; ++i) {
-                    al.Add(operands[i].Get<object>());
+                    al.Add(operands[i].GetObject());
                 }
                 Debug.LogErrorFormat(fmt, al.ToArray());
             }
@@ -7312,7 +7354,7 @@ namespace DslExpression
         protected override bool Load(Dsl.StatementData statementData)
         {
             for (int i = 0; i < statementData.GetFunctionNum(); ++i) {
-                var funcData = statementData.GetFunction(i);
+                var funcData = statementData.GetFunction(i).AsFunction;
                 Load(funcData);
             }
             return true;
@@ -7364,11 +7406,11 @@ namespace DslExpression
             }
             bool noWait = false;
             if (null != cfg.m_NoWait) {
-                noWait = cfg.m_NoWait.Calc().Get<bool>();
+                noWait = cfg.m_NoWait.Calc().GetBool();
             }
             DslCalculator.ProcessStartOption option = new DslCalculator.ProcessStartOption();
             if (null != cfg.m_UseShellExecute) {
-                option.UseShellExecute = cfg.m_UseShellExecute.Calc().Get<bool>();
+                option.UseShellExecute = cfg.m_UseShellExecute.Calc().GetBool();
             }
             if (null != cfg.m_Verb) {
                 option.Verb = cfg.m_Verb.Calc().AsString;
@@ -7386,7 +7428,7 @@ namespace DslExpression
                 option.PasswordInClearText = cfg.m_PasswordInClearText.Calc().AsString;
             }
             if (null != cfg.m_LoadUserProfile) {
-                option.LoadUserProfile = cfg.m_LoadUserProfile.Calc().Get<bool>();
+                option.LoadUserProfile = cfg.m_LoadUserProfile.Calc().GetBool();
             }
             if (null != cfg.m_WindowStyle) {
                 var str = cfg.m_WindowStyle.Calc().AsString;
@@ -7396,10 +7438,10 @@ namespace DslExpression
                 }
             }
             if (null != cfg.m_NewWindow) {
-                option.NewWindow = cfg.m_NewWindow.Calc().Get<bool>();
+                option.NewWindow = cfg.m_NewWindow.Calc().GetBool();
             }
             if (null != cfg.m_ErrorDialog) {
-                option.ErrorDialog = cfg.m_ErrorDialog.Calc().Get<bool>();
+                option.ErrorDialog = cfg.m_ErrorDialog.Calc().GetBool();
             }
             if (null != cfg.m_WorkingDirectory) {
                 option.WorkingDirectory = cfg.m_WorkingDirectory.Calc().AsString;
@@ -7412,7 +7454,7 @@ namespace DslExpression
                     encoding = Encoding.GetEncoding(name);
                 }
                 else if (v.IsInteger) {
-                    int codePage = v.Get<int>();
+                    int codePage = v.GetInt();
                     encoding = Encoding.GetEncoding(codePage);
                 }
             }
@@ -7465,7 +7507,7 @@ namespace DslExpression
                     output = v;
                 }
                 if (null != cfg.m_OutputOptArg)
-                    outputIx = cfg.m_OutputOptArg.Calc().Get<int>();
+                    outputIx = cfg.m_OutputOptArg.Calc().GetInt();
                 outputBuilder = new StringBuilder();
             }
             if (null != cfg.m_Error) {
@@ -7479,12 +7521,12 @@ namespace DslExpression
                     error = v;
                 }
                 if (null != cfg.m_ErrorOptArg)
-                    errorIx = cfg.m_ErrorOptArg.Calc().Get<int>();
+                    errorIx = cfg.m_ErrorOptArg.Calc().GetInt();
                 errorBuilder = new StringBuilder();
             }
             if (null != cfg.m_RedirectToConsole) {
                 var v = cfg.m_RedirectToConsole.Calc();
-                redirectToConsole = v.Get<bool>();
+                redirectToConsole = v.GetBool();
             }
             int exitCode = DslCalculator.NewProcess(noWait, fileName, args, option, istream, ostream, input, outputBuilder, errorBuilder, redirectToConsole, encoding);
             Debug.LogFormat("new process:{0} {1}, exit code:{2}", fileName, args, exitCode);
@@ -7549,11 +7591,11 @@ namespace DslExpression
             if (cfg.m_Commands.TryGetValue(os, out cmd) || cfg.m_Commands.TryGetValue("common", out cmd)) {
                 bool noWait = false;
                 if (null != cfg.m_NoWait) {
-                    noWait = cfg.m_NoWait.Calc().Get<bool>();
+                    noWait = cfg.m_NoWait.Calc().GetBool();
                 }
                 DslCalculator.ProcessStartOption option = new DslCalculator.ProcessStartOption();
                 if (null != cfg.m_UseShellExecute) {
-                    option.UseShellExecute = cfg.m_UseShellExecute.Calc().Get<bool>();
+                    option.UseShellExecute = cfg.m_UseShellExecute.Calc().GetBool();
                 }
                 if (null != cfg.m_Verb) {
                     option.Verb = cfg.m_Verb.Calc().AsString;
@@ -7571,7 +7613,7 @@ namespace DslExpression
                     option.PasswordInClearText = cfg.m_PasswordInClearText.Calc().AsString;
                 }
                 if (null != cfg.m_LoadUserProfile) {
-                    option.LoadUserProfile = cfg.m_LoadUserProfile.Calc().Get<bool>();
+                    option.LoadUserProfile = cfg.m_LoadUserProfile.Calc().GetBool();
                 }
                 if (null != cfg.m_WindowStyle) {
                     var str = cfg.m_WindowStyle.Calc().AsString;
@@ -7581,10 +7623,10 @@ namespace DslExpression
                     }
                 }
                 if (null != cfg.m_NewWindow) {
-                    option.NewWindow = cfg.m_NewWindow.Calc().Get<bool>();
+                    option.NewWindow = cfg.m_NewWindow.Calc().GetBool();
                 }
                 if (null != cfg.m_ErrorDialog) {
-                    option.ErrorDialog = cfg.m_ErrorDialog.Calc().Get<bool>();
+                    option.ErrorDialog = cfg.m_ErrorDialog.Calc().GetBool();
                 }
                 if (null != cfg.m_WorkingDirectory) {
                     option.WorkingDirectory = cfg.m_WorkingDirectory.Calc().AsString;
@@ -7597,7 +7639,7 @@ namespace DslExpression
                         encoding = Encoding.GetEncoding(name);
                     }
                     else if (v.IsInteger) {
-                        int codePage = v.Get<int>();
+                        int codePage = v.GetInt();
                         encoding = Encoding.GetEncoding(codePage);
                     }
                 }
@@ -7646,7 +7688,7 @@ namespace DslExpression
                         output = v;
                     }
                     if (null != cfg.m_OutputOptArg)
-                        outputIx = cfg.m_OutputOptArg.Calc().Get<int>();
+                        outputIx = cfg.m_OutputOptArg.Calc().GetInt();
                     outputBuilder = new StringBuilder();
                 }
                 if (null != cfg.m_Error) {
@@ -7660,12 +7702,12 @@ namespace DslExpression
                         error = v;
                     }
                     if (null != cfg.m_ErrorOptArg)
-                        errorIx = cfg.m_ErrorOptArg.Calc().Get<int>();
+                        errorIx = cfg.m_ErrorOptArg.Calc().GetInt();
                     errorBuilder = new StringBuilder();
                 }
                 if (null != cfg.m_RedirectToConsole) {
                     var v = cfg.m_RedirectToConsole.Calc();
-                    redirectToConsole = v.Get<bool>();
+                    redirectToConsole = v.GetBool();
                 }
 
                 cmd = cmd.Trim();
@@ -7792,7 +7834,7 @@ namespace DslExpression
                     ret = ct;
                 }
                 else if (vObj.IsInteger) {
-                    int pid = vObj.Get<int>();
+                    int pid = vObj.GetInt();
                     var p = System.Diagnostics.Process.GetProcessById(pid);
                     if (null != p && p.Id != myselfId) {
                         Debug.LogFormat("kill {0}[pid:{1},session id:{2}]", p.ProcessName, p.Id, p.SessionId);
@@ -7817,7 +7859,7 @@ namespace DslExpression
                 ret = p.Id;
                 int exitCode = 0;
                 if (operands.Count >= 1) {
-                    exitCode = operands[0].Get<int>();
+                    exitCode = operands[0].GetInt();
                 }
                 Debug.LogFormat("killme {0}[pid:{1},session id:{2}] exit code:{3}", p.ProcessName, p.Id, p.SessionId, exitCode);
                 Environment.Exit(exitCode);
@@ -7877,7 +7919,7 @@ namespace DslExpression
         {
             var ret = CalculatorValue.NullObject;
             if (operands.Count >= 1) {
-                var time = operands[0].Get<int>();
+                var time = operands[0].GetInt();
                 System.Threading.Thread.Sleep(time);
                 ret = time;
             }
@@ -7891,7 +7933,7 @@ namespace DslExpression
             var tasks = DslCalculator.Tasks;
             int timeout = -1;
             if (operands.Count >= 1) {
-                timeout = operands[0].Get<int>();
+                timeout = operands[0].GetInt();
             }
             List<int> results = new List<int>();
             if (Task.WaitAll(tasks.ToArray(), timeout)) {
@@ -7909,7 +7951,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var v = operands[0];
                 if (!v.IsNullObject) {
-                    DslCalculator.CheckStartInterval = v.Get<int>();
+                    DslCalculator.CheckStartInterval = v.GetInt();
                 }
             }
             return DslCalculator.CheckStartInterval;
@@ -7924,7 +7966,7 @@ namespace DslExpression
             if (operands.Count >= 3) {
                 var title = operands[0].AsString;
                 var text = operands[1].AsString;
-                var progress = operands[2].Get<float>();
+                var progress = operands[2].GetFloat();
                 if (null != title && null != text) {
                     EditorUtility.DisplayProgressBar(title, text, progress);
                 }
@@ -7942,7 +7984,7 @@ namespace DslExpression
             if (operands.Count >= 3) {
                 var title = operands[0].AsString;
                 var text = operands[1].AsString;
-                var progress = operands[2].Get<float>();
+                var progress = operands[2].GetFloat();
                 if (null != title && null != text) {
                     ret = EditorUtility.DisplayCancelableProgressBar(title, text, progress);
                 }
@@ -8638,8 +8680,8 @@ namespace DslExpression
             else {
                 var statement = info as Dsl.StatementData;
                 if (null != statement && statement.GetFunctionNum() == 2) {
-                    id = statement.First.GetParamId(0);
-                    func = statement.Second;
+                    id = statement.First.AsFunction.GetParamId(0);
+                    func = statement.Second.AsFunction;
                     if (func.GetId() == "args" && func.IsHighOrder) {
                         if (func.LowerOrderFunction.GetParamNum() > 0) {
                             procInfo = new ProcInfo();
@@ -8684,13 +8726,17 @@ namespace DslExpression
             }
             if (null == procInfo)
                 procInfo = new ProcInfo();
-            foreach (Dsl.ISyntaxComponent comp in func.Params) {
+            LoadDsl(func.Params, procInfo.Codes);
+            m_Procs[proc] = procInfo;
+        }
+        public void LoadDsl(IList<Dsl.ISyntaxComponent> statements, List<IExpression> exps)
+        {
+            foreach (Dsl.ISyntaxComponent comp in statements) {
                 var exp = Load(comp);
                 if (null != exp) {
-                    procInfo.Codes.Add(exp);
+                    exps.Add(exp);
                 }
             }
-            m_Procs[proc] = procInfo;
         }
         public List<CalculatorValue> NewCalculatorValueList()
         {
@@ -8750,59 +8796,62 @@ namespace DslExpression
         {
             return Calc(null, procContext, procInfo);
         }
-        private CalculatorValue Calc<T>(List<CalculatorValue> args, T procContext, ProcInfo procInfo) where T : class
+        public CalculatorValue CalcInCurrentContext(IList<IExpression> exps)
         {
             CalculatorValue ret = 0;
-            LocalStackPush(args, procContext, procInfo);
-            try {
-                var exps = procInfo.Codes;
-                for (int i = 0; i < exps.Count; ++i) {
-                    var exp = exps[i];
-                    try {
-                        ret = exp.Calc();
-                        if (m_RunState == RunStateEnum.Return) {
-                            m_RunState = RunStateEnum.Normal;
-                            break;
-                        }
-                        else if (m_RunState == RunStateEnum.Redirect) {
-                            break;
-                        }
+            for (int i = 0; i < exps.Count; ++i) {
+                var exp = exps[i];
+                try {
+                    ret = exp.Calc();
+                    if (m_RunState == RunStateEnum.Return) {
+                        m_RunState = RunStateEnum.Normal;
+                        break;
                     }
-                    catch (DirectoryNotFoundException ex5) {
-                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex5.Message, ex5.StackTrace);
-                        OutputInnerException(ex5);
-                    }
-                    catch (FileNotFoundException ex4) {
-                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex4.Message, ex4.StackTrace);
-                        OutputInnerException(ex4);
-                    }
-                    catch (IOException ex3) {
-                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex3.Message, ex3.StackTrace);
-                        OutputInnerException(ex3);
-                        ret = -1;
-                    }
-                    catch (UnauthorizedAccessException ex2) {
-                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex2.Message, ex2.StackTrace);
-                        OutputInnerException(ex2);
-                        ret = -1;
-                    }
-                    catch (NotSupportedException ex1) {
-                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex1.Message, ex1.StackTrace);
-                        OutputInnerException(ex1);
-                        ret = -1;
-                    }
-                    catch (Exception ex) {
-                        Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex.Message, ex.StackTrace);
-                        OutputInnerException(ex);
-                        ret = -1;
+                    else if (m_RunState == RunStateEnum.Redirect) {
                         break;
                     }
                 }
+                catch (DirectoryNotFoundException ex5) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex5.Message, ex5.StackTrace);
+                    OutputInnerException(ex5);
+                }
+                catch (FileNotFoundException ex4) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex4.Message, ex4.StackTrace);
+                    OutputInnerException(ex4);
+                }
+                catch (IOException ex3) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex3.Message, ex3.StackTrace);
+                    OutputInnerException(ex3);
+                    ret = -1;
+                }
+                catch (UnauthorizedAccessException ex2) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex2.Message, ex2.StackTrace);
+                    OutputInnerException(ex2);
+                    ret = -1;
+                }
+                catch (NotSupportedException ex1) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex1.Message, ex1.StackTrace);
+                    OutputInnerException(ex1);
+                    ret = -1;
+                }
+                catch (Exception ex) {
+                    Log("calc:[{0}] exception:{1}\n{2}", exp.ToString(), ex.Message, ex.StackTrace);
+                    OutputInnerException(ex);
+                    ret = -1;
+                    break;
+                }
+            }
+            return ret;
+        }
+        private CalculatorValue Calc<T>(List<CalculatorValue> args, T procContext, ProcInfo procInfo) where T : class
+        {
+            LocalStackPush(args, procContext, procInfo);
+            try {
+                return CalcInCurrentContext(procInfo.Codes);
             }
             finally {
                 LocalStackPop();
             }
-            return ret;
         }
         public RunStateEnum RunState
         {
@@ -8812,7 +8861,10 @@ namespace DslExpression
         public void Log(string fmt, params object[] args)
         {
             if (null != OnLog) {
-                OnLog(string.Format(fmt, args));
+                if (args.Length == 0)
+                    OnLog(fmt);
+                else
+                    OnLog(string.Format(fmt, args));
             }
         }
         public void Log(object arg)
@@ -9093,30 +9145,23 @@ namespace DslExpression
                     }
                 }
             }
-            IExpression ret = null;
-            string expId = comp.GetId();
-            if (null != funcData && !funcData.IsHighOrder && m_Procs.ContainsKey(expId)) {
-                ret = new FunctionCall();
-            }
-            else {
-                ret = Create(comp.GetId());
+            IExpression ret = Create(comp.GetId());
+            if (null == ret) {
+                if (null != funcData && !funcData.IsHighOrder) {
+                    ret = new FunctionCall();
+                }
             }
             if (null != ret) {
                 Dsl.StatementData stData = comp as Dsl.StatementData;
                 if (null != stData) {
-                    Dsl.FunctionData first = stData.First;
-                    if (first.HaveId() && !first.HaveParamOrStatement()) {
+                    Dsl.ValueData first = stData.First.AsValue;
+                    if (null != first) {
                         //将命令行语法转换为函数调用语法
                         Dsl.FunctionData fd = new Dsl.FunctionData();
-                        fd.CopyFrom(first);
+                        fd.Name = first;
                         for (int argi = 1; argi < stData.GetFunctionNum(); ++argi) {
                             var pfd = stData.GetFunction(argi);
-                            if (pfd.HaveId() && !pfd.HaveParamOrStatement()) {
-                                fd.AddParam(pfd.Name);
-                            }
-                            else {
-                                fd.AddParam(pfd);
-                            }
+                            fd.AddParam(pfd);
                         }
                         if (!ret.Load(fd, this)) {
                             //error

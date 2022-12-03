@@ -29,7 +29,7 @@ public class AiDoNormal : ISimpleStoryCommandPlugin
             m_ParamReaded = true;
             m_ObjId = args[0];
             if (args.Count > 1) {
-                m_EnableLearning = args[1].Get<int>() != 0;
+                m_EnableLearning = args[1].GetInt() != 0;
             }
         }
         EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);

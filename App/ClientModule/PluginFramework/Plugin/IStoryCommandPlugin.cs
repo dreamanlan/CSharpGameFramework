@@ -13,9 +13,8 @@ namespace GameFramework.Plugin
         void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args);
         bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta);
         bool ExecCommandWithArgs(StoryInstance instance, long delta, object iterator, object[] args);
-        void LoadCallData(Dsl.FunctionData callData);
-        void LoadFuncData(Dsl.FunctionData funcData);
-        void LoadStatementData(Dsl.StatementData statementData);
+        bool LoadFuncData(Dsl.FunctionData funcData);
+        bool LoadStatementData(Dsl.StatementData statementData);
     }
     public interface ISimpleStoryCommandPlugin
     {

@@ -49,7 +49,7 @@ namespace StorySystem.CommonValues
             if (m_TypeName.HaveValue) {
                 m_HaveValue = true;
                 string typeName = m_TypeName.Value;
-                m_Value = BoxedValue.From(Type.GetType(typeName));
+                m_Value = BoxedValue.FromObject(Type.GetType(typeName));
                 if (null == m_Value.ObjectVal) {
                     GameFramework.LogSystem.Warn("null == Type.GetType({0})", typeName);
                 }
@@ -129,12 +129,12 @@ namespace StorySystem.CommonValues
             if (canCalc) {
                 m_HaveValue = true;
                 m_Value = BoxedValue.NullObject;
-                object obj = m_Object.Value.Get<object>();
+                object obj = m_Object.Value.GetObject();
                 var methodObj = m_Method.Value;
                 string method = methodObj.IsString ? methodObj.StringVal : null;
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_Args.Count; i++) {
-                    arglist.Add(m_Args[i].Value.Get<object>());
+                    arglist.Add(m_Args[i].Value.GetObject());
                 }
                 object[] args = arglist.ToArray();
                 if (null != obj) {
@@ -143,7 +143,7 @@ namespace StorySystem.CommonValues
                         if (null != dict && dict.Contains(method) && dict[method] is Delegate) {
                             var d = dict[method] as Delegate;
                             if (null != d) {
-                                m_Value = BoxedValue.From(d.DynamicInvoke(args));
+                                m_Value = BoxedValue.FromObject(d.DynamicInvoke(args));
                             }
                         }
                         else {
@@ -152,7 +152,7 @@ namespace StorySystem.CommonValues
                                 try {
                                     BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
                                     GameFramework.Converter.CastArgsForCall(t, method, flags, args);
-                                    m_Value = BoxedValue.From(t.InvokeMember(method, flags, null, null, args));
+                                    m_Value = BoxedValue.FromObject(t.InvokeMember(method, flags, null, null, args));
                                 }
                                 catch (Exception ex) {
                                     GameFramework.LogSystem.Warn("DotnetCall {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
@@ -165,7 +165,7 @@ namespace StorySystem.CommonValues
                                     try {
                                         BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
                                         GameFramework.Converter.CastArgsForCall(t, method, flags, args);
-                                        m_Value = BoxedValue.From(t.InvokeMember(method, flags, null, obj, args));
+                                        m_Value = BoxedValue.FromObject(t.InvokeMember(method, flags, null, obj, args));
                                     }
                                     catch (Exception ex) {
                                         GameFramework.LogSystem.Warn("DotnetCall {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
@@ -254,19 +254,19 @@ namespace StorySystem.CommonValues
             if (canCalc) {
                 m_HaveValue = true;
                 m_Value = BoxedValue.NullObject;
-                object obj = m_Object.Value.Get<object>();
+                object obj = m_Object.Value.GetObject();
                 var methodObj = m_Method.Value;
                 string method = methodObj.IsString ? methodObj.StringVal : null;
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_Args.Count; i++) {
-                    arglist.Add(m_Args[i].Value.Get<object>());
+                    arglist.Add(m_Args[i].Value.GetObject());
                 }
                 object[] args = arglist.ToArray();
                 if (null != obj) {
                     if (null != method) {
                         IDictionary dict = obj as IDictionary;
                         if (null != dict && dict.Contains(method)) {
-                            m_Value = BoxedValue.From(dict[method]);
+                            m_Value = BoxedValue.FromObject(dict[method]);
                         }
                         else {
                             Type t = obj as Type;
@@ -274,7 +274,7 @@ namespace StorySystem.CommonValues
                                 try {
                                     BindingFlags flags = BindingFlags.Static | BindingFlags.GetField | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic;
                                     GameFramework.Converter.CastArgsForGet(t, method, flags, args);
-                                    m_Value = BoxedValue.From(t.InvokeMember(method, flags, null, null, args));
+                                    m_Value = BoxedValue.FromObject(t.InvokeMember(method, flags, null, null, args));
                                 }
                                 catch (Exception ex) {
                                     GameFramework.LogSystem.Warn("DotnetGet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
@@ -287,7 +287,7 @@ namespace StorySystem.CommonValues
                                     try {
                                         BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.GetField | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic;
                                         GameFramework.Converter.CastArgsForGet(t, method, flags, args);
-                                        m_Value = BoxedValue.From(t.InvokeMember(method, flags, null, obj, args));
+                                        m_Value = BoxedValue.FromObject(t.InvokeMember(method, flags, null, obj, args));
                                     }
                                     catch (Exception ex) {
                                         GameFramework.LogSystem.Warn("DotnetGet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
@@ -376,33 +376,33 @@ namespace StorySystem.CommonValues
             if (canCalc) {
                 m_HaveValue = true;
                 m_Value = BoxedValue.NullObject;
-                object obj = m_Object.Value.Get<object>();
+                object obj = m_Object.Value.GetObject();
                 var methodObj = m_Method.Value;
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_Args.Count; i++) {
-                    arglist.Add(m_Args[i].Value.Get<object>());
+                    arglist.Add(m_Args[i].Value.GetObject());
                 }
                 object[] args = arglist.ToArray();
                 if (null != obj) {
                     IDictionary dict = obj as IDictionary;
-                    var mobj = methodObj.Get<object>();
+                    var mobj = methodObj.GetObject();
                     if (null != dict && dict.Contains(mobj)) {
                         var d = dict[mobj] as Delegate;
                         if (null != d) {
-                            m_Value = BoxedValue.From(d.DynamicInvoke(args));
+                            m_Value = BoxedValue.FromObject(d.DynamicInvoke(args));
                         }
                     }
                     else {
                         IEnumerable enumer = obj as IEnumerable;
                         if (null != enumer && methodObj.IsInteger) {
-                            int index = methodObj.Get<int>();
+                            int index = methodObj.GetInt();
                             var e = enumer.GetEnumerator();
                             for (int i = 0; i <= index; ++i) {
                                 e.MoveNext();
                             }
                             var d = e.Current as Delegate;
                             if (null != d) {
-                                m_Value = BoxedValue.From(d.DynamicInvoke(args));
+                                m_Value = BoxedValue.FromObject(d.DynamicInvoke(args));
                             }
                         }
                     }
@@ -485,28 +485,28 @@ namespace StorySystem.CommonValues
             if (canCalc) {
                 m_HaveValue = true;
                 m_Value = BoxedValue.NullObject;
-                object obj = m_Object.Value.Get<object>();
+                object obj = m_Object.Value.GetObject();
                 var methodObj = m_Method.Value;
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_Args.Count; i++) {
-                    arglist.Add(m_Args[i].Value.Get<object>());
+                    arglist.Add(m_Args[i].Value.GetObject());
                 }
                 object[] args = arglist.ToArray();
                 if (null != obj) {
                     IDictionary dict = obj as IDictionary;
-                    var mobj = methodObj.Get<object>();
+                    var mobj = methodObj.GetObject();
                     if (null != dict && dict.Contains(mobj)) {
-                        m_Value = BoxedValue.From(dict[mobj]);
+                        m_Value = BoxedValue.FromObject(dict[mobj]);
                     }
                     else {
                         IEnumerable enumer = obj as IEnumerable;
                         if (null != enumer && methodObj.IsInteger) {
-                            int index = methodObj.Get<int>();
+                            int index = methodObj.GetInt();
                             var e = enumer.GetEnumerator();
                             for (int i = 0; i <= index; ++i) {
                                 e.MoveNext();
                             }
-                            m_Value = BoxedValue.From(e.Current);
+                            m_Value = BoxedValue.FromObject(e.Current);
                         }
                     }
                 }
@@ -619,51 +619,51 @@ namespace StorySystem.CommonValues
                         }
                         else {
                             if (0 == type.CompareTo("sbyte")) {
-                                m_Value = obj.Get<sbyte>();
+                                m_Value = obj.GetSByte();
                             }
                             else if (0 == type.CompareTo("byte")) {
-                                m_Value = obj.Get<byte>();
+                                m_Value = obj.GetByte();
                             }
                             else if (0 == type.CompareTo("short")) {
-                                m_Value = obj.Get<short>();
+                                m_Value = obj.GetShort();
                             }
                             else if (0 == type.CompareTo("ushort")) {
-                                m_Value = obj.Get<ushort>();
+                                m_Value = obj.GetUShort();
                             }
                             else if (0 == type.CompareTo("int")) {
-                                m_Value = obj.Get<int>();
+                                m_Value = obj.GetInt();
                             }
                             else if (0 == type.CompareTo("uint")) {
-                                m_Value = obj.Get<uint>();
+                                m_Value = obj.GetUInt();
                             }
                             else if (0 == type.CompareTo("long")) {
-                                m_Value = obj.Get<long>();
+                                m_Value = obj.GetLong();
                             }
                             else if (0 == type.CompareTo("ulong")) {
-                                m_Value = obj.Get<ulong>();
+                                m_Value = obj.GetULong();
                             }
                             else if (0 == type.CompareTo("float")) {
-                                m_Value = obj.Get<float>();
+                                m_Value = obj.GetFloat();
                             }
                             else if (0 == type.CompareTo("double")) {
-                                m_Value = obj.Get<double>();
+                                m_Value = obj.GetDouble();
                             }
                             else if (0 == type.CompareTo("decimal")) {
-                                m_Value = obj.Get<decimal>();
+                                m_Value = obj.GetDecimal();
                             }
                             else if (0 == type.CompareTo("bool")) {
-                                m_Value = obj.Get<bool>();
+                                m_Value = obj.GetBool();
                             }
                             else if (0 == type.CompareTo("char")) {
-                                m_Value = obj.Get<char>();
+                                m_Value = obj.GetChar();
                             }
                             else if (0 == type.CompareTo("string")) {
-                                m_Value = obj.Get<string>();
+                                m_Value = obj.GetString();
                             }
                             else {
                                 Type t = Type.GetType(type);
                                 if (null != t) {
-                                    m_Value = BoxedValue.FromObject(obj.Get(t));
+                                    m_Value = BoxedValue.FromObject(obj.CastTo(t));
                                 }
                                 else {
                                     GameFramework.LogSystem.Warn("null == Type.GetType({0})", type);
@@ -674,7 +674,7 @@ namespace StorySystem.CommonValues
                     else {
                         var t = objType.IsObject ? objType.ObjectVal as Type : null;
                         if (null != t) {
-                            m_Value = BoxedValue.From(StoryValueHelper.CastTo(t, obj.GetObject()));
+                            m_Value = BoxedValue.FromObject(StoryValueHelper.CastTo(t, obj.GetObject()));
                         }
                     }
                 }
@@ -744,7 +744,7 @@ namespace StorySystem.CommonValues
                         t = Type.GetType(type);
                     }
                     if (null != t) {
-                        m_Value = BoxedValue.From(Enum.Parse(t, val, true));
+                        m_Value = BoxedValue.FromObject(Enum.Parse(t, val, true));
                     }
                     else {
                         GameFramework.LogSystem.Warn("null == Type.GetType({0})", type);

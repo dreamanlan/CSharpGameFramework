@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using ScriptRuntime;
+
 public class BoolList : List<bool>
 {
     public BoolList() { }
@@ -164,16 +166,19 @@ public class ObjObjDict : Dictionary<object, object>
 public class IntHashSet : HashSet<int>
 {
     public IntHashSet() { }
+    public IntHashSet(int capacity) : base(capacity) { }
     public IntHashSet(IEnumerable<int> coll) : base(coll) { }
 }
 public class StrHashSet : HashSet<string>
 {
     public StrHashSet() { }
+    public StrHashSet(int capacity) : base(capacity) { }
     public StrHashSet(IEnumerable<string> coll) : base(coll) { }
 }
 public class ObjHashSet : HashSet<object>
 {
     public ObjHashSet() { }
+    public ObjHashSet(int capacity) : base(capacity) { }
     public ObjHashSet(IEnumerable<object> coll) : base(coll) { }
 }
 public class IntQueue : Queue<int>
@@ -215,6 +220,7 @@ public class StrStack : Stack<string>
 public class IntObjSortedDict : SortedDictionary<int, object>
 {
     public IntObjSortedDict() { }
+    public IntObjSortedDict(int capacity) { }
     public IntObjSortedDict(IDictionary<int, object> dict) : base(dict) { }
 }
 public class Vector2List : List<ScriptRuntime.Vector2>
@@ -760,168 +766,168 @@ public struct BoxedValue
 
     public static implicit operator BoxedValue(string v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator string(BoxedValue v)
     {
-        return v.Get<string>();
+        return v.GetString();
     }
     public static implicit operator BoxedValue(bool v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator bool(BoxedValue v)
     {
-        return v.Get<bool>();
+        return v.GetBool();
     }
     public static implicit operator BoxedValue(char v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator char(BoxedValue v)
     {
-        return v.Get<char>();
+        return v.GetChar();
     }
     public static implicit operator BoxedValue(sbyte v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator sbyte(BoxedValue v)
     {
-        return v.Get<sbyte>();
+        return v.GetSByte();
     }
     public static implicit operator BoxedValue(short v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator short(BoxedValue v)
     {
-        return v.Get<short>();
+        return v.GetShort();
     }
     public static implicit operator BoxedValue(int v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator int(BoxedValue v)
     {
-        return v.Get<int>();
+        return v.GetInt();
     }
     public static implicit operator BoxedValue(long v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator long(BoxedValue v)
     {
-        return v.Get<long>();
+        return v.GetLong();
     }
     public static implicit operator BoxedValue(byte v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator byte(BoxedValue v)
     {
-        return v.Get<byte>();
+        return v.GetByte();
     }
     public static implicit operator BoxedValue(ushort v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator ushort(BoxedValue v)
     {
-        return v.Get<ushort>();
+        return v.GetUShort();
     }
     public static implicit operator BoxedValue(uint v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator uint(BoxedValue v)
     {
-        return v.Get<uint>();
+        return v.GetUInt();
     }
     public static implicit operator BoxedValue(ulong v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator ulong(BoxedValue v)
     {
-        return v.Get<ulong>();
+        return v.GetULong();
     }
     public static implicit operator BoxedValue(float v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator float(BoxedValue v)
     {
-        return v.Get<float>();
+        return v.GetFloat();
     }
     public static implicit operator BoxedValue(double v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator double(BoxedValue v)
     {
-        return v.Get<double>();
+        return v.GetDouble();
     }
     public static implicit operator BoxedValue(decimal v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator decimal(BoxedValue v)
     {
-        return v.Get<decimal>();
+        return v.GetDecimal();
     }
     public static implicit operator BoxedValue(ScriptRuntime.Vector2 v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator ScriptRuntime.Vector2(BoxedValue v)
     {
-        return v.Get<ScriptRuntime.Vector2>();
+        return v.GetVector2();
     }
     public static implicit operator BoxedValue(ScriptRuntime.Vector3 v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator ScriptRuntime.Vector3(BoxedValue v)
     {
-        return v.Get<ScriptRuntime.Vector3>();
+        return v.GetVector3();
     }
     public static implicit operator BoxedValue(ScriptRuntime.Vector4 v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator ScriptRuntime.Vector4(BoxedValue v)
     {
-        return v.Get<ScriptRuntime.Vector4>();
+        return v.GetVector4();
     }
     public static implicit operator BoxedValue(ScriptRuntime.Quaternion v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator ScriptRuntime.Quaternion(BoxedValue v)
     {
-        return v.Get<ScriptRuntime.Quaternion>();
+        return v.GetQuaternion();
     }
     public static implicit operator BoxedValue(ScriptRuntime.ColorF v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator ScriptRuntime.ColorF(BoxedValue v)
     {
-        return v.Get<ScriptRuntime.ColorF>();
+        return v.GetColor();
     }
     public static implicit operator BoxedValue(ScriptRuntime.Color32 v)
     {
-        return From(v);
+        return BoxedValue.From(v);
     }
     public static implicit operator ScriptRuntime.Color32(BoxedValue v)
     {
-        return v.Get<ScriptRuntime.Color32>();
+        return v.GetColor32();
     }
 
     public static implicit operator BoxedValue(byte[] v)
     {
-        return From(v);
+        return BoxedValue.FromObject(v);
     }
     public static implicit operator byte[](BoxedValue v)
     {
@@ -929,7 +935,7 @@ public struct BoxedValue
     }
     public static implicit operator BoxedValue(object[] v)
     {
-        return From(v);
+        return BoxedValue.FromObject(v);
     }
     public static implicit operator object[] (BoxedValue v)
     {
@@ -937,7 +943,7 @@ public struct BoxedValue
     }
     public static implicit operator BoxedValue(Type v)
     {
-        return From(v);
+        return BoxedValue.FromObject(v);
     }
     public static implicit operator Type(BoxedValue v)
     {
@@ -945,7 +951,7 @@ public struct BoxedValue
     }
     public static implicit operator BoxedValue(ObjList v)
     {
-        return From(v);
+        return BoxedValue.FromObject(v);
     }
     public static implicit operator ObjList(BoxedValue v)
     {
@@ -953,7 +959,7 @@ public struct BoxedValue
     }
     public static implicit operator BoxedValue(ArrayList v)
     {
-        return From(v);
+        return BoxedValue.FromObject(v);
     }
     public static implicit operator ArrayList(BoxedValue v)
     {
@@ -1060,7 +1066,7 @@ public struct BoxedValue
             }
         }
     }
-    public bool IsFloat
+    public bool IsNumber
     {
         get {
             return Type == c_FloatType || Type == c_DoubleType || Type == c_DecimalType;
@@ -1108,24 +1114,455 @@ public struct BoxedValue
         Type = c_StringType;
         StringVal = string.Empty;
     }
-    public void Set<T>(T v)
+
+    public void Set(bool v)
     {
-        var t = v != null ? v.GetType() : typeof(T);
-        Set<T>(t, v);
+        Type = c_BoolType;
+        Union.BoolVal = v;
     }
-    public void Set(Type t, object v)
+    public void Set(char v)
     {
-        Set<object>(t, v);
+        Type = c_CharType;
+        Union.CharVal = v;
     }
-    public T Get<T>()
+    public void Set(sbyte v)
     {
-        var t = typeof(T);
-        return Get<T>(t);
+        Type = c_SByteType;
+        Union.SByteVal = v;
     }
-    public object Get(Type t)
+    public void Set(short v)
     {
-        return Get<object>(t);
+        Type = c_ShortType;
+        Union.ShortVal = v;
     }
+    public void Set(int v)
+    {
+        Type = c_IntType;
+        Union.IntVal = v;
+    }
+    public void Set(long v)
+    {
+        Type = c_LongType;
+        Union.LongVal = v;
+    }
+    public void Set(byte v)
+    {
+        Type = c_ByteType;
+        Union.ByteVal = v;
+    }
+    public void Set(ushort v)
+    {
+        Type = c_UShortType;
+        Union.UShortVal = v;
+    }
+    public void Set(uint v)
+    {
+        Type = c_UIntType;
+        Union.UIntVal = v;
+    }
+    public void Set(ulong v)
+    {
+        Type = c_ULongType;
+        Union.ULongVal = v;
+    }
+    public void Set(float v)
+    {
+        Type = c_FloatType;
+        Union.FloatVal = v;
+    }
+    public void Set(double v)
+    {
+        Type = c_DoubleType;
+        Union.DoubleVal = v;
+    }
+    public void Set(decimal v)
+    {
+        Type = c_DecimalType;
+        Union.DecimalVal = v;
+    }
+    public void Set(ScriptRuntime.Vector2 v)
+    {
+        Type = c_Vector2Type;
+        Union.Vector2Val = v;
+    }
+    public void Set(ScriptRuntime.Vector3 v)
+    {
+        Type = c_Vector3Type;
+        Union.Vector3Val = v;
+    }
+    public void Set(ScriptRuntime.Vector4 v)
+    {
+        Type = c_Vector4Type;
+        Union.Vector4Val = v;
+    }
+    public void Set(ScriptRuntime.Quaternion v)
+    {
+        Type = c_QuaternionType;
+        Union.QuaternionVal = v;
+    }
+    public void Set(ScriptRuntime.ColorF v)
+    {
+        Type = c_ColorType;
+        Union.ColorVal = v;
+    }
+    public void Set(ScriptRuntime.Color32 v)
+    {
+        Type = c_Color32Type;
+        Union.Color32Val = v;
+    }
+    public void Set(string v)
+    {
+        Type = c_StringType;
+        StringVal = v;
+    }
+    public void SetObject(object val)
+    {
+        if (null == val) {
+            SetWithObjectType(val);
+            return;
+        }
+        Type t = val.GetType();
+        if (t == typeof(string))
+            Set((string)val);
+        else if (t == typeof(bool))
+            Set((bool)val);
+        else if (t == typeof(char))
+            Set((char)val);
+        else if (t == typeof(sbyte))
+            Set((sbyte)val);
+        else if (t == typeof(short))
+            Set((short)val);
+        else if (t == typeof(int))
+            Set((int)val);
+        else if (t == typeof(long))
+            Set((long)val);
+        else if (t == typeof(byte))
+            Set((byte)val);
+        else if (t == typeof(ushort))
+            Set((ushort)val);
+        else if (t == typeof(uint))
+            Set((uint)val);
+        else if (t == typeof(ulong))
+            Set((ulong)val);
+        else if (t == typeof(float))
+            Set((float)val);
+        else if (t == typeof(double))
+            Set((double)val);
+        else if (t == typeof(decimal))
+            Set((decimal)val);
+        else if (t == typeof(ScriptRuntime.Vector2))
+            Set((ScriptRuntime.Vector2)val);
+        else if (t == typeof(ScriptRuntime.Vector3))
+            Set((ScriptRuntime.Vector3)val);
+        else if (t == typeof(ScriptRuntime.Vector4))
+            Set((ScriptRuntime.Vector4)val);
+        else if (t == typeof(ScriptRuntime.Quaternion))
+            Set((ScriptRuntime.Quaternion)val);
+        else if (t == typeof(ScriptRuntime.ColorF))
+            Set((ScriptRuntime.ColorF)val);
+        else if (t == typeof(ScriptRuntime.Color32))
+            Set((ScriptRuntime.Color32)val);
+        else if (t == typeof(BoxedValue))
+            this = (BoxedValue)val;
+        else
+            SetWithObjectType(val);
+    }
+    public void SetWithObjectType(object val)
+    {
+        Type = c_ObjectType;
+        ObjectVal = val;
+    }
+
+    public bool GetBool()
+    {
+        return ToBool();
+    }
+    public char GetChar()
+    {
+        return ToChar();
+    }
+    public sbyte GetSByte()
+    {
+        return ToSByte();
+    }
+    public short GetShort()
+    {
+        return ToShort();
+    }
+    public int GetInt()
+    {
+        return ToInt();
+    }
+    public long GetLong()
+    {
+        return ToLong();
+    }
+    public byte GetByte()
+    {
+        return ToByte();
+    }
+    public ushort GetUShort()
+    {
+        return ToUShort();
+    }
+    public uint GetUInt()
+    {
+        return ToUInt();
+    }
+    public ulong GetULong()
+    {
+        return ToULong();
+    }
+    public float GetFloat()
+    {
+        return ToFloat();
+    }
+    public double GetDouble()
+    {
+        return ToDouble();
+    }
+    public decimal GetDecimal()
+    {
+        return ToDecimal();
+    }
+    public ScriptRuntime.Vector2 GetVector2()
+    {
+        return ToVector2();
+    }
+    public ScriptRuntime.Vector3 GetVector3()
+    {
+        return ToVector3();
+    }
+    public ScriptRuntime.Vector4 GetVector4()
+    {
+        return ToVector4();
+    }
+    public ScriptRuntime.Quaternion GetQuaternion()
+    {
+        return ToQuaternion();
+    }
+    public ScriptRuntime.ColorF GetColor()
+    {
+        return ToColor();
+    }
+    public ScriptRuntime.Color32 GetColor32()
+    {
+        return ToColor32();
+    }
+    public string GetString()
+    {
+        return ToString();
+    }
+    public object GetObject()
+    {
+        return ToObject();
+    }
+
+    public T CastTo<T>()
+    {
+        Type t = typeof(T);
+        if (t == typeof(string))
+            return GenericValueConverter.From<T>(ToString());
+        else if (t == typeof(bool))
+            return GenericValueConverter.From<T>(ToBool());
+        else if (t == typeof(char))
+            return GenericValueConverter.From<T>(ToChar());
+        else if (t == typeof(sbyte))
+            return GenericValueConverter.From<T>(ToSByte());
+        else if (t == typeof(short))
+            return GenericValueConverter.From<T>(ToShort());
+        else if (t == typeof(int))
+            return GenericValueConverter.From<T>(ToInt());
+        else if (t == typeof(long))
+            return GenericValueConverter.From<T>(ToLong());
+        else if (t == typeof(byte))
+            return GenericValueConverter.From<T>(ToByte());
+        else if (t == typeof(ushort))
+            return GenericValueConverter.From<T>(ToUShort());
+        else if (t == typeof(uint))
+            return GenericValueConverter.From<T>(ToUInt());
+        else if (t == typeof(ulong))
+            return GenericValueConverter.From<T>(ToULong());
+        else if (t == typeof(float))
+            return GenericValueConverter.From<T>(ToFloat());
+        else if (t == typeof(double))
+            return GenericValueConverter.From<T>(ToDouble());
+        else if (t == typeof(decimal))
+            return GenericValueConverter.From<T>(ToDecimal());
+        else if (t == typeof(ScriptRuntime.Vector2))
+            return GenericValueConverter.From<T>(ToVector2());
+        else if (t == typeof(ScriptRuntime.Vector3))
+            return GenericValueConverter.From<T>(ToVector3());
+        else if (t == typeof(ScriptRuntime.Vector4))
+            return GenericValueConverter.From<T>(ToVector4());
+        else if (t == typeof(ScriptRuntime.Quaternion))
+            return GenericValueConverter.From<T>(ToQuaternion());
+        else if (t == typeof(ScriptRuntime.ColorF))
+            return GenericValueConverter.From<T>(ToColor());
+        else if (t == typeof(ScriptRuntime.Color32))
+            return GenericValueConverter.From<T>(ToColor32());
+        else if (t == typeof(BoxedValue))
+            return GenericValueConverter.From<T>(this);
+        else if (t == typeof(object))
+            return GenericValueConverter.From<T>(ToObject());
+        else
+            return GenericValueConverter.CastTo<T>(ToObject());
+    }
+    public object CastTo(Type t)
+    {
+        if (t == typeof(string))
+            return ToString();
+        else if (t == typeof(bool))
+            return ToBool();
+        else if (t == typeof(char))
+            return ToChar();
+        else if (t == typeof(sbyte))
+            return ToSByte();
+        else if (t == typeof(short))
+            return ToShort();
+        else if (t == typeof(int))
+            return ToInt();
+        else if (t == typeof(long))
+            return ToLong();
+        else if (t == typeof(byte))
+            return ToByte();
+        else if (t == typeof(ushort))
+            return ToUShort();
+        else if (t == typeof(uint))
+            return ToUInt();
+        else if (t == typeof(ulong))
+            return ToULong();
+        else if (t == typeof(float))
+            return ToFloat();
+        else if (t == typeof(double))
+            return ToDouble();
+        else if (t == typeof(decimal))
+            return ToDecimal();
+        else if (t == typeof(ScriptRuntime.Vector2))
+            return ToVector2();
+        else if (t == typeof(ScriptRuntime.Vector3))
+            return ToVector3();
+        else if (t == typeof(ScriptRuntime.Vector4))
+            return ToVector4();
+        else if (t == typeof(ScriptRuntime.Quaternion))
+            return ToQuaternion();
+        else if (t == typeof(ScriptRuntime.ColorF))
+            return ToColor();
+        else if (t == typeof(ScriptRuntime.Color32))
+            return ToColor32();
+        else if (t == typeof(BoxedValue))
+            return this;
+        else if (t == typeof(object))
+            return ToObject();
+        else
+            return Convert.ChangeType(ToObject(), t);
+    }
+    public void GenericSet<T>(T val)
+    {
+        Type t = typeof(T);
+        if (t == typeof(string))
+            Set(GenericValueConverter.ToString<T>(val));
+        else if (t == typeof(bool))
+            Set(GenericValueConverter.ToBool<T>(val));
+        else if (t == typeof(char))
+            Set(GenericValueConverter.ToChar<T>(val));
+        else if (t == typeof(sbyte))
+            Set(GenericValueConverter.ToSByte<T>(val));
+        else if (t == typeof(short))
+            Set(GenericValueConverter.ToShort<T>(val));
+        else if (t == typeof(int))
+            Set(GenericValueConverter.ToInt<T>(val));
+        else if (t == typeof(long))
+            Set(GenericValueConverter.ToLong<T>(val));
+        else if (t == typeof(byte))
+            Set(GenericValueConverter.ToByte<T>(val));
+        else if (t == typeof(ushort))
+            Set(GenericValueConverter.ToUShort<T>(val));
+        else if (t == typeof(uint))
+            Set(GenericValueConverter.ToUInt<T>(val));
+        else if (t == typeof(ulong))
+            Set(GenericValueConverter.ToULong<T>(val));
+        else if (t == typeof(float))
+            Set(GenericValueConverter.ToFloat<T>(val));
+        else if (t == typeof(double))
+            Set(GenericValueConverter.ToDouble<T>(val));
+        else if (t == typeof(decimal))
+            Set(GenericValueConverter.ToDecimal<T>(val));
+        else if (t == typeof(ScriptRuntime.Vector2))
+            Set(GenericValueConverter.ToVector2<T>(val));
+        else if (t == typeof(ScriptRuntime.Vector3))
+            Set(GenericValueConverter.ToVector3<T>(val));
+        else if (t == typeof(ScriptRuntime.Vector4))
+            Set(GenericValueConverter.ToVector4<T>(val));
+        else if (t == typeof(ScriptRuntime.Quaternion))
+            Set(GenericValueConverter.ToQuaternion<T>(val));
+        else if (t == typeof(ScriptRuntime.ColorF))
+            Set(GenericValueConverter.ToColor<T>(val));
+        else if (t == typeof(ScriptRuntime.Color32))
+            Set(GenericValueConverter.ToColor32<T>(val));
+        else if (t == typeof(BoxedValue))
+            this = GenericValueConverter.ToBoxedValue<T>(val);
+        else if (t == typeof(object))
+            SetWithObjectType(GenericValueConverter.ToObject<T>(val));
+        else
+            SetWithObjectType(val);
+    }
+    public void GenericSet(Type t, object val)
+    {
+        if (null == val) {
+            if (t == typeof(string))
+                Set((string)val);
+            else
+                SetWithObjectType(val);
+            return;
+        }
+        t = val.GetType();
+        if (t == typeof(string))
+            Set((string)val);
+        else if (t == typeof(bool))
+            Set((bool)val);
+        else if (t == typeof(char))
+            Set((char)val);
+        else if (t == typeof(sbyte))
+            Set((sbyte)val);
+        else if (t == typeof(short))
+            Set((short)val);
+        else if (t == typeof(int))
+            Set((int)val);
+        else if (t == typeof(long))
+            Set((long)val);
+        else if (t == typeof(byte))
+            Set((byte)val);
+        else if (t == typeof(ushort))
+            Set((ushort)val);
+        else if (t == typeof(uint))
+            Set((uint)val);
+        else if (t == typeof(ulong))
+            Set((ulong)val);
+        else if (t == typeof(float))
+            Set((float)val);
+        else if (t == typeof(double))
+            Set((double)val);
+        else if (t == typeof(decimal))
+            Set((decimal)val);
+        else if (t == typeof(ScriptRuntime.Vector2))
+            Set((ScriptRuntime.Vector2)val);
+        else if (t == typeof(ScriptRuntime.Vector3))
+            Set((ScriptRuntime.Vector3)val);
+        else if (t == typeof(ScriptRuntime.Vector4))
+            Set((ScriptRuntime.Vector4)val);
+        else if (t == typeof(ScriptRuntime.Quaternion))
+            Set((ScriptRuntime.Quaternion)val);
+        else if (t == typeof(ScriptRuntime.ColorF))
+            Set((ScriptRuntime.ColorF)val);
+        else if (t == typeof(ScriptRuntime.Color32))
+            Set((ScriptRuntime.Color32)val);
+        else if (t == typeof(BoxedValue))
+            this = (BoxedValue)val;
+        else
+            SetWithObjectType(val);
+    }
+
     //供lua或防止隐式转换出问题时使用
     public void SetBool(bool v)
     {
@@ -1143,29 +1580,13 @@ public struct BoxedValue
     {
         Set(v);
     }
-    public void SetObject(object v)
-    {
-        Set(v);
-    }
-    public bool GetBool()
-    {
-        return Get<bool>();
-    }
     public long GetInteger()
     {
-        return Get<long>();
+        return GetLong();
     }
     public double GetNumber()
     {
-        return Get<double>();
-    }
-    public string GetString()
-    {
-        return Get<string>();
-    }
-    public object GetObject()
-    {
-        return Get<object>();
+        return GetNumber();
     }
 
     public void CopyFrom(BoxedValue other)
@@ -1285,386 +1706,7 @@ public struct BoxedValue
         }
         return string.Empty;
     }
-
-    private void Set<T>(Type t, T v)
-    {
-        if (typeof(T) == typeof(object)) {
-
-            if (t == typeof(BoxedValue)) {
-                var cv = (BoxedValue)(object)v;
-                CopyFrom(cv);
-            }
-            else if (t == typeof(bool)) {
-                var cv = (bool)(object)v;
-                Type = c_BoolType;
-                Union.BoolVal = cv;
-            }
-            else if (t == typeof(char)) {
-                var cv = (char)(object)v;
-                Type = c_CharType;
-                Union.CharVal = cv;
-            }
-            else if (t == typeof(sbyte)) {
-                var cv = (sbyte)(object)v;
-                Type = c_SByteType;
-                Union.SByteVal = cv;
-            }
-            else if (t == typeof(short)) {
-                var cv = (short)(object)v;
-                Type = c_ShortType;
-                Union.ShortVal = cv;
-            }
-            else if (t == typeof(int)) {
-                var cv = (int)(object)v;
-                Type = c_IntType;
-                Union.IntVal = cv;
-            }
-            else if (t == typeof(long)) {
-                var cv = (long)(object)v;
-                Type = c_LongType;
-                Union.LongVal = cv;
-            }
-            else if (t == typeof(byte)) {
-                var cv = (byte)(object)v;
-                Type = c_ByteType;
-                Union.ByteVal = cv;
-            }
-            else if (t == typeof(ushort)) {
-                var cv = (ushort)(object)v;
-                Type = c_UShortType;
-                Union.UShortVal = cv;
-            }
-            else if (t == typeof(uint)) {
-                var cv = (uint)(object)v;
-                Type = c_UIntType;
-                Union.UIntVal = cv;
-            }
-            else if (t == typeof(ulong)) {
-                var cv = (ulong)(object)v;
-                Type = c_ULongType;
-                Union.ULongVal = cv;
-            }
-            else if (t == typeof(float)) {
-                var cv = (float)(object)v;
-                Type = c_FloatType;
-                Union.FloatVal = cv;
-            }
-            else if (t == typeof(double)) {
-                var cv = (double)(object)v;
-                Type = c_DoubleType;
-                Union.DoubleVal = cv;
-            }
-            else if (t == typeof(decimal)) {
-                var cv = (decimal)(object)v;
-                Type = c_DecimalType;
-                Union.DecimalVal = cv;
-            }
-            else if (t == typeof(ScriptRuntime.Vector2)) {
-                var cv = (ScriptRuntime.Vector2)(object)v;
-                Type = c_Vector2Type;
-                Union.Vector2Val = cv;
-            }
-            else if (t == typeof(ScriptRuntime.Vector3)) {
-                var cv = (ScriptRuntime.Vector3)(object)v;
-                Type = c_Vector3Type;
-                Union.Vector3Val = cv;
-            }
-            else if (t == typeof(ScriptRuntime.Vector4)) {
-                var cv = (ScriptRuntime.Vector4)(object)v;
-                Type = c_Vector4Type;
-                Union.Vector4Val = cv;
-            }
-            else if (t == typeof(ScriptRuntime.Quaternion)) {
-                var cv = (ScriptRuntime.Quaternion)(object)v;
-                Type = c_QuaternionType;
-                Union.QuaternionVal = cv;
-            }
-            else if (t == typeof(ScriptRuntime.ColorF)) {
-                var cv = (ScriptRuntime.ColorF)(object)v;
-                Type = c_ColorType;
-                Union.ColorVal = cv;
-            }
-            else if (t == typeof(ScriptRuntime.Color32)) {
-                var cv = (ScriptRuntime.Color32)(object)v;
-                Type = c_Color32Type;
-                Union.Color32Val = cv;
-            }
-            else if (t == typeof(string)) {
-                var cv = (string)(object)v;
-                Type = c_StringType;
-                ObjectVal = cv;
-            }
-            else {
-                object vObj = v;
-                Type = c_ObjectType;
-                ObjectVal = vObj;
-            }
-        }
-        else {
-            if (t == typeof(BoxedValue)) {
-                var cv = GenericValueConverter.ToBoxedValue(v);
-                CopyFrom(cv);
-            }
-            else if (t == typeof(bool)) {
-                var cv = GenericValueConverter.ToBool(v);
-                Type = c_BoolType;
-                Union.BoolVal = cv;
-            }
-            else if (t == typeof(char)) {
-                var cv = GenericValueConverter.ToChar(v);
-                Type = c_CharType;
-                Union.CharVal = cv;
-            }
-            else if (t == typeof(sbyte)) {
-                var cv = GenericValueConverter.ToSByte(v);
-                Type = c_SByteType;
-                Union.SByteVal = cv;
-            }
-            else if (t == typeof(short)) {
-                var cv = GenericValueConverter.ToShort(v);
-                Type = c_ShortType;
-                Union.ShortVal = cv;
-            }
-            else if (t == typeof(int)) {
-                var cv = GenericValueConverter.ToInt(v);
-                Type = c_IntType;
-                Union.IntVal = cv;
-            }
-            else if (t == typeof(long)) {
-                var cv = GenericValueConverter.ToLong(v);
-                Type = c_LongType;
-                Union.LongVal = cv;
-            }
-            else if (t == typeof(byte)) {
-                var cv = GenericValueConverter.ToByte(v);
-                Type = c_ByteType;
-                Union.ByteVal = cv;
-            }
-            else if (t == typeof(ushort)) {
-                var cv = GenericValueConverter.ToUShort(v);
-                Type = c_UShortType;
-                Union.UShortVal = cv;
-            }
-            else if (t == typeof(uint)) {
-                var cv = GenericValueConverter.ToUInt(v);
-                Type = c_UIntType;
-                Union.UIntVal = cv;
-            }
-            else if (t == typeof(ulong)) {
-                var cv = GenericValueConverter.ToULong(v);
-                Type = c_ULongType;
-                Union.ULongVal = cv;
-            }
-            else if (t == typeof(float)) {
-                var cv = GenericValueConverter.ToFloat(v);
-                Type = c_FloatType;
-                Union.FloatVal = cv;
-            }
-            else if (t == typeof(double)) {
-                var cv = GenericValueConverter.ToDouble(v);
-                Type = c_DoubleType;
-                Union.DoubleVal = cv;
-            }
-            else if (t == typeof(decimal)) {
-                var cv = GenericValueConverter.ToDecimal(v);
-                Type = c_DecimalType;
-                Union.DecimalVal = cv;
-            }
-            else if (t == typeof(ScriptRuntime.Vector2)) {
-                var cv = GenericValueConverter.ToVector2(v);
-                Type = c_Vector2Type;
-                Union.Vector2Val = cv;
-            }
-            else if (t == typeof(ScriptRuntime.Vector3)) {
-                var cv = GenericValueConverter.ToVector3(v);
-                Type = c_Vector3Type;
-                Union.Vector3Val = cv;
-            }
-            else if (t == typeof(ScriptRuntime.Vector4)) {
-                var cv = GenericValueConverter.ToVector4(v);
-                Type = c_Vector4Type;
-                Union.Vector4Val = cv;
-            }
-            else if (t == typeof(ScriptRuntime.Quaternion)) {
-                var cv = GenericValueConverter.ToQuaternion(v);
-                Type = c_QuaternionType;
-                Union.QuaternionVal = cv;
-            }
-            else if (t == typeof(ScriptRuntime.ColorF)) {
-                var cv = GenericValueConverter.ToColor(v);
-                Type = c_ColorType;
-                Union.ColorVal = cv;
-            }
-            else if (t == typeof(ScriptRuntime.Color32)) {
-                var cv = GenericValueConverter.ToColor32(v);
-                Type = c_Color32Type;
-                Union.Color32Val = cv;
-            }
-            else if (t == typeof(string)) {
-                var cv = GenericValueConverter.ToString(v);
-                Type = c_StringType;
-                ObjectVal = cv;
-            }
-            else {
-                object vObj = v;
-                Type = c_ObjectType;
-                ObjectVal = vObj;
-            }
-        }
-    }
-    private T Get<T>(Type t)
-    {
-        if (typeof(T) == typeof(object)) {
-            var obj = ToObject();
-            return GenericValueConverter.CastTo<T>(obj);
-        }
-        else if (Type == c_StringType) {
-            if (t == typeof(BoxedValue)) {
-                return GenericValueConverter.From<T>(this);
-            }
-            else if (t == typeof(string)) {
-                return GenericValueConverter.From<T>(StringVal);
-            }
-            else if (t == typeof(object)) {
-                return GenericValueConverter.From<T>(ObjectVal);
-            }
-            else {
-                return GenericValueConverter.CastTo<T>(ObjectVal);
-            }
-        }
-        else {
-            if (t == typeof(BoxedValue)) {
-                return GenericValueConverter.From<T>(this);
-            }
-            else if (t == typeof(bool) && Type == c_BoolType) {
-                return GenericValueConverter.From<T>(Union.BoolVal);
-            }
-            else if (t == typeof(char) && Type == c_CharType) {
-                return GenericValueConverter.From<T>(Union.CharVal);
-            }
-            else if (t == typeof(sbyte) && Type == c_SByteType) {
-                return GenericValueConverter.From<T>(Union.SByteVal);
-            }
-            else if (t == typeof(short) && Type == c_ShortType) {
-                return GenericValueConverter.From<T>(Union.ShortVal);
-            }
-            else if (t == typeof(int) && Type == c_IntType) {
-                return GenericValueConverter.From<T>(Union.IntVal);
-            }
-            else if (t == typeof(long) && Type == c_LongType) {
-                return GenericValueConverter.From<T>(Union.LongVal);
-            }
-            else if (t == typeof(byte) && Type == c_ByteType) {
-                return GenericValueConverter.From<T>(Union.ByteVal);
-            }
-            else if (t == typeof(ushort) && Type == c_UShortType) {
-                return GenericValueConverter.From<T>(Union.UShortVal);
-            }
-            else if (t == typeof(uint) && Type == c_UIntType) {
-                return GenericValueConverter.From<T>(Union.UIntVal);
-            }
-            else if (t == typeof(ulong) && Type == c_ULongType) {
-                return GenericValueConverter.From<T>(Union.ULongVal);
-            }
-            else if (t == typeof(float) && Type == c_FloatType) {
-                return GenericValueConverter.From<T>(Union.FloatVal);
-            }
-            else if (t == typeof(double) && Type == c_DoubleType) {
-                return GenericValueConverter.From<T>(Union.DoubleVal);
-            }
-            else if (t == typeof(decimal) && Type == c_DecimalType) {
-                return GenericValueConverter.From<T>(Union.DecimalVal);
-            }
-            else if (t == typeof(ScriptRuntime.Vector2) && Type == c_Vector2Type) {
-                return GenericValueConverter.From<T>(Union.Vector2Val);
-            }
-            else if (t == typeof(ScriptRuntime.Vector3) && Type == c_Vector3Type) {
-                return GenericValueConverter.From<T>(Union.Vector3Val);
-            }
-            else if (t == typeof(ScriptRuntime.Vector4) && Type == c_Vector4Type) {
-                return GenericValueConverter.From<T>(Union.Vector4Val);
-            }
-            else if (t == typeof(ScriptRuntime.Quaternion) && Type == c_QuaternionType) {
-                return GenericValueConverter.From<T>(Union.QuaternionVal);
-            }
-            else if (t == typeof(ScriptRuntime.ColorF) && Type == c_ColorType) {
-                return GenericValueConverter.From<T>(Union.ColorVal);
-            }
-            else if (t == typeof(ScriptRuntime.Color32) && Type == c_Color32Type) {
-                return GenericValueConverter.From<T>(Union.Color32Val);
-            }
-            else if (t == typeof(bool)) {
-                long v = ToLong();
-                return GenericValueConverter.From<T>(v != 0);
-            }
-            else if (t == typeof(char)) {
-                long v = ToLong();
-                return GenericValueConverter.From<T>((char)v);
-            }
-            else if (t == typeof(sbyte)) {
-                long v = ToLong();
-                return GenericValueConverter.From<T>((sbyte)v);
-            }
-            else if (t == typeof(short)) {
-                long v = ToLong();
-                return GenericValueConverter.From<T>((short)v);
-            }
-            else if (t == typeof(int)) {
-                long v = ToLong();
-                return GenericValueConverter.From<T>((int)v);
-            }
-            else if (t == typeof(long)) {
-                long v = ToLong();
-                return GenericValueConverter.From<T>(v);
-            }
-            else if (t == typeof(byte)) {
-                long v = ToLong();
-                return GenericValueConverter.From<T>((byte)v);
-            }
-            else if (t == typeof(ushort)) {
-                long v = ToLong();
-                return GenericValueConverter.From<T>((ushort)v);
-            }
-            else if (t == typeof(uint)) {
-                long v = ToLong();
-                return GenericValueConverter.From<T>((uint)v);
-            }
-            else if (t == typeof(ulong)) {
-                long v = ToLong();
-                return GenericValueConverter.From<T>((ulong)v);
-            }
-            else if (t == typeof(float)) {
-                double v = ToDouble();
-                return GenericValueConverter.From<T>((float)v);
-            }
-            else if (t == typeof(double)) {
-                double v = ToDouble();
-                return GenericValueConverter.From<T>(v);
-            }
-            else if (t == typeof(decimal)) {
-                double v = ToDouble();
-                return GenericValueConverter.From<T>((decimal)v);
-            }
-            else if (t == typeof(string) && Type == c_StringType) {
-                return GenericValueConverter.From<T>(StringVal);
-            }
-            else if (t == typeof(object) && Type == c_ObjectType) {
-                return GenericValueConverter.From<T>(ObjectVal);
-            }
-            else if (t == typeof(string)) {
-                var str = ToString();
-                return GenericValueConverter.From<T>(str);
-            }
-            else if (t == typeof(object)) {
-                var obj = ToObject();
-                return GenericValueConverter.From<T>(obj);
-            }
-            else {
-                var obj = ToObject();
-                return GenericValueConverter.CastTo<T>(obj);
-            }
-        }
-    }
+    
     private object ToObject()
     {
         switch (Type) {
@@ -1714,17 +1756,250 @@ public struct BoxedValue
     }
     private bool ToBool()
     {
-        if (Type == c_BoolType)
-            return Union.BoolVal;
-        else
-            return ToLong() != 0;
+        switch (Type) {
+            case c_StringType:
+                if (null != StringVal) {
+                    long v;
+                    long.TryParse(StringVal, out v);
+                    return v != 0;
+                }
+                else {
+                    return false;
+                }
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    if (ObjectVal is bool) {
+                        return (bool)ObjectVal;
+                    }
+                    else {
+                        long v = GenericValueConverter.CastTo<long>(ObjectVal);
+                        return v != 0;
+                    }
+                }
+                else {
+                    return false;
+                }
+            case c_BoolType:
+                return Union.BoolVal;
+            case c_CharType:
+                return Union.CharVal != 0;
+            case c_SByteType:
+                return Union.SByteVal != 0;
+            case c_ShortType:
+                return Union.ShortVal != 0;
+            case c_IntType:
+                return Union.IntVal != 0;
+            case c_LongType:
+                return Union.LongVal != 0;
+            case c_ByteType:
+                return Union.ByteVal != 0;
+            case c_UShortType:
+                return Union.UShortVal != 0;
+            case c_UIntType:
+                return Union.UIntVal != 0;
+            case c_ULongType:
+                return Union.ULongVal != 0;
+            case c_FloatType:
+                return Union.FloatVal != 0;
+            case c_DoubleType:
+                return Union.DoubleVal != 0;
+            case c_DecimalType:
+                return Union.DecimalVal != 0;
+            case c_Vector2Type:
+                return Union.Vector2Val != ScriptRuntime.Vector2.Zero;
+            case c_Vector3Type:
+                return Union.Vector3Val != ScriptRuntime.Vector3.Zero;
+            case c_Vector4Type:
+                return Union.Vector4Val != ScriptRuntime.Vector4.Zero;
+            case c_QuaternionType:
+                return Union.QuaternionVal != ScriptRuntime.Quaternion.Identity;
+            case c_ColorType:
+                return Union.ColorVal != ScriptRuntime.Color32.Black.ToColorF();
+            case c_Color32Type:
+                return Union.Color32Val != ScriptRuntime.Color32.Black;
+        }
+        return false;
     }
     private char ToChar()
     {
-        if (Type == c_CharType)
-            return Union.CharVal;
-        else
-            return (char)(ulong)ToLong();
+        switch (Type) {
+            case c_StringType:
+                if (null != StringVal && StringVal.Length > 0) {
+                    return StringVal[0];
+                }
+                else {
+                    return '\0';
+                }
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    if (ObjectVal is char) {
+                        return (char)ObjectVal;
+                    }
+                    else {
+                        char v = GenericValueConverter.CastTo<char>(ObjectVal);
+                        return v;
+                    }
+                }
+                else {
+                    return '\0';
+                }
+            case c_BoolType:
+                return Union.BoolVal ? '\x01' : '\0';
+            case c_CharType:
+                return Union.CharVal;
+            case c_SByteType:
+                return (char)Union.SByteVal;
+            case c_ShortType:
+                return (char)Union.ShortVal;
+            case c_IntType:
+                return (char)Union.IntVal;
+            case c_LongType:
+                return (char)Union.LongVal;
+            case c_ByteType:
+                return (char)Union.ByteVal;
+            case c_UShortType:
+                return (char)Union.UShortVal;
+            case c_UIntType:
+                return (char)Union.UIntVal;
+            case c_ULongType:
+                return (char)Union.ULongVal;
+            case c_FloatType:
+                return (char)(int)Union.FloatVal;
+            case c_DoubleType:
+                return (char)(long)Union.DoubleVal;
+            case c_DecimalType:
+                return (char)(int)Union.DecimalVal;
+        }
+        return '\0';
+    }
+    private sbyte ToSByte()
+    {
+        sbyte v = 0;
+        switch (Type) {
+            case c_BoolType:
+                return (sbyte)(Union.BoolVal ? 1 : 0);
+            case c_CharType:
+                return (sbyte)Union.CharVal;
+            case c_SByteType:
+                return Union.SByteVal;
+            case c_ShortType:
+                return (sbyte)Union.ShortVal;
+            case c_IntType:
+                return (sbyte)Union.IntVal;
+            case c_LongType:
+                return (sbyte)Union.LongVal;
+            case c_ByteType:
+                return (sbyte)Union.ByteVal;
+            case c_UShortType:
+                return (sbyte)Union.UShortVal;
+            case c_UIntType:
+                return (sbyte)Union.UIntVal;
+            case c_ULongType:
+                return (sbyte)Union.ULongVal;
+            case c_FloatType:
+                return (sbyte)Union.FloatVal;
+            case c_DoubleType:
+                return (sbyte)Union.DoubleVal;
+            case c_DecimalType:
+                return (sbyte)Union.DecimalVal;
+            case c_StringType:
+                if (null != StringVal) {
+                    sbyte.TryParse(StringVal, out v);
+                }
+                return v;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<sbyte>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private short ToShort()
+    {
+        short v = 0;
+        switch (Type) {
+            case c_BoolType:
+                return (short)(Union.BoolVal ? 1 : 0);
+            case c_CharType:
+                return (short)Union.CharVal;
+            case c_SByteType:
+                return Union.SByteVal;
+            case c_ShortType:
+                return Union.ShortVal;
+            case c_IntType:
+                return (short)Union.IntVal;
+            case c_LongType:
+                return (short)Union.LongVal;
+            case c_ByteType:
+                return Union.ByteVal;
+            case c_UShortType:
+                return (short)Union.UShortVal;
+            case c_UIntType:
+                return (short)Union.UIntVal;
+            case c_ULongType:
+                return (short)Union.ULongVal;
+            case c_FloatType:
+                return (short)Union.FloatVal;
+            case c_DoubleType:
+                return (short)Union.DoubleVal;
+            case c_DecimalType:
+                return (short)Union.DecimalVal;
+            case c_StringType:
+                if (null != StringVal) {
+                    short.TryParse(StringVal, out v);
+                }
+                return v;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<short>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private int ToInt()
+    {
+        int v = 0;
+        switch (Type) {
+            case c_BoolType:
+                return Union.BoolVal ? 1 : 0;
+            case c_CharType:
+                return Union.CharVal;
+            case c_SByteType:
+                return Union.SByteVal;
+            case c_ShortType:
+                return Union.ShortVal;
+            case c_IntType:
+                return Union.IntVal;
+            case c_LongType:
+                return (int)Union.LongVal;
+            case c_ByteType:
+                return Union.ByteVal;
+            case c_UShortType:
+                return Union.UShortVal;
+            case c_UIntType:
+                return (int)Union.UIntVal;
+            case c_ULongType:
+                return (int)Union.ULongVal;
+            case c_FloatType:
+                return (int)Union.FloatVal;
+            case c_DoubleType:
+                return (int)Union.DoubleVal;
+            case c_DecimalType:
+                return (int)Union.DecimalVal;
+            case c_StringType:
+                if (null != StringVal) {
+                    int.TryParse(StringVal, out v);
+                }
+                return v;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<int>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
     }
     private long ToLong()
     {
@@ -1764,6 +2039,221 @@ public struct BoxedValue
             case c_ObjectType:
                 if (null != ObjectVal) {
                     v = GenericValueConverter.CastTo<long>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private byte ToByte()
+    {
+        byte v = 0;
+        switch (Type) {
+            case c_BoolType:
+                return (byte)(Union.BoolVal ? 1 : 0);
+            case c_CharType:
+                return (byte)Union.CharVal;
+            case c_SByteType:
+                return (byte)Union.SByteVal;
+            case c_ShortType:
+                return (byte)Union.ShortVal;
+            case c_IntType:
+                return (byte)Union.IntVal;
+            case c_LongType:
+                return (byte)Union.LongVal;
+            case c_ByteType:
+                return Union.ByteVal;
+            case c_UShortType:
+                return (byte)Union.UShortVal;
+            case c_UIntType:
+                return (byte)Union.UIntVal;
+            case c_ULongType:
+                return (byte)Union.ULongVal;
+            case c_FloatType:
+                return (byte)Union.FloatVal;
+            case c_DoubleType:
+                return (byte)Union.DoubleVal;
+            case c_DecimalType:
+                return (byte)Union.DecimalVal;
+            case c_StringType:
+                if (null != StringVal) {
+                    byte.TryParse(StringVal, out v);
+                }
+                return v;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<byte>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private ushort ToUShort()
+    {
+        ushort v = 0;
+        switch (Type) {
+            case c_BoolType:
+                return (ushort)(Union.BoolVal ? 1 : 0);
+            case c_CharType:
+                return Union.CharVal;
+            case c_SByteType:
+                return (ushort)Union.SByteVal;
+            case c_ShortType:
+                return (ushort)Union.ShortVal;
+            case c_IntType:
+                return (ushort)Union.IntVal;
+            case c_LongType:
+                return (ushort)Union.LongVal;
+            case c_ByteType:
+                return Union.ByteVal;
+            case c_UShortType:
+                return Union.UShortVal;
+            case c_UIntType:
+                return (ushort)Union.UIntVal;
+            case c_ULongType:
+                return (ushort)Union.ULongVal;
+            case c_FloatType:
+                return (ushort)Union.FloatVal;
+            case c_DoubleType:
+                return (ushort)Union.DoubleVal;
+            case c_DecimalType:
+                return (ushort)Union.DecimalVal;
+            case c_StringType:
+                if (null != StringVal) {
+                    ushort.TryParse(StringVal, out v);
+                }
+                return v;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<ushort>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private uint ToUInt()
+    {
+        uint v = 0;
+        switch (Type) {
+            case c_BoolType:
+                return (uint)(Union.BoolVal ? 1 : 0);
+            case c_CharType:
+                return Union.CharVal;
+            case c_SByteType:
+                return (uint)Union.SByteVal;
+            case c_ShortType:
+                return (uint)Union.ShortVal;
+            case c_IntType:
+                return (uint)Union.IntVal;
+            case c_LongType:
+                return (uint)Union.LongVal;
+            case c_ByteType:
+                return Union.ByteVal;
+            case c_UShortType:
+                return Union.UShortVal;
+            case c_UIntType:
+                return Union.UIntVal;
+            case c_ULongType:
+                return (uint)Union.ULongVal;
+            case c_FloatType:
+                return (uint)Union.FloatVal;
+            case c_DoubleType:
+                return (uint)Union.DoubleVal;
+            case c_DecimalType:
+                return (uint)Union.DecimalVal;
+            case c_StringType:
+                if (null != StringVal) {
+                    uint.TryParse(StringVal, out v);
+                }
+                return v;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<uint>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private ulong ToULong()
+    {
+        ulong v = 0;
+        switch (Type) {
+            case c_BoolType:
+                return (ulong)(Union.BoolVal ? 1 : 0);
+            case c_CharType:
+                return (ulong)Union.CharVal;
+            case c_SByteType:
+                return (ulong)Union.SByteVal;
+            case c_ShortType:
+                return (ulong)Union.ShortVal;
+            case c_IntType:
+                return (ulong)Union.IntVal;
+            case c_LongType:
+                return (ulong)Union.LongVal;
+            case c_ByteType:
+                return Union.ByteVal;
+            case c_UShortType:
+                return Union.UShortVal;
+            case c_UIntType:
+                return Union.UIntVal;
+            case c_ULongType:
+                return Union.ULongVal;
+            case c_FloatType:
+                return (ulong)Union.FloatVal;
+            case c_DoubleType:
+                return (ulong)Union.DoubleVal;
+            case c_DecimalType:
+                return (ulong)Union.DecimalVal;
+            case c_StringType:
+                if (null != StringVal) {
+                    ulong.TryParse(StringVal, out v);
+                }
+                return v;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<ulong>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private float ToFloat()
+    {
+        float v = 0;
+        switch (Type) {
+            case c_BoolType:
+                return Union.BoolVal ? 1 : 0;
+            case c_CharType:
+                return Union.CharVal;
+            case c_SByteType:
+                return Union.SByteVal;
+            case c_ShortType:
+                return Union.ShortVal;
+            case c_IntType:
+                return Union.IntVal;
+            case c_LongType:
+                return Union.LongVal;
+            case c_ByteType:
+                return Union.ByteVal;
+            case c_UShortType:
+                return Union.UShortVal;
+            case c_UIntType:
+                return Union.UIntVal;
+            case c_ULongType:
+                return Union.ULongVal;
+            case c_FloatType:
+                return Union.FloatVal;
+            case c_DoubleType:
+                return (float)Union.DoubleVal;
+            case c_DecimalType:
+                return (float)Union.DecimalVal;
+            case c_StringType:
+                if (null != StringVal) {
+                    float.TryParse(StringVal, out v);
+                }
+                return v;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<float>(ObjectVal);
                 }
                 return v;
         }
@@ -1812,17 +2302,262 @@ public struct BoxedValue
         }
         return v;
     }
+    private decimal ToDecimal()
+    {
+        decimal v = 0;
+        switch (Type) {
+            case c_BoolType:
+                return Union.BoolVal ? 1 : 0;
+            case c_CharType:
+                return Union.CharVal;
+            case c_SByteType:
+                return Union.SByteVal;
+            case c_ShortType:
+                return Union.ShortVal;
+            case c_IntType:
+                return Union.IntVal;
+            case c_LongType:
+                return Union.LongVal;
+            case c_ByteType:
+                return Union.ByteVal;
+            case c_UShortType:
+                return Union.UShortVal;
+            case c_UIntType:
+                return Union.UIntVal;
+            case c_ULongType:
+                return Union.ULongVal;
+            case c_FloatType:
+                return (decimal)Union.FloatVal;
+            case c_DoubleType:
+                return (decimal)Union.DoubleVal;
+            case c_DecimalType:
+                return Union.DecimalVal;
+            case c_StringType:
+                if (null != StringVal) {
+                    decimal.TryParse(StringVal, out v);
+                }
+                return v;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<decimal>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private ScriptRuntime.Vector2 ToVector2()
+    {
+        ScriptRuntime.Vector2 v = ScriptRuntime.Vector2.Zero;
+        switch (Type) {
+            case c_Vector2Type:
+                return Union.Vector2Val;
+            case c_Vector3Type:
+                return new ScriptRuntime.Vector2(Union.Vector3Val.X, Union.Vector3Val.Y);
+            case c_Vector4Type:
+                return new ScriptRuntime.Vector2(Union.Vector4Val.X, Union.Vector4Val.Y);
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<ScriptRuntime.Vector2>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private ScriptRuntime.Vector3 ToVector3()
+    {
+        ScriptRuntime.Vector3 v = ScriptRuntime.Vector3.Zero;
+        switch (Type) {
+            case c_Vector2Type:
+                return new ScriptRuntime.Vector3(Union.Vector2Val, 0);
+            case c_Vector3Type:
+                return Union.Vector3Val;
+            case c_Vector4Type:
+                return new ScriptRuntime.Vector3(Union.Vector4Val.X, Union.Vector4Val.Y, Union.Vector4Val.Z);
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<ScriptRuntime.Vector3>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private ScriptRuntime.Vector4 ToVector4()
+    {
+        ScriptRuntime.Vector4 v = ScriptRuntime.Vector4.Zero;
+        switch (Type) {
+            case c_Vector2Type:
+                return new ScriptRuntime.Vector4(Union.Vector2Val, 0, 0);
+            case c_Vector3Type:
+                return new ScriptRuntime.Vector4(Union.Vector3Val, 0);
+            case c_Vector4Type:
+                return Union.Vector4Val;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<Vector4>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private ScriptRuntime.Quaternion ToQuaternion()
+    {
+        ScriptRuntime.Quaternion v = ScriptRuntime.Quaternion.Identity;
+        switch (Type) {
+            case c_QuaternionType:
+                return Union.QuaternionVal;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<ScriptRuntime.Quaternion>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private ScriptRuntime.ColorF ToColor()
+    {
+        ScriptRuntime.ColorF v = ScriptRuntime.Color32.Black.ToColorF();
+        switch (Type) {
+            case c_ColorType:
+                return Union.ColorVal;
+            case c_Color32Type:
+                return Union.Color32Val.ToColorF();
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<ScriptRuntime.ColorF>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
+    private ScriptRuntime.Color32 ToColor32()
+    {
+        ScriptRuntime.Color32 v = ScriptRuntime.Color32.Black;
+        switch (Type) {
+            case c_ColorType:
+                return Union.ColorVal.ToColor32();
+            case c_Color32Type:
+                return Union.Color32Val;
+            case c_ObjectType:
+                if (null != ObjectVal) {
+                    v = GenericValueConverter.CastTo<ScriptRuntime.Color32>(ObjectVal);
+                }
+                return v;
+        }
+        return v;
+    }
 
-    public static BoxedValue From<T>(T v)
+    public static BoxedValue From(bool v)
     {
         BoxedValue bv = new BoxedValue();
         bv.Set(v);
         return bv;
     }
-    public static BoxedValue From(Type t, object o)
+    public static BoxedValue From(sbyte v)
     {
         BoxedValue bv = new BoxedValue();
-        bv.Set(o);
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(short v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(int v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(long v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(byte v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(ushort v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(uint v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(ulong v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(float v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(double v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(decimal v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(ScriptRuntime.Vector2 v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(ScriptRuntime.Vector3 v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(ScriptRuntime.Vector4 v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(ScriptRuntime.Quaternion v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(ScriptRuntime.ColorF v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(ScriptRuntime.Color32 v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
+        return bv;
+    }
+    public static BoxedValue From(string v)
+    {
+        BoxedValue bv = new BoxedValue();
+        bv.Set(v);
         return bv;
     }
     //供lua或防止隐式转换出问题时使用
@@ -1847,7 +2582,7 @@ public struct BoxedValue
     public static BoxedValue FromObject(object v)
     {
         BoxedValue bv = new BoxedValue();
-        bv.Set(v);
+        bv.SetObject(v);
         return bv;
     }
 

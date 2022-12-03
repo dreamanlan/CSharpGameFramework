@@ -32,7 +32,7 @@ namespace StorySystem.CommonCommands
             if (!string.IsNullOrEmpty(format) && m_FormatArgs.Count > 0) {
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_FormatArgs.Count; i++) {
-                    arglist.Add(m_FormatArgs[i].Value.Get<object>());
+                    arglist.Add(m_FormatArgs[i].Value.GetObject());
                 }
                 object[] args = arglist.ToArray();
                 LogSystem.Warn(format, args);

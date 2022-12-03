@@ -29,7 +29,7 @@ public class AiKeepAway : ISimpleStoryCommandPlugin
 
             m_ObjId = args[0];
             m_SkillInfo = args[1].ObjectVal as SkillInfo;
-            m_Ratio = args[2].Get<float>();
+            m_Ratio = args[2].GetFloat();
         }
         EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);
         if (null != npc && !npc.IsUnderControl()) {

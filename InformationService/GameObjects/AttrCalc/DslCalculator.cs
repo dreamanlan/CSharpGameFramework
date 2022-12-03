@@ -1032,8 +1032,8 @@ namespace GameFramework.AttrCalc
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            Dsl.FunctionData funcData1 = statementData.First;
-            Dsl.FunctionData funcData2 = statementData.Second;
+            Dsl.FunctionData funcData1 = statementData.First.AsFunction;
+            Dsl.FunctionData funcData2 = statementData.Second.AsFunction;
             if (funcData2.GetId() == ":") {
                 Dsl.ISyntaxComponent cond = funcData1.LowerOrderFunction.GetParam(0);
                 Dsl.ISyntaxComponent op1 = funcData1.GetParam(0);
@@ -1145,7 +1145,8 @@ namespace GameFramework.AttrCalc
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            foreach (var fData in statementData.Functions) {
+            foreach (var f in statementData.Functions) {
+                var fData = f.AsFunction;
                 if (fData.IsHighOrder && (fData.GetId() == "if" || fData.GetId() == "elseif")) {
                     IfExp.Clause item = new IfExp.Clause();
                     if (fData.LowerOrderFunction.GetParamNum() > 0) {
@@ -1464,7 +1465,7 @@ namespace GameFramework.AttrCalc
             var func = info as Dsl.FunctionData;
             var stData = info as Dsl.StatementData;
             if(null==func && null != stData) {
-                func = stData.First;
+                func = stData.First.AsFunction;
             }
             if (null == func || !func.IsHighOrder)
                 return;

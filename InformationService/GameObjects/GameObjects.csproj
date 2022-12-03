@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>GameFramework</RootNamespace>
     <AssemblyName>GameObjects</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

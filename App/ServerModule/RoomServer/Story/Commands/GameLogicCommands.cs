@@ -62,7 +62,7 @@ namespace GameFramework.Story.Commands
             Scene scene = instance.Context as Scene;
             if (null != scene) {
                 string name = m_AttrName.Value;
-                object value = m_Value.Value.Get<object>();
+                object value = m_Value.Value.GetObject();
                 scene.SceneContext.BlackBoard.SetVariable(name, value);
             }
             return false;
@@ -160,8 +160,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -259,8 +259,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -315,7 +315,7 @@ namespace GameFramework.Story.Commands
             if (null != scene) {
                 var obj = m_Arg.Value;
                 if (obj.IsInteger) {
-                    int unitId = obj.Get<int>();
+                    int unitId = obj.GetInt();
                     EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
                     if (null != entity) {
                         Vector3 pos = entity.GetMovementStateInfo().GetPosition3D();
@@ -348,7 +348,7 @@ namespace GameFramework.Story.Commands
                         }
                     }
                 } else {
-                    Vector3 pos = obj.Get<Vector3>();
+                    Vector3 pos = obj.GetVector3();
                     Msg_RC_SendGfxMessage msg = new GameFrameworkMessage.Msg_RC_SendGfxMessage();
                     msg.name = "GameRoot";
                     msg.msg = "CameraLook";
@@ -393,8 +393,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -472,8 +472,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -554,8 +554,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -693,8 +693,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -806,8 +806,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     m_HaveSet = true;
 

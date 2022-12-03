@@ -65,12 +65,12 @@ namespace StorySystem.CommonValues
                             results.Sort((object o1, object o2) => {
                                 BoxedValue r1 = BoxedValue.NullObject;
                                 for (int i = 0; i < m_Args.Count; i++) {
-                                    m_Args[i].Evaluate(instance, handler, BoxedValue.From(o1), args);
+                                    m_Args[i].Evaluate(instance, handler, BoxedValue.FromObject(o1), args);
                                     r1 = m_Args[i].Value;
                                 }
                                 BoxedValue r2 = BoxedValue.NullObject;
                                 for (int i = 0; i < m_Args.Count; i++) {
-                                    m_Args[i].Evaluate(instance, handler, BoxedValue.From(o2), args);
+                                    m_Args[i].Evaluate(instance, handler, BoxedValue.FromObject(o2), args);
                                     r2 = m_Args[i].Value;
                                 }
                                 string rs1 = r1.ToString();
@@ -79,8 +79,8 @@ namespace StorySystem.CommonValues
                                 if (null != rs1 && null != rs2) {
                                     r = rs1.CompareTo(rs2);
                                 } else {
-                                    float rd1 = r1.Get<float>();
-                                    float rd2 = r2.Get<float>();
+                                    float rd1 = r1.GetFloat();
+                                    float rd2 = r2.GetFloat();
                                     r = rd1.CompareTo(rd2);
                                 }
                                 if (desc)
@@ -96,10 +96,10 @@ namespace StorySystem.CommonValues
 
                                 BoxedValue r = BoxedValue.NullObject;
                                 for (int i = 0; i < m_Args.Count; i++) {
-                                    m_Args[i].Evaluate(instance, handler, BoxedValue.From(val), args);
+                                    m_Args[i].Evaluate(instance, handler, BoxedValue.FromObject(val), args);
                                     r = m_Args[i].Value;
                                 }
-                                if (r.Get<int>() != 0) {
+                                if (r.GetInt() != 0) {
                                     results.Add(val);
                                 }
                             }
@@ -110,7 +110,7 @@ namespace StorySystem.CommonValues
                                 m_Args[i].Evaluate(instance, handler, iterator, args);
                                 r = m_Args[i].Value;
                             }
-                            int ct = r.Get<int>();
+                            int ct = r.GetInt();
                             ObjList results = new ObjList();
                             IEnumerator enumer = list.GetEnumerator();
                             while (enumer.MoveNext()) {
@@ -123,7 +123,7 @@ namespace StorySystem.CommonValues
                             v = results;
                         }
                     }
-                    m_Value = BoxedValue.From(v);
+                    m_Value = BoxedValue.FromObject(v);
                 } else {
                     m_Value = BoxedValue.NullObject;
                 }

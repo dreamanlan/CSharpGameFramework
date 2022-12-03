@@ -1,6 +1,0 @@
-story(main)
-{
-  onmessage("start")
-  {
-  };
-};

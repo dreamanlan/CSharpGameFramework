@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 using UnityEditor.UI;
@@ -96,7 +96,7 @@ public sealed class TerrainEditWindow : EditorWindow
                     var dslInfo = info as Dsl.StatementData;
                     if (null == dslInfo)
                         continue;
-                    var func = dslInfo.First;
+                    var func = dslInfo.First.AsFunction;
                     foreach(var comp in func.Params) {
                         var callData = comp as Dsl.FunctionData;
                         string id = callData.GetId();
@@ -279,7 +279,7 @@ internal static class TerrainEditUtility
             }
             var terrain = root.GetComponent<Terrain>();
             var terrainData = terrain.terrainData;
-            var datas = terrainData.GetHeights(0, 0, terrainData.heightmapWidth, terrainData.heightmapHeight);
+            var datas = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
             var alphamaps = terrainData.GetAlphamaps(0, 0, terrainData.alphamapWidth, terrainData.alphamapHeight);
             int alphanum = alphamaps.GetLength(2);
             int[] layers = terrainData.GetSupportedLayers(0, 0, terrainData.detailWidth, terrainData.detailHeight);
@@ -351,7 +351,7 @@ internal static class TerrainEditUtility
                     if (null == info)
                         continue;
                     for (int i = 1; i < info.GetFunctionNum(); ++i) {
-                        calc.LoadDsl(ix.ToString(), info.GetFunction(i));
+                        calc.LoadDsl(ix.ToString(), info.GetFunction(i).AsFunction);
                         ++ix;
                     }
                 }
@@ -361,7 +361,7 @@ internal static class TerrainEditUtility
                     if (null == info)
                         continue;
                     for (int i = 1; i < info.GetFunctionNum(); ++i) {
-                        ProcessWithDsl(info.First, info.GetFunctionId(i), datas, alphamaps, details, calc, ix2.ToString(), ref resetTrees);
+                        ProcessWithDsl(info.First.AsFunction, info.GetFunctionId(i), datas, alphamaps, details, calc, ix2.ToString(), ref resetTrees);
                         ++ix2;
                     }
                 }
@@ -467,7 +467,7 @@ internal static class TerrainEditUtility
                 int yi = y + iy;
                 calc.SetGlobalVariable("height", datas[yi, xi]);
                 calc.Calc(proc, xi, yi);
-                datas[yi, xi] = calc.GetGlobalVariable("height").Get<float>();
+                datas[yi, xi] = calc.GetGlobalVariable("height").GetFloat();
             }
 
             if (DisplayCancelableProgressBar("生成高度与对象数据", ix * h, w * h))
@@ -492,7 +492,7 @@ internal static class TerrainEditUtility
                 if (dx * dx + dy * dy <= r2) {
                     calc.SetGlobalVariable("height", datas[yi, xi]);
                     calc.Calc(proc, xi, yi);
-                    datas[yi, xi] = calc.GetGlobalVariable("height").Get<float>();
+                    datas[yi, xi] = calc.GetGlobalVariable("height").GetFloat();
                 }
             }
 
@@ -568,7 +568,7 @@ internal static class TerrainEditUtility
                     var detail = pair.Value[xi, yi];
                     calc.SetGlobalVariable("detail", detail);
                     calc.Calc(proc, xi, yi, layer);
-                    pair.Value[xi, yi] = calc.GetGlobalVariable("detail").Get<int>();
+                    pair.Value[xi, yi] = calc.GetGlobalVariable("detail").GetInt();
                 }
             }
 
@@ -597,7 +597,7 @@ internal static class TerrainEditUtility
                         var detail = pair.Value[xi, yi];
                         calc.SetGlobalVariable("detail", detail);
                         calc.Calc(proc, xi, yi, layer);
-                        pair.Value[xi, yi] = calc.GetGlobalVariable("detail").Get<int>();
+                        pair.Value[xi, yi] = calc.GetGlobalVariable("detail").GetInt();
                     }
                 }
             }
@@ -620,7 +620,7 @@ internal static class TerrainEditUtility
         AppendLine(sb, "{0}thickness({1});", GetIndent(indent), data.thickness);
         AppendLine(sb, "{0}basemapresolution({1});", GetIndent(indent), data.baseMapResolution);
 
-        AppendLine(sb, "{0}heightmap(size({1}, {2}), resolution({3}), scale{4});", GetIndent(indent), data.heightmapWidth, data.heightmapHeight, data.heightmapResolution, data.heightmapScale);
+        AppendLine(sb, "{0}heightmap(size({1}, {2}), resolution({3}), scale{4});", GetIndent(indent), data.heightmapResolution, data.heightmapResolution, data.heightmapResolution, data.heightmapScale);
 
         AppendLine(sb, "{0}alphamap(size({1}, {2}), resolution({3}), layers({4}))", GetIndent(indent), data.alphamapWidth, data.alphamapHeight, data.alphamapResolution, data.alphamapLayers);
         AppendLine(sb, "{0}{{", GetIndent(indent));
@@ -813,8 +813,8 @@ internal class GetHeightExp : DslExpression.SimpleExpressionBase
         float r = 0;
         if (operands.Count >= 2) {
             var datas = Calculator.GetGlobalVariable("heights").As<float[,]>();
-            var x = operands[0].Get<long>();
-            var y = operands[1].Get<long>();
+            var x = operands[0].GetLong();
+            var y = operands[1].GetLong();
             r = datas[y, x];
         }
         return r;
@@ -827,9 +827,9 @@ internal class GetAlphamapExp : DslExpression.SimpleExpressionBase
         float r = 0;
         if (operands.Count >= 3) {
             var datas = Calculator.GetGlobalVariable("alphamaps").As<float[, ,]>();
-            var x = operands[0].Get<long>();
-            var y = operands[1].Get<long>();
-            var ix = operands[2].Get<long>();
+            var x = operands[0].GetLong();
+            var y = operands[1].GetLong();
+            var ix = operands[2].GetLong();
             r = datas[x, y, ix];
         }
         return r;
@@ -842,7 +842,7 @@ internal class GetAlphaExp : DslExpression.SimpleExpressionBase
         float r = 0;
         if (operands.Count >= 1) {
             var datas = Calculator.GetGlobalVariable("alphas").As<float[]>();
-            var ix = operands[0].Get<long>();
+            var ix = operands[0].GetLong();
             r = datas[ix];
         }
         return r;
@@ -855,8 +855,8 @@ internal class SetAlphaExp : DslExpression.SimpleExpressionBase
         double r = 0;
         if (operands.Count >= 2) {
             var datas = Calculator.GetGlobalVariable("alphas").As<float[]>();
-            var ix = operands[0].Get<long>();
-            var v = operands[1].Get<double>();
+            var ix = operands[0].GetLong();
+            var v = operands[1].GetDouble();
             datas[ix] = (float)v;
             r = v;
         }
@@ -870,9 +870,9 @@ internal class GetDetailExp : DslExpression.SimpleExpressionBase
         int r = 0;
         if (operands.Count >= 3) {
             var datas = Calculator.GetGlobalVariable("details").As<Dictionary<int, int[,]>>();
-            var x = operands[0].Get<long>();
-            var y = operands[1].Get<long>();
-            var ix = operands[2].Get<long>();
+            var x = operands[0].GetLong();
+            var y = operands[1].GetLong();
+            var ix = operands[2].GetLong();
             int[,] v;
             if (datas.TryGetValue((int)ix, out v)) {
                 r = v[x, y];
@@ -889,8 +889,8 @@ internal class SampleRedExp : DslExpression.SimpleExpressionBase
         if (operands.Count >= 3) {
             var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
             var key = operands[0].AsString;
-            var x = operands[1].Get<long>();
-            var y = operands[2].Get<long>();
+            var x = operands[1].GetLong();
+            var y = operands[2].GetLong();
             Color32[,] colors;
             if (datas.TryGetValue(key, out colors)) {
                 if (x >= 0 && x < colors.GetLength(0)) {
@@ -911,8 +911,8 @@ internal class SampleGreenExp : DslExpression.SimpleExpressionBase
         if (operands.Count >= 3) {
             var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
             var key = operands[0].AsString;
-            var x = operands[1].Get<long>();
-            var y = operands[2].Get<long>();
+            var x = operands[1].GetLong();
+            var y = operands[2].GetLong();
             Color32[,] colors;
             if (datas.TryGetValue(key, out colors)) {
                 if (x >= 0 && x < colors.GetLength(0)) {
@@ -933,8 +933,8 @@ internal class SampleBlueExp : DslExpression.SimpleExpressionBase
         if (operands.Count >= 3) {
             var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
             var key = operands[0].AsString;
-            var x = operands[1].Get<long>();
-            var y = operands[2].Get<long>();
+            var x = operands[1].GetLong();
+            var y = operands[2].GetLong();
             Color32[,] colors;
             if (datas.TryGetValue(key, out colors)) {
                 if (x >= 0 && x < colors.GetLength(0)) {
@@ -955,8 +955,8 @@ internal class SampleAlphaExp : DslExpression.SimpleExpressionBase
         if (operands.Count >= 3) {
             var datas = Calculator.GetGlobalVariable("samplers").As<Dictionary<string, Color32[,]>>();
             var key = operands[0].AsString;
-            var x = operands[1].Get<long>();
-            var y = operands[2].Get<long>();
+            var x = operands[1].GetLong();
+            var y = operands[2].GetLong();
             Color32[,] colors;
             if (datas.TryGetValue(key, out colors)) {
                 if (x >= 0 && x < colors.GetLength(0)) {
@@ -977,8 +977,8 @@ internal class GetCacheExp : DslExpression.SimpleExpressionBase
         if (operands.Count >= 3) {
             var datas = Calculator.GetGlobalVariable("caches").As<Dictionary<string, int[,]>>();
             var key = operands[0].AsString;
-            var x = operands[1].Get<long>();
-            var y = operands[2].Get<long>();
+            var x = operands[1].GetLong();
+            var y = operands[2].GetLong();
             int[,] vals;
             if (datas.TryGetValue(key, out vals)) {
                 if (x >= 0 && x < vals.GetLength(0)) {
@@ -999,9 +999,9 @@ internal class SetCacheExp : DslExpression.SimpleExpressionBase
         if (operands.Count >= 4) {
             var datas = Calculator.GetGlobalVariable("caches").As<Dictionary<string, int[,]>>();
             var key = operands[0].AsString;
-            var x = operands[1].Get<long>();
-            var y = operands[2].Get<long>();
-            var v = operands[3].Get<long>();
+            var x = operands[1].GetLong();
+            var y = operands[2].GetLong();
+            var v = operands[3].GetLong();
             int[,] vals;
             if (datas.TryGetValue(key, out vals)) {
                 if (x >= 0 && x < vals.GetLength(0)) {
@@ -1022,15 +1022,15 @@ internal class AddTreeExp : DslExpression.SimpleExpressionBase
         long r = 0;
         if (operands.Count >= 9) {
             var trees = Calculator.GetGlobalVariable("trees").As<List<TreeInstance>>();
-            var ix = operands[0].Get<long>();
-            var x = operands[1].Get<double>();
-            var y = operands[2].Get<double>();
-            var z = operands[3].Get<double>();
-            var rot = operands[4].Get<double>();
-            var w_scale = operands[5].Get<double>();
-            var h_scale = operands[6].Get<double>();
-            var color = operands[7].Get<uint>();
-            var lightmap = operands[8].Get<uint>();
+            var ix = operands[0].GetLong();
+            var x = operands[1].GetDouble();
+            var y = operands[2].GetDouble();
+            var z = operands[3].GetDouble();
+            var rot = operands[4].GetDouble();
+            var w_scale = operands[5].GetDouble();
+            var h_scale = operands[6].GetDouble();
+            var color = operands[7].GetUInt();
+            var lightmap = operands[8].GetUInt();
             if (null != trees) {
                 Color32 c = new Color32((byte)((color & 0xff000000) >> 24), (byte)((color & 0xff0000) >> 16), (byte)((color & 0xff00) >> 8), (byte)(color & 0xff));
                 Color32 l = new Color32((byte)((lightmap & 0xff000000) >> 24), (byte)((lightmap & 0xff0000) >> 16), (byte)((lightmap & 0xff00) >> 8), (byte)(lightmap & 0xff));
@@ -1048,9 +1048,9 @@ internal class AddObjectExp : DslExpression.SimpleExpressionBase
         string r = string.Empty;
         if (operands.Count >= 4) {
             var objects = Calculator.GetGlobalVariable("objects").As<List<ObjectInfo>>();
-            var x = operands[0].Get<float>();
-            var y = operands[1].Get<float>();
-            var z = operands[2].Get<float>();
+            var x = operands[0].GetFloat();
+            var y = operands[1].GetFloat();
+            var z = operands[2].GetFloat();
             var m = operands[3].AsString;
             if (null != objects && objects.Count < TerrainEditUtility.MaxObjectCount) {
                 objects.Add(new ObjectInfo { X = x, Y = y, Z = z, Prefab = m });

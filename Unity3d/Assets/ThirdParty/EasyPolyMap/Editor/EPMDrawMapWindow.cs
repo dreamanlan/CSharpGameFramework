@@ -286,8 +286,8 @@ namespace EasyPolyMap
 			textureHeight = Mathf.RoundToInt(m_creator.g_customData.terrainLength / scale);
 			textureWidth = Mathf.RoundToInt(m_creator.g_customData.terrainWidth / scale);
 
-			originTexture.Resize(textureWidth, textureHeight);
-			showTexture.Resize(textureWidth, textureHeight);
+			originTexture.Reinitialize(textureWidth, textureHeight);
+			showTexture.Reinitialize(textureWidth, textureHeight);
 
 			RedrawBase();
 

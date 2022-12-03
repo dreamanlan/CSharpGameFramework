@@ -50,7 +50,7 @@ namespace GameFramework.Story.Values
                 if (m_UserGuid.HaveValue) {
                     ulong userGuid = m_UserGuid.Value;
                     m_HaveValue = true;
-                    m_Value = BoxedValue.From(UserServer.Instance.UserProcessScheduler.GetUserInfo(userGuid));
+                    m_Value = BoxedValue.FromObject(UserServer.Instance.UserProcessScheduler.GetUserInfo(userGuid));
                 }
             }
         }

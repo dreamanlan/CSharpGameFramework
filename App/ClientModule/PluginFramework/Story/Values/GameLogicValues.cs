@@ -65,7 +65,7 @@ namespace GameFramework.Story.Values
                 m_HaveValue = true;
                 object v;
                 if (PluginFramework.Instance.BlackBoard.TryGetVariable(name, out v)) {
-                    m_Value = BoxedValue.From(v);
+                    m_Value = BoxedValue.FromObject(v);
                 }
                 else {
                     if (m_ParamNum > 1) {
@@ -148,7 +148,7 @@ namespace GameFramework.Story.Values
                         npts.Add(curPt + Geometry.GetRotate(offset, dir));
                         curPt = pt;
                     }
-                    m_Value = BoxedValue.From(npts);
+                    m_Value = BoxedValue.FromObject(npts);
                 } else {
                     m_Value = BoxedValue.NullObject;
                 }
@@ -285,7 +285,7 @@ namespace GameFramework.Story.Values
                 int dlgItemId = TableConfigUtility.GenStoryDlgItemId(dlgId, index);
                 TableConfig.StoryDlg cfg = TableConfig.StoryDlgProvider.Instance.GetStoryDlg(dlgItemId);
                 if (null != cfg) {
-                    m_Value = BoxedValue.From(cfg);
+                    m_Value = BoxedValue.FromObject(cfg);
                 } else {
                     m_Value = BoxedValue.NullObject;
                 }
@@ -352,7 +352,7 @@ namespace GameFramework.Story.Values
                 List<TableConfig.LevelMonster> monsterList;
                 if (TableConfig.LevelMonsterProvider.Instance.TryGetValue(monstersId, out monsterList)) {
                     if (index >= 0 && index < monsterList.Count) {
-                        m_Value = BoxedValue.From(monsterList[index]);
+                        m_Value = BoxedValue.FromObject(monsterList[index]);
                     } else {
                         m_Value = BoxedValue.NullObject;
                     }
@@ -477,7 +477,7 @@ namespace GameFramework.Story.Values
                 int index = m_Index.Value;
                 UnityEngine.Sprite obj = SpriteManager.GetActorIcon(index);
                 if (null != obj) {
-                    m_Value = BoxedValue.From((object)obj);
+                    m_Value = BoxedValue.FromObject(obj);
                 } else {
                     m_Value = BoxedValue.NullObject;
                 }
@@ -535,7 +535,7 @@ namespace GameFramework.Story.Values
                 m_HaveValue = true;
                 m_Value = BoxedValue.NullObject;
                 int objId = m_ObjId.Value;
-                m_Value = BoxedValue.From((object)EntityController.Instance.GetGameObject(objId));
+                m_Value = BoxedValue.FromObject(EntityController.Instance.GetGameObject(objId));
             }
         }
 
@@ -1100,7 +1100,7 @@ namespace GameFramework.Story.Values
                 string dictId = m_DictId.Value;
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_FormatArgs.Count; i++) {
-                    arglist.Add(m_FormatArgs[i].Value.Get<object>());
+                    arglist.Add(m_FormatArgs[i].Value.GetObject());
                 }
                 object[] args = arglist.ToArray();
                 m_Value = Dict.Format(dictId, args);

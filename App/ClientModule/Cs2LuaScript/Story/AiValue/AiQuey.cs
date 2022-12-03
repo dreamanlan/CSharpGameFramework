@@ -46,7 +46,7 @@ public class AiQuery : IStoryValuePlugin
                 var enumerator = enumer.GetEnumerator();
                 while (enumerator.MoveNext()) {
                     var v = enumerator.Current;
-                    var bv = BoxedValue.From(v);
+                    var bv = BoxedValue.FromObject(v);
                     if (null != m_Where) {
                         m_Where.Evaluate(instance, handler, bv, args);
                         object wvObj = m_Where.Value;
@@ -109,7 +109,7 @@ public class AiQuery : IStoryValuePlugin
     public void LoadStatementData(Dsl.StatementData statementData)
     {
         for (int i = 0; i < statementData.Functions.Count; ++i) {
-            var funcData = statementData.Functions[i];
+            var funcData = statementData.Functions[i].AsFunction;
             LoadFuncData(funcData);
         }
     }
@@ -120,12 +120,12 @@ public class AiQuery : IStoryValuePlugin
         coll.Add(row);
 
         m_Select.Evaluate(instance, handler, v, args);
-        row.Add(m_Select.Value.Get<object>());
+        row.Add(m_Select.Value.GetObject());
 
         for (int i = 0; i < m_OrderBy.Count; ++i) {
             var val = m_OrderBy[i];
             val.Evaluate(instance, handler, v, args);
-            row.Add(val.Value.Get<object>());
+            row.Add(val.Value.GetObject());
         }
     }
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEditor;
 using UnityEditor.UI;
@@ -284,7 +284,7 @@ internal static class UiEditUtility
                 var func = info as Dsl.FunctionData;
                 var stData = info as Dsl.StatementData;
                 if(null==func && null != stData) {
-                    func = stData.First;
+                    func = stData.First.AsFunction;
                 }
                 if (null == func)
                     continue;
@@ -301,7 +301,7 @@ internal static class UiEditUtility
                 var func = info as Dsl.FunctionData;
                 var stData = info as Dsl.StatementData;
                 if (null == func && null != stData) {
-                    func = stData.First;
+                    func = stData.First.AsFunction;
                 }
                 if (null == func)
                     continue;

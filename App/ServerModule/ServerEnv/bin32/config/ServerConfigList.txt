@@ -1,9 +1,0 @@
-STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING	STRING
-机器外网IP	机器内网IP	服务器名称	当前ServerID	ZONE ID	大世界组ID	当前世界ID	key	value	key	value	key	value	key	value	key	value	key	value	key	value	key	value	key	value	key	value	key	value	key	value	key	value	key	value	key	value	key	value
-127.0.0.1	127.0.0.1	第一推动_CENTER	0	1	999	1	端口	30000																														
-127.0.0.1	127.0.0.1	第一推动_USER	2	1	999	1	开服时间	20150301	日志版本	v1.9	客户端日志	1	商店掩码	0	状态	程序																						
-127.0.0.1	127.0.0.1	第一推动_STORE	3	1	999	1	DB	127.0.0.1																														
-127.0.0.1	127.0.0.1	第一推动_NODE	4	1	999	1																																
-127.0.0.1	127.0.0.1	第一推动_CENTER	0	1	999	999	端口	20000																														
-127.0.0.1	127.0.0.1	第一推动_大厅	1	1	999	999	开服时间	20150301	日志版本	v1.9	客户端日志	1	商店掩码	0	状态	程序																						
-127.0.0.1	127.0.0.1	第一推动_ROOM	20	1	999	999																																

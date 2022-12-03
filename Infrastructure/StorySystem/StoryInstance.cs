@@ -366,7 +366,7 @@ namespace StorySystem
         public void Load(Dsl.StatementData messageHandlerData, string storyId)
         {
             m_StoryId = storyId;
-            var first = messageHandlerData.First;
+            var first = messageHandlerData.First.AsFunction;
             Dsl.FunctionData msgCallData = first;
             if (first.IsHighOrder) {
                 msgCallData = first.LowerOrderFunction;
@@ -380,7 +380,7 @@ namespace StorySystem
                 m_MessageId = string.Join(":", args);
             }
             for (int ix = 1; ix < messageHandlerData.GetFunctionNum(); ++ix) {
-                var funcData = messageHandlerData.Functions[ix];
+                var funcData = messageHandlerData.Functions[ix].AsFunction;
                 var id = funcData.GetId();
                 if (id == "args") {
                     var callData = funcData;
@@ -408,7 +408,7 @@ namespace StorySystem
             }
             Dsl.FunctionData bodyFunc = null;
             for (int ix = 0; ix < messageHandlerData.GetFunctionNum(); ++ix) {
-                var funcData = messageHandlerData.Functions[ix];
+                var funcData = messageHandlerData.Functions[ix].AsFunction;
                 var id = funcData.GetId();
                 if (funcData.HaveStatement() && id != "comment" && id != "comments") {
                     bodyFunc = funcData;

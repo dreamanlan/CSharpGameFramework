@@ -26,7 +26,7 @@ public class AiSelectSkill : ISimpleStoryValuePlugin
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc) {
             SkillInfo skillInfo = AiLogicUtility.NpcFindCanUseSkill(npc);
-            m_Proxy.Value = BoxedValue.From(skillInfo);
+            m_Proxy.Value = BoxedValue.FromObject(skillInfo);
         }
     }
 

@@ -30,14 +30,14 @@ namespace StorySystem.CommonValues
             m_HaveValue = false;
             m_X.Evaluate(instance, handler, iterator, args);
             if (m_X.HaveValue) {
-                int x = m_X.Value.Get<int>();
+                int x = m_X.Value.GetInt();
                 if (x == 0) {
                     m_HaveValue = true;
                     m_Value = 0;
                 } else {
                     m_Y.Evaluate(instance, handler, iterator, args);
                     if (m_Y.HaveValue) {
-                        int y = m_Y.Value.Get<int>();
+                        int y = m_Y.Value.GetInt();
                         m_HaveValue = true;
                         m_Value = (y != 0 ? 1 : 0);
                     }
@@ -63,8 +63,8 @@ namespace StorySystem.CommonValues
         {
             if (m_X.HaveValue && m_Y.HaveValue) {
                 m_HaveValue = true;
-                int x = m_X.Value.Get<int>();
-                int y = m_Y.Value.Get<int>();
+                int x = m_X.Value.GetInt();
+                int y = m_Y.Value.GetInt();
                 m_Value = ((x != 0 && y != 0) ? 1 : 0);
             }
         }
@@ -100,14 +100,14 @@ namespace StorySystem.CommonValues
             m_HaveValue = false;
             m_X.Evaluate(instance, handler, iterator, args);
             if (m_X.HaveValue) {
-                int x = m_X.Value.Get<int>();
+                int x = m_X.Value.GetInt();
                 if (x != 0) {
                     m_HaveValue = true;
                     m_Value = 1;
                 } else {
                     m_Y.Evaluate(instance, handler, iterator, args);
                     if (m_Y.HaveValue) {
-                        int y = m_Y.Value.Get<int>();
+                        int y = m_Y.Value.GetInt();
                         m_HaveValue = true;
                         m_Value = (y != 0 ? 1 : 0);
                     }
@@ -133,8 +133,8 @@ namespace StorySystem.CommonValues
         {
             if (m_X.HaveValue && m_Y.HaveValue) {
                 m_HaveValue = true;
-                int x = m_X.Value.Get<int>();
-                int y = m_Y.Value.Get<int>();
+                int x = m_X.Value.GetInt();
+                int y = m_Y.Value.GetInt();
                 m_Value = ((x != 0 || y != 0) ? 1 : 0);
             }
         }
@@ -188,7 +188,7 @@ namespace StorySystem.CommonValues
         {
             if (m_X.HaveValue) {
                 m_HaveValue = true;
-                int x = m_X.Value.Get<int>();
+                int x = m_X.Value.GetInt();
                 m_Value = (x == 0 ? 1 : 0);
             }
         }

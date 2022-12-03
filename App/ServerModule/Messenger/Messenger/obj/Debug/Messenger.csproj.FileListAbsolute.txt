@@ -41,3 +41,15 @@ E:/OpenSource/CSharpGameFramework/App/ServerModule/Messenger/Messenger/obj/Debug
 /Users/bytedance/Documents/GitHub/CSharpGameFramework/App/ServerModule/Messenger/Messenger/obj/Debug/Messenger.csproj.CopyComplete
 /Users/bytedance/Documents/GitHub/CSharpGameFramework/App/ServerModule/Messenger/Messenger/obj/Debug/Messenger.dll
 /Users/bytedance/Documents/GitHub/CSharpGameFramework/App/ServerModule/Messenger/Messenger/obj/Debug/Messenger.pdb
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\Messenger.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\Messenger.pdb
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\CSharpCenterClient.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\protobuf-net.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\ServerProtoBuf.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\ServerProtoBuf.pdb
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.csproj.AssemblyReference.cache
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.csproj.CoreCompileInputs.cache
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.csproj.CopyComplete
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\Messenger.pdb
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\ServerProtobufSerializer.dll

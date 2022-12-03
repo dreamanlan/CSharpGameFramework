@@ -90,7 +90,7 @@ namespace SkillSystem
                     var func = info as Dsl.FunctionData;
                     var stData = info as Dsl.StatementData;
                     if (null == func && null != stData) {
-                        func = stData.First;
+                        func = stData.First.AsFunction;
                     }
                     if (null == func)
                         continue;

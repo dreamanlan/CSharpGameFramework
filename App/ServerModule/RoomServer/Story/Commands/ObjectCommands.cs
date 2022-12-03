@@ -602,7 +602,7 @@ namespace GameFramework.Story.Commands
                 Dictionary<string, object> locals = new Dictionary<string, object>();
                 for (int i = 0; i < m_Args.Count - 1; i += 2) {
                     string key = m_Args[i].Value;
-                    object val = m_Args[i + 1].Value.Get<int>();
+                    object val = m_Args[i + 1].Value.GetInt();
                     if (!string.IsNullOrEmpty(key)) {
                         locals.Add(key, val);
                     }
@@ -651,8 +651,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadVarName(second);
@@ -773,7 +773,7 @@ namespace GameFramework.Story.Commands
                 Dictionary<string, object> locals = new Dictionary<string, object>();
                 for (int i = 0; i < m_Args.Count - 1; i += 2) {
                     string key = m_Args[i].Value;
-                    object val = m_Args[i + 1].Value.Get<int>();
+                    object val = m_Args[i + 1].Value.GetInt();
                     if (!string.IsNullOrEmpty(key)) {
                         locals.Add(key, val);
                     }
@@ -1153,7 +1153,7 @@ namespace GameFramework.Story.Commands
             if (null != scene) {
                 int uniqueId = m_UniqueId.Value;
                 string localName = m_AttrName.Value;
-                object value = m_Value.Value.Get<int>();
+                object value = m_Value.Value.GetInt();
                 scene.SceneContext.ObjectSet(uniqueId, localName, value);
             }
             return false;

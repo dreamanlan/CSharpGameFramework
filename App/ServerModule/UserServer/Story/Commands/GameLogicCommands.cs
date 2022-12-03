@@ -255,7 +255,7 @@ namespace GameFramework.Story.Commands
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     if (id.Type == BoxedValue.c_ULongType) {
-                        ulong memberGuid = id.Get<ulong>();
+                        ulong memberGuid = id.GetULong();
                         MemberInfo mi = ui.MemberInfos.Find(info => info.MemberGuid == memberGuid);
                         if (null != mi) {
                             mi.Deleted = true;
@@ -264,7 +264,7 @@ namespace GameFramework.Story.Commands
                         }
                     } else {
                         try {
-                            int heroId = id.Get<int>();
+                            int heroId = id.GetInt();
                             MemberInfo mi = ui.MemberInfos.Find(info => info.HeroId == heroId);
                             if (null != mi) {
                                 mi.Deleted = true;
@@ -517,11 +517,11 @@ namespace GameFramework.Story.Commands
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     if (id.Type == BoxedValue.c_ULongType) {
-                        ulong itemGuid = id.Get<ulong>();
+                        ulong itemGuid = id.GetULong();
                         ui.ItemBag.DelItemData(itemGuid);
                     } else {
                         try {
-                            int itemId = id.Get<int>();
+                            int itemId = id.GetInt();
                             ui.ItemBag.DelItemData(itemId);
                         } catch {
 
@@ -666,13 +666,13 @@ namespace GameFramework.Story.Commands
                 UserInfo ui = userThread.GetUserInfo(guid);
                 if (null != ui) {
                     if (val.IsInteger) {
-                        int v = val.Get<int>();
+                        int v = val.GetInt();
                         if (ui.IntDatas.ContainsKey(key))
                             ui.IntDatas[key] = v;
                         else
                             ui.IntDatas.Add(key, v);
-                    } else if (val.IsFloat) {
-                        float v = val.Get<float>();
+                    } else if (val.IsNumber) {
+                        float v = val.GetFloat();
                         if (ui.FloatDatas.ContainsKey(key))
                             ui.FloatDatas[key] = v;
                         else
@@ -831,10 +831,10 @@ namespace GameFramework.Story.Commands
                 string key = m_Key.Value;
                 var val = m_Value.Value;
                 if (val.IsInteger) {
-                    int v = val.Get<int>();
+                    int v = val.GetInt();
                     GlobalData.Instance.AddInt(key, v);
-                } else if (val.IsFloat) {
-                    float v = val.Get<float>();
+                } else if (val.IsNumber) {
+                    float v = val.GetFloat();
                     GlobalData.Instance.AddFloat(key, v);
                 } else {
                     string v = val.StringVal;

@@ -230,8 +230,8 @@ namespace GameFramework.Skill.Trigers
         }
         protected override void Load(Dsl.StatementData statementData, SkillInstance instance)
         {
-            Dsl.FunctionData func1 = statementData.First;
-            Dsl.FunctionData func2 = statementData.Second;
+            Dsl.FunctionData func1 = statementData.First.AsFunction;
+            Dsl.FunctionData func2 = statementData.Second.AsFunction;
             if (null != func1 && null != func2) {
                 Load(func1, instance);
                 LoadIf(func2, instance);

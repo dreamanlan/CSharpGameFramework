@@ -46,9 +46,9 @@ public class AiSelectSkillByDistance : ISimpleStoryValuePlugin
                         }
                     }
                     if (null != targetSkillInfo)
-                        m_Proxy.Value = BoxedValue.From(targetSkillInfo);
+                        m_Proxy.Value = BoxedValue.FromObject(targetSkillInfo);
                     else
-                        m_Proxy.Value = BoxedValue.From(maxSkillInfo);
+                        m_Proxy.Value = BoxedValue.FromObject(maxSkillInfo);
                     return;
                 }
             }

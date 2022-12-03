@@ -25,7 +25,8 @@ set tabledir=%workdir%\Resource\Tables
 set logdir=%workdir%\BuildLog
 set libdir=%workdir%\ExternalLibrary
 
-set msbuild=%workdir%\Tools\msbuild\msbuild.exe
+rem set msbuild=%workdir%\Tools\msbuild\msbuild.exe
+set msbuild="C:\Program Files\JetBrains\JetBrains Rider 2022.1.1\tools\MSBuild\Current\Bin\MSBuild.exe"
 
 rem mdb generator
 set pdb2mdb=%workdir%\Tools\mono\mono.exe %workdir%\Tools\lib\mono\4.5\pdb2mdb.exe

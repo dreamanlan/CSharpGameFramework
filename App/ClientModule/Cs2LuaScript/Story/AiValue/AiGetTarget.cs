@@ -29,7 +29,7 @@ public class AiGetTarget : ISimpleStoryValuePlugin
             if (targetId > 0) {
                 EntityInfo entity = PluginFramework.Instance.GetEntityById(targetId);
                 if (null != entity && !entity.IsDead()) {
-                    m_Proxy.Value = BoxedValue.From(entity);
+                    m_Proxy.Value = BoxedValue.FromObject(entity);
                 } else {
                     m_Proxy.Value = BoxedValue.NullObject;
                 }

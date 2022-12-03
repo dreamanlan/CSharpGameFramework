@@ -22,7 +22,7 @@ public class AiNeedChase : ISimpleStoryValuePlugin
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
         var args = _params.Values;
-        int objId = args[0].Get<int>();
+        int objId = args[0].GetInt();
         SkillInfo skillInfo = args[1].ObjectVal as SkillInfo;
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc && null != skillInfo) {

@@ -241,7 +241,7 @@ namespace SkillSystem
         public static void SetParam(Dsl.StatementData statementData, int funcIndex, int index, string val)
         {
             if (funcIndex >= 0 && funcIndex < statementData.Functions.Count) {
-                Dsl.FunctionData funcData = statementData.Functions[funcIndex];
+                Dsl.FunctionData funcData = statementData.Functions[funcIndex].AsFunction;
                 SetParam(funcData, index, val);
             }
         }
@@ -253,7 +253,7 @@ namespace SkillSystem
         public static void SetStatementParam(Dsl.StatementData statementData, int funcIndex, int stIndex, int paramIndex, string val)
         {
             if (funcIndex >= 0 && funcIndex < statementData.GetFunctionNum()) {
-                Dsl.FunctionData funcData = statementData.GetFunction(funcIndex);
+                Dsl.FunctionData funcData = statementData.GetFunction(funcIndex).AsFunction;
                 SetStatementParam(funcData, stIndex, paramIndex, val);
             }
         }

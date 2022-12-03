@@ -60,13 +60,13 @@ namespace StorySystem
                 Dsl.StatementData statementData = config as Dsl.StatementData;
                 if (null != statementData) {
                     int funcNum = statementData.GetFunctionNum();
-                    var lastFunc = statementData.Last;
+                    var lastFunc = statementData.Last.AsFunction;
                     var id = lastFunc.GetId();
                     if (funcNum >= 2 && (id == "comment" || id == "comments")) {
                         m_Comments = lastFunc;
                         statementData.Functions.RemoveAt(funcNum - 1);
                         if (statementData.GetFunctionNum() == 1) {
-                            funcData = statementData.GetFunction(0);
+                            funcData = statementData.GetFunction(0).AsFunction;
                             ret = Load(funcData);
                         }
                         else {
@@ -180,7 +180,8 @@ namespace StorySystem
         protected virtual bool Load(Dsl.StatementData statementData)
         {
             bool v = true;
-            foreach (var func in statementData.Functions) {
+            foreach (var f in statementData.Functions) {
+                var func = f.AsFunction;
                 if (func.IsHighOrder) {
                     if (func.LowerOrderFunction.GetParamNum() > 0 || func.HaveStatement() || func.HaveExternScript()) {
                         v = false;

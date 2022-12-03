@@ -99,7 +99,7 @@ namespace GameFramework.Network
         private void StopLoginLobby()
         {
             try {
-                //ÕËºÅµÇÂ¼Ê§°Ü£¬È¡Ïû×Ô¶¯µÇÂ¼£¬¶Ï¿ªÍøÂçÁ¬½Ó
+                //è´¦å·ç™»å½•å¤±è´¥ï¼Œå–æ¶ˆè‡ªåŠ¨ç™»å½•ï¼Œæ–­å¼€ç½‘ç»œè¿æ¥
                 m_IsWaitStart = true;
                 m_HasLoggedOn = false;
                 if (IsConnected) {
@@ -163,7 +163,7 @@ namespace GameFramework.Network
             int enableLog = verifyResult.m_EnableLog;
             //GlobalVariables.Instance.ShopMask = verifyResult.m_ShopMask;
             if (0 == ret) {
-                //°æ±¾Ğ£ÑéÊ§°Ü£¬ÌáÊ¾ÓÃ»§ĞèÒª¸üĞÂ°æ±¾¡£
+                //ç‰ˆæœ¬æ ¡éªŒå¤±è´¥ï¼Œæç¤ºç”¨æˆ·éœ€è¦æ›´æ–°ç‰ˆæœ¬ã€‚
                 StopLoginLobby();
                 GfxStorySystem.Instance.SendMessage("version_verify_failed");
             } else {
@@ -172,7 +172,7 @@ namespace GameFramework.Network
                 } else {
                     GameControler.FileLogger.Enabled = true;
                 }
-                //Ïò·şÎñÆ÷·¢ËÍµÇÂ¼ÏûÏ¢
+                //å‘æœåŠ¡å™¨å‘é€ç™»å½•æ¶ˆæ¯
                 NodeMessage loginMsg = new NodeMessage(LobbyMessageDefine.AccountLogin, m_AccountId);
                 GameFrameworkMessage.AccountLogin protoMsg = new GameFrameworkMessage.AccountLogin();
                 loginMsg.m_ProtoData = protoMsg;
@@ -193,9 +193,9 @@ namespace GameFramework.Network
             GameFrameworkMessage.AccountLoginResult.AccountLoginResultEnum ret = protoData.m_Result;
             ulong userGuid = protoData.m_UserGuid;
             UserNetworkSystem.Instance.IsQueueing = false;
-            if (m_HasLoggedOn) {//ÖØÁ¬´¦Àí
+            if (m_HasLoggedOn) {//é‡è¿å¤„ç†
                 if (ret == AccountLoginResult.AccountLoginResultEnum.Success) {
-                    //µÇÂ¼³É¹¦£¬Ïò·şÎñÆ÷ÇëÇóÍæ¼Ò½ÇÉ«
+                    //ç™»å½•æˆåŠŸï¼Œå‘æœåŠ¡å™¨è¯·æ±‚ç©å®¶è§’è‰²
                     m_Guid = userGuid;
                     NodeMessage msg = new NodeMessage(LobbyMessageDefine.RoleEnter, m_AccountId);
                     GameFrameworkMessage.RoleEnter protoMsg = new GameFrameworkMessage.RoleEnter();
@@ -208,34 +208,34 @@ namespace GameFramework.Network
                 } else {
                     //PluginFramework.Instance.ReturnToLogin();
                 }
-            } else {//Ê×´ÎµÇÂ¼´¦Àí
+            } else {//é¦–æ¬¡ç™»å½•å¤„ç†
                 if (ret == AccountLoginResult.AccountLoginResultEnum.Success) {
                     m_Guid = userGuid;
-                    //µÇÂ¼³É¹¦£¬Ïò·şÎñÆ÷ÇëÇóÍæ¼Ò½ÇÉ«          
+                    //ç™»å½•æˆåŠŸï¼Œå‘æœåŠ¡å™¨è¯·æ±‚ç©å®¶è§’è‰²          
                     NodeMessage msg = new NodeMessage(LobbyMessageDefine.RoleEnter, m_AccountId);
                     GameFrameworkMessage.RoleEnter protoMsg = new GameFrameworkMessage.RoleEnter();
                     protoMsg.m_Nickname = string.Empty;
                     msg.m_ProtoData = protoMsg;
                     SendMessage(msg);
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.FirstLogin) {
-                    //ÕËºÅÊ×´ÎµÇÂ¼£¬ĞèÒªÖ¸¶¨êÇ³Æ
+                    //è´¦å·é¦–æ¬¡ç™»å½•ï¼Œéœ€è¦æŒ‡å®šæ˜µç§°
                     m_Guid = userGuid;
                     RequestNickname();
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.Wait) {
-                    //Í¬Ê±µÇÂ¼ÈËÌ«¶à£¬ĞèÒªµÈ´ıÒ»¶ÎÊ±¼äºóÔÙµÇÂ¼
+                    //åŒæ—¶ç™»å½•äººå¤ªå¤šï¼Œéœ€è¦ç­‰å¾…ä¸€æ®µæ—¶é—´åå†ç™»å½•
                     PluginFramework.Instance.HighlightPrompt("Tip_TooManyPeople");
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.Banned) {
-                    //ÕËºÅÒÑ±»·âÍ££¬½ûÖ¹µÇÂ¼
+                    //è´¦å·å·²è¢«å°åœï¼Œç¦æ­¢ç™»å½•
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.Queueing) {
                     PluginFramework.Instance.HighlightPrompt("Tip_Queueing");
                     UserNetworkSystem.Instance.IsQueueing = true;
                     UserNetworkSystem.Instance.QueueingNum = -1;
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.QueueFull) {
-                    //ÅÅ¶ÓÂú
+                    //æ’é˜Ÿæ»¡
                     StopLoginLobby();
                     PluginFramework.Instance.HighlightPrompt("Tip_QueueFull");
                 } else {
-                    //ÕËºÅµÇÂ¼Ê§°Ü
+                    //è´¦å·ç™»å½•å¤±è´¥
                     PluginFramework.Instance.HighlightPrompt("Tip_AccountLoginFailed");
                 }
             }
@@ -245,7 +245,7 @@ namespace GameFramework.Network
             GameFrameworkMessage.RequestNicknameResult protoMsg = lobbyMsg.m_ProtoData as GameFrameworkMessage.RequestNicknameResult;
             if (null == protoMsg)
                 return;
-            GfxStorySystem.Instance.SendMessage("show_nickname", BoxedValue.From(protoMsg.m_Nicknames));
+            GfxStorySystem.Instance.SendMessage("show_nickname", BoxedValue.FromObject(protoMsg.m_Nicknames));
         }
         private void HandleChangeNameResult(NodeMessage lobbyMsg)
         {
@@ -279,17 +279,17 @@ namespace GameFramework.Network
                     LogSystem.Info("Retry RoleEnter {0} {1}", m_AccountId, m_Guid);
                     return;
                 } else if (ret == RoleEnterResult.RoleEnterResultEnum.Success) {
-                    //¿Í»§¶Ë½ÓÊÕ·şÎñÆ÷´«À´µÄÊı¾İ£¬´´½¨Íæ¼Ò¶ÔÏó
+                    //å®¢æˆ·ç«¯æ¥æ”¶æœåŠ¡å™¨ä¼ æ¥çš„æ•°æ®ï¼Œåˆ›å»ºç©å®¶å¯¹è±¡
                     m_WorldId = protoData.WorldId;
                     ///
                     m_IsLogining = false;
                     m_HasLoggedOn = true;
                     GfxStorySystem.Instance.SendMessage("start_game");
                 } else if (ret == RoleEnterResult.RoleEnterResultEnum.Reconnect) {
-                    //ÖØÁ¬ÓÃ»§£¬µÈ´ı·şÎñÆ÷´¦ÀíÖØÁ¬¹ı³Ìºó·µ»Ø½ø³¡¾°ÏûÏ¢£¬ÕâÖÖÇéĞÎ²»ÓÃ×öÈÎºÎ´¦Àí
+                    //é‡è¿ç”¨æˆ·ï¼Œç­‰å¾…æœåŠ¡å™¨å¤„ç†é‡è¿è¿‡ç¨‹åè¿”å›è¿›åœºæ™¯æ¶ˆæ¯ï¼Œè¿™ç§æƒ…å½¢ä¸ç”¨åšä»»ä½•å¤„ç†
                     PluginFramework.Instance.HighlightPrompt("Tip_Reconnecting");
                 } else {
-                    //½øÈëÓÎÏ·Ê§°Ü
+                    //è¿›å…¥æ¸¸æˆå¤±è´¥
                     PluginFramework.Instance.HighlightPrompt("Tip_RoleEnterFailed");
                 }
             }
@@ -306,7 +306,7 @@ namespace GameFramework.Network
                     int campId = protoData.camp_id;
                     int sceneId = protoData.scene_type;
                     ClientInfo.Instance.PropertyKey = protoData.prime;
-                    //ÑÓ³Ù´¦Àí£¬·ÀÖ¹µ±Ç°ÕıÔÚÇĞ³¡¾°¹ı³ÌÖĞ
+                    //å»¶è¿Ÿå¤„ç†ï¼Œé˜²æ­¢å½“å‰æ­£åœ¨åˆ‡åœºæ™¯è¿‡ç¨‹ä¸­
                     PluginFramework.Instance.QueueAction(PluginFramework.Instance.TryEnterScene, key, ip, port, campId, sceneId);
                 } else {
                     PluginFramework.Instance.HighlightPrompt("Tip_SceneEnterFailed");

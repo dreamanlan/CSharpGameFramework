@@ -59,17 +59,17 @@ namespace StorySystem.CommonValues
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
                 if (valX.IsString || valY.IsString) {
-                    string x = valX.Get<string>();
-                    string y = valY.Get<string>();
+                    string x = valX.GetString();
+                    string y = valY.GetString();
                     m_Value = x + y;
                 } else {
                     if (valX.IsInteger && valY.IsInteger) {
-                        int x = valX.Get<int>();
-                        int y = valY.Get<int>();
+                        int x = valX.GetInt();
+                        int y = valY.GetInt();
                         m_Value = x + y;
                     } else {
-                        float x = valX.Get<float>();
-                        float y = valY.Get<float>();
+                        float x = valX.GetFloat();
+                        float y = valY.GetFloat();
                         m_Value = x + y;
                     }
                 }
@@ -136,12 +136,12 @@ namespace StorySystem.CommonValues
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
                 if (valX.IsInteger && valY.IsInteger) {
-                    int x = valX.Get<int>();
-                    int y = valY.Get<int>();
+                    int x = valX.GetInt();
+                    int y = valY.GetInt();
                     m_Value = x - y;
                 } else {
-                    float x = valX.Get<float>();
-                    float y = valY.Get<float>();
+                    float x = valX.GetFloat();
+                    float y = valY.GetFloat();
                     m_Value = x - y;
                 }
             }
@@ -202,12 +202,12 @@ namespace StorySystem.CommonValues
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
                 if (valX.IsInteger && valY.IsInteger) {
-                    int x = valX.Get<int>();
-                    int y = valY.Get<int>();
+                    int x = valX.GetInt();
+                    int y = valY.GetInt();
                     m_Value = x * y;
                 } else {
-                    float x = valX.Get<float>();
-                    float y = valY.Get<float>();
+                    float x = valX.GetFloat();
+                    float y = valY.GetFloat();
                     m_Value = x * y;
                 }
             }
@@ -268,12 +268,12 @@ namespace StorySystem.CommonValues
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
                 if (valX.IsInteger && valY.IsInteger) {
-                    int x = valX.Get<int>();
-                    int y = valY.Get<int>();
+                    int x = valX.GetInt();
+                    int y = valY.GetInt();
                     m_Value = x / y;
                 } else {
-                    float x = valX.Get<float>();
-                    float y = valY.Get<float>();
+                    float x = valX.GetFloat();
+                    float y = valY.GetFloat();
                     m_Value = x / y;
                 }
             }
@@ -334,12 +334,12 @@ namespace StorySystem.CommonValues
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
                 if (valX.IsInteger && valY.IsInteger) {
-                    int x = valX.Get<int>();
-                    int y = valY.Get<int>();
+                    int x = valX.GetInt();
+                    int y = valY.GetInt();
                     m_Value = x % y;
                 } else {
-                    float x = valX.Get<float>();
-                    float y = valY.Get<float>();
+                    float x = valX.GetFloat();
+                    float y = valY.GetFloat();
                     m_Value = x % y;
                 }
             }
@@ -396,10 +396,10 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 if (valX.IsInteger) {
-                    int x = valX.Get<int>();
+                    int x = valX.GetInt();
                     m_Value = Math.Abs(x);
                 } else {
-                    float x = valX.Get<float>();
+                    float x = valX.GetFloat();
                     m_Value = Math.Abs(x);
                 }
             }
@@ -455,10 +455,10 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 if (valX.IsInteger) {
-                    int x = valX.Get<int>();
+                    int x = valX.GetInt();
                     m_Value = x;
                 } else {
-                    float x = valX.Get<float>();
+                    float x = valX.GetFloat();
                     m_Value = (int)Math.Floor(x);
                 }
             }
@@ -514,10 +514,10 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 if (valX.IsInteger) {
-                    int x = valX.Get<int>();
+                    int x = valX.GetInt();
                     m_Value = x;
                 } else {
-                    float x = valX.Get<float>();
+                    float x = valX.GetFloat();
                     m_Value = (int)Math.Ceiling(x);
                 }
             }
@@ -573,10 +573,10 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 if (valX.IsInteger) {
-                    int x = valX.Get<int>();
+                    int x = valX.GetInt();
                     m_Value = x;
                 } else {
-                    float x = valX.Get<float>();
+                    float x = valX.GetFloat();
                     m_Value = (int)Math.Round(x);
                 }
             }
@@ -639,19 +639,19 @@ namespace StorySystem.CommonValues
             if (1 == m_ParamNum && m_X.HaveValue) {
                 m_HaveValue = true;
                 var valX = m_X.Value;
-                float x = valX.Get<float>();
+                float x = valX.GetFloat();
                 m_Value = (float)Math.Exp(x);
             } else if (2 == m_ParamNum && m_X.HaveValue && m_Y.HaveValue) {
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
                 if (valX.IsInteger && valY.IsInteger) {
-                    int x = valX.Get<int>();
-                    int y = valY.Get<int>();
+                    int x = valX.GetInt();
+                    int y = valY.GetInt();
                     m_Value = (int)Math.Pow(x, y);
                 } else {
-                    float x = valX.Get<float>();
-                    float y = valY.Get<float>();
+                    float x = valX.GetFloat();
+                    float y = valY.GetFloat();
                     m_Value = (float)Math.Pow(x, y);
                 }
             }
@@ -716,14 +716,14 @@ namespace StorySystem.CommonValues
             if (1 == m_ParamNum && m_X.HaveValue) {
                 m_HaveValue = true;
                 var valX = m_X.Value;
-                float x = valX.Get<float>();
+                float x = valX.GetFloat();
                 m_Value = (float)Math.Log(x);
             } else if (2 == m_ParamNum && m_X.HaveValue && m_Y.HaveValue) {
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
-                float x = valX.Get<float>();
-                float y = valY.Get<float>();
+                float x = valX.GetFloat();
+                float y = valY.GetFloat();
                 m_Value = (float)Math.Log(x, y);
             }
         }
@@ -777,7 +777,7 @@ namespace StorySystem.CommonValues
             if (m_X.HaveValue) {
                 m_HaveValue = true;
                 var valX = m_X.Value;
-                float x = valX.Get<float>();
+                float x = valX.GetFloat();
                 m_Value = (float)Math.Sqrt(x);
             }
         }
@@ -829,7 +829,7 @@ namespace StorySystem.CommonValues
             if (m_X.HaveValue) {
                 m_HaveValue = true;
                 var valX = m_X.Value;
-                float x = valX.Get<float>();
+                float x = valX.GetFloat();
                 m_Value = (float)Math.Sin(x);
             }
         }
@@ -881,7 +881,7 @@ namespace StorySystem.CommonValues
             if (m_X.HaveValue) {
                 m_HaveValue = true;
                 var valX = m_X.Value;
-                float x = valX.Get<float>();
+                float x = valX.GetFloat();
                 m_Value = (float)Math.Cos(x);
             }
         }
@@ -933,7 +933,7 @@ namespace StorySystem.CommonValues
             if (m_X.HaveValue) {
                 m_HaveValue = true;
                 var valX = m_X.Value;
-                float x = valX.Get<float>();
+                float x = valX.GetFloat();
                 m_Value = (float)Math.Sinh(x);
             }
         }
@@ -985,7 +985,7 @@ namespace StorySystem.CommonValues
             if (m_X.HaveValue) {
                 m_HaveValue = true;
                 var valX = m_X.Value;
-                float x = valX.Get<float>();
+                float x = valX.GetFloat();
                 m_Value = (float)Math.Cosh(x);
             }
         }

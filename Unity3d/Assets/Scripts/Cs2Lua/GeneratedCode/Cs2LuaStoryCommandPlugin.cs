@@ -101,19 +101,7 @@ public class Cs2LuaStoryCommandPlugin : LuaClassProxyBase
 			return false;
 		}
 	}
-	public void LoadCallData(Dsl.FunctionData callData)
-	{
-		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_LoadCallData);
-		LuaFunctionHelper.PushValue(Self);
-		LuaFunctionHelper.PushValue(callData);
-		var end_call_res = LuaFunctionHelper.EndCall(err);
-		if (end_call_res) {
-			LuaFunctionHelper.BeginGetResult(err);
-			LuaFunctionHelper.EndGetResult();
-		} else {
-		}
-	}
-	public void LoadFuncData(Dsl.FunctionData funcData)
+	public bool LoadFuncData(Dsl.FunctionData funcData)
 	{
 		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_LoadFuncData);
 		LuaFunctionHelper.PushValue(Self);
@@ -121,11 +109,16 @@ public class Cs2LuaStoryCommandPlugin : LuaClassProxyBase
 		var end_call_res = LuaFunctionHelper.EndCall(err);
 		if (end_call_res) {
 			LuaFunctionHelper.BeginGetResult(err);
+			bool __cs2lua_ret;
+			LuaFunctionHelper.GetResult(out __cs2lua_ret);
 			LuaFunctionHelper.EndGetResult();
-		} else {
+			return __cs2lua_ret;
+		}
+		else {
+			return false;
 		}
 	}
-	public void LoadStatementData(Dsl.StatementData statementData)
+	public bool LoadStatementData(Dsl.StatementData statementData)
 	{
 		var err = LuaFunctionHelper.BeginCall(m_Cs2Lua_LoadStatementData);
 		LuaFunctionHelper.PushValue(Self);
@@ -133,8 +126,13 @@ public class Cs2LuaStoryCommandPlugin : LuaClassProxyBase
 		var end_call_res = LuaFunctionHelper.EndCall(err);
 		if (end_call_res) {
 			LuaFunctionHelper.BeginGetResult(err);
+			bool __cs2lua_ret;
+			LuaFunctionHelper.GetResult(out __cs2lua_ret);
 			LuaFunctionHelper.EndGetResult();
-		} else {
+			return __cs2lua_ret;
+		}
+		else {
+			return false;
 		}
 	}
 

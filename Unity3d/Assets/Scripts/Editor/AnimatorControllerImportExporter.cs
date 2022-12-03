@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
 using System.Collections;
@@ -331,7 +331,7 @@ public static class AnimatorControllerUtility
                     var func = dslInfo as Dsl.FunctionData;
                     var stData = dslInfo as Dsl.StatementData;
                     if (null == func && null != stData) {
-                        func = stData.First;
+                        func = stData.First.AsFunction;
                     }
                     if (null != func) {
                         foreach (Dsl.ISyntaxComponent comp in func.Params) {

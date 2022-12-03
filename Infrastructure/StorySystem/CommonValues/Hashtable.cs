@@ -51,7 +51,7 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 m_Value = BoxedValue.NullObject;
                 if (File.Exists(str)) {
-                    m_Value = BoxedValue.From(File.ReadAllLines(str));
+                    m_Value = BoxedValue.FromObject(File.ReadAllLines(str));
                 }
             }
         }
@@ -156,7 +156,7 @@ namespace StorySystem.CommonValues
         {
             if (m_Hashtable.HaveValue) {
                 m_HaveValue = true;
-                object obj = m_Hashtable.Value.Get<object>();
+                object obj = m_Hashtable.Value.GetObject();
                 if (null != obj) {
                     JsonData json = ToJson(obj);
                     m_Value = JsonMapper.ToJson(json);
@@ -255,7 +255,7 @@ namespace StorySystem.CommonValues
                 string str = m_String.Value;
                 m_HaveValue = true;
                 var json = JsonMapper.ToObject(str);
-                m_Value = BoxedValue.From(ToValue(json, null));
+                m_Value = BoxedValue.FromObject(ToValue(json, null));
             }
         }
 
@@ -397,10 +397,10 @@ namespace StorySystem.CommonValues
                     Pair pair = m_Args[i];
                     var key = pair.m_Key.Value.ToString();
                     if (null != key) {
-                        dict.Add(key, pair.m_Value.Value.Get<object>());
+                        dict.Add(key, pair.m_Value.Value.GetObject());
                     }
                 }
-                m_Value = BoxedValue.From(dict);
+                m_Value = BoxedValue.FromObject(dict);
             }
         }
 
@@ -465,9 +465,9 @@ namespace StorySystem.CommonValues
         private void TryUpdateValue()
         {
             if (m_Var.HaveValue && m_Key.HaveValue && (m_ParamNum <= 2 || m_DefValue.HaveValue)) {
-                object obj = m_Var.Value.Get<object>();
+                object obj = m_Var.Value.GetObject();
                 var dict = obj as IDictionary;
-                object key = m_Key.Value.Get<object>();
+                object key = m_Key.Value.GetObject();
                 BoxedValue defVal = BoxedValue.NullObject;
                 if (m_ParamNum > 2) {
                     defVal = m_DefValue.Value;
@@ -476,7 +476,7 @@ namespace StorySystem.CommonValues
                 if (null != dict && null != key) {
                     try {
                         if (dict.Contains(key)) {
-                            m_Value = BoxedValue.From(dict[key]);
+                            m_Value = BoxedValue.FromObject(dict[key]);
                         } else {
                             m_Value = defVal;
                         }
@@ -542,7 +542,7 @@ namespace StorySystem.CommonValues
         private void TryUpdateValue()
         {
             if (m_Var.HaveValue) {
-                object obj = m_Var.Value.Get<object>();
+                object obj = m_Var.Value.GetObject();
                 var dict = obj as IDictionary;
                 m_HaveValue = true;
                 if (null != dict) {
@@ -604,13 +604,13 @@ namespace StorySystem.CommonValues
         private void TryUpdateValue()
         {
             if (m_Var.HaveValue) {
-                object obj = m_Var.Value.Get<object>();
+                object obj = m_Var.Value.GetObject();
                 var dict = obj as IDictionary;
                 m_HaveValue = true;
                 if (null != dict) {
                     ArrayList list = new ArrayList();
                     list.AddRange(dict.Keys);
-                    m_Value = BoxedValue.From(list);
+                    m_Value = BoxedValue.FromObject(list);
                 } else {
                     m_Value.SetNullObject();
                 }
@@ -668,13 +668,13 @@ namespace StorySystem.CommonValues
         private void TryUpdateValue()
         {
             if (m_Var.HaveValue) {
-                object obj = m_Var.Value.Get<object>();
+                object obj = m_Var.Value.GetObject();
                 var dict = obj as IDictionary;
                 m_HaveValue = true;
                 if (null != dict) {
                     ArrayList list = new ArrayList();
                     list.AddRange(dict.Values);
-                    m_Value = BoxedValue.From(list);
+                    m_Value = BoxedValue.FromObject(list);
                 } else {
                     m_Value.SetNullObject();
                 }

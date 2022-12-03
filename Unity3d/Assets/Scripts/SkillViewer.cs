@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
@@ -267,7 +267,7 @@ public class SkillViewer : MonoBehaviour
                                 AddViewedSkill(skillId, skillRecords.records);
                             }
 
-                            GfxStorySystem.Instance.SendMessage("reload", actorId, targetId, BoxedValue.From(args));
+                            GfxStorySystem.Instance.SendMessage("reload", actorId, targetId, BoxedValue.FromObject(args));
                         }
                     }
                 }
@@ -388,7 +388,7 @@ public class SkillViewer : MonoBehaviour
                     }
 
                     if (args.Count > 1) {
-                        GfxStorySystem.Instance.SendMessage("reload", actorId, targetId, BoxedValue.From(args));
+                        GfxStorySystem.Instance.SendMessage("reload", actorId, targetId, BoxedValue.FromObject(args));
                     }
                 }
             }

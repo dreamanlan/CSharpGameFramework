@@ -54,7 +54,7 @@ namespace GameFramework.Story.Values
                     npcs.Add(npcInfo.GetId());
                 });
                 m_HaveValue = true;
-                m_Value = BoxedValue.From(npcs);
+                m_Value = BoxedValue.FromObject(npcs);
             }
         }
         private bool m_HaveValue;

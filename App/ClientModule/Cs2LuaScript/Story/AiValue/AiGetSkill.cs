@@ -23,7 +23,7 @@ public class AiGetSkill : ISimpleStoryValuePlugin
     {
         var args = _params.Values;
         int objId = args[0];
-        int index = args[1].Get<int>();
+        int index = args[1].GetInt();
         EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
         if (null != npc) {
             int skillId = 0;
@@ -65,7 +65,7 @@ public class AiGetSkill : ISimpleStoryValuePlugin
                     skillInfo = new SkillInfo(skillId);
                     npc.GetSkillStateInfo().AddSkill(skillInfo);
                 }
-                m_Proxy.Value = BoxedValue.From(skillInfo);
+                m_Proxy.Value = BoxedValue.FromObject(skillInfo);
             } else {
                 m_Proxy.Value = BoxedValue.NullObject;
             }

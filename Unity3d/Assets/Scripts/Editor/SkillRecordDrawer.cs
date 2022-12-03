@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using System.Text;
@@ -207,7 +207,7 @@ public class SkillRecordDrawer : PropertyDrawer
                 var funcData = info as Dsl.FunctionData;
                 var stData = info as Dsl.StatementData;
                 if (null == funcData && null != stData) {
-                    funcData = stData.First;
+                    funcData = stData.First.AsFunction;
                 }
                 if (null == funcData || !funcData.IsHighOrder)
                     continue;

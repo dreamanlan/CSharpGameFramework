@@ -619,13 +619,13 @@ namespace GameFramework.Story.Commands
                         string key = param.Key.Value;
                         var val = param.Value.Value;
                         if (type == "int") {
-                            int v = val.Get<int>();
+                            int v = val.GetInt();
                             animator.SetInteger(key, v);
                         } else if (type == "float") {
-                            float v = val.Get<float>();
+                            float v = val.GetFloat();
                             animator.SetFloat(key, v);
                         } else if (type == "bool") {
-                            bool v = val.Get<bool>();
+                            bool v = val.GetBool();
                             animator.SetBool(key, v);
                         } else if (type == "trigger") {
                             string v = val.ToString();
@@ -749,7 +749,7 @@ namespace GameFramework.Story.Commands
             Dictionary<string, object> locals = new Dictionary<string, object>();
             for (int i = 0; i < m_Args.Count - 1; i += 2) {
                 string key = m_Args[i].Value;
-                object val = m_Args[i + 1].Value.Get<object>();
+                object val = m_Args[i + 1].Value.GetObject();
                 if (!string.IsNullOrEmpty(key)) {
                     locals.Add(key, val);
                 }
@@ -791,8 +791,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadVarName(second);
@@ -904,7 +904,7 @@ namespace GameFramework.Story.Commands
             Dictionary<string, object> locals = new Dictionary<string, object>();
             for (int i = 0; i < m_Args.Count - 1; i += 2) {
                 string key = m_Args[i].Value;
-                object val = m_Args[i + 1].Value.Get<object>();
+                object val = m_Args[i + 1].Value.GetObject();
                 if (!string.IsNullOrEmpty(key)) {
                     locals.Add(key, val);
                 }
@@ -1148,7 +1148,7 @@ namespace GameFramework.Story.Commands
         {
             int uniqueId = m_UniqueId.Value;
             string localName = m_AttrName.Value;
-            object value = m_Value.Value.Get<object>();
+            object value = m_Value.Value.GetObject();
             PluginFramework.Instance.SceneContext.ObjectSet(uniqueId, localName, value);
             return false;
         }
@@ -1241,7 +1241,7 @@ namespace GameFramework.Story.Commands
             EntityInfo charObj = PluginFramework.Instance.GetEntityById(objId);
             if (null != charObj) {
                 try {
-                    long val = value.Get<long>();
+                    long val = value.GetLong();
                     charObj.BaseProperty.SetLong((CharacterPropertyEnum)attrId, val);
                     charObj.ActualProperty.SetLong((CharacterPropertyEnum)attrId, val);
                 } catch (Exception ex) {

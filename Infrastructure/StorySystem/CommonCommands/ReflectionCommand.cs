@@ -30,12 +30,12 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object obj = m_Object.Value.Get<object>();
+            object obj = m_Object.Value.GetObject();
             var methodObj = m_Method.Value;
             string method = methodObj.IsString ? methodObj.StringVal : null;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
-                arglist.Add(m_Args[i].Value.Get<object>());
+                arglist.Add(m_Args[i].Value.GetObject());
             }
             object[] args = arglist.ToArray();
             if (null != obj) {
@@ -116,12 +116,12 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object obj = m_Object.Value.Get<object>();
+            object obj = m_Object.Value.GetObject();
             var methodObj = m_Method.Value;
             string method = methodObj.IsString ? methodObj.StringVal : null;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
-                arglist.Add(m_Args[i].Value.Get<object>());
+                arglist.Add(m_Args[i].Value.GetObject());
             }
             object[] args = arglist.ToArray();
             if (null != obj) {
@@ -199,16 +199,16 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object obj = m_Object.Value.Get<object>();
+            object obj = m_Object.Value.GetObject();
             var methodObj = m_Method.Value;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
-                arglist.Add(m_Args[i].Value.Get<object>());
+                arglist.Add(m_Args[i].Value.GetObject());
             }
             object[] args = arglist.ToArray();
             if (null != obj) {
                 IDictionary dict = obj as IDictionary;
-                var mobj = methodObj.Get<object>();
+                var mobj = methodObj.GetObject();
                 if (null != dict && dict.Contains(mobj)) {
                     var d = dict[mobj] as Delegate;
                     if (null != d) {
@@ -218,7 +218,7 @@ namespace StorySystem.CommonCommands
                 else {
                     IEnumerable enumer = obj as IEnumerable;
                     if (null != enumer && methodObj.IsInteger) {
-                        int index = methodObj.Get<int>();
+                        int index = methodObj.GetInt();
                         var e = enumer.GetEnumerator();
                         for (int i = 0; i <= index; ++i) {
                             e.MoveNext();
@@ -275,23 +275,23 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object obj = m_Object.Value.Get<object>();
+            object obj = m_Object.Value.GetObject();
             var methodObj = m_Method.Value;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
-                arglist.Add(m_Args[i].Value.Get<object>());
+                arglist.Add(m_Args[i].Value.GetObject());
             }
             object[] args = arglist.ToArray();
             if (null != obj) {
                 IDictionary dict = obj as IDictionary;
-                var mobj = methodObj.Get<object>();
+                var mobj = methodObj.GetObject();
                 if (null != dict && dict.Contains(mobj)) {
                     dict[mobj] = args[0];
                 }
                 else {
                     IList list = obj as IList;
                     if (null != list && methodObj.IsInteger) {
-                        int index = methodObj.Get<int>();
+                        int index = methodObj.GetInt();
                         if (index >= 0 && index < list.Count) {
                             list[index] = args[0];
                         }

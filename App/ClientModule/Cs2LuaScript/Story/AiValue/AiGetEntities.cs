@@ -21,7 +21,7 @@ public class AiGetEntities : ISimpleStoryValuePlugin
     }
     public void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params)
     {
-        m_Proxy.Value = BoxedValue.From(PluginFramework.Instance.EntityManager.Entities.Values);
+        m_Proxy.Value = BoxedValue.FromObject(PluginFramework.Instance.EntityManager.Entities.Values);
     }
 
     private StoryValueResult m_Proxy = null;

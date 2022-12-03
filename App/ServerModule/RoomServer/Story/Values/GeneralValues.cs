@@ -150,7 +150,7 @@ namespace GameFramework.Story.Values
                 if (m_ObjId.HaveValue) {
                     int objId = m_ObjId.Value;
                     m_HaveValue = true;
-                    m_Value = BoxedValue.From(scene.SceneContext.GetEntityById(objId));
+                    m_Value = BoxedValue.FromObject(scene.SceneContext.GetEntityById(objId));
                 }
             }
         }

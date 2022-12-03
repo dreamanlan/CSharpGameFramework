@@ -28,9 +28,9 @@ public class AiRandMove : ISimpleStoryCommandPlugin
         if (!m_ParamReaded) {
             m_ParamReaded = true;
 
-            m_ObjId = args[0].Get<int>();
-            m_Time = args[1].Get<int>();
-            m_Radius = args[2].Get<int>();
+            m_ObjId = args[0].GetInt();
+            m_Time = args[1].GetInt();
+            m_Radius = args[2].GetInt();
 
             EntityInfo npc = PluginFramework.Instance.GetEntityById(m_ObjId);
             if (null != npc && !npc.IsUnderControl()) {

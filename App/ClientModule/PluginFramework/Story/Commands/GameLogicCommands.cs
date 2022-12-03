@@ -58,7 +58,7 @@ namespace GameFramework.Story.Commands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             string name = m_AttrName.Value;
-            object value = m_Value.Value.Get<object>();
+            object value = m_Value.Value.GetObject();
             PluginFramework.Instance.BlackBoard.SetVariable(name, value);
             return false;
         }
@@ -133,8 +133,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -181,7 +181,7 @@ namespace GameFramework.Story.Commands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object obj = m_Arg.Value.Get<object>();
+            object obj = m_Arg.Value.GetObject();
             string path = m_CameraPath.Value;
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -209,8 +209,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -257,7 +257,7 @@ namespace GameFramework.Story.Commands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object obj = m_Arg.Value.Get<object>();
+            object obj = m_Arg.Value.GetObject();
             string path = m_CameraPath.Value;
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -285,8 +285,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -333,7 +333,7 @@ namespace GameFramework.Story.Commands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object obj = m_Arg.Value.Get<object>();
+            object obj = m_Arg.Value.GetObject();
             string path = m_CameraPath.Value;
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
@@ -361,8 +361,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -425,8 +425,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -497,8 +497,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -567,8 +567,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -636,8 +636,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -705,8 +705,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -764,8 +764,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -843,8 +843,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -905,8 +905,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -970,8 +970,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -1037,8 +1037,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -1104,8 +1104,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -1171,8 +1171,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -1223,7 +1223,7 @@ namespace GameFramework.Story.Commands
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
             }
-            object obj = m_ObjPath.Value.Get<object>();
+            object obj = m_ObjPath.Value.GetObject();
             var pobj = obj as UnityEngine.GameObject;
             if (null == pobj) {
                 string objPath = obj as string;
@@ -1257,8 +1257,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -1310,7 +1310,7 @@ namespace GameFramework.Story.Commands
             if (string.IsNullOrEmpty(path)) {
                 path = "GameRoot";
             }
-            object obj = m_ObjPath.Value.Get<object>();
+            object obj = m_ObjPath.Value.GetObject();
             var pobj = obj as UnityEngine.GameObject;
             if (null == pobj) {
                 string objPath = obj as string;
@@ -1335,8 +1335,8 @@ namespace GameFramework.Story.Commands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            var first = statementData.First;
-            var second = statementData.Second;
+            var first = statementData.First.AsFunction;
+            var second = statementData.Second.AsFunction;
             if (null != first && null != second) {
                 var cd1 = first;
                 var cd2 = second;
@@ -1627,8 +1627,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     m_HaveSet = true;
 
@@ -2006,18 +2006,18 @@ namespace GameFramework.Story.Commands
         }
         private static void AddVariable(StoryInstance instance, string name, UnityEngine.GameObject control)
         {
-            instance.SetVariable(name, BoxedValue.From((object)control));
+            instance.SetVariable(name, BoxedValue.FromObject(control));
             UnityEngine.UI.Text text = control.GetComponent<UnityEngine.UI.Text>();
             if (null != text) {
-                instance.SetVariable(string.Format("{0}_Text", name), BoxedValue.From((object)text));
+                instance.SetVariable(string.Format("{0}_Text", name), BoxedValue.FromObject(text));
             }
             UnityEngine.UI.Image image = control.GetComponent<UnityEngine.UI.Image>();
             if (null != image) {
-                instance.SetVariable(string.Format("{0}_Image", name), BoxedValue.From((object)image));
+                instance.SetVariable(string.Format("{0}_Image", name), BoxedValue.FromObject(image));
             }
             UnityEngine.UI.RawImage rawImage = control.GetComponent<UnityEngine.UI.RawImage>();
             if (null != rawImage) {
-                instance.SetVariable(string.Format("{0}_RawImage", name), BoxedValue.From((object)rawImage));
+                instance.SetVariable(string.Format("{0}_RawImage", name), BoxedValue.FromObject(rawImage));
             }
             UnityEngine.UI.Button button = control.GetComponent<UnityEngine.UI.Button>();
             if (null != button) {
@@ -2025,27 +2025,27 @@ namespace GameFramework.Story.Commands
             }
             UnityEngine.UI.Dropdown dropdown = control.GetComponent<UnityEngine.UI.Dropdown>();
             if (null != dropdown) {
-                instance.SetVariable(string.Format("{0}_Dropdown", name), BoxedValue.From((object)dropdown));
+                instance.SetVariable(string.Format("{0}_Dropdown", name), BoxedValue.FromObject(dropdown));
             }
             UnityEngine.UI.InputField inputField = control.GetComponent<UnityEngine.UI.InputField>();
             if (null != inputField) {
-                instance.SetVariable(string.Format("{0}_Input", name), BoxedValue.From((object)inputField));
+                instance.SetVariable(string.Format("{0}_Input", name), BoxedValue.FromObject(inputField));
             }
             UnityEngine.UI.Slider slider = control.GetComponent<UnityEngine.UI.Slider>();
             if (null != inputField) {
-                instance.SetVariable(string.Format("{0}_Slider", name), BoxedValue.From((object)slider));
+                instance.SetVariable(string.Format("{0}_Slider", name), BoxedValue.FromObject(slider));
             }
             UnityEngine.UI.Toggle toggle = control.GetComponent<UnityEngine.UI.Toggle>();
             if (null != toggle) {
-                instance.SetVariable(string.Format("{0}_Toggle", name), BoxedValue.From((object)toggle));
+                instance.SetVariable(string.Format("{0}_Toggle", name), BoxedValue.FromObject(toggle));
             }
             UnityEngine.UI.ToggleGroup toggleGroup = control.GetComponent<UnityEngine.UI.ToggleGroup>();
             if (null != toggleGroup) {
-                instance.SetVariable(string.Format("{0}_ToggleGroup", name), BoxedValue.From((object)toggleGroup));
+                instance.SetVariable(string.Format("{0}_ToggleGroup", name), BoxedValue.FromObject(toggleGroup));
             }
             UnityEngine.UI.Scrollbar scrollbar = control.GetComponent<UnityEngine.UI.Scrollbar>();
             if (null != scrollbar) {
-                instance.SetVariable(string.Format("{0}_Scrollbar", name), BoxedValue.From((object)scrollbar));
+                instance.SetVariable(string.Format("{0}_Scrollbar", name), BoxedValue.FromObject(scrollbar));
             }
         }
     }

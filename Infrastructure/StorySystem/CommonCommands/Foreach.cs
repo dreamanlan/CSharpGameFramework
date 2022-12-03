@@ -37,7 +37,7 @@ namespace StorySystem.CommonCommands
                     localInfo.List[i].Evaluate(instance, handler, iterator, args);
                 }
                 for (int i = 0; i < localInfo.List.Count; i++) {
-                    localInfo.Iterators.Enqueue(localInfo.List[i].Value.Get<object>());
+                    localInfo.Iterators.Enqueue(localInfo.List[i].Value.GetObject());
                 }
             }
         }
@@ -64,7 +64,7 @@ namespace StorySystem.CommonCommands
                 if (localInfo.Iterators.Count > 0) {
                     Prepare(handler);
                     runtime = handler.PeekRuntime();
-                    runtime.Iterator = BoxedValue.From(localInfo.Iterators.Dequeue());
+                    runtime.Iterator = BoxedValue.FromObject(localInfo.Iterators.Dequeue());
                     runtime.Arguments = args;
                     ret = true;
                     //没有wait之类命令直接执行
@@ -187,7 +187,7 @@ namespace StorySystem.CommonCommands
                 if (localInfo.Iterators.Count > 0) {
                     Prepare(handler);
                     runtime = handler.PeekRuntime();
-                    runtime.Iterator = BoxedValue.From(localInfo.Iterators.Dequeue());
+                    runtime.Iterator = BoxedValue.FromObject(localInfo.Iterators.Dequeue());
                     runtime.Arguments = args;
                     ret = true;
                     //没有wait之类命令直接执行

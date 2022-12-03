@@ -9,7 +9,7 @@ namespace StorySystem
         public static T CastTo<T>(object obj)
         {
             if (obj is BoxedValue) {
-                return ((BoxedValue)obj).Get<T>();
+                return ((BoxedValue)obj).CastTo<T>();
             }
             else if (obj is T) {
                 return (T)obj;
@@ -32,7 +32,7 @@ namespace StorySystem
                 return null;
             Type st = obj.GetType();
             if (obj is BoxedValue) {
-                return ((BoxedValue)obj).Get(t);
+                return ((BoxedValue)obj).CastTo(t);
             }
             else if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
                 return obj;
@@ -96,8 +96,8 @@ namespace StorySystem
             if (enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
@@ -127,8 +127,8 @@ namespace StorySystem
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
@@ -171,8 +171,8 @@ namespace StorySystem
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
@@ -223,8 +223,8 @@ namespace StorySystem
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
@@ -283,8 +283,8 @@ namespace StorySystem
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
@@ -351,8 +351,8 @@ namespace StorySystem
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
@@ -427,8 +427,8 @@ namespace StorySystem
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
@@ -511,8 +511,8 @@ namespace StorySystem
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
@@ -603,8 +603,8 @@ namespace StorySystem
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
@@ -703,8 +703,8 @@ namespace StorySystem
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);
@@ -776,8 +776,8 @@ namespace StorySystem
             if (null == callData && enableComments) {
                 var statementData = param as Dsl.StatementData;
                 if (null != statementData && statementData.GetFunctionNum() == 2) {
-                    var first = statementData.First;
-                    var last = statementData.Last;
+                    var first = statementData.First.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (!first.HaveStatement() && (last.GetId() == "comment" || last.GetId() == "comments")) {
                         ret = last;
                         statementData.Functions.RemoveAt(1);

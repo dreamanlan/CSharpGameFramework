@@ -170,7 +170,7 @@ namespace StorySystem
         internal void SetValue<T>(T val)
         {
             m_HaveValue = true;
-            m_Value.Set(val);
+            m_Value.GenericSet<T>(val);
         }
 
         protected virtual StoryConstValue NewValueObject()
@@ -374,7 +374,7 @@ namespace StorySystem
         public T Value
         {
             get {
-                return null == m_Proxy ? default(T) : m_Proxy.Value.Get<T>();
+                return null == m_Proxy ? default(T) : m_Proxy.Value.CastTo<T>();
             }
         }
 
@@ -417,7 +417,7 @@ namespace StorySystem
             if (null != val) {
                 //对初始化即能求得值的函数，不需要再记录函数表达式，直接转换为常量值。
                 if (val.HaveValue) {
-                    SetValue(val.Value.Get<T>());
+                    SetValue(val.Value.CastTo<T>());
                 }
                 else {
                     SetProxy(val);

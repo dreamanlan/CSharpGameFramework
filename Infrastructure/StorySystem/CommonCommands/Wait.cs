@@ -49,8 +49,8 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadCondition(second);
@@ -120,8 +120,8 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadCondition(second);
@@ -195,8 +195,8 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadCondition(second);
@@ -272,8 +272,8 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadCondition(second);

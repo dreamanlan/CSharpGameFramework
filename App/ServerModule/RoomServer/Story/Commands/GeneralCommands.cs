@@ -53,8 +53,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (!first.HaveStatement() && !second.HaveStatement()) {
                     Load(first);
                     var call = second;
@@ -110,8 +110,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (!first.HaveStatement() && !second.HaveStatement()) {
                     Load(first);
                     var call = second;
@@ -212,13 +212,13 @@ namespace GameFramework.Story.Commands
         {
             int ct = statementData.Functions.Count;
             if (statementData.Functions.Count >= 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (ct == 2) {
                     m_HaveMultiple = true;
                     LoadMultiple(second);
                 } else if (ct == 3) {
-                    var third = statementData.Third;
+                    var third = statementData.Third.AsFunction;
                     if (null != first && null != second && null != third) {
                         m_HaveSet = true;
                         Load(first);
@@ -226,8 +226,8 @@ namespace GameFramework.Story.Commands
                         LoadTimeoutSet(third);
                     }
                 } else if (ct == 4) {
-                    var third = statementData.Third;
-                    var last = statementData.Last;
+                    var third = statementData.Third.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (null != first && null != second && null != third && null != last) {
                         m_HaveSet = true;
                         Load(first);
@@ -329,8 +329,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (!first.HaveStatement() && !second.HaveStatement()) {
                     Load(first);
                     var call = second;
@@ -398,8 +398,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (!first.HaveStatement() && !second.HaveStatement()) {
                     Load(first);
                     var call = second;
@@ -586,9 +586,9 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
 
@@ -711,9 +711,9 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
 
@@ -900,12 +900,12 @@ namespace GameFramework.Story.Commands
                     } else if (v.IsInteger) {
                         Msg_LRL_StoryMessage.MessageArg arg = new Msg_LRL_StoryMessage.MessageArg();
                         arg.val_type = Msg_LRL_StoryMessage.ArgType.INT;
-                        arg.str_val = v.Get<int>().ToString();
+                        arg.str_val = v.GetInt().ToString();
                         msg.Args.Add(arg);
-                    } else if (v.IsFloat) {
+                    } else if (v.IsNumber) {
                         Msg_LRL_StoryMessage.MessageArg arg = new Msg_LRL_StoryMessage.MessageArg();
                         arg.val_type = Msg_LRL_StoryMessage.ArgType.FLOAT;
-                        arg.str_val = v.Get<float>().ToString();
+                        arg.str_val = v.GetFloat().ToString();
                         msg.Args.Add(arg);
                     } else {
                         Msg_LRL_StoryMessage.MessageArg arg = new Msg_LRL_StoryMessage.MessageArg();
@@ -948,8 +948,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -1020,12 +1020,12 @@ namespace GameFramework.Story.Commands
                     } else if (v.IsInteger) {
                         Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
                         arg.val_type = ArgType.INT;
-                        arg.str_val = v.Get<int>().ToString();
+                        arg.str_val = v.GetInt().ToString();
                         msg.m_Args.Add(arg);
-                    } else if (v.IsFloat) {
+                    } else if (v.IsNumber) {
                         Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
                         arg.val_type = ArgType.FLOAT;
-                        arg.str_val = v.Get<float>().ToString();
+                        arg.str_val = v.GetFloat().ToString();
                         msg.m_Args.Add(arg);
                     } else {
                         Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
@@ -1067,8 +1067,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -1144,12 +1144,12 @@ namespace GameFramework.Story.Commands
                     } else if (v.IsInteger) {
                         Msg_RC_PublishEvent.EventArg arg = new Msg_RC_PublishEvent.EventArg();
                         arg.val_type = ArgType.INT;
-                        arg.str_val = v.Get<int>().ToString();
+                        arg.str_val = v.GetInt().ToString();
                         msg.args.Add(arg);
-                    } else if (v.IsFloat) {
+                    } else if (v.IsNumber) {
                         Msg_RC_PublishEvent.EventArg arg = new Msg_RC_PublishEvent.EventArg();
                         arg.val_type = ArgType.FLOAT;
-                        arg.str_val = v.Get<float>().ToString();
+                        arg.str_val = v.GetFloat().ToString();
                         msg.args.Add(arg);
                     } else {
                         Msg_RC_PublishEvent.EventArg arg = new Msg_RC_PublishEvent.EventArg();
@@ -1192,8 +1192,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -1270,12 +1270,12 @@ namespace GameFramework.Story.Commands
                     } else if (v.IsInteger) {
                         Msg_RC_SendGfxMessage.EventArg arg = new Msg_RC_SendGfxMessage.EventArg();
                         arg.val_type = ArgType.INT;
-                        arg.str_val = v.Get<int>().ToString();
+                        arg.str_val = v.GetInt().ToString();
                         msg.args.Add(arg);
-                    } else if (v.IsFloat) {
+                    } else if (v.IsNumber) {
                         Msg_RC_SendGfxMessage.EventArg arg = new Msg_RC_SendGfxMessage.EventArg();
                         arg.val_type = ArgType.FLOAT;
-                        arg.str_val = v.Get<float>().ToString();
+                        arg.str_val = v.GetFloat().ToString();
                         msg.args.Add(arg);
                     } else {
                         Msg_RC_SendGfxMessage.EventArg arg = new Msg_RC_SendGfxMessage.EventArg();
@@ -1318,8 +1318,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -1396,12 +1396,12 @@ namespace GameFramework.Story.Commands
                     } else if (v.IsInteger) {
                         Msg_RC_SendGfxMessage.EventArg arg = new Msg_RC_SendGfxMessage.EventArg();
                         arg.val_type = ArgType.INT;
-                        arg.str_val = v.Get<int>().ToString();
+                        arg.str_val = v.GetInt().ToString();
                         msg.args.Add(arg);
-                    } else if (v.IsFloat) {
+                    } else if (v.IsNumber) {
                         Msg_RC_SendGfxMessage.EventArg arg = new Msg_RC_SendGfxMessage.EventArg();
                         arg.val_type = ArgType.FLOAT;
-                        arg.str_val = v.Get<float>().ToString();
+                        arg.str_val = v.GetFloat().ToString();
                         msg.args.Add(arg);
                     } else {
                         Msg_RC_SendGfxMessage.EventArg arg = new Msg_RC_SendGfxMessage.EventArg();
@@ -1444,8 +1444,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadUserId(second);
@@ -1497,7 +1497,7 @@ namespace GameFramework.Story.Commands
                 int sceneId = m_TargetSceneId.Value;
                 var idObj = m_ObjId.Value;
                 if (idObj.IsInteger) {
-                    int objId = idObj.Get<int>();
+                    int objId = idObj.GetInt();
                     EntityInfo entity = scene.GetEntityById(objId);
                     if (null != entity) {
                         User us = entity.CustomData as User;
@@ -1569,7 +1569,7 @@ namespace GameFramework.Story.Commands
                 int sceneId = m_TargetSceneId.Value;
                 var idObj = m_ObjId.Value;
                 if (idObj.IsInteger) {
-                    int objId = idObj.Get<int>();
+                    int objId = idObj.GetInt();
                     EntityInfo entity = scene.GetEntityById(objId);
                     if (null != entity) {
                         User us = entity.CustomData as User;
@@ -1898,7 +1898,7 @@ namespace GameFramework.Story.Commands
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_DictArgs.Count; ++i) {
                     IStoryValue val = m_DictArgs[i];
-                    arglist.Add(val.Value.Get<object>());
+                    arglist.Add(val.Value.GetObject());
                 }
                 object[] args = arglist.ToArray();
                 scene.SceneContext.HighlightPrompt(objId, dictId, args);

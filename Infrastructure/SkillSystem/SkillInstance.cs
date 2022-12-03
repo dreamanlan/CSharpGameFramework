@@ -551,7 +551,7 @@ namespace SkillSystem
             var func = config as Dsl.FunctionData;
             var stData = config as Dsl.StatementData;
             if (null == func && null != stData) {
-                func = stData.First;
+                func = stData.First.AsFunction;
             }
             if (null == func)
                 return false;

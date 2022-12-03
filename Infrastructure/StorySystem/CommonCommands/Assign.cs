@@ -70,7 +70,7 @@ namespace StorySystem.CommonCommands
                     if (instance.GlobalVariables.ContainsKey(m_VarName)) {
                         var oval = instance.GlobalVariables[m_VarName];
                         if (oval.IsInteger) {
-                            int ov = oval.Get<int>();
+                            int ov = oval.GetInt();
                             if (m_ParamNum > 1 && m_Value.HaveValue) {
                                 int v = m_Value.Value;
                                 ov += v;
@@ -80,7 +80,7 @@ namespace StorySystem.CommonCommands
                                 instance.GlobalVariables[m_VarName] = ov;
                             }
                         } else {
-                            float ov = oval.Get<float>();
+                            float ov = oval.GetFloat();
                             if (m_ParamNum > 1 && m_Value.HaveValue) {
                                 float v = m_Value.Value;
                                 ov += v;
@@ -96,7 +96,7 @@ namespace StorySystem.CommonCommands
                 if (instance.LocalVariables.ContainsKey(m_VarName)) {
                     var oval = instance.LocalVariables[m_VarName];
                     if (oval.IsInteger) {
-                        int ov = oval.Get<int>();
+                        int ov = oval.GetInt();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
                             int v = m_Value.Value;
                             ov += v;
@@ -106,7 +106,7 @@ namespace StorySystem.CommonCommands
                             instance.LocalVariables[m_VarName] = ov;
                         }
                     } else {
-                        float ov = oval.Get<float>();
+                        float ov = oval.GetFloat();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
                             float v = m_Value.Value;
                             ov += v;
@@ -121,7 +121,7 @@ namespace StorySystem.CommonCommands
                 if (instance.StackVariables.ContainsKey(m_VarName)) {
                     var oval = instance.StackVariables[m_VarName];
                     if (oval.IsInteger) {
-                        int ov = oval.Get<int>();
+                        int ov = oval.GetInt();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
                             int v = m_Value.Value;
                             ov += v;
@@ -131,7 +131,7 @@ namespace StorySystem.CommonCommands
                             instance.StackVariables[m_VarName] = ov;
                         }
                     } else {
-                        float ov = oval.Get<float>();
+                        float ov = oval.GetFloat();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
                             float v = m_Value.Value;
                             ov += v;
@@ -189,7 +189,7 @@ namespace StorySystem.CommonCommands
                     if (instance.GlobalVariables.ContainsKey(m_VarName)) {
                         var oval = instance.GlobalVariables[m_VarName];
                         if (oval.IsInteger) {
-                            int ov = oval.Get<int>();
+                            int ov = oval.GetInt();
                             if (m_ParamNum > 1 && m_Value.HaveValue) {
                                 int v = m_Value.Value;
                                 ov -= v;
@@ -199,7 +199,7 @@ namespace StorySystem.CommonCommands
                                 instance.GlobalVariables[m_VarName] = ov;
                             }
                         } else {
-                            float ov = oval.Get<float>();
+                            float ov = oval.GetFloat();
                             if (m_ParamNum > 1 && m_Value.HaveValue) {
                                 float v = m_Value.Value;
                                 ov -= v;
@@ -215,7 +215,7 @@ namespace StorySystem.CommonCommands
                 if (instance.LocalVariables.ContainsKey(m_VarName)) {
                     var oval = instance.LocalVariables[m_VarName];
                     if (oval.IsInteger) {
-                        int ov = oval.Get<int>();
+                        int ov = oval.GetInt();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
                             int v = m_Value.Value;
                             ov -= v;
@@ -225,7 +225,7 @@ namespace StorySystem.CommonCommands
                             instance.LocalVariables[m_VarName] = ov;
                         }
                     } else {
-                        float ov = oval.Get<float>();
+                        float ov = oval.GetFloat();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
                             float v = m_Value.Value;
                             ov -= v;
@@ -240,7 +240,7 @@ namespace StorySystem.CommonCommands
                 if (instance.StackVariables.ContainsKey(m_VarName)) {
                     var oval = instance.StackVariables[m_VarName];
                     if (oval.IsInteger) {
-                        int ov = oval.Get<int>();
+                        int ov = oval.GetInt();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
                             int v = m_Value.Value;
                             ov -= v;
@@ -250,7 +250,7 @@ namespace StorySystem.CommonCommands
                             instance.StackVariables[m_VarName] = ov;
                         }
                     } else {
-                        float ov = oval.Get<float>();
+                        float ov = oval.GetFloat();
                         if (m_ParamNum > 1 && m_Value.HaveValue) {
                             float v = m_Value.Value;
                             ov -= v;
@@ -341,7 +341,7 @@ namespace StorySystem.CommonCommands
             if (m_ListValue.HaveValue && m_IndexValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
                 int index = m_IndexValue.Value;
-                object val = m_Value.Value.Get<object>();
+                object val = m_Value.Value.GetObject();
                 int ct = listValue.Count;
                 if (index >= 0 && index < ct) {
                     listValue[index] = val;
@@ -386,7 +386,7 @@ namespace StorySystem.CommonCommands
         {
             if (m_ListValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
-                object val = m_Value.Value.Get<object>();
+                object val = m_Value.Value.GetObject();
                 listValue.Add(val);
             }
             return false;
@@ -424,7 +424,7 @@ namespace StorySystem.CommonCommands
         {
             if (m_ListValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
-                object val = m_Value.Value.Get<object>();
+                object val = m_Value.Value.GetObject();
                 listValue.Remove(val);
             }
             return false;
@@ -465,7 +465,7 @@ namespace StorySystem.CommonCommands
             if (m_ListValue.HaveValue && m_IndexValue.HaveValue && m_Value.HaveValue) {
                 IList listValue = m_ListValue.Value;
                 int index = m_IndexValue.Value;
-                object val = m_Value.Value.Get<object>();
+                object val = m_Value.Value.GetObject();
                 listValue.Insert(index, val);
             }
             return false;

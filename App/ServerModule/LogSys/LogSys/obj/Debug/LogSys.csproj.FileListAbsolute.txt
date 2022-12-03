@@ -36,3 +36,8 @@ E:/OpenSource/CSharpGameFramework/App/ServerModule/LogSys/LogSys/obj/Debug/LogSy
 /Users/bytedance/Documents/GitHub/CSharpGameFramework/App/ServerModule/LogSys/LogSys/obj/Debug/LogSys.csproj.CoreCompileInputs.cache
 /Users/bytedance/Documents/GitHub/CSharpGameFramework/App/ServerModule/LogSys/LogSys/obj/Debug/LogSys.dll
 /Users/bytedance/Documents/GitHub/CSharpGameFramework/App/ServerModule/LogSys/LogSys/obj/Debug/LogSys.pdb
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin\LogSys.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\ServerEnv\bin\LogSys.pdb
+D:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\LogSys.csproj.CoreCompileInputs.cache
+D:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\LogSys.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\LogSys.pdb

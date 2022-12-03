@@ -63,7 +63,7 @@ namespace GameFramework.Story
                     strVals[i] = InputLabels[i].text;
                 }
                 if (strCt > 0) {
-                    args.Add(BoxedValue.From(strVals));
+                    args.Add(BoxedValue.FromObject(strVals));
                 }
             }
             if (null != InputToggles) {
@@ -73,7 +73,7 @@ namespace GameFramework.Story
                     boolVals[i] = InputToggles[i].isOn ? 1 : 0;
                 }
                 if (boolCt > 0) {
-                    args.Add(BoxedValue.From(boolVals));
+                    args.Add(BoxedValue.FromObject(boolVals));
                 }
             }
             if (null != InputSliders) {
@@ -83,7 +83,7 @@ namespace GameFramework.Story
                     floatVals[i] = InputSliders[i].value;
                 }
                 if (floatCt > 0) {
-                    args.Add(BoxedValue.From(floatVals));
+                    args.Add(BoxedValue.FromObject(floatVals));
                 }
             }
             if (null != InputDropdowns) {
@@ -93,7 +93,7 @@ namespace GameFramework.Story
                     dropdownVals[i] = InputDropdowns[i].value;
                 }
                 if (dropdownCt > 0) {
-                    args.Add(BoxedValue.From(dropdownVals));
+                    args.Add(BoxedValue.FromObject(dropdownVals));
                 }
             }
         }

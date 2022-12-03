@@ -117,8 +117,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (!first.HaveStatement() && !second.HaveStatement()) {
                     Load(first);
                     var call = second;
@@ -171,8 +171,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (!first.HaveStatement() && !second.HaveStatement()) {
                     Load(first);
                     var call = second;
@@ -269,13 +269,13 @@ namespace GameFramework.Story.Commands
         {
             int ct = statementData.Functions.Count;
             if (statementData.Functions.Count >= 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (ct == 2) {
                     m_HaveMultiple = true;
                     LoadMultiple(second);
                 } else if (ct == 3) {
-                    var third = statementData.Third;
+                    var third = statementData.Third.AsFunction;
                     if (null != first && null != second && null != third) {
                         m_HaveSet = true;
                         Load(first);
@@ -283,8 +283,8 @@ namespace GameFramework.Story.Commands
                         LoadTimeoutSet(third);
                     }
                 } else if (ct == 4) {
-                    var third = statementData.Third;
-                    var last = statementData.Last;
+                    var third = statementData.Third.AsFunction;
+                    var last = statementData.Last.AsFunction;
                     if (null != first && null != second && null != third && null != last) {
                         m_HaveSet = true;
                         Load(first);
@@ -383,8 +383,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (!first.HaveStatement() && !second.HaveStatement()) {
                     Load(first);
                     var call = second;
@@ -449,8 +449,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.GetFunctionNum() == 2) {
-                var first = statementData.First;
-                var second = statementData.Second;
+                var first = statementData.First.AsFunction;
+                var second = statementData.Second.AsFunction;
                 if (!first.HaveStatement() && !second.HaveStatement()) {
                     Load(first);
                     var call = second;
@@ -640,9 +640,9 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
 
@@ -762,9 +762,9 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
 
@@ -930,7 +930,7 @@ namespace GameFramework.Story.Commands
 
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue val = m_Args[i];
-                object v = val.Value.Get<object>();
+                object v = val.Value.GetObject();
                 if (null == v) {
                     Msg_CRC_StoryMessage.MessageArg arg = new Msg_CRC_StoryMessage.MessageArg();
                     arg.val_type = ArgType.NULL;
@@ -1008,7 +1008,7 @@ namespace GameFramework.Story.Commands
 
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue val = m_Args[i];
-                object v = val.Value.Get<object>();
+                object v = val.Value.GetObject();
                 if (null == v) {
                     Msg_CLC_StoryMessage.MessageArg arg = new Msg_CLC_StoryMessage.MessageArg();
                     arg.val_type = LobbyArgType.NULL;
@@ -1093,7 +1093,7 @@ namespace GameFramework.Story.Commands
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue val = m_Args[i];
-                arglist.Add(val.Value.Get<object>());
+                arglist.Add(val.Value.GetObject());
             }
             object[] args = arglist.ToArray();
             Utility.EventSystem.Publish(evname, group, args);
@@ -1153,7 +1153,7 @@ namespace GameFramework.Story.Commands
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue val = m_Args[i];
-                arglist.Add(val.Value.Get<object>());
+                arglist.Add(val.Value.GetObject());
             }
             object[] args = arglist.ToArray();
             if (args.Length == 0)
@@ -1218,7 +1218,7 @@ namespace GameFramework.Story.Commands
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; ++i) {
                 IStoryValue val = m_Args[i];
-                arglist.Add(val.Value.Get<object>());
+                arglist.Add(val.Value.GetObject());
             }
             object[] args = arglist.ToArray();
             if (args.Length == 0)
@@ -1277,7 +1277,7 @@ namespace GameFramework.Story.Commands
 
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object obj = m_Object.Value.Get<object>();
+            object obj = m_Object.Value.GetObject();
             var uobj = obj as UnityEngine.GameObject;
             if (null == uobj) {
                 try {
@@ -1292,7 +1292,7 @@ namespace GameFramework.Story.Commands
                 ArrayList arglist = new ArrayList();
                 for (int i = 0; i < m_Args.Count; ++i) {
                     IStoryValue val = m_Args[i];
-                    arglist.Add(val.Value.Get<object>());
+                    arglist.Add(val.Value.GetObject());
                 }
                 object[] args = arglist.ToArray();
                 if (args.Length == 0)
@@ -1362,7 +1362,7 @@ namespace GameFramework.Story.Commands
             Dictionary<string, object> locals = new Dictionary<string, object>();
             for (int i = 0; i < m_Args.Count - 1; i += 2) {
                 string key = m_Args[i].Value;
-                object val = m_Args[i + 1].Value.Get<object>();
+                object val = m_Args[i + 1].Value.GetObject();
                 if (!string.IsNullOrEmpty(key)) {
                     locals.Add(key, val);
                 }
@@ -1439,7 +1439,7 @@ namespace GameFramework.Story.Commands
             if(null!=obj){
                 obj.name = name;
                 if (m_HaveParent) {
-                    object parent = m_Parent.Value.Get<object>();
+                    object parent = m_Parent.Value.GetObject();
                     string path = parent as string;
                     if (null != path) {
                         var pobj = UnityEngine.GameObject.Find(path);
@@ -1467,7 +1467,7 @@ namespace GameFramework.Story.Commands
                 }
                 if (m_HaveObj) {
                     string varName = m_ObjVarName.Value;
-                    instance.SetVariable(varName, BoxedValue.From((object)obj));
+                    instance.SetVariable(varName, BoxedValue.FromObject(obj));
                 }
             }
             return false;
@@ -1493,8 +1493,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     if (second.IsHighOrder) {
@@ -1585,7 +1585,7 @@ namespace GameFramework.Story.Commands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            object objVal = m_ObjPath.Value.Get<object>();
+            object objVal = m_ObjPath.Value.GetObject();
             int localOrWorld = m_LocalOrWorld.Value;
             string objPath = objVal as string;
             UnityEngine.GameObject obj = null;
@@ -2063,7 +2063,7 @@ namespace GameFramework.Story.Commands
                     obj = UnityEngine.GameObject.Find(objPath);
                 } else {
                     try {
-                        int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
+                        int id = objPathVal.IsInteger ? objPathVal.GetInt() : -1;
                         obj = PluginFramework.Instance.GetGameObject(id);
                     } catch {
                         obj = null;
@@ -2084,7 +2084,7 @@ namespace GameFramework.Story.Commands
                 }
                 if (m_HaveObj) {
                     string varName = m_ObjVarName.Value;
-                    instance.SetVariable(varName, BoxedValue.From((object)component));
+                    instance.SetVariable(varName, BoxedValue.FromObject(component));
                 }
             }
             return false;
@@ -2103,8 +2103,8 @@ namespace GameFramework.Story.Commands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count == 2) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
                 if (null != first && null != second) {
                     Load(first);
                     LoadVarName(second);
@@ -2154,7 +2154,7 @@ namespace GameFramework.Story.Commands
                 }
                 else {
                     try {
-                        int id = objPathVal.IsInteger ? objPathVal.Get<int>() : -1;
+                        int id = objPathVal.IsInteger ? objPathVal.GetInt() : -1;
                         obj = PluginFramework.Instance.GetGameObject(id);
                     }
                     catch {
@@ -2720,7 +2720,7 @@ namespace GameFramework.Story.Commands
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_DictArgs.Count; ++i) {
                 IStoryValue val = m_DictArgs[i];
-                arglist.Add(val.Value.Get<object>());
+                arglist.Add(val.Value.GetObject());
             }
             object[] args = arglist.ToArray();
             PluginFramework.Instance.HighlightPromptWithDict(dictId, args);
@@ -2854,7 +2854,7 @@ namespace GameFramework.Story.Commands
                     uobj = UnityEngine.GameObject.Find(objPath);
                 } else {
                     try {
-                        int objId = o.Get<int>();
+                        int objId = o.GetInt();
                         uobj = PluginFramework.Instance.GetGameObject(objId);
                     } catch {
                         uobj = null;
@@ -2940,7 +2940,7 @@ namespace GameFramework.Story.Commands
                     obj = UnityEngine.GameObject.Find(objPath);
                 } else {
                     try {
-                        int objId = o.Get<int>();
+                        int objId = o.GetInt();
                         obj = PluginFramework.Instance.GetGameObject(objId);
                     } catch {
                         obj = null;
@@ -2956,13 +2956,13 @@ namespace GameFramework.Story.Commands
                         string key = param.Key.Value;
                         var val = param.Value.Value;
                         if (type == "int") {
-                            int v = val.Get<int>();
+                            int v = val.GetInt();
                             animator.SetInteger(key, v);
                         } else if (type == "float") {
-                            float v = val.Get<float>();
+                            float v = val.GetFloat();
                             animator.SetFloat(key, v);
                         } else if (type == "bool") {
-                            bool v = val.Get<bool>();
+                            bool v = val.GetBool();
                             animator.SetBool(key, v);
                         } else if (type == "trigger") {
                             string v = val.ToString();
@@ -3079,7 +3079,7 @@ namespace GameFramework.Story.Commands
                     uobj = UnityEngine.GameObject.Find(objPath);
                 } else {
                     try {
-                        int objId = o.Get<int>();
+                        int objId = o.GetInt();
                         uobj = PluginFramework.Instance.GetGameObject(objId);
                     } catch {
                         uobj = null;
@@ -3090,7 +3090,7 @@ namespace GameFramework.Story.Commands
             StrObjDict locals = new StrObjDict();
             for (int i = 0; i < m_Args.Count - 1; i += 2) {
                 string key = m_Args[i].Value;
-                object val = m_Args[i + 1].Value.Get<object>();
+                object val = m_Args[i + 1].Value.GetObject();
                 if (!string.IsNullOrEmpty(key)) {
                     locals.Add(key, val);
                 }

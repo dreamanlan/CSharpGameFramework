@@ -115,9 +115,9 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue && m_Key.HaveValue && m_Value.HaveValue) {
-                object obj = m_Var.Value.Get<object>();
-                object key = m_Key.Value.Get<object>();
-                object val = m_Value.Value.Get<object>();
+                object obj = m_Var.Value.GetObject();
+                object key = m_Key.Value.GetObject();
+                object val = m_Value.Value.GetObject();
                 var dict = obj as IDictionary;
                 if (null != dict && null != key) {
                     dict.Add(key, val);
@@ -162,9 +162,9 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue && m_Key.HaveValue && m_Value.HaveValue) {
-                object obj = m_Var.Value.Get<object>();
-                object key = m_Key.Value.Get<object>();
-                object val = m_Value.Value.Get<object>();
+                object obj = m_Var.Value.GetObject();
+                object key = m_Key.Value.GetObject();
+                object val = m_Value.Value.GetObject();
                 var dict = obj as IDictionary;
                 if (null != dict && null != key) {
                     dict[key] = val;
@@ -208,8 +208,8 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue && m_Key.HaveValue) {
-                object obj = m_Var.Value.Get<object>();
-                object key = m_Key.Value.Get<object>();
+                object obj = m_Var.Value.GetObject();
+                object key = m_Key.Value.GetObject();
                 var dict = obj as IDictionary;
                 if (null != dict && null != key) {
                     dict.Remove(key);
@@ -248,7 +248,7 @@ namespace StorySystem.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_Var.HaveValue) {
-                object obj = m_Var.Value.Get<object>();
+                object obj = m_Var.Value.GetObject();
                 var dict = obj as IDictionary;
                 if (null != dict) {
                     dict.Clear();

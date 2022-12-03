@@ -1123,7 +1123,7 @@ namespace StorySystem.CommonValues
                 for (int i = 0; i < list.Count; ++i) {
                     v.Add(list[i]);
                 }
-                m_Value = BoxedValue.From(v);
+                m_Value = BoxedValue.FromObject(v);
             }
         }
         private IStoryValue<string> m_ListString = new StoryValue<string>();
@@ -1178,7 +1178,7 @@ namespace StorySystem.CommonValues
                 for (int i = 0; i < list.Count; ++i) {
                     v.Add(list[i]);
                 }
-                m_Value = BoxedValue.From(v);
+                m_Value = BoxedValue.FromObject(v);
             }
         }
         private IStoryValue<string> m_ListString = new StoryValue<string>();
@@ -1233,7 +1233,7 @@ namespace StorySystem.CommonValues
                 for (int i = 0; i < list.Count; ++i) {
                     v.Add(list[i]);
                 }
-                m_Value = BoxedValue.From(v);
+                m_Value = BoxedValue.FromObject(v);
             }
         }
         private IStoryValue<string> m_ListString = new StoryValue<string>();
@@ -1288,7 +1288,7 @@ namespace StorySystem.CommonValues
                 for (int i = 0; i < list.Count; ++i) {
                     v.Add(list[i]);
                 }
-                m_Value = BoxedValue.From(v);
+                m_Value = BoxedValue.FromObject(v);
             }
         }
         private IStoryValue<string> m_ListString = new StoryValue<string>();
@@ -1343,7 +1343,7 @@ namespace StorySystem.CommonValues
                 for (int i = 0; i < list.Count; ++i) {
                     v.Add(list[i]);
                 }
-                m_Value = BoxedValue.From(v);
+                m_Value = BoxedValue.FromObject(v);
             }
         }
         private IStoryValue<string> m_ListString = new StoryValue<string>();
@@ -1410,9 +1410,9 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 var list = new ObjList();
                 for (int i = 0; i < m_List.Count; i++) {
-                    list.Add(m_List[i].Value.Get<object>());
+                    list.Add(m_List[i].Value.GetObject());
                 }
-                m_Value = BoxedValue.From(list.ToArray());
+                m_Value = BoxedValue.FromObject(list.ToArray());
             }
         }
         private List<IStoryValue> m_List = new List<IStoryValue>();
@@ -1460,7 +1460,7 @@ namespace StorySystem.CommonValues
         {
             if (m_ListValue.HaveValue) {
                 m_HaveValue = true;
-                object list = m_ListValue.Value.Get<object>();
+                object list = m_ListValue.Value.GetObject();
                 IEnumerable obj = list as IEnumerable;
                 if (null != obj) {
                     ArrayList al = new ArrayList();
@@ -1469,7 +1469,7 @@ namespace StorySystem.CommonValues
                         object val = enumer.Current;
                         al.Add(val);
                     }
-                    m_Value = BoxedValue.From(al.ToArray());
+                    m_Value = BoxedValue.FromObject(al.ToArray());
                 } else {
                     m_Value = BoxedValue.NullObject;
                 }
@@ -1541,9 +1541,9 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 var v = new ObjList();
                 for (int i = 0; i < m_List.Count; i++) {
-                    v.Add(m_List[i].Value.Get<object>());
+                    v.Add(m_List[i].Value.GetObject());
                 }
-                m_Value = BoxedValue.From(v);
+                m_Value = BoxedValue.FromObject(v);
             }
         }
         private List<IStoryValue> m_List = new List<IStoryValue>();
@@ -1607,9 +1607,9 @@ namespace StorySystem.CommonValues
                 int ct = listValue.Count;
                 int ix = GameFramework.Helper.Random.Next(ct);
                 if (ix >= 0 && ix < ct) {
-                    m_Value = BoxedValue.From(listValue[ix]);
+                    m_Value = BoxedValue.FromObject(listValue[ix]);
                 } else if (ct > 0) {
-                    m_Value = BoxedValue.From(listValue[0]);
+                    m_Value = BoxedValue.FromObject(listValue[0]);
                 } else if (m_ParamNum > 1) {
                     m_Value = m_DefaultValue.Value;
                 } else {
@@ -1687,9 +1687,9 @@ namespace StorySystem.CommonValues
                 int ix = m_IndexValue.Value;
                 int ct = listValue.Count;
                 if (ix >= 0 && ix < ct) {
-                    m_Value = BoxedValue.From(listValue[ix]);
+                    m_Value = BoxedValue.FromObject(listValue[ix]);
                 } else if (ct > 0) {
-                    m_Value = BoxedValue.From(listValue[ct - 1]);
+                    m_Value = BoxedValue.FromObject(listValue[ct - 1]);
                 } else if (m_ParamNum > 2) {
                     m_Value = m_DefaultValue.Value;
                 } else {
@@ -1810,7 +1810,7 @@ namespace StorySystem.CommonValues
             if (m_ListValue.HaveValue && m_IndexOfValue.HaveValue) {
                 m_HaveValue = true;
                 IList listValue = m_ListValue.Value;
-                object val = m_IndexOfValue.Value.Get<object>();
+                object val = m_IndexOfValue.Value.GetObject();
                 m_Value = listValue.IndexOf(val);
             }
         }

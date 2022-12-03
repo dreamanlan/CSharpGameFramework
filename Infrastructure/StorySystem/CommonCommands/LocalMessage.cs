@@ -278,9 +278,9 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
                     Load(first);
@@ -391,9 +391,9 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
                     Load(first);
@@ -512,9 +512,9 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
                     Load(first);
@@ -625,9 +625,9 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
                     Load(first);
@@ -1034,9 +1034,9 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
                     Load(first);
@@ -1153,9 +1153,9 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
                     Load(first);
@@ -1285,9 +1285,9 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
                     Load(first);
@@ -1405,9 +1405,9 @@ namespace StorySystem.CommonCommands
         protected override bool Load(Dsl.StatementData statementData)
         {
             if (statementData.Functions.Count >= 3) {
-                Dsl.FunctionData first = statementData.First;
-                Dsl.FunctionData second = statementData.Second;
-                Dsl.FunctionData third = statementData.Third;
+                Dsl.FunctionData first = statementData.First.AsFunction;
+                Dsl.FunctionData second = statementData.Second.AsFunction;
+                Dsl.FunctionData third = statementData.Third.AsFunction;
                 if (null != first && null != second && null != third) {
                     m_HaveSet = true;
                     Load(first);

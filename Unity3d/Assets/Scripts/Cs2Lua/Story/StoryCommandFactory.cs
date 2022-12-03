@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using GameFramework.Plugin;
@@ -71,17 +71,19 @@ internal class NativeStoryCommand : AbstractStoryCommand
         }
         return false;
     }
-    protected override void Load(Dsl.FunctionData funcData)
+    protected override bool Load(Dsl.FunctionData funcData)
     {
         if (null != m_Plugin) {
-            m_Plugin.LoadFuncData(funcData);
+            return m_Plugin.LoadFuncData(funcData);
         }
+        return false;
     }
-    protected override void Load(Dsl.StatementData statementData)
+    protected override bool Load(Dsl.StatementData statementData)
     {
         if (null != m_Plugin) {
-            m_Plugin.LoadStatementData(statementData);
+            return m_Plugin.LoadStatementData(statementData);
         }
+        return false;
     }
 
     private string m_ClassName;
@@ -101,10 +103,10 @@ internal class LuaStoryCommand : AbstractStoryCommand
         if (callLua) {
             m_Plugin = new Cs2LuaStoryCommandPlugin();
             m_Plugin.LoadLua(m_FileName);
-            IsCompositeCommand = m_Plugin.IsCompositeCommand();
+            m_IsCompositeCommand = m_Plugin.IsCompositeCommand();
         }
     }
-
+    public override bool IsCompositeCommand => m_IsCompositeCommand;
     protected override IStoryCommand CloneCommand()
     {
         var newObj = new LuaStoryCommand(m_ClassName, false);
@@ -112,7 +114,7 @@ internal class LuaStoryCommand : AbstractStoryCommand
             var ret = m_Plugin.Clone();
             newObj.m_Plugin = new Cs2LuaStoryCommandPlugin();
             newObj.m_Plugin.InitLua((LuaTable)ret, m_FileName);
-            newObj.IsCompositeCommand = newObj.m_Plugin.IsCompositeCommand();
+            newObj.m_IsCompositeCommand = newObj.m_Plugin.IsCompositeCommand();
         }
         return newObj;
     }
@@ -142,19 +144,22 @@ internal class LuaStoryCommand : AbstractStoryCommand
         }
         return false;
     }
-    protected override void Load(Dsl.FunctionData funcData)
+    protected override bool Load(Dsl.FunctionData funcData)
     {
         if (null != m_Plugin) {
-            m_Plugin.LoadFuncData(funcData);
+            return m_Plugin.LoadFuncData(funcData);
         }
+        return false;
     }
-    protected override void Load(Dsl.StatementData statementData)
+    protected override bool Load(Dsl.StatementData statementData)
     {
         if (null != m_Plugin) {
-            m_Plugin.LoadStatementData(statementData);
+            return m_Plugin.LoadStatementData(statementData);
         }
+        return false;
     }
 
+    private bool m_IsCompositeCommand;
     private string m_FileName;
     private string m_ClassName;
     private Cs2LuaStoryCommandPlugin m_Plugin;

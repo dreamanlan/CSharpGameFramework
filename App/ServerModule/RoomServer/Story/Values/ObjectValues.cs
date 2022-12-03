@@ -1096,7 +1096,7 @@ namespace GameFramework.Story.Values
                     m_HaveValue = true;
                     object v;
                     if (scene.SceneContext.ObjectTryGet(uniqueId, localName, out v)) {
-                        m_Value = BoxedValue.From(v);
+                        m_Value = BoxedValue.FromObject(v);
                     }
                     else if(m_ParamNum > 2) {
                         m_Value = m_DefaultValue.Value;
@@ -1293,7 +1293,7 @@ namespace GameFramework.Story.Values
                     if (null != obj) {
                         try {
                             Type t = obj.GetType();
-                            m_Value = BoxedValue.From(t.InvokeMember(attrName, System.Reflection.BindingFlags.GetProperty, null, obj, null));
+                            m_Value = BoxedValue.FromObject(t.InvokeMember(attrName, System.Reflection.BindingFlags.GetProperty, null, obj, null));
                         } catch (Exception ex) {
                             LogSystem.Warn("setattr throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
                             m_Value = BoxedValue.NullObject;

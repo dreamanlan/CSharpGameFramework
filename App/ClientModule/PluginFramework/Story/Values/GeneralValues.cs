@@ -160,7 +160,7 @@ namespace GameFramework.Story.Values
                     m_Value = uobj.activeSelf ? 1 : 0;
                 } else {
                     try {
-                        int objId = o.Get<int>();
+                        int objId = o.GetInt();
                         UnityEngine.GameObject obj = PluginFramework.Instance.GetGameObject(objId);
                         if (null != obj) {
                             m_Value = obj.activeSelf ? 1 : 0;
@@ -236,7 +236,7 @@ namespace GameFramework.Story.Values
                     m_Value = uobj.activeInHierarchy ? 1 : 0;
                 } else {
                     try {
-                        int objId = o.Get<int>();
+                        int objId = o.GetInt();
                         UnityEngine.GameObject obj = PluginFramework.Instance.GetGameObject(objId);
                         if (null != obj) {
                             m_Value = obj.activeInHierarchy ? 1 : 0;
@@ -305,7 +305,7 @@ namespace GameFramework.Story.Values
                         uobj = UnityEngine.GameObject.Find(objPath);
                     } else {
                         try {
-                            int objId = o.Get<int>();
+                            int objId = o.GetInt();
                             uobj = PluginFramework.Instance.GetGameObject(objId);
                         } catch {
                             uobj = null;
@@ -460,7 +460,7 @@ namespace GameFramework.Story.Values
                         obj = UnityEngine.GameObject.Find(path);
                     } else {
                         try {
-                            int objId = objPath.Get<int>();
+                            int objId = objPath.GetInt();
                             obj = PluginFramework.Instance.GetGameObject(objId);
                         } catch {
                             obj = null;
@@ -471,12 +471,12 @@ namespace GameFramework.Story.Values
                     Type t = componentType.IsObject ? componentType.ObjectVal as Type : null;
                     if (null != t) {
                         UnityEngine.Component component = obj.GetComponent(t);
-                        m_Value = BoxedValue.From((object)component);
+                        m_Value = BoxedValue.FromObject(component);
                     } else {
                         string name = componentType.IsString ? componentType.StringVal : null;
                         if (null != name) {
                             UnityEngine.Component component = obj.GetComponent(name);
-                            m_Value = BoxedValue.From((object)component);
+                            m_Value = BoxedValue.FromObject(component);
                         }
                     }
                 }
@@ -542,7 +542,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int objId = objPath.Get<int>();
+                            int objId = objPath.GetInt();
                             obj = PluginFramework.Instance.GetGameObject(objId);
                         }
                         catch {
@@ -554,7 +554,7 @@ namespace GameFramework.Story.Values
                     Type t = componentType.IsObject ? componentType.ObjectVal as Type : null;
                     if (null != t) {
                         UnityEngine.Component component = obj.GetComponentInParent(t);
-                        m_Value = BoxedValue.From((object)component);
+                        m_Value = BoxedValue.FromObject(component);
                     }
                     else {
                         string name = componentType.IsString ? componentType.StringVal : null;
@@ -562,7 +562,7 @@ namespace GameFramework.Story.Values
                             t = Utility.GetType(name);
                             if (null != t) {
                                 UnityEngine.Component component = obj.GetComponentInParent(t);
-                                m_Value = BoxedValue.From((object)component);
+                                m_Value = BoxedValue.FromObject(component);
                             } else {
                                 m_Value = BoxedValue.NullObject;
                             }
@@ -643,7 +643,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int objId = objPath.Get<int>();
+                            int objId = objPath.GetInt();
                             obj = PluginFramework.Instance.GetGameObject(objId);
                         }
                         catch {
@@ -655,7 +655,7 @@ namespace GameFramework.Story.Values
                     Type t = componentType.IsObject ? componentType.ObjectVal as Type : null;
                     if (null != t) {
                         UnityEngine.Component component = obj.GetComponentInChildren(t, includeInactive != 0);
-                        m_Value = BoxedValue.From((object)component);
+                        m_Value = BoxedValue.FromObject(component);
                     }
                     else {
                         string name = componentType.IsString ? componentType.StringVal : null;
@@ -663,7 +663,7 @@ namespace GameFramework.Story.Values
                             t = Utility.GetType(name);
                             if (null != t) {
                                 UnityEngine.Component component = obj.GetComponentInChildren(t, includeInactive != 0);
-                                m_Value = BoxedValue.From((object)component);
+                                m_Value = BoxedValue.FromObject(component);
                             } else {
                                 m_Value = BoxedValue.NullObject;
                             }
@@ -735,7 +735,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int objId = objPath.Get<int>();
+                            int objId = objPath.GetInt();
                             obj = PluginFramework.Instance.GetGameObject(objId);
                         }
                         catch {
@@ -750,7 +750,7 @@ namespace GameFramework.Story.Values
                         if (null != comps)
                             m_Value = comps;
                         else
-                            m_Value = BoxedValue.From(new List<UnityEngine.Component>());
+                            m_Value = BoxedValue.FromObject(new List<UnityEngine.Component>());
                     }
                     else {
                         string name = componentType.IsString ? componentType.StringVal : null;
@@ -761,9 +761,9 @@ namespace GameFramework.Story.Values
                                 if (null != comps)
                                     m_Value = comps;
                                 else
-                                    m_Value = BoxedValue.From(new List<UnityEngine.Component>());
+                                    m_Value = BoxedValue.FromObject(new List<UnityEngine.Component>());
                             } else {
-                                m_Value = BoxedValue.From(new List<UnityEngine.Component>());
+                                m_Value = BoxedValue.FromObject(new List<UnityEngine.Component>());
                             }
                         }
                     }
@@ -857,7 +857,7 @@ namespace GameFramework.Story.Values
                         if (null != comps)
                             m_Value = comps;
                         else
-                            m_Value = BoxedValue.From(new List<UnityEngine.Component>());
+                            m_Value = BoxedValue.FromObject(new List<UnityEngine.Component>());
                     }
                     else {
                         string name = componentType.IsString ? componentType.StringVal : null;
@@ -868,10 +868,10 @@ namespace GameFramework.Story.Values
                                 if (null != comps)
                                     m_Value = comps;
                                 else
-                                    m_Value = BoxedValue.From(new List<UnityEngine.Component>());
+                                    m_Value = BoxedValue.FromObject(new List<UnityEngine.Component>());
                             }
                             else {
-                                m_Value = BoxedValue.From(new List<UnityEngine.Component>());
+                                m_Value = BoxedValue.FromObject(new List<UnityEngine.Component>());
                             }
                         }
                     }
@@ -953,7 +953,7 @@ namespace GameFramework.Story.Values
                     }
                     else {
                         try {
-                            int objId = objPath.Get<int>();
+                            int objId = objPath.GetInt();
                             obj = PluginFramework.Instance.GetGameObject(objId);
                         }
                         catch {
@@ -968,7 +968,7 @@ namespace GameFramework.Story.Values
                         if (null != comps)
                             m_Value = comps;
                         else
-                            m_Value = BoxedValue.From(new List<UnityEngine.Component>());
+                            m_Value = BoxedValue.FromObject(new List<UnityEngine.Component>());
                     }
                     else {
                         string name = componentType.IsString ? componentType.StringVal : null;
@@ -979,10 +979,10 @@ namespace GameFramework.Story.Values
                                 if (null != comps)
                                     m_Value = comps;
                                 else
-                                    m_Value = BoxedValue.From(new List<UnityEngine.Component>());
+                                    m_Value = BoxedValue.FromObject(new List<UnityEngine.Component>());
                             }
                             else {
-                                m_Value = BoxedValue.From(new List<UnityEngine.Component>());
+                                m_Value = BoxedValue.FromObject(new List<UnityEngine.Component>());
                             }
                         }
                     }
@@ -1066,15 +1066,15 @@ namespace GameFramework.Story.Values
                 if (null != objPath) {
                     obj = UnityEngine.GameObject.Find(objPath);
                     if (null != obj) {
-                        m_Value = BoxedValue.From((object)obj);
+                        m_Value = BoxedValue.FromObject(obj);
                     } else {
                         m_Value = BoxedValue.NullObject;
                     }
                 } else {
                     try {
-                        int objId = o.Get<int>();
+                        int objId = o.GetInt();
                         obj = PluginFramework.Instance.GetGameObject(objId);
-                        m_Value = BoxedValue.From((object)obj);
+                        m_Value = BoxedValue.FromObject(obj);
                     } catch {
                         m_Value = BoxedValue.NullObject;
                     }
@@ -1200,22 +1200,22 @@ namespace GameFramework.Story.Values
                 if (null != objPath) {
                     var obj = UnityEngine.GameObject.Find(objPath);
                     if (null != obj && null != obj.transform.parent) {
-                        m_Value = BoxedValue.From((object)obj.transform.parent.gameObject);
+                        m_Value = BoxedValue.FromObject(obj.transform.parent.gameObject);
                     } else {
                         m_Value = BoxedValue.NullObject;
                     }
                 } else if (null != uobj) {
                     if (null != uobj.transform.parent) {
-                        m_Value = BoxedValue.From((object)uobj.transform.parent.gameObject);
+                        m_Value = BoxedValue.FromObject(uobj.transform.parent.gameObject);
                     } else {
                         m_Value = BoxedValue.NullObject;
                     }
                 } else {
                     try {
-                        int objId = o.Get<int>();
+                        int objId = o.GetInt();
                         var obj = PluginFramework.Instance.GetGameObject(objId);
                         if (null != obj && null != obj.transform.parent) {
-                            m_Value = BoxedValue.From((object)obj.transform.parent.gameObject);
+                            m_Value = BoxedValue.FromObject(obj.transform.parent.gameObject);
                         } else {
                             m_Value = BoxedValue.NullObject;
                         }
@@ -1285,7 +1285,7 @@ namespace GameFramework.Story.Values
                     if (null != obj) {
                         var t = Utility.FindChildRecursive(obj.transform, childPath);
                         if (null != t) {
-                            m_Value = BoxedValue.From((object)t.gameObject);
+                            m_Value = BoxedValue.FromObject(t.gameObject);
                         } else {
                             m_Value = BoxedValue.NullObject;
                         }
@@ -1295,18 +1295,18 @@ namespace GameFramework.Story.Values
                 } else if (null != uobj) {
                     var t = Utility.FindChildRecursive(uobj.transform, childPath);
                     if (null != t) {
-                        m_Value = BoxedValue.From((object)t.gameObject);
+                        m_Value = BoxedValue.FromObject(t.gameObject);
                     } else {
                         m_Value = BoxedValue.NullObject;
                     }
                 } else {
                     try {
-                        int objId = o.Get<int>();
+                        int objId = o.GetInt();
                         var obj = PluginFramework.Instance.GetGameObject(objId);
                         if (null != obj) {
                             var t = Utility.FindChildRecursive(obj.transform, childPath);
                             if (null != t) {
-                                m_Value = BoxedValue.From((object)t.gameObject);
+                                m_Value = BoxedValue.FromObject(t.gameObject);
                             } else {
                                 m_Value = BoxedValue.NullObject;
                             }
@@ -1462,7 +1462,7 @@ namespace GameFramework.Story.Values
                 if (null != uobj) {
                     var t = uobj.transform.GetChild(index);
                     if (null != t) {
-                        m_Value = BoxedValue.From((object)t.gameObject);
+                        m_Value = BoxedValue.FromObject(t.gameObject);
                     } else {
                         m_Value = BoxedValue.NullObject;
                     }
@@ -1713,7 +1713,7 @@ namespace GameFramework.Story.Values
             if (m_ObjId.HaveValue) {
                 int objId = m_ObjId.Value;
                 m_HaveValue = true;
-                m_Value = BoxedValue.From(PluginFramework.Instance.GetEntityById(objId));
+                m_Value = BoxedValue.FromObject(PluginFramework.Instance.GetEntityById(objId));
             }
         }
 
@@ -1764,7 +1764,7 @@ namespace GameFramework.Story.Values
             if (m_ObjId.HaveValue) {
                 int objId = m_ObjId.Value;
                 m_HaveValue = true;
-                m_Value = BoxedValue.From(EntityController.Instance.GetEntityViewById(objId));
+                m_Value = BoxedValue.FromObject(EntityController.Instance.GetEntityViewById(objId));
             }
         }
 
@@ -1809,7 +1809,7 @@ namespace GameFramework.Story.Values
         private void TryUpdateValue(StoryInstance instance)
         {
             m_HaveValue = true;
-            m_Value = BoxedValue.From(GlobalVariables.Instance);
+            m_Value = BoxedValue.FromObject(GlobalVariables.Instance);
         }
 
         private bool m_HaveValue;
@@ -1852,7 +1852,7 @@ namespace GameFramework.Story.Values
         private void TryUpdateValue(StoryInstance instance)
         {
             m_HaveValue = true;
-            m_Value = BoxedValue.From(PluginFramework.Instance);
+            m_Value = BoxedValue.FromObject(PluginFramework.Instance);
         }
 
         private bool m_HaveValue;

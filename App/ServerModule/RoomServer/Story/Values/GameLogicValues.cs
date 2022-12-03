@@ -66,7 +66,7 @@ namespace GameFramework.Story.Values
                     m_HaveValue = true;
                     object v;
                     if (scene.SceneContext.BlackBoard.TryGetVariable(name, out v)) {
-                        m_Value = BoxedValue.From(v);
+                        m_Value = BoxedValue.FromObject(v);
                     }
                     else {
                         if (m_ParamNum > 1) {
@@ -137,7 +137,7 @@ namespace GameFramework.Story.Values
                     int dlgItemId = TableConfigUtility.GenStoryDlgItemId(dlgId, index);
                     TableConfig.StoryDlg cfg = TableConfig.StoryDlgProvider.Instance.GetStoryDlg(dlgItemId);
                     if (null != cfg) {
-                        m_Value = BoxedValue.From(cfg);
+                        m_Value = BoxedValue.FromObject(cfg);
                     } else {
                         m_Value = BoxedValue.NullObject;
                     }
@@ -264,7 +264,7 @@ namespace GameFramework.Story.Values
                     List<TableConfig.LevelMonster> monsterList;
                     if (TableConfig.LevelMonsterProvider.Instance.TryGetValue(monstersId, out monsterList)) {
                         if (index >= 0 && index < monsterList.Count) {
-                            m_Value = BoxedValue.From(monsterList[index]);
+                            m_Value = BoxedValue.FromObject(monsterList[index]);
                         } else {
                             m_Value = BoxedValue.NullObject;
                         }

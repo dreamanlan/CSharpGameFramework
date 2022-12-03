@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEditor;
 using UnityEditor.Animations;
 using System.Collections;
@@ -263,7 +263,7 @@ public static class AnimationClipUtility
                 funcData = dslInfo as Dsl.FunctionData;
                 var stData = dslInfo as Dsl.StatementData;
                 if (null == funcData && null!=stData) {
-                    funcData = stData.First;
+                    funcData = stData.First.AsFunction;
                 }
             } else {
                 foreach (var info in file.DslInfos) {
@@ -271,7 +271,7 @@ public static class AnimationClipUtility
                         funcData = info as Dsl.FunctionData;
                         var stData = info as Dsl.StatementData;
                         if (null == funcData && null != stData) {
-                            funcData = stData.First;
+                            funcData = stData.First.AsFunction;
                         }
                         if (null != funcData) {
                             var callData = funcData;

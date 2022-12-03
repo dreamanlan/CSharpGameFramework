@@ -30,10 +30,11 @@ config(LegalExtensionList)
     type("UnityEngine.Playables.PlayableExtensions");
     type("UniGifExtension");
 };
-config(LegalConvertionList)
+config(LegalConversionList)
 {
-    convertion("","");
+    conversion("","");
 };
+
 config(IllegalTypeList)
 {
     type("");
@@ -49,4 +50,34 @@ config(IllegalPropertyList)
 config(IllegalFieldList)
 {
     field("","");
+};
+
+config(InvokeToLuaLibMethodList)
+{
+    method("CsLibrary.LogSystem","Debug","dummycall");
+    method("CsLibrary.LogSystem","Info","dummycall");
+    method("CsLibrary.LogSystem","Assert","dummycall");
+    method("Test", "testcall", "lualib_call");
+};
+config(InvokeToLuaLibPropertyList)
+{
+    property("CsLibrary.ClientModule","Instance","clientmodule_instance");
+    property("CsLibrary.GlobalVariables","Instance","globalvariables_instance");
+};
+config(InvokeToLuaLibFieldList)
+{
+    field("","","");
+};
+config(InvokeToLuaLibIndexerPropertyList)
+{
+    property("","","");
+};
+config(InvokeToLuaLibArrayList)
+{
+    array("","");
+};
+
+config(ExternClassMethodMap)
+{
+    map("Remove__TKey", "System.Collections.Generic.Dictionary_TKey_TValue", "Remove");  
 };

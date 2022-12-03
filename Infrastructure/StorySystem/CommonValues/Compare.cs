@@ -49,8 +49,8 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
-                float x = valX.Get<float>();
-                float y = valY.Get<float>();
+                float x = valX.GetFloat();
+                float y = valY.GetFloat();
                 m_Value = (x > y ? 1 : 0);
             }
         }
@@ -106,8 +106,8 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
-                float x = valX.Get<float>();
-                float y = valY.Get<float>();
+                float x = valX.GetFloat();
+                float y = valY.GetFloat();
                 m_Value = (x >= y ? 1 : 0);
             }
         }
@@ -164,8 +164,8 @@ namespace StorySystem.CommonValues
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
                 if (valX.IsString || valY.IsString) {
-                    string x = valX.Get<string>();
-                    string y = valY.Get<string>();
+                    string x = valX.GetString();
+                    string y = valY.GetString();
                     m_Value = (x == y ? 1 : 0);
                 }
                 else if (valX.IsObject && valY.IsObject) {
@@ -174,8 +174,8 @@ namespace StorySystem.CommonValues
                     m_Value = (x == y ? 1 : 0);
                 }
                 else {
-                    int x = valX.Get<int>();
-                    int y = valY.Get<int>();
+                    int x = valX.GetInt();
+                    int y = valY.GetInt();
                     m_Value = (x == y ? 1 : 0);
                 }
             }
@@ -233,8 +233,8 @@ namespace StorySystem.CommonValues
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
                 if (valX.IsString || valY.IsString) {
-                    string x = valX.Get<string>();
-                    string y = valY.Get<string>();
+                    string x = valX.GetString();
+                    string y = valY.GetString();
                     m_Value = (x != y ? 1 : 0);
                 }
                 else if (valX.IsObject && valY.IsObject) {
@@ -243,8 +243,8 @@ namespace StorySystem.CommonValues
                     m_Value = (x != y ? 1 : 0);
                 }
                 else {
-                    int x = valX.Get<int>();
-                    int y = valY.Get<int>();
+                    int x = valX.GetInt();
+                    int y = valY.GetInt();
                     m_Value = (x != y ? 1 : 0);
                 }
             }
@@ -301,8 +301,8 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
-                float x = valX.Get<float>();
-                float y = valY.Get<float>();
+                float x = valX.GetFloat();
+                float y = valY.GetFloat();
                 m_Value = (x < y ? 1 : 0);
             }
         }
@@ -358,8 +358,8 @@ namespace StorySystem.CommonValues
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 var valY = m_Y.Value;
-                float x = valX.Get<float>();
-                float y = valY.Get<float>();
+                float x = valX.GetFloat();
+                float y = valY.GetFloat();
                 m_Value = (x <= y ? 1 : 0);
             }
         }

@@ -114,7 +114,7 @@ namespace GameFramework.Story.Values
                     UserInfo ui = userThread.GetUserInfo(userGuid);
                     if (null != ui) {
                         if (index >= 0 && index < ui.MemberInfos.Count) {
-                            m_Value = BoxedValue.From(ui.MemberInfos[index]);
+                            m_Value = BoxedValue.FromObject(ui.MemberInfos[index]);
                         } else {
                             m_Value = BoxedValue.NullObject;
                         }
@@ -235,13 +235,13 @@ namespace GameFramework.Story.Values
                     UserInfo ui = userThread.GetUserInfo(userGuid);
                     if (null != ui) {
                         if (id.Type == BoxedValue.c_ULongType) {
-                            ulong guid = id.Get<ulong>();
-                            m_Value = BoxedValue.From(ui.FriendInfos.Find(fi => fi.FriendGuid == guid));
+                            ulong guid = id.GetULong();
+                            m_Value = BoxedValue.FromObject(ui.FriendInfos.Find(fi => fi.FriendGuid == guid));
                         } else {
                             try {
-                                int index = id.Get<int>();
+                                int index = id.GetInt();
                                 if (index >= 0 && index < ui.MemberInfos.Count) {
-                                    m_Value = BoxedValue.From(ui.FriendInfos[index]);
+                                    m_Value = BoxedValue.FromObject(ui.FriendInfos[index]);
                                 } else {
                                     m_Value = BoxedValue.NullObject;
                                 }
@@ -426,13 +426,13 @@ namespace GameFramework.Story.Values
                     UserInfo ui = userThread.GetUserInfo(userGuid);
                     if (null != ui) {
                         if (id.Type == BoxedValue.c_ULongType) {
-                            ulong guid = id.Get<ulong>();
-                            m_Value = BoxedValue.From(ui.ItemBag.GetItemData(guid));
+                            ulong guid = id.GetULong();
+                            m_Value = BoxedValue.FromObject(ui.ItemBag.GetItemData(guid));
                         } else {
                             try {
-                                int index = id.Get<int>();
+                                int index = id.GetInt();
                                 if (index >= 0 && index < ui.MemberInfos.Count) {
-                                    m_Value = BoxedValue.From(ui.FriendInfos[index]);
+                                    m_Value = BoxedValue.FromObject(ui.FriendInfos[index]);
                                 } else {
                                     m_Value = BoxedValue.NullObject;
                                 }
@@ -501,12 +501,12 @@ namespace GameFramework.Story.Values
                     UserInfo ui = userThread.GetUserInfo(userGuid);
                     if (null != ui) {
                         if (id.Type == BoxedValue.c_ULongType) {
-                            ulong guid = id.Get<ulong>();
-                            m_Value = BoxedValue.From(ui.ItemBag.GetItemData(guid));
+                            ulong guid = id.GetULong();
+                            m_Value = BoxedValue.FromObject(ui.ItemBag.GetItemData(guid));
                         } else {
                             try {
-                                int itemId = id.Get<int>();
-                                m_Value = BoxedValue.From(ui.ItemBag.GetItemData(itemId));
+                                int itemId = id.GetInt();
+                                m_Value = BoxedValue.FromObject(ui.ItemBag.GetItemData(itemId));
                             } catch {
                                 m_Value = BoxedValue.NullObject;
                             }

@@ -189,9 +189,9 @@ namespace GameFramework
                         //resetdsl
                         scene.GmStorySystem.Reset();
                         if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                            scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.From(user.Info);
+                            scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.FromObject(user.Info);
                         } else {
-                            scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.From(user.Info));
+                            scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.FromObject(user.Info));
                         }
                         StorySystem.StoryConfigManager.Instance.Clear();
                         scene.StorySystem.ClearStoryInstancePool();
@@ -204,9 +204,9 @@ namespace GameFramework
                         if (null != cmdMsg.content) {
                             scene.GmStorySystem.Reset();
                             if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                                scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.From(user.Info);
+                                scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.FromObject(user.Info);
                             } else {
-                                scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.From(user.Info));
+                                scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.FromObject(user.Info));
                             }
                             scene.GmStorySystem.LoadStory(cmdMsg.content);
                             scene.GmStorySystem.StartStory("main");
@@ -218,10 +218,10 @@ namespace GameFramework
                             string cmd = cmdMsg.content;
                             scene.GmStorySystem.Reset();
                             if (scene.GmStorySystem.GlobalVariables.ContainsKey("EntityInfo")) {
-                                scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.From(user.Info);
+                                scene.GmStorySystem.GlobalVariables["EntityInfo"] = BoxedValue.FromObject(user.Info);
                             }
                             else {
-                                scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.From(user.Info));
+                                scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.FromObject(user.Info));
                             }
                             scene.GmStorySystem.LoadStoryText(System.Text.Encoding.UTF8.GetBytes("script(main){onmessage(\"start\"){" + cmd + "}}"));
                             scene.GmStorySystem.StartStory("main");
@@ -243,7 +243,7 @@ namespace GameFramework
             Scene scene = user.OwnRoomUserManager.ActiveScene;
             if (scene != null) {
                 try {
-                    //客户端发来的消息都加上前缀client，防止直接调用服务器端逻辑（服务器消息不能用client前缀！）
+                    //瀹㈡埛绔彂鏉ョ殑娑堟伅閮藉姞涓婂墠缂�client锛岄槻姝㈢洿鎺ヨ皟鐢ㄦ湇鍔″櫒绔�昏緫锛堟湇鍔″櫒娑堟伅涓嶈兘鐢╟lient鍓嶇紑锛侊級
                     string msgId = string.Format("client:{0}", target_msg.m_MsgId);
                     ArrayList args = new ArrayList();
                     args.Add(user.RoleId);

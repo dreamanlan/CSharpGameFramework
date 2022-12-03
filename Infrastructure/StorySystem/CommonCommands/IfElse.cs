@@ -123,10 +123,10 @@ namespace StorySystem.CommonCommands
         }
         protected override bool Load(Dsl.StatementData statementData)
         {
-            Load(statementData.First);
+            Load(statementData.First.AsFunction);
             int ct = statementData.Functions.Count;
             for (int stIx = 1; stIx < ct; ++stIx) {
-                Dsl.FunctionData functionData = statementData.Functions[stIx];
+                Dsl.FunctionData functionData = statementData.Functions[stIx].AsFunction;
                 if (null != functionData) {
                     string funcId = functionData.GetId();
                     if (funcId == "elseif") {

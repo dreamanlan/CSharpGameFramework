@@ -133,10 +133,10 @@ namespace StorySystem
                 else {
                     var statement = dslInfo as Dsl.StatementData;
                     if (null != statement) {
-                        first = statement.First;
+                        first = statement.First.AsFunction;
                         cmd.Name = first.GetParamId(0);
                         for (int i = 1; i < statement.GetFunctionNum(); ++i) {
-                            var funcData = statement.GetFunction(i);
+                            var funcData = statement.GetFunction(i).AsFunction;
                             var cd = funcData;
                             if (funcData.IsHighOrder)
                                 cd = funcData.LowerOrderFunction;
@@ -181,10 +181,10 @@ namespace StorySystem
                 else {
                     var statement = dslInfo as Dsl.StatementData;
                     if (null != statement) {
-                        first = statement.First;
+                        first = statement.First.AsFunction;
                         val.Name = first.GetParamId(0);
                         for (int i = 1; i < statement.GetFunctionNum(); ++i) {
-                            var funcData = statement.GetFunction(i);
+                            var funcData = statement.GetFunction(i).AsFunction;
                             var cd = funcData;
                             if (funcData.IsHighOrder) {
                                 cd = funcData.LowerOrderFunction;
@@ -236,7 +236,7 @@ namespace StorySystem
                 }
                 else {
                     if (null != statement) {
-                        first = statement.First;
+                        first = statement.First.AsFunction;
                         name = first.GetParamId(0);
                     }
                 }
@@ -249,7 +249,7 @@ namespace StorySystem
                     Dsl.FunctionData bodyFunc = null;
                     if (null != statement) {
                         for (int i = 0; i < statement.GetFunctionNum(); ++i) {
-                            var funcData = statement.GetFunction(i);
+                            var funcData = statement.GetFunction(i).AsFunction;
                             var fid = funcData.GetId();
                             if (funcData.HaveStatement() && fid != "opts") {
                                 bodyFunc = funcData;
@@ -288,7 +288,7 @@ namespace StorySystem
                 }
                 else {
                     if (null != statement) {
-                        first = statement.First;
+                        first = statement.First.AsFunction;
                         name = first.GetParamId(0);
                     }
                 }
@@ -301,7 +301,7 @@ namespace StorySystem
                     Dsl.FunctionData bodyFunc = null;
                     if (null != statement) {
                         for (int i = 0; i < statement.GetFunctionNum(); ++i) {
-                            var funcData = statement.GetFunction(i);
+                            var funcData = statement.GetFunction(i).AsFunction;
                             var fid = funcData.GetId();
                             if (funcData.HaveStatement() && fid != "opts") {
                                 bodyFunc = funcData;
