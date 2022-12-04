@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ProtoBuf_Meta_TypeFormatEventArgs : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Type(IntPtr l) {
 		try {
 			ProtoBuf.Meta.TypeFormatEventArgs self=(ProtoBuf.Meta.TypeFormatEventArgs)checkSelf(l);
@@ -16,6 +17,7 @@ public class Lua_ProtoBuf_Meta_TypeFormatEventArgs : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Type(IntPtr l) {
 		try {
 			ProtoBuf.Meta.TypeFormatEventArgs self=(ProtoBuf.Meta.TypeFormatEventArgs)checkSelf(l);
@@ -30,6 +32,7 @@ public class Lua_ProtoBuf_Meta_TypeFormatEventArgs : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_FormattedName(IntPtr l) {
 		try {
 			ProtoBuf.Meta.TypeFormatEventArgs self=(ProtoBuf.Meta.TypeFormatEventArgs)checkSelf(l);
@@ -42,6 +45,7 @@ public class Lua_ProtoBuf_Meta_TypeFormatEventArgs : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_FormattedName(IntPtr l) {
 		try {
 			ProtoBuf.Meta.TypeFormatEventArgs self=(ProtoBuf.Meta.TypeFormatEventArgs)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_ProtoBuf_Meta_TypeFormatEventArgs : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ProtoBuf.Meta.TypeFormatEventArgs");
 		addMember(l,"Type",get_Type,set_Type,true);

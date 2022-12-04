@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_SkillSystem_SkillSection : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			SkillSystem.SkillSection o;
 			o=new SkillSystem.SkillSection();
@@ -17,6 +18,7 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int VisitProperties(IntPtr l) {
 		try {
 			SkillSystem.SkillSection self=(SkillSystem.SkillSection)checkSelf(l);
@@ -31,6 +33,21 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Clone(IntPtr l) {
+		try {
+			SkillSystem.SkillSection self=(SkillSystem.SkillSection)checkSelf(l);
+			var ret=self.Clone();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Load(IntPtr l) {
 		try {
 			SkillSystem.SkillSection self=(SkillSystem.SkillSection)checkSelf(l);
@@ -47,6 +64,7 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			SkillSystem.SkillSection self=(SkillSystem.SkillSection)checkSelf(l);
@@ -59,6 +77,7 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Prepare(IntPtr l) {
 		try {
 			SkillSystem.SkillSection self=(SkillSystem.SkillSection)checkSelf(l);
@@ -71,6 +90,7 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Tick(IntPtr l) {
 		try {
 			SkillSystem.SkillSection self=(SkillSystem.SkillSection)checkSelf(l);
@@ -89,6 +109,7 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Duration(IntPtr l) {
 		try {
 			SkillSystem.SkillSection self=(SkillSystem.SkillSection)checkSelf(l);
@@ -101,6 +122,7 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Duration(IntPtr l) {
 		try {
 			SkillSystem.SkillSection self=(SkillSystem.SkillSection)checkSelf(l);
@@ -115,6 +137,7 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurTime(IntPtr l) {
 		try {
 			SkillSystem.SkillSection self=(SkillSystem.SkillSection)checkSelf(l);
@@ -127,6 +150,7 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsFinished(IntPtr l) {
 		try {
 			SkillSystem.SkillSection self=(SkillSystem.SkillSection)checkSelf(l);
@@ -138,9 +162,12 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"SkillSystem.SkillSection");
+		addMember(l,ctor_s);
 		addMember(l,VisitProperties);
+		addMember(l,Clone);
 		addMember(l,Load);
 		addMember(l,Reset);
 		addMember(l,Prepare);
@@ -148,6 +175,6 @@ public class Lua_SkillSystem_SkillSection : LuaObject {
 		addMember(l,"Duration",get_Duration,set_Duration,true);
 		addMember(l,"CurTime",get_CurTime,null,true);
 		addMember(l,"IsFinished",get_IsFinished,null,true);
-		createTypeMetatable(l,constructor, typeof(SkillSystem.SkillSection));
+		createTypeMetatable(l,null, typeof(SkillSystem.SkillSection));
 	}
 }

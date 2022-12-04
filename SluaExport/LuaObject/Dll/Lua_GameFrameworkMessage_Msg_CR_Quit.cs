@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_CR_Quit : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Quit o;
 			o=new GameFrameworkMessage.Msg_CR_Quit();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Quit : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_is_force(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Quit self=(GameFrameworkMessage.Msg_CR_Quit)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Quit : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_is_force(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Quit self=(GameFrameworkMessage.Msg_CR_Quit)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_Msg_CR_Quit : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_CR_Quit");
+		addMember(l,ctor_s);
 		addMember(l,"is_force",get_is_force,set_is_force,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_CR_Quit));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_CR_Quit));
 	}
 }

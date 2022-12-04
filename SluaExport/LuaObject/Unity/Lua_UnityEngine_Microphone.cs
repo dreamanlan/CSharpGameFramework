@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_Microphone : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.Microphone o;
 			o=new UnityEngine.Microphone();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_Microphone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Start_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -37,6 +39,7 @@ public class Lua_UnityEngine_Microphone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int End_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -50,6 +53,7 @@ public class Lua_UnityEngine_Microphone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsRecording_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -64,6 +68,7 @@ public class Lua_UnityEngine_Microphone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetPosition_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -78,6 +83,7 @@ public class Lua_UnityEngine_Microphone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetDeviceCaps_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -95,6 +101,7 @@ public class Lua_UnityEngine_Microphone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_devices(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -105,14 +112,16 @@ public class Lua_UnityEngine_Microphone : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Microphone");
+		addMember(l,ctor_s);
 		addMember(l,Start_s);
 		addMember(l,End_s);
 		addMember(l,IsRecording_s);
 		addMember(l,GetPosition_s);
 		addMember(l,GetDeviceCaps_s);
 		addMember(l,"devices",get_devices,null,false);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.Microphone));
+		createTypeMetatable(l,null, typeof(UnityEngine.Microphone));
 	}
 }

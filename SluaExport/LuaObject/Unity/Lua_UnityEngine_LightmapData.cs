@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_LightmapData : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.LightmapData o;
 			o=new UnityEngine.LightmapData();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_LightmapData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_lightmapColor(IntPtr l) {
 		try {
 			UnityEngine.LightmapData self=(UnityEngine.LightmapData)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_UnityEngine_LightmapData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_lightmapColor(IntPtr l) {
 		try {
 			UnityEngine.LightmapData self=(UnityEngine.LightmapData)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_UnityEngine_LightmapData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_lightmapDir(IntPtr l) {
 		try {
 			UnityEngine.LightmapData self=(UnityEngine.LightmapData)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_UnityEngine_LightmapData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_lightmapDir(IntPtr l) {
 		try {
 			UnityEngine.LightmapData self=(UnityEngine.LightmapData)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_UnityEngine_LightmapData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_shadowMask(IntPtr l) {
 		try {
 			UnityEngine.LightmapData self=(UnityEngine.LightmapData)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_UnityEngine_LightmapData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_shadowMask(IntPtr l) {
 		try {
 			UnityEngine.LightmapData self=(UnityEngine.LightmapData)checkSelf(l);
@@ -94,11 +101,13 @@ public class Lua_UnityEngine_LightmapData : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.LightmapData");
+		addMember(l,ctor_s);
 		addMember(l,"lightmapColor",get_lightmapColor,set_lightmapColor,true);
 		addMember(l,"lightmapDir",get_lightmapDir,set_lightmapDir,true);
 		addMember(l,"shadowMask",get_shadowMask,set_shadowMask,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.LightmapData));
+		createTypeMetatable(l,null, typeof(UnityEngine.LightmapData));
 	}
 }

@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RegisterAttrExpression(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy self=(GameFramework.Plugin.IPluginProxy)checkSelf(l);
@@ -20,6 +21,7 @@ public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RegisterSkillTrigger(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy self=(GameFramework.Plugin.IPluginProxy)checkSelf(l);
@@ -36,6 +38,7 @@ public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RegisterStoryCommand(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy self=(GameFramework.Plugin.IPluginProxy)checkSelf(l);
@@ -52,6 +55,7 @@ public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RegisterStoryValue(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy self=(GameFramework.Plugin.IPluginProxy)checkSelf(l);
@@ -68,6 +72,7 @@ public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RegisterSimpleStoryCommand(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy self=(GameFramework.Plugin.IPluginProxy)checkSelf(l);
@@ -84,6 +89,7 @@ public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RegisterSimpleStoryValue(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy self=(GameFramework.Plugin.IPluginProxy)checkSelf(l);
@@ -100,6 +106,7 @@ public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int InstallStartupPlugin(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy self=(GameFramework.Plugin.IPluginProxy)checkSelf(l);
@@ -116,6 +123,7 @@ public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RemoveStartupPlugin(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy self=(GameFramework.Plugin.IPluginProxy)checkSelf(l);
@@ -132,6 +140,7 @@ public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int InstallTickPlugin(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy self=(GameFramework.Plugin.IPluginProxy)checkSelf(l);
@@ -148,6 +157,7 @@ public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RemoveTickPlugin(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy self=(GameFramework.Plugin.IPluginProxy)checkSelf(l);
@@ -163,6 +173,7 @@ public class Lua_GameFramework_Plugin_IPluginProxy : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.Plugin.IPluginProxy");
 		addMember(l,RegisterAttrExpression);

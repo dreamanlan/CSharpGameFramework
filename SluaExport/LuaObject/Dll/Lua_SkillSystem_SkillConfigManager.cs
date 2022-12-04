@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadSkillIfNotExist(IntPtr l) {
 		try {
 			SkillSystem.SkillConfigManager self=(SkillSystem.SkillConfigManager)checkSelf(l);
@@ -20,6 +21,7 @@ public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ExistSkill(IntPtr l) {
 		try {
 			SkillSystem.SkillConfigManager self=(SkillSystem.SkillConfigManager)checkSelf(l);
@@ -35,6 +37,7 @@ public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadSkill(IntPtr l) {
 		try {
 			SkillSystem.SkillConfigManager self=(SkillSystem.SkillConfigManager)checkSelf(l);
@@ -51,6 +54,7 @@ public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadSkillText(IntPtr l) {
 		try {
 			SkillSystem.SkillConfigManager self=(SkillSystem.SkillConfigManager)checkSelf(l);
@@ -67,6 +71,7 @@ public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadSkillDsl(IntPtr l) {
 		try {
 			SkillSystem.SkillConfigManager self=(SkillSystem.SkillConfigManager)checkSelf(l);
@@ -83,6 +88,7 @@ public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int NewSkillInstance(IntPtr l) {
 		try {
 			SkillSystem.SkillConfigManager self=(SkillSystem.SkillConfigManager)checkSelf(l);
@@ -98,6 +104,7 @@ public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			SkillSystem.SkillConfigManager self=(SkillSystem.SkillConfigManager)checkSelf(l);
@@ -110,6 +117,7 @@ public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Instance(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -120,6 +128,7 @@ public class Lua_SkillSystem_SkillConfigManager : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"SkillSystem.SkillConfigManager");
 		addMember(l,LoadSkillIfNotExist);

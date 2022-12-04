@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_SkillSystem_SkillStringParam : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			SkillSystem.SkillStringParam o;
 			o=new SkillSystem.SkillStringParam();
@@ -17,6 +18,7 @@ public class Lua_SkillSystem_SkillStringParam : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CopyFrom(IntPtr l) {
 		try {
 			SkillSystem.SkillStringParam self=(SkillSystem.SkillStringParam)checkSelf(l);
@@ -31,34 +33,37 @@ public class Lua_SkillSystem_SkillStringParam : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Set(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int Set__String(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,2,typeof(Dsl.ISyntaxComponent))){
-				SkillSystem.SkillStringParam self=(SkillSystem.SkillStringParam)checkSelf(l);
-				Dsl.ISyntaxComponent a1;
-				checkType(l,2,out a1);
-				self.Set(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(matchType(l,argc,2,typeof(string))){
-				SkillSystem.SkillStringParam self=(SkillSystem.SkillStringParam)checkSelf(l);
-				System.String a1;
-				checkType(l,2,out a1);
-				self.Set(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			SkillSystem.SkillStringParam self=(SkillSystem.SkillStringParam)checkSelf(l);
+			System.String a1;
+			checkType(l,2,out a1);
+			self.Set(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Set__ISyntaxComponent(IntPtr l) {
+		try {
+			SkillSystem.SkillStringParam self=(SkillSystem.SkillStringParam)checkSelf(l);
+			Dsl.ISyntaxComponent a1;
+			checkType(l,2,out a1);
+			self.Set(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Get(IntPtr l) {
 		try {
 			SkillSystem.SkillStringParam self=(SkillSystem.SkillStringParam)checkSelf(l);
@@ -74,6 +79,7 @@ public class Lua_SkillSystem_SkillStringParam : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_EditableValue(IntPtr l) {
 		try {
 			SkillSystem.SkillStringParam self=(SkillSystem.SkillStringParam)checkSelf(l);
@@ -86,6 +92,7 @@ public class Lua_SkillSystem_SkillStringParam : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_EditableValue(IntPtr l) {
 		try {
 			SkillSystem.SkillStringParam self=(SkillSystem.SkillStringParam)checkSelf(l);
@@ -99,12 +106,15 @@ public class Lua_SkillSystem_SkillStringParam : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"SkillSystem.SkillStringParam");
+		addMember(l,ctor_s);
 		addMember(l,CopyFrom);
-		addMember(l,Set);
+		addMember(l,Set__String);
+		addMember(l,Set__ISyntaxComponent);
 		addMember(l,Get);
 		addMember(l,"EditableValue",get_EditableValue,set_EditableValue,true);
-		createTypeMetatable(l,constructor, typeof(SkillSystem.SkillStringParam));
+		createTypeMetatable(l,null, typeof(SkillSystem.SkillStringParam));
 	}
 }

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_ChangeNameResult : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.ChangeNameResult o;
 			o=new GameFrameworkMessage.ChangeNameResult();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_ChangeNameResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Result(IntPtr l) {
 		try {
 			GameFrameworkMessage.ChangeNameResult self=(GameFrameworkMessage.ChangeNameResult)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_ChangeNameResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Result(IntPtr l) {
 		try {
 			GameFrameworkMessage.ChangeNameResult self=(GameFrameworkMessage.ChangeNameResult)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_ChangeNameResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Nickname(IntPtr l) {
 		try {
 			GameFrameworkMessage.ChangeNameResult self=(GameFrameworkMessage.ChangeNameResult)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_ChangeNameResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Nickname(IntPtr l) {
 		try {
 			GameFrameworkMessage.ChangeNameResult self=(GameFrameworkMessage.ChangeNameResult)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_ChangeNameResult : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.ChangeNameResult");
+		addMember(l,ctor_s);
 		addMember(l,"m_Result",get_m_Result,set_m_Result,true);
 		addMember(l,"m_Nickname",get_m_Nickname,set_m_Nickname,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.ChangeNameResult));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.ChangeNameResult));
 	}
 }

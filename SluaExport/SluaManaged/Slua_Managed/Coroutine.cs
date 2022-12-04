@@ -20,26 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#if !SLUA_STANDALONE
 namespace SLua
 {
-	using UnityEngine;
-	using System.Collections;
-	using SLua;
-	using System;
+    using UnityEngine;
+    using System.Collections;
+    using SLua;
+    using System;
 
-	public class LuaCoroutine : LuaObject
-	{
+    public class LuaCoroutine : LuaObject
+    {
 
-		static MonoBehaviour mb;
+        static MonoBehaviour mb;
 
-		static public void reg(IntPtr l, MonoBehaviour m)
-		{
-			mb = m;
+        static public void reg(IntPtr l, MonoBehaviour m)
+        {
+            mb = m;
             reg(l, Yieldk, "UnityEngine");
             reg(l, WrapEnumerator, "UnityEngine");
+            reg(l, WrapEnumerator2, "UnityEngine");
 
-			string yield =
+            string yield =
 @"
 local Yield = UnityEngine.Yieldk
 UnityEngine.Yield = function(x)
@@ -48,85 +48,127 @@ UnityEngine.Yield = function(x)
 
 	if type(x) == 'thread' and coroutine.status(x) ~= 'dead' then
 		repeat
-			Yield(nil, function() lualog('coroutine status:{0} after thread {1}', coroutine.status(co), x);coroutine.resume(co) end)
-            lualog('coroutine yield for thread {0}', x)
+			Yield(nil, function() 
+                    --lualog('coroutine status:{0} after thread {1}', coroutine.status(co), x)
+                    coroutine.resume(co)
+                end)
+            --lualog('coroutine yield for thread {0}', x)
 			coroutine.yield()
 		until coroutine.status(x) == 'dead'
 	else
-		Yield(x, function() lualog('coroutine status:{0} after {1}', coroutine.status(co), x);if coroutine.status(co) == 'suspended' then coroutine.resume(co) end; end)
-		lualog('coroutine yield for {0}', x)
+		Yield(x, function() 
+                --lualog('coroutine status:{0} after {1}', coroutine.status(co), x);
+                if coroutine.status(co) == 'suspended' then 
+                    coroutine.resume(co) 
+                end
+            end)
+		--lualog('coroutine yield for {0}', x)
         coroutine.yield()
 	end
 end
 ";
-			LuaState.get(l).doString(yield);
-		}
+            LuaState.get(l).doString(yield);
+        }
 
-		[MonoPInvokeCallback(typeof(LuaCSFunction))]
-		static public int Yieldk(IntPtr l)
-		{
-			try
-			{
-				if (LuaDLL.lua_pushthread(l) == 1)
-				{
-					return error(l, "should put Yield call into lua coroutine.");
-				}
-				object y = checkObj(l, 1);
-				LuaFunction f;
-				checkType(l, 2, out f);
+        [MonoPInvokeCallback(typeof(LuaCSFunction))]
+        static public int Yieldk(IntPtr l)
+        {
+            try {
+                if (LuaDLL.lua_pushthread(l) == 1) {
+                    return error(l, "should put Yield call into lua coroutine.");
+                }
+                object y = checkObj(l, 1);
+                LuaFunction f;
+                checkType(l, 2, out f);
 
-				mb.StartCoroutine(yieldReturn(y, f));
-				pushValue(l, true);
-				return 1;
-			}
-			catch (Exception e)
-			{
-				return error(l, e);
-			}
-		}
+                mb.StartCoroutine(yieldReturn(y, f));
+                pushValue(l, true);
+                return 1;
+            }
+            catch (Exception e) {
+                return error(l, e);
+            }
+        }
 
-		static public IEnumerator yieldReturn(object y, LuaFunction f)
-		{
-			if (y is IEnumerator)
-				yield return mb.StartCoroutine((IEnumerator)y);
-			else
-				yield return y;
+        static public IEnumerator yieldReturn(object y, LuaFunction f)
+        {
+            if (y is IEnumerator)
+                yield return mb.StartCoroutine((IEnumerator)y);
+            else
+                yield return y;
             yield return null;
-			f.call();
+            f.call();
         }
 
         [MonoPInvokeCallback(typeof(LuaCSFunction))]
         static public int WrapEnumerator(IntPtr l)
         {
             try {
-                var t = LuaDLL.lua_tothread(l, 1);
-                IEnumerator enumer = buildEnumerator(t);
+                LuaThread lt;
+                checkType(l, 1, out lt);
+                IEnumerator enumer = buildEnumerator(lt);
                 LuaDLL.lua_pop(l, 1);
                 pushValue(l, true);
                 pushValue(l, enumer);
                 return 2;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 return error(l, e);
             }
         }
-        
-        static public IEnumerator buildEnumerator(IntPtr l)
+
+        static public IEnumerator buildEnumerator(LuaThread lt)
         {
-            LuaDLL.lua_resume(l, 0);
-            for (; ; ) {
-                int r = LuaDLL.lua_status(l);
+            LuaDLL.lua_getref(lt.L, lt.Ref);
+            IntPtr t = LuaDLL.lua_tothread(lt.L, -1);
+            LuaDLL.lua_resume(t, 0);
+            for (; lt.Ref != 0;) {
+                int r = LuaDLL.lua_status(t);
                 if (r == 0) {
-                    if (LuaDLL.lua_gettop(l) == 0)
-                        break;
-                    else
+                    if (LuaDLL.lua_gettop(t) == 0) {
+                        yield break;
+                    }
+                    else {
                         yield return null;
-                } else if (r == (int)SLua.LuaThreadStatus.LUA_YIELD) {
+                    }
+                }
+                else if (r == (int)SLua.LuaThreadStatus.LUA_YIELD) {
                     yield return null;
-                } else {
-                    break;
+                }
+                else {
+                    Logger.LogError("buildEnumerator loop exit: " + r);
+                    yield break;
                 }
             }
         }
-	}
+
+        [MonoPInvokeCallback(typeof(LuaCSFunction))]
+        static public int WrapEnumerator2(IntPtr l)
+        {
+            try {
+                LuaFunction cofunc;
+                checkType(l, 1, out cofunc);
+                IEnumerator enumer = buildEnumerator2(cofunc);
+                LuaDLL.lua_pop(l, 1);
+                pushValue(l, true);
+                pushValue(l, enumer);
+                return 2;
+            }
+            catch (Exception e) {
+                return error(l, e);
+            }
+        }
+
+        static public IEnumerator buildEnumerator2(LuaFunction cofunc)
+        {
+            for (; null != cofunc;) {
+                object r = cofunc.call();
+                if (Helper.luaYieldBreak != r)
+                    yield return r;
+                else
+                    yield break;
+            }
+        }
+    }
 }
-#endif
+

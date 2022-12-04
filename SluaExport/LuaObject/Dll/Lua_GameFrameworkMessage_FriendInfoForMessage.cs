@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage o;
 			o=new GameFrameworkMessage.FriendInfoForMessage();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_FriendGuid(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage self=(GameFrameworkMessage.FriendInfoForMessage)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_FriendGuid(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage self=(GameFrameworkMessage.FriendInfoForMessage)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_FriendNickname(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage self=(GameFrameworkMessage.FriendInfoForMessage)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_FriendNickname(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage self=(GameFrameworkMessage.FriendInfoForMessage)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_QQ(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage self=(GameFrameworkMessage.FriendInfoForMessage)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_QQ(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage self=(GameFrameworkMessage.FriendInfoForMessage)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_weixin(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage self=(GameFrameworkMessage.FriendInfoForMessage)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_weixin(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage self=(GameFrameworkMessage.FriendInfoForMessage)checkSelf(l);
@@ -121,6 +130,7 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsBlack(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage self=(GameFrameworkMessage.FriendInfoForMessage)checkSelf(l);
@@ -133,6 +143,7 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsBlack(IntPtr l) {
 		try {
 			GameFrameworkMessage.FriendInfoForMessage self=(GameFrameworkMessage.FriendInfoForMessage)checkSelf(l);
@@ -146,13 +157,15 @@ public class Lua_GameFrameworkMessage_FriendInfoForMessage : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.FriendInfoForMessage");
+		addMember(l,ctor_s);
 		addMember(l,"FriendGuid",get_FriendGuid,set_FriendGuid,true);
 		addMember(l,"FriendNickname",get_FriendNickname,set_FriendNickname,true);
 		addMember(l,"QQ",get_QQ,set_QQ,true);
 		addMember(l,"weixin",get_weixin,set_weixin,true);
 		addMember(l,"IsBlack",get_IsBlack,set_IsBlack,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.FriendInfoForMessage));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.FriendInfoForMessage));
 	}
 }

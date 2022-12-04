@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule o;
 			o=new UnityEngine.ParticleSystem.CollisionModule();
@@ -17,6 +18,58 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int AddPlane(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			UnityEngine.Transform a1;
+			checkType(l,2,out a1);
+			self.AddPlane(a1);
+			pushValue(l,true);
+			setBack(l,(object)self);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int RemovePlane__Int32(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			self.RemovePlane(a1);
+			pushValue(l,true);
+			setBack(l,(object)self);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int RemovePlane__Transform(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			UnityEngine.Transform a1;
+			checkType(l,2,out a1);
+			self.RemovePlane(a1);
+			pushValue(l,true);
+			setBack(l,(object)self);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetPlane(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -27,7 +80,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			checkType(l,3,out a2);
 			self.SetPlane(a1,a2);
 			pushValue(l,true);
-			setBack(l,self);
+			setBack(l,(object)self);
 			return 1;
 		}
 		catch(Exception e) {
@@ -35,6 +88,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetPlane(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -51,6 +105,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -64,6 +119,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -71,7 +127,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.enabled=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -80,6 +136,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_type(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -93,6 +150,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_type(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -100,7 +158,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			UnityEngine.ParticleSystemCollisionType v;
 			checkEnum(l,2,out v);
 			self.type=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -109,6 +167,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_mode(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -122,6 +181,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_mode(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -129,7 +189,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			UnityEngine.ParticleSystemCollisionMode v;
 			checkEnum(l,2,out v);
 			self.mode=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -138,6 +198,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_dampen(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -151,6 +212,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_dampen(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -158,7 +220,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.dampen=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -167,6 +229,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_dampenMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -180,6 +243,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_dampenMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -187,7 +251,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.dampenMultiplier=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -196,6 +260,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_bounce(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -209,6 +274,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_bounce(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -216,7 +282,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.bounce=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -225,6 +291,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_bounceMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -238,6 +305,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_bounceMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -245,7 +313,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.bounceMultiplier=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -254,6 +322,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_lifetimeLoss(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -267,6 +336,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_lifetimeLoss(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -274,7 +344,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.lifetimeLoss=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -283,6 +353,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_lifetimeLossMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -296,6 +367,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_lifetimeLossMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -303,7 +375,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.lifetimeLossMultiplier=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -312,6 +384,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_minKillSpeed(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -325,6 +398,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_minKillSpeed(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -332,7 +406,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.minKillSpeed=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -341,6 +415,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_maxKillSpeed(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -354,6 +429,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_maxKillSpeed(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -361,7 +437,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.maxKillSpeed=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -370,6 +446,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_collidesWith(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -383,6 +460,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_collidesWith(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -390,7 +468,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			UnityEngine.LayerMask v;
 			checkValueType(l,2,out v);
 			self.collidesWith=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -399,6 +477,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_enableDynamicColliders(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -412,6 +491,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_enableDynamicColliders(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -419,7 +499,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.enableDynamicColliders=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -428,35 +508,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_enableInteriorCollisions(IntPtr l) {
-		try {
-			UnityEngine.ParticleSystem.CollisionModule self;
-			checkValueType(l,1,out self);
-			pushValue(l,true);
-			pushValue(l,self.enableInteriorCollisions);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_enableInteriorCollisions(IntPtr l) {
-		try {
-			UnityEngine.ParticleSystem.CollisionModule self;
-			checkValueType(l,1,out self);
-			bool v;
-			checkType(l,2,out v);
-			self.enableInteriorCollisions=v;
-			setBack(l,self);
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_maxCollisionShapes(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -470,6 +522,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_maxCollisionShapes(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -477,7 +530,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.maxCollisionShapes=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -486,6 +539,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_quality(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -499,6 +553,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_quality(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -506,7 +561,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			UnityEngine.ParticleSystemCollisionQuality v;
 			checkEnum(l,2,out v);
 			self.quality=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -515,6 +570,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_voxelSize(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -528,6 +584,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_voxelSize(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -535,7 +592,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.voxelSize=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -544,6 +601,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_radiusScale(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -557,6 +615,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_radiusScale(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -564,7 +623,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.radiusScale=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -573,6 +632,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_sendCollisionMessages(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -586,6 +646,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_sendCollisionMessages(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
@@ -593,7 +654,7 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.sendCollisionMessages=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -602,20 +663,150 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_maxPlaneCount(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int get_colliderForce(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CollisionModule self;
 			checkValueType(l,1,out self);
 			pushValue(l,true);
-			pushValue(l,self.maxPlaneCount);
+			pushValue(l,self.colliderForce);
 			return 2;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int set_colliderForce(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			float v;
+			checkType(l,2,out v);
+			self.colliderForce=v;
+			setBack(l,(object)self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_multiplyColliderForceByCollisionAngle(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.multiplyColliderForceByCollisionAngle);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int set_multiplyColliderForceByCollisionAngle(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			bool v;
+			checkType(l,2,out v);
+			self.multiplyColliderForceByCollisionAngle=v;
+			setBack(l,(object)self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_multiplyColliderForceByParticleSpeed(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.multiplyColliderForceByParticleSpeed);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int set_multiplyColliderForceByParticleSpeed(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			bool v;
+			checkType(l,2,out v);
+			self.multiplyColliderForceByParticleSpeed=v;
+			setBack(l,(object)self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_multiplyColliderForceByParticleSize(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.multiplyColliderForceByParticleSize);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int set_multiplyColliderForceByParticleSize(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			bool v;
+			checkType(l,2,out v);
+			self.multiplyColliderForceByParticleSize=v;
+			setBack(l,(object)self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_planeCount(IntPtr l) {
+		try {
+			UnityEngine.ParticleSystem.CollisionModule self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.planeCount);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ParticleSystem.CollisionModule");
+		addMember(l,ctor_s);
+		addMember(l,AddPlane);
+		addMember(l,RemovePlane__Int32);
+		addMember(l,RemovePlane__Transform);
 		addMember(l,SetPlane);
 		addMember(l,GetPlane);
 		addMember(l,"enabled",get_enabled,set_enabled,true);
@@ -631,13 +822,16 @@ public class Lua_UnityEngine_ParticleSystem_CollisionModule : LuaObject {
 		addMember(l,"maxKillSpeed",get_maxKillSpeed,set_maxKillSpeed,true);
 		addMember(l,"collidesWith",get_collidesWith,set_collidesWith,true);
 		addMember(l,"enableDynamicColliders",get_enableDynamicColliders,set_enableDynamicColliders,true);
-		addMember(l,"enableInteriorCollisions",get_enableInteriorCollisions,set_enableInteriorCollisions,true);
 		addMember(l,"maxCollisionShapes",get_maxCollisionShapes,set_maxCollisionShapes,true);
 		addMember(l,"quality",get_quality,set_quality,true);
 		addMember(l,"voxelSize",get_voxelSize,set_voxelSize,true);
 		addMember(l,"radiusScale",get_radiusScale,set_radiusScale,true);
 		addMember(l,"sendCollisionMessages",get_sendCollisionMessages,set_sendCollisionMessages,true);
-		addMember(l,"maxPlaneCount",get_maxPlaneCount,null,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.ParticleSystem.CollisionModule),typeof(System.ValueType));
+		addMember(l,"colliderForce",get_colliderForce,set_colliderForce,true);
+		addMember(l,"multiplyColliderForceByCollisionAngle",get_multiplyColliderForceByCollisionAngle,set_multiplyColliderForceByCollisionAngle,true);
+		addMember(l,"multiplyColliderForceByParticleSpeed",get_multiplyColliderForceByParticleSpeed,set_multiplyColliderForceByParticleSpeed,true);
+		addMember(l,"multiplyColliderForceByParticleSize",get_multiplyColliderForceByParticleSize,set_multiplyColliderForceByParticleSize,true);
+		addMember(l,"planeCount",get_planeCount,null,true);
+		createTypeMetatable(l,null, typeof(UnityEngine.ParticleSystem.CollisionModule),typeof(System.ValueType));
 	}
 }

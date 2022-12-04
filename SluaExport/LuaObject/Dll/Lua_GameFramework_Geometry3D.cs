@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_Geometry3D : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.Geometry3D o;
 			o=new GameFramework.Geometry3D();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_Geometry3D : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetCenter_s(IntPtr l) {
 		try {
 			ScriptRuntime.Vector3 a1;
@@ -32,9 +34,11 @@ public class Lua_GameFramework_Geometry3D : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.Geometry3D");
+		addMember(l,ctor_s);
 		addMember(l,GetCenter_s);
-		createTypeMetatable(l,constructor, typeof(GameFramework.Geometry3D));
+		createTypeMetatable(l,null, typeof(GameFramework.Geometry3D));
 	}
 }

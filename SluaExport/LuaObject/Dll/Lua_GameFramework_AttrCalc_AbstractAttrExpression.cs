@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_AttrCalc_AbstractAttrExpression : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Calc(IntPtr l) {
 		try {
 			GameFramework.AttrCalc.AbstractAttrExpression self=(GameFramework.AttrCalc.AbstractAttrExpression)checkSelf(l);
@@ -25,6 +26,7 @@ public class Lua_GameFramework_AttrCalc_AbstractAttrExpression : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Load(IntPtr l) {
 		try {
 			GameFramework.AttrCalc.AbstractAttrExpression self=(GameFramework.AttrCalc.AbstractAttrExpression)checkSelf(l);
@@ -41,6 +43,7 @@ public class Lua_GameFramework_AttrCalc_AbstractAttrExpression : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.AttrCalc.AbstractAttrExpression");
 		addMember(l,Calc);

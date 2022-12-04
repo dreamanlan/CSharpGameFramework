@@ -20,45 +20,43 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#if !SLUA_STANDALONE
 namespace SLua
 {
-	using UnityEngine;
-	using System.Collections;
-	using SLua;
-	using System;
-	using System.Net;
-	using System.Net.Sockets;
-	using System.IO;
+    using UnityEngine;
+    using System.Collections;
+    using SLua;
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.IO;
 
-	public class LuaSvrGameObject : MonoBehaviour
-	{
+    public class LuaSvrGameObject : MonoBehaviour
+    {
 
-		public LuaState state;
-		public Action onUpdate;
+        public LuaState state;
+        public Action onUpdate;
 
-		void OnDestroy()
-		{
-			if (state != null)
-			{
-				
-				// state is disposed by editorapplication if in the Editor
-				// state isn't disposed in App because that all resources will be disposed by app on process exit.
-			}
-		}
+        void OnDestroy()
+        {
+            if (state != null) {
 
-		public void init() {
-			
-		}
+                // state is disposed by editorapplication if in the Editor
+                // state isn't disposed in App because that all resources will be disposed by app on process exit.
+            }
+        }
+
+        public void init()
+        {
+
+        }
 
 
-		void Update()
-		{
-			if (onUpdate != null) onUpdate();
+        void Update()
+        {
+            if (onUpdate != null) onUpdate();
 
-		}
+        }
 
-		
-	}
+
+    }
 }
-#endif

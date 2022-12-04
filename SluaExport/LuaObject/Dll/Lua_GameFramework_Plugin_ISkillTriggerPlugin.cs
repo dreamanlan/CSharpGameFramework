@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_Plugin_ISkillTriggerPlugin : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetProxy(IntPtr l) {
 		try {
 			GameFramework.Plugin.ISkillTriggerPlugin self=(GameFramework.Plugin.ISkillTriggerPlugin)checkSelf(l);
@@ -18,6 +19,21 @@ public class Lua_GameFramework_Plugin_ISkillTriggerPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Clone(IntPtr l) {
+		try {
+			GameFramework.Plugin.ISkillTriggerPlugin self=(GameFramework.Plugin.ISkillTriggerPlugin)checkSelf(l);
+			var ret=self.Clone();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			GameFramework.Plugin.ISkillTriggerPlugin self=(GameFramework.Plugin.ISkillTriggerPlugin)checkSelf(l);
@@ -30,6 +46,7 @@ public class Lua_GameFramework_Plugin_ISkillTriggerPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Execute(IntPtr l) {
 		try {
 			GameFramework.Plugin.ISkillTriggerPlugin self=(GameFramework.Plugin.ISkillTriggerPlugin)checkSelf(l);
@@ -51,6 +68,7 @@ public class Lua_GameFramework_Plugin_ISkillTriggerPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadCallData(IntPtr l) {
 		try {
 			GameFramework.Plugin.ISkillTriggerPlugin self=(GameFramework.Plugin.ISkillTriggerPlugin)checkSelf(l);
@@ -67,6 +85,7 @@ public class Lua_GameFramework_Plugin_ISkillTriggerPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadFuncData(IntPtr l) {
 		try {
 			GameFramework.Plugin.ISkillTriggerPlugin self=(GameFramework.Plugin.ISkillTriggerPlugin)checkSelf(l);
@@ -83,6 +102,7 @@ public class Lua_GameFramework_Plugin_ISkillTriggerPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadStatementData(IntPtr l) {
 		try {
 			GameFramework.Plugin.ISkillTriggerPlugin self=(GameFramework.Plugin.ISkillTriggerPlugin)checkSelf(l);
@@ -99,6 +119,7 @@ public class Lua_GameFramework_Plugin_ISkillTriggerPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnInitProperties(IntPtr l) {
 		try {
 			GameFramework.Plugin.ISkillTriggerPlugin self=(GameFramework.Plugin.ISkillTriggerPlugin)checkSelf(l);
@@ -110,9 +131,11 @@ public class Lua_GameFramework_Plugin_ISkillTriggerPlugin : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.Plugin.ISkillTriggerPlugin");
 		addMember(l,SetProxy);
+		addMember(l,Clone);
 		addMember(l,Reset);
 		addMember(l,Execute);
 		addMember(l,LoadCallData);

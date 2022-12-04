@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_LC_SyncMailList : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncMailList o;
 			o=new GameFrameworkMessage.Msg_LC_SyncMailList();
@@ -16,21 +17,10 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncMailList : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_m_Mails(IntPtr l) {
-		try {
-			GameFrameworkMessage.Msg_LC_SyncMailList self=(GameFrameworkMessage.Msg_LC_SyncMailList)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.m_Mails);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_LC_SyncMailList");
-		addMember(l,"m_Mails",get_m_Mails,null,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_LC_SyncMailList));
+		addMember(l,ctor_s);
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_LC_SyncMailList));
 	}
 }

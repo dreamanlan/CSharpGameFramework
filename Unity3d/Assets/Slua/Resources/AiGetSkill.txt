@@ -1,103 +1,165 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
+require "cs2lua__namespaces"; 
 
 AiGetSkill = {
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
 	__new_object = function(...)
-		return newobject(AiGetSkill, nil, nil, ...);
+		local __cs2dsl_newobj;
+		__cs2dsl_newobj = newobject(AiGetSkill, nil, nil, "ctor", 0, nil, ...);
+		return __cs2dsl_newobj;
 	end,
-	__define_class = function()
-		local static = AiGetSkill;
 
-		local static_methods = {
-			cctor = function()
-			end,
-		};
+	cctor = function()
+		AiGetSkill.__cctor();
+	end,
 
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
+	__cctor = function()
+		if AiGetSkill.__cctor_called then 
+			return;
+		else
+			AiGetSkill.__cctor_called = true;
 		end;
-		local static_props = nil;
-		local static_events = nil;
+	end,
 
-		local instance_methods = {
-			SetProxy = function(this, result)
-				this.m_Proxy = result;
-			end,
-			Clone = function(this)
-				return newobject(AiGetSkill, "ctor", nil);
-			end,
-			Evaluate = function(this, instance, _params)
-				local args; args = _params.Values;
-				local objId; objId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32, false);
-				local index; index = typecast(System.Convert.ChangeType(getexterninstanceindexer(args, nil, "get_Item", 1), System.Int32), System.Int32, false);
-				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
-				if (nil ~= npc) then
-					local skillId; skillId = 0;
-					local __compiler_switch_29 = index;
-					if __compiler_switch_29 == 0 then
-						skillId = npc.ConfigData.skill0;
-					elseif __compiler_switch_29 == 1 then
-						skillId = npc.ConfigData.skill1;
-					elseif __compiler_switch_29 == 2 then
-						skillId = npc.ConfigData.skill2;
-					elseif __compiler_switch_29 == 3 then
-						skillId = npc.ConfigData.skill3;
-					elseif __compiler_switch_29 == 4 then
-						skillId = npc.ConfigData.skill4;
-					elseif __compiler_switch_29 == 5 then
-						skillId = npc.ConfigData.skill5;
-					elseif __compiler_switch_29 == 6 then
-						skillId = npc.ConfigData.skill6;
-					elseif __compiler_switch_29 == 7 then
-						skillId = npc.ConfigData.skill7;
-					elseif __compiler_switch_29 == 8 then
-						skillId = npc.ConfigData.skill8;
-					else
-						skillId = 0;
-					end;
-					if (skillId > 0) then
-						local skillInfo; skillInfo = npc:GetSkillStateInfo():GetSkillInfoById(skillId);
-						if (nil == skillInfo) then
-							skillInfo = newexternobject(GameFramework.SkillInfo, "GameFramework.SkillInfo", "ctor", nil, skillId);
-							npc:GetSkillStateInfo():AddSkill(skillInfo);
-						end;
-						this.m_Proxy.Value = skillInfo;
-					else
-						this.m_Proxy.Value = nil;
-					end;
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+	-------------------------------
+	------ instance methods -------
+	-------------------------------
+	SetProxy = function(this, result)
+		this.m_Proxy = result;
+	end,
+
+	Clone = function(this)
+		local __method_ret_17_4_20_5;
+		__method_ret_17_4_20_5 = newobject(AiGetSkill, nil, nil, "ctor", 0, nil);
+		return __method_ret_17_4_20_5;
+	end,
+
+	Evaluate = function(this, instance, handler, _params)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(AiGetSkill.__ori_Evaluate, this, __cs2lua_func_info, instance, handler, _params);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_Evaluate = function(this, __cs2lua_func_info, instance, handler, _params)
+		local args;
+		args = _params.Values;
+		local objId;
+		objId = invokeexternoperator(System.Int32, BoxedValue, "op_Implicit__Int32__BoxedValue", boxedvalue_list_get(__cs2lua_func_info, args, 1, 0));
+		local index;
+		index = boxedvalue_list_get(__cs2lua_func_info, args, 1, 1):GetInt();
+		local npc;
+		npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
+		if (not isequal(nil, npc)) then 
+			local skillId;
+			skillId = 0;
+			local __switch_29_12_60_13;
+			__switch_29_12_60_13 = index;
+			if (__switch_29_12_60_13 == 0) then 
+				skillId = npc.ConfigData.skill0;
+			elseif (__switch_29_12_60_13 == 1) then 
+				skillId = npc.ConfigData.skill1;
+			elseif (__switch_29_12_60_13 == 2) then 
+				skillId = npc.ConfigData.skill2;
+			elseif (__switch_29_12_60_13 == 3) then 
+				skillId = npc.ConfigData.skill3;
+			elseif (__switch_29_12_60_13 == 4) then 
+				skillId = npc.ConfigData.skill4;
+			elseif (__switch_29_12_60_13 == 5) then 
+				skillId = npc.ConfigData.skill5;
+			elseif (__switch_29_12_60_13 == 6) then 
+				skillId = npc.ConfigData.skill6;
+			elseif (__switch_29_12_60_13 == 7) then 
+				skillId = npc.ConfigData.skill7;
+			elseif (__switch_29_12_60_13 == 8) then 
+				skillId = npc.ConfigData.skill8;
+			else
+				skillId = 0;
+			end;
+			if (skillId > 0) then 
+				local skillInfo;
+				skillInfo = npc:GetSkillStateInfo():GetSkillInfoById(skillId);
+				if isequal(nil, skillInfo) then 
+					skillInfo = newexternobject(GameFramework.SkillInfo, nil, nil, "ctor__Int32", 0, nil, skillId);
+					npc:GetSkillStateInfo():AddSkill__SkillInfo(skillInfo);
 				end;
-			end,
-			ctor = function(this)
-			end,
-		};
-
-		local instance_fields_build = function()
-			local instance_fields = {
-				m_Proxy = __cs2lua_nil_field_value,
-			};
-			return instance_fields;
+				this.m_Proxy.Value = callexternstaticreturnstruct(BoxedValue, "FromObject", skillInfo);
+			else
+				this.m_Proxy.Value = getexternstaticstructmember(SymbolKind.Property, BoxedValue, "NullObject");
+			end;
 		end;
-		local instance_props = nil;
-		local instance_events = nil;
-		local interfaces = {
-			"GameFramework.Plugin.ISimpleStoryValuePlugin",
-		};
-
-		local interface_map = {
-			ISimpleStoryValuePlugin_SetProxy = "SetProxy",
-			ISimpleStoryValuePlugin_Clone = "Clone",
-			ISimpleStoryValuePlugin_Evaluate = "Evaluate",
-		};
-
-
-		return defineclass(nil, "AiGetSkill", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
+
+	ctor = function(this)
+		AiGetSkill.__ctor(this);
+	end,
+
+	__ctor = function(this)
+		if this.__ctor_called then 
+			return;
+		else
+			this.__ctor_called = true;
+		end;
+	end,
+	-------------------------------
+	------ instance fields -------
+	-------------------------------
+	__init_obj_fields = function(this)
+		rawset(this, "__ctor_called", false);
+	end,
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
+	__define_class = function()
+		Utility.Warn("AiGetSkill::__define_class begin");
+
+		local class = AiGetSkill;
+		local obj_methods = {
+			SetProxy = rawget(class, "SetProxy"),
+			Clone = rawget(class, "Clone"),
+			Evaluate = rawget(class, "Evaluate"),
+			ctor = rawget(class, "ctor"),
+			__ctor = rawget(class, "__ctor"),
+		};
+		local tmp_obj_method = nil;
+
+		local __defineclass_return = defineclass(nil, "AiGetSkill", "AiGetSkill", class, obj_methods, false, false);
+		Utility.Warn("AiGetSkill::__define_class end");
+		return __defineclass_return;
+	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+	__obj_fields = {
+		m_Proxy = true,
+		__ctor_called = true,
+	},
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
+	__interfaces = {
+		"GameFramework.Plugin.ISimpleStoryValuePlugin",
+	},
+	__method_info = {
+		ctor = {
+			ctor = true,
+		},
+	},
 };
 
 
-
-AiGetSkill.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+settempmetatable(AiGetSkill);

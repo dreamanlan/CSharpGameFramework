@@ -1,65 +1,120 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
+require "cs2lua__namespaces"; 
 
 AiGetEntities = {
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
 	__new_object = function(...)
-		return newobject(AiGetEntities, nil, nil, ...);
+		local __cs2dsl_newobj;
+		__cs2dsl_newobj = newobject(AiGetEntities, nil, nil, "ctor", 0, nil, ...);
+		return __cs2dsl_newobj;
 	end,
+
+	cctor = function()
+		AiGetEntities.__cctor();
+	end,
+
+	__cctor = function()
+		if AiGetEntities.__cctor_called then 
+			return;
+		else
+			AiGetEntities.__cctor_called = true;
+		end;
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+	-------------------------------
+	------ instance methods -------
+	-------------------------------
+	SetProxy = function(this, result)
+		this.m_Proxy = result;
+	end,
+
+	Clone = function(this)
+		local __method_ret_17_4_20_5;
+		__method_ret_17_4_20_5 = newobject(AiGetEntities, nil, nil, "ctor", 0, nil);
+		return __method_ret_17_4_20_5;
+	end,
+
+	Evaluate = function(this, instance, handler, _params)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(AiGetEntities.__ori_Evaluate, this, __cs2lua_func_info, instance, handler, _params);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_Evaluate = function(this, __cs2lua_func_info, instance, handler, _params)
+		this.m_Proxy.Value = callexternstaticreturnstruct(BoxedValue, "FromObject", GameFramework.PluginFramework.Instance.EntityManager.Entities.Values);
+	end,
+
+	ctor = function(this)
+		AiGetEntities.__ctor(this);
+	end,
+
+	__ctor = function(this)
+		if this.__ctor_called then 
+			return;
+		else
+			this.__ctor_called = true;
+		end;
+	end,
+	-------------------------------
+	------ instance fields -------
+	-------------------------------
+	__init_obj_fields = function(this)
+		rawset(this, "__ctor_called", false);
+	end,
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
 	__define_class = function()
-		local static = AiGetEntities;
+		Utility.Warn("AiGetEntities::__define_class begin");
 
-		local static_methods = {
-			cctor = function()
-			end,
+		local class = AiGetEntities;
+		local obj_methods = {
+			SetProxy = rawget(class, "SetProxy"),
+			Clone = rawget(class, "Clone"),
+			Evaluate = rawget(class, "Evaluate"),
+			ctor = rawget(class, "ctor"),
+			__ctor = rawget(class, "__ctor"),
 		};
+		local tmp_obj_method = nil;
 
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
-		end;
-		local static_props = nil;
-		local static_events = nil;
-
-		local instance_methods = {
-			SetProxy = function(this, result)
-				this.m_Proxy = result;
-			end,
-			Clone = function(this)
-				return newobject(AiGetEntities, "ctor", nil);
-			end,
-			Evaluate = function(this, instance, _params)
-				this.m_Proxy.Value = GameFramework.PluginFramework.Instance.EntityManager.Entities.Values;
-			end,
-			ctor = function(this)
-			end,
-		};
-
-		local instance_fields_build = function()
-			local instance_fields = {
-				m_Proxy = __cs2lua_nil_field_value,
-			};
-			return instance_fields;
-		end;
-		local instance_props = nil;
-		local instance_events = nil;
-		local interfaces = {
-			"GameFramework.Plugin.ISimpleStoryValuePlugin",
-		};
-
-		local interface_map = {
-			ISimpleStoryValuePlugin_SetProxy = "SetProxy",
-			ISimpleStoryValuePlugin_Clone = "Clone",
-			ISimpleStoryValuePlugin_Evaluate = "Evaluate",
-		};
-
-
-		return defineclass(nil, "AiGetEntities", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+		local __defineclass_return = defineclass(nil, "AiGetEntities", "AiGetEntities", class, obj_methods, false, false);
+		Utility.Warn("AiGetEntities::__define_class end");
+		return __defineclass_return;
 	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+	__obj_fields = {
+		m_Proxy = true,
+		__ctor_called = true,
+	},
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
+	__interfaces = {
+		"GameFramework.Plugin.ISimpleStoryValuePlugin",
+	},
+	__method_info = {
+		ctor = {
+			ctor = true,
+		},
+	},
 };
 
 
-
-AiGetEntities.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+settempmetatable(AiGetEntities);

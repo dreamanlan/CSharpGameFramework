@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_LC_SendMail : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SendMail o;
 			o=new GameFrameworkMessage.Msg_LC_SendMail();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_SendMail : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Result(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SendMail self=(GameFrameworkMessage.Msg_LC_SendMail)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_SendMail : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Result(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SendMail self=(GameFrameworkMessage.Msg_LC_SendMail)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_Msg_LC_SendMail : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_LC_SendMail");
+		addMember(l,ctor_s);
 		addMember(l,"m_Result",get_m_Result,set_m_Result,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_LC_SendMail));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_LC_SendMail));
 	}
 }

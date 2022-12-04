@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_UI : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.UI o;
 			o=new TableConfig.UI();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadFromBinary(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -34,6 +36,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteToBinary(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -48,6 +51,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetId(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -61,6 +65,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_id(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -73,6 +78,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_id(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -87,6 +93,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_name(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -99,6 +106,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_name(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -113,6 +121,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_path(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -125,6 +134,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_path(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -139,6 +149,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_dsl(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -151,6 +162,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_dsl(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -165,6 +177,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_visible(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -177,6 +190,7 @@ public class Lua_TableConfig_UI : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_visible(IntPtr l) {
 		try {
 			TableConfig.UI self=(TableConfig.UI)checkSelf(l);
@@ -190,8 +204,10 @@ public class Lua_TableConfig_UI : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.UI");
+		addMember(l,ctor_s);
 		addMember(l,ReadFromBinary);
 		addMember(l,WriteToBinary);
 		addMember(l,GetId);
@@ -200,6 +216,6 @@ public class Lua_TableConfig_UI : LuaObject {
 		addMember(l,"path",get_path,set_path,true);
 		addMember(l,"dsl",get_dsl,set_dsl,true);
 		addMember(l,"visible",get_visible,set_visible,true);
-		createTypeMetatable(l,constructor, typeof(TableConfig.UI));
+		createTypeMetatable(l,null, typeof(TableConfig.UI));
 	}
 }

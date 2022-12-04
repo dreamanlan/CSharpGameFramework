@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Position : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Position o;
 			o=new GameFrameworkMessage.Position();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Position : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_x(IntPtr l) {
 		try {
 			GameFrameworkMessage.Position self=(GameFrameworkMessage.Position)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Position : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_x(IntPtr l) {
 		try {
 			GameFrameworkMessage.Position self=(GameFrameworkMessage.Position)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Position : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_z(IntPtr l) {
 		try {
 			GameFrameworkMessage.Position self=(GameFrameworkMessage.Position)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Position : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_z(IntPtr l) {
 		try {
 			GameFrameworkMessage.Position self=(GameFrameworkMessage.Position)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_Position : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Position");
+		addMember(l,ctor_s);
 		addMember(l,"x",get_x,set_x,true);
 		addMember(l,"z",get_z,set_z,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Position));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Position));
 	}
 }

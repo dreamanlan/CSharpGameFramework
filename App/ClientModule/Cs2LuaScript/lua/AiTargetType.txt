@@ -1,7 +1,4 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
+require "cs2lua__namespaces"; 
 
 AiTargetType = {
 	["NPC"] = 0,
@@ -11,8 +8,13 @@ AiTargetType = {
 };
 
 rawset(AiTargetType, "Value2String", {
-		[0] = "NPC",
-		[1] = "HERO",
-		[2] = "BOSS",
-		[3] = "ALL",
+	[0] = "NPC",
+	[1] = "HERO",
+	[2] = "BOSS",
+	[3] = "ALL",
 });
+
+
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";

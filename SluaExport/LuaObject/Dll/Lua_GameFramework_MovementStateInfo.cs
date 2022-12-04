@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_MovementStateInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo o;
 			o=new GameFramework.MovementStateInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CalcDistancSquareToTarget(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -30,38 +32,41 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int SetPosition(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int SetPosition__Vector3(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-				ScriptRuntime.Vector3 a1;
-				checkValueType(l,2,out a1);
-				self.SetPosition(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==4){
-				GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-				System.Single a1;
-				checkType(l,2,out a1);
-				System.Single a2;
-				checkType(l,3,out a2);
-				System.Single a3;
-				checkType(l,4,out a3);
-				self.SetPosition(a1,a2,a3);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
+			ScriptRuntime.Vector3 a1;
+			checkValueType(l,2,out a1);
+			self.SetPosition(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int SetPosition__Single__Single__Single(IntPtr l) {
+		try {
+			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
+			System.Single a1;
+			checkType(l,2,out a1);
+			System.Single a2;
+			checkType(l,3,out a2);
+			System.Single a3;
+			checkType(l,4,out a3);
+			self.SetPosition(a1,a2,a3);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetPosition3D(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -75,36 +80,39 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int SetPosition2D(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int SetPosition2D__Vector2(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-				ScriptRuntime.Vector2 a1;
-				checkValueType(l,2,out a1);
-				self.SetPosition2D(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==3){
-				GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-				System.Single a1;
-				checkType(l,2,out a1);
-				System.Single a2;
-				checkType(l,3,out a2);
-				self.SetPosition2D(a1,a2);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
+			ScriptRuntime.Vector2 a1;
+			checkValueType(l,2,out a1);
+			self.SetPosition2D(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int SetPosition2D__Single__Single(IntPtr l) {
+		try {
+			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
+			System.Single a1;
+			checkType(l,2,out a1);
+			System.Single a2;
+			checkType(l,3,out a2);
+			self.SetPosition2D(a1,a2);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetPosition2D(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -118,36 +126,39 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int SetFaceDir(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int SetFaceDir__Single(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-				System.Single a1;
-				checkType(l,2,out a1);
-				self.SetFaceDir(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==3){
-				GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
-				System.Single a1;
-				checkType(l,2,out a1);
-				System.Boolean a2;
-				checkType(l,3,out a2);
-				self.SetFaceDir(a1,a2);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
+			System.Single a1;
+			checkType(l,2,out a1);
+			self.SetFaceDir(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int SetFaceDir__Single__Boolean(IntPtr l) {
+		try {
+			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
+			System.Single a1;
+			checkType(l,2,out a1);
+			System.Boolean a2;
+			checkType(l,3,out a2);
+			self.SetFaceDir(a1,a2);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetFaceDir(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -161,6 +172,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetWantedFaceDir(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -175,6 +187,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetWantedFaceDir(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -188,6 +201,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetFaceDir2D(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -201,6 +215,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetFaceDir3D(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -214,6 +229,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -226,6 +242,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsMoving(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -238,6 +255,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsMoving(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -252,6 +270,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_FormationIndex(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -264,6 +283,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_FormationIndex(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -278,6 +298,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TargetPosition(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -290,6 +311,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_TargetPosition(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -304,6 +326,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_PositionX(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -316,6 +339,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_PositionX(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -330,6 +354,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_PositionY(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -342,6 +367,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_PositionY(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -356,6 +382,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_PositionZ(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -368,6 +395,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_PositionZ(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -382,6 +410,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TargetDir(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -394,6 +423,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_LastTargetPos(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -406,6 +436,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_LastTargetPos(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -420,6 +451,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsFaceDirChanged(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -432,6 +464,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsFaceDirChanged(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -446,6 +479,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsMoveStatusChanged(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -458,6 +492,7 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsMoveStatusChanged(IntPtr l) {
 		try {
 			GameFramework.MovementStateInfo self=(GameFramework.MovementStateInfo)checkSelf(l);
@@ -471,14 +506,19 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.MovementStateInfo");
+		addMember(l,ctor_s);
 		addMember(l,CalcDistancSquareToTarget);
-		addMember(l,SetPosition);
+		addMember(l,SetPosition__Vector3);
+		addMember(l,SetPosition__Single__Single__Single);
 		addMember(l,GetPosition3D);
-		addMember(l,SetPosition2D);
+		addMember(l,SetPosition2D__Vector2);
+		addMember(l,SetPosition2D__Single__Single);
 		addMember(l,GetPosition2D);
-		addMember(l,SetFaceDir);
+		addMember(l,SetFaceDir__Single);
+		addMember(l,SetFaceDir__Single__Boolean);
 		addMember(l,GetFaceDir);
 		addMember(l,SetWantedFaceDir);
 		addMember(l,GetWantedFaceDir);
@@ -495,6 +535,6 @@ public class Lua_GameFramework_MovementStateInfo : LuaObject {
 		addMember(l,"LastTargetPos",get_LastTargetPos,set_LastTargetPos,true);
 		addMember(l,"IsFaceDirChanged",get_IsFaceDirChanged,set_IsFaceDirChanged,true);
 		addMember(l,"IsMoveStatusChanged",get_IsMoveStatusChanged,set_IsMoveStatusChanged,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.MovementStateInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.MovementStateInfo));
 	}
 }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 class UiScrollInfo : ITickPlugin
 {
-    public void Init(GameObject obj, MonoBehaviour behaviour)
+    public void Init(GameObject obj, MonoBehaviourProxy behaviour)
     {
         m_GameObject = obj;
         m_Item = Resources.Load("UI/Image");

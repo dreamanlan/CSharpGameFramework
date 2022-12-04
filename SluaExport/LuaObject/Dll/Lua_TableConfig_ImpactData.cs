@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_ImpactData : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.ImpactData o;
 			o=new TableConfig.ImpactData();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadFromBinary(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -34,6 +36,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteToBinary(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -48,6 +51,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetId(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -61,6 +65,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_id(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -73,6 +78,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_id(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -87,6 +93,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_desc(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -99,6 +106,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_desc(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -113,6 +121,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_type(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -125,6 +134,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_type(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -139,6 +149,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_icon(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -151,6 +162,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_icon(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -165,6 +177,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_duration(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -177,6 +190,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_duration(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -191,6 +205,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_cooldown(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -203,6 +218,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_cooldown(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -217,84 +233,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_multiple(IntPtr l) {
-		try {
-			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.multiple);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_multiple(IntPtr l) {
-		try {
-			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
-			System.Collections.Generic.List<System.Int32> v;
-			checkType(l,2,out v);
-			self.multiple=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_damage(IntPtr l) {
-		try {
-			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.damage);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_damage(IntPtr l) {
-		try {
-			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
-			System.Collections.Generic.List<System.Int32> v;
-			checkType(l,2,out v);
-			self.damage=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_vampire(IntPtr l) {
-		try {
-			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.vampire);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_vampire(IntPtr l) {
-		try {
-			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
-			System.Collections.Generic.List<System.Int32> v;
-			checkType(l,2,out v);
-			self.vampire=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_attr1(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -307,6 +246,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_attr1(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -321,6 +261,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value1(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -333,6 +274,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_value1(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -347,6 +289,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_attr2(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -359,6 +302,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_attr2(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -373,6 +317,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value2(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -385,6 +330,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_value2(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -399,6 +345,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_attr3(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -411,6 +358,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_attr3(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -425,6 +373,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value3(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -437,6 +386,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_value3(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -451,6 +401,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_attr4(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -463,6 +414,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_attr4(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -477,6 +429,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value4(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -489,6 +442,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_value4(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -503,6 +457,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_attr5(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -515,6 +470,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_attr5(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -529,6 +485,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value5(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -541,6 +498,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_value5(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -555,6 +513,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_attr6(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -567,6 +526,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_attr6(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -581,6 +541,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value6(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -593,6 +554,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_value6(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -607,6 +569,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_attr7(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -619,6 +582,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_attr7(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -633,6 +597,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value7(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -645,6 +610,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_value7(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -659,6 +625,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_attr8(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -671,6 +638,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_attr8(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -685,6 +653,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value8(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -697,6 +666,7 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_value8(IntPtr l) {
 		try {
 			TableConfig.ImpactData self=(TableConfig.ImpactData)checkSelf(l);
@@ -710,8 +680,10 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.ImpactData");
+		addMember(l,ctor_s);
 		addMember(l,ReadFromBinary);
 		addMember(l,WriteToBinary);
 		addMember(l,GetId);
@@ -721,9 +693,6 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		addMember(l,"icon",get_icon,set_icon,true);
 		addMember(l,"duration",get_duration,set_duration,true);
 		addMember(l,"cooldown",get_cooldown,set_cooldown,true);
-		addMember(l,"multiple",get_multiple,set_multiple,true);
-		addMember(l,"damage",get_damage,set_damage,true);
-		addMember(l,"vampire",get_vampire,set_vampire,true);
 		addMember(l,"attr1",get_attr1,set_attr1,true);
 		addMember(l,"value1",get_value1,set_value1,true);
 		addMember(l,"attr2",get_attr2,set_attr2,true);
@@ -740,6 +709,6 @@ public class Lua_TableConfig_ImpactData : LuaObject {
 		addMember(l,"value7",get_value7,set_value7,true);
 		addMember(l,"attr8",get_attr8,set_attr8,true);
 		addMember(l,"value8",get_value8,set_value8,true);
-		createTypeMetatable(l,constructor, typeof(TableConfig.ImpactData));
+		createTypeMetatable(l,null, typeof(TableConfig.ImpactData));
 	}
 }

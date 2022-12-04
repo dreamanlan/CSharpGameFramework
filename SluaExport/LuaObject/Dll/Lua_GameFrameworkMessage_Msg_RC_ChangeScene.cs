@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_RC_ChangeScene : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_ChangeScene o;
 			o=new GameFrameworkMessage.Msg_RC_ChangeScene();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_ChangeScene : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_target_scene_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_ChangeScene self=(GameFrameworkMessage.Msg_RC_ChangeScene)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_ChangeScene : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_target_scene_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_ChangeScene self=(GameFrameworkMessage.Msg_RC_ChangeScene)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_Msg_RC_ChangeScene : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_RC_ChangeScene");
+		addMember(l,ctor_s);
 		addMember(l,"target_scene_id",get_target_scene_id,set_target_scene_id,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_RC_ChangeScene));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_RC_ChangeScene));
 	}
 }

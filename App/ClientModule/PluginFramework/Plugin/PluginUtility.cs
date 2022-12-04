@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
+using UnityEngine;
 
 //导出给lua使用的常用集合类型
 public class IntUobjDict : Dictionary<int, UnityEngine.Object>
@@ -99,4 +100,27 @@ public class AiQueryComparer : IComparer
 
     private bool m_Desc = false;
     private int m_Count = 0;
+}
+
+public sealed class MonoBehaviourProxy
+{
+    public MonoBehaviourProxy(UnityEngine.MonoBehaviour monoBehavior)
+    {
+        m_MonoBehaviour = monoBehavior;
+    }
+    public void StartCoroutine(IEnumerator routine)
+    {
+        m_MonoBehaviour.StartCoroutine(routine);
+    }
+    public void StopAllCoroutines()
+    {
+        m_MonoBehaviour.StopAllCoroutines();
+    }
+
+    public Coroutine StartOneCoroutine(IEnumerator routine)
+    {
+        return m_MonoBehaviour.StartCoroutine(routine);
+    }
+
+    private UnityEngine.MonoBehaviour m_MonoBehaviour = null;
 }

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_LC_LackOfSpace : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_LackOfSpace o;
 			o=new GameFrameworkMessage.Msg_LC_LackOfSpace();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_LackOfSpace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Succeed(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_LackOfSpace self=(GameFrameworkMessage.Msg_LC_LackOfSpace)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_LackOfSpace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Succeed(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_LackOfSpace self=(GameFrameworkMessage.Msg_LC_LackOfSpace)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_LackOfSpace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_ReceiveNum(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_LackOfSpace self=(GameFrameworkMessage.Msg_LC_LackOfSpace)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_LackOfSpace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_ReceiveNum(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_LackOfSpace self=(GameFrameworkMessage.Msg_LC_LackOfSpace)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_LackOfSpace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_FreeNum(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_LackOfSpace self=(GameFrameworkMessage.Msg_LC_LackOfSpace)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_LackOfSpace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_FreeNum(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_LackOfSpace self=(GameFrameworkMessage.Msg_LC_LackOfSpace)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_LackOfSpace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_MailGuid(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_LackOfSpace self=(GameFrameworkMessage.Msg_LC_LackOfSpace)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_LackOfSpace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_MailGuid(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_LackOfSpace self=(GameFrameworkMessage.Msg_LC_LackOfSpace)checkSelf(l);
@@ -120,12 +129,14 @@ public class Lua_GameFrameworkMessage_Msg_LC_LackOfSpace : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_LC_LackOfSpace");
+		addMember(l,ctor_s);
 		addMember(l,"m_Succeed",get_m_Succeed,set_m_Succeed,true);
 		addMember(l,"m_ReceiveNum",get_m_ReceiveNum,set_m_ReceiveNum,true);
 		addMember(l,"m_FreeNum",get_m_FreeNum,set_m_FreeNum,true);
 		addMember(l,"m_MailGuid",get_m_MailGuid,set_m_MailGuid,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_LC_LackOfSpace));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_LC_LackOfSpace));
 	}
 }

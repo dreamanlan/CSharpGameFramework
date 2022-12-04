@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ProtoBuf_IExtensible : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetExtensionObject(IntPtr l) {
 		try {
 			ProtoBuf.IExtensible self=(ProtoBuf.IExtensible)checkSelf(l);
@@ -18,6 +19,7 @@ public class Lua_ProtoBuf_IExtensible : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ProtoBuf.IExtensible");
 		addMember(l,GetExtensionObject);

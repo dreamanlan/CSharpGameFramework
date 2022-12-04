@@ -18,7 +18,7 @@ internal sealed class Cs2LuaMethodInfo
     internal void Init(MethodInfo mi, System.Type type)
     {
         int ct = 0;
-        var ms = type.GetMethods();
+        var ms = Cs2LuaCodeGen.GetMethods(type);
         foreach (var m in ms) {
             if (m.Name == mi.Name) {
                 ++ct;
@@ -134,12 +134,12 @@ internal sealed class Cs2LuaMethodInfo
 
 public static class Cs2LuaCodeGen
 {
-    [MenuItem("工具/Build/GenCs2LuaInterface", false, 600)]
+    [MenuItem("工具/Build/GenCs2LuaInterface", false, 100)]
     public static void GenInterfaces()
     {
     }
 
-    [MenuItem("工具/Build/GenCs2LuaProxy", false, 600)]
+    [MenuItem("工具/Build/GenCs2LuaProxy", false, 100)]
     public static void GenProxies()
     {
         GenLuaProxyCode(typeof(IAttrExpressionPlugin), "Cs2LuaAttrExpressionPlugin");
@@ -588,7 +588,7 @@ public static class Cs2LuaCodeGen
                     sb.AppendFormat("{0}LuaFunctionHelper.PushValue(0);", GetIndentString());
 
                 } else {
-                    sb.AppendFormat("{0}LuaFunctionHelper.PushValue(null);", GetIndentString());
+                    sb.AppendFormat("{0}LuaFunctionHelper.PushValue(({1})null);", GetIndentString(), SimpleName(pi.ParameterType));
                 }
                 sb.AppendLine();
             } else if (ix < ps.Length - 1 || !existParams) {
@@ -714,6 +714,57 @@ public static class Cs2LuaCodeGen
         sb.AppendLine("}");
     }
 
+    internal static IList<PropertyInfo> GetProperties(System.Type t)
+    {
+        List<PropertyInfo> properties = new List<PropertyInfo>();
+        if (null != t) {
+            var ps = t.GetProperties(c_BindingFlags);
+            if (null != ps)
+                properties.AddRange(ps);
+            if (null != t.BaseType && t.BaseType != typeof(System.Object) && t.BaseType != typeof(System.ValueType)) {
+                properties.AddRange(GetProperties(t.BaseType));
+            }
+            AddInterfaceProperties(properties, t);
+        }
+        return properties;
+    }
+    private static void AddInterfaceProperties(List<PropertyInfo> properties, System.Type t)
+    {
+        foreach (var intf in t.GetInterfaces()) {
+            var ps = intf.GetProperties(c_BindingFlags);
+            if (null != ps)
+                properties.AddRange(ps);
+        }
+        foreach (var intf in t.GetInterfaces()) {
+            AddInterfaceProperties(properties, intf);
+        }
+    }
+    internal static IList<MethodInfo> GetMethods(System.Type t)
+    {
+        List<MethodInfo> methods = new List<MethodInfo>();
+        if (null != t) {
+            var ms = t.GetMethods(c_BindingFlags);
+            if (null != ms)
+                methods.AddRange(ms);
+            if (null != t.BaseType && t.BaseType != typeof(System.Object) && t.BaseType != typeof(System.ValueType)) {
+                methods.AddRange(GetMethods(t.BaseType));
+            }
+            AddInterfaceMethods(methods, t);
+        }
+        return methods;
+    }
+    private static void AddInterfaceMethods(List<MethodInfo> methods, System.Type t)
+    {
+        foreach (var intf in t.GetInterfaces()) {
+            var ms = intf.GetMethods(c_BindingFlags);
+            if (null != ms)
+                methods.AddRange(ms);
+        }
+        foreach (var intf in t.GetInterfaces()) {
+            AddInterfaceMethods(methods, intf);
+        }
+    }
+
     private static string SimpleName(System.Type t)
     {
         if (t.IsByRef) {
@@ -732,7 +783,9 @@ public static class Cs2LuaCodeGen
             case "Int32":
                 return "int";
             case "Object":
-                return FullName(t);
+                tn = FullName(t);
+                tn = tn.Replace("System.Object", "object");
+                return tn;
             default:
                 tn = TypeDecl(t);
                 tn = tn.Replace("System.Collections.Generic.", "");

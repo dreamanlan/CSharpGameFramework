@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_NodeRegister : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeRegister o;
 			o=new GameFrameworkMessage.NodeRegister();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_NodeRegister : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Name(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeRegister self=(GameFrameworkMessage.NodeRegister)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_NodeRegister : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Name(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeRegister self=(GameFrameworkMessage.NodeRegister)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_NodeRegister : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.NodeRegister");
+		addMember(l,ctor_s);
 		addMember(l,"m_Name",get_m_Name,set_m_Name,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.NodeRegister));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.NodeRegister));
 	}
 }

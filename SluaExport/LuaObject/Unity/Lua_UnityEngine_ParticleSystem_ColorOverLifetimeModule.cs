@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ParticleSystem_ColorOverLifetimeModule : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorOverLifetimeModule o;
 			o=new UnityEngine.ParticleSystem.ColorOverLifetimeModule();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorOverLifetimeModule self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorOverLifetimeModule self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorOverLifetimeModule : LuaObject 
 			bool v;
 			checkType(l,2,out v);
 			self.enabled=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_color(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorOverLifetimeModule self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_color(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorOverLifetimeModule self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorOverLifetimeModule : LuaObject 
 			UnityEngine.ParticleSystem.MinMaxGradient v;
 			checkValueType(l,2,out v);
 			self.color=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -74,10 +79,12 @@ public class Lua_UnityEngine_ParticleSystem_ColorOverLifetimeModule : LuaObject 
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ParticleSystem.ColorOverLifetimeModule");
+		addMember(l,ctor_s);
 		addMember(l,"enabled",get_enabled,set_enabled,true);
 		addMember(l,"color",get_color,set_color,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.ParticleSystem.ColorOverLifetimeModule),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.ParticleSystem.ColorOverLifetimeModule),typeof(System.ValueType));
 	}
 }

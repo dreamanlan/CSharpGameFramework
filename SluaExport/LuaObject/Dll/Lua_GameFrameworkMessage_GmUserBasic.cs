@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic o;
 			o=new GameFrameworkMessage.GmUserBasic();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_HeroId(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_HeroId(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Level(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Level(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Vip(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Vip(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Money(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Money(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -121,6 +130,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Gold(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -133,6 +143,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Gold(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -147,6 +158,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_CreateTime(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -159,6 +171,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_CreateTime(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -173,6 +186,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_LastLogoutTime(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -185,6 +199,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_LastLogoutTime(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -199,6 +214,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_GoldCash(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -211,6 +227,7 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_GoldCash(IntPtr l) {
 		try {
 			GameFrameworkMessage.GmUserBasic self=(GameFrameworkMessage.GmUserBasic)checkSelf(l);
@@ -224,8 +241,10 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.GmUserBasic");
+		addMember(l,ctor_s);
 		addMember(l,"m_HeroId",get_m_HeroId,set_m_HeroId,true);
 		addMember(l,"m_Level",get_m_Level,set_m_Level,true);
 		addMember(l,"m_Vip",get_m_Vip,set_m_Vip,true);
@@ -234,6 +253,6 @@ public class Lua_GameFrameworkMessage_GmUserBasic : LuaObject {
 		addMember(l,"m_CreateTime",get_m_CreateTime,set_m_CreateTime,true);
 		addMember(l,"m_LastLogoutTime",get_m_LastLogoutTime,set_m_LastLogoutTime,true);
 		addMember(l,"m_GoldCash",get_m_GoldCash,set_m_GoldCash,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.GmUserBasic));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.GmUserBasic));
 	}
 }

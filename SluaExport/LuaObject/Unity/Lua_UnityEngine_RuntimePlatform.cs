@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_RuntimePlatform : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"UnityEngine.RuntimePlatform");
@@ -21,12 +21,12 @@ public class Lua_UnityEngine_RuntimePlatform : LuaObject {
 		addMember(l,15,"FlashPlayer");
 		addMember(l,16,"LinuxEditor");
 		addMember(l,17,"WebGLPlayer");
-		addMember(l,18,"WSAPlayerX86");
 		addMember(l,18,"MetroPlayerX86");
-		addMember(l,19,"WSAPlayerX64");
+		addMember(l,18,"WSAPlayerX86");
 		addMember(l,19,"MetroPlayerX64");
-		addMember(l,20,"WSAPlayerARM");
+		addMember(l,19,"WSAPlayerX64");
 		addMember(l,20,"MetroPlayerARM");
+		addMember(l,20,"WSAPlayerARM");
 		addMember(l,21,"WP8Player");
 		addMember(l,22,"BlackBerryPlayer");
 		addMember(l,22,"BB10Player");
@@ -39,6 +39,20 @@ public class Lua_UnityEngine_RuntimePlatform : LuaObject {
 		addMember(l,30,"WiiU");
 		addMember(l,31,"tvOS");
 		addMember(l,32,"Switch");
+		addMember(l,33,"Lumin");
+		addMember(l,34,"Stadia");
+		addMember(l,35,"CloudRendering");
+		addMember(l,36,"GameCoreXboxSeries");
+		addMember(l,37,"GameCoreXboxOne");
+		addMember(l,38,"PS5");
+		addMember(l,39,"EmbeddedLinuxArm64");
+		addMember(l,40,"EmbeddedLinuxArm32");
+		addMember(l,41,"EmbeddedLinuxX64");
+		addMember(l,42,"EmbeddedLinuxX86");
+		addMember(l,43,"LinuxServer");
+		addMember(l,44,"WindowsServer");
+		addMember(l,45,"OSXServer");
+		addMember(l,-1,"GameCoreScarlett");
 		LuaDLL.lua_pop(l, 1);
 	}
 }

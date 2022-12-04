@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage o;
 			o=new GameFrameworkMessage.MailInfoForMessage();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_AlreadyRead(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_AlreadyRead(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_MailGuid(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_MailGuid(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Module(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Module(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Title(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Title(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -121,6 +130,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Sender(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -133,6 +143,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Sender(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -147,6 +158,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_SendTime(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -159,6 +171,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_SendTime(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -173,6 +186,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Text(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -185,6 +199,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Text(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -199,18 +214,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_m_Items(IntPtr l) {
-		try {
-			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.m_Items);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Money(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -223,6 +227,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Money(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -237,6 +242,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Gold(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -249,6 +255,7 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Gold(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailInfoForMessage self=(GameFrameworkMessage.MailInfoForMessage)checkSelf(l);
@@ -262,8 +269,10 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.MailInfoForMessage");
+		addMember(l,ctor_s);
 		addMember(l,"m_AlreadyRead",get_m_AlreadyRead,set_m_AlreadyRead,true);
 		addMember(l,"m_MailGuid",get_m_MailGuid,set_m_MailGuid,true);
 		addMember(l,"m_Module",get_m_Module,set_m_Module,true);
@@ -271,9 +280,8 @@ public class Lua_GameFrameworkMessage_MailInfoForMessage : LuaObject {
 		addMember(l,"m_Sender",get_m_Sender,set_m_Sender,true);
 		addMember(l,"m_SendTime",get_m_SendTime,set_m_SendTime,true);
 		addMember(l,"m_Text",get_m_Text,set_m_Text,true);
-		addMember(l,"m_Items",get_m_Items,null,true);
 		addMember(l,"m_Money",get_m_Money,set_m_Money,true);
 		addMember(l,"m_Gold",get_m_Gold,set_m_Gold,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.MailInfoForMessage));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.MailInfoForMessage));
 	}
 }

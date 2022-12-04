@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_VersionVerifyResult : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.VersionVerifyResult o;
 			o=new GameFrameworkMessage.VersionVerifyResult();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_VersionVerifyResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Result(IntPtr l) {
 		try {
 			GameFrameworkMessage.VersionVerifyResult self=(GameFrameworkMessage.VersionVerifyResult)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_VersionVerifyResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Result(IntPtr l) {
 		try {
 			GameFrameworkMessage.VersionVerifyResult self=(GameFrameworkMessage.VersionVerifyResult)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_VersionVerifyResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_EnableLog(IntPtr l) {
 		try {
 			GameFrameworkMessage.VersionVerifyResult self=(GameFrameworkMessage.VersionVerifyResult)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_VersionVerifyResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_EnableLog(IntPtr l) {
 		try {
 			GameFrameworkMessage.VersionVerifyResult self=(GameFrameworkMessage.VersionVerifyResult)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_VersionVerifyResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_ShopMask(IntPtr l) {
 		try {
 			GameFrameworkMessage.VersionVerifyResult self=(GameFrameworkMessage.VersionVerifyResult)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_VersionVerifyResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_ShopMask(IntPtr l) {
 		try {
 			GameFrameworkMessage.VersionVerifyResult self=(GameFrameworkMessage.VersionVerifyResult)checkSelf(l);
@@ -94,11 +101,13 @@ public class Lua_GameFrameworkMessage_VersionVerifyResult : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.VersionVerifyResult");
+		addMember(l,ctor_s);
 		addMember(l,"m_Result",get_m_Result,set_m_Result,true);
 		addMember(l,"m_EnableLog",get_m_EnableLog,set_m_EnableLog,true);
 		addMember(l,"m_ShopMask",get_m_ShopMask,set_m_ShopMask,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.VersionVerifyResult));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.VersionVerifyResult));
 	}
 }

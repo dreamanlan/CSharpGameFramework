@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_SkillSystem_IPropertyVisitor : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int VisitProperties(IntPtr l) {
 		try {
 			SkillSystem.IPropertyVisitor self=(SkillSystem.IPropertyVisitor)checkSelf(l);
@@ -17,6 +18,7 @@ public class Lua_SkillSystem_IPropertyVisitor : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"SkillSystem.IPropertyVisitor");
 		addMember(l,VisitProperties);

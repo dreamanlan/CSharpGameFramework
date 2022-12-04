@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_LC_AddFriend : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_AddFriend o;
 			o=new GameFrameworkMessage.Msg_LC_AddFriend();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_AddFriend : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_FriendInfo(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_AddFriend self=(GameFrameworkMessage.Msg_LC_AddFriend)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_AddFriend : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_FriendInfo(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_AddFriend self=(GameFrameworkMessage.Msg_LC_AddFriend)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_Msg_LC_AddFriend : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_LC_AddFriend");
+		addMember(l,ctor_s);
 		addMember(l,"m_FriendInfo",get_m_FriendInfo,set_m_FriendInfo,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_LC_AddFriend));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_LC_AddFriend));
 	}
 }

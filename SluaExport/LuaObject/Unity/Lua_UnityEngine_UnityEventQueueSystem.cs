@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_UnityEventQueueSystem : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.UnityEventQueueSystem o;
 			o=new UnityEngine.UnityEventQueueSystem();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_UnityEventQueueSystem : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GenerateEventIdForPayload_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -31,6 +33,7 @@ public class Lua_UnityEngine_UnityEventQueueSystem : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetGlobalEventQueue_s(IntPtr l) {
 		try {
 			var ret=UnityEngine.UnityEventQueueSystem.GetGlobalEventQueue();
@@ -42,10 +45,12 @@ public class Lua_UnityEngine_UnityEventQueueSystem : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.UnityEventQueueSystem");
+		addMember(l,ctor_s);
 		addMember(l,GenerateEventIdForPayload_s);
 		addMember(l,GetGlobalEventQueue_s);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.UnityEventQueueSystem));
+		createTypeMetatable(l,null, typeof(UnityEngine.UnityEventQueueSystem));
 	}
 }

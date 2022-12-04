@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_Rendering_CameraEvent : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"UnityEngine.Rendering.CameraEvent");
@@ -28,6 +28,8 @@ public class Lua_UnityEngine_Rendering_CameraEvent : LuaObject {
 		addMember(l,20,"AfterEverything");
 		addMember(l,21,"BeforeReflections");
 		addMember(l,22,"AfterReflections");
+		addMember(l,23,"BeforeHaloAndLensFlares");
+		addMember(l,24,"AfterHaloAndLensFlares");
 		LuaDLL.lua_pop(l, 1);
 	}
 }

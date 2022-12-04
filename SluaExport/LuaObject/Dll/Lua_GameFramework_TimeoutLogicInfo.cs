@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_TimeoutLogicInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.TimeoutLogicInfo o;
 			o=new GameFramework.TimeoutLogicInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_TimeoutLogicInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Timeout(IntPtr l) {
 		try {
 			GameFramework.TimeoutLogicInfo self=(GameFramework.TimeoutLogicInfo)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFramework_TimeoutLogicInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Timeout(IntPtr l) {
 		try {
 			GameFramework.TimeoutLogicInfo self=(GameFramework.TimeoutLogicInfo)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFramework_TimeoutLogicInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_CurTime(IntPtr l) {
 		try {
 			GameFramework.TimeoutLogicInfo self=(GameFramework.TimeoutLogicInfo)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFramework_TimeoutLogicInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_CurTime(IntPtr l) {
 		try {
 			GameFramework.TimeoutLogicInfo self=(GameFramework.TimeoutLogicInfo)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFramework_TimeoutLogicInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_IsTriggered(IntPtr l) {
 		try {
 			GameFramework.TimeoutLogicInfo self=(GameFramework.TimeoutLogicInfo)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFramework_TimeoutLogicInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_IsTriggered(IntPtr l) {
 		try {
 			GameFramework.TimeoutLogicInfo self=(GameFramework.TimeoutLogicInfo)checkSelf(l);
@@ -94,11 +101,13 @@ public class Lua_GameFramework_TimeoutLogicInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.TimeoutLogicInfo");
+		addMember(l,ctor_s);
 		addMember(l,"m_Timeout",get_m_Timeout,set_m_Timeout,true);
 		addMember(l,"m_CurTime",get_m_CurTime,set_m_CurTime,true);
 		addMember(l,"m_IsTriggered",get_m_IsTriggered,set_m_IsTriggered,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.TimeoutLogicInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.TimeoutLogicInfo));
 	}
 }

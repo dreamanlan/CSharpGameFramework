@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_Rendering_GraphicsDeviceType : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"UnityEngine.Rendering.GraphicsDeviceType");
@@ -22,6 +22,13 @@ public class Lua_UnityEngine_Rendering_GraphicsDeviceType : LuaObject {
 		addMember(l,18,"Direct3D12");
 		addMember(l,19,"N3DS");
 		addMember(l,21,"Vulkan");
+		addMember(l,22,"Switch");
+		addMember(l,23,"XboxOneD3D12");
+		addMember(l,24,"GameCoreXboxOne");
+		addMember(l,25,"GameCoreXboxSeries");
+		addMember(l,26,"PlayStation5");
+		addMember(l,27,"PlayStation5NGGC");
+		addMember(l,-1,"GameCoreScarlett");
 		LuaDLL.lua_pop(l, 1);
 	}
 }

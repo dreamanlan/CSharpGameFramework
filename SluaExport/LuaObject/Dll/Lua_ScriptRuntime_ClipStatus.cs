@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ScriptRuntime_ClipStatus : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"ScriptRuntime.ClipStatus");

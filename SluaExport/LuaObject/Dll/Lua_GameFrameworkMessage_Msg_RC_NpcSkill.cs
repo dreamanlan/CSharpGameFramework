@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill o;
 			o=new GameFrameworkMessage.Msg_RC_NpcSkill();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_npc_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_npc_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_skill_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_skill_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_stand_pos(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_stand_pos(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_face_direction(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_face_direction(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
@@ -121,6 +130,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_target_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
@@ -133,6 +143,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_target_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcSkill self=(GameFrameworkMessage.Msg_RC_NpcSkill)checkSelf(l);
@@ -146,13 +157,15 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcSkill : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_RC_NpcSkill");
+		addMember(l,ctor_s);
 		addMember(l,"npc_id",get_npc_id,set_npc_id,true);
 		addMember(l,"skill_id",get_skill_id,set_skill_id,true);
 		addMember(l,"stand_pos",get_stand_pos,set_stand_pos,true);
 		addMember(l,"face_direction",get_face_direction,set_face_direction,true);
 		addMember(l,"target_id",get_target_id,set_target_id,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_RC_NpcSkill));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_RC_NpcSkill));
 	}
 }

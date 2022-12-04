@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_SkillResources : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.SkillResources o;
 			o=new TableConfig.SkillResources();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_SkillResources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadFromBinary(IntPtr l) {
 		try {
 			TableConfig.SkillResources self=(TableConfig.SkillResources)checkSelf(l);
@@ -34,6 +36,7 @@ public class Lua_TableConfig_SkillResources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteToBinary(IntPtr l) {
 		try {
 			TableConfig.SkillResources self=(TableConfig.SkillResources)checkSelf(l);
@@ -48,6 +51,7 @@ public class Lua_TableConfig_SkillResources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_skillId(IntPtr l) {
 		try {
 			TableConfig.SkillResources self=(TableConfig.SkillResources)checkSelf(l);
@@ -60,6 +64,7 @@ public class Lua_TableConfig_SkillResources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_skillId(IntPtr l) {
 		try {
 			TableConfig.SkillResources self=(TableConfig.SkillResources)checkSelf(l);
@@ -74,6 +79,7 @@ public class Lua_TableConfig_SkillResources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_key(IntPtr l) {
 		try {
 			TableConfig.SkillResources self=(TableConfig.SkillResources)checkSelf(l);
@@ -86,6 +92,7 @@ public class Lua_TableConfig_SkillResources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_key(IntPtr l) {
 		try {
 			TableConfig.SkillResources self=(TableConfig.SkillResources)checkSelf(l);
@@ -100,6 +107,7 @@ public class Lua_TableConfig_SkillResources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_resource(IntPtr l) {
 		try {
 			TableConfig.SkillResources self=(TableConfig.SkillResources)checkSelf(l);
@@ -112,6 +120,7 @@ public class Lua_TableConfig_SkillResources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_resource(IntPtr l) {
 		try {
 			TableConfig.SkillResources self=(TableConfig.SkillResources)checkSelf(l);
@@ -125,13 +134,15 @@ public class Lua_TableConfig_SkillResources : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.SkillResources");
+		addMember(l,ctor_s);
 		addMember(l,ReadFromBinary);
 		addMember(l,WriteToBinary);
 		addMember(l,"skillId",get_skillId,set_skillId,true);
 		addMember(l,"key",get_key,set_key,true);
 		addMember(l,"resource",get_resource,set_resource,true);
-		createTypeMetatable(l,constructor, typeof(TableConfig.SkillResources));
+		createTypeMetatable(l,null, typeof(TableConfig.SkillResources));
 	}
 }

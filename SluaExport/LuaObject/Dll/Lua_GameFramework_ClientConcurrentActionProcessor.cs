@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_ClientConcurrentActionProcessor : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.ClientConcurrentActionProcessor o;
 			o=new GameFramework.ClientConcurrentActionProcessor();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_ClientConcurrentActionProcessor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int QueueActionWithDelegation(IntPtr l) {
 		try {
 			GameFramework.ClientConcurrentActionProcessor self=(GameFramework.ClientConcurrentActionProcessor)checkSelf(l);
@@ -33,6 +35,7 @@ public class Lua_GameFramework_ClientConcurrentActionProcessor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int QueueAction(IntPtr l) {
 		try {
 			GameFramework.ClientConcurrentActionProcessor self=(GameFramework.ClientConcurrentActionProcessor)checkSelf(l);
@@ -47,6 +50,22 @@ public class Lua_GameFramework_ClientConcurrentActionProcessor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int QueueFunc(IntPtr l) {
+		try {
+			GameFramework.ClientConcurrentActionProcessor self=(GameFramework.ClientConcurrentActionProcessor)checkSelf(l);
+			GameFramework.MyFunc a1;
+			LuaDelegation.checkDelegate(l,2,out a1);
+			self.QueueFunc(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int DequeueAction(IntPtr l) {
 		try {
 			GameFramework.ClientConcurrentActionProcessor self=(GameFramework.ClientConcurrentActionProcessor)checkSelf(l);
@@ -60,6 +79,7 @@ public class Lua_GameFramework_ClientConcurrentActionProcessor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int HandleActions(IntPtr l) {
 		try {
 			GameFramework.ClientConcurrentActionProcessor self=(GameFramework.ClientConcurrentActionProcessor)checkSelf(l);
@@ -74,6 +94,7 @@ public class Lua_GameFramework_ClientConcurrentActionProcessor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			GameFramework.ClientConcurrentActionProcessor self=(GameFramework.ClientConcurrentActionProcessor)checkSelf(l);
@@ -86,6 +107,7 @@ public class Lua_GameFramework_ClientConcurrentActionProcessor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ClearPool(IntPtr l) {
 		try {
 			GameFramework.ClientConcurrentActionProcessor self=(GameFramework.ClientConcurrentActionProcessor)checkSelf(l);
@@ -100,20 +122,7 @@ public class Lua_GameFramework_ClientConcurrentActionProcessor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int DebugPoolCount(IntPtr l) {
-		try {
-			GameFramework.ClientConcurrentActionProcessor self=(GameFramework.ClientConcurrentActionProcessor)checkSelf(l);
-			GameFramework.MyAction<System.String> a1;
-			LuaDelegation.checkDelegate(l,2,out a1);
-			self.DebugPoolCount(a1);
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurActionNum(IntPtr l) {
 		try {
 			GameFramework.ClientConcurrentActionProcessor self=(GameFramework.ClientConcurrentActionProcessor)checkSelf(l);
@@ -125,16 +134,18 @@ public class Lua_GameFramework_ClientConcurrentActionProcessor : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.ClientConcurrentActionProcessor");
+		addMember(l,ctor_s);
 		addMember(l,QueueActionWithDelegation);
 		addMember(l,QueueAction);
+		addMember(l,QueueFunc);
 		addMember(l,DequeueAction);
 		addMember(l,HandleActions);
 		addMember(l,Reset);
 		addMember(l,ClearPool);
-		addMember(l,DebugPoolCount);
 		addMember(l,"CurActionNum",get_CurActionNum,null,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.ClientConcurrentActionProcessor));
+		createTypeMetatable(l,null, typeof(GameFramework.ClientConcurrentActionProcessor));
 	}
 }

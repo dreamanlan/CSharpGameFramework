@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Init(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -16,6 +17,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Release(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -28,6 +30,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Tick(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -40,6 +43,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CreateEntityView(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -54,6 +58,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int DestroyEntityView(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -68,6 +73,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetEntityViewById(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -83,6 +89,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetEntityViewByUnitId(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -98,6 +105,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetGameObject(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -113,6 +121,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetGameObjectByUnitId(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -128,6 +137,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetEntityView(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -143,6 +153,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetGameObjectUnitId(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -158,6 +169,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetGameObjectId(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -173,29 +185,15 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int ExistGameObject(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ExistGameObject__GameObject(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,2,typeof(int))){
-				GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				var ret=self.ExistGameObject(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(matchType(l,argc,2,typeof(UnityEngine.GameObject))){
-				GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
-				UnityEngine.GameObject a1;
-				checkType(l,2,out a1);
-				var ret=self.ExistGameObject(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
+			UnityEngine.GameObject a1;
+			checkType(l,2,out a1);
+			var ret=self.ExistGameObject(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -203,6 +201,23 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ExistGameObject__Int32(IntPtr l) {
+		try {
+			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			var ret=self.ExistGameObject(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int MarkSpaceInfoViews(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -215,6 +230,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int UpdateSpaceInfoView(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -239,6 +255,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int DestroyUnusedSpaceInfoViews(IntPtr l) {
 		try {
 			GameFramework.EntityViewModelManager self=(GameFramework.EntityViewModelManager)checkSelf(l);
@@ -251,6 +268,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Instance(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -261,6 +279,7 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.EntityViewModelManager");
 		addMember(l,Init);
@@ -275,7 +294,8 @@ public class Lua_GameFramework_EntityViewModelManager : LuaObject {
 		addMember(l,GetEntityView);
 		addMember(l,GetGameObjectUnitId);
 		addMember(l,GetGameObjectId);
-		addMember(l,ExistGameObject);
+		addMember(l,ExistGameObject__GameObject);
+		addMember(l,ExistGameObject__Int32);
 		addMember(l,MarkSpaceInfoViews);
 		addMember(l,UpdateSpaceInfoView);
 		addMember(l,DestroyUnusedSpaceInfoViews);

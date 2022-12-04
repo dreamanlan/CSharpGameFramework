@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_StorySystem_StoryValue : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			StorySystem.StoryValue o;
 			o=new StorySystem.StoryValue();
@@ -17,6 +18,7 @@ public class Lua_StorySystem_StoryValue : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int InitFromDsl(IntPtr l) {
 		try {
 			StorySystem.StoryValue self=(StorySystem.StoryValue)checkSelf(l);
@@ -31,16 +33,33 @@ public class Lua_StorySystem_StoryValue : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Clone(IntPtr l) {
+		try {
+			StorySystem.StoryValue self=(StorySystem.StoryValue)checkSelf(l);
+			var ret=self.Clone();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Evaluate(IntPtr l) {
 		try {
 			StorySystem.StoryValue self=(StorySystem.StoryValue)checkSelf(l);
 			StorySystem.StoryInstance a1;
 			checkType(l,2,out a1);
-			System.Object a2;
+			StorySystem.StoryMessageHandler a2;
 			checkType(l,3,out a2);
-			System.Object[] a3;
-			checkArray(l,4,out a3);
-			self.Evaluate(a1,a2,a3);
+			BoxedValue a3;
+			checkValueType(l,4,out a3);
+			BoxedValueList a4;
+			checkType(l,5,out a4);
+			self.Evaluate(a1,a2,a3,a4);
 			pushValue(l,true);
 			return 1;
 		}
@@ -49,28 +68,7 @@ public class Lua_StorySystem_StoryValue : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_c_Iterator(IntPtr l) {
-		try {
-			pushValue(l,true);
-			pushValue(l,StorySystem.StoryValue.c_Iterator);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_c_NotArg(IntPtr l) {
-		try {
-			pushValue(l,true);
-			pushValue(l,StorySystem.StoryValue.c_NotArg);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_HaveValue(IntPtr l) {
 		try {
 			StorySystem.StoryValue self=(StorySystem.StoryValue)checkSelf(l);
@@ -83,38 +81,27 @@ public class Lua_StorySystem_StoryValue : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Value(IntPtr l) {
 		try {
 			StorySystem.StoryValue self=(StorySystem.StoryValue)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.Value);
+			pushValue(l,self.Value.GetObject());
 			return 2;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_IsConst(IntPtr l) {
-		try {
-			StorySystem.StoryValue self=(StorySystem.StoryValue)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.IsConst);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"StorySystem.StoryValue");
+		addMember(l,ctor_s);
 		addMember(l,InitFromDsl);
+		addMember(l,Clone);
 		addMember(l,Evaluate);
-		addMember(l,"c_Iterator",get_c_Iterator,null,false);
-		addMember(l,"c_NotArg",get_c_NotArg,null,false);
 		addMember(l,"HaveValue",get_HaveValue,null,true);
 		addMember(l,"Value",get_Value,null,true);
-		addMember(l,"IsConst",get_IsConst,null,true);
-		createTypeMetatable(l,constructor, typeof(StorySystem.StoryValue));
+		createTypeMetatable(l,null, typeof(StorySystem.StoryValue));
 	}
 }

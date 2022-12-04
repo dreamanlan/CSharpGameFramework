@@ -23,6 +23,7 @@
 // uncomment this will use static binder(class BindCustom/BindUnity), 
 // init will not use reflection to speed up the speed
 //#define USE_STATIC_BINDER  
+[assembly: UnityEngine.Scripting.Preserve]
 
 namespace SLua
 {
@@ -31,38 +32,50 @@ namespace SLua
     using System.Collections;
     using System.Collections.Generic;
     using System.Reflection;
-#if !SLUA_STANDALONE
     using UnityEngine;
     using Debug = UnityEngine.Debug;
-#endif
 
 	public enum LuaSvrFlag {
 		LSF_BASIC = 0,
 		LSF_EXTLIB = 1,
-		LSF_3RDDLL = 2
+		LSF_3RDDLL = 2,
 	};
 
 	public class LuaSvr 
 	{
-		public LuaState luaState;
-#if !SLUA_STANDALONE
-		protected static LuaSvrGameObject lgo;
-		#endif
-		int errorReported = 0;
-		public bool inited = false;
+		static public MainState mainState;
+
+		public class MainState : LuaState {
+
+			int errorReported = 0;
+
+			protected override void tick() {
+				base.tick ();
+				LuaTimer.tick(Time.deltaTime);
+				checkTop ();
+			}
+
+			internal void checkTop()
+			{
+				if (LuaDLL.lua_gettop(L) != errorReported)
+				{
+					errorReported = LuaDLL.lua_gettop(L);
+					Logger.LogError(string.Format("Some function not remove temp value({0}) from lua stack. You should fix it.",LuaDLL.luaL_typename(L,errorReported)));
+				}
+			}
+		}
 
 		public LuaSvr()
 		{
-			LuaState luaState = new LuaState();
-			this.luaState = luaState;
+			mainState = new MainState();
+            mainState.Name = "main";
 		}
 
-		List<Action<IntPtr>> collectBindInfo() {
+		static List<Action<IntPtr>> collectBindInfo() {
 
 			List<Action<IntPtr>> list = new List<Action<IntPtr>>();
 
-			#if !SLUA_STANDALONE
-			#if !USE_STATIC_BINDER
+#if !USE_STATIC_BINDER
             var ams = new List<Assembly>();
             ams.AddRange(AppDomain.CurrentDomain.GetAssemblies());
             
@@ -118,14 +131,12 @@ namespace SLua
             list.AddRange(getBindList(assembly, "SLua.BindDll"));
             list.AddRange(getBindList(assembly, "SLua.BindCustom"));
 #endif
-#endif
-
 			return list;
 
 		}
 
 
-		protected void doBind(IntPtr L)
+		static internal void doBind(IntPtr L)
 		{
 			var list = collectBindInfo ();
 
@@ -139,7 +150,7 @@ namespace SLua
 
 
 
-		private IEnumerator doBind(IntPtr L,Action<int> _tick,Action complete)
+		static internal IEnumerator doBind(IntPtr L,Action<int> _tick,Action complete)
 		{
 			Action<int> tick = (int p) => {
 				if (_tick != null)
@@ -159,6 +170,7 @@ namespace SLua
 				action(L);
 				bindProgress = (int)(((float)n / list.Count) * 98.0) + 2;
 				if (_tick!=null && lastProgress != bindProgress && bindProgress % 5 == 0) {
+                    lastProgress = bindProgress;
 					tick (bindProgress);
 					yield return null;
 				}
@@ -175,105 +187,50 @@ namespace SLua
 			return new Action<IntPtr>[0];
 		}
 
-        protected void doinit(IntPtr L,LuaSvrFlag flag)
-        {
-#if !SLUA_STANDALONE
-            LuaTimer.reg(L);
-            if (!SLuaSetting.IsEditor || SLuaSetting.IsPlaying) {
-                LuaCoroutine.reg(L, lgo);
-            }
-#endif
-            Helper.reg(L);
+        protected void doinit(LuaState L,LuaSvrFlag flag)
+		{
+			L.openSluaLib ();
+			if ((flag & LuaSvrFlag.LSF_EXTLIB)!=0) {
+				L.openExtLib ();
+			}
 
-            if ((flag & LuaSvrFlag.LSF_EXTLIB) != 0)
-                LuaDLL.luaS_openextlibs(L);
-            if ((flag & LuaSvrFlag.LSF_3RDDLL) != 0)
-                Lua3rdDLL.open(L);
+			if((flag & LuaSvrFlag.LSF_3RDDLL)!=0)
+				Lua3rdDLL.open(L.L);
 
-#if !SLUA_STANDALONE
-            if (!SLuaSetting.IsEditor || SLuaSetting.IsPlaying) {
-                lgo.state = luaState;
-                lgo.onUpdate = this.tick;
-                lgo.init();
-            }
-#endif
+		}
 
-            inited = true;
-        }
+		public void init(Action<int> tick,Action complete,LuaSvrFlag flag=LuaSvrFlag.LSF_BASIC|LuaSvrFlag.LSF_EXTLIB)
+		{
+			
+			IntPtr L = mainState.L;
+			LuaObject.init(L);
 
-        protected void checkTop(IntPtr L)
-        {
-            if (LuaDLL.lua_gettop(luaState.L) != errorReported) {
-                Logger.LogError("Some function not remove temp value from lua stack. You should fix it.");
-                errorReported = LuaDLL.lua_gettop(luaState.L);
-            }
-        }
+			if (SLuaSetting.IsEditor && !SLuaSetting.IsPlaying)
+			{
+				doBind(L);
+				doinit(mainState, flag);
+				complete();
+				mainState.checkTop();
+			}
+			else
+			{
+				mainState.lgo.StartCoroutine(doBind(L,tick, () =>
+					{
+						doinit(mainState, flag);
+						complete();
+						mainState.checkTop();
+					}));
+			}
+		}
 
-        public void init(Action<int> tick, Action complete, LuaSvrFlag flag = LuaSvrFlag.LSF_BASIC)
-        {
-#if !SLUA_STANDALONE
-            if (lgo == null && (!SLuaSetting.IsEditor || SLuaSetting.IsPlaying)) {
-                GameObject go = new GameObject("LuaSvrProxy");
-                lgo = go.AddComponent<LuaSvrGameObject>();
-                GameObject.DontDestroyOnLoad(go);
-
-            }
-#endif
-            IntPtr L = luaState.L;
-            LuaObject.init(L);
-
-#if SLUA_STANDALONE
-            doBind(L);
-            doinit(L, flag);
-		    complete();
-            checkTop(L);
-#else
-
-
-            // be caurefull here, doBind Run in another thread
-            // any code access unity interface will cause deadlock.
-            // if you want to debug bind code using unity interface, need call doBind directly, like:
-            // doBind(L);
-            if (SLuaSetting.IsEditor && !SLuaSetting.IsPlaying) {
-                doBind(L);
-                doinit(L, flag);
-                complete();
-                checkTop(L);
-            } else {
-                lgo.StartCoroutine(doBind(L, tick, () => {
-                    doinit(L, flag);
-                    complete();
-                    checkTop(L);
-                }));
-            }
-#endif
-        }
-
-        public object start(string main)
-        {
-            if (main != null) {
-                luaState.doFile(main);
-                LuaFunction func = (LuaFunction)luaState["main"];
-                if (func != null)
-                    return func.call();
-            }
-            return null;
-        }
-
-#if !SLUA_STANDALONE
-        void tick()
-        {
-            if (!inited)
-                return;
-
-            if (LuaDLL.lua_gettop(luaState.L) != errorReported) {
-                errorReported = LuaDLL.lua_gettop(luaState.L);
-                Logger.LogError(string.Format("Some function not remove temp value({0}) from lua stack. You should fix it.", LuaDLL.luaL_typename(luaState.L, errorReported)));
-            }
-
-            luaState.checkRef();
-            LuaTimer.tick(Time.deltaTime);
-        }
-#endif
-    }
+		public object start(string main)
+		{
+			if (main != null)
+			{
+				mainState.doFile(main);
+                return mainState.run("main");
+			}
+			return null;
+		}
+	}
 }

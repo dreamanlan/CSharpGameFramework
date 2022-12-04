@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_AiStateInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo o;
 			o=new GameFramework.AiStateInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int PushState(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -31,6 +33,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int PopState(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -44,6 +47,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ChangeToState(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -58,26 +62,13 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CloneAiStates(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==1){
-				GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
-				var ret=self.CloneAiStates();
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(argc==2){
-				GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
-				System.Collections.Generic.IEnumerable<System.Int32> a1;
-				checkType(l,2,out a1);
-				self.CloneAiStates(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
+			var ret=self.CloneAiStates();
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -85,6 +76,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -97,6 +89,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetExternalTarget(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -111,6 +104,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_c_MaxAiParamNum(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -122,6 +116,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurState(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -134,6 +129,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_AiLogic(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -146,6 +142,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_AiLogic(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -160,6 +157,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_AiParam(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -172,6 +170,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_AiDatas(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -184,6 +183,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_AiStoryInstanceInfo(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -196,6 +196,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_AiStoryInstanceInfo(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -210,6 +211,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsInited(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -222,6 +224,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsInited(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -236,6 +239,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Time(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -248,6 +252,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Time(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -262,6 +267,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_FormationId(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -274,6 +280,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_FormationId(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -288,6 +295,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_LeaderId(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -300,6 +308,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_LeaderId(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -314,6 +323,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_HomePos(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -326,6 +336,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_HomePos(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -340,6 +351,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Target(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -352,6 +364,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Target(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -366,6 +379,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_HateTarget(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -378,6 +392,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_HateTarget(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -392,6 +407,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsExternalTarget(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -404,6 +420,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_LastChangeTargetTime(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -416,6 +433,7 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_LastChangeTargetTime(IntPtr l) {
 		try {
 			GameFramework.AiStateInfo self=(GameFramework.AiStateInfo)checkSelf(l);
@@ -429,8 +447,10 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.AiStateInfo");
+		addMember(l,ctor_s);
 		addMember(l,PushState);
 		addMember(l,PopState);
 		addMember(l,ChangeToState);
@@ -452,6 +472,6 @@ public class Lua_GameFramework_AiStateInfo : LuaObject {
 		addMember(l,"HateTarget",get_HateTarget,set_HateTarget,true);
 		addMember(l,"IsExternalTarget",get_IsExternalTarget,null,true);
 		addMember(l,"LastChangeTargetTime",get_LastChangeTargetTime,set_LastChangeTargetTime,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.AiStateInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.AiStateInfo));
 	}
 }

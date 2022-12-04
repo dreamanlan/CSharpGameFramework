@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_SkillSystem_IPropertyAccessor : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int TryGetProperty(IntPtr l) {
 		try {
 			SkillSystem.IPropertyAccessor self=(SkillSystem.IPropertyAccessor)checkSelf(l);
@@ -21,6 +22,7 @@ public class Lua_SkillSystem_IPropertyAccessor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetProperty(IntPtr l) {
 		try {
 			SkillSystem.IPropertyAccessor self=(SkillSystem.IPropertyAccessor)checkSelf(l);
@@ -36,6 +38,7 @@ public class Lua_SkillSystem_IPropertyAccessor : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"SkillSystem.IPropertyAccessor");
 		addMember(l,TryGetProperty);

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_HumanBone : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.HumanBone o;
 			o=new UnityEngine.HumanBone();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_HumanBone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_limit(IntPtr l) {
 		try {
 			UnityEngine.HumanBone self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_HumanBone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_limit(IntPtr l) {
 		try {
 			UnityEngine.HumanBone self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_HumanBone : LuaObject {
 			UnityEngine.HumanLimit v;
 			checkValueType(l,2,out v);
 			self.limit=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_HumanBone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_boneName(IntPtr l) {
 		try {
 			UnityEngine.HumanBone self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_HumanBone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_boneName(IntPtr l) {
 		try {
 			UnityEngine.HumanBone self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_HumanBone : LuaObject {
 			string v;
 			checkType(l,2,out v);
 			self.boneName=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +80,7 @@ public class Lua_UnityEngine_HumanBone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_humanName(IntPtr l) {
 		try {
 			UnityEngine.HumanBone self;
@@ -88,6 +94,7 @@ public class Lua_UnityEngine_HumanBone : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_humanName(IntPtr l) {
 		try {
 			UnityEngine.HumanBone self;
@@ -95,7 +102,7 @@ public class Lua_UnityEngine_HumanBone : LuaObject {
 			string v;
 			checkType(l,2,out v);
 			self.humanName=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -103,11 +110,13 @@ public class Lua_UnityEngine_HumanBone : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.HumanBone");
+		addMember(l,ctor_s);
 		addMember(l,"limit",get_limit,set_limit,true);
 		addMember(l,"boneName",get_boneName,set_boneName,true);
 		addMember(l,"humanName",get_humanName,set_humanName,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.HumanBone),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.HumanBone),typeof(System.ValueType));
 	}
 }

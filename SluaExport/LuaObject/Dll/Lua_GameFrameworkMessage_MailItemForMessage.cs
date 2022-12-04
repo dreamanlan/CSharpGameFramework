@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_MailItemForMessage : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailItemForMessage o;
 			o=new GameFrameworkMessage.MailItemForMessage();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_MailItemForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_ItemId(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailItemForMessage self=(GameFrameworkMessage.MailItemForMessage)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_MailItemForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_ItemId(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailItemForMessage self=(GameFrameworkMessage.MailItemForMessage)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_MailItemForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_ItemNum(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailItemForMessage self=(GameFrameworkMessage.MailItemForMessage)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_MailItemForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_ItemNum(IntPtr l) {
 		try {
 			GameFrameworkMessage.MailItemForMessage self=(GameFrameworkMessage.MailItemForMessage)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_MailItemForMessage : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.MailItemForMessage");
+		addMember(l,ctor_s);
 		addMember(l,"m_ItemId",get_m_ItemId,set_m_ItemId,true);
 		addMember(l,"m_ItemNum",get_m_ItemNum,set_m_ItemNum,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.MailItemForMessage));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.MailItemForMessage));
 	}
 }

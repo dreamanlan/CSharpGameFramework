@@ -398,7 +398,19 @@ namespace SLua
                 // Get Member including all parent fields
                 CollectTypeMembers(type, ref cache);
             }
-            return cache[key];
+            List<MemberInfo> lmi;
+            if(cache.TryGetValue(key, out lmi)) {
+                return lmi;
+            }
+            int ix = key.IndexOf("__");
+            if (ix > 0) {
+                var orikey = key.Substring(ix);
+                if (cache.TryGetValue(orikey, out lmi)) {
+                    cache.Add(key, lmi);
+                    return lmi;
+                }
+            }
+            return null;
         }
 
         static int newindexString(IntPtr l, object self, string key)
@@ -662,6 +674,8 @@ namespace SLua
             LuaDLL.lua_createtable(l, 0, 1);
             pushValue(l, methodWrapper);
             LuaDLL.lua_setfield(l, -2, "__call");
+            LuaDLL.lua_pushcfunction(l, lua_gc);
+            LuaDLL.lua_setfield(l, -2, "__gc");
             LuaDLL.lua_setfield(l, LuaIndexes.LUA_REGISTRYINDEX, ObjectCache.getAQName(typeof(LuaCSFunction)));
         }
     }

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_CR_ShakeHands : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_ShakeHands o;
 			o=new GameFrameworkMessage.Msg_CR_ShakeHands();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_ShakeHands : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_auth_key(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_ShakeHands self=(GameFrameworkMessage.Msg_CR_ShakeHands)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_ShakeHands : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_auth_key(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_ShakeHands self=(GameFrameworkMessage.Msg_CR_ShakeHands)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_Msg_CR_ShakeHands : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_CR_ShakeHands");
+		addMember(l,ctor_s);
 		addMember(l,"auth_key",get_auth_key,set_auth_key,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_CR_ShakeHands));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_CR_ShakeHands));
 	}
 }

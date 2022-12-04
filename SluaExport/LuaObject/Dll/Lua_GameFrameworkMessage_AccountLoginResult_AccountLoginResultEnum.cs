@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_AccountLoginResult_AccountLoginResultEnum : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"GameFrameworkMessage.AccountLoginResult.AccountLoginResultEnum");

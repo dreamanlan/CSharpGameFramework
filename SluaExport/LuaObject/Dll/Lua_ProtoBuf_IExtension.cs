@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ProtoBuf_IExtension : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int BeginAppend(IntPtr l) {
 		try {
 			ProtoBuf.IExtension self=(ProtoBuf.IExtension)checkSelf(l);
@@ -17,6 +18,7 @@ public class Lua_ProtoBuf_IExtension : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int EndAppend(IntPtr l) {
 		try {
 			ProtoBuf.IExtension self=(ProtoBuf.IExtension)checkSelf(l);
@@ -33,6 +35,7 @@ public class Lua_ProtoBuf_IExtension : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int BeginQuery(IntPtr l) {
 		try {
 			ProtoBuf.IExtension self=(ProtoBuf.IExtension)checkSelf(l);
@@ -46,6 +49,7 @@ public class Lua_ProtoBuf_IExtension : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int EndQuery(IntPtr l) {
 		try {
 			ProtoBuf.IExtension self=(ProtoBuf.IExtension)checkSelf(l);
@@ -60,6 +64,7 @@ public class Lua_ProtoBuf_IExtension : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetLength(IntPtr l) {
 		try {
 			ProtoBuf.IExtension self=(ProtoBuf.IExtension)checkSelf(l);
@@ -72,6 +77,7 @@ public class Lua_ProtoBuf_IExtension : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ProtoBuf.IExtension");
 		addMember(l,BeginAppend);

@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_DslUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CalcVector2_s(IntPtr l) {
 		try {
 			Dsl.FunctionData a1;
@@ -18,6 +19,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CalcVector3_s(IntPtr l) {
 		try {
 			Dsl.FunctionData a1;
@@ -32,6 +34,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CalcVector4_s(IntPtr l) {
 		try {
 			Dsl.FunctionData a1;
@@ -46,6 +49,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CalcColor_s(IntPtr l) {
 		try {
 			Dsl.FunctionData a1;
@@ -60,6 +64,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CalcQuaternion_s(IntPtr l) {
 		try {
 			Dsl.FunctionData a1;
@@ -74,6 +79,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CalcEularRotation_s(IntPtr l) {
 		try {
 			Dsl.FunctionData a1;
@@ -88,6 +94,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CalcEularAngles_s(IntPtr l) {
 		try {
 			Dsl.FunctionData a1;
@@ -101,6 +108,7 @@ public class Lua_GameFramework_DslUtility : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.DslUtility");
 		addMember(l,CalcVector2_s);

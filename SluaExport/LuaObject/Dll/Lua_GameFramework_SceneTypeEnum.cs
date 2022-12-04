@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_SceneTypeEnum : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"GameFramework.SceneTypeEnum");

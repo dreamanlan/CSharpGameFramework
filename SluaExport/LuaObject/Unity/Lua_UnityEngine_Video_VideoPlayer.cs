@@ -1,22 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
-		try {
-			UnityEngine.Video.VideoPlayer o;
-			o=new UnityEngine.Video.VideoPlayer();
-			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Prepare(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -29,6 +17,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Play(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -41,6 +30,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Pause(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -53,6 +43,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Stop(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -65,6 +56,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int StepForward(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -77,6 +69,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetAudioLanguageCode(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -92,6 +85,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetAudioChannelCount(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -107,6 +101,23 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int GetAudioSampleRate(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			System.UInt16 a1;
+			checkType(l,2,out a1);
+			var ret=self.GetAudioSampleRate(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int EnableAudioTrack(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -123,6 +134,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsAudioTrackEnabled(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -138,6 +150,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetDirectAudioVolume(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -153,6 +166,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetDirectAudioVolume(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -169,6 +183,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetDirectAudioMute(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -184,6 +199,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetDirectAudioMute(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -200,6 +216,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetTargetAudioSource(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -215,6 +232,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetTargetAudioSource(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -231,6 +249,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_source(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -243,6 +262,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_source(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -257,6 +277,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_url(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -269,6 +290,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_url(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -283,6 +305,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_clip(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -295,6 +318,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_clip(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -309,6 +333,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_renderMode(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -321,6 +346,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_renderMode(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -335,6 +361,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_targetCamera(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -347,6 +374,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_targetCamera(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -361,6 +389,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_targetTexture(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -373,6 +402,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_targetTexture(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -387,6 +417,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_targetMaterialRenderer(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -399,6 +430,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_targetMaterialRenderer(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -413,6 +445,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_targetMaterialProperty(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -425,6 +458,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_targetMaterialProperty(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -439,6 +473,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_aspectRatio(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -451,6 +486,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_aspectRatio(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -465,6 +501,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_targetCameraAlpha(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -477,6 +514,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_targetCameraAlpha(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -491,6 +529,35 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_targetCamera3DLayout(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			pushValue(l,true);
+			pushEnum(l,(int)self.targetCamera3DLayout);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int set_targetCamera3DLayout(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			UnityEngine.Video.Video3DLayout v;
+			checkEnum(l,2,out v);
+			self.targetCamera3DLayout=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_texture(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -503,6 +570,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_isPrepared(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -515,6 +583,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_waitForFirstFrame(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -527,6 +596,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_waitForFirstFrame(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -541,6 +611,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_playOnAwake(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -553,6 +624,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_playOnAwake(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -567,6 +639,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_isPlaying(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -579,6 +652,20 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_isPaused(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.isPaused);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_canSetTime(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -591,6 +678,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_time(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -603,6 +691,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_time(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -617,6 +706,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_frame(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -629,6 +719,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_frame(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -643,6 +734,20 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_clockTime(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.clockTime);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_canStep(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -655,6 +760,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_canSetPlaybackSpeed(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -667,6 +773,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_playbackSpeed(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -679,6 +786,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_playbackSpeed(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -693,6 +801,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_isLooping(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -705,6 +814,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_isLooping(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -719,6 +829,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_canSetTimeSource(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -731,6 +842,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_timeSource(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -743,6 +855,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_timeSource(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -757,6 +870,63 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_timeReference(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			pushValue(l,true);
+			pushEnum(l,(int)self.timeReference);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int set_timeReference(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			UnityEngine.Video.VideoTimeReference v;
+			checkEnum(l,2,out v);
+			self.timeReference=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_externalReferenceTime(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.externalReferenceTime);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int set_externalReferenceTime(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			double v;
+			checkType(l,2,out v);
+			self.externalReferenceTime=v;
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_canSetSkipOnDrop(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -769,6 +939,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_skipOnDrop(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -781,6 +952,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_skipOnDrop(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -795,6 +967,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_frameCount(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -807,6 +980,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_frameRate(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -819,6 +993,72 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_length(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.length);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_width(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.width);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_height(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.height);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_pixelAspectRatioNumerator(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.pixelAspectRatioNumerator);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_pixelAspectRatioDenominator(IntPtr l) {
+		try {
+			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.pixelAspectRatioDenominator);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_audioTrackCount(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -831,6 +1071,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_controlledAudioTrackMaxCount(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -842,6 +1083,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_controlledAudioTrackCount(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -854,6 +1096,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_controlledAudioTrackCount(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -868,6 +1111,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_audioOutputMode(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -880,6 +1124,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_audioOutputMode(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -894,6 +1139,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_canSetDirectAudioVolume(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -906,6 +1152,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_sendFrameReadyEvents(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -918,6 +1165,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_sendFrameReadyEvents(IntPtr l) {
 		try {
 			UnityEngine.Video.VideoPlayer self=(UnityEngine.Video.VideoPlayer)checkSelf(l);
@@ -931,6 +1179,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Video.VideoPlayer");
 		addMember(l,Prepare);
@@ -940,6 +1189,7 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		addMember(l,StepForward);
 		addMember(l,GetAudioLanguageCode);
 		addMember(l,GetAudioChannelCount);
+		addMember(l,GetAudioSampleRate);
 		addMember(l,EnableAudioTrack);
 		addMember(l,IsAudioTrackEnabled);
 		addMember(l,GetDirectAudioVolume);
@@ -958,30 +1208,40 @@ public class Lua_UnityEngine_Video_VideoPlayer : LuaObject {
 		addMember(l,"targetMaterialProperty",get_targetMaterialProperty,set_targetMaterialProperty,true);
 		addMember(l,"aspectRatio",get_aspectRatio,set_aspectRatio,true);
 		addMember(l,"targetCameraAlpha",get_targetCameraAlpha,set_targetCameraAlpha,true);
+		addMember(l,"targetCamera3DLayout",get_targetCamera3DLayout,set_targetCamera3DLayout,true);
 		addMember(l,"texture",get_texture,null,true);
 		addMember(l,"isPrepared",get_isPrepared,null,true);
 		addMember(l,"waitForFirstFrame",get_waitForFirstFrame,set_waitForFirstFrame,true);
 		addMember(l,"playOnAwake",get_playOnAwake,set_playOnAwake,true);
 		addMember(l,"isPlaying",get_isPlaying,null,true);
+		addMember(l,"isPaused",get_isPaused,null,true);
 		addMember(l,"canSetTime",get_canSetTime,null,true);
 		addMember(l,"time",get_time,set_time,true);
 		addMember(l,"frame",get_frame,set_frame,true);
+		addMember(l,"clockTime",get_clockTime,null,true);
 		addMember(l,"canStep",get_canStep,null,true);
 		addMember(l,"canSetPlaybackSpeed",get_canSetPlaybackSpeed,null,true);
 		addMember(l,"playbackSpeed",get_playbackSpeed,set_playbackSpeed,true);
 		addMember(l,"isLooping",get_isLooping,set_isLooping,true);
 		addMember(l,"canSetTimeSource",get_canSetTimeSource,null,true);
 		addMember(l,"timeSource",get_timeSource,set_timeSource,true);
+		addMember(l,"timeReference",get_timeReference,set_timeReference,true);
+		addMember(l,"externalReferenceTime",get_externalReferenceTime,set_externalReferenceTime,true);
 		addMember(l,"canSetSkipOnDrop",get_canSetSkipOnDrop,null,true);
 		addMember(l,"skipOnDrop",get_skipOnDrop,set_skipOnDrop,true);
 		addMember(l,"frameCount",get_frameCount,null,true);
 		addMember(l,"frameRate",get_frameRate,null,true);
+		addMember(l,"length",get_length,null,true);
+		addMember(l,"width",get_width,null,true);
+		addMember(l,"height",get_height,null,true);
+		addMember(l,"pixelAspectRatioNumerator",get_pixelAspectRatioNumerator,null,true);
+		addMember(l,"pixelAspectRatioDenominator",get_pixelAspectRatioDenominator,null,true);
 		addMember(l,"audioTrackCount",get_audioTrackCount,null,true);
 		addMember(l,"controlledAudioTrackMaxCount",get_controlledAudioTrackMaxCount,null,false);
 		addMember(l,"controlledAudioTrackCount",get_controlledAudioTrackCount,set_controlledAudioTrackCount,true);
 		addMember(l,"audioOutputMode",get_audioOutputMode,set_audioOutputMode,true);
 		addMember(l,"canSetDirectAudioVolume",get_canSetDirectAudioVolume,null,true);
 		addMember(l,"sendFrameReadyEvents",get_sendFrameReadyEvents,set_sendFrameReadyEvents,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.Video.VideoPlayer),typeof(UnityEngine.Behaviour));
+		createTypeMetatable(l,null, typeof(UnityEngine.Video.VideoPlayer),typeof(UnityEngine.Behaviour));
 	}
 }

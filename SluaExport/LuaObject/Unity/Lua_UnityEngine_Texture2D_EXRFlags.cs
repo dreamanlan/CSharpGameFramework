@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_Texture2D_EXRFlags : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"UnityEngine.Texture2D.EXRFlags");

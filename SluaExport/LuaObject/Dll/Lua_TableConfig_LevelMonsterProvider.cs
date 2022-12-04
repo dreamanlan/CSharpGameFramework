@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.LevelMonsterProvider o;
 			o=new TableConfig.LevelMonsterProvider();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadForClient(IntPtr l) {
 		try {
 			TableConfig.LevelMonsterProvider self=(TableConfig.LevelMonsterProvider)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadForServer(IntPtr l) {
 		try {
 			TableConfig.LevelMonsterProvider self=(TableConfig.LevelMonsterProvider)checkSelf(l);
@@ -41,6 +44,7 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Load(IntPtr l) {
 		try {
 			TableConfig.LevelMonsterProvider self=(TableConfig.LevelMonsterProvider)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Save(IntPtr l) {
 		try {
 			TableConfig.LevelMonsterProvider self=(TableConfig.LevelMonsterProvider)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			TableConfig.LevelMonsterProvider self=(TableConfig.LevelMonsterProvider)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetLevelMonsterCount(IntPtr l) {
 		try {
 			TableConfig.LevelMonsterProvider self=(TableConfig.LevelMonsterProvider)checkSelf(l);
@@ -94,6 +101,7 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int BuildGroupedLevelMonsters(IntPtr l) {
 		try {
 			TableConfig.LevelMonsterProvider self=(TableConfig.LevelMonsterProvider)checkSelf(l);
@@ -106,6 +114,7 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int TryGetValue(IntPtr l) {
 		try {
 			TableConfig.LevelMonsterProvider self=(TableConfig.LevelMonsterProvider)checkSelf(l);
@@ -123,18 +132,7 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_LevelMonsterMgr(IntPtr l) {
-		try {
-			TableConfig.LevelMonsterProvider self=(TableConfig.LevelMonsterProvider)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.LevelMonsterMgr);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Instance(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -145,8 +143,10 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.LevelMonsterProvider");
+		addMember(l,ctor_s);
 		addMember(l,LoadForClient);
 		addMember(l,LoadForServer);
 		addMember(l,Load);
@@ -155,8 +155,7 @@ public class Lua_TableConfig_LevelMonsterProvider : LuaObject {
 		addMember(l,GetLevelMonsterCount);
 		addMember(l,BuildGroupedLevelMonsters);
 		addMember(l,TryGetValue);
-		addMember(l,"LevelMonsterMgr",get_LevelMonsterMgr,null,true);
 		addMember(l,"Instance",get_Instance,null,false);
-		createTypeMetatable(l,constructor, typeof(TableConfig.LevelMonsterProvider));
+		createTypeMetatable(l,null, typeof(TableConfig.LevelMonsterProvider));
 	}
 }

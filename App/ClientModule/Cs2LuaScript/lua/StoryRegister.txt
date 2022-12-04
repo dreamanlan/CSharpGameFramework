@@ -1,49 +1,78 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
-require "Cs2LuaScript__Plugin";
+require "cs2lua__namespaces"; 
 
 StoryRegister = {
-	__define_class = function()
-		local static = StoryRegister;
-
-		local static_methods = {
-			Register = function()
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_do_normal", "AiDoNormal");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_do_member", "AiDoMember");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_cast_skill", "AiCastSkill");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_chase", "AiChase");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_keep_away", "AiKeepAway");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_go_home", "AiGohome");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryCommand("ai_rand_move", "AiRandMove");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_select_skill_by_distance", "AiSelectSkillByDistance");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_need_chase", "AiNeedChase");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_need_keep_away", "AiNeedKeepAway");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_select_skill", "AiSelectSkill");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_select_target", "AiSelectTarget");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_get_skill", "AiGetSkill");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_get_target", "AiGetTarget");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_get_skills", "AiGetSkills");
-				Cs2LuaScript.Plugin.Proxy:RegisterSimpleStoryValue("ai_get_entities", "AiGetEntities");
-				Cs2LuaScript.Plugin.Proxy:RegisterStoryValue("select", "AiQuery");
-			end,
-			cctor = function()
-			end,
-		};
-
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
-		end;
-		local static_props = nil;
-		local static_events = nil;
-
-		return defineclass(nil, "StoryRegister", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
+	Register = function()
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryCommand", luastrtocsstr("ai_do_normal"), luastrtocsstr("AiDoNormal"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryCommand", luastrtocsstr("ai_do_member"), luastrtocsstr("AiDoMember"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryCommand", luastrtocsstr("ai_cast_skill"), luastrtocsstr("AiCastSkill"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryCommand", luastrtocsstr("ai_chase"), luastrtocsstr("AiChase"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryCommand", luastrtocsstr("ai_keep_away"), luastrtocsstr("AiKeepAway"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryCommand", luastrtocsstr("ai_go_home"), luastrtocsstr("AiGohome"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryCommand", luastrtocsstr("ai_rand_move"), luastrtocsstr("AiRandMove"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryValue", luastrtocsstr("ai_select_skill_by_distance"), luastrtocsstr("AiSelectSkillByDistance"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryValue", luastrtocsstr("ai_need_chase"), luastrtocsstr("AiNeedChase"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryValue", luastrtocsstr("ai_need_keep_away"), luastrtocsstr("AiNeedKeepAway"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryValue", luastrtocsstr("ai_select_skill"), luastrtocsstr("AiSelectSkill"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryValue", luastrtocsstr("ai_select_target"), luastrtocsstr("AiSelectTarget"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryValue", luastrtocsstr("ai_get_skill"), luastrtocsstr("AiGetSkill"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryValue", luastrtocsstr("ai_get_target"), luastrtocsstr("AiGetTarget"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryValue", luastrtocsstr("ai_get_skills"), luastrtocsstr("AiGetSkills"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSimpleStoryValue", luastrtocsstr("ai_get_entities"), luastrtocsstr("AiGetEntities"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterStoryValue", luastrtocsstr("select"), luastrtocsstr("AiQuery"));
 	end,
+
+	cctor = function()
+		StoryRegister.__cctor();
+	end,
+
+	__cctor = function()
+		if StoryRegister.__cctor_called then 
+			return;
+		else
+			StoryRegister.__cctor_called = true;
+		end;
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
+	__define_class = function()
+		Utility.Warn("StoryRegister::__define_class begin");
+
+		local class = StoryRegister;
+		local obj_methods = nil;
+		local tmp_obj_method = nil;
+
+		local __defineclass_return = defineclass(nil, "StoryRegister", "StoryRegister", class, obj_methods, false, false);
+		Utility.Warn("StoryRegister::__define_class end");
+		return __defineclass_return;
+	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
 };
 
 
-
-StoryRegister.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+require "cs2luascript__plugin";
+settempmetatable(StoryRegister);

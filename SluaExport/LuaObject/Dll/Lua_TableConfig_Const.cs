@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_Const : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.Const o;
 			o=new TableConfig.Const();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_Const : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadFromBinary(IntPtr l) {
 		try {
 			TableConfig.Const self=(TableConfig.Const)checkSelf(l);
@@ -34,6 +36,7 @@ public class Lua_TableConfig_Const : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteToBinary(IntPtr l) {
 		try {
 			TableConfig.Const self=(TableConfig.Const)checkSelf(l);
@@ -48,6 +51,7 @@ public class Lua_TableConfig_Const : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetId(IntPtr l) {
 		try {
 			TableConfig.Const self=(TableConfig.Const)checkSelf(l);
@@ -61,6 +65,7 @@ public class Lua_TableConfig_Const : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_id(IntPtr l) {
 		try {
 			TableConfig.Const self=(TableConfig.Const)checkSelf(l);
@@ -73,6 +78,7 @@ public class Lua_TableConfig_Const : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_id(IntPtr l) {
 		try {
 			TableConfig.Const self=(TableConfig.Const)checkSelf(l);
@@ -87,6 +93,7 @@ public class Lua_TableConfig_Const : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value(IntPtr l) {
 		try {
 			TableConfig.Const self=(TableConfig.Const)checkSelf(l);
@@ -99,6 +106,7 @@ public class Lua_TableConfig_Const : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_value(IntPtr l) {
 		try {
 			TableConfig.Const self=(TableConfig.Const)checkSelf(l);
@@ -112,13 +120,15 @@ public class Lua_TableConfig_Const : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.Const");
+		addMember(l,ctor_s);
 		addMember(l,ReadFromBinary);
 		addMember(l,WriteToBinary);
 		addMember(l,GetId);
 		addMember(l,"id",get_id,set_id,true);
 		addMember(l,"value",get_value,set_value,true);
-		createTypeMetatable(l,constructor, typeof(TableConfig.Const));
+		createTypeMetatable(l,null, typeof(TableConfig.Const));
 	}
 }

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_PointController : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			PointController o;
 			o=new PointController();
@@ -17,6 +18,7 @@ public class Lua_PointController : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int PointList_s(IntPtr l) {
 		try {
 			UnityEngine.Vector3[] a1;
@@ -32,9 +34,11 @@ public class Lua_PointController : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"PointController");
+		addMember(l,ctor_s);
 		addMember(l,PointList_s);
-		createTypeMetatable(l,constructor, typeof(PointController));
+		createTypeMetatable(l,null, typeof(PointController));
 	}
 }

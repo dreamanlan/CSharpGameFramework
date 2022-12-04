@@ -1,84 +1,143 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
-require "AiLogicUtility";
+require "cs2lua__namespaces"; 
 
 AiSelectTarget = {
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
 	__new_object = function(...)
-		return newobject(AiSelectTarget, nil, nil, ...);
+		local __cs2dsl_newobj;
+		__cs2dsl_newobj = newobject(AiSelectTarget, nil, nil, "ctor", 0, nil, ...);
+		return __cs2dsl_newobj;
 	end,
-	__define_class = function()
-		local static = AiSelectTarget;
 
-		local static_methods = {
-			cctor = function()
-			end,
-		};
+	cctor = function()
+		AiSelectTarget.__cctor();
+	end,
 
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
+	__cctor = function()
+		if AiSelectTarget.__cctor_called then 
+			return;
+		else
+			AiSelectTarget.__cctor_called = true;
 		end;
-		local static_props = nil;
-		local static_events = nil;
+	end,
 
-		local instance_methods = {
-			SetProxy = function(this, result)
-				this.m_Proxy = result;
-			end,
-			Clone = function(this)
-				return newobject(AiSelectTarget, "ctor", nil);
-			end,
-			Evaluate = function(this, instance, _params)
-				local args; args = _params.Values;
-				local objId; objId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32, false);
-				local dist; dist = typecast(System.Convert.ChangeType(getexterninstanceindexer(args, nil, "get_Item", 1), System.Single), System.Single, false);
-				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
-				if (nil ~= npc) then
-					local entity;
-					if (dist < 0.00) then
-						entity = AiLogicUtility.GetNearstTargetHelper__GameFramework_EntityInfo__GameFramework_CharacterRelation(npc, 0);
-						if (nil ~= entity) then
-							npc:GetAiStateInfo().Target = entity:GetId();
-						end;
-					else
-						entity = AiLogicUtility.GetNearstTargetHelper__GameFramework_EntityInfo__System_Single__GameFramework_CharacterRelation(npc, dist, 0);
-						if (nil ~= entity) then
-							npc:GetAiStateInfo().Target = entity:GetId();
-						end;
-					end;
-					this.m_Proxy.Value = entity;
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+	-------------------------------
+	------ instance methods -------
+	-------------------------------
+	SetProxy = function(this, result)
+		this.m_Proxy = result;
+	end,
+
+	Clone = function(this)
+		local __method_ret_17_4_20_5;
+		__method_ret_17_4_20_5 = newobject(AiSelectTarget, nil, nil, "ctor", 0, nil);
+		return __method_ret_17_4_20_5;
+	end,
+
+	Evaluate = function(this, instance, handler, _params)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(AiSelectTarget.__ori_Evaluate, this, __cs2lua_func_info, instance, handler, _params);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_Evaluate = function(this, __cs2lua_func_info, instance, handler, _params)
+		local args;
+		args = _params.Values;
+		local objId;
+		objId = boxedvalue_list_get(__cs2lua_func_info, args, 1, 0):GetInt();
+		local dist;
+		dist = boxedvalue_list_get(__cs2lua_func_info, args, 1, 1):GetFloat();
+		local npc;
+		npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
+		if (not isequal(nil, npc)) then 
+			local entity;
+			if (dist < 0.00010000) then 
+				entity = AiLogicUtility.GetNearstTargetHelper__EntityInfo__CharacterRelation(npc, 0);
+				if (not isequal(nil, entity)) then 
+					npc:GetAiStateInfo().Target = entity:GetId();
 				end;
-			end,
-			ctor = function(this)
-			end,
-		};
-
-		local instance_fields_build = function()
-			local instance_fields = {
-				m_Proxy = __cs2lua_nil_field_value,
-			};
-			return instance_fields;
+			else
+				entity = AiLogicUtility.GetNearstTargetHelper__EntityInfo__Single__CharacterRelation(npc, dist, 0);
+				if (not isequal(nil, entity)) then 
+					npc:GetAiStateInfo().Target = entity:GetId();
+				end;
+			end;
+			this.m_Proxy.Value = callexternstaticreturnstruct(BoxedValue, "FromObject", entity);
 		end;
-		local instance_props = nil;
-		local instance_events = nil;
-		local interfaces = {
-			"GameFramework.Plugin.ISimpleStoryValuePlugin",
-		};
-
-		local interface_map = {
-			ISimpleStoryValuePlugin_SetProxy = "SetProxy",
-			ISimpleStoryValuePlugin_Clone = "Clone",
-			ISimpleStoryValuePlugin_Evaluate = "Evaluate",
-		};
-
-
-		return defineclass(nil, "AiSelectTarget", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
 	end,
+
+	ctor = function(this)
+		AiSelectTarget.__ctor(this);
+	end,
+
+	__ctor = function(this)
+		if this.__ctor_called then 
+			return;
+		else
+			this.__ctor_called = true;
+		end;
+	end,
+	-------------------------------
+	------ instance fields -------
+	-------------------------------
+	__init_obj_fields = function(this)
+		rawset(this, "__ctor_called", false);
+	end,
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
+	__define_class = function()
+		Utility.Warn("AiSelectTarget::__define_class begin");
+
+		local class = AiSelectTarget;
+		local obj_methods = {
+			SetProxy = rawget(class, "SetProxy"),
+			Clone = rawget(class, "Clone"),
+			Evaluate = rawget(class, "Evaluate"),
+			ctor = rawget(class, "ctor"),
+			__ctor = rawget(class, "__ctor"),
+		};
+		local tmp_obj_method = nil;
+
+		local __defineclass_return = defineclass(nil, "AiSelectTarget", "AiSelectTarget", class, obj_methods, false, false);
+		Utility.Warn("AiSelectTarget::__define_class end");
+		return __defineclass_return;
+	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+	__obj_fields = {
+		m_Proxy = true,
+		__ctor_called = true,
+	},
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
+	__interfaces = {
+		"GameFramework.Plugin.ISimpleStoryValuePlugin",
+	},
+	__method_info = {
+		ctor = {
+			ctor = true,
+		},
+	},
 };
 
 
-
-AiSelectTarget.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+require "ailogicutility";
+settempmetatable(AiSelectTarget);

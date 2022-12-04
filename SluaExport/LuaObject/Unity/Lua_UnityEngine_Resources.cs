@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_Resources : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.Resources o;
 			o=new UnityEngine.Resources();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_Resources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int FindObjectsOfTypeAll_s(IntPtr l) {
 		try {
 			System.Type a1;
@@ -31,29 +33,14 @@ public class Lua_UnityEngine_Resources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Load_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int Load__String_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==1){
-				System.String a1;
-				checkType(l,1,out a1);
-				var ret=UnityEngine.Resources.Load(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(argc==2){
-				System.String a1;
-				checkType(l,1,out a1);
-				System.Type a2;
-				checkType(l,2,out a2);
-				var ret=UnityEngine.Resources.Load(a1,a2);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			System.String a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Resources.Load(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -61,29 +48,16 @@ public class Lua_UnityEngine_Resources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int LoadAsync_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int Load__String__Type_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==1){
-				System.String a1;
-				checkType(l,1,out a1);
-				var ret=UnityEngine.Resources.LoadAsync(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(argc==2){
-				System.String a1;
-				checkType(l,1,out a1);
-				System.Type a2;
-				checkType(l,2,out a2);
-				var ret=UnityEngine.Resources.LoadAsync(a1,a2);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			System.String a1;
+			checkType(l,1,out a1);
+			System.Type a2;
+			checkType(l,2,out a2);
+			var ret=UnityEngine.Resources.Load(a1,a2);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -91,29 +65,14 @@ public class Lua_UnityEngine_Resources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int LoadAll_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int LoadAsync__String_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==1){
-				System.String a1;
-				checkType(l,1,out a1);
-				var ret=UnityEngine.Resources.LoadAll(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(argc==2){
-				System.String a1;
-				checkType(l,1,out a1);
-				System.Type a2;
-				checkType(l,2,out a2);
-				var ret=UnityEngine.Resources.LoadAll(a1,a2);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			System.String a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Resources.LoadAsync(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -121,6 +80,56 @@ public class Lua_UnityEngine_Resources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int LoadAsync__String__Type_s(IntPtr l) {
+		try {
+			System.String a1;
+			checkType(l,1,out a1);
+			System.Type a2;
+			checkType(l,2,out a2);
+			var ret=UnityEngine.Resources.LoadAsync(a1,a2);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int LoadAll__String_s(IntPtr l) {
+		try {
+			System.String a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Resources.LoadAll(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int LoadAll__String__Type_s(IntPtr l) {
+		try {
+			System.String a1;
+			checkType(l,1,out a1);
+			System.Type a2;
+			checkType(l,2,out a2);
+			var ret=UnityEngine.Resources.LoadAll(a1,a2);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetBuiltinResource_s(IntPtr l) {
 		try {
 			System.Type a1;
@@ -137,6 +146,7 @@ public class Lua_UnityEngine_Resources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int UnloadAsset_s(IntPtr l) {
 		try {
 			UnityEngine.Object a1;
@@ -150,6 +160,7 @@ public class Lua_UnityEngine_Resources : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int UnloadUnusedAssets_s(IntPtr l) {
 		try {
 			var ret=UnityEngine.Resources.UnloadUnusedAssets();
@@ -161,15 +172,36 @@ public class Lua_UnityEngine_Resources : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int InstanceIDToObject_s(IntPtr l) {
+		try {
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			var ret=UnityEngine.Resources.InstanceIDToObject(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Resources");
+		addMember(l,ctor_s);
 		addMember(l,FindObjectsOfTypeAll_s);
-		addMember(l,Load_s);
-		addMember(l,LoadAsync_s);
-		addMember(l,LoadAll_s);
+		addMember(l,Load__String_s);
+		addMember(l,Load__String__Type_s);
+		addMember(l,LoadAsync__String_s);
+		addMember(l,LoadAsync__String__Type_s);
+		addMember(l,LoadAll__String_s);
+		addMember(l,LoadAll__String__Type_s);
 		addMember(l,GetBuiltinResource_s);
 		addMember(l,UnloadAsset_s);
 		addMember(l,UnloadUnusedAssets_s);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.Resources));
+		addMember(l,InstanceIDToObject_s);
+		createTypeMetatable(l,null, typeof(UnityEngine.Resources));
 	}
 }

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_CR_StopSkill : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_StopSkill o;
 			o=new GameFrameworkMessage.Msg_CR_StopSkill();
@@ -16,8 +17,10 @@ public class Lua_GameFrameworkMessage_Msg_CR_StopSkill : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_CR_StopSkill");
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_CR_StopSkill));
+		addMember(l,ctor_s);
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_CR_StopSkill));
 	}
 }

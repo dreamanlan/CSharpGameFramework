@@ -1,99 +1,194 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
-require "AiCommand";
+require "cs2lua__namespaces"; 
 
 AiGohome = {
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
 	__new_object = function(...)
-		return newobject(AiGohome, nil, nil, ...);
+		local __cs2dsl_newobj;
+		__cs2dsl_newobj = newobject(AiGohome, nil, nil, "ctor", 0, nil, ...);
+		return __cs2dsl_newobj;
 	end,
+
+	cctor = function()
+		AiGohome.__cctor();
+	end,
+
+	__cctor = function()
+		if AiGohome.__cctor_called then 
+			return;
+		else
+			AiGohome.__cctor_called = true;
+		end;
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+	-------------------------------
+	------ instance methods -------
+	-------------------------------
+	Clone = function(this)
+		local __method_ret_12_4_15_5;
+		__method_ret_12_4_15_5 = newobject(AiGohome, nil, nil, "ctor", 0, nil);
+		return __method_ret_12_4_15_5;
+	end,
+
+	ResetState = function(this)
+		this.m_ParamReaded = false;
+	end,
+
+	ExecCommand = function(this, instance, handler, _params, delta)
+		local __cs2lua_func_info = luainitialize();
+		local __retval_0, __retval_1 = luapcall(AiGohome.__ori_ExecCommand, this, __cs2lua_func_info, instance, handler, _params, delta);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+		if not __retval_0 then
+			lualog("{0}", __retval_1);
+			__retval_1 = false;
+		end;
+		return __retval_1;
+	end,
+	__ori_ExecCommand = function(this, __cs2lua_func_info, instance, handler, _params, delta)
+		local __method_ret_22_4_35_5;
+		local args;
+		args = _params.Values;
+		if (not this.m_ParamReaded) then 
+			this.m_ParamReaded = true;
+			local __old_val_27_12_27_29;
+			__old_val_27_12_27_29 = this.m_ObjId;
+			this.m_ObjId = invokeexternoperator(System.Int32, BoxedValue, "op_Implicit__Int32__BoxedValue", boxedvalue_list_get(__cs2lua_func_info, args, 1, 0));
+			local __new_val_27_12_27_29;
+			__new_val_27_12_27_29 = this.m_ObjId;
+			recycleandkeepstructvalue(System.Int32, __old_val_27_12_27_29, __new_val_27_12_27_29);
+		end;
+		local npc;
+		npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
+		if (not isequal(nil, npc)) then 
+			local info;
+			info = npc:GetAiStateInfo();
+			__method_ret_22_4_35_5 = AiGohome.GohomeHandler(this, npc, info, delta);
+			return __method_ret_22_4_35_5;
+		end;
+		__method_ret_22_4_35_5 = false;
+		return __method_ret_22_4_35_5;
+	end,
+
+	GohomeHandler = function(this, npc, info, deltaTime)
+		local __cs2lua_func_info = luainitialize();
+		local __retval_0, __retval_1 = luapcall(AiGohome.__ori_GohomeHandler, this, __cs2lua_func_info, npc, info, deltaTime);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+		if not __retval_0 then
+			lualog("{0}", __retval_1);
+			__retval_1 = false;
+		end;
+		return __retval_1;
+	end,
+	__ori_GohomeHandler = function(this, __cs2lua_func_info, npc, info, deltaTime)
+		local __method_ret_37_4_60_5;
+		info.Time = (info.Time + deltaTime);
+		if (info.Time > 100) then 
+			info.Time = 0;
+		else
+			__method_ret_37_4_60_5 = true;
+			return __method_ret_37_4_60_5;
+		end;
+		local targetPos;
+		targetPos = getexterninstancestructmember(SymbolKind.Property, info, GameFramework.AiStateInfo, "HomePos");
+		local srcPos;
+		srcPos = callexterninstancereturnstruct(npc:GetMovementStateInfo(), GameFramework.MovementStateInfo, "GetPosition3D");
+		local distSqr;
+		distSqr = GameFramework.Geometry.DistanceSquare__Vector3__Vector3(wrapexternstructargument(srcPos, ScriptRuntime.Vector3, OperationKind.LocalReference, SymbolKind.Local), getexterninstancestructmember(SymbolKind.Property, info, GameFramework.AiStateInfo, "HomePos"));
+		if (distSqr <= 1) then 
+			npc:GetMovementStateInfo().IsMoving = false;
+			AiCommand.AiStopPursue(npc);
+			info:ChangeToState(1);
+			__method_ret_37_4_60_5 = false;
+			return __method_ret_37_4_60_5;
+		else
+			npc:GetMovementStateInfo().IsMoving = true;
+			npc:GetMovementStateInfo().TargetPosition = targetPos;
+			AiCommand.AiPursue(npc, wrapexternstructargument(targetPos, ScriptRuntime.Vector3, OperationKind.LocalReference, SymbolKind.Local));
+		end;
+		__method_ret_37_4_60_5 = true;
+		return __method_ret_37_4_60_5;
+	end,
+
+	ctor = function(this)
+		AiGohome.__ctor(this);
+	end,
+
+	__ctor = function(this)
+		if this.__ctor_called then 
+			return;
+		else
+			this.__ctor_called = true;
+		end;
+	end,
+	-------------------------------
+	------ instance fields -------
+	-------------------------------
+	__init_obj_fields = function(this)
+		rawset(this, "m_ObjId", 0);
+		rawset(this, "m_ParamReaded", false);
+		rawset(this, "__ctor_called", false);
+	end,
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
 	__define_class = function()
-		local static = AiGohome;
+		Utility.Warn("AiGohome::__define_class begin");
 
-		local static_methods = {
-			cctor = function()
-			end,
+		local class = AiGohome;
+		local obj_methods = {
+			Clone = rawget(class, "Clone"),
+			ResetState = rawget(class, "ResetState"),
+			ExecCommand = rawget(class, "ExecCommand"),
+			GohomeHandler = rawget(class, "GohomeHandler"),
+			ctor = rawget(class, "ctor"),
+			__ctor = rawget(class, "__ctor"),
 		};
+		local tmp_obj_method = nil;
 
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
-		end;
-		local static_props = nil;
-		local static_events = nil;
-
-		local instance_methods = {
-			Clone = function(this)
-				return newobject(AiGohome, "ctor", nil);
-			end,
-			ResetState = function(this)
-				this.m_ParamReaded = false;
-			end,
-			ExecCommand = function(this, instance, _params, delta)
-				local args; args = _params.Values;
-				if (not this.m_ParamReaded) then
-					this.m_ParamReaded = true;
-					this.m_ObjId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32, false);
-				end;
-				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
-				if (nil ~= npc) then
-					local info; info = npc:GetAiStateInfo();
-					return this:GohomeHandler(npc, info, delta);
-				end;
-				return false;
-			end,
-			GohomeHandler = function(this, npc, info, deltaTime)
-				info.Time = invokeintegeroperator(2, "+", info.Time, deltaTime, System.Int64, System.Int64);
-				if (info.Time > 100) then
-					info.Time = 0;
-				else
-					return true;
-				end;
-				local targetPos; targetPos = info.HomePos;
-				local srcPos; srcPos = npc:GetMovementStateInfo():GetPosition3D();
-				local distSqr; distSqr = GameFramework.Geometry.DistanceSquare(srcPos, info.HomePos);
-				if (distSqr <= 1) then
-					npc:GetMovementStateInfo().IsMoving = false;
-					AiCommand.AiStopPursue(npc);
-					info:ChangeToState(1);
-					return false;
-				else
-					npc:GetMovementStateInfo().IsMoving = true;
-					npc:GetMovementStateInfo().TargetPosition = targetPos;
-					AiCommand.AiPursue(npc, targetPos);
-				end;
-				return true;
-			end,
-			ctor = function(this)
-			end,
-		};
-
-		local instance_fields_build = function()
-			local instance_fields = {
-				m_ObjId = 0,
-				m_ParamReaded = false,
-			};
-			return instance_fields;
-		end;
-		local instance_props = nil;
-		local instance_events = nil;
-		local interfaces = {
-			"GameFramework.Plugin.ISimpleStoryCommandPlugin",
-		};
-
-		local interface_map = {
-			ISimpleStoryCommandPlugin_Clone = "Clone",
-			ISimpleStoryCommandPlugin_ResetState = "ResetState",
-			ISimpleStoryCommandPlugin_ExecCommand = "ExecCommand",
-		};
-
-
-		return defineclass(nil, "AiGohome", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+		local __defineclass_return = defineclass(nil, "AiGohome", "AiGohome", class, obj_methods, false, false);
+		Utility.Warn("AiGohome::__define_class end");
+		return __defineclass_return;
 	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+	__obj_fields = {
+		m_ObjId = true,
+		m_ParamReaded = true,
+		__ctor_called = true,
+	},
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
+	__interfaces = {
+		"GameFramework.Plugin.ISimpleStoryCommandPlugin",
+	},
+	__method_info = {
+		GohomeHandler = {
+			private = true,
+		},
+		ctor = {
+			ctor = true,
+		},
+	},
 };
 
 
-
-AiGohome.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+require "aicommand";
+settempmetatable(AiGohome);

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_AttrCalc_DslCalculator2 : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.AttrCalc.DslCalculator2 o;
 			o=new GameFramework.AttrCalc.DslCalculator2();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_AttrCalc_DslCalculator2 : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Load(IntPtr l) {
 		try {
 			GameFramework.AttrCalc.DslCalculator2 self=(GameFramework.AttrCalc.DslCalculator2)checkSelf(l);
@@ -31,6 +33,7 @@ public class Lua_GameFramework_AttrCalc_DslCalculator2 : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Calc(IntPtr l) {
 		try {
 			GameFramework.AttrCalc.DslCalculator2 self=(GameFramework.AttrCalc.DslCalculator2)checkSelf(l);
@@ -53,10 +56,12 @@ public class Lua_GameFramework_AttrCalc_DslCalculator2 : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.AttrCalc.DslCalculator2");
+		addMember(l,ctor_s);
 		addMember(l,Load);
 		addMember(l,Calc);
-		createTypeMetatable(l,constructor, typeof(GameFramework.AttrCalc.DslCalculator2));
+		createTypeMetatable(l,null, typeof(GameFramework.AttrCalc.DslCalculator2));
 	}
 }

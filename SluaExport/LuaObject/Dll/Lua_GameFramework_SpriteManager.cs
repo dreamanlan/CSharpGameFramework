@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_SpriteManager : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.SpriteManager o;
 			o=new GameFramework.SpriteManager();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_SpriteManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Init_s(IntPtr l) {
 		try {
 			GameFramework.SpriteManager.Init();
@@ -28,6 +30,7 @@ public class Lua_GameFramework_SpriteManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetActorIcon_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -42,6 +45,7 @@ public class Lua_GameFramework_SpriteManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetActorBigIcon_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -56,6 +60,7 @@ public class Lua_GameFramework_SpriteManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetSkillIcon_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -70,6 +75,7 @@ public class Lua_GameFramework_SpriteManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetActorIconIndex_s(IntPtr l) {
 		try {
 			UnityEngine.Sprite a1;
@@ -84,6 +90,7 @@ public class Lua_GameFramework_SpriteManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetActorBigIconIndex_s(IntPtr l) {
 		try {
 			UnityEngine.Sprite a1;
@@ -98,6 +105,7 @@ public class Lua_GameFramework_SpriteManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetSkillIconIndex_s(IntPtr l) {
 		try {
 			UnityEngine.Sprite a1;
@@ -111,8 +119,10 @@ public class Lua_GameFramework_SpriteManager : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.SpriteManager");
+		addMember(l,ctor_s);
 		addMember(l,Init_s);
 		addMember(l,GetActorIcon_s);
 		addMember(l,GetActorBigIcon_s);
@@ -120,6 +130,6 @@ public class Lua_GameFramework_SpriteManager : LuaObject {
 		addMember(l,GetActorIconIndex_s);
 		addMember(l,GetActorBigIconIndex_s);
 		addMember(l,GetSkillIconIndex_s);
-		createTypeMetatable(l,constructor, typeof(GameFramework.SpriteManager));
+		createTypeMetatable(l,null, typeof(GameFramework.SpriteManager));
 	}
 }

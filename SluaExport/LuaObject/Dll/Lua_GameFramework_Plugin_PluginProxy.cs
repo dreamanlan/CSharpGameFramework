@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_Plugin_PluginProxy : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_NativeProxy(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -15,6 +16,7 @@ public class Lua_GameFramework_Plugin_PluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_NativeProxy(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy v;
@@ -28,6 +30,7 @@ public class Lua_GameFramework_Plugin_PluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_LuaProxy(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -39,6 +42,7 @@ public class Lua_GameFramework_Plugin_PluginProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_LuaProxy(IntPtr l) {
 		try {
 			GameFramework.Plugin.IPluginProxy v;
@@ -51,6 +55,7 @@ public class Lua_GameFramework_Plugin_PluginProxy : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.Plugin.PluginProxy");
 		addMember(l,"NativeProxy",get_NativeProxy,set_NativeProxy,false);

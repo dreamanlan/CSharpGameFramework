@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_Plugin_IAttrExpressionPlugin : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetCalculator(IntPtr l) {
 		try {
 			GameFramework.Plugin.IAttrExpressionPlugin self=(GameFramework.Plugin.IAttrExpressionPlugin)checkSelf(l);
@@ -18,6 +19,7 @@ public class Lua_GameFramework_Plugin_IAttrExpressionPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Calc(IntPtr l) {
 		try {
 			GameFramework.Plugin.IAttrExpressionPlugin self=(GameFramework.Plugin.IAttrExpressionPlugin)checkSelf(l);
@@ -39,6 +41,7 @@ public class Lua_GameFramework_Plugin_IAttrExpressionPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadValue(IntPtr l) {
 		try {
 			GameFramework.Plugin.IAttrExpressionPlugin self=(GameFramework.Plugin.IAttrExpressionPlugin)checkSelf(l);
@@ -54,6 +57,7 @@ public class Lua_GameFramework_Plugin_IAttrExpressionPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadCallData(IntPtr l) {
 		try {
 			GameFramework.Plugin.IAttrExpressionPlugin self=(GameFramework.Plugin.IAttrExpressionPlugin)checkSelf(l);
@@ -69,6 +73,7 @@ public class Lua_GameFramework_Plugin_IAttrExpressionPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadExpressions(IntPtr l) {
 		try {
 			GameFramework.Plugin.IAttrExpressionPlugin self=(GameFramework.Plugin.IAttrExpressionPlugin)checkSelf(l);
@@ -84,6 +89,7 @@ public class Lua_GameFramework_Plugin_IAttrExpressionPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadFuncData(IntPtr l) {
 		try {
 			GameFramework.Plugin.IAttrExpressionPlugin self=(GameFramework.Plugin.IAttrExpressionPlugin)checkSelf(l);
@@ -99,6 +105,7 @@ public class Lua_GameFramework_Plugin_IAttrExpressionPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadStatementData(IntPtr l) {
 		try {
 			GameFramework.Plugin.IAttrExpressionPlugin self=(GameFramework.Plugin.IAttrExpressionPlugin)checkSelf(l);
@@ -113,6 +120,7 @@ public class Lua_GameFramework_Plugin_IAttrExpressionPlugin : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.Plugin.IAttrExpressionPlugin");
 		addMember(l,SetCalculator);

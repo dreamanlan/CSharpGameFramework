@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_StorySystem_StoryValueResult : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			StorySystem.StoryValueResult o;
 			o=new StorySystem.StoryValueResult();
@@ -17,6 +18,21 @@ public class Lua_StorySystem_StoryValueResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Clone(IntPtr l) {
+		try {
+			StorySystem.StoryValueResult self=(StorySystem.StoryValueResult)checkSelf(l);
+			var ret=self.Clone();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_HaveValue(IntPtr l) {
 		try {
 			StorySystem.StoryValueResult self=(StorySystem.StoryValueResult)checkSelf(l);
@@ -29,6 +45,7 @@ public class Lua_StorySystem_StoryValueResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_HaveValue(IntPtr l) {
 		try {
 			StorySystem.StoryValueResult self=(StorySystem.StoryValueResult)checkSelf(l);
@@ -43,11 +60,12 @@ public class Lua_StorySystem_StoryValueResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Value(IntPtr l) {
 		try {
 			StorySystem.StoryValueResult self=(StorySystem.StoryValueResult)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.Value);
+			pushValue(l,self.Value.GetObject());
 			return 2;
 		}
 		catch(Exception e) {
@@ -55,11 +73,12 @@ public class Lua_StorySystem_StoryValueResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Value(IntPtr l) {
 		try {
 			StorySystem.StoryValueResult self=(StorySystem.StoryValueResult)checkSelf(l);
-			System.Object v;
-			checkType(l,2,out v);
+			BoxedValue v;
+			checkValueType(l,2,out v);
 			self.Value=v;
 			pushValue(l,true);
 			return 1;
@@ -68,10 +87,13 @@ public class Lua_StorySystem_StoryValueResult : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"StorySystem.StoryValueResult");
+		addMember(l,ctor_s);
+		addMember(l,Clone);
 		addMember(l,"HaveValue",get_HaveValue,set_HaveValue,true);
 		addMember(l,"Value",get_Value,set_Value,true);
-		createTypeMetatable(l,constructor, typeof(StorySystem.StoryValueResult));
+		createTypeMetatable(l,null, typeof(StorySystem.StoryValueResult));
 	}
 }

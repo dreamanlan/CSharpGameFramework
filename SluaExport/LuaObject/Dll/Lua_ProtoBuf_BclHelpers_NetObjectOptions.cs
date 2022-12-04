@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ProtoBuf_BclHelpers_NetObjectOptions : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"ProtoBuf.BclHelpers.NetObjectOptions");

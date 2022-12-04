@@ -1,47 +1,84 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
+require "cs2lua__namespaces"; 
 
 HandlerRegister = {
-	__define_class = function()
-		local static = HandlerRegister;
-
-		local static_methods = {
-			Register = function()
---在这里注册所有基于名字的消息处理
-			end,
-			Call = function(name, ...)
-				local args = wraparray{...};
-				local handler;
-				if (function() local __compiler_invoke_15; __compiler_invoke_15, handler = HandlerRegister.s_Handlers:TryGetValue(name, __cs2lua_out); return __compiler_invoke_15; end)() then
-					handler(unpack(args));
-				end;
-			end,
-			Register__System_String__HandlerDelegation = function(name, handler)
-				if HandlerRegister.s_Handlers:ContainsKey(name) then
-					HandlerRegister.s_Handlers:Add(name, handler);
-				else
-					setexterninstanceindexer(HandlerRegister.s_Handlers, nil, "set_Item", name, handler);
-				end;
-			end,
-			cctor = function()
-			end,
-		};
-
-		local static_fields_build = function()
-			local static_fields = {
-				s_Handlers = newexterndictionary(System.Collections.Generic.Dictionary_TKey_TValue, "System.Collections.Generic.Dictionary_TKey_TValue", "ctor", {}),
-			};
-			return static_fields;
-		end;
-		local static_props = nil;
-		local static_events = nil;
-
-		return defineclass(nil, "HandlerRegister", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
+	Register = function()
+		--在这里注册所有基于名字的消息处理
 	end,
+
+	Call = function(name, ...)
+		local args;
+		args = wrapparams({...}, System.Object, TypeKind.Class);
+		local handler;
+		--
+		local __invoke_15_12_15_53;
+		__invoke_15_12_15_53,handler = HandlerRegister.s_Handlers:TryGetValue(name, __cs2lua_out);
+		if __invoke_15_12_15_53 then
+
+			handler(luaunpack(args));
+		end;
+	end,
+
+	Register__String__HandlerDelegation = function(name, handler)
+		if HandlerRegister.s_Handlers:ContainsKey(name) then 
+			HandlerRegister.s_Handlers:Add(name, handler);
+		else
+			HandlerRegister.s_Handlers[name] = handler;
+		end;
+	end,
+
+	cctor = function()
+		HandlerRegister.__cctor();
+	end,
+
+	__cctor = function()
+		if HandlerRegister.__cctor_called then 
+			return;
+		else
+			HandlerRegister.__cctor_called = true;
+		end;
+		HandlerRegister.s_Handlers = newexterndictionary(System.Collections.Generic.Dictionary_TKey_TValue, buildglobalinfoonce("g_System_Collections_Generic_Dictionary_System_String_HandlerDelegation_TypeArgs", getglobalinfo("g_System_Collections_Generic_Dictionary_System_String_HandlerDelegation_TypeArgs") or {System.String, "HandlerDelegation"}), buildglobalinfoonce("g_System_Collections_Generic_Dictionary_System_String_HandlerDelegation_TypeKinds", getglobalinfo("g_System_Collections_Generic_Dictionary_System_String_HandlerDelegation_TypeKinds") or {TypeKind.Class, TypeKind.Delegate}), "ctor", 0, {});
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
+	__define_class = function()
+		Utility.Warn("HandlerRegister::__define_class begin");
+
+		local class = HandlerRegister;
+		local obj_methods = nil;
+		local tmp_obj_method = nil;
+
+		local __defineclass_return = defineclass(nil, "HandlerRegister", "HandlerRegister", class, obj_methods, false, false);
+		Utility.Warn("HandlerRegister::__define_class end");
+		return __defineclass_return;
+	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		s_Handlers = true,
+		__cctor_called = true,
+	},
+
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
 };
 
 
-
-HandlerRegister.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+settempmetatable(HandlerRegister);

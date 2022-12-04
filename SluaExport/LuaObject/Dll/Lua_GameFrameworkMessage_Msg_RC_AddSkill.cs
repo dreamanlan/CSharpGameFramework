@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_RC_AddSkill : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddSkill o;
 			o=new GameFrameworkMessage.Msg_RC_AddSkill();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_obj_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddSkill self=(GameFrameworkMessage.Msg_RC_AddSkill)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_obj_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddSkill self=(GameFrameworkMessage.Msg_RC_AddSkill)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_skill_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddSkill self=(GameFrameworkMessage.Msg_RC_AddSkill)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_skill_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddSkill self=(GameFrameworkMessage.Msg_RC_AddSkill)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddSkill : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_RC_AddSkill");
+		addMember(l,ctor_s);
 		addMember(l,"obj_id",get_obj_id,set_obj_id,true);
 		addMember(l,"skill_id",get_skill_id,set_skill_id,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_RC_AddSkill));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_RC_AddSkill));
 	}
 }

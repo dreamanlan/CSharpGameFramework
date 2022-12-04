@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Logout : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Logout o;
 			o=new GameFrameworkMessage.Logout();
@@ -16,8 +17,10 @@ public class Lua_GameFrameworkMessage_Logout : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Logout");
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Logout));
+		addMember(l,ctor_s);
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Logout));
 	}
 }

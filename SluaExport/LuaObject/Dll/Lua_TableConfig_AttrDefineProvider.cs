@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.AttrDefineProvider o;
 			o=new TableConfig.AttrDefineProvider();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadForClient(IntPtr l) {
 		try {
 			TableConfig.AttrDefineProvider self=(TableConfig.AttrDefineProvider)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadForServer(IntPtr l) {
 		try {
 			TableConfig.AttrDefineProvider self=(TableConfig.AttrDefineProvider)checkSelf(l);
@@ -41,6 +44,7 @@ public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Load(IntPtr l) {
 		try {
 			TableConfig.AttrDefineProvider self=(TableConfig.AttrDefineProvider)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Save(IntPtr l) {
 		try {
 			TableConfig.AttrDefineProvider self=(TableConfig.AttrDefineProvider)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			TableConfig.AttrDefineProvider self=(TableConfig.AttrDefineProvider)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetAttrDefineCount(IntPtr l) {
 		try {
 			TableConfig.AttrDefineProvider self=(TableConfig.AttrDefineProvider)checkSelf(l);
@@ -94,6 +101,7 @@ public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetAttrDefine(IntPtr l) {
 		try {
 			TableConfig.AttrDefineProvider self=(TableConfig.AttrDefineProvider)checkSelf(l);
@@ -109,18 +117,7 @@ public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_AttrDefineMgr(IntPtr l) {
-		try {
-			TableConfig.AttrDefineProvider self=(TableConfig.AttrDefineProvider)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.AttrDefineMgr);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Instance(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -131,8 +128,10 @@ public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.AttrDefineProvider");
+		addMember(l,ctor_s);
 		addMember(l,LoadForClient);
 		addMember(l,LoadForServer);
 		addMember(l,Load);
@@ -140,8 +139,7 @@ public class Lua_TableConfig_AttrDefineProvider : LuaObject {
 		addMember(l,Clear);
 		addMember(l,GetAttrDefineCount);
 		addMember(l,GetAttrDefine);
-		addMember(l,"AttrDefineMgr",get_AttrDefineMgr,null,true);
 		addMember(l,"Instance",get_Instance,null,false);
-		createTypeMetatable(l,constructor, typeof(TableConfig.AttrDefineProvider));
+		createTypeMetatable(l,null, typeof(TableConfig.AttrDefineProvider));
 	}
 }

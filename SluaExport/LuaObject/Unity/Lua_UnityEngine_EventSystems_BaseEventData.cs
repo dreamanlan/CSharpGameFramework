@@ -1,14 +1,15 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_EventSystems_BaseEventData : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseEventData o;
 			UnityEngine.EventSystems.EventSystem a1;
-			checkType(l,2,out a1);
+			checkType(l,1,out a1);
 			o=new UnityEngine.EventSystems.BaseEventData(a1);
 			pushValue(l,true);
 			pushValue(l,o);
@@ -19,6 +20,7 @@ public class Lua_UnityEngine_EventSystems_BaseEventData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_currentInputModule(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseEventData self=(UnityEngine.EventSystems.BaseEventData)checkSelf(l);
@@ -31,6 +33,7 @@ public class Lua_UnityEngine_EventSystems_BaseEventData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_selectedObject(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseEventData self=(UnityEngine.EventSystems.BaseEventData)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_UnityEngine_EventSystems_BaseEventData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_selectedObject(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseEventData self=(UnityEngine.EventSystems.BaseEventData)checkSelf(l);
@@ -56,10 +60,12 @@ public class Lua_UnityEngine_EventSystems_BaseEventData : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.EventSystems.BaseEventData");
+		addMember(l,ctor_s);
 		addMember(l,"currentInputModule",get_currentInputModule,null,true);
 		addMember(l,"selectedObject",get_selectedObject,set_selectedObject,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.EventSystems.BaseEventData),typeof(UnityEngine.EventSystems.AbstractEventData));
+		createTypeMetatable(l,null, typeof(UnityEngine.EventSystems.BaseEventData),typeof(UnityEngine.EventSystems.AbstractEventData));
 	}
 }

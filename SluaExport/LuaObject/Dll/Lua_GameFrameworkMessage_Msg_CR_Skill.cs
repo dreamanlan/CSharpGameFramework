@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Skill o;
 			o=new GameFrameworkMessage.Msg_CR_Skill();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_role_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Skill self=(GameFrameworkMessage.Msg_CR_Skill)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_role_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Skill self=(GameFrameworkMessage.Msg_CR_Skill)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_skill_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Skill self=(GameFrameworkMessage.Msg_CR_Skill)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_skill_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Skill self=(GameFrameworkMessage.Msg_CR_Skill)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_target_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Skill self=(GameFrameworkMessage.Msg_CR_Skill)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_target_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Skill self=(GameFrameworkMessage.Msg_CR_Skill)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_target_dir(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Skill self=(GameFrameworkMessage.Msg_CR_Skill)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_target_dir(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CR_Skill self=(GameFrameworkMessage.Msg_CR_Skill)checkSelf(l);
@@ -120,12 +129,14 @@ public class Lua_GameFrameworkMessage_Msg_CR_Skill : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_CR_Skill");
+		addMember(l,ctor_s);
 		addMember(l,"role_id",get_role_id,set_role_id,true);
 		addMember(l,"skill_id",get_skill_id,set_skill_id,true);
 		addMember(l,"target_id",get_target_id,set_target_id,true);
 		addMember(l,"target_dir",get_target_dir,set_target_dir,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_CR_Skill));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_CR_Skill));
 	}
 }

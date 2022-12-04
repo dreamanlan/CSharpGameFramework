@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_CLC_StoryMessage_MessageArg : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg o;
 			o=new GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_CLC_StoryMessage_MessageArg : LuaObjec
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_val_type(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg self=(GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_CLC_StoryMessage_MessageArg : LuaObjec
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_val_type(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg self=(GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_CLC_StoryMessage_MessageArg : LuaObjec
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_str_val(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg self=(GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_CLC_StoryMessage_MessageArg : LuaObjec
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_str_val(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg self=(GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_Msg_CLC_StoryMessage_MessageArg : LuaObjec
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg");
+		addMember(l,ctor_s);
 		addMember(l,"val_type",get_val_type,set_val_type,true);
 		addMember(l,"str_val",get_str_val,set_str_val,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_CLC_StoryMessage.MessageArg));
 	}
 }

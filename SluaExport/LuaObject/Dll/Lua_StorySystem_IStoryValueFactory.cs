@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_StorySystem_IStoryValueFactory : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Build(IntPtr l) {
 		try {
 			StorySystem.IStoryValueFactory self=(StorySystem.IStoryValueFactory)checkSelf(l);
@@ -16,6 +17,7 @@ public class Lua_StorySystem_IStoryValueFactory : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"StorySystem.IStoryValueFactory");
 		addMember(l,Build);

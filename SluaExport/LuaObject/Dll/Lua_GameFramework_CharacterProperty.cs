@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_CharacterProperty : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty o;
 			o=new GameFramework.CharacterProperty();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetFloat(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -32,6 +34,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetFloat(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -48,6 +51,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IncreaseFloat(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -64,6 +68,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetInt(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -79,6 +84,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetInt(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -95,6 +101,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IncreaseInt(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -111,6 +118,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetLong(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -126,6 +134,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetLong(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -142,6 +151,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IncreaseLong(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -158,6 +168,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CopyFrom(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -172,6 +183,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ConfigData(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -184,6 +196,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ConfigData(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -198,6 +211,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Owner(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -210,6 +224,7 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Owner(IntPtr l) {
 		try {
 			GameFramework.CharacterProperty self=(GameFramework.CharacterProperty)checkSelf(l);
@@ -223,8 +238,10 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.CharacterProperty");
+		addMember(l,ctor_s);
 		addMember(l,GetFloat);
 		addMember(l,SetFloat);
 		addMember(l,IncreaseFloat);
@@ -237,6 +254,6 @@ public class Lua_GameFramework_CharacterProperty : LuaObject {
 		addMember(l,CopyFrom);
 		addMember(l,"ConfigData",get_ConfigData,set_ConfigData,true);
 		addMember(l,"Owner",get_Owner,set_Owner,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.CharacterProperty));
+		createTypeMetatable(l,null, typeof(GameFramework.CharacterProperty));
 	}
 }

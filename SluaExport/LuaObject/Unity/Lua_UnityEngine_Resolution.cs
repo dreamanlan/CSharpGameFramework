@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_Resolution : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.Resolution o;
 			o=new UnityEngine.Resolution();
@@ -17,6 +18,22 @@ public class Lua_UnityEngine_Resolution : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static new public int ToString(IntPtr l) {
+		try {
+			UnityEngine.Resolution self;
+			checkValueType(l,1,out self);
+			var ret=self.ToString();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_width(IntPtr l) {
 		try {
 			UnityEngine.Resolution self;
@@ -30,6 +47,7 @@ public class Lua_UnityEngine_Resolution : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_width(IntPtr l) {
 		try {
 			UnityEngine.Resolution self;
@@ -37,7 +55,7 @@ public class Lua_UnityEngine_Resolution : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.width=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +64,7 @@ public class Lua_UnityEngine_Resolution : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_height(IntPtr l) {
 		try {
 			UnityEngine.Resolution self;
@@ -59,6 +78,7 @@ public class Lua_UnityEngine_Resolution : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_height(IntPtr l) {
 		try {
 			UnityEngine.Resolution self;
@@ -66,7 +86,7 @@ public class Lua_UnityEngine_Resolution : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.height=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +95,7 @@ public class Lua_UnityEngine_Resolution : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_refreshRate(IntPtr l) {
 		try {
 			UnityEngine.Resolution self;
@@ -88,6 +109,7 @@ public class Lua_UnityEngine_Resolution : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_refreshRate(IntPtr l) {
 		try {
 			UnityEngine.Resolution self;
@@ -95,7 +117,7 @@ public class Lua_UnityEngine_Resolution : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.refreshRate=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -103,11 +125,14 @@ public class Lua_UnityEngine_Resolution : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Resolution");
+		addMember(l,ctor_s);
+		addMember(l,ToString);
 		addMember(l,"width",get_width,set_width,true);
 		addMember(l,"height",get_height,set_height,true);
 		addMember(l,"refreshRate",get_refreshRate,set_refreshRate,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.Resolution),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.Resolution),typeof(System.ValueType));
 	}
 }

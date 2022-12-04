@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_CL_GmLockUser : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmLockUser o;
 			o=new GameFrameworkMessage.Msg_CL_GmLockUser();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmLockUser : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_AccountId(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmLockUser self=(GameFrameworkMessage.Msg_CL_GmLockUser)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmLockUser : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_AccountId(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmLockUser self=(GameFrameworkMessage.Msg_CL_GmLockUser)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmLockUser : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_CL_GmLockUser");
+		addMember(l,ctor_s);
 		addMember(l,"m_AccountId",get_m_AccountId,set_m_AccountId,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_CL_GmLockUser));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_CL_GmLockUser));
 	}
 }

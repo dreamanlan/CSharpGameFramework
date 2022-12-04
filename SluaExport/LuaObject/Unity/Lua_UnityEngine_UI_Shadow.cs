@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_UI_Shadow : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int ModifyMesh(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ModifyMesh__VertexHelper(IntPtr l) {
 		try {
 			UnityEngine.UI.Shadow self=(UnityEngine.UI.Shadow)checkSelf(l);
 			UnityEngine.UI.VertexHelper a1;
@@ -18,6 +19,22 @@ public class Lua_UnityEngine_UI_Shadow : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ModifyMesh__Mesh(IntPtr l) {
+		try {
+			UnityEngine.UI.Shadow self=(UnityEngine.UI.Shadow)checkSelf(l);
+			UnityEngine.Mesh a1;
+			checkType(l,2,out a1);
+			self.ModifyMesh(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_effectColor(IntPtr l) {
 		try {
 			UnityEngine.UI.Shadow self=(UnityEngine.UI.Shadow)checkSelf(l);
@@ -30,6 +47,7 @@ public class Lua_UnityEngine_UI_Shadow : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_effectColor(IntPtr l) {
 		try {
 			UnityEngine.UI.Shadow self=(UnityEngine.UI.Shadow)checkSelf(l);
@@ -44,6 +62,7 @@ public class Lua_UnityEngine_UI_Shadow : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_effectDistance(IntPtr l) {
 		try {
 			UnityEngine.UI.Shadow self=(UnityEngine.UI.Shadow)checkSelf(l);
@@ -56,6 +75,7 @@ public class Lua_UnityEngine_UI_Shadow : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_effectDistance(IntPtr l) {
 		try {
 			UnityEngine.UI.Shadow self=(UnityEngine.UI.Shadow)checkSelf(l);
@@ -70,6 +90,7 @@ public class Lua_UnityEngine_UI_Shadow : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_useGraphicAlpha(IntPtr l) {
 		try {
 			UnityEngine.UI.Shadow self=(UnityEngine.UI.Shadow)checkSelf(l);
@@ -82,6 +103,7 @@ public class Lua_UnityEngine_UI_Shadow : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_useGraphicAlpha(IntPtr l) {
 		try {
 			UnityEngine.UI.Shadow self=(UnityEngine.UI.Shadow)checkSelf(l);
@@ -95,9 +117,11 @@ public class Lua_UnityEngine_UI_Shadow : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.UI.Shadow");
-		addMember(l,ModifyMesh);
+		addMember(l,ModifyMesh__VertexHelper);
+		addMember(l,ModifyMesh__Mesh);
 		addMember(l,"effectColor",get_effectColor,set_effectColor,true);
 		addMember(l,"effectDistance",get_effectDistance,set_effectDistance,true);
 		addMember(l,"useGraphicAlpha",get_useGraphicAlpha,set_useGraphicAlpha,true);

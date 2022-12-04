@@ -1,23 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_AudioBehaviour : LuaObject {
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
-		try {
-			UnityEngine.AudioBehaviour o;
-			o=new UnityEngine.AudioBehaviour();
-			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.AudioBehaviour");
-		createTypeMetatable(l,constructor, typeof(UnityEngine.AudioBehaviour),typeof(UnityEngine.Behaviour));
+		createTypeMetatable(l,null, typeof(UnityEngine.AudioBehaviour),typeof(UnityEngine.Behaviour));
 	}
 }

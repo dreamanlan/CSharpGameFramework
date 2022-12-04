@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_StoryDlg : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.StoryDlg o;
 			o=new TableConfig.StoryDlg();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadFromBinary(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -34,6 +36,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteToBinary(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -48,6 +51,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetId(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -61,6 +65,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_id(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -73,6 +78,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_id(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -87,6 +93,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_dialogId(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -99,6 +106,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_dialogId(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -113,6 +121,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_index(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -125,6 +134,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_index(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -139,6 +149,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_speaker(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -151,6 +162,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_speaker(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -165,6 +177,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_leftOrRight(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -177,6 +190,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_leftOrRight(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -191,6 +205,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_dialog(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -203,6 +218,7 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_dialog(IntPtr l) {
 		try {
 			TableConfig.StoryDlg self=(TableConfig.StoryDlg)checkSelf(l);
@@ -216,8 +232,10 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.StoryDlg");
+		addMember(l,ctor_s);
 		addMember(l,ReadFromBinary);
 		addMember(l,WriteToBinary);
 		addMember(l,GetId);
@@ -227,6 +245,6 @@ public class Lua_TableConfig_StoryDlg : LuaObject {
 		addMember(l,"speaker",get_speaker,set_speaker,true);
 		addMember(l,"leftOrRight",get_leftOrRight,set_leftOrRight,true);
 		addMember(l,"dialog",get_dialog,set_dialog,true);
-		createTypeMetatable(l,constructor, typeof(TableConfig.StoryDlg));
+		createTypeMetatable(l,null, typeof(TableConfig.StoryDlg));
 	}
 }

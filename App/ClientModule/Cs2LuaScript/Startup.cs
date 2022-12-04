@@ -5,7 +5,7 @@ using System.Text;
 
 class Startup : IStartupPlugin
 {
-    public void Start(GameObject obj, MonoBehaviour behaviour)
+    public void Init(GameObject obj, MonoBehaviourProxy behaviour)
     {
         HandlerRegister.Register();
         SkillTriggerRegister.Register();

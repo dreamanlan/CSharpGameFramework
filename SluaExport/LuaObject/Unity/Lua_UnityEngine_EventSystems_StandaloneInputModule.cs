@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int UpdateModule(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -16,19 +17,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int IsModuleSupported(IntPtr l) {
-		try {
-			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
-			var ret=self.IsModuleSupported();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ShouldActivateModule(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -42,6 +31,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ActivateModule(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -54,6 +44,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int DeactivateModule(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -66,6 +57,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Process(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -78,32 +70,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_forceModuleActive(IntPtr l) {
-		try {
-			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.forceModuleActive);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_forceModuleActive(IntPtr l) {
-		try {
-			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
-			bool v;
-			checkType(l,2,out v);
-			self.forceModuleActive=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_inputActionsPerSecond(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -116,6 +83,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_inputActionsPerSecond(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -130,6 +98,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_repeatDelay(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -142,6 +111,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_repeatDelay(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -156,6 +126,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_horizontalAxis(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -168,6 +139,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_horizontalAxis(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -182,6 +154,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_verticalAxis(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -194,6 +167,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_verticalAxis(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -208,6 +182,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_submitButton(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -220,6 +195,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_submitButton(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -234,6 +210,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_cancelButton(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -246,6 +223,7 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_cancelButton(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.StandaloneInputModule self=(UnityEngine.EventSystems.StandaloneInputModule)checkSelf(l);
@@ -259,15 +237,14 @@ public class Lua_UnityEngine_EventSystems_StandaloneInputModule : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.EventSystems.StandaloneInputModule");
 		addMember(l,UpdateModule);
-		addMember(l,IsModuleSupported);
 		addMember(l,ShouldActivateModule);
 		addMember(l,ActivateModule);
 		addMember(l,DeactivateModule);
 		addMember(l,Process);
-		addMember(l,"forceModuleActive",get_forceModuleActive,set_forceModuleActive,true);
 		addMember(l,"inputActionsPerSecond",get_inputActionsPerSecond,set_inputActionsPerSecond,true);
 		addMember(l,"repeatDelay",get_repeatDelay,set_repeatDelay,true);
 		addMember(l,"horizontalAxis",get_horizontalAxis,set_horizontalAxis,true);

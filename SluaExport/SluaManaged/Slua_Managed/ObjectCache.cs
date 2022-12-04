@@ -29,6 +29,8 @@ namespace SLua
     using System.Runtime.InteropServices;
     using System.Collections.Generic;
     using System.Runtime.CompilerServices;
+    using System.Reflection;
+    using System.Linq;
 
     public class ObjectCache
     {
@@ -36,6 +38,62 @@ namespace SLua
 
         static IntPtr oldl = IntPtr.Zero;
         static internal ObjectCache oldoc = null;
+
+        public static List<Dictionary<object, int>> GetAllManagedObject2Ints(IntPtr l)
+        {
+            List<Dictionary<object, int>> list = new List<Dictionary<object, int>>();
+            foreach (var cache in multiState.Values) {
+                list.Add(cache.objMap);
+            }
+            return list;
+        }
+        public static List<Dictionary<int, object>> GetAllManagedInt2Objects(IntPtr l)
+        {
+            List<Dictionary<int, object>> list = new List<Dictionary<int, object>>();
+            foreach (var cache in multiState.Values) {
+                list.Add(cache.cache);
+            }
+            return list;
+        }
+        public static void ClearNameDebugs()
+        {
+            foreach (var cache in multiState.Values) {
+                cache.objNameDebugs.Clear();
+            }
+        }
+        public static List<string[]> GetAllManagedObjectNames(IntPtr l)
+        {
+            List<string[]> names = new List<string[]>();
+            foreach (var cache in multiState.Values) {
+                foreach (var pair in cache.objMap) {
+                    string[] infos;
+                    if (cache.objNameDebugs.TryGetValue(pair.Key, out infos)) {
+                        if (infos.Length < 3)
+                            continue;
+                        names.Add(new string[] { infos[0] + " addr:" + GetLuaAddr(l, pair.Value, cache.udCacheRef), infos[1], infos[2] });
+                    }
+                }
+            }
+            return names;
+        }
+        public static List<string[]> GetAlreadyDestroyedObjectNames(IntPtr l)
+        {
+            List<string[]> names = new List<string[]>();
+            foreach (var cache in multiState.Values) {
+                foreach (var pair in cache.objMap) {
+                    var o = pair.Key;
+                    if (o is Object && (o as Object).Equals(null)) {
+                        string[] infos;
+                        if (cache.objNameDebugs.TryGetValue(o, out infos)) {
+                            if (infos.Length < 3)
+                                continue;
+                            names.Add(new string[] { infos[0] + " addr:" + GetLuaAddr(l, pair.Value, cache.udCacheRef), infos[1], infos[2] });
+                        }
+                    }
+                }
+            }
+            return names;
+        }
 
         public static ObjectCache get(IntPtr l)
         {
@@ -64,78 +122,16 @@ namespace SLua
         {
             aqnameMap[t] = aqname;
         }
-
-        class ObjSlot
+        public static string GetLuaAddr(IntPtr l, int objIndex, int cref)
         {
-            public int freeslot;
-            public object v;
-            public ObjSlot(int slot, object o)
-            {
-                freeslot = slot;
-                v = o;
+            string luaAddr = string.Empty;
+            if (LuaDLL.luaS_getcacheud(l, objIndex, cref) == 1) {
+                IntPtr p = LuaDLL.lua_topointer(l, -1);
+                LuaDLL.lua_pop(l, 1);
+                luaAddr = string.Format("{0:x8}", p.ToInt64());
             }
+            return luaAddr;
         }
-
-#if SPEED_FREELIST
-		class FreeList : List<ObjSlot>
-		{
-			public FreeList()
-			{
-				this.Add(new ObjSlot(0, null));
-			}
-
-			public int add(object o)
-			{
-				ObjSlot free = this[0];
-				if (free.freeslot == 0)
-				{
-					Add(new ObjSlot(this.Count, o));
-					return this.Count - 1;
-				}
-				else
-				{
-					int slot = free.freeslot;
-					free.freeslot = this[slot].freeslot;
-					this[slot].v = o;
-					this[slot].freeslot = slot;
-					return slot;
-				}
-			}
-
-			public void del(int i)
-			{
-				ObjSlot free = this[0];
-				this[i].freeslot = free.freeslot;
-				this[i].v = null;
-				free.freeslot = i;
-			}
-
-			public bool get(int i, out object o)
-			{
-				if (i < 1 || i > this.Count)
-				{
-					throw new ArgumentOutOfRangeException();
-				}
-
-				ObjSlot slot = this[i];
-				o = slot.v;
-				return o != null;
-			}
-
-			public object get(int i)
-			{
-				object o;
-				if (get(i, out o))
-					return o;
-				return null;
-			}
-
-			public void set(int i, object o)
-			{
-				this[i].v = o;
-			}
-		}
-#else
 
         class FreeList : Dictionary<int, object>
         {
@@ -170,8 +166,6 @@ namespace SLua
             }
         }
 
-#endif
-
         FreeList cache = new FreeList();
         public class ObjEqualityComparer : IEqualityComparer<object>
         {
@@ -188,6 +182,34 @@ namespace SLua
         }
 
         Dictionary<object, int> objMap = new Dictionary<object, int>(new ObjEqualityComparer());
+        public Dictionary<object, int>.KeyCollection Objs { get { return objMap.Keys; } }
+
+        Dictionary<object, string[]> objNameDebugs = new Dictionary<object, string[]>(new ObjEqualityComparer());
+
+        private static string getDebugFullName(UnityEngine.Transform transform)
+        {
+            if (transform.parent == null) {
+                return transform.gameObject.ToString();
+            }
+            return getDebugFullName(transform.parent) + "/" + transform.name;
+        }
+
+        private static string getDebugName(int objIndex, object o)
+        {
+            if (o is UnityEngine.GameObject) {
+                var go = o as UnityEngine.GameObject;
+                int id = go.GetInstanceID();
+                return getDebugFullName(go.transform) + "[" + o.GetType().Name + "](" + id + ", index:" + objIndex + ")";
+            }
+            else if (o is UnityEngine.Component) {
+                var comp = o as UnityEngine.Component;
+                int id = comp.GetInstanceID();
+                return getDebugFullName(comp.transform) + "[" + o.GetType().Name + "](" + comp.GetType().Name + "," + id + ", index:" + objIndex + ")";
+            }
+            int hash = o.GetHashCode();
+            return o.ToString() + "[" + o.GetType().Name + "](" + hash + ", index:" + objIndex + ")";
+        }
+
         int udCacheRef = 0;
 
 
@@ -222,6 +244,11 @@ namespace SLua
             oldoc = oc;
         }
 
+        public int size()
+        {
+            return objMap.Count;
+        }
+
         internal void gc(int index)
         {
             object o;
@@ -229,28 +256,44 @@ namespace SLua
                 int oldindex;
                 if (isGcObject(o) && objMap.TryGetValue(o, out oldindex) && oldindex == index) {
                     objMap.Remove(o);
+                    if (objNameDebugs.Count > 0)
+                        objNameDebugs.Remove(o);
                 }
                 cache.del(index);
             }
         }
-#if !SLUA_STANDALONE
         internal void gc(UnityEngine.Object o)
         {
             int index;
             if (objMap.TryGetValue(o, out index)) {
                 objMap.Remove(o);
                 cache.del(index);
+                if (objNameDebugs.Count > 0)
+                    objNameDebugs.Remove(o);
             }
         }
-#endif
 
-        internal int add(object o)
+        internal int add(IntPtr l, object o)
         {
             int objIndex = cache.add(o);
             if (isGcObject(o)) {
                 objMap[o] = objIndex;
+                if (SLuaSetting.Instance.IsDebug) {
+                    string s1 = string.Empty, s2 = string.Empty;
+                    if (SLuaSetting.Instance.RecordObjectStackTrace) {
+                        s1 = Environment.StackTrace;
+                        s2 = Logger.GetLuaStackTrack(l, "add");
+                    }
+                    objNameDebugs[o] = new string[] { getDebugName(objIndex, o) + DateTime.Now.ToString(" (HH-mm-ss-fff)"), s1, s2 };
+                }
             }
             return objIndex;
+        }
+
+        internal void destoryObject(IntPtr l, int p)
+        {
+            int index = LuaDLL.luaS_rawnetobj(l, p);
+            gc(index);
         }
 
         internal object get(IntPtr l, int p)
@@ -280,57 +323,67 @@ namespace SLua
             push(l, o, true);
         }
 
-		internal void push(IntPtr l, Array o)
-		{
-			int index = allocID (l, o);
-			if (index < 0)
-				return;
+        internal void push(IntPtr l, Array o)
+        {
+            int index = allocID(l, o);
+            if (index < 0)
+                return;
 
-			LuaDLL.luaS_pushobject(l, index, "LuaArray", true, udCacheRef);
-		}
+            LuaDLL.luaS_pushobject(l, index, "LuaArray", true, udCacheRef);
+        }
 
-		internal int allocID(IntPtr l,object o) {
+        internal int allocID(IntPtr l, object o)
+        {
 
-			int index = -1;
+            int index = -1;
 
-			if (o == null)
-			{
-				LuaDLL.lua_pushnil(l);
-				return index;
-			}
+            if (o == null) {
+                LuaDLL.lua_pushnil(l);
+                return index;
+            }
 
-			bool gco = isGcObject(o);
-			bool found = gco && objMap.TryGetValue(o, out index);
-			if (found)
-			{
-				if (LuaDLL.luaS_getcacheud(l, index, udCacheRef) == 1)
-					return -1;
-			}
+            bool gco = isGcObject(o);
+            bool found = gco && objMap.TryGetValue(o, out index);
+            if (found) {
+                if (LuaDLL.luaS_getcacheud(l, index, udCacheRef) == 1)
+                    return -1;
+            }
 
-			index = add(o);
-			return index;
-		}
+            index = add(l, o);
+            return index;
+        }
 
-		internal void push(IntPtr l, object o, bool checkReflect)
-		{
-			
-			int index = allocID (l, o);
-			if (index < 0)
-				return;
+        internal void pushInterface(IntPtr l, object o, Type t)
+        {
 
-			bool gco = isGcObject(o);
+            int index = allocID(l, o);
+            if (index < 0)
+                return;
+
+            LuaDLL.luaS_pushobject(l, index, getAQName(t), true, udCacheRef);
+        }
+
+
+        internal void push(IntPtr l, object o, bool checkReflect)
+        {
+
+            int index = allocID(l, o);
+            if (index < 0)
+                return;
+
+            bool gco = isGcObject(o);
 
 #if SLUA_CHECK_REFLECTION
 			int isReflect = LuaDLL.luaS_pushobject(l, index, getAQName(o, l), gco, udCacheRef);
-			if (isReflect != 0 && checkReflect)
+			if (isReflect != 0 && checkReflect && !(o is LuaClassObject))
 			{
 				Logger.LogWarning(string.Format("{0} not exported, using reflection instead", o.ToString()));
 			}
 #else
-			LuaDLL.luaS_pushobject(l, index, getAQName(o, l), gco, udCacheRef);
+            LuaDLL.luaS_pushobject(l, index, getAQName(o, l), gco, udCacheRef);
 #endif
 
-		}
+        }
 
         static Dictionary<Type, string> aqnameMap = new Dictionary<Type, string>();
         internal static string getAQName(object o)
@@ -372,10 +425,12 @@ namespace SLua
                                     break;
                                 }
                             }
-                        } else if (null != temp.BaseType && (null == temp.BaseType.Namespace || !temp.BaseType.Namespace.StartsWith("System"))) {
+                        }
+                        else if (null != temp.BaseType && (null == temp.BaseType.Namespace || !temp.BaseType.Namespace.StartsWith("System"))) {
                             rt = temp.BaseType;
                         }
-                    } else {
+                    }
+                    else {
                         name = tn;
                         break;
                     }
@@ -390,6 +445,268 @@ namespace SLua
         {
             return obj.GetType().IsValueType == false;
         }
+
+        public bool isObjInLua(object obj)
+        {
+            return objMap.ContainsKey(obj);
+        }
+
+        // find type in current domain
+        static Type getTypeInGlobal(string name)
+        {
+            Type t = Type.GetType(name);
+            if (t != null) return t;
+
+            Assembly[] ams = AppDomain.CurrentDomain.GetAssemblies();
+
+            for (int n = 0; n < ams.Length; n++) {
+                Assembly a = ams[n];
+                Type[] ts = null;
+                try {
+                    ts = a.GetExportedTypes();
+                    for (int k = 0; k < ts.Length; k++) {
+                        t = ts[k];
+                        if (t.Name == name)
+                            return t;
+                    }
+                }
+                catch {
+                    continue;
+                }
+            }
+            return null;
+        }
+
+        static Type typeofLD;
+        WeakDictionary<Type, MethodInfo> methodCache = new WeakDictionary<Type, MethodInfo>();
+
+        internal MethodInfo getDelegateMethod(Type t)
+        {
+            MethodInfo mi;
+            if (methodCache.TryGetValue(t, out mi))
+                return mi;
+
+            if (typeofLD == null)
+                typeofLD = getTypeInGlobal("LuaDelegation");
+
+            if (typeofLD == null) return null;
+
+            MethodInfo[] mis = typeofLD.GetMethods(BindingFlags.Static | BindingFlags.NonPublic);
+            for (int n = 0; n < mis.Length; n++) {
+                mi = mis[n];
+                if (isMethodCompatibleWithDelegate(mi, t)) {
+                    methodCache.Add(t, mi);
+                    return mi;
+                }
+            }
+            return null;
+        }
+
+        static bool isMethodCompatibleWithDelegate(MethodInfo target, Type dt)
+        {
+            MethodInfo ds = dt.GetMethod("Invoke");
+
+            bool parametersEqual = ds
+                .GetParameters()
+                .Select(x => x.ParameterType)
+                .SequenceEqual(target.GetParameters().Skip(1)
+                .Select(x => x.ParameterType));
+
+            return ds.ReturnType == target.ReturnType &&
+                   parametersEqual;
+        }
+    }
+
+    public static class LuaSnapshot
+    {
+        public static int CachedDelegateCount = 0;
+        public static List<string[]> DelegateStackTraces = null;
+        public static List<string[]> DestroyedObjectNames = null;
+        public static List<string[]> AddedObjectNames = null;
+        public static List<Dictionary<object, int>> Obj2Ints = null;
+        public static List<Dictionary<int, object>> Int2Objs = null;
+
+        public static void Capture(bool gcBeforeCapture, Action captureLua)
+        {
+            Prepare();
+
+            if (gcBeforeCapture) {
+                LuaDLL.lua_gc(LuaState.main.L, LuaGCOptions.LUA_GCCOLLECT, 0);
+                System.GC.Collect();
+            }
+            if (null != captureLua) {
+                captureLua();
+            }
+            Obj2Ints = ObjectCache.GetAllManagedObject2Ints(LuaState.main.L);
+            Int2Objs = ObjectCache.GetAllManagedInt2Objects(LuaState.main.L);
+            var destroyedObjectNames = ObjectCache.GetAlreadyDestroyedObjectNames(LuaState.main.L);
+            var allObjectNames = ObjectCache.GetAllManagedObjectNames(LuaState.main.L);
+            DestroyedObjectNames.Clear();
+            foreach (var names in destroyedObjectNames) {
+                var list = new List<string>();
+                for (int i = 0; i < names.Length; ++i) {
+                    if (i == 0) {
+                        list.Add(names[i]);
+                    }
+                    else {
+                        var stack = names[i];
+                        var lines = stack.Split(new char[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var line in lines) {
+                            if (!line.Contains("SLua."))
+                                list.Add("\t" + line.Trim());
+                        }
+                    }
+                }
+                DestroyedObjectNames.Add(list.ToArray());
+            }
+            AddedObjectNames.Clear();
+            foreach (var names in allObjectNames) {
+                if (!m_LastAllObjectNames.Contains(names[0])) {
+                    var list = new List<string>();
+                    for (int i = 0; i < names.Length; ++i) {
+                        if (i == 0) {
+                            list.Add(names[i]);
+                        }
+                        else {
+                            var stack = names[i];
+                            var lines = stack.Split(new char[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var line in lines) {
+                                if (!line.Contains("SLua."))
+                                    list.Add("\t" + line.Trim());
+                            }
+                        }
+                    }
+                    AddedObjectNames.Add(list.ToArray());
+                }
+            }
+            m_LastAllObjectNames.Clear();
+            if (null != allObjectNames) {
+                foreach (var names in allObjectNames) {
+                    m_LastAllObjectNames.Add(names[0]);
+                }
+            }
+            CachedDelegateCount = LuaState.main.cachedDelegateCount;
+            var delegateStackTraces = LuaState.main.GetCachedDelegateStackTraces();
+            DelegateStackTraces.Clear();
+            foreach (var st in delegateStackTraces) {
+                var list = new List<string>();
+                for (int i = 0; i < st.Length; ++i) {
+                    if (i == 0) {
+                        list.Add(st[i]);
+                    }
+                    else {
+                        var stack = st[i];
+                        var lines = stack.Split(new char[] { '\n' }, System.StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var line in lines) {
+                            if (!line.Contains("SLua."))
+                                list.Add("\t" + line.Trim());
+                        }
+                    }
+                }
+                DelegateStackTraces.Add(list.ToArray());
+            }
+        }
+        public static void Save(string file)
+        {
+            using (var sw = new System.IO.StreamWriter(file)) {
+                Export(line => { sw.WriteLine(line); }, (title, info, progress) => { });
+                sw.Close();
+            }
+        }
+        public static void Export(Action<string> outputLine, Action<string, string, float> onprogress)
+        {
+            Prepare();
+            if (null != Obj2Ints) {
+                int ct0 = 0;
+                foreach(var dict in Obj2Ints) {
+                    ct0 += dict.Count;
+                }
+                outputLine("object2ints:" + ct0);
+                foreach(var dict in Obj2Ints) {
+                    outputLine("----------------");
+                    foreach(var pair in dict) {
+                        var obj = pair.Key;
+                        int index = pair.Value;
+                        if (obj is Object && (obj as Object).Equals(null)) {
+                            outputLine("(null) <=> " + index);
+                        }
+                        else {
+                            outputLine(obj.GetType().FullName + " <=> " + index);
+                        }
+                    }
+                }
+            }
+            if (null != Int2Objs) {
+                int ct0 = 0;
+                foreach (var dict in Int2Objs) {
+                    ct0 += dict.Count;
+                }
+                outputLine("int2objects:" + ct0);
+                foreach (var dict in Int2Objs) {
+                    outputLine("----------------");
+                    foreach (var pair in dict) {
+                        int index = pair.Key;
+                        var obj = pair.Value;
+                        if (obj is Object && (obj as Object).Equals(null)) {
+                            outputLine(index + " <=> (null)");
+                        }
+                        else {
+                            outputLine(index + " <=> " + obj.GetType().FullName);
+                        }
+                    }
+                }
+            }
+            outputLine("cached delegates:" + CachedDelegateCount);
+            int ct = 0;
+            int totalCt = DelegateStackTraces.Count;
+            int delta = totalCt / 100 + (totalCt % 100 > 0 ? 1 : 0);
+            foreach (var stacks in DelegateStackTraces) {
+                for (int i = 0; i < stacks.Length; ++i) {
+                    outputLine(stacks[i]);
+                }
+                ++ct;
+                if (ct % delta == 0)
+                    onprogress("cached delegates", string.Format("{0}/{1}", ct, totalCt), ct * 1.0f / totalCt);
+            }
+            outputLine("destroyed objects:" + DestroyedObjectNames.Count);
+            ct = 0;
+            totalCt = DestroyedObjectNames.Count;
+            delta = totalCt / 100 + (totalCt % 100 > 0 ? 1 : 0);
+            foreach (var names in DestroyedObjectNames) {
+                for (int i = 0; i < names.Length; ++i) {
+                    outputLine(names[i]);
+                }
+                ++ct;
+                if (ct % delta == 0)
+                    onprogress("destroyed objects", string.Format("{0}/{1}", ct, totalCt), ct * 1.0f / totalCt);
+            }
+            outputLine("added objects:" + AddedObjectNames.Count);
+            ct = 0;
+            totalCt = AddedObjectNames.Count;
+            delta = totalCt / 100 + (totalCt % 100 > 0 ? 1 : 0);
+            foreach (var names in AddedObjectNames) {
+                for (int i = 0; i < names.Length; ++i) {
+                    outputLine(names[i]);
+                }
+                ++ct;
+                if (ct % delta == 0)
+                    onprogress("added objects", string.Format("{0}/{1}", ct, totalCt), ct * 1.0f / totalCt);
+            }
+        }
+        public static void Prepare()
+        {
+            if (m_Inited)
+                return;
+            m_Inited = true;
+            CachedDelegateCount = 0;
+            DelegateStackTraces = new List<string[]>();
+            DestroyedObjectNames = new List<string[]>();
+            m_LastAllObjectNames = new HashSet<string>();
+            AddedObjectNames = new List<string[]>();
+        }
+
+        private static bool m_Inited = false;
+        private static HashSet<string> m_LastAllObjectNames = null;
     }
 }
 

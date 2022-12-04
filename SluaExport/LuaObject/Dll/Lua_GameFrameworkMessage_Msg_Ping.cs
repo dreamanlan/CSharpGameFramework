@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_Ping : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_Ping o;
 			o=new GameFrameworkMessage.Msg_Ping();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_Ping : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_send_ping_time(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_Ping self=(GameFrameworkMessage.Msg_Ping)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_Ping : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_send_ping_time(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_Ping self=(GameFrameworkMessage.Msg_Ping)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_Msg_Ping : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_Ping");
+		addMember(l,ctor_s);
 		addMember(l,"send_ping_time",get_send_ping_time,set_send_ping_time,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_Ping));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_Ping));
 	}
 }

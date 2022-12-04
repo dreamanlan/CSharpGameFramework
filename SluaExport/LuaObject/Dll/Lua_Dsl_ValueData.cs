@@ -1,44 +1,58 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_Dsl_ValueData : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
 			Dsl.ValueData o;
-			if(argc==1){
-				o=new Dsl.ValueData();
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(argc==2){
-				System.String a1;
-				checkType(l,2,out a1);
-				o=new Dsl.ValueData(a1);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(argc==3){
-				System.String a1;
-				checkType(l,2,out a1);
-				System.Int32 a2;
-				checkType(l,3,out a2);
-				o=new Dsl.ValueData(a1,a2);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			return error(l,"New object failed.");
+			o=new Dsl.ValueData();
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__String_s(IntPtr l) {
+		try {
+			Dsl.ValueData o;
+			System.String a1;
+			checkType(l,1,out a1);
+			o=new Dsl.ValueData(a1);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__String__Int32_s(IntPtr l) {
+		try {
+			Dsl.ValueData o;
+			System.String a1;
+			checkType(l,1,out a1);
+			System.Int32 a2;
+			checkType(l,2,out a2);
+			o=new Dsl.ValueData(a1,a2);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsValid(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -52,6 +66,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetId(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -65,6 +80,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetIdType(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -78,6 +94,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetLine(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -91,6 +108,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ToScriptString(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -106,6 +124,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int HaveId(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -119,6 +138,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetId(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -133,6 +153,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetType(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -147,6 +168,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetLine(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -161,6 +183,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsId(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -174,6 +197,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsNumber(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -187,6 +211,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsString(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -200,19 +225,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int IsBoolean(IntPtr l) {
-		try {
-			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
-			var ret=self.IsBoolean();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -225,6 +238,7 @@ public class Lua_Dsl_ValueData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CopyFrom(IntPtr l) {
 		try {
 			Dsl.ValueData self=(Dsl.ValueData)checkSelf(l);
@@ -238,8 +252,24 @@ public class Lua_Dsl_ValueData : LuaObject {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_NullValue(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,Dsl.ValueData.NullValue);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"Dsl.ValueData");
+		addMember(l,ctor_s);
+		addMember(l,ctor__String_s);
+		addMember(l,ctor__String__Int32_s);
 		addMember(l,IsValid);
 		addMember(l,GetId);
 		addMember(l,GetIdType);
@@ -252,9 +282,9 @@ public class Lua_Dsl_ValueData : LuaObject {
 		addMember(l,IsId);
 		addMember(l,IsNumber);
 		addMember(l,IsString);
-		addMember(l,IsBoolean);
 		addMember(l,Clear);
 		addMember(l,CopyFrom);
-		createTypeMetatable(l,constructor, typeof(Dsl.ValueData),typeof(Dsl.AbstractSyntaxComponent));
+		addMember(l,"NullValue",get_NullValue,null,false);
+		createTypeMetatable(l,null, typeof(Dsl.ValueData),typeof(Dsl.ValueOrFunctionData));
 	}
 }

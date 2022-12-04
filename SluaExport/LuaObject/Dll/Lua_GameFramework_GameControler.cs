@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_GameControler : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.GameControler o;
 			o=new GameFramework.GameControler();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_GameControler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Init_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -32,6 +34,7 @@ public class Lua_GameFramework_GameControler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int InitGame_s(IntPtr l) {
 		try {
 			System.Boolean a1;
@@ -45,6 +48,7 @@ public class Lua_GameFramework_GameControler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int PauseGame_s(IntPtr l) {
 		try {
 			System.Boolean a1;
@@ -58,6 +62,7 @@ public class Lua_GameFramework_GameControler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int PauseGameForeground_s(IntPtr l) {
 		try {
 			System.Boolean a1;
@@ -71,6 +76,7 @@ public class Lua_GameFramework_GameControler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Release_s(IntPtr l) {
 		try {
 			GameFramework.GameControler.Release();
@@ -82,6 +88,7 @@ public class Lua_GameFramework_GameControler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int TickGame_s(IntPtr l) {
 		try {
 			GameFramework.GameControler.TickGame();
@@ -93,6 +100,7 @@ public class Lua_GameFramework_GameControler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsInited(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -103,8 +111,10 @@ public class Lua_GameFramework_GameControler : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.GameControler");
+		addMember(l,ctor_s);
 		addMember(l,Init_s);
 		addMember(l,InitGame_s);
 		addMember(l,PauseGame_s);
@@ -112,6 +122,6 @@ public class Lua_GameFramework_GameControler : LuaObject {
 		addMember(l,Release_s);
 		addMember(l,TickGame_s);
 		addMember(l,"IsInited",get_IsInited,null,false);
-		createTypeMetatable(l,constructor, typeof(GameFramework.GameControler));
+		createTypeMetatable(l,null, typeof(GameFramework.GameControler));
 	}
 }

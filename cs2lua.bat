@@ -17,8 +17,8 @@ popd
 xcopy %workdir%\App\ClientModule\Cs2LuaScript\lua\*.txt %workdir%\Unity3d\Assets\Slua\Resources /y /q
 
 xcopy %workdir%\App\ClientModule\Cs2LuaScript\bin\Debug\Cs2LuaScript.dll %workdir%\Unity3d\Assets\StreamingAssets /y /q
-xcopy %workdir%\App\ClientModule\Cs2LuaScript\bin\Debug\Cs2LuaUtility.dll %workdir%\Unity3d\Assets\StreamingAssets /y /q
+xcopy %workdir%\App\ClientModule\Cs2LuaScript\bin\Debug\Cs2DslUtility.dll %workdir%\Unity3d\Assets\StreamingAssets /y /q
 
 del /a /f %workdir%\Unity3d\Assets\Plugins\Cs2LuaScript.dll
 del /a /f %workdir%\Unity3d\Assets\Plugins\Cs2LuaScript.dll.mdb
-del /a /f %workdir%\Unity3d\Assets\Plugins\Cs2LuaUtility.dll
+del /a /f %workdir%\Unity3d\Assets\Plugins\Cs2DslUtility.dll

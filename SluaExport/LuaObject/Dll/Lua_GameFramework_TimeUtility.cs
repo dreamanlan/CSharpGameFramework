@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_TimeUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LobbyGetMillisecondsFromLastResponse_s(IntPtr l) {
 		try {
 			var ret=GameFramework.TimeUtility.LobbyGetMillisecondsFromLastResponse();
@@ -16,6 +17,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetMillisecondsFromLastResponse_s(IntPtr l) {
 		try {
 			var ret=GameFramework.TimeUtility.GetMillisecondsFromLastResponse();
@@ -28,30 +30,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetLocalMicroseconds_s(IntPtr l) {
-		try {
-			var ret=GameFramework.TimeUtility.GetLocalMicroseconds();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetLocalMilliseconds_s(IntPtr l) {
-		try {
-			var ret=GameFramework.TimeUtility.GetLocalMilliseconds();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetServerDateTime_s(IntPtr l) {
 		try {
 			var ret=GameFramework.TimeUtility.GetServerDateTime();
@@ -64,6 +43,46 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int GetTimeScale_s(IntPtr l) {
+		try {
+			var ret=GameFramework.TimeUtility.GetTimeScale();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int GetLocalMilliseconds_s(IntPtr l) {
+		try {
+			var ret=GameFramework.TimeUtility.GetLocalMilliseconds();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int GetLocalRealMilliseconds_s(IntPtr l) {
+		try {
+			var ret=GameFramework.TimeUtility.GetLocalRealMilliseconds();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetElapsedTimeUs_s(IntPtr l) {
 		try {
 			var ret=GameFramework.TimeUtility.GetElapsedTimeUs();
@@ -76,9 +95,16 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int SampleClientTick_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int UpdateGfxTime_s(IntPtr l) {
 		try {
-			GameFramework.TimeUtility.SampleClientTick();
+			System.Single a1;
+			checkType(l,1,out a1);
+			System.Single a2;
+			checkType(l,2,out a2);
+			System.Single a3;
+			checkType(l,3,out a3);
+			GameFramework.TimeUtility.UpdateGfxTime(a1,a2,a3);
 			pushValue(l,true);
 			return 1;
 		}
@@ -87,18 +113,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetClientDeltaTime_s(IntPtr l) {
-		try {
-			var ret=GameFramework.TimeUtility.GetClientDeltaTime();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TimeCounterInterval(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -110,6 +125,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurTimestamp(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -121,6 +137,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_LobbyLastResponseTime(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -132,6 +149,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_LobbyLastResponseTime(IntPtr l) {
 		try {
 			System.Int64 v;
@@ -145,6 +163,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_LobbyAverageRoundtripTime(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -156,6 +175,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_LobbyAverageRoundtripTime(IntPtr l) {
 		try {
 			System.Int64 v;
@@ -169,6 +189,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_LastResponseTime(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -180,6 +201,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_LastResponseTime(IntPtr l) {
 		try {
 			System.Int64 v;
@@ -193,6 +215,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_AverageRoundtripTime(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -204,6 +227,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_AverageRoundtripTime(IntPtr l) {
 		try {
 			System.Int64 v;
@@ -217,6 +241,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_RemoteTimeOffset(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -228,6 +253,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_RemoteTimeOffset(IntPtr l) {
 		try {
 			System.Int64 v;
@@ -241,6 +267,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_GfxFps(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -252,6 +279,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_GfxFps(IntPtr l) {
 		try {
 			float v;
@@ -265,6 +293,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_GfxAvgFps(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -276,6 +305,7 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_GfxAvgFps(IntPtr l) {
 		try {
 			float v;
@@ -288,64 +318,17 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_GfxTime(IntPtr l) {
-		try {
-			pushValue(l,true);
-			pushValue(l,GameFramework.TimeUtility.GfxTime);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_GfxTime(IntPtr l) {
-		try {
-			float v;
-			checkType(l,2,out v);
-			GameFramework.TimeUtility.GfxTime=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_GfxTimeScale(IntPtr l) {
-		try {
-			pushValue(l,true);
-			pushValue(l,GameFramework.TimeUtility.GfxTimeScale);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_GfxTimeScale(IntPtr l) {
-		try {
-			float v;
-			checkType(l,2,out v);
-			GameFramework.TimeUtility.GfxTimeScale=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.TimeUtility");
 		addMember(l,LobbyGetMillisecondsFromLastResponse_s);
 		addMember(l,GetMillisecondsFromLastResponse_s);
-		addMember(l,GetLocalMicroseconds_s);
-		addMember(l,GetLocalMilliseconds_s);
 		addMember(l,GetServerDateTime_s);
+		addMember(l,GetTimeScale_s);
+		addMember(l,GetLocalMilliseconds_s);
+		addMember(l,GetLocalRealMilliseconds_s);
 		addMember(l,GetElapsedTimeUs_s);
-		addMember(l,SampleClientTick_s);
-		addMember(l,GetClientDeltaTime_s);
+		addMember(l,UpdateGfxTime_s);
 		addMember(l,"TimeCounterInterval",get_TimeCounterInterval,null,false);
 		addMember(l,"CurTimestamp",get_CurTimestamp,null,false);
 		addMember(l,"LobbyLastResponseTime",get_LobbyLastResponseTime,set_LobbyLastResponseTime,false);
@@ -355,8 +338,6 @@ public class Lua_GameFramework_TimeUtility : LuaObject {
 		addMember(l,"RemoteTimeOffset",get_RemoteTimeOffset,set_RemoteTimeOffset,false);
 		addMember(l,"GfxFps",get_GfxFps,set_GfxFps,false);
 		addMember(l,"GfxAvgFps",get_GfxAvgFps,set_GfxAvgFps,false);
-		addMember(l,"GfxTime",get_GfxTime,set_GfxTime,false);
-		addMember(l,"GfxTimeScale",get_GfxTimeScale,set_GfxTimeScale,false);
 		createTypeMetatable(l,null, typeof(GameFramework.TimeUtility));
 	}
 }

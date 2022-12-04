@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_AttrDefine : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.AttrDefine o;
 			o=new TableConfig.AttrDefine();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadFromBinary(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -34,6 +36,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteToBinary(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -48,6 +51,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetId(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -61,6 +65,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_id(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -73,6 +78,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_id(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -87,6 +93,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -99,6 +106,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_value(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -113,6 +121,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_minValue(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -125,6 +134,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_minValue(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -139,6 +149,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_maxValue(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -151,6 +162,7 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_maxValue(IntPtr l) {
 		try {
 			TableConfig.AttrDefine self=(TableConfig.AttrDefine)checkSelf(l);
@@ -164,8 +176,10 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.AttrDefine");
+		addMember(l,ctor_s);
 		addMember(l,ReadFromBinary);
 		addMember(l,WriteToBinary);
 		addMember(l,GetId);
@@ -173,6 +187,6 @@ public class Lua_TableConfig_AttrDefine : LuaObject {
 		addMember(l,"value",get_value,set_value,true);
 		addMember(l,"minValue",get_minValue,set_minValue,true);
 		addMember(l,"maxValue",get_maxValue,set_maxValue,true);
-		createTypeMetatable(l,constructor, typeof(TableConfig.AttrDefine));
+		createTypeMetatable(l,null, typeof(TableConfig.AttrDefine));
 	}
 }

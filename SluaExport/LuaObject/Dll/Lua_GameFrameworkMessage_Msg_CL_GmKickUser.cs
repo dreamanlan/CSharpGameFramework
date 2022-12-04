@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_CL_GmKickUser : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmKickUser o;
 			o=new GameFrameworkMessage.Msg_CL_GmKickUser();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmKickUser : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Nickname(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmKickUser self=(GameFrameworkMessage.Msg_CL_GmKickUser)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmKickUser : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Nickname(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmKickUser self=(GameFrameworkMessage.Msg_CL_GmKickUser)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmKickUser : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_LockMinutes(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmKickUser self=(GameFrameworkMessage.Msg_CL_GmKickUser)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmKickUser : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_LockMinutes(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmKickUser self=(GameFrameworkMessage.Msg_CL_GmKickUser)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmKickUser : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_CL_GmKickUser");
+		addMember(l,ctor_s);
 		addMember(l,"m_Nickname",get_m_Nickname,set_m_Nickname,true);
 		addMember(l,"m_LockMinutes",get_m_LockMinutes,set_m_LockMinutes,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_CL_GmKickUser));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_CL_GmKickUser));
 	}
 }

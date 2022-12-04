@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_CombineInstance : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance o;
 			o=new UnityEngine.CombineInstance();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_mesh(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_mesh(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 			UnityEngine.Mesh v;
 			checkType(l,2,out v);
 			self.mesh=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_subMeshIndex(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_subMeshIndex(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.subMeshIndex=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +80,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_transform(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance self;
@@ -88,6 +94,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_transform(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance self;
@@ -95,7 +102,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 			UnityEngine.Matrix4x4 v;
 			checkValueType(l,2,out v);
 			self.transform=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -104,6 +111,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_lightmapScaleOffset(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance self;
@@ -117,6 +125,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_lightmapScaleOffset(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance self;
@@ -124,7 +133,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 			UnityEngine.Vector4 v;
 			checkType(l,2,out v);
 			self.lightmapScaleOffset=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -133,6 +142,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_realtimeLightmapScaleOffset(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance self;
@@ -146,6 +156,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_realtimeLightmapScaleOffset(IntPtr l) {
 		try {
 			UnityEngine.CombineInstance self;
@@ -153,7 +164,7 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 			UnityEngine.Vector4 v;
 			checkType(l,2,out v);
 			self.realtimeLightmapScaleOffset=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -161,13 +172,15 @@ public class Lua_UnityEngine_CombineInstance : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.CombineInstance");
+		addMember(l,ctor_s);
 		addMember(l,"mesh",get_mesh,set_mesh,true);
 		addMember(l,"subMeshIndex",get_subMeshIndex,set_subMeshIndex,true);
 		addMember(l,"transform",get_transform,set_transform,true);
 		addMember(l,"lightmapScaleOffset",get_lightmapScaleOffset,set_lightmapScaleOffset,true);
 		addMember(l,"realtimeLightmapScaleOffset",get_realtimeLightmapScaleOffset,set_realtimeLightmapScaleOffset,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.CombineInstance),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.CombineInstance),typeof(System.ValueType));
 	}
 }

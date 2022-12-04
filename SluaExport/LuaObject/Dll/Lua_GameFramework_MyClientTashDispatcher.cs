@@ -1,70 +1,100 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
 			GameFramework.MyClientTashDispatcher o;
-			if(argc==1){
-				o=new GameFramework.MyClientTashDispatcher();
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(argc==2){
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				o=new GameFramework.MyClientTashDispatcher(a1);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(argc==3){
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				System.Boolean a2;
-				checkType(l,3,out a2);
-				o=new GameFramework.MyClientTashDispatcher(a1,a2);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(argc==4){
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				System.Boolean a2;
-				checkType(l,3,out a2);
-				System.Int32 a3;
-				checkType(l,4,out a3);
-				o=new GameFramework.MyClientTashDispatcher(a1,a2,a3);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(argc==5){
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				System.Boolean a2;
-				checkType(l,3,out a2);
-				System.Int32 a3;
-				checkType(l,4,out a3);
-				System.Int32 a4;
-				checkType(l,5,out a4);
-				o=new GameFramework.MyClientTashDispatcher(a1,a2,a3,a4);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			return error(l,"New object failed.");
+			o=new GameFramework.MyClientTashDispatcher();
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Int32_s(IntPtr l) {
+		try {
+			GameFramework.MyClientTashDispatcher o;
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			o=new GameFramework.MyClientTashDispatcher(a1);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Int32__Boolean_s(IntPtr l) {
+		try {
+			GameFramework.MyClientTashDispatcher o;
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			System.Boolean a2;
+			checkType(l,2,out a2);
+			o=new GameFramework.MyClientTashDispatcher(a1,a2);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Int32__Boolean__Int32_s(IntPtr l) {
+		try {
+			GameFramework.MyClientTashDispatcher o;
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			System.Boolean a2;
+			checkType(l,2,out a2);
+			System.Int32 a3;
+			checkType(l,3,out a3);
+			o=new GameFramework.MyClientTashDispatcher(a1,a2,a3);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Int32__Boolean__Int32__Int32_s(IntPtr l) {
+		try {
+			GameFramework.MyClientTashDispatcher o;
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			System.Boolean a2;
+			checkType(l,2,out a2);
+			System.Int32 a3;
+			checkType(l,3,out a3);
+			System.Int32 a4;
+			checkType(l,4,out a4);
+			o=new GameFramework.MyClientTashDispatcher(a1,a2,a3,a4);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int DispatchActionWithDelegation(IntPtr l) {
 		try {
 			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
@@ -81,6 +111,7 @@ public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int DispatchAction(IntPtr l) {
 		try {
 			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
@@ -95,12 +126,13 @@ public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int DebugPoolCount(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int DispatchFunc(IntPtr l) {
 		try {
 			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
-			GameFramework.MyAction<System.String> a1;
+			GameFramework.MyFunc a1;
 			LuaDelegation.checkDelegate(l,2,out a1);
-			self.DebugPoolCount(a1);
+			self.DispatchFunc(a1);
 			pushValue(l,true);
 			return 1;
 		}
@@ -109,20 +141,7 @@ public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int DebugThreadActionCount(IntPtr l) {
-		try {
-			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
-			GameFramework.MyAction<System.String> a1;
-			LuaDelegation.checkDelegate(l,2,out a1);
-			self.DebugThreadActionCount(a1);
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int StopTaskThreads(IntPtr l) {
 		try {
 			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
@@ -135,6 +154,7 @@ public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ClearPool(IntPtr l) {
 		try {
 			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
@@ -149,6 +169,7 @@ public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsPassive(IntPtr l) {
 		try {
 			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
@@ -161,6 +182,7 @@ public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TickSleepTime(IntPtr l) {
 		try {
 			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
@@ -173,6 +195,7 @@ public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_TickSleepTime(IntPtr l) {
 		try {
 			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
@@ -187,6 +210,7 @@ public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ActionNumPerTick(IntPtr l) {
 		try {
 			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
@@ -199,6 +223,7 @@ public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ActionNumPerTick(IntPtr l) {
 		try {
 			GameFramework.MyClientTashDispatcher self=(GameFramework.MyClientTashDispatcher)checkSelf(l);
@@ -212,17 +237,22 @@ public class Lua_GameFramework_MyClientTashDispatcher : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.MyClientTashDispatcher");
+		addMember(l,ctor_s);
+		addMember(l,ctor__Int32_s);
+		addMember(l,ctor__Int32__Boolean_s);
+		addMember(l,ctor__Int32__Boolean__Int32_s);
+		addMember(l,ctor__Int32__Boolean__Int32__Int32_s);
 		addMember(l,DispatchActionWithDelegation);
 		addMember(l,DispatchAction);
-		addMember(l,DebugPoolCount);
-		addMember(l,DebugThreadActionCount);
+		addMember(l,DispatchFunc);
 		addMember(l,StopTaskThreads);
 		addMember(l,ClearPool);
 		addMember(l,"IsPassive",get_IsPassive,null,true);
 		addMember(l,"TickSleepTime",get_TickSleepTime,set_TickSleepTime,true);
 		addMember(l,"ActionNumPerTick",get_ActionNumPerTick,set_ActionNumPerTick,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.MyClientTashDispatcher));
+		createTypeMetatable(l,null, typeof(GameFramework.MyClientTashDispatcher));
 	}
 }

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_CL_GmCode : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmCode o;
 			o=new GameFrameworkMessage.Msg_CL_GmCode();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmCode : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Nick(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmCode self=(GameFrameworkMessage.Msg_CL_GmCode)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmCode : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Nick(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmCode self=(GameFrameworkMessage.Msg_CL_GmCode)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmCode : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Content(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmCode self=(GameFrameworkMessage.Msg_CL_GmCode)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmCode : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Content(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmCode self=(GameFrameworkMessage.Msg_CL_GmCode)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmCode : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_CL_GmCode");
+		addMember(l,ctor_s);
 		addMember(l,"m_Nick",get_m_Nick,set_m_Nick,true);
 		addMember(l,"m_Content",get_m_Content,set_m_Content,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_CL_GmCode));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_CL_GmCode));
 	}
 }

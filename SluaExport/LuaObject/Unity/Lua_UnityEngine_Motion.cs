@@ -1,22 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_Motion : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
-		try {
-			UnityEngine.Motion o;
-			o=new UnityEngine.Motion();
-			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_averageDuration(IntPtr l) {
 		try {
 			UnityEngine.Motion self=(UnityEngine.Motion)checkSelf(l);
@@ -29,6 +17,7 @@ public class Lua_UnityEngine_Motion : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_averageAngularSpeed(IntPtr l) {
 		try {
 			UnityEngine.Motion self=(UnityEngine.Motion)checkSelf(l);
@@ -41,6 +30,7 @@ public class Lua_UnityEngine_Motion : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_averageSpeed(IntPtr l) {
 		try {
 			UnityEngine.Motion self=(UnityEngine.Motion)checkSelf(l);
@@ -53,6 +43,7 @@ public class Lua_UnityEngine_Motion : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_apparentSpeed(IntPtr l) {
 		try {
 			UnityEngine.Motion self=(UnityEngine.Motion)checkSelf(l);
@@ -65,6 +56,7 @@ public class Lua_UnityEngine_Motion : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_isLooping(IntPtr l) {
 		try {
 			UnityEngine.Motion self=(UnityEngine.Motion)checkSelf(l);
@@ -77,6 +69,7 @@ public class Lua_UnityEngine_Motion : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_legacy(IntPtr l) {
 		try {
 			UnityEngine.Motion self=(UnityEngine.Motion)checkSelf(l);
@@ -89,6 +82,7 @@ public class Lua_UnityEngine_Motion : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_isHumanMotion(IntPtr l) {
 		try {
 			UnityEngine.Motion self=(UnityEngine.Motion)checkSelf(l);
@@ -100,6 +94,7 @@ public class Lua_UnityEngine_Motion : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Motion");
 		addMember(l,"averageDuration",get_averageDuration,null,true);
@@ -109,6 +104,6 @@ public class Lua_UnityEngine_Motion : LuaObject {
 		addMember(l,"isLooping",get_isLooping,null,true);
 		addMember(l,"legacy",get_legacy,null,true);
 		addMember(l,"isHumanMotion",get_isHumanMotion,null,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.Motion),typeof(UnityEngine.Object));
+		createTypeMetatable(l,null, typeof(UnityEngine.Motion),typeof(UnityEngine.Object));
 	}
 }

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ProtoBuf_ProtoEnumAttribute : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			ProtoBuf.ProtoEnumAttribute o;
 			o=new ProtoBuf.ProtoEnumAttribute();
@@ -17,6 +18,7 @@ public class Lua_ProtoBuf_ProtoEnumAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int HasValue(IntPtr l) {
 		try {
 			ProtoBuf.ProtoEnumAttribute self=(ProtoBuf.ProtoEnumAttribute)checkSelf(l);
@@ -30,6 +32,7 @@ public class Lua_ProtoBuf_ProtoEnumAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Value(IntPtr l) {
 		try {
 			ProtoBuf.ProtoEnumAttribute self=(ProtoBuf.ProtoEnumAttribute)checkSelf(l);
@@ -42,6 +45,7 @@ public class Lua_ProtoBuf_ProtoEnumAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Value(IntPtr l) {
 		try {
 			ProtoBuf.ProtoEnumAttribute self=(ProtoBuf.ProtoEnumAttribute)checkSelf(l);
@@ -56,6 +60,7 @@ public class Lua_ProtoBuf_ProtoEnumAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Name(IntPtr l) {
 		try {
 			ProtoBuf.ProtoEnumAttribute self=(ProtoBuf.ProtoEnumAttribute)checkSelf(l);
@@ -68,6 +73,7 @@ public class Lua_ProtoBuf_ProtoEnumAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Name(IntPtr l) {
 		try {
 			ProtoBuf.ProtoEnumAttribute self=(ProtoBuf.ProtoEnumAttribute)checkSelf(l);
@@ -81,11 +87,13 @@ public class Lua_ProtoBuf_ProtoEnumAttribute : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ProtoBuf.ProtoEnumAttribute");
+		addMember(l,ctor_s);
 		addMember(l,HasValue);
 		addMember(l,"Value",get_Value,set_Value,true);
 		addMember(l,"Name",get_Name,set_Name,true);
-		createTypeMetatable(l,constructor, typeof(ProtoBuf.ProtoEnumAttribute),typeof(System.Attribute));
+		createTypeMetatable(l,null, typeof(ProtoBuf.ProtoEnumAttribute),typeof(System.Attribute));
 	}
 }

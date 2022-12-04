@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_EventSystems_PointerInputModule_MouseButtonEventData : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData o;
 			o=new UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule_MouseButtonEventDat
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int PressedThisFrame(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData self=(UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData)checkSelf(l);
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule_MouseButtonEventDat
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReleasedThisFrame(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData self=(UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule_MouseButtonEventDat
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_buttonState(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData self=(UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule_MouseButtonEventDat
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_buttonState(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData self=(UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule_MouseButtonEventDat
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_buttonData(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData self=(UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule_MouseButtonEventDat
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_buttonData(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData self=(UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData)checkSelf(l);
@@ -94,12 +101,14 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule_MouseButtonEventDat
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData");
+		addMember(l,ctor_s);
 		addMember(l,PressedThisFrame);
 		addMember(l,ReleasedThisFrame);
 		addMember(l,"buttonState",get_buttonState,set_buttonState,true);
 		addMember(l,"buttonData",get_buttonData,set_buttonData,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData));
+		createTypeMetatable(l,null, typeof(UnityEngine.EventSystems.PointerInputModule.MouseButtonEventData));
 	}
 }

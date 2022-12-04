@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_AnimationState : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.AnimationState o;
 			o=new UnityEngine.AnimationState();
@@ -17,36 +18,39 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int AddMixingTransform(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int AddMixingTransform__Transform(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
-				UnityEngine.Transform a1;
-				checkType(l,2,out a1);
-				self.AddMixingTransform(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==3){
-				UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
-				UnityEngine.Transform a1;
-				checkType(l,2,out a1);
-				System.Boolean a2;
-				checkType(l,3,out a2);
-				self.AddMixingTransform(a1,a2);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
+			UnityEngine.Transform a1;
+			checkType(l,2,out a1);
+			self.AddMixingTransform(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int AddMixingTransform__Transform__Boolean(IntPtr l) {
+		try {
+			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
+			UnityEngine.Transform a1;
+			checkType(l,2,out a1);
+			System.Boolean a2;
+			checkType(l,3,out a2);
+			self.AddMixingTransform(a1,a2);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RemoveMixingTransform(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -61,6 +65,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_enabled(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -73,6 +78,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_enabled(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -87,6 +93,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_weight(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -99,6 +106,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_weight(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -113,6 +121,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_wrapMode(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -125,6 +134,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_wrapMode(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -139,6 +149,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_time(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -151,6 +162,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_time(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -165,6 +177,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_normalizedTime(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -177,6 +190,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_normalizedTime(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -191,6 +205,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_speed(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -203,6 +218,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_speed(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -217,6 +233,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_normalizedSpeed(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -229,6 +246,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_normalizedSpeed(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -243,6 +261,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_length(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -255,6 +274,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_layer(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -267,6 +287,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_layer(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -281,6 +302,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_clip(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -293,6 +315,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_name(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -305,6 +328,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_name(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -319,6 +343,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_blendMode(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -331,6 +356,7 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_blendMode(IntPtr l) {
 		try {
 			UnityEngine.AnimationState self=(UnityEngine.AnimationState)checkSelf(l);
@@ -344,9 +370,12 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.AnimationState");
-		addMember(l,AddMixingTransform);
+		addMember(l,ctor_s);
+		addMember(l,AddMixingTransform__Transform);
+		addMember(l,AddMixingTransform__Transform__Boolean);
 		addMember(l,RemoveMixingTransform);
 		addMember(l,"enabled",get_enabled,set_enabled,true);
 		addMember(l,"weight",get_weight,set_weight,true);
@@ -360,6 +389,6 @@ public class Lua_UnityEngine_AnimationState : LuaObject {
 		addMember(l,"clip",get_clip,null,true);
 		addMember(l,"name",get_name,set_name,true);
 		addMember(l,"blendMode",get_blendMode,set_blendMode,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.AnimationState),typeof(UnityEngine.TrackedReference));
+		createTypeMetatable(l,null, typeof(UnityEngine.AnimationState),typeof(UnityEngine.TrackedReference));
 	}
 }

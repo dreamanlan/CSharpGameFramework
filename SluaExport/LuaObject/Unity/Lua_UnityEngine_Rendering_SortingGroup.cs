@@ -1,22 +1,22 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_Rendering_SortingGroup : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int UpdateAllSortingGroups_s(IntPtr l) {
 		try {
-			UnityEngine.Rendering.SortingGroup o;
-			o=new UnityEngine.Rendering.SortingGroup();
+			UnityEngine.Rendering.SortingGroup.UpdateAllSortingGroups();
 			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_sortingLayerName(IntPtr l) {
 		try {
 			UnityEngine.Rendering.SortingGroup self=(UnityEngine.Rendering.SortingGroup)checkSelf(l);
@@ -29,6 +29,7 @@ public class Lua_UnityEngine_Rendering_SortingGroup : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_sortingLayerName(IntPtr l) {
 		try {
 			UnityEngine.Rendering.SortingGroup self=(UnityEngine.Rendering.SortingGroup)checkSelf(l);
@@ -43,6 +44,7 @@ public class Lua_UnityEngine_Rendering_SortingGroup : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_sortingLayerID(IntPtr l) {
 		try {
 			UnityEngine.Rendering.SortingGroup self=(UnityEngine.Rendering.SortingGroup)checkSelf(l);
@@ -55,6 +57,7 @@ public class Lua_UnityEngine_Rendering_SortingGroup : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_sortingLayerID(IntPtr l) {
 		try {
 			UnityEngine.Rendering.SortingGroup self=(UnityEngine.Rendering.SortingGroup)checkSelf(l);
@@ -69,6 +72,7 @@ public class Lua_UnityEngine_Rendering_SortingGroup : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_sortingOrder(IntPtr l) {
 		try {
 			UnityEngine.Rendering.SortingGroup self=(UnityEngine.Rendering.SortingGroup)checkSelf(l);
@@ -81,6 +85,7 @@ public class Lua_UnityEngine_Rendering_SortingGroup : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_sortingOrder(IntPtr l) {
 		try {
 			UnityEngine.Rendering.SortingGroup self=(UnityEngine.Rendering.SortingGroup)checkSelf(l);
@@ -94,11 +99,13 @@ public class Lua_UnityEngine_Rendering_SortingGroup : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.Rendering.SortingGroup");
+		addMember(l,UpdateAllSortingGroups_s);
 		addMember(l,"sortingLayerName",get_sortingLayerName,set_sortingLayerName,true);
 		addMember(l,"sortingLayerID",get_sortingLayerID,set_sortingLayerID,true);
 		addMember(l,"sortingOrder",get_sortingOrder,set_sortingOrder,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.Rendering.SortingGroup),typeof(UnityEngine.Behaviour));
+		createTypeMetatable(l,null, typeof(UnityEngine.Rendering.SortingGroup),typeof(UnityEngine.Behaviour));
 	}
 }

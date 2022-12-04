@@ -1,36 +1,42 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_ImpactInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Int32_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
 			GameFramework.ImpactInfo o;
-			if(matchType(l,argc,2,typeof(int))){
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				o=new GameFramework.ImpactInfo(a1);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(matchType(l,argc,2,typeof(TableConfig.Skill))){
-				TableConfig.Skill a1;
-				checkType(l,2,out a1);
-				o=new GameFramework.ImpactInfo(a1);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			return error(l,"New object failed.");
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			o=new GameFramework.ImpactInfo(a1);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Skill_s(IntPtr l) {
+		try {
+			GameFramework.ImpactInfo o;
+			TableConfig.Skill a1;
+			checkType(l,1,out a1);
+			o=new GameFramework.ImpactInfo(a1);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RefixCharacterProperty(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -45,6 +51,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Seq(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -57,6 +64,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Seq(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -71,6 +79,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ImpactId(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -83,6 +92,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ImpactId(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -97,6 +107,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_SkillId(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -109,6 +120,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_SkillId(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -123,6 +135,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ImpactSenderId(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -135,6 +148,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ImpactSenderId(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -149,6 +163,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_SenderPosition(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -161,6 +176,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_SenderPosition(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -175,6 +191,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TargetType(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -187,6 +204,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_TargetType(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -201,6 +219,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_StartTime(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -213,6 +232,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_StartTime(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -227,6 +247,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_DurationTime(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -239,6 +260,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_DurationTime(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -253,6 +275,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurDamageCount(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -265,6 +288,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_CurDamageCount(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -279,6 +303,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ImpactToTarget(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -291,6 +316,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ImpactToTarget(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -305,6 +331,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ConfigData(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -317,6 +344,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ConfigData(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -331,6 +359,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_DamageData(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -343,6 +372,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_DamageData(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -357,6 +387,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_SenderProperty(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -369,6 +400,7 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_SenderProperty(IntPtr l) {
 		try {
 			GameFramework.ImpactInfo self=(GameFramework.ImpactInfo)checkSelf(l);
@@ -382,8 +414,11 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.ImpactInfo");
+		addMember(l,ctor__Int32_s);
+		addMember(l,ctor__Skill_s);
 		addMember(l,RefixCharacterProperty);
 		addMember(l,"Seq",get_Seq,set_Seq,true);
 		addMember(l,"ImpactId",get_ImpactId,set_ImpactId,true);
@@ -398,6 +433,6 @@ public class Lua_GameFramework_ImpactInfo : LuaObject {
 		addMember(l,"ConfigData",get_ConfigData,set_ConfigData,true);
 		addMember(l,"DamageData",get_DamageData,set_DamageData,true);
 		addMember(l,"SenderProperty",get_SenderProperty,set_SenderProperty,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.ImpactInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.ImpactInfo));
 	}
 }

@@ -1,52 +1,58 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Skill__Int32__Int32__GameObject_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
 			GameFramework.Skill.GfxSkillSenderInfo o;
-			if(argc==5){
-				TableConfig.Skill a1;
-				checkType(l,2,out a1);
-				System.Int32 a2;
-				checkType(l,3,out a2);
-				System.Int32 a3;
-				checkType(l,4,out a3);
-				UnityEngine.GameObject a4;
-				checkType(l,5,out a4);
-				o=new GameFramework.Skill.GfxSkillSenderInfo(a1,a2,a3,a4);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(argc==7){
-				TableConfig.Skill a1;
-				checkType(l,2,out a1);
-				System.Int32 a2;
-				checkType(l,3,out a2);
-				System.Int32 a3;
-				checkType(l,4,out a3);
-				UnityEngine.GameObject a4;
-				checkType(l,5,out a4);
-				System.Int32 a5;
-				checkType(l,6,out a5);
-				UnityEngine.GameObject a6;
-				checkType(l,7,out a6);
-				o=new GameFramework.Skill.GfxSkillSenderInfo(a1,a2,a3,a4,a5,a6);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			return error(l,"New object failed.");
+			TableConfig.Skill a1;
+			checkType(l,1,out a1);
+			System.Int32 a2;
+			checkType(l,2,out a2);
+			System.Int32 a3;
+			checkType(l,3,out a3);
+			UnityEngine.GameObject a4;
+			checkType(l,4,out a4);
+			o=new GameFramework.Skill.GfxSkillSenderInfo(a1,a2,a3,a4);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Skill__Int32__Int32__GameObject__Int32__GameObject_s(IntPtr l) {
+		try {
+			GameFramework.Skill.GfxSkillSenderInfo o;
+			TableConfig.Skill a1;
+			checkType(l,1,out a1);
+			System.Int32 a2;
+			checkType(l,2,out a2);
+			System.Int32 a3;
+			checkType(l,3,out a3);
+			UnityEngine.GameObject a4;
+			checkType(l,4,out a4);
+			System.Int32 a5;
+			checkType(l,5,out a5);
+			UnityEngine.GameObject a6;
+			checkType(l,6,out a6);
+			o=new GameFramework.Skill.GfxSkillSenderInfo(a1,a2,a3,a4,a5,a6);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_SkillId(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
@@ -59,6 +65,7 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ConfigData(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
@@ -71,6 +78,7 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Seq(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
@@ -83,11 +91,12 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_ActorId(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int get_ObjId(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.ActorId);
+			pushValue(l,self.ObjId);
 			return 2;
 		}
 		catch(Exception e) {
@@ -95,6 +104,7 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_GfxObj(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
@@ -107,6 +117,7 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_GfxObj(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
@@ -121,11 +132,12 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_TargetActorId(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int get_TargetObjId(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
 			pushValue(l,true);
-			pushValue(l,self.TargetActorId);
+			pushValue(l,self.TargetObjId);
 			return 2;
 		}
 		catch(Exception e) {
@@ -133,12 +145,13 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_TargetActorId(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int set_TargetObjId(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
 			int v;
 			checkType(l,2,out v);
-			self.TargetActorId=v;
+			self.TargetObjId=v;
 			pushValue(l,true);
 			return 1;
 		}
@@ -147,6 +160,7 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TargetGfxObj(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
@@ -159,6 +173,7 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_TargetGfxObj(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
@@ -173,6 +188,7 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TrackEffectObj(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
@@ -185,6 +201,7 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_TrackEffectObj(IntPtr l) {
 		try {
 			GameFramework.Skill.GfxSkillSenderInfo self=(GameFramework.Skill.GfxSkillSenderInfo)checkSelf(l);
@@ -198,16 +215,19 @@ public class Lua_GameFramework_Skill_GfxSkillSenderInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.Skill.GfxSkillSenderInfo");
+		addMember(l,ctor__Skill__Int32__Int32__GameObject_s);
+		addMember(l,ctor__Skill__Int32__Int32__GameObject__Int32__GameObject_s);
 		addMember(l,"SkillId",get_SkillId,null,true);
 		addMember(l,"ConfigData",get_ConfigData,null,true);
 		addMember(l,"Seq",get_Seq,null,true);
-		addMember(l,"ActorId",get_ActorId,null,true);
+		addMember(l,"ObjId",get_ObjId,null,true);
 		addMember(l,"GfxObj",get_GfxObj,set_GfxObj,true);
-		addMember(l,"TargetActorId",get_TargetActorId,set_TargetActorId,true);
+		addMember(l,"TargetObjId",get_TargetObjId,set_TargetObjId,true);
 		addMember(l,"TargetGfxObj",get_TargetGfxObj,set_TargetGfxObj,true);
 		addMember(l,"TrackEffectObj",get_TrackEffectObj,set_TrackEffectObj,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.Skill.GfxSkillSenderInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.Skill.GfxSkillSenderInfo));
 	}
 }

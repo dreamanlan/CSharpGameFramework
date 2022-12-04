@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult o;
 			o=new UnityEngine.EventSystems.RaycastResult();
@@ -17,13 +18,14 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
 			checkValueType(l,1,out self);
 			self.Clear();
 			pushValue(l,true);
-			setBack(l,self);
+			setBack(l,(object)self);
 			return 1;
 		}
 		catch(Exception e) {
@@ -31,6 +33,22 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static new public int ToString(IntPtr l) {
+		try {
+			UnityEngine.EventSystems.RaycastResult self;
+			checkValueType(l,1,out self);
+			var ret=self.ToString();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_module(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -44,6 +62,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_module(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -51,7 +70,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			UnityEngine.EventSystems.BaseRaycaster v;
 			checkType(l,2,out v);
 			self.module=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -60,6 +79,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_distance(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -73,6 +93,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_distance(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -80,7 +101,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			System.Single v;
 			checkType(l,2,out v);
 			self.distance=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -89,6 +110,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_index(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -102,6 +124,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_index(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -109,7 +132,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			System.Single v;
 			checkType(l,2,out v);
 			self.index=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -118,6 +141,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_depth(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -131,6 +155,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_depth(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -138,7 +163,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			System.Int32 v;
 			checkType(l,2,out v);
 			self.depth=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -147,6 +172,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_sortingLayer(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -160,6 +186,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_sortingLayer(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -167,7 +194,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			System.Int32 v;
 			checkType(l,2,out v);
 			self.sortingLayer=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -176,6 +203,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_sortingOrder(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -189,6 +217,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_sortingOrder(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -196,7 +225,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			System.Int32 v;
 			checkType(l,2,out v);
 			self.sortingOrder=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -205,6 +234,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_worldPosition(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -218,6 +248,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_worldPosition(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -225,7 +256,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			UnityEngine.Vector3 v;
 			checkType(l,2,out v);
 			self.worldPosition=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -234,6 +265,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_worldNormal(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -247,6 +279,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_worldNormal(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -254,7 +287,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			UnityEngine.Vector3 v;
 			checkType(l,2,out v);
 			self.worldNormal=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -263,6 +296,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_screenPosition(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -276,6 +310,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_screenPosition(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -283,7 +318,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			UnityEngine.Vector2 v;
 			checkType(l,2,out v);
 			self.screenPosition=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -292,6 +327,38 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_displayIndex(IntPtr l) {
+		try {
+			UnityEngine.EventSystems.RaycastResult self;
+			checkValueType(l,1,out self);
+			pushValue(l,true);
+			pushValue(l,self.displayIndex);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int set_displayIndex(IntPtr l) {
+		try {
+			UnityEngine.EventSystems.RaycastResult self;
+			checkValueType(l,1,out self);
+			System.Int32 v;
+			checkType(l,2,out v);
+			self.displayIndex=v;
+			setBack(l,(object)self);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_gameObject(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -305,6 +372,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_gameObject(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -312,7 +380,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			UnityEngine.GameObject v;
 			checkType(l,2,out v);
 			self.gameObject=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -321,6 +389,7 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_isValid(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.RaycastResult self;
@@ -333,9 +402,12 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.EventSystems.RaycastResult");
+		addMember(l,ctor_s);
 		addMember(l,Clear);
+		addMember(l,ToString);
 		addMember(l,"module",get_module,set_module,true);
 		addMember(l,"distance",get_distance,set_distance,true);
 		addMember(l,"index",get_index,set_index,true);
@@ -345,8 +417,9 @@ public class Lua_UnityEngine_EventSystems_RaycastResult : LuaObject {
 		addMember(l,"worldPosition",get_worldPosition,set_worldPosition,true);
 		addMember(l,"worldNormal",get_worldNormal,set_worldNormal,true);
 		addMember(l,"screenPosition",get_screenPosition,set_screenPosition,true);
+		addMember(l,"displayIndex",get_displayIndex,set_displayIndex,true);
 		addMember(l,"gameObject",get_gameObject,set_gameObject,true);
 		addMember(l,"isValid",get_isValid,null,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.EventSystems.RaycastResult),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.EventSystems.RaycastResult),typeof(System.ValueType));
 	}
 }

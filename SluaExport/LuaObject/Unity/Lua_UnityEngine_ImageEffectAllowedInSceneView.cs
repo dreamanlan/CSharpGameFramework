@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ImageEffectAllowedInSceneView : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.ImageEffectAllowedInSceneView o;
 			o=new UnityEngine.ImageEffectAllowedInSceneView();
@@ -16,8 +17,10 @@ public class Lua_UnityEngine_ImageEffectAllowedInSceneView : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ImageEffectAllowedInSceneView");
-		createTypeMetatable(l,constructor, typeof(UnityEngine.ImageEffectAllowedInSceneView),typeof(System.Attribute));
+		addMember(l,ctor_s);
+		createTypeMetatable(l,null, typeof(UnityEngine.ImageEffectAllowedInSceneView),typeof(System.Attribute));
 	}
 }

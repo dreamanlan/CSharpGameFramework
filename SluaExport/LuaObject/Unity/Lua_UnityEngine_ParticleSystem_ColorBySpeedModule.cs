@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorBySpeedModule o;
 			o=new UnityEngine.ParticleSystem.ColorBySpeedModule();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorBySpeedModule self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorBySpeedModule self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.enabled=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_color(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorBySpeedModule self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_color(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorBySpeedModule self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 			UnityEngine.ParticleSystem.MinMaxGradient v;
 			checkValueType(l,2,out v);
 			self.color=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +80,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_range(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorBySpeedModule self;
@@ -88,6 +94,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_range(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ColorBySpeedModule self;
@@ -95,7 +102,7 @@ public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 			UnityEngine.Vector2 v;
 			checkType(l,2,out v);
 			self.range=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -103,11 +110,13 @@ public class Lua_UnityEngine_ParticleSystem_ColorBySpeedModule : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ParticleSystem.ColorBySpeedModule");
+		addMember(l,ctor_s);
 		addMember(l,"enabled",get_enabled,set_enabled,true);
 		addMember(l,"color",get_color,set_color,true);
 		addMember(l,"range",get_range,set_range,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.ParticleSystem.ColorBySpeedModule),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.ParticleSystem.ColorBySpeedModule),typeof(System.ValueType));
 	}
 }

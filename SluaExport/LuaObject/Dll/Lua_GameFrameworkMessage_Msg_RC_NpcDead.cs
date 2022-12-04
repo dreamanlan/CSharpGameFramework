@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_RC_NpcDead : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcDead o;
 			o=new GameFrameworkMessage.Msg_RC_NpcDead();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcDead : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_npc_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcDead self=(GameFrameworkMessage.Msg_RC_NpcDead)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcDead : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_npc_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcDead self=(GameFrameworkMessage.Msg_RC_NpcDead)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcDead : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_RC_NpcDead");
+		addMember(l,ctor_s);
 		addMember(l,"npc_id",get_npc_id,set_npc_id,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_RC_NpcDead));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_RC_NpcDead));
 	}
 }

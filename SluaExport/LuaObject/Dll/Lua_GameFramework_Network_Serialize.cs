@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_Network_Serialize : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Encode_s(IntPtr l) {
 		try {
 			System.Object a1;
@@ -20,6 +21,7 @@ public class Lua_GameFramework_Network_Serialize : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Decode_s(IntPtr l) {
 		try {
 			System.Byte[] a1;
@@ -35,6 +37,7 @@ public class Lua_GameFramework_Network_Serialize : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.Network.Serialize");
 		addMember(l,Encode_s);

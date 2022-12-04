@@ -1,4 +1,4 @@
-﻿// The MIT License (MIT)
+// The MIT License (MIT)
 
 // Copyright 2015 Siney/Pangweiwei siney@yeah.net
 // 
@@ -24,11 +24,12 @@ namespace SLua
 {
     using System.Collections.Generic;
     using System;
-    
+
     public class CustomExport
     {
 
-        public static void OnGetAssemblyToGenerateExtensionMethod(out List<string> list) {
+        public static void OnGetAssemblyToGenerateExtensionMethod(out List<string> list)
+        {
             list = new List<string> {
                 "PluginFramework",
             };
@@ -41,6 +42,7 @@ namespace SLua
             add(typeof(System.Action<int, Dictionary<int, object>>), null);
             add(typeof(System.Exception), "System.Exception");
             add(typeof(string), "System.String");
+            add(typeof(System.Object), "System.Object");
             add(typeof(System.Array), "System.Array");
             add(typeof(System.Collections.ArrayList), "System.Collections.ArrayList");
             add(typeof(System.Collections.Hashtable), "System.Collections.Hashtable");
@@ -77,6 +79,7 @@ namespace SLua
             add(typeof(System.Math), "System.Math");
             add(typeof(System.Random), "System.Random");
             add(typeof(System.Delegate), "System.Delegate");
+            add(typeof(System.Globalization.CultureInfo), "System.Globalization.CultureInfo");
             add(typeof(System.Text.StringBuilder), "System.Text.StringBuilder");
             add(typeof(System.Text.Encoding), "System.Text.Encoding");
             add(typeof(System.Text.ASCIIEncoding), "System.Text.ASCIIEncoding");
@@ -120,8 +123,8 @@ namespace SLua
             // add its name into list, slua will generate all exported interface automatically for you
 
             //list.Add("NGUI");
-            list.Add("ClientProtoBuf");            
-			list.Add("protobuf-net");
+            list.Add("ClientProtoBuf");
+            list.Add("protobuf-net");
             list.Add("PluginFramework");
             list.Add("Common");
             list.Add("Dsl");
@@ -130,16 +133,14 @@ namespace SLua
             list.Add("SkillSystem");
             list.Add("StorySystem");
         }
-        
-        public static void OnGetCustomAssemblyUseList(out HashSet<string> list)
+        public static HashSet<string> OnGetCustomAssemblyUseList()
         {
-            list = new HashSet<string> {
+            return new HashSet<string> {
             };
         }
-        public static void OnGetCustomAssemblyNoUseList(out List<string> list)
+        public static List<string> OnGetCustomAssemblyNoUseList()
         {
-            list = new List<string>
-            {
+            return new List<string> {
             };
         }
 
@@ -147,7 +148,7 @@ namespace SLua
         {
             "System.Single.IsFinite",
             "System.Double.IsFinite",
-			"System.Type.IsSZArray",
+            "System.Type.IsSZArray",
             "System.IO.Stream.CopyToAsync",
             "System.IO.Stream.FlushAsync",
             "System.IO.Stream.ReadAsync",
@@ -156,20 +157,23 @@ namespace SLua
             "System.IO.Stream.WriteAsync",
             "System.IO.Stream.BeginWrite",
             "System.IO.Stream.EndWrite",
+            "System.Type.MakeGenericSignatureType",
+            "System.Type.IsCollectible",
+            "System.Collections.Generic.HashSet`1.EnsureCapacity",
         };
         // white list
-        public static void OnGetUseList(out HashSet<string> list)
+        public static HashSet<string> OnGetUseList()
         {
-            list = new HashSet<string>
+            return new HashSet<string>
             {
                 "UnityEngine.Texture2D"
             };
         }
         // black list
-        public static void OnGetNoUseList(out List<string> list)
+        public static List<string> OnGetNoUseList()
         {
-            list = new List<string>
-            {      
+            return new List<string>
+            {
                 "HideInInspector",
                 "ExecuteInEditMode",
                 "AddComponentMenu",
@@ -178,7 +182,7 @@ namespace SLua
                 "DisallowMultipleComponent",
                 "SerializeField",
                 "AssemblyIsEditorAssembly",
-                "Attribute", 
+                "Attribute",
                 "Types",
                 "UnitySurrogateSelector",
                 "TrackedReference",
@@ -201,7 +205,7 @@ namespace SLua
                 "TextClipping",
                 "Gizmos",
                 "ADBannerView",
-                "ADInterstitialAd",            
+                "ADInterstitialAd",
                 "Android",
                 "Tizen",
                 "jvalue",
@@ -217,7 +221,7 @@ namespace SLua
                 "Handheld",
                 "LocalNotification",
                 "NotificationServices",
-                "RemoteNotificationType",      
+                "RemoteNotificationType",
                 "RemoteNotification",
                 "SamsungTV",
                 "TextureCompressionQuality",
@@ -225,7 +229,7 @@ namespace SLua
                 "TouchScreenKeyboard",
                 "MovieTexture",
                 "UnityEngineInternal",
-                "Terrain",                            
+                "Terrain",
                 "Tree",
                 "SplatPrototype",
                 "DetailPrototype",
@@ -233,8 +237,8 @@ namespace SLua
                 "MeshSubsetCombineUtility",
                 "AOT",
                 "Social",
-                "Enumerator",       
-                "SendMouseEvents",               
+                "Enumerator",
+                "SendMouseEvents",
                 "Cursor",
                 "Flash",
                 "ActionScript",
@@ -246,10 +250,10 @@ namespace SLua
                 "GraphicRebuildTracker",
                 "Advertisements",
                 "UnityEditor",
-			    "WSA",
-			    "EventProvider",
-			    "Apple",
-			    "ClusterInput",
+                "WSA",
+                "EventProvider",
+                "Apple",
+                "ClusterInput",
                 "CullingParameters",
                 "ShadowSplitData",
                 "RaycastAllCallback",

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_PluginManager : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			PluginManager o;
 			o=new PluginManager();
@@ -17,6 +18,7 @@ public class Lua_PluginManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CreateObject(IntPtr l) {
 		try {
 			PluginManager self=(PluginManager)checkSelf(l);
@@ -32,6 +34,7 @@ public class Lua_PluginManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CreateStartup(IntPtr l) {
 		try {
 			PluginManager self=(PluginManager)checkSelf(l);
@@ -47,6 +50,7 @@ public class Lua_PluginManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CreateTick(IntPtr l) {
 		try {
 			PluginManager self=(PluginManager)checkSelf(l);
@@ -62,6 +66,7 @@ public class Lua_PluginManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RegisterObjectFactory(IntPtr l) {
 		try {
 			PluginManager self=(PluginManager)checkSelf(l);
@@ -78,6 +83,7 @@ public class Lua_PluginManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RegisterStartupFactory(IntPtr l) {
 		try {
 			PluginManager self=(PluginManager)checkSelf(l);
@@ -94,6 +100,7 @@ public class Lua_PluginManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RegisterTickFactory(IntPtr l) {
 		try {
 			PluginManager self=(PluginManager)checkSelf(l);
@@ -110,6 +117,7 @@ public class Lua_PluginManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Instance(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -120,8 +128,10 @@ public class Lua_PluginManager : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"PluginManager");
+		addMember(l,ctor_s);
 		addMember(l,CreateObject);
 		addMember(l,CreateStartup);
 		addMember(l,CreateTick);
@@ -129,6 +139,6 @@ public class Lua_PluginManager : LuaObject {
 		addMember(l,RegisterStartupFactory);
 		addMember(l,RegisterTickFactory);
 		addMember(l,"Instance",get_Instance,null,false);
-		createTypeMetatable(l,constructor, typeof(PluginManager));
+		createTypeMetatable(l,null, typeof(PluginManager));
 	}
 }

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_LevelMonster : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.LevelMonster o;
 			o=new TableConfig.LevelMonster();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadFromBinary(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -34,6 +36,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteToBinary(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -48,6 +51,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_group(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -60,6 +64,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_group(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -74,6 +79,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_scene(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -86,6 +92,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_scene(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -100,6 +107,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_camp(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -112,6 +120,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_camp(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -126,6 +135,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_actorID(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -138,6 +148,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_actorID(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -152,6 +163,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_x(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -164,6 +176,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_x(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -178,6 +191,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_y(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -190,6 +204,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_y(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -204,6 +219,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_dir(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -216,6 +232,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_dir(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -230,6 +247,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_level(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -242,6 +260,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_level(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -256,6 +275,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_passive(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -268,6 +288,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_passive(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -282,6 +303,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_aiLogic(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -294,6 +316,7 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_aiLogic(IntPtr l) {
 		try {
 			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
@@ -307,34 +330,10 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_aiParams(IntPtr l) {
-		try {
-			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.aiParams);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_aiParams(IntPtr l) {
-		try {
-			TableConfig.LevelMonster self=(TableConfig.LevelMonster)checkSelf(l);
-			System.Collections.Generic.List<System.String> v;
-			checkType(l,2,out v);
-			self.aiParams=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.LevelMonster");
+		addMember(l,ctor_s);
 		addMember(l,ReadFromBinary);
 		addMember(l,WriteToBinary);
 		addMember(l,"group",get_group,set_group,true);
@@ -347,7 +346,6 @@ public class Lua_TableConfig_LevelMonster : LuaObject {
 		addMember(l,"level",get_level,set_level,true);
 		addMember(l,"passive",get_passive,set_passive,true);
 		addMember(l,"aiLogic",get_aiLogic,set_aiLogic,true);
-		addMember(l,"aiParams",get_aiParams,set_aiParams,true);
-		createTypeMetatable(l,constructor, typeof(TableConfig.LevelMonster));
+		createTypeMetatable(l,null, typeof(TableConfig.LevelMonster));
 	}
 }

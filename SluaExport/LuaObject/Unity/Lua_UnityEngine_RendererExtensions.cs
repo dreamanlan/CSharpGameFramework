@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_RendererExtensions : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int UpdateGIMaterials_s(IntPtr l) {
 		try {
 			UnityEngine.Renderer a1;
@@ -16,6 +17,7 @@ public class Lua_UnityEngine_RendererExtensions : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.RendererExtensions");
 		addMember(l,UpdateGIMaterials_s);

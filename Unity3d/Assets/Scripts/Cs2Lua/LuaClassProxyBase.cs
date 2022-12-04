@@ -1237,16 +1237,15 @@ public class LuaClassProxyBase
             return;
         if (!Cs2LuaAssembly.Instance.LuaInited)
             return;
-        string fileName = m_LuaClassFileName.StrToLower();
+        string fileName = m_LuaClassFileName.ToLower();
         string className = m_LuaClassFileName.Replace("__", ".");
-        var svr = Cs2LuaAssembly.Instance.LuaSvr;
         var sb = new System.Text.StringBuilder();
         sb.Append("require ");
         sb.Append('"');
         sb.Append(fileName);
         sb.Append('"');
-        svr.luaState.doString(sb.ToString());
-        var classObj = (LuaTable)svr.luaState[className];
+        LuaState.main.doString(sb.ToString());
+        var classObj = (LuaTable)LuaState.main[className];
         if (null != classObj) {
             m_Self = (LuaTable)((LuaFunction)classObj["__new_object"]).call();
             if (null != m_Self) {

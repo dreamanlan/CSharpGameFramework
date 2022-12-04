@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_SkillProvider : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.SkillProvider o;
 			o=new TableConfig.SkillProvider();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_SkillProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadForClient(IntPtr l) {
 		try {
 			TableConfig.SkillProvider self=(TableConfig.SkillProvider)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_TableConfig_SkillProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadForServer(IntPtr l) {
 		try {
 			TableConfig.SkillProvider self=(TableConfig.SkillProvider)checkSelf(l);
@@ -41,6 +44,7 @@ public class Lua_TableConfig_SkillProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Load(IntPtr l) {
 		try {
 			TableConfig.SkillProvider self=(TableConfig.SkillProvider)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_TableConfig_SkillProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Save(IntPtr l) {
 		try {
 			TableConfig.SkillProvider self=(TableConfig.SkillProvider)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_TableConfig_SkillProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			TableConfig.SkillProvider self=(TableConfig.SkillProvider)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_TableConfig_SkillProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetSkillCount(IntPtr l) {
 		try {
 			TableConfig.SkillProvider self=(TableConfig.SkillProvider)checkSelf(l);
@@ -94,6 +101,7 @@ public class Lua_TableConfig_SkillProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetSkill(IntPtr l) {
 		try {
 			TableConfig.SkillProvider self=(TableConfig.SkillProvider)checkSelf(l);
@@ -109,18 +117,7 @@ public class Lua_TableConfig_SkillProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_SkillMgr(IntPtr l) {
-		try {
-			TableConfig.SkillProvider self=(TableConfig.SkillProvider)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.SkillMgr);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Instance(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -131,8 +128,10 @@ public class Lua_TableConfig_SkillProvider : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.SkillProvider");
+		addMember(l,ctor_s);
 		addMember(l,LoadForClient);
 		addMember(l,LoadForServer);
 		addMember(l,Load);
@@ -140,8 +139,7 @@ public class Lua_TableConfig_SkillProvider : LuaObject {
 		addMember(l,Clear);
 		addMember(l,GetSkillCount);
 		addMember(l,GetSkill);
-		addMember(l,"SkillMgr",get_SkillMgr,null,true);
 		addMember(l,"Instance",get_Instance,null,false);
-		createTypeMetatable(l,constructor, typeof(TableConfig.SkillProvider));
+		createTypeMetatable(l,null, typeof(TableConfig.SkillProvider));
 	}
 }

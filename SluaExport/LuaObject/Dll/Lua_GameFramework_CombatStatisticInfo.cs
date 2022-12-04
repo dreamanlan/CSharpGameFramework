@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo o;
 			o=new GameFramework.CombatStatisticInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddDeadCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -31,6 +33,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddKillHeroCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -45,6 +48,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddKillNpcCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -59,6 +63,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ClearContinueKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -71,6 +76,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddContinueKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -85,6 +91,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ClearContinueDeadCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -97,6 +104,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddContinueDeadCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -111,6 +119,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ClearMultiKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -123,6 +132,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddMultiKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -137,6 +147,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddKillTowerCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -151,6 +162,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddTotalDamageFromMyself(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -165,6 +177,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddTotalDamageToMyself(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -179,6 +192,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -191,6 +205,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_DeadCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -203,6 +218,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_DeadCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -217,6 +233,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_KillHeroCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -229,6 +246,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_KillHeroCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -243,6 +261,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_KillNpcCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -255,6 +274,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_KillNpcCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -269,6 +289,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ContinueKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -281,6 +302,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ContinueKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -295,6 +317,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ContinueDeadCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -307,6 +330,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ContinueDeadCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -321,6 +345,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_MultiKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -333,6 +358,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_MultiKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -347,6 +373,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_MaxContinueKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -359,6 +386,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_MaxContinueKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -373,6 +401,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_MaxMultiKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -385,6 +414,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_MaxMultiKillCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -399,6 +429,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_KillTowerCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -411,6 +442,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_KillTowerCount(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -425,6 +457,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TotalDamageFromMyself(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -437,6 +470,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_TotalDamageFromMyself(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -451,6 +485,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TotalDamageToMyself(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -463,6 +498,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_TotalDamageToMyself(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -477,6 +513,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_DataChanged(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -489,6 +526,7 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_DataChanged(IntPtr l) {
 		try {
 			GameFramework.CombatStatisticInfo self=(GameFramework.CombatStatisticInfo)checkSelf(l);
@@ -502,8 +540,10 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.CombatStatisticInfo");
+		addMember(l,ctor_s);
 		addMember(l,AddDeadCount);
 		addMember(l,AddKillHeroCount);
 		addMember(l,AddKillNpcCount);
@@ -529,6 +569,6 @@ public class Lua_GameFramework_CombatStatisticInfo : LuaObject {
 		addMember(l,"TotalDamageFromMyself",get_TotalDamageFromMyself,set_TotalDamageFromMyself,true);
 		addMember(l,"TotalDamageToMyself",get_TotalDamageToMyself,set_TotalDamageToMyself,true);
 		addMember(l,"DataChanged",get_DataChanged,set_DataChanged,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.CombatStatisticInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.CombatStatisticInfo));
 	}
 }

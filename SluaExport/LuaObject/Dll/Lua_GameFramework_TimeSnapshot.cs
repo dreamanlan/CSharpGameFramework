@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_TimeSnapshot : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.TimeSnapshot o;
 			o=new GameFramework.TimeSnapshot();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_TimeSnapshot : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Start_s(IntPtr l) {
 		try {
 			GameFramework.TimeSnapshot.Start();
@@ -28,6 +30,7 @@ public class Lua_GameFramework_TimeSnapshot : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int End_s(IntPtr l) {
 		try {
 			var ret=GameFramework.TimeSnapshot.End();
@@ -40,6 +43,7 @@ public class Lua_GameFramework_TimeSnapshot : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int DoCheckPoint_s(IntPtr l) {
 		try {
 			var ret=GameFramework.TimeSnapshot.DoCheckPoint();
@@ -51,11 +55,13 @@ public class Lua_GameFramework_TimeSnapshot : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.TimeSnapshot");
+		addMember(l,ctor_s);
 		addMember(l,Start_s);
 		addMember(l,End_s);
 		addMember(l,DoCheckPoint_s);
-		createTypeMetatable(l,constructor, typeof(GameFramework.TimeSnapshot));
+		createTypeMetatable(l,null, typeof(GameFramework.TimeSnapshot));
 	}
 }

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ProtoBuf_ProtoBeforeDeserializationAttribute : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			ProtoBuf.ProtoBeforeDeserializationAttribute o;
 			o=new ProtoBuf.ProtoBeforeDeserializationAttribute();
@@ -16,8 +17,10 @@ public class Lua_ProtoBuf_ProtoBeforeDeserializationAttribute : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ProtoBuf.ProtoBeforeDeserializationAttribute");
-		createTypeMetatable(l,constructor, typeof(ProtoBuf.ProtoBeforeDeserializationAttribute),typeof(System.Attribute));
+		addMember(l,ctor_s);
+		createTypeMetatable(l,null, typeof(ProtoBuf.ProtoBeforeDeserializationAttribute),typeof(System.Attribute));
 	}
 }

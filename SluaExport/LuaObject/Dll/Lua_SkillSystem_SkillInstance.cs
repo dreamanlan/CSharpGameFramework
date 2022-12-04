@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_SkillSystem_SkillInstance : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance o;
 			o=new SkillSystem.SkillInstance();
@@ -17,19 +18,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int CollectProperties(IntPtr l) {
-		try {
-			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
-			var ret=self.CollectProperties();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetVariable(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -46,29 +35,13 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Init(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int Clone(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,2,typeof(Dsl.FunctionData))){
-				SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
-				Dsl.FunctionData a1;
-				checkType(l,2,out a1);
-				var ret=self.Init(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(matchType(l,argc,2,typeof(Dsl.DslInfo))){
-				SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
-				Dsl.DslInfo a1;
-				checkType(l,2,out a1);
-				var ret=self.Init(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
+			var ret=self.Clone();
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -76,6 +49,39 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Init__ISyntaxComponent(IntPtr l) {
+		try {
+			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
+			Dsl.ISyntaxComponent a1;
+			checkType(l,2,out a1);
+			var ret=self.Init(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Init__FunctionData(IntPtr l) {
+		try {
+			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
+			Dsl.FunctionData a1;
+			checkType(l,2,out a1);
+			var ret=self.Init(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ToScriptString(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -89,6 +95,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Save(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -103,6 +110,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -115,6 +123,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Start(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -129,6 +138,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SendMessage(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -143,6 +153,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Tick(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -159,6 +170,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnInterrupt(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -173,6 +185,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnSkillStop(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -187,6 +200,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsMessageDone(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -200,6 +214,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetCurSectionDuration(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -214,6 +229,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AdjustCurSectionDuration(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -228,6 +244,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int StopCurSection(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -240,6 +257,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddUseImpactForInit(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -258,38 +276,41 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int AddImpactForInit(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int AddImpactForInit__ISkillTriger(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
-				SkillSystem.ISkillTriger a1;
-				checkType(l,2,out a1);
-				self.AddImpactForInit(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==4){
-				SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
-				SkillSystem.ISkillTriger a1;
-				checkType(l,2,out a1);
-				System.Int32 a2;
-				checkType(l,3,out a2);
-				System.Boolean a3;
-				checkType(l,4,out a3);
-				self.AddImpactForInit(a1,a2,a3);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
+			SkillSystem.ISkillTriger a1;
+			checkType(l,2,out a1);
+			self.AddImpactForInit(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int AddImpactForInit__ISkillTriger__Int32__Boolean(IntPtr l) {
+		try {
+			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
+			SkillSystem.ISkillTriger a1;
+			checkType(l,2,out a1);
+			System.Int32 a2;
+			checkType(l,3,out a2);
+			System.Boolean a3;
+			checkType(l,4,out a3);
+			self.AddImpactForInit(a1,a2,a3);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddDamageForInit(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -304,6 +325,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GenInnerEmitSkillId_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -318,6 +340,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GenInnerHitSkillId_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -332,6 +355,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_c_FirstInnerEmitSkillId(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -343,6 +367,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_c_FirstInnerHitSkillId(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -354,6 +379,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_InnerDslSkillId(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -366,6 +392,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_OuterDslSkillId(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -378,6 +405,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_DslSkillId(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -390,6 +418,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_DslSkillId(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -404,6 +433,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Context(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -416,6 +446,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Context(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -430,6 +461,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsInterrupted(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -442,6 +474,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsInterrupted(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -456,6 +489,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsFinished(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -468,6 +502,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsFinished(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -482,6 +517,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurTime(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -494,6 +530,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurSection(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -506,6 +543,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurSectionDuration(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -518,6 +556,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_OriginalDelta(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -530,6 +569,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TimeScale(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -542,6 +582,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_TimeScale(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -556,6 +597,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_EffectScale(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -568,6 +610,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_EffectScale(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -582,6 +625,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_MoveScale(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -594,6 +638,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_MoveScale(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -608,6 +653,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_GoToSection(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -620,6 +666,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_GoToSection(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -634,6 +681,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Variables(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -646,6 +694,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CustomDatas(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -658,6 +707,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_EmitSkillInstances(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -670,6 +720,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_HitSkillInstances(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -682,6 +733,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ImpactCount(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -694,6 +746,7 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_DamageCount(IntPtr l) {
 		try {
 			SkillSystem.SkillInstance self=(SkillSystem.SkillInstance)checkSelf(l);
@@ -705,11 +758,14 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"SkillSystem.SkillInstance");
-		addMember(l,CollectProperties);
+		addMember(l,ctor_s);
 		addMember(l,SetVariable);
-		addMember(l,Init);
+		addMember(l,Clone);
+		addMember(l,Init__ISyntaxComponent);
+		addMember(l,Init__FunctionData);
 		addMember(l,ToScriptString);
 		addMember(l,Save);
 		addMember(l,Reset);
@@ -723,7 +779,8 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		addMember(l,AdjustCurSectionDuration);
 		addMember(l,StopCurSection);
 		addMember(l,AddUseImpactForInit);
-		addMember(l,AddImpactForInit);
+		addMember(l,AddImpactForInit__ISkillTriger);
+		addMember(l,AddImpactForInit__ISkillTriger__Int32__Boolean);
 		addMember(l,AddDamageForInit);
 		addMember(l,GenInnerEmitSkillId_s);
 		addMember(l,GenInnerHitSkillId_s);
@@ -749,6 +806,6 @@ public class Lua_SkillSystem_SkillInstance : LuaObject {
 		addMember(l,"HitSkillInstances",get_HitSkillInstances,null,true);
 		addMember(l,"ImpactCount",get_ImpactCount,null,true);
 		addMember(l,"DamageCount",get_DamageCount,null,true);
-		createTypeMetatable(l,constructor, typeof(SkillSystem.SkillInstance));
+		createTypeMetatable(l,null, typeof(SkillSystem.SkillInstance));
 	}
 }

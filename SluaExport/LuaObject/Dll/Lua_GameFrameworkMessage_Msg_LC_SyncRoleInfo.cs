@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncRoleInfo o;
 			o=new GameFrameworkMessage.Msg_LC_SyncRoleInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_HeroId(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncRoleInfo self=(GameFrameworkMessage.Msg_LC_SyncRoleInfo)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_HeroId(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncRoleInfo self=(GameFrameworkMessage.Msg_LC_SyncRoleInfo)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Money(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncRoleInfo self=(GameFrameworkMessage.Msg_LC_SyncRoleInfo)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Money(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncRoleInfo self=(GameFrameworkMessage.Msg_LC_SyncRoleInfo)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Gold(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncRoleInfo self=(GameFrameworkMessage.Msg_LC_SyncRoleInfo)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Gold(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncRoleInfo self=(GameFrameworkMessage.Msg_LC_SyncRoleInfo)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Level(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncRoleInfo self=(GameFrameworkMessage.Msg_LC_SyncRoleInfo)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Level(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncRoleInfo self=(GameFrameworkMessage.Msg_LC_SyncRoleInfo)checkSelf(l);
@@ -120,12 +129,14 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncRoleInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_LC_SyncRoleInfo");
+		addMember(l,ctor_s);
 		addMember(l,"HeroId",get_HeroId,set_HeroId,true);
 		addMember(l,"Money",get_Money,set_Money,true);
 		addMember(l,"Gold",get_Gold,set_Gold,true);
 		addMember(l,"Level",get_Level,set_Level,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_LC_SyncRoleInfo));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_LC_SyncRoleInfo));
 	}
 }

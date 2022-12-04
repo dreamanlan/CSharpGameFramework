@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_SceneContextInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo o;
 			o=new GameFramework.SceneContextInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetEntityById(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -32,6 +34,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetEntityByUnitId(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -47,6 +50,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int HighlightPromptAll(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -63,6 +67,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int HighlightPrompt(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -81,6 +86,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ResetUniqueId(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -93,6 +99,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GenUniqueId(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -106,6 +113,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ObjectSet(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -124,6 +132,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ObjectTryGet(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -143,6 +152,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OnHighlightPrompt(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -159,6 +169,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_KdTree(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -171,6 +182,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_KdTree(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -185,6 +197,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_SceneLogicInfoManager(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -197,6 +210,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_SceneLogicInfoManager(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -211,6 +225,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_EntityManager(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -223,6 +238,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_EntityManager(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -237,6 +253,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_BlackBoard(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -249,6 +266,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_BlackBoard(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -263,18 +281,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_CommandInfos(IntPtr l) {
-		try {
-			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.CommandInfos);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_SceneResId(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -287,6 +294,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_SceneResId(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -301,6 +309,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsRunWithRoomServer(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -313,6 +322,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsRunWithRoomServer(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -327,6 +337,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_StartTime(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -339,6 +350,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_StartTime(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -353,6 +365,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CustomData(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -365,6 +378,7 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_CustomData(IntPtr l) {
 		try {
 			GameFramework.SceneContextInfo self=(GameFramework.SceneContextInfo)checkSelf(l);
@@ -378,8 +392,10 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.SceneContextInfo");
+		addMember(l,ctor_s);
 		addMember(l,GetEntityById);
 		addMember(l,GetEntityByUnitId);
 		addMember(l,HighlightPromptAll);
@@ -393,11 +409,10 @@ public class Lua_GameFramework_SceneContextInfo : LuaObject {
 		addMember(l,"SceneLogicInfoManager",get_SceneLogicInfoManager,set_SceneLogicInfoManager,true);
 		addMember(l,"EntityManager",get_EntityManager,set_EntityManager,true);
 		addMember(l,"BlackBoard",get_BlackBoard,set_BlackBoard,true);
-		addMember(l,"CommandInfos",get_CommandInfos,null,true);
 		addMember(l,"SceneResId",get_SceneResId,set_SceneResId,true);
 		addMember(l,"IsRunWithRoomServer",get_IsRunWithRoomServer,set_IsRunWithRoomServer,true);
 		addMember(l,"StartTime",get_StartTime,set_StartTime,true);
 		addMember(l,"CustomData",get_CustomData,set_CustomData,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.SceneContextInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.SceneContextInfo));
 	}
 }

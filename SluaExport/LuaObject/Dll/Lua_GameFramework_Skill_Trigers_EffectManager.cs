@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_Skill_Trigers_EffectManager : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.Skill.Trigers.EffectManager o;
 			o=new GameFramework.Skill.Trigers.EffectManager();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_Skill_Trigers_EffectManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddEffect(IntPtr l) {
 		try {
 			GameFramework.Skill.Trigers.EffectManager self=(GameFramework.Skill.Trigers.EffectManager)checkSelf(l);
@@ -31,6 +33,7 @@ public class Lua_GameFramework_Skill_Trigers_EffectManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetParticleSpeed(IntPtr l) {
 		try {
 			GameFramework.Skill.Trigers.EffectManager self=(GameFramework.Skill.Trigers.EffectManager)checkSelf(l);
@@ -45,6 +48,7 @@ public class Lua_GameFramework_Skill_Trigers_EffectManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int PauseEffects(IntPtr l) {
 		try {
 			GameFramework.Skill.Trigers.EffectManager self=(GameFramework.Skill.Trigers.EffectManager)checkSelf(l);
@@ -59,6 +63,7 @@ public class Lua_GameFramework_Skill_Trigers_EffectManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int StopEffects(IntPtr l) {
 		try {
 			GameFramework.Skill.Trigers.EffectManager self=(GameFramework.Skill.Trigers.EffectManager)checkSelf(l);
@@ -70,12 +75,14 @@ public class Lua_GameFramework_Skill_Trigers_EffectManager : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.Skill.Trigers.EffectManager");
+		addMember(l,ctor_s);
 		addMember(l,AddEffect);
 		addMember(l,SetParticleSpeed);
 		addMember(l,PauseEffects);
 		addMember(l,StopEffects);
-		createTypeMetatable(l,constructor, typeof(GameFramework.Skill.Trigers.EffectManager));
+		createTypeMetatable(l,null, typeof(GameFramework.Skill.Trigers.EffectManager));
 	}
 }

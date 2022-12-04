@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler o;
 			o=new SkillSystem.SkillMessageHandler();
@@ -17,6 +18,7 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int VisitProperties(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
@@ -31,6 +33,21 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Clone(IntPtr l) {
+		try {
+			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
+			var ret=self.Clone();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Load(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
@@ -47,6 +64,7 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
@@ -59,6 +77,7 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Prepare(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
@@ -71,6 +90,7 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Tick(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
@@ -89,6 +109,7 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsOver(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
@@ -102,6 +123,7 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_MsgId(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
@@ -114,6 +136,7 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurTime(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
@@ -126,6 +149,7 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsTriggered(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
@@ -138,6 +162,7 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsTriggered(IntPtr l) {
 		try {
 			SkillSystem.SkillMessageHandler self=(SkillSystem.SkillMessageHandler)checkSelf(l);
@@ -151,9 +176,12 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"SkillSystem.SkillMessageHandler");
+		addMember(l,ctor_s);
 		addMember(l,VisitProperties);
+		addMember(l,Clone);
 		addMember(l,Load);
 		addMember(l,Reset);
 		addMember(l,Prepare);
@@ -162,6 +190,6 @@ public class Lua_SkillSystem_SkillMessageHandler : LuaObject {
 		addMember(l,"MsgId",get_MsgId,null,true);
 		addMember(l,"CurTime",get_CurTime,null,true);
 		addMember(l,"IsTriggered",get_IsTriggered,set_IsTriggered,true);
-		createTypeMetatable(l,constructor, typeof(SkillSystem.SkillMessageHandler));
+		createTypeMetatable(l,null, typeof(SkillSystem.SkillMessageHandler));
 	}
 }

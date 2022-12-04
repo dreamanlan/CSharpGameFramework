@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_ClientAsyncActionProcessor : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.ClientAsyncActionProcessor o;
 			o=new GameFramework.ClientAsyncActionProcessor();
@@ -16,8 +17,10 @@ public class Lua_GameFramework_ClientAsyncActionProcessor : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.ClientAsyncActionProcessor");
-		createTypeMetatable(l,constructor, typeof(GameFramework.ClientAsyncActionProcessor),typeof(GameFramework.ClientConcurrentActionProcessor));
+		addMember(l,ctor_s);
+		createTypeMetatable(l,null, typeof(GameFramework.ClientAsyncActionProcessor),typeof(GameFramework.ClientConcurrentActionProcessor));
 	}
 }

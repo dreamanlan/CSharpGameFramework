@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove o;
 			o=new GameFrameworkMessage.Msg_RC_NpcMove();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_npc_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_npc_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_velocity(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_velocity(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_cur_pos(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_cur_pos(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_target_pos(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_target_pos(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcMove self=(GameFrameworkMessage.Msg_RC_NpcMove)checkSelf(l);
@@ -120,12 +129,14 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcMove : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_RC_NpcMove");
+		addMember(l,ctor_s);
 		addMember(l,"npc_id",get_npc_id,set_npc_id,true);
 		addMember(l,"velocity",get_velocity,set_velocity,true);
 		addMember(l,"cur_pos",get_cur_pos,set_cur_pos,true);
 		addMember(l,"target_pos",get_target_pos,set_target_pos,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_RC_NpcMove));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_RC_NpcMove));
 	}
 }

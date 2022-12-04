@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_QuitRoom : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.QuitRoom o;
 			o=new GameFrameworkMessage.QuitRoom();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_QuitRoom : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_IsQuitRoom(IntPtr l) {
 		try {
 			GameFrameworkMessage.QuitRoom self=(GameFrameworkMessage.QuitRoom)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_QuitRoom : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_IsQuitRoom(IntPtr l) {
 		try {
 			GameFrameworkMessage.QuitRoom self=(GameFrameworkMessage.QuitRoom)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_QuitRoom : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.QuitRoom");
+		addMember(l,ctor_s);
 		addMember(l,"m_IsQuitRoom",get_m_IsQuitRoom,set_m_IsQuitRoom,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.QuitRoom));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.QuitRoom));
 	}
 }

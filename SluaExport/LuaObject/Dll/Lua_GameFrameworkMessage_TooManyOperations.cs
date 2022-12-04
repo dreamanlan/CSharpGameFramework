@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_TooManyOperations : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.TooManyOperations o;
 			o=new GameFrameworkMessage.TooManyOperations();
@@ -16,8 +17,10 @@ public class Lua_GameFrameworkMessage_TooManyOperations : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.TooManyOperations");
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.TooManyOperations));
+		addMember(l,ctor_s);
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.TooManyOperations));
 	}
 }

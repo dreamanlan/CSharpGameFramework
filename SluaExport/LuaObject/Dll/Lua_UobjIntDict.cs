@@ -1,34 +1,24 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UobjIntDict : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
 			UobjIntDict o;
-			if(argc==1){
-				o=new UobjIntDict();
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(argc==2){
-				System.Collections.Generic.IDictionary<UnityEngine.Object,System.Int32> a1;
-				checkType(l,2,out a1);
-				o=new UobjIntDict(a1);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			return error(l,"New object failed.");
+			o=new UobjIntDict();
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Add(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -45,6 +35,7 @@ public class Lua_UobjIntDict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -57,6 +48,7 @@ public class Lua_UobjIntDict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ContainsKey(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -72,6 +64,7 @@ public class Lua_UobjIntDict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ContainsValue(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -87,6 +80,7 @@ public class Lua_UobjIntDict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetObjectData(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -103,6 +97,7 @@ public class Lua_UobjIntDict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnDeserialization(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -117,6 +112,7 @@ public class Lua_UobjIntDict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Remove(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -132,6 +128,7 @@ public class Lua_UobjIntDict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int TryGetValue(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -149,6 +146,81 @@ public class Lua_UobjIntDict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int EnsureCapacity(IntPtr l) {
+		try {
+			UobjIntDict self=(UobjIntDict)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			var ret=self.EnsureCapacity(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int TrimExcess(IntPtr l) {
+		try {
+			UobjIntDict self=(UobjIntDict)checkSelf(l);
+			self.TrimExcess();
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int TrimExcess__Int32(IntPtr l) {
+		try {
+			UobjIntDict self=(UobjIntDict)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			self.TrimExcess(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static new public int Equals(IntPtr l) {
+		try {
+			UobjIntDict self=(UobjIntDict)checkSelf(l);
+			System.Object a1;
+			checkType(l,2,out a1);
+			var ret=self.Equals(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static new public int ToString(IntPtr l) {
+		try {
+			UobjIntDict self=(UobjIntDict)checkSelf(l);
+			var ret=self.ToString();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Count(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -161,42 +233,7 @@ public class Lua_UobjIntDict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_Comparer(IntPtr l) {
-		try {
-			UobjIntDict self=(UobjIntDict)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.Comparer);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_Keys(IntPtr l) {
-		try {
-			UobjIntDict self=(UobjIntDict)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.Keys);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_Values(IntPtr l) {
-		try {
-			UobjIntDict self=(UobjIntDict)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.Values);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int getItem(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -212,6 +249,7 @@ public class Lua_UobjIntDict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int setItem(IntPtr l) {
 		try {
 			UobjIntDict self=(UobjIntDict)checkSelf(l);
@@ -227,8 +265,10 @@ public class Lua_UobjIntDict : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UobjIntDict");
+		addMember(l,ctor_s);
 		addMember(l,Add);
 		addMember(l,Clear);
 		addMember(l,ContainsKey);
@@ -237,12 +277,14 @@ public class Lua_UobjIntDict : LuaObject {
 		addMember(l,OnDeserialization);
 		addMember(l,Remove);
 		addMember(l,TryGetValue);
+		addMember(l,EnsureCapacity);
+		addMember(l,TrimExcess);
+		addMember(l,TrimExcess__Int32);
+		addMember(l,Equals);
+		addMember(l,ToString);
 		addMember(l,getItem);
 		addMember(l,setItem);
 		addMember(l,"Count",get_Count,null,true);
-		addMember(l,"Comparer",get_Comparer,null,true);
-		addMember(l,"Keys",get_Keys,null,true);
-		addMember(l,"Values",get_Values,null,true);
-		createTypeMetatable(l,constructor, typeof(UobjIntDict),typeof(System.Collections.Generic.Dictionary<UnityEngine.Object,System.Int32>));
+		createTypeMetatable(l,null, typeof(UobjIntDict),typeof(System.Collections.Generic.Dictionary<UnityEngine.Object,System.Int32>));
 	}
 }

@@ -1,10 +1,30 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ScriptRuntime_MathHelper : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Clamp_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int Clamp__Int32__Int32__Int32_s(IntPtr l) {
+		try {
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			System.Int32 a2;
+			checkType(l,2,out a2);
+			System.Int32 a3;
+			checkType(l,3,out a3);
+			var ret=ScriptRuntime.MathHelper.Clamp(a1,a2,a3);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Clamp__Single__Single__Single_s(IntPtr l) {
 		try {
 			System.Single a1;
 			checkType(l,1,out a1);
@@ -22,6 +42,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Hermite_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -44,6 +65,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Lerp_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -62,31 +84,16 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Max_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int Max__Int32__Int32_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,1,typeof(int),typeof(int))){
-				System.Int32 a1;
-				checkType(l,1,out a1);
-				System.Int32 a2;
-				checkType(l,2,out a2);
-				var ret=ScriptRuntime.MathHelper.Max(a1,a2);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(matchType(l,argc,1,typeof(float),typeof(float))){
-				System.Single a1;
-				checkType(l,1,out a1);
-				System.Single a2;
-				checkType(l,2,out a2);
-				var ret=ScriptRuntime.MathHelper.Max(a1,a2);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			System.Int32 a2;
+			checkType(l,2,out a2);
+			var ret=ScriptRuntime.MathHelper.Max(a1,a2);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -94,31 +101,16 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Min_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int Max__Single__Single_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,1,typeof(int),typeof(int))){
-				System.Int32 a1;
-				checkType(l,1,out a1);
-				System.Int32 a2;
-				checkType(l,2,out a2);
-				var ret=ScriptRuntime.MathHelper.Min(a1,a2);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(matchType(l,argc,1,typeof(float),typeof(float))){
-				System.Single a1;
-				checkType(l,1,out a1);
-				System.Single a2;
-				checkType(l,2,out a2);
-				var ret=ScriptRuntime.MathHelper.Min(a1,a2);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			System.Single a1;
+			checkType(l,1,out a1);
+			System.Single a2;
+			checkType(l,2,out a2);
+			var ret=ScriptRuntime.MathHelper.Max(a1,a2);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -126,6 +118,41 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Min__Int32__Int32_s(IntPtr l) {
+		try {
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			System.Int32 a2;
+			checkType(l,2,out a2);
+			var ret=ScriptRuntime.MathHelper.Min(a1,a2);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Min__Single__Single_s(IntPtr l) {
+		try {
+			System.Single a1;
+			checkType(l,1,out a1);
+			System.Single a2;
+			checkType(l,2,out a2);
+			var ret=ScriptRuntime.MathHelper.Min(a1,a2);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SmoothStep_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -144,6 +171,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RadiansToDegrees_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -158,6 +186,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int DegreesToRadians_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -172,6 +201,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Sin_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -186,6 +216,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Cos_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -200,6 +231,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Tan_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -214,6 +246,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ASin_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -228,6 +261,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ACos_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -242,6 +276,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ATan_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -256,6 +291,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ATan2_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -272,6 +308,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Sqrt_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -286,27 +323,14 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Abs_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int Abs__Int32_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,1,typeof(int))){
-				System.Int32 a1;
-				checkType(l,1,out a1);
-				var ret=ScriptRuntime.MathHelper.Abs(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(matchType(l,argc,1,typeof(float))){
-				System.Single a1;
-				checkType(l,1,out a1);
-				var ret=ScriptRuntime.MathHelper.Abs(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			var ret=ScriptRuntime.MathHelper.Abs(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -314,6 +338,22 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Abs__Single_s(IntPtr l) {
+		try {
+			System.Single a1;
+			checkType(l,1,out a1);
+			var ret=ScriptRuntime.MathHelper.Abs(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Pow_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -330,6 +370,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Exp_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -344,6 +385,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Log_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -358,6 +400,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Log10_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -372,6 +415,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Ceil_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -386,6 +430,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Floor_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -400,6 +445,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Round_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -414,6 +460,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ICeil_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -428,6 +475,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IFloor_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -442,6 +490,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IRound_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -456,6 +505,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsPowerOfTwo_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -470,6 +520,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int NextPowerOfTwo_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -484,6 +535,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_E(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -495,6 +547,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Log10E(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -506,6 +559,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Log2E(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -517,6 +571,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Pi(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -528,6 +583,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_PiOver2(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -539,6 +595,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_PiOver4(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -550,6 +607,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TwoPi(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -561,6 +619,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Deg2Rad(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -572,6 +631,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Rad2Deg(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -583,6 +643,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Epsilon(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -594,6 +655,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Infinity(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -605,6 +667,7 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_NegativeInfinity(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -615,13 +678,17 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ScriptRuntime.MathHelper");
-		addMember(l,Clamp_s);
+		addMember(l,Clamp__Int32__Int32__Int32_s);
+		addMember(l,Clamp__Single__Single__Single_s);
 		addMember(l,Hermite_s);
 		addMember(l,Lerp_s);
-		addMember(l,Max_s);
-		addMember(l,Min_s);
+		addMember(l,Max__Int32__Int32_s);
+		addMember(l,Max__Single__Single_s);
+		addMember(l,Min__Int32__Int32_s);
+		addMember(l,Min__Single__Single_s);
 		addMember(l,SmoothStep_s);
 		addMember(l,RadiansToDegrees_s);
 		addMember(l,DegreesToRadians_s);
@@ -633,7 +700,8 @@ public class Lua_ScriptRuntime_MathHelper : LuaObject {
 		addMember(l,ATan_s);
 		addMember(l,ATan2_s);
 		addMember(l,Sqrt_s);
-		addMember(l,Abs_s);
+		addMember(l,Abs__Int32_s);
+		addMember(l,Abs__Single_s);
 		addMember(l,Pow_s);
 		addMember(l,Exp_s);
 		addMember(l,Log_s);

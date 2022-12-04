@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_RC_NpcFace : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcFace o;
 			o=new GameFrameworkMessage.Msg_RC_NpcFace();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcFace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_npc_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcFace self=(GameFrameworkMessage.Msg_RC_NpcFace)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcFace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_npc_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcFace self=(GameFrameworkMessage.Msg_RC_NpcFace)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcFace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_face_direction(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcFace self=(GameFrameworkMessage.Msg_RC_NpcFace)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcFace : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_face_direction(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_NpcFace self=(GameFrameworkMessage.Msg_RC_NpcFace)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_Msg_RC_NpcFace : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_RC_NpcFace");
+		addMember(l,ctor_s);
 		addMember(l,"npc_id",get_npc_id,set_npc_id,true);
 		addMember(l,"face_direction",get_face_direction,set_face_direction,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_RC_NpcFace));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_RC_NpcFace));
 	}
 }

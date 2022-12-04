@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_TableConfigUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GenStoryDlgItemId_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -20,6 +21,7 @@ public class Lua_GameFramework_TableConfigUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GenLevelMonstersId_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -35,6 +37,7 @@ public class Lua_GameFramework_TableConfigUtility : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.TableConfigUtility");
 		addMember(l,GenStoryDlgItemId_s);

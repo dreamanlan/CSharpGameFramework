@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule o;
 			o=new UnityEngine.ParticleSystem.LightsModule();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.enabled=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ratio(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ratio(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.ratio=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +80,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_useRandomDistribution(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -88,6 +94,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_useRandomDistribution(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -95,7 +102,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.useRandomDistribution=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -104,6 +111,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_light(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -117,6 +125,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_light(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -124,7 +133,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			UnityEngine.Light v;
 			checkType(l,2,out v);
 			self.light=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -133,6 +142,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_useParticleColor(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -146,6 +156,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_useParticleColor(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -153,7 +164,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.useParticleColor=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -162,6 +173,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_sizeAffectsRange(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -175,6 +187,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_sizeAffectsRange(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -182,7 +195,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.sizeAffectsRange=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -191,6 +204,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_alphaAffectsIntensity(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -204,6 +218,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_alphaAffectsIntensity(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -211,7 +226,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.alphaAffectsIntensity=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -220,6 +235,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_range(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -233,6 +249,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_range(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -240,7 +257,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.range=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -249,6 +266,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_rangeMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -262,6 +280,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_rangeMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -269,7 +288,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.rangeMultiplier=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -278,6 +297,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_intensity(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -291,6 +311,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_intensity(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -298,7 +319,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.intensity=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -307,6 +328,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_intensityMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -320,6 +342,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_intensityMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -327,7 +350,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.intensityMultiplier=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -336,6 +359,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_maxLights(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -349,6 +373,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_maxLights(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.LightsModule self;
@@ -356,7 +381,7 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.maxLights=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -364,8 +389,10 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ParticleSystem.LightsModule");
+		addMember(l,ctor_s);
 		addMember(l,"enabled",get_enabled,set_enabled,true);
 		addMember(l,"ratio",get_ratio,set_ratio,true);
 		addMember(l,"useRandomDistribution",get_useRandomDistribution,set_useRandomDistribution,true);
@@ -378,6 +405,6 @@ public class Lua_UnityEngine_ParticleSystem_LightsModule : LuaObject {
 		addMember(l,"intensity",get_intensity,set_intensity,true);
 		addMember(l,"intensityMultiplier",get_intensityMultiplier,set_intensityMultiplier,true);
 		addMember(l,"maxLights",get_maxLights,set_maxLights,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.ParticleSystem.LightsModule),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.ParticleSystem.LightsModule),typeof(System.ValueType));
 	}
 }

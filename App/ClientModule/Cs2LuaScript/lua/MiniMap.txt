@@ -1,92 +1,162 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
+require "cs2lua__namespaces"; 
 
 MiniMap = {
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
 	__new_object = function(...)
-		return newobject(MiniMap, nil, nil, ...);
+		local __cs2dsl_newobj;
+		__cs2dsl_newobj = newobject(MiniMap, nil, nil, "ctor", 0, nil, ...);
+		return __cs2dsl_newobj;
 	end,
+
+	cctor = function()
+		MiniMap.__cctor();
+	end,
+
+	__cctor = function()
+		if MiniMap.__cctor_called then 
+			return;
+		else
+			MiniMap.__cctor_called = true;
+		end;
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+	-------------------------------
+	------ instance methods -------
+	-------------------------------
+	Init = function(this, obj, behaviour)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(MiniMap.__ori_Init, this, __cs2lua_func_info, obj, behaviour);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_Init = function(this, __cs2lua_func_info, obj, behaviour)
+		local rectTrans;
+		rectTrans = typeas(obj.transform, UnityEngine.RectTransform, TypeKind.Class);
+		this.m_RawImage = obj:GetComponent__Type(UnityEngine.UI.RawImage);
+		this.m_MapPlayer = obj.transform:FindChild(luastrtocsstr("Player"));
+		this.m_MapWidth = typecast(getexterninstancestructmember(SymbolKind.Property, rectTrans, UnityEngine.RectTransform, "rect").width, System.Int32, TypeKind.Structure);
+		this.m_MapHeight = typecast(getexterninstancestructmember(SymbolKind.Property, rectTrans, UnityEngine.RectTransform, "rect").height, System.Int32, TypeKind.Structure);
+		this.m_TerrainWidth = typecast(getexterninstancestructmember(SymbolKind.Property, UnityEngine.Terrain.activeTerrain.terrainData, UnityEngine.TerrainData, "size").x, System.Int32, TypeKind.Structure);
+		this.m_TerrainHeight = typecast(getexterninstancestructmember(SymbolKind.Property, UnityEngine.Terrain.activeTerrain.terrainData, UnityEngine.TerrainData, "size").z, System.Int32, TypeKind.Structure);
+	end,
+
+	Update = function(this)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(MiniMap.__ori_Update, this, __cs2lua_func_info);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_Update = function(this, __cs2lua_func_info)
+		if invokeexternoperator(System.Boolean, UnityEngine.Object, "op_Equality", nil, this.m_GamePlayer) then 
+			this.m_GamePlayer = GameFramework.PluginFramework.Instance:GetGameObject(GameFramework.PluginFramework.Instance.LeaderId);
+		else
+			local pos;
+			pos = get_tranform_position(__cs2lua_func_info, this.m_GamePlayer.transform);
+			local x;
+			x = (((pos.x * this.m_MapWidth) / this.m_TerrainWidth) - invokeintegeroperator(0, "/", this.m_MapWidth, 2, System.Int32, System.Int32));
+			local y;
+			y = (((pos.z * this.m_MapHeight) / this.m_TerrainHeight) - invokeintegeroperator(0, "/", this.m_MapHeight, 2, System.Int32, System.Int32));
+			local rect;
+			rect = typeas(this.m_MapPlayer.transform, UnityEngine.RectTransform, TypeKind.Class);
+			rect.localPosition = new_vector3(__cs2lua_func_info, nil, x, y, 0);
+		end;
+	end,
+
+	Call = function(this, name, ...)
+		local args;
+		args = wrapparams({...}, System.Object, TypeKind.Class);
+		if stringisequal(name, "SetImage") then 
+			local res;
+			res = typeas(args[1], System.String, TypeKind.Class);
+			local obj;
+			obj = typeas(GameFramework.UiResourceSystem.Instance:GetUiResource(res), UnityEngine.Texture2D, TypeKind.Class);
+			if invokeexternoperator(System.Boolean, UnityEngine.Object, "op_Inequality", nil, obj) then 
+				this.m_RawImage.texture = obj;
+			end;
+		end;
+	end,
+
+	ctor = function(this)
+		MiniMap.__ctor(this);
+	end,
+
+	__ctor = function(this)
+		if this.__ctor_called then 
+			return;
+		else
+			this.__ctor_called = true;
+		end;
+	end,
+	-------------------------------
+	------ instance fields -------
+	-------------------------------
+	__init_obj_fields = function(this)
+		rawset(this, "m_MapWidth", 100);
+		rawset(this, "m_MapHeight", 100);
+		rawset(this, "m_TerrainWidth", 512);
+		rawset(this, "m_TerrainHeight", 512);
+		rawset(this, "__ctor_called", false);
+	end,
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
 	__define_class = function()
-		local static = MiniMap;
+		Utility.Warn("MiniMap::__define_class begin");
 
-		local static_methods = {
-			cctor = function()
-			end,
+		local class = MiniMap;
+		local obj_methods = {
+			Init = rawget(class, "Init"),
+			Update = rawget(class, "Update"),
+			Call = rawget(class, "Call"),
+			ctor = rawget(class, "ctor"),
+			__ctor = rawget(class, "__ctor"),
 		};
+		local tmp_obj_method = nil;
 
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
-		end;
-		local static_props = nil;
-		local static_events = nil;
-
-		local instance_methods = {
-			Init = function(this, obj, behaviour)
-				local rectTrans; rectTrans = typeas(obj.transform, UnityEngine.RectTransform, false);
-				this.m_RawImage = obj:GetComponent(UnityEngine.UI.RawImage);
-				this.m_MapPlayer = obj.transform:FindChild("Player");
-				this.m_MapWidth = typecast(rectTrans.rect.width, System.Int32, false);
-				this.m_MapHeight = typecast(rectTrans.rect.height, System.Int32, false);
-				this.m_TerrainWidth = typecast(UnityEngine.Terrain.activeTerrain.terrainData.size.x, System.Int32, false);
-				this.m_TerrainHeight = typecast(UnityEngine.Terrain.activeTerrain.terrainData.size.z, System.Int32, false);
-			end,
-			Update = function(this)
-				if invokeexternoperator(UnityEngine.Object, "op_Equality", nil, this.m_GamePlayer) then
-					this.m_GamePlayer = GameFramework.PluginFramework.Instance:GetGameObject(GameFramework.PluginFramework.Instance.LeaderId);
-				else
-					local pos; pos = this.m_GamePlayer.transform.position;
-					local x; x = (((pos.x * this.m_MapWidth) / this.m_TerrainWidth) - invokeintegeroperator(0, "/", this.m_MapWidth, 2, System.Int32, System.Int32));
-					local y; y = (((pos.z * this.m_MapHeight) / this.m_TerrainHeight) - invokeintegeroperator(0, "/", this.m_MapHeight, 2, System.Int32, System.Int32));
-					local rect; rect = typeas(this.m_MapPlayer.transform, UnityEngine.RectTransform, false);
-					rect.localPosition = newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, x, y, 0);
-				end;
-			end,
-			Call = function(this, name, ...)
-				local args = wraparray{...};
-				if (name == "SetImage") then
-					local res; res = typeas(args[1], System.String, false);
-					local obj; obj = typeas(GameFramework.UiResourceSystem.Instance:GetUiResource(res), UnityEngine.Texture2D, false);
-					if invokeexternoperator(UnityEngine.Object, "op_Inequality", nil, obj) then
-						this.m_RawImage.texture = obj;
-					end;
-				end;
-			end,
-			ctor = function(this)
-			end,
-		};
-
-		local instance_fields_build = function()
-			local instance_fields = {
-				m_RawImage = __cs2lua_nil_field_value,
-				m_MapWidth = 100,
-				m_MapHeight = 100,
-				m_TerrainWidth = 512,
-				m_TerrainHeight = 512,
-				m_MapPlayer = __cs2lua_nil_field_value,
-				m_GamePlayer = __cs2lua_nil_field_value,
-			};
-			return instance_fields;
-		end;
-		local instance_props = nil;
-		local instance_events = nil;
-		local interfaces = {
-			"ITickPlugin",
-		};
-
-		local interface_map = {
-			ITickPlugin_Init = "Init",
-			ITickPlugin_Update = "Update",
-			ITickPlugin_Call = "Call",
-		};
-
-
-		return defineclass(nil, "MiniMap", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+		local __defineclass_return = defineclass(nil, "MiniMap", "MiniMap", class, obj_methods, false, false);
+		Utility.Warn("MiniMap::__define_class end");
+		return __defineclass_return;
 	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+	__obj_fields = {
+		m_RawImage = true,
+		m_MapWidth = true,
+		m_MapHeight = true,
+		m_TerrainWidth = true,
+		m_TerrainHeight = true,
+		m_MapPlayer = true,
+		m_GamePlayer = true,
+		__ctor_called = true,
+	},
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
+	__interfaces = {
+		"ITickPlugin",
+	},
+	__method_info = {
+		ctor = {
+			ctor = true,
+		},
+	},
 };
 
 
-
-MiniMap.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+settempmetatable(MiniMap);

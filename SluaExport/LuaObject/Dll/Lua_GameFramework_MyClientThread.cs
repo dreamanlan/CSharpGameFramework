@@ -1,88 +1,112 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_MyClientThread : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
 			GameFramework.MyClientThread o;
-			if(argc==1){
-				o=new GameFramework.MyClientThread();
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(matchType(l,argc,2,typeof(int))){
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				o=new GameFramework.MyClientThread(a1);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(matchType(l,argc,2,typeof(int),typeof(int))){
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				System.Int32 a2;
-				checkType(l,3,out a2);
-				o=new GameFramework.MyClientThread(a1,a2);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(matchType(l,argc,2,typeof(GameFramework.ClientAsyncActionProcessor))){
-				GameFramework.ClientAsyncActionProcessor a1;
-				checkType(l,2,out a1);
-				o=new GameFramework.MyClientThread(a1);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(matchType(l,argc,2,typeof(int),typeof(GameFramework.ClientAsyncActionProcessor))){
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				GameFramework.ClientAsyncActionProcessor a2;
-				checkType(l,3,out a2);
-				o=new GameFramework.MyClientThread(a1,a2);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			else if(argc==4){
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				System.Int32 a2;
-				checkType(l,3,out a2);
-				GameFramework.ClientAsyncActionProcessor a3;
-				checkType(l,4,out a3);
-				o=new GameFramework.MyClientThread(a1,a2,a3);
-				pushValue(l,true);
-				pushValue(l,o);
-				return 2;
-			}
-			return error(l,"New object failed.");
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int DebugPoolCount(IntPtr l) {
-		try {
-			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
-			GameFramework.MyAction<System.String> a1;
-			LuaDelegation.checkDelegate(l,2,out a1);
-			self.DebugPoolCount(a1);
+			o=new GameFramework.MyClientThread();
 			pushValue(l,true);
-			return 1;
+			pushValue(l,o);
+			return 2;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Int32_s(IntPtr l) {
+		try {
+			GameFramework.MyClientThread o;
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			o=new GameFramework.MyClientThread(a1);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__ClientAsyncActionProcessor_s(IntPtr l) {
+		try {
+			GameFramework.MyClientThread o;
+			GameFramework.ClientAsyncActionProcessor a1;
+			checkType(l,1,out a1);
+			o=new GameFramework.MyClientThread(a1);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Int32__Int32_s(IntPtr l) {
+		try {
+			GameFramework.MyClientThread o;
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			System.Int32 a2;
+			checkType(l,2,out a2);
+			o=new GameFramework.MyClientThread(a1,a2);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Int32__ClientAsyncActionProcessor_s(IntPtr l) {
+		try {
+			GameFramework.MyClientThread o;
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			GameFramework.ClientAsyncActionProcessor a2;
+			checkType(l,2,out a2);
+			o=new GameFramework.MyClientThread(a1,a2);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Int32__Int32__ClientAsyncActionProcessor_s(IntPtr l) {
+		try {
+			GameFramework.MyClientThread o;
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			System.Int32 a2;
+			checkType(l,2,out a2);
+			GameFramework.ClientAsyncActionProcessor a3;
+			checkType(l,3,out a3);
+			o=new GameFramework.MyClientThread(a1,a2,a3);
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ClearPool(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -97,6 +121,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Start(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -109,6 +134,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Stop(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -121,6 +147,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int QueueActionWithDelegation(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -137,6 +164,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int QueueAction(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -151,6 +179,22 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int QueueFunc(IntPtr l) {
+		try {
+			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
+			GameFramework.MyFunc a1;
+			LuaDelegation.checkDelegate(l,2,out a1);
+			self.QueueFunc(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OnStartEvent(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -167,6 +211,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OnTickEvent(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -183,6 +228,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OnQuitEvent(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -199,6 +245,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TickSleepTime(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -211,6 +258,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_TickSleepTime(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -225,6 +273,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ActionNumPerTick(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -237,6 +286,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ActionNumPerTick(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -251,6 +301,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurActionNum(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -263,6 +314,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsCurrentThread(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -275,6 +327,7 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Thread(IntPtr l) {
 		try {
 			GameFramework.MyClientThread self=(GameFramework.MyClientThread)checkSelf(l);
@@ -286,14 +339,21 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.MyClientThread");
-		addMember(l,DebugPoolCount);
+		addMember(l,ctor_s);
+		addMember(l,ctor__Int32_s);
+		addMember(l,ctor__ClientAsyncActionProcessor_s);
+		addMember(l,ctor__Int32__Int32_s);
+		addMember(l,ctor__Int32__ClientAsyncActionProcessor_s);
+		addMember(l,ctor__Int32__Int32__ClientAsyncActionProcessor_s);
 		addMember(l,ClearPool);
 		addMember(l,Start);
 		addMember(l,Stop);
 		addMember(l,QueueActionWithDelegation);
 		addMember(l,QueueAction);
+		addMember(l,QueueFunc);
 		addMember(l,"OnStartEvent",null,set_OnStartEvent,true);
 		addMember(l,"OnTickEvent",null,set_OnTickEvent,true);
 		addMember(l,"OnQuitEvent",null,set_OnQuitEvent,true);
@@ -302,6 +362,6 @@ public class Lua_GameFramework_MyClientThread : LuaObject {
 		addMember(l,"CurActionNum",get_CurActionNum,null,true);
 		addMember(l,"IsCurrentThread",get_IsCurrentThread,null,true);
 		addMember(l,"Thread",get_Thread,null,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.MyClientThread));
+		createTypeMetatable(l,null, typeof(GameFramework.MyClientThread));
 	}
 }

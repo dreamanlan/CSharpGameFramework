@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_HumanPose : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.HumanPose o;
 			o=new UnityEngine.HumanPose();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_HumanPose : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_bodyPosition(IntPtr l) {
 		try {
 			UnityEngine.HumanPose self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_HumanPose : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_bodyPosition(IntPtr l) {
 		try {
 			UnityEngine.HumanPose self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_HumanPose : LuaObject {
 			UnityEngine.Vector3 v;
 			checkType(l,2,out v);
 			self.bodyPosition=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_HumanPose : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_bodyRotation(IntPtr l) {
 		try {
 			UnityEngine.HumanPose self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_HumanPose : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_bodyRotation(IntPtr l) {
 		try {
 			UnityEngine.HumanPose self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_HumanPose : LuaObject {
 			UnityEngine.Quaternion v;
 			checkType(l,2,out v);
 			self.bodyRotation=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +80,7 @@ public class Lua_UnityEngine_HumanPose : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_muscles(IntPtr l) {
 		try {
 			UnityEngine.HumanPose self;
@@ -88,6 +94,7 @@ public class Lua_UnityEngine_HumanPose : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_muscles(IntPtr l) {
 		try {
 			UnityEngine.HumanPose self;
@@ -95,7 +102,7 @@ public class Lua_UnityEngine_HumanPose : LuaObject {
 			System.Single[] v;
 			checkArray(l,2,out v);
 			self.muscles=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -103,11 +110,13 @@ public class Lua_UnityEngine_HumanPose : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.HumanPose");
+		addMember(l,ctor_s);
 		addMember(l,"bodyPosition",get_bodyPosition,set_bodyPosition,true);
 		addMember(l,"bodyRotation",get_bodyRotation,set_bodyRotation,true);
 		addMember(l,"muscles",get_muscles,set_muscles,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.HumanPose),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.HumanPose),typeof(System.ValueType));
 	}
 }

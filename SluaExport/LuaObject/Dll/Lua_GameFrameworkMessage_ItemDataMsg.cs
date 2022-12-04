@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg o;
 			o=new GameFrameworkMessage.ItemDataMsg();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Guid(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Guid(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ItemId(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ItemId(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Level(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Level(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Experience(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Experience(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -121,6 +130,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Num(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -133,6 +143,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Num(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -147,6 +158,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_AppendProperty(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -159,6 +171,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_AppendProperty(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -173,6 +186,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_EnhanceStarLevel(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -185,6 +199,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_EnhanceStarLevel(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -199,6 +214,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_StrengthLevel(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -211,6 +227,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_StrengthLevel(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -225,6 +242,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_StrengthFailCount(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -237,6 +255,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_StrengthFailCount(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -251,6 +270,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsCanTrade(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -263,6 +283,7 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsCanTrade(IntPtr l) {
 		try {
 			GameFrameworkMessage.ItemDataMsg self=(GameFrameworkMessage.ItemDataMsg)checkSelf(l);
@@ -276,8 +297,10 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.ItemDataMsg");
+		addMember(l,ctor_s);
 		addMember(l,"Guid",get_Guid,set_Guid,true);
 		addMember(l,"ItemId",get_ItemId,set_ItemId,true);
 		addMember(l,"Level",get_Level,set_Level,true);
@@ -288,6 +311,6 @@ public class Lua_GameFrameworkMessage_ItemDataMsg : LuaObject {
 		addMember(l,"StrengthLevel",get_StrengthLevel,set_StrengthLevel,true);
 		addMember(l,"StrengthFailCount",get_StrengthFailCount,set_StrengthFailCount,true);
 		addMember(l,"IsCanTrade",get_IsCanTrade,set_IsCanTrade,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.ItemDataMsg));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.ItemDataMsg));
 	}
 }

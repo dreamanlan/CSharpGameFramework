@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_HomePath : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.HomePath o;
 			o=new GameFramework.HomePath();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_HomePath : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int InitHomePath_s(IntPtr l) {
 		try {
 			GameFramework.HomePath.InitHomePath();
@@ -28,6 +30,7 @@ public class Lua_GameFramework_HomePath : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetAbsolutePath_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -42,6 +45,7 @@ public class Lua_GameFramework_HomePath : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_CurHomePath(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -53,6 +57,7 @@ public class Lua_GameFramework_HomePath : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_CurHomePath(IntPtr l) {
 		try {
 			string v;
@@ -65,11 +70,13 @@ public class Lua_GameFramework_HomePath : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.HomePath");
+		addMember(l,ctor_s);
 		addMember(l,InitHomePath_s);
 		addMember(l,GetAbsolutePath_s);
 		addMember(l,"CurHomePath",get_CurHomePath,set_CurHomePath,false);
-		createTypeMetatable(l,constructor, typeof(GameFramework.HomePath));
+		createTypeMetatable(l,null, typeof(GameFramework.HomePath));
 	}
 }

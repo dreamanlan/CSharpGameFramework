@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_StorySystem_StoryConfigManager : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadStories(IntPtr l) {
 		try {
 			StorySystem.StoryConfigManager self=(StorySystem.StoryConfigManager)checkSelf(l);
@@ -22,6 +23,7 @@ public class Lua_StorySystem_StoryConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ExistStory(IntPtr l) {
 		try {
 			StorySystem.StoryConfigManager self=(StorySystem.StoryConfigManager)checkSelf(l);
@@ -39,6 +41,7 @@ public class Lua_StorySystem_StoryConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadStory(IntPtr l) {
 		try {
 			StorySystem.StoryConfigManager self=(StorySystem.StoryConfigManager)checkSelf(l);
@@ -57,16 +60,19 @@ public class Lua_StorySystem_StoryConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadStoryText(IntPtr l) {
 		try {
 			StorySystem.StoryConfigManager self=(StorySystem.StoryConfigManager)checkSelf(l);
 			System.String a1;
 			checkType(l,2,out a1);
-			System.Int32 a2;
-			checkType(l,3,out a2);
-			System.String a3;
+			System.Byte[] a2;
+			checkArray(l,3,out a2);
+			System.Int32 a3;
 			checkType(l,4,out a3);
-			self.LoadStoryText(a1,a2,a3);
+			System.String a4;
+			checkType(l,5,out a4);
+			self.LoadStoryText(a1,a2,a3,a4);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,16 +81,13 @@ public class Lua_StorySystem_StoryConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int LoadStoryCode(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int FreeStory(IntPtr l) {
 		try {
 			StorySystem.StoryConfigManager self=(StorySystem.StoryConfigManager)checkSelf(l);
 			System.String a1;
 			checkType(l,2,out a1);
-			System.Int32 a2;
-			checkType(l,3,out a2);
-			System.String a3;
-			checkType(l,4,out a3);
-			self.LoadStoryCode(a1,a2,a3);
+			self.FreeStory(a1);
 			pushValue(l,true);
 			return 1;
 		}
@@ -93,36 +96,7 @@ public class Lua_StorySystem_StoryConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetStories(IntPtr l) {
-		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,2,typeof(string))){
-				StorySystem.StoryConfigManager self=(StorySystem.StoryConfigManager)checkSelf(l);
-				System.String a1;
-				checkType(l,2,out a1);
-				var ret=self.GetStories(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(matchType(l,argc,2,typeof(int))){
-				StorySystem.StoryConfigManager self=(StorySystem.StoryConfigManager)checkSelf(l);
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				var ret=self.GetStories(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int NewStoryInstance(IntPtr l) {
 		try {
 			StorySystem.StoryConfigManager self=(StorySystem.StoryConfigManager)checkSelf(l);
@@ -140,6 +114,7 @@ public class Lua_StorySystem_StoryConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			StorySystem.StoryConfigManager self=(StorySystem.StoryConfigManager)checkSelf(l);
@@ -152,6 +127,7 @@ public class Lua_StorySystem_StoryConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int NewInstance_s(IntPtr l) {
 		try {
 			var ret=StorySystem.StoryConfigManager.NewInstance();
@@ -164,6 +140,7 @@ public class Lua_StorySystem_StoryConfigManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Instance(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -174,14 +151,14 @@ public class Lua_StorySystem_StoryConfigManager : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"StorySystem.StoryConfigManager");
 		addMember(l,LoadStories);
 		addMember(l,ExistStory);
 		addMember(l,LoadStory);
 		addMember(l,LoadStoryText);
-		addMember(l,LoadStoryCode);
-		addMember(l,GetStories);
+		addMember(l,FreeStory);
 		addMember(l,NewStoryInstance);
 		addMember(l,Clear);
 		addMember(l,NewInstance_s);

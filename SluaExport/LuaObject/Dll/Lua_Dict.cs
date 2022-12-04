@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_Dict : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Parse_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -18,6 +19,7 @@ public class Lua_Dict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Get_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -32,6 +34,7 @@ public class Lua_Dict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Format_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -48,6 +51,7 @@ public class Lua_Dict : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OnFindDictionary(IntPtr l) {
 		try {
 			Dict.FindDictionaryDelegation v;
@@ -62,6 +66,7 @@ public class Lua_Dict : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"Dict");
 		addMember(l,Parse_s);

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_AiStoryInstanceInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.AiStoryInstanceInfo o;
 			o=new GameFramework.AiStoryInstanceInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_AiStoryInstanceInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Recycle(IntPtr l) {
 		try {
 			GameFramework.AiStoryInstanceInfo self=(GameFramework.AiStoryInstanceInfo)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFramework_AiStoryInstanceInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_StoryInstance(IntPtr l) {
 		try {
 			GameFramework.AiStoryInstanceInfo self=(GameFramework.AiStoryInstanceInfo)checkSelf(l);
@@ -41,6 +44,7 @@ public class Lua_GameFramework_AiStoryInstanceInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_StoryInstance(IntPtr l) {
 		try {
 			GameFramework.AiStoryInstanceInfo self=(GameFramework.AiStoryInstanceInfo)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFramework_AiStoryInstanceInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_IsUsed(IntPtr l) {
 		try {
 			GameFramework.AiStoryInstanceInfo self=(GameFramework.AiStoryInstanceInfo)checkSelf(l);
@@ -67,6 +72,7 @@ public class Lua_GameFramework_AiStoryInstanceInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_IsUsed(IntPtr l) {
 		try {
 			GameFramework.AiStoryInstanceInfo self=(GameFramework.AiStoryInstanceInfo)checkSelf(l);
@@ -80,11 +86,13 @@ public class Lua_GameFramework_AiStoryInstanceInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.AiStoryInstanceInfo");
+		addMember(l,ctor_s);
 		addMember(l,Recycle);
 		addMember(l,"m_StoryInstance",get_m_StoryInstance,set_m_StoryInstance,true);
 		addMember(l,"m_IsUsed",get_m_IsUsed,set_m_IsUsed,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.AiStoryInstanceInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.AiStoryInstanceInfo));
 	}
 }

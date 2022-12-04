@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo o;
 			o=new GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_obj_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo self=(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_obj_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo self=(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_is_player(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo self=(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_is_player(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo self=(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_pos_x(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo self=(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_pos_x(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo self=(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_pos_z(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo self=(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_pos_z(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo self=(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo)checkSelf(l);
@@ -121,6 +130,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_face_dir(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo self=(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo)checkSelf(l);
@@ -133,6 +143,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_face_dir(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo self=(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo)checkSelf(l);
@@ -146,13 +157,15 @@ public class Lua_GameFrameworkMessage_Msg_RC_DebugSpaceInfo_DebugSpaceInfo : Lua
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo");
+		addMember(l,ctor_s);
 		addMember(l,"obj_id",get_obj_id,set_obj_id,true);
 		addMember(l,"is_player",get_is_player,set_is_player,true);
 		addMember(l,"pos_x",get_pos_x,set_pos_x,true);
 		addMember(l,"pos_z",get_pos_z,set_pos_z,true);
 		addMember(l,"face_dir",get_face_dir,set_face_dir,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_RC_DebugSpaceInfo.DebugSpaceInfo));
 	}
 }

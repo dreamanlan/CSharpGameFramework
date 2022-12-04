@@ -1,14 +1,15 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy o;
 			SkillSystem.AbstractSkillTriger a1;
-			checkType(l,2,out a1);
+			checkType(l,1,out a1);
 			o=new SkillSystem.SkillTriggerProxy(a1);
 			pushValue(l,true);
 			pushValue(l,o);
@@ -19,6 +20,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int DoClone(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -33,6 +35,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddProperty(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -51,6 +54,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Name(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -63,6 +67,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Name(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -77,6 +82,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_StartTime(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -89,6 +95,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_StartTime(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -103,6 +110,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_OrderInSkill(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -115,6 +123,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OrderInSkill(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -129,6 +138,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_OrderInSection(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -141,6 +151,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OrderInSection(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -155,6 +166,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsFinal(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -167,6 +179,7 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsFinal(IntPtr l) {
 		try {
 			SkillSystem.SkillTriggerProxy self=(SkillSystem.SkillTriggerProxy)checkSelf(l);
@@ -180,8 +193,10 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"SkillSystem.SkillTriggerProxy");
+		addMember(l,ctor_s);
 		addMember(l,DoClone);
 		addMember(l,AddProperty);
 		addMember(l,"Name",get_Name,set_Name,true);
@@ -189,6 +204,6 @@ public class Lua_SkillSystem_SkillTriggerProxy : LuaObject {
 		addMember(l,"OrderInSkill",get_OrderInSkill,set_OrderInSkill,true);
 		addMember(l,"OrderInSection",get_OrderInSection,set_OrderInSection,true);
 		addMember(l,"IsFinal",get_IsFinal,set_IsFinal,true);
-		createTypeMetatable(l,constructor, typeof(SkillSystem.SkillTriggerProxy));
+		createTypeMetatable(l,null, typeof(SkillSystem.SkillTriggerProxy));
 	}
 }

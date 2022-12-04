@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using GameFramework;
@@ -34,7 +34,7 @@ internal static class CommonPluginProxy
             if (null != startup) {
                 startup.PluginType = runAsLua ? PluginType.Lua : PluginType.Native;
                 startup.LuaClassFileName = implClass.Replace(".","__");
-                startup.Startup();
+                startup.Start();
             }
         }
     }
@@ -59,7 +59,7 @@ internal static class CommonPluginProxy
             if (null != tick) {
                 tick.PluginType = runAsLua ? PluginType.Lua : PluginType.Native;
                 tick.LuaClassFileName = implClass.Replace(".", "__");
-                tick.Startup();
+                tick.Start();
             }
         }
     }

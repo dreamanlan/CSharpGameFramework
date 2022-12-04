@@ -1,34 +1,63 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
-require "Cs2LuaScript__Plugin";
+require "cs2lua__namespaces"; 
 
 SkillTriggerRegister = {
-	__define_class = function()
-		local static = SkillTriggerRegister;
-
-		local static_methods = {
-			Register = function()
-				Cs2LuaScript.Plugin.Proxy:RegisterSkillTrigger("trackbullet", "TrackBulletTrigger");
-				Cs2LuaScript.Plugin.Proxy:RegisterSkillTrigger("track2", "Track2Trigger");
-			end,
-			cctor = function()
-			end,
-		};
-
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
-		end;
-		local static_props = nil;
-		local static_events = nil;
-
-		return defineclass(nil, "SkillTriggerRegister", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
+	Register = function()
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSkillTrigger", luastrtocsstr("trackbullet"), luastrtocsstr("TrackBulletTrigger"));
+		callinterface(Cs2LuaScript.Plugin.get_Proxy(), GameFramework.Plugin.IPluginProxy, "RegisterSkillTrigger", luastrtocsstr("track2"), luastrtocsstr("Track2Trigger"));
 	end,
+
+	cctor = function()
+		SkillTriggerRegister.__cctor();
+	end,
+
+	__cctor = function()
+		if SkillTriggerRegister.__cctor_called then 
+			return;
+		else
+			SkillTriggerRegister.__cctor_called = true;
+		end;
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
+	__define_class = function()
+		Utility.Warn("SkillTriggerRegister::__define_class begin");
+
+		local class = SkillTriggerRegister;
+		local obj_methods = nil;
+		local tmp_obj_method = nil;
+
+		local __defineclass_return = defineclass(nil, "SkillTriggerRegister", "SkillTriggerRegister", class, obj_methods, false, false);
+		Utility.Warn("SkillTriggerRegister::__define_class end");
+		return __defineclass_return;
+	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
 };
 
 
-
-SkillTriggerRegister.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+require "cs2luascript__plugin";
+settempmetatable(SkillTriggerRegister);

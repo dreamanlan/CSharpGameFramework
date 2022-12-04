@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_Rendering_BuiltinRenderTextureType : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"UnityEngine.Rendering.BuiltinRenderTextureType");
@@ -24,6 +24,9 @@ public class Lua_UnityEngine_Rendering_BuiltinRenderTextureType : LuaObject {
 		addMember(l,17,"GBuffer5");
 		addMember(l,18,"GBuffer6");
 		addMember(l,19,"GBuffer7");
+		addMember(l,-4,"PropertyName");
+		addMember(l,-3,"BufferPtr");
+		addMember(l,-2,"RenderTexture");
 		addMember(l,-1,"BindableTexture");
 		LuaDLL.lua_pop(l, 1);
 	}

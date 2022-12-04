@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty o;
 			o=new GameFrameworkMessage.Msg_RC_SyncProperty();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_role_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty self=(GameFrameworkMessage.Msg_RC_SyncProperty)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_role_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty self=(GameFrameworkMessage.Msg_RC_SyncProperty)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_hp(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty self=(GameFrameworkMessage.Msg_RC_SyncProperty)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_hp(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty self=(GameFrameworkMessage.Msg_RC_SyncProperty)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_np(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty self=(GameFrameworkMessage.Msg_RC_SyncProperty)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_np(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty self=(GameFrameworkMessage.Msg_RC_SyncProperty)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_shield(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty self=(GameFrameworkMessage.Msg_RC_SyncProperty)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_shield(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty self=(GameFrameworkMessage.Msg_RC_SyncProperty)checkSelf(l);
@@ -121,6 +130,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_state(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty self=(GameFrameworkMessage.Msg_RC_SyncProperty)checkSelf(l);
@@ -133,6 +143,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_state(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_SyncProperty self=(GameFrameworkMessage.Msg_RC_SyncProperty)checkSelf(l);
@@ -146,13 +157,15 @@ public class Lua_GameFrameworkMessage_Msg_RC_SyncProperty : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_RC_SyncProperty");
+		addMember(l,ctor_s);
 		addMember(l,"role_id",get_role_id,set_role_id,true);
 		addMember(l,"hp",get_hp,set_hp,true);
 		addMember(l,"np",get_np,set_np,true);
 		addMember(l,"shield",get_shield,set_shield,true);
 		addMember(l,"state",get_state,set_state,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_RC_SyncProperty));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_RC_SyncProperty));
 	}
 }

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_SandClockLogicInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.SandClockLogicInfo o;
 			o=new GameFramework.SandClockLogicInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_SandClockLogicInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_LastHour(IntPtr l) {
 		try {
 			GameFramework.SandClockLogicInfo self=(GameFramework.SandClockLogicInfo)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFramework_SandClockLogicInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_LastHour(IntPtr l) {
 		try {
 			GameFramework.SandClockLogicInfo self=(GameFramework.SandClockLogicInfo)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFramework_SandClockLogicInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_LastMinute(IntPtr l) {
 		try {
 			GameFramework.SandClockLogicInfo self=(GameFramework.SandClockLogicInfo)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFramework_SandClockLogicInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_LastMinute(IntPtr l) {
 		try {
 			GameFramework.SandClockLogicInfo self=(GameFramework.SandClockLogicInfo)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFramework_SandClockLogicInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.SandClockLogicInfo");
+		addMember(l,ctor_s);
 		addMember(l,"m_LastHour",get_m_LastHour,set_m_LastHour,true);
 		addMember(l,"m_LastMinute",get_m_LastMinute,set_m_LastMinute,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.SandClockLogicInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.SandClockLogicInfo));
 	}
 }

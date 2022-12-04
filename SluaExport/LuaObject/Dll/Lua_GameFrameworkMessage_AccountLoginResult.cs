@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_AccountLoginResult : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLoginResult o;
 			o=new GameFrameworkMessage.AccountLoginResult();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_AccountLoginResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_AccountId(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLoginResult self=(GameFrameworkMessage.AccountLoginResult)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_AccountLoginResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_AccountId(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLoginResult self=(GameFrameworkMessage.AccountLoginResult)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_AccountLoginResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Result(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLoginResult self=(GameFrameworkMessage.AccountLoginResult)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_AccountLoginResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Result(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLoginResult self=(GameFrameworkMessage.AccountLoginResult)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_AccountLoginResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_UserGuid(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLoginResult self=(GameFrameworkMessage.AccountLoginResult)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_AccountLoginResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_UserGuid(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLoginResult self=(GameFrameworkMessage.AccountLoginResult)checkSelf(l);
@@ -94,11 +101,13 @@ public class Lua_GameFrameworkMessage_AccountLoginResult : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.AccountLoginResult");
+		addMember(l,ctor_s);
 		addMember(l,"m_AccountId",get_m_AccountId,set_m_AccountId,true);
 		addMember(l,"m_Result",get_m_Result,set_m_Result,true);
 		addMember(l,"m_UserGuid",get_m_UserGuid,set_m_UserGuid,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.AccountLoginResult));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.AccountLoginResult));
 	}
 }

@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_AbstractScriptBehavior : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_ResourceEnabled(IntPtr l) {
 		try {
 			GameFramework.AbstractScriptBehavior self=(GameFramework.AbstractScriptBehavior)checkSelf(l);
@@ -16,6 +17,7 @@ public class Lua_GameFramework_AbstractScriptBehavior : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_ResourceEnabled(IntPtr l) {
 		try {
 			GameFramework.AbstractScriptBehavior self=(GameFramework.AbstractScriptBehavior)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFramework_AbstractScriptBehavior : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.AbstractScriptBehavior");
 		addMember(l,"ResourceEnabled",get_ResourceEnabled,set_ResourceEnabled,true);

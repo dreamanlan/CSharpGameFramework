@@ -1,28 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
-		try {
-			ProtoBuf.ProtoWriter o;
-			System.IO.Stream a1;
-			checkType(l,2,out a1);
-			ProtoBuf.Meta.TypeModel a2;
-			checkType(l,3,out a2);
-			ProtoBuf.SerializationContext a3;
-			checkType(l,4,out a3);
-			o=new ProtoBuf.ProtoWriter(a1,a2,a3);
-			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Close(IntPtr l) {
 		try {
 			ProtoBuf.ProtoWriter self=(ProtoBuf.ProtoWriter)checkSelf(l);
@@ -35,6 +17,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetRootObject(IntPtr l) {
 		try {
 			ProtoBuf.ProtoWriter self=(ProtoBuf.ProtoWriter)checkSelf(l);
@@ -49,6 +32,20 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Dispose(IntPtr l) {
+		try {
+			ProtoBuf.ProtoWriter self=(ProtoBuf.ProtoWriter)checkSelf(l);
+			((System.IDisposable)self).Dispose();
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteObject_s(IntPtr l) {
 		try {
 			System.Object a1;
@@ -66,6 +63,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteRecursionSafeObject_s(IntPtr l) {
 		try {
 			System.Object a1;
@@ -83,6 +81,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteFieldHeader_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -100,40 +99,43 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int WriteBytes_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int WriteBytes__A_Byte__ProtoWriter_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				System.Byte[] a1;
-				checkArray(l,1,out a1);
-				ProtoBuf.ProtoWriter a2;
-				checkType(l,2,out a2);
-				ProtoBuf.ProtoWriter.WriteBytes(a1,a2);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==4){
-				System.Byte[] a1;
-				checkArray(l,1,out a1);
-				System.Int32 a2;
-				checkType(l,2,out a2);
-				System.Int32 a3;
-				checkType(l,3,out a3);
-				ProtoBuf.ProtoWriter a4;
-				checkType(l,4,out a4);
-				ProtoBuf.ProtoWriter.WriteBytes(a1,a2,a3,a4);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			System.Byte[] a1;
+			checkArray(l,1,out a1);
+			ProtoBuf.ProtoWriter a2;
+			checkType(l,2,out a2);
+			ProtoBuf.ProtoWriter.WriteBytes(a1,a2);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int WriteBytes__A_Byte__Int32__Int32__ProtoWriter_s(IntPtr l) {
+		try {
+			System.Byte[] a1;
+			checkArray(l,1,out a1);
+			System.Int32 a2;
+			checkType(l,2,out a2);
+			System.Int32 a3;
+			checkType(l,3,out a3);
+			ProtoBuf.ProtoWriter a4;
+			checkType(l,4,out a4);
+			ProtoBuf.ProtoWriter.WriteBytes(a1,a2,a3,a4);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int StartSubItem_s(IntPtr l) {
 		try {
 			System.Object a1;
@@ -150,6 +152,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int EndSubItem_s(IntPtr l) {
 		try {
 			ProtoBuf.SubItemToken a1;
@@ -165,6 +168,26 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Create_s(IntPtr l) {
+		try {
+			System.IO.Stream a1;
+			checkType(l,1,out a1);
+			ProtoBuf.Meta.TypeModel a2;
+			checkType(l,2,out a2);
+			ProtoBuf.SerializationContext a3;
+			checkType(l,3,out a3);
+			var ret=ProtoBuf.ProtoWriter.Create(a1,a2,a3);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteString_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -180,6 +203,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteUInt64_s(IntPtr l) {
 		try {
 			System.UInt64 a1;
@@ -195,6 +219,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteInt64_s(IntPtr l) {
 		try {
 			System.Int64 a1;
@@ -210,6 +235,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteUInt32_s(IntPtr l) {
 		try {
 			System.UInt32 a1;
@@ -225,6 +251,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteInt16_s(IntPtr l) {
 		try {
 			System.Int16 a1;
@@ -240,6 +267,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteUInt16_s(IntPtr l) {
 		try {
 			System.UInt16 a1;
@@ -255,6 +283,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteByte_s(IntPtr l) {
 		try {
 			System.Byte a1;
@@ -270,6 +299,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteSByte_s(IntPtr l) {
 		try {
 			System.SByte a1;
@@ -285,6 +315,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteInt32_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -300,6 +331,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteDouble_s(IntPtr l) {
 		try {
 			System.Double a1;
@@ -315,6 +347,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteSingle_s(IntPtr l) {
 		try {
 			System.Single a1;
@@ -330,6 +363,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ThrowEnumException_s(IntPtr l) {
 		try {
 			ProtoBuf.ProtoWriter a1;
@@ -345,6 +379,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteBoolean_s(IntPtr l) {
 		try {
 			System.Boolean a1;
@@ -360,6 +395,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AppendExtensionData_s(IntPtr l) {
 		try {
 			ProtoBuf.IExtensible a1;
@@ -375,6 +411,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetPackedField_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -390,6 +427,41 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ClearPackedField_s(IntPtr l) {
+		try {
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			ProtoBuf.ProtoWriter a2;
+			checkType(l,2,out a2);
+			ProtoBuf.ProtoWriter.ClearPackedField(a1,a2);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int WritePackedPrefix_s(IntPtr l) {
+		try {
+			System.Int32 a1;
+			checkType(l,1,out a1);
+			ProtoBuf.WireType a2;
+			checkEnum(l,2,out a2);
+			ProtoBuf.ProtoWriter a3;
+			checkType(l,3,out a3);
+			ProtoBuf.ProtoWriter.WritePackedPrefix(a1,a2,a3);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteType_s(IntPtr l) {
 		try {
 			System.Type a1;
@@ -405,6 +477,20 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Dispose_s(IntPtr l) {
+		try {
+			ProtoBuf.ProtoWriter self=(ProtoBuf.ProtoWriter)checkSelf(l);
+			((System.IDisposable)self).Dispose();
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Context(IntPtr l) {
 		try {
 			ProtoBuf.ProtoWriter self=(ProtoBuf.ProtoWriter)checkSelf(l);
@@ -417,6 +503,7 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Model(IntPtr l) {
 		try {
 			ProtoBuf.ProtoWriter self=(ProtoBuf.ProtoWriter)checkSelf(l);
@@ -428,16 +515,20 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ProtoBuf.ProtoWriter");
 		addMember(l,Close);
 		addMember(l,SetRootObject);
+		addMember(l,Dispose);
 		addMember(l,WriteObject_s);
 		addMember(l,WriteRecursionSafeObject_s);
 		addMember(l,WriteFieldHeader_s);
-		addMember(l,WriteBytes_s);
+		addMember(l,WriteBytes__A_Byte__ProtoWriter_s);
+		addMember(l,WriteBytes__A_Byte__Int32__Int32__ProtoWriter_s);
 		addMember(l,StartSubItem_s);
 		addMember(l,EndSubItem_s);
+		addMember(l,Create_s);
 		addMember(l,WriteString_s);
 		addMember(l,WriteUInt64_s);
 		addMember(l,WriteInt64_s);
@@ -453,9 +544,12 @@ public class Lua_ProtoBuf_ProtoWriter : LuaObject {
 		addMember(l,WriteBoolean_s);
 		addMember(l,AppendExtensionData_s);
 		addMember(l,SetPackedField_s);
+		addMember(l,ClearPackedField_s);
+		addMember(l,WritePackedPrefix_s);
 		addMember(l,WriteType_s);
+		addMember(l,Dispose_s);
 		addMember(l,"Context",get_Context,null,true);
 		addMember(l,"Model",get_Model,null,true);
-		createTypeMetatable(l,constructor, typeof(ProtoBuf.ProtoWriter));
+		createTypeMetatable(l,null, typeof(ProtoBuf.ProtoWriter));
 	}
 }

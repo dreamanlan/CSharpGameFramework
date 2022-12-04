@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_UI_Selectable : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsInteractable(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int FindSelectable(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -32,6 +34,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int FindSelectableOnLeft(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -45,6 +48,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int FindSelectableOnRight(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -58,6 +62,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int FindSelectableOnUp(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -71,6 +76,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int FindSelectableOnDown(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -84,6 +90,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnMove(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -98,6 +105,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnPointerDown(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -112,6 +120,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnPointerUp(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -126,6 +135,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnPointerEnter(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -140,6 +150,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnPointerExit(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -154,6 +165,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnSelect(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -168,6 +180,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int OnDeselect(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -182,6 +195,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Select(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -194,10 +208,14 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_allSelectables(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int AllSelectablesNoAlloc_s(IntPtr l) {
 		try {
+			UnityEngine.UI.Selectable[] a1;
+			checkArray(l,1,out a1);
+			var ret=UnityEngine.UI.Selectable.AllSelectablesNoAlloc(a1);
 			pushValue(l,true);
-			pushValue(l,UnityEngine.UI.Selectable.allSelectables);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -205,6 +223,31 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_allSelectablesArray(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.UI.Selectable.allSelectablesArray);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_allSelectableCount(IntPtr l) {
+		try {
+			pushValue(l,true);
+			pushValue(l,UnityEngine.UI.Selectable.allSelectableCount);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_navigation(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -217,6 +260,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_navigation(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -231,6 +275,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_transition(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -243,6 +288,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_transition(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -257,6 +303,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_colors(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -269,6 +316,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_colors(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -283,6 +331,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_spriteState(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -295,6 +344,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_spriteState(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -309,6 +359,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_animationTriggers(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -321,6 +372,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_animationTriggers(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -335,6 +387,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_targetGraphic(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -347,6 +400,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_targetGraphic(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -361,6 +415,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_interactable(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -373,6 +428,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_interactable(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -387,6 +443,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_image(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -399,6 +456,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_image(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -413,6 +471,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_animator(IntPtr l) {
 		try {
 			UnityEngine.UI.Selectable self=(UnityEngine.UI.Selectable)checkSelf(l);
@@ -424,6 +483,7 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.UI.Selectable");
 		addMember(l,IsInteractable);
@@ -440,7 +500,9 @@ public class Lua_UnityEngine_UI_Selectable : LuaObject {
 		addMember(l,OnSelect);
 		addMember(l,OnDeselect);
 		addMember(l,Select);
-		addMember(l,"allSelectables",get_allSelectables,null,false);
+		addMember(l,AllSelectablesNoAlloc_s);
+		addMember(l,"allSelectablesArray",get_allSelectablesArray,null,false);
+		addMember(l,"allSelectableCount",get_allSelectableCount,null,false);
 		addMember(l,"navigation",get_navigation,set_navigation,true);
 		addMember(l,"transition",get_transition,set_transition,true);
 		addMember(l,"colors",get_colors,set_colors,true);

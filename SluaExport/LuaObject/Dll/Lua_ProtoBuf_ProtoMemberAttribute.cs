@@ -1,14 +1,15 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute o;
 			System.Int32 a1;
-			checkType(l,2,out a1);
+			checkType(l,1,out a1);
 			o=new ProtoBuf.ProtoMemberAttribute(a1);
 			pushValue(l,true);
 			pushValue(l,o);
@@ -19,29 +20,15 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int CompareTo(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int CompareTo__Object(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,2,typeof(ProtoBuf.ProtoMemberAttribute))){
-				ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
-				ProtoBuf.ProtoMemberAttribute a1;
-				checkType(l,2,out a1);
-				var ret=self.CompareTo(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(matchType(l,argc,2,typeof(System.Object))){
-				ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
-				System.Object a1;
-				checkType(l,2,out a1);
-				var ret=self.CompareTo(a1);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
+			System.Object a1;
+			checkType(l,2,out a1);
+			var ret=self.CompareTo(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -49,6 +36,23 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int CompareTo__ProtoMemberAttribute(IntPtr l) {
+		try {
+			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
+			ProtoBuf.ProtoMemberAttribute a1;
+			checkType(l,2,out a1);
+			var ret=self.CompareTo(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Name(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -61,6 +65,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Name(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -75,6 +80,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_DataFormat(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -87,6 +93,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_DataFormat(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -101,6 +108,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Tag(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -113,6 +121,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsRequired(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -125,6 +134,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsRequired(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -139,6 +149,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsPacked(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -151,6 +162,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsPacked(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -165,6 +177,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_OverwriteList(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -177,6 +190,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OverwriteList(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -191,6 +205,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_AsReference(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -203,6 +218,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_AsReference(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -217,6 +233,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_DynamicType(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -229,6 +246,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_DynamicType(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -243,6 +261,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Options(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -255,6 +274,7 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Options(IntPtr l) {
 		try {
 			ProtoBuf.ProtoMemberAttribute self=(ProtoBuf.ProtoMemberAttribute)checkSelf(l);
@@ -268,9 +288,12 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ProtoBuf.ProtoMemberAttribute");
-		addMember(l,CompareTo);
+		addMember(l,ctor_s);
+		addMember(l,CompareTo__Object);
+		addMember(l,CompareTo__ProtoMemberAttribute);
 		addMember(l,"Name",get_Name,set_Name,true);
 		addMember(l,"DataFormat",get_DataFormat,set_DataFormat,true);
 		addMember(l,"Tag",get_Tag,null,true);
@@ -280,6 +303,6 @@ public class Lua_ProtoBuf_ProtoMemberAttribute : LuaObject {
 		addMember(l,"AsReference",get_AsReference,set_AsReference,true);
 		addMember(l,"DynamicType",get_DynamicType,set_DynamicType,true);
 		addMember(l,"Options",get_Options,set_Options,true);
-		createTypeMetatable(l,constructor, typeof(ProtoBuf.ProtoMemberAttribute),typeof(System.Attribute));
+		createTypeMetatable(l,null, typeof(ProtoBuf.ProtoMemberAttribute),typeof(System.Attribute));
 	}
 }

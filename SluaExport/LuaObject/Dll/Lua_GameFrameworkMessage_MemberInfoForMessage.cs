@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_MemberInfoForMessage : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.MemberInfoForMessage o;
 			o=new GameFrameworkMessage.MemberInfoForMessage();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_MemberInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Hero(IntPtr l) {
 		try {
 			GameFrameworkMessage.MemberInfoForMessage self=(GameFrameworkMessage.MemberInfoForMessage)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_MemberInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Hero(IntPtr l) {
 		try {
 			GameFrameworkMessage.MemberInfoForMessage self=(GameFrameworkMessage.MemberInfoForMessage)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_MemberInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Level(IntPtr l) {
 		try {
 			GameFrameworkMessage.MemberInfoForMessage self=(GameFrameworkMessage.MemberInfoForMessage)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_MemberInfoForMessage : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Level(IntPtr l) {
 		try {
 			GameFrameworkMessage.MemberInfoForMessage self=(GameFrameworkMessage.MemberInfoForMessage)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_MemberInfoForMessage : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.MemberInfoForMessage");
+		addMember(l,ctor_s);
 		addMember(l,"Hero",get_Hero,set_Hero,true);
 		addMember(l,"Level",get_Level,set_Level,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.MemberInfoForMessage));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.MemberInfoForMessage));
 	}
 }

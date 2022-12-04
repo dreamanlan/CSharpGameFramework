@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_EventSystems_PointerInputModule : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsPointerOverGameObject(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.PointerInputModule self=(UnityEngine.EventSystems.PointerInputModule)checkSelf(l);
@@ -19,6 +20,21 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static new public int ToString(IntPtr l) {
+		try {
+			UnityEngine.EventSystems.PointerInputModule self=(UnityEngine.EventSystems.PointerInputModule)checkSelf(l);
+			var ret=self.ToString();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_kMouseLeftId(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -30,6 +46,7 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_kMouseRightId(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -41,6 +58,7 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_kMouseMiddleId(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -52,6 +70,7 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_kFakeTouchesId(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -62,9 +81,11 @@ public class Lua_UnityEngine_EventSystems_PointerInputModule : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.EventSystems.PointerInputModule");
 		addMember(l,IsPointerOverGameObject);
+		addMember(l,ToString);
 		addMember(l,"kMouseLeftId",get_kMouseLeftId,null,false);
 		addMember(l,"kMouseRightId",get_kMouseRightId,null,false);
 		addMember(l,"kMouseMiddleId",get_kMouseMiddleId,null,false);

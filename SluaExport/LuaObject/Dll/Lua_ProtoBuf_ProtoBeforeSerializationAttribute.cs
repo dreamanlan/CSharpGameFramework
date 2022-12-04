@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ProtoBuf_ProtoBeforeSerializationAttribute : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			ProtoBuf.ProtoBeforeSerializationAttribute o;
 			o=new ProtoBuf.ProtoBeforeSerializationAttribute();
@@ -16,8 +17,10 @@ public class Lua_ProtoBuf_ProtoBeforeSerializationAttribute : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ProtoBuf.ProtoBeforeSerializationAttribute");
-		createTypeMetatable(l,constructor, typeof(ProtoBuf.ProtoBeforeSerializationAttribute),typeof(System.Attribute));
+		addMember(l,ctor_s);
+		createTypeMetatable(l,null, typeof(ProtoBuf.ProtoBeforeSerializationAttribute),typeof(System.Attribute));
 	}
 }

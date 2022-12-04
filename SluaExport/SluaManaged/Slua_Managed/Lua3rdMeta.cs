@@ -2,18 +2,13 @@
 using System;
 using System.Linq;
 using System.Reflection;
-#if !SLUA_STANDALONE
 using UnityEngine;
-#endif
 using System.IO;
 
 namespace SLua
 {
 
-    public class Lua3rdMeta
-#if !SLUA_STANDALONE
- : ScriptableObject
-#endif
+    public class Lua3rdMeta : ScriptableObject
     {
         /// <summary>
         ///Cache class types here those contain 3rd dll attribute.
@@ -22,24 +17,18 @@ namespace SLua
 
         void OnEnable()
         {
-#if !SLUA_STANDALONE
             this.hideFlags = HideFlags.NotEditable;
-#endif
         }
         private static Lua3rdMeta _instance = null;
         public static Lua3rdMeta Instance
         {
-            get
-            {
-#if !SLUA_STANDALONE
+            get {
                 if (_instance == null) {
                     _instance = Resources.Load<Lua3rdMeta>("lua3rdmeta");
                 }
-#endif
                 return _instance;
             }
-            set
-            {
+            set {
                 _instance = value;
             }
         }

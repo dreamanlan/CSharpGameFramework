@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact o;
 			o=new GameFrameworkMessage.Msg_RC_AddImpact();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_sender_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact self=(GameFrameworkMessage.Msg_RC_AddImpact)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_sender_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact self=(GameFrameworkMessage.Msg_RC_AddImpact)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_target_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact self=(GameFrameworkMessage.Msg_RC_AddImpact)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_target_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact self=(GameFrameworkMessage.Msg_RC_AddImpact)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_impact_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact self=(GameFrameworkMessage.Msg_RC_AddImpact)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_impact_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact self=(GameFrameworkMessage.Msg_RC_AddImpact)checkSelf(l);
@@ -95,6 +102,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_skill_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact self=(GameFrameworkMessage.Msg_RC_AddImpact)checkSelf(l);
@@ -107,6 +115,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_skill_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact self=(GameFrameworkMessage.Msg_RC_AddImpact)checkSelf(l);
@@ -121,6 +130,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_duration(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact self=(GameFrameworkMessage.Msg_RC_AddImpact)checkSelf(l);
@@ -133,6 +143,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_duration(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_AddImpact self=(GameFrameworkMessage.Msg_RC_AddImpact)checkSelf(l);
@@ -146,13 +157,15 @@ public class Lua_GameFrameworkMessage_Msg_RC_AddImpact : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_RC_AddImpact");
+		addMember(l,ctor_s);
 		addMember(l,"sender_id",get_sender_id,set_sender_id,true);
 		addMember(l,"target_id",get_target_id,set_target_id,true);
 		addMember(l,"impact_id",get_impact_id,set_impact_id,true);
 		addMember(l,"skill_id",get_skill_id,set_skill_id,true);
 		addMember(l,"duration",get_duration,set_duration,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_RC_AddImpact));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_RC_AddImpact));
 	}
 }

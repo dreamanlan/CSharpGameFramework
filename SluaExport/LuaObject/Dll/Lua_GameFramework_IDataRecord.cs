@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_IDataRecord : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadFromBinary(IntPtr l) {
 		try {
 			GameFramework.IDataRecord self=(GameFramework.IDataRecord)checkSelf(l);
@@ -21,6 +22,7 @@ public class Lua_GameFramework_IDataRecord : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteToBinary(IntPtr l) {
 		try {
 			GameFramework.IDataRecord self=(GameFramework.IDataRecord)checkSelf(l);
@@ -34,6 +36,7 @@ public class Lua_GameFramework_IDataRecord : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.IDataRecord");
 		addMember(l,ReadFromBinary);

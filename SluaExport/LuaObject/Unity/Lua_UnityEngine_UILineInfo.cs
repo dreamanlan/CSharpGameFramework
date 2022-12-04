@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_UILineInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.UILineInfo o;
 			o=new UnityEngine.UILineInfo();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_startCharIdx(IntPtr l) {
 		try {
 			UnityEngine.UILineInfo self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_startCharIdx(IntPtr l) {
 		try {
 			UnityEngine.UILineInfo self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 			System.Int32 v;
 			checkType(l,2,out v);
 			self.startCharIdx=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_height(IntPtr l) {
 		try {
 			UnityEngine.UILineInfo self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_height(IntPtr l) {
 		try {
 			UnityEngine.UILineInfo self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 			System.Int32 v;
 			checkType(l,2,out v);
 			self.height=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +80,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_topY(IntPtr l) {
 		try {
 			UnityEngine.UILineInfo self;
@@ -88,6 +94,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_topY(IntPtr l) {
 		try {
 			UnityEngine.UILineInfo self;
@@ -95,7 +102,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 			System.Single v;
 			checkType(l,2,out v);
 			self.topY=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -104,6 +111,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_leading(IntPtr l) {
 		try {
 			UnityEngine.UILineInfo self;
@@ -117,6 +125,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_leading(IntPtr l) {
 		try {
 			UnityEngine.UILineInfo self;
@@ -124,7 +133,7 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 			System.Single v;
 			checkType(l,2,out v);
 			self.leading=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -132,12 +141,14 @@ public class Lua_UnityEngine_UILineInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.UILineInfo");
+		addMember(l,ctor_s);
 		addMember(l,"startCharIdx",get_startCharIdx,set_startCharIdx,true);
 		addMember(l,"height",get_height,set_height,true);
 		addMember(l,"topY",get_topY,set_topY,true);
 		addMember(l,"leading",get_leading,set_leading,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.UILineInfo),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.UILineInfo),typeof(System.ValueType));
 	}
 }

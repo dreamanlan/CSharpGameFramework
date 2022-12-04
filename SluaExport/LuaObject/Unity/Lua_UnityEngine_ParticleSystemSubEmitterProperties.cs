@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ParticleSystemSubEmitterProperties : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"UnityEngine.ParticleSystemSubEmitterProperties");
@@ -9,7 +9,9 @@ public class Lua_UnityEngine_ParticleSystemSubEmitterProperties : LuaObject {
 		addMember(l,1,"InheritColor");
 		addMember(l,2,"InheritSize");
 		addMember(l,4,"InheritRotation");
-		addMember(l,7,"InheritEverything");
+		addMember(l,8,"InheritLifetime");
+		addMember(l,16,"InheritDuration");
+		addMember(l,31,"InheritEverything");
 		LuaDLL.lua_pop(l, 1);
 	}
 }

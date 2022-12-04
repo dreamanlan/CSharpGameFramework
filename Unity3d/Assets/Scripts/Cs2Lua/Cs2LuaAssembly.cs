@@ -34,9 +34,11 @@ internal class Cs2LuaAssembly
         ObjectCache.AddAQName(typeof(KeyValuePair<string, object>), "StrObjPair");
         ObjectCache.AddAQName(typeof(KeyValuePair<string, UnityEngine.Object>), "StrUobjPair");
         m_LuaSvr.init(null, () => {
-            var entry = (LuaTable)m_LuaSvr.start("Cs2LuaScript__Program");
-            entry.invoke("Init");
-            m_LuaInited = true;
+            var entry = (LuaTable)m_LuaSvr.start("program");
+            if (entry != null) {
+                entry.invoke("Init");
+                m_LuaInited = true;
+            }
         });
 #endif
 

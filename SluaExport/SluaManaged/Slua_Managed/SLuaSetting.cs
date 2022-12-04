@@ -19,47 +19,39 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
 using System.Collections;
-#if !SLUA_STANDALONE
 using UnityEngine;
-#endif
 
-namespace SLua{
-	public enum EOL{
-		Native,
-		CRLF,
-		CR,
-		LF,
-	}
-
-	public class SLuaSetting 
-#if !SLUA_STANDALONE
-        : ScriptableObject
-#endif
+namespace SLua
+{
+    public enum EOL
     {
+        Native,
+        CRLF,
+        CR,
+        LF,
+    }
 
-		public EOL eol = EOL.Native;
-		public bool exportExtensionMethod = true;
-		public string UnityEngineGeneratePath = "../SluaExport/LuaObject/";
+    public class SLuaSetting : ScriptableObject
+    {
+        public EOL eol = EOL.Native;
+        public bool exportExtensionMethod = true;
+        public string UnityEngineGeneratePath = "../SluaExport/LuaObject/";
+        public bool IsDebug = false;
+        public bool RecordObjectStackTrace = false;
 
-		public int debugPort=10240;
-		public string debugIP="0.0.0.0";
-
-		public static SLuaSetting Instance{
-			get{
-#if !SLUA_STANDALONE
-				if(_instance == null){
-					_instance = Resources.Load<SLuaSetting>("setting");
-				}
-#endif
-				return _instance;
+        public static SLuaSetting Instance
+        {
+            get {
+                if (_instance == null) {
+                    _instance = Resources.Load<SLuaSetting>("setting");
+                }
+                return _instance;
             }
-            set
-            {
+            set {
                 _instance = value;
             }
-		}
+        }
         public static bool IsEditor
         {
             get { return _isEditor; }
@@ -74,6 +66,5 @@ namespace SLua{
         private static SLuaSetting _instance = null;
         private static bool _isEditor = false;
         private static bool _isPlaying = true;
-	}
-
+    }
 }

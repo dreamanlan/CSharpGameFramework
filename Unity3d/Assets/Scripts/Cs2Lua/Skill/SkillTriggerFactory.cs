@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -131,9 +131,8 @@ internal class LuaSkillTrigger : AbstractSkillTriger
         m_FileName = m_ClassName.Replace(".", "__");
 
         if (callLua) {
-            m_Svr = Cs2LuaAssembly.Instance.LuaSvr;
-            m_Svr.luaState.doFile(m_FileName);
-            m_ClassObj = (LuaTable)m_Svr.luaState[m_ClassName];
+            LuaSvr.mainState.doFile(m_FileName);
+            m_ClassObj = (LuaTable)LuaSvr.mainState[m_ClassName];
             m_Self = (LuaTable)((LuaFunction)m_ClassObj["__new_object"]).call();
             BindLuaInterface();
             if (null != m_SetProxy) {

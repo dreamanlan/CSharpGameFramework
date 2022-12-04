@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule o;
 			o=new UnityEngine.ParticleSystem.CustomDataModule();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetMode(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule self;
@@ -27,7 +29,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 			checkEnum(l,3,out a2);
 			self.SetMode(a1,a2);
 			pushValue(l,true);
-			setBack(l,self);
+			setBack(l,(object)self);
 			return 1;
 		}
 		catch(Exception e) {
@@ -35,6 +37,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetMode(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule self;
@@ -51,6 +54,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetVectorComponentCount(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule self;
@@ -61,7 +65,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 			checkType(l,3,out a2);
 			self.SetVectorComponentCount(a1,a2);
 			pushValue(l,true);
-			setBack(l,self);
+			setBack(l,(object)self);
 			return 1;
 		}
 		catch(Exception e) {
@@ -69,6 +73,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetVectorComponentCount(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule self;
@@ -85,6 +90,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetVector(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule self;
@@ -97,7 +103,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 			checkValueType(l,4,out a3);
 			self.SetVector(a1,a2,a3);
 			pushValue(l,true);
-			setBack(l,self);
+			setBack(l,(object)self);
 			return 1;
 		}
 		catch(Exception e) {
@@ -105,6 +111,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetVector(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule self;
@@ -123,6 +130,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetColor(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule self;
@@ -133,7 +141,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 			checkValueType(l,3,out a2);
 			self.SetColor(a1,a2);
 			pushValue(l,true);
-			setBack(l,self);
+			setBack(l,(object)self);
 			return 1;
 		}
 		catch(Exception e) {
@@ -141,6 +149,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetColor(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule self;
@@ -157,6 +166,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule self;
@@ -170,6 +180,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.CustomDataModule self;
@@ -177,7 +188,7 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.enabled=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -185,8 +196,10 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ParticleSystem.CustomDataModule");
+		addMember(l,ctor_s);
 		addMember(l,SetMode);
 		addMember(l,GetMode);
 		addMember(l,SetVectorComponentCount);
@@ -196,6 +209,6 @@ public class Lua_UnityEngine_ParticleSystem_CustomDataModule : LuaObject {
 		addMember(l,SetColor);
 		addMember(l,GetColor);
 		addMember(l,"enabled",get_enabled,set_enabled,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.ParticleSystem.CustomDataModule),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.ParticleSystem.CustomDataModule),typeof(System.ValueType));
 	}
 }

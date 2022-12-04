@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.InheritVelocityModule o;
 			o=new UnityEngine.ParticleSystem.InheritVelocityModule();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.InheritVelocityModule self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.InheritVelocityModule self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.enabled=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_mode(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.InheritVelocityModule self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_mode(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.InheritVelocityModule self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 			UnityEngine.ParticleSystemInheritVelocityMode v;
 			checkEnum(l,2,out v);
 			self.mode=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +80,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_curve(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.InheritVelocityModule self;
@@ -88,6 +94,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_curve(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.InheritVelocityModule self;
@@ -95,7 +102,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.curve=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -104,6 +111,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_curveMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.InheritVelocityModule self;
@@ -117,6 +125,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_curveMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.InheritVelocityModule self;
@@ -124,7 +133,7 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.curveMultiplier=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -132,12 +141,14 @@ public class Lua_UnityEngine_ParticleSystem_InheritVelocityModule : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ParticleSystem.InheritVelocityModule");
+		addMember(l,ctor_s);
 		addMember(l,"enabled",get_enabled,set_enabled,true);
 		addMember(l,"mode",get_mode,set_mode,true);
 		addMember(l,"curve",get_curve,set_curve,true);
 		addMember(l,"curveMultiplier",get_curveMultiplier,set_curveMultiplier,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.ParticleSystem.InheritVelocityModule),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.ParticleSystem.InheritVelocityModule),typeof(System.ValueType));
 	}
 }

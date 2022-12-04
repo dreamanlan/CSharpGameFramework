@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_RC_ShowDlg : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_ShowDlg o;
 			o=new GameFrameworkMessage.Msg_RC_ShowDlg();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_ShowDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_dialog_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_ShowDlg self=(GameFrameworkMessage.Msg_RC_ShowDlg)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_RC_ShowDlg : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_dialog_id(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_RC_ShowDlg self=(GameFrameworkMessage.Msg_RC_ShowDlg)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_Msg_RC_ShowDlg : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_RC_ShowDlg");
+		addMember(l,ctor_s);
 		addMember(l,"dialog_id",get_dialog_id,set_dialog_id,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_RC_ShowDlg));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_RC_ShowDlg));
 	}
 }

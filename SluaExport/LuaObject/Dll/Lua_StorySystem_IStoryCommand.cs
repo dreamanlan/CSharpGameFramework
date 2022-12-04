@@ -1,15 +1,74 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_StorySystem_IStoryCommand : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Init(IntPtr l) {
 		try {
 			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
 			Dsl.ISyntaxComponent a1;
 			checkType(l,2,out a1);
-			self.Init(a1);
+			var ret=self.Init(a1);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int GetId(IntPtr l) {
+		try {
+			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
+			var ret=self.GetId();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int GetComments(IntPtr l) {
+		try {
+			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
+			var ret=self.GetComments();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int GetConfig(IntPtr l) {
+		try {
+			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
+			var ret=self.GetConfig();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ShareConfig(IntPtr l) {
+		try {
+			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
+			StorySystem.IStoryCommand a1;
+			checkType(l,2,out a1);
+			self.ShareConfig(a1);
 			pushValue(l,true);
 			return 1;
 		}
@@ -18,6 +77,21 @@ public class Lua_StorySystem_IStoryCommand : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Clone(IntPtr l) {
+		try {
+			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
+			var ret=self.Clone();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
@@ -30,18 +104,21 @@ public class Lua_StorySystem_IStoryCommand : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Execute(IntPtr l) {
 		try {
 			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
 			StorySystem.StoryInstance a1;
 			checkType(l,2,out a1);
-			System.Int64 a2;
+			StorySystem.StoryMessageHandler a2;
 			checkType(l,3,out a2);
-			System.Object a3;
+			System.Int64 a3;
 			checkType(l,4,out a3);
-			System.Object[] a4;
-			checkArray(l,5,out a4);
-			var ret=self.Execute(a1,a2,a3,a4);
+			BoxedValue a4;
+			checkValueType(l,5,out a4);
+			BoxedValueList a5;
+			checkType(l,6,out a5);
+			var ret=self.Execute(a1,a2,a3,a4,a5);
 			pushValue(l,true);
 			pushValue(l,ret);
 			return 2;
@@ -51,23 +128,69 @@ public class Lua_StorySystem_IStoryCommand : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_LeadCommand(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ExecDebugger(IntPtr l) {
 		try {
 			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
+			StorySystem.StoryInstance a1;
+			checkType(l,2,out a1);
+			StorySystem.StoryMessageHandler a2;
+			checkType(l,3,out a2);
+			System.Int64 a3;
+			checkType(l,4,out a3);
+			BoxedValue a4;
+			checkValueType(l,5,out a4);
+			BoxedValueList a5;
+			checkType(l,6,out a5);
+			var ret=self.ExecDebugger(a1,a2,a3,a4,a5);
 			pushValue(l,true);
-			pushValue(l,self.LeadCommand);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_PrologueCommand(IntPtr l) {
+		try {
+			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.PrologueCommand);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int get_EpilogueCommand(IntPtr l) {
+		try {
+			StorySystem.IStoryCommand self=(StorySystem.IStoryCommand)checkSelf(l);
+			pushValue(l,true);
+			pushValue(l,self.EpilogueCommand);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"StorySystem.IStoryCommand");
 		addMember(l,Init);
+		addMember(l,GetId);
+		addMember(l,GetComments);
+		addMember(l,GetConfig);
+		addMember(l,ShareConfig);
+		addMember(l,Clone);
 		addMember(l,Reset);
 		addMember(l,Execute);
-		addMember(l,"LeadCommand",get_LeadCommand,null,true);
+		addMember(l,ExecDebugger);
+		addMember(l,"PrologueCommand",get_PrologueCommand,null,true);
+		addMember(l,"EpilogueCommand",get_EpilogueCommand,null,true);
 		createTypeMetatable(l,null, typeof(StorySystem.IStoryCommand));
 	}
 }

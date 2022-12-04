@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_StoryDlgProvider : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.StoryDlgProvider o;
 			o=new TableConfig.StoryDlgProvider();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_StoryDlgProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadForClient(IntPtr l) {
 		try {
 			TableConfig.StoryDlgProvider self=(TableConfig.StoryDlgProvider)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_TableConfig_StoryDlgProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Load(IntPtr l) {
 		try {
 			TableConfig.StoryDlgProvider self=(TableConfig.StoryDlgProvider)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_TableConfig_StoryDlgProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Save(IntPtr l) {
 		try {
 			TableConfig.StoryDlgProvider self=(TableConfig.StoryDlgProvider)checkSelf(l);
@@ -57,6 +61,7 @@ public class Lua_TableConfig_StoryDlgProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			TableConfig.StoryDlgProvider self=(TableConfig.StoryDlgProvider)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_TableConfig_StoryDlgProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetStoryDlgCount(IntPtr l) {
 		try {
 			TableConfig.StoryDlgProvider self=(TableConfig.StoryDlgProvider)checkSelf(l);
@@ -82,6 +88,7 @@ public class Lua_TableConfig_StoryDlgProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetStoryDlg(IntPtr l) {
 		try {
 			TableConfig.StoryDlgProvider self=(TableConfig.StoryDlgProvider)checkSelf(l);
@@ -97,18 +104,7 @@ public class Lua_TableConfig_StoryDlgProvider : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_StoryDlgMgr(IntPtr l) {
-		try {
-			TableConfig.StoryDlgProvider self=(TableConfig.StoryDlgProvider)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.StoryDlgMgr);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Instance(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -119,16 +115,17 @@ public class Lua_TableConfig_StoryDlgProvider : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.StoryDlgProvider");
+		addMember(l,ctor_s);
 		addMember(l,LoadForClient);
 		addMember(l,Load);
 		addMember(l,Save);
 		addMember(l,Clear);
 		addMember(l,GetStoryDlgCount);
 		addMember(l,GetStoryDlg);
-		addMember(l,"StoryDlgMgr",get_StoryDlgMgr,null,true);
 		addMember(l,"Instance",get_Instance,null,false);
-		createTypeMetatable(l,constructor, typeof(TableConfig.StoryDlgProvider));
+		createTypeMetatable(l,null, typeof(TableConfig.StoryDlgProvider));
 	}
 }

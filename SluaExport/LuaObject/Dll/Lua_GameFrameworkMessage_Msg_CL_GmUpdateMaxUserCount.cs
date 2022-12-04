@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_CL_GmUpdateMaxUserCount : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount o;
 			o=new GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmUpdateMaxUserCount : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_MaxUserCount(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount self=(GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmUpdateMaxUserCount : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_MaxUserCount(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount self=(GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmUpdateMaxUserCount : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_MaxQueueingCount(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount self=(GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmUpdateMaxUserCount : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_MaxQueueingCount(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount self=(GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_Msg_CL_GmUpdateMaxUserCount : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount");
+		addMember(l,ctor_s);
 		addMember(l,"m_MaxUserCount",get_m_MaxUserCount,set_m_MaxUserCount,true);
 		addMember(l,"m_MaxQueueingCount",get_m_MaxQueueingCount,set_m_MaxQueueingCount,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_CL_GmUpdateMaxUserCount));
 	}
 }

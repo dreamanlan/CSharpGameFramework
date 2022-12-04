@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 
-
 namespace SLua
 {
     public partial class LuaDelegation : LuaObject
@@ -19,21 +18,25 @@ namespace SLua
                 ua = (UnityEngine.RectTransform.ReapplyDrivenProperties)checkObj(l, p);
                 return op;
             }
+            if(LuaDLL.lua_isnil(l,-1)) {
+				ua=null;
+				return op;
+			}
             LuaDelegate ld;
             checkType(l, -1, out ld);
+			LuaDLL.lua_pop(l,1);
             if(ld.d!=null)
             {
                 ua = (UnityEngine.RectTransform.ReapplyDrivenProperties)ld.d;
                 return op;
             }
-			LuaDLL.lua_pop(l,1);
 			
 			l = LuaState.get(l).L;
             ua = (UnityEngine.RectTransform a1) =>
             {
                 int error = pushTry(l);
 
-				pushValue(l,a1);
+				pushValue(l, a1);
 				ld.pcall(1, error);
 				LuaDLL.lua_settop(l, error-1);
 			};

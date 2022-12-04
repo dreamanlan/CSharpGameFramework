@@ -1,14 +1,15 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_EntityManager : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.EntityManager o;
 			System.Int32 a1;
-			checkType(l,2,out a1);
+			checkType(l,1,out a1);
 			o=new GameFramework.EntityManager(a1);
 			pushValue(l,true);
 			pushValue(l,o);
@@ -19,6 +20,7 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetSceneContext(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -33,6 +35,7 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetEntityInfo(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -48,6 +51,7 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetEntityInfoByUnitId(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -63,47 +67,23 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int AddEntity(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int AddEntity__Int32__Int32__Actor__String__A_String(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==6){
-				GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				System.Int32 a2;
-				checkType(l,3,out a2);
-				TableConfig.Actor a3;
-				checkType(l,4,out a3);
-				System.String a4;
-				checkType(l,5,out a4);
-				System.String[] a5;
-				checkParams(l,6,out a5);
-				var ret=self.AddEntity(a1,a2,a3,a4,a5);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(argc==7){
-				GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				System.Int32 a2;
-				checkType(l,3,out a2);
-				System.Int32 a3;
-				checkType(l,4,out a3);
-				TableConfig.Actor a4;
-				checkType(l,5,out a4);
-				System.String a5;
-				checkType(l,6,out a5);
-				System.String[] a6;
-				checkParams(l,7,out a6);
-				var ret=self.AddEntity(a1,a2,a3,a4,a5,a6);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			System.Int32 a2;
+			checkType(l,3,out a2);
+			TableConfig.Actor a3;
+			checkType(l,4,out a3);
+			System.String a4;
+			checkType(l,5,out a4);
+			System.String[] a5;
+			checkParams(l,6,out a5);
+			var ret=self.AddEntity(a1,a2,a3,a4,a5);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -111,47 +91,25 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int DelayAddEntity(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int AddEntity__Int32__Int32__Int32__Actor__String__A_String(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==6){
-				GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				System.Int32 a2;
-				checkType(l,3,out a2);
-				TableConfig.Actor a3;
-				checkType(l,4,out a3);
-				System.String a4;
-				checkType(l,5,out a4);
-				System.String[] a5;
-				checkParams(l,6,out a5);
-				var ret=self.DelayAddEntity(a1,a2,a3,a4,a5);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			else if(argc==7){
-				GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				System.Int32 a2;
-				checkType(l,3,out a2);
-				System.Int32 a3;
-				checkType(l,4,out a3);
-				TableConfig.Actor a4;
-				checkType(l,5,out a4);
-				System.String a5;
-				checkType(l,6,out a5);
-				System.String[] a6;
-				checkParams(l,7,out a6);
-				var ret=self.DelayAddEntity(a1,a2,a3,a4,a5,a6);
-				pushValue(l,true);
-				pushValue(l,ret);
-				return 2;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
+			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			System.Int32 a2;
+			checkType(l,3,out a2);
+			System.Int32 a3;
+			checkType(l,4,out a3);
+			TableConfig.Actor a4;
+			checkType(l,5,out a4);
+			System.String a5;
+			checkType(l,6,out a5);
+			System.String[] a6;
+			checkParams(l,7,out a6);
+			var ret=self.AddEntity(a1,a2,a3,a4,a5,a6);
+			pushValue(l,true);
+			pushValue(l,ret);
 			return 2;
 		}
 		catch(Exception e) {
@@ -159,6 +117,57 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int DelayAddEntity__Int32__Int32__Actor__String__A_String(IntPtr l) {
+		try {
+			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			System.Int32 a2;
+			checkType(l,3,out a2);
+			TableConfig.Actor a3;
+			checkType(l,4,out a3);
+			System.String a4;
+			checkType(l,5,out a4);
+			System.String[] a5;
+			checkParams(l,6,out a5);
+			var ret=self.DelayAddEntity(a1,a2,a3,a4,a5);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int DelayAddEntity__Int32__Int32__Int32__Actor__String__A_String(IntPtr l) {
+		try {
+			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			System.Int32 a2;
+			checkType(l,3,out a2);
+			System.Int32 a3;
+			checkType(l,4,out a3);
+			TableConfig.Actor a4;
+			checkType(l,5,out a4);
+			System.String a5;
+			checkType(l,6,out a5);
+			System.String[] a6;
+			checkParams(l,7,out a6);
+			var ret=self.DelayAddEntity(a1,a2,a3,a4,a5,a6);
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ExecuteDelayAdd(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -171,6 +180,7 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RemoveEntity(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -185,6 +195,7 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetNearest(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -203,6 +214,7 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int HasCombatNpc(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -216,6 +228,7 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int HasCombatNpcAlive(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -229,6 +242,7 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -241,6 +255,7 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int FireDamageEvent(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -265,6 +280,7 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OnDamage(IntPtr l) {
 		try {
 			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
@@ -280,25 +296,17 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_Entities(IntPtr l) {
-		try {
-			GameFramework.EntityManager self=(GameFramework.EntityManager)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.Entities);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.EntityManager");
+		addMember(l,ctor_s);
 		addMember(l,SetSceneContext);
 		addMember(l,GetEntityInfo);
 		addMember(l,GetEntityInfoByUnitId);
-		addMember(l,AddEntity);
-		addMember(l,DelayAddEntity);
+		addMember(l,AddEntity__Int32__Int32__Actor__String__A_String);
+		addMember(l,AddEntity__Int32__Int32__Int32__Actor__String__A_String);
+		addMember(l,DelayAddEntity__Int32__Int32__Actor__String__A_String);
+		addMember(l,DelayAddEntity__Int32__Int32__Int32__Actor__String__A_String);
 		addMember(l,ExecuteDelayAdd);
 		addMember(l,RemoveEntity);
 		addMember(l,GetNearest);
@@ -307,7 +315,6 @@ public class Lua_GameFramework_EntityManager : LuaObject {
 		addMember(l,Reset);
 		addMember(l,FireDamageEvent);
 		addMember(l,"OnDamage",null,set_OnDamage,true);
-		addMember(l,"Entities",get_Entities,null,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.EntityManager));
+		createTypeMetatable(l,null, typeof(GameFramework.EntityManager));
 	}
 }

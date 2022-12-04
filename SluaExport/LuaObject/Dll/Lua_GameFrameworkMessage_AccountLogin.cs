@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_AccountLogin : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLogin o;
 			o=new GameFrameworkMessage.AccountLogin();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_AccountLogin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_AccountId(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLogin self=(GameFrameworkMessage.AccountLogin)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_AccountLogin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_AccountId(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLogin self=(GameFrameworkMessage.AccountLogin)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_AccountLogin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Password(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLogin self=(GameFrameworkMessage.AccountLogin)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_AccountLogin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Password(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLogin self=(GameFrameworkMessage.AccountLogin)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFrameworkMessage_AccountLogin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_ClientInfo(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLogin self=(GameFrameworkMessage.AccountLogin)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFrameworkMessage_AccountLogin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_ClientInfo(IntPtr l) {
 		try {
 			GameFrameworkMessage.AccountLogin self=(GameFrameworkMessage.AccountLogin)checkSelf(l);
@@ -94,11 +101,13 @@ public class Lua_GameFrameworkMessage_AccountLogin : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.AccountLogin");
+		addMember(l,ctor_s);
 		addMember(l,"m_AccountId",get_m_AccountId,set_m_AccountId,true);
 		addMember(l,"m_Password",get_m_Password,set_m_Password,true);
 		addMember(l,"m_ClientInfo",get_m_ClientInfo,set_m_ClientInfo,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.AccountLogin));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.AccountLogin));
 	}
 }

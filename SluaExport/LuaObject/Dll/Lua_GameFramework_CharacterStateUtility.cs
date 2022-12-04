@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_CharacterStateUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int NameToState_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -18,6 +19,7 @@ public class Lua_GameFramework_CharacterStateUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int StateToName_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -31,6 +33,7 @@ public class Lua_GameFramework_CharacterStateUtility : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.CharacterStateUtility");
 		addMember(l,NameToState_s);

@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_NodeMessageWithAccount : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeMessageWithAccount o;
 			o=new GameFrameworkMessage.NodeMessageWithAccount();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_NodeMessageWithAccount : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Account(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeMessageWithAccount self=(GameFrameworkMessage.NodeMessageWithAccount)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_NodeMessageWithAccount : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Account(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeMessageWithAccount self=(GameFrameworkMessage.NodeMessageWithAccount)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_NodeMessageWithAccount : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.NodeMessageWithAccount");
+		addMember(l,ctor_s);
 		addMember(l,"m_Account",get_m_Account,set_m_Account,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.NodeMessageWithAccount));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.NodeMessageWithAccount));
 	}
 }

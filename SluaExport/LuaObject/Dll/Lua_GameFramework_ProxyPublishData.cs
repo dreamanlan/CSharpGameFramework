@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_ProxyPublishData : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.ProxyPublishData o;
 			o=new GameFramework.ProxyPublishData();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_ProxyPublishData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_EventName(IntPtr l) {
 		try {
 			GameFramework.ProxyPublishData self=(GameFramework.ProxyPublishData)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFramework_ProxyPublishData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_EventName(IntPtr l) {
 		try {
 			GameFramework.ProxyPublishData self=(GameFramework.ProxyPublishData)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFramework_ProxyPublishData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Group(IntPtr l) {
 		try {
 			GameFramework.ProxyPublishData self=(GameFramework.ProxyPublishData)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFramework_ProxyPublishData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Group(IntPtr l) {
 		try {
 			GameFramework.ProxyPublishData self=(GameFramework.ProxyPublishData)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFramework_ProxyPublishData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Args(IntPtr l) {
 		try {
 			GameFramework.ProxyPublishData self=(GameFramework.ProxyPublishData)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFramework_ProxyPublishData : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Args(IntPtr l) {
 		try {
 			GameFramework.ProxyPublishData self=(GameFramework.ProxyPublishData)checkSelf(l);
@@ -94,11 +101,13 @@ public class Lua_GameFramework_ProxyPublishData : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.ProxyPublishData");
+		addMember(l,ctor_s);
 		addMember(l,"m_EventName",get_m_EventName,set_m_EventName,true);
 		addMember(l,"m_Group",get_m_Group,set_m_Group,true);
 		addMember(l,"m_Args",get_m_Args,set_m_Args,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.ProxyPublishData));
+		createTypeMetatable(l,null, typeof(GameFramework.ProxyPublishData));
 	}
 }

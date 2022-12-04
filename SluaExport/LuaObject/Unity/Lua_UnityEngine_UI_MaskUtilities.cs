@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_UI_MaskUtilities : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.UI.MaskUtilities o;
 			o=new UnityEngine.UI.MaskUtilities();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_UI_MaskUtilities : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Notify2DMaskStateChanged_s(IntPtr l) {
 		try {
 			UnityEngine.Component a1;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_UI_MaskUtilities : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int NotifyStencilStateChanged_s(IntPtr l) {
 		try {
 			UnityEngine.Component a1;
@@ -43,6 +46,7 @@ public class Lua_UnityEngine_UI_MaskUtilities : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int FindRootSortOverrideCanvas_s(IntPtr l) {
 		try {
 			UnityEngine.Transform a1;
@@ -57,6 +61,7 @@ public class Lua_UnityEngine_UI_MaskUtilities : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetStencilDepth_s(IntPtr l) {
 		try {
 			UnityEngine.Transform a1;
@@ -73,6 +78,7 @@ public class Lua_UnityEngine_UI_MaskUtilities : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsDescendantOrSelf_s(IntPtr l) {
 		try {
 			UnityEngine.Transform a1;
@@ -89,6 +95,7 @@ public class Lua_UnityEngine_UI_MaskUtilities : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetRectMaskForClippable_s(IntPtr l) {
 		try {
 			UnityEngine.UI.IClippable a1;
@@ -102,30 +109,16 @@ public class Lua_UnityEngine_UI_MaskUtilities : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetRectMasksForClip_s(IntPtr l) {
-		try {
-			UnityEngine.UI.RectMask2D a1;
-			checkType(l,1,out a1);
-			System.Collections.Generic.List<UnityEngine.UI.RectMask2D> a2;
-			checkType(l,2,out a2);
-			UnityEngine.UI.MaskUtilities.GetRectMasksForClip(a1,a2);
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.UI.MaskUtilities");
+		addMember(l,ctor_s);
 		addMember(l,Notify2DMaskStateChanged_s);
 		addMember(l,NotifyStencilStateChanged_s);
 		addMember(l,FindRootSortOverrideCanvas_s);
 		addMember(l,GetStencilDepth_s);
 		addMember(l,IsDescendantOrSelf_s);
 		addMember(l,GetRectMaskForClippable_s);
-		addMember(l,GetRectMasksForClip_s);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.UI.MaskUtilities));
+		createTypeMetatable(l,null, typeof(UnityEngine.UI.MaskUtilities));
 	}
 }

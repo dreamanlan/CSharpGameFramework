@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_SortingLayer : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.SortingLayer o;
 			o=new UnityEngine.SortingLayer();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetLayerValueFromID_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -31,6 +33,7 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetLayerValueFromName_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -45,6 +48,7 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int NameToID_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IDToName_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -73,6 +78,7 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsValid_s(IntPtr l) {
 		try {
 			System.Int32 a1;
@@ -87,6 +93,7 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_id(IntPtr l) {
 		try {
 			UnityEngine.SortingLayer self;
@@ -100,6 +107,7 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_name(IntPtr l) {
 		try {
 			UnityEngine.SortingLayer self;
@@ -113,6 +121,7 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_value(IntPtr l) {
 		try {
 			UnityEngine.SortingLayer self;
@@ -126,6 +135,7 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_layers(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -136,8 +146,10 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.SortingLayer");
+		addMember(l,ctor_s);
 		addMember(l,GetLayerValueFromID_s);
 		addMember(l,GetLayerValueFromName_s);
 		addMember(l,NameToID_s);
@@ -147,6 +159,6 @@ public class Lua_UnityEngine_SortingLayer : LuaObject {
 		addMember(l,"name",get_name,null,true);
 		addMember(l,"value",get_value,null,true);
 		addMember(l,"layers",get_layers,null,false);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.SortingLayer),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.SortingLayer),typeof(System.ValueType));
 	}
 }

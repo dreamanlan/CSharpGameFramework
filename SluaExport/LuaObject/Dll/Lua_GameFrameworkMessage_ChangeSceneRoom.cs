@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_ChangeSceneRoom : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.ChangeSceneRoom o;
 			o=new GameFrameworkMessage.ChangeSceneRoom();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_ChangeSceneRoom : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_SceneId(IntPtr l) {
 		try {
 			GameFrameworkMessage.ChangeSceneRoom self=(GameFrameworkMessage.ChangeSceneRoom)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_ChangeSceneRoom : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_SceneId(IntPtr l) {
 		try {
 			GameFrameworkMessage.ChangeSceneRoom self=(GameFrameworkMessage.ChangeSceneRoom)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_ChangeSceneRoom : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_RoomId(IntPtr l) {
 		try {
 			GameFrameworkMessage.ChangeSceneRoom self=(GameFrameworkMessage.ChangeSceneRoom)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_ChangeSceneRoom : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_RoomId(IntPtr l) {
 		try {
 			GameFrameworkMessage.ChangeSceneRoom self=(GameFrameworkMessage.ChangeSceneRoom)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_ChangeSceneRoom : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.ChangeSceneRoom");
+		addMember(l,ctor_s);
 		addMember(l,"m_SceneId",get_m_SceneId,set_m_SceneId,true);
 		addMember(l,"m_RoomId",get_m_RoomId,set_m_RoomId,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.ChangeSceneRoom));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.ChangeSceneRoom));
 	}
 }

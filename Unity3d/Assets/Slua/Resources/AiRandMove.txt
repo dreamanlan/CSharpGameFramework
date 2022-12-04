@@ -1,132 +1,242 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
-require "AiCommand";
+require "cs2lua__namespaces"; 
 
 AiRandMove = {
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
 	__new_object = function(...)
-		return newobject(AiRandMove, nil, nil, ...);
+		local __cs2dsl_newobj;
+		__cs2dsl_newobj = newobject(AiRandMove, nil, nil, "ctor", 0, nil, ...);
+		return __cs2dsl_newobj;
 	end,
+
+	cctor = function()
+		AiRandMove.__cctor();
+	end,
+
+	__cctor = function()
+		if AiRandMove.__cctor_called then 
+			return;
+		else
+			AiRandMove.__cctor_called = true;
+		end;
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+	-------------------------------
+	------ instance methods -------
+	-------------------------------
+	Clone = function(this)
+		local __method_ret_13_4_16_5;
+		__method_ret_13_4_16_5 = newobject(AiRandMove, nil, nil, "ctor", 0, nil);
+		return __method_ret_13_4_16_5;
+	end,
+
+	ResetState = function(this)
+		this.m_ParamReaded = false;
+		this.m_PursueInterval = 0;
+	end,
+
+	ExecCommand = function(this, instance, handler, _params, delta)
+		local __cs2lua_func_info = luainitialize();
+		local __retval_0, __retval_1 = luapcall(AiRandMove.__ori_ExecCommand, this, __cs2lua_func_info, instance, handler, _params, delta);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+		if not __retval_0 then
+			lualog("{0}", __retval_1);
+			__retval_1 = false;
+		end;
+		return __retval_1;
+	end,
+	__ori_ExecCommand = function(this, __cs2lua_func_info, instance, handler, _params, delta)
+		local __method_ret_24_4_47_5;
+		local args;
+		args = _params.Values;
+		if (not this.m_ParamReaded) then 
+			this.m_ParamReaded = true;
+			this.m_ObjId = boxedvalue_list_get(__cs2lua_func_info, args, 1, 0):GetInt();
+			this.m_Time = boxedvalue_list_get(__cs2lua_func_info, args, 1, 1):GetInt();
+			this.m_Radius = boxedvalue_list_get(__cs2lua_func_info, args, 1, 2):GetInt();
+			local npc;
+			npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
+			if ((not isequal(nil, npc)) and (not npc:IsUnderControl())) then 
+				AiRandMove.SelectTargetPos(this, npc);
+				__method_ret_24_4_47_5 = true;
+				return __method_ret_24_4_47_5;
+			end;
+		else
+			local npc;
+			npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
+			if ((not isequal(nil, npc)) and (not npc:IsUnderControl())) then 
+				local info;
+				info = npc:GetAiStateInfo();
+				__method_ret_24_4_47_5 = AiRandMove.RandMoveHandler(this, npc, info, delta);
+				return __method_ret_24_4_47_5;
+			end;
+		end;
+		__method_ret_24_4_47_5 = false;
+		return __method_ret_24_4_47_5;
+	end,
+
+	RandMoveHandler = function(this, npc, info, deltaTime)
+		local __cs2lua_func_info = luainitialize();
+		local __retval_0, __retval_1 = luapcall(AiRandMove.__ori_RandMoveHandler, this, __cs2lua_func_info, npc, info, deltaTime);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+		if not __retval_0 then
+			lualog("{0}", __retval_1);
+			__retval_1 = false;
+		end;
+		return __retval_1;
+	end,
+	__ori_RandMoveHandler = function(this, __cs2lua_func_info, npc, info, deltaTime)
+		local __method_ret_49_4_85_5;
+		info.Time = (info.Time + deltaTime);
+		this.m_PursueInterval = (this.m_PursueInterval + deltaTime);
+		if (info.Time > this.m_Time) then 
+			info.Time = 0;
+			npc:GetMovementStateInfo().IsMoving = false;
+			AiCommand.AiStopPursue(npc);
+			info:ChangeToState(1);
+			local target;
+			target = GameFramework.PluginFramework.Instance:GetEntityById(info.Target);
+			if (not isequal(nil, target)) then 
+				local dir;
+				dir = GameFramework.Geometry.GetYRadian__Vector3__Vector3(callexterninstancereturnstruct(npc:GetMovementStateInfo(), GameFramework.MovementStateInfo, "GetPosition3D"), callexterninstancereturnstruct(target:GetMovementStateInfo(), GameFramework.MovementStateInfo, "GetPosition3D"));
+				npc:GetMovementStateInfo():SetFaceDir__Single(dir);
+			end;
+			__method_ret_49_4_85_5 = false;
+			return __method_ret_49_4_85_5;
+		end;
+		if (this.m_PursueInterval < 100) then 
+			__method_ret_49_4_85_5 = true;
+			return __method_ret_49_4_85_5;
+		else
+			this.m_PursueInterval = 0;
+		end;
+		local targetPos;
+		targetPos = getexterninstancestructmember(SymbolKind.Property, npc:GetMovementStateInfo(), GameFramework.MovementStateInfo, "TargetPosition");
+		local srcPos;
+		srcPos = callexterninstancereturnstruct(npc:GetMovementStateInfo(), GameFramework.MovementStateInfo, "GetPosition3D");
+		local distSqr;
+		distSqr = GameFramework.Geometry.DistanceSquare__Vector3__Vector3(wrapexternstructargument(srcPos, ScriptRuntime.Vector3, OperationKind.LocalReference, SymbolKind.Local), wrapexternstructargument(targetPos, ScriptRuntime.Vector3, OperationKind.LocalReference, SymbolKind.Local));
+		if (distSqr <= 1) then 
+			if npc:GetMovementStateInfo().IsMoving then 
+				npc:GetMovementStateInfo().IsMoving = false;
+				AiCommand.AiStopPursue(npc);
+				info:ChangeToState(1);
+			end;
+		else
+			npc:GetMovementStateInfo().IsMoving = true;
+			AiCommand.AiPursue(npc, wrapexternstructargument(targetPos, ScriptRuntime.Vector3, OperationKind.LocalReference, SymbolKind.Local));
+		end;
+		__method_ret_49_4_85_5 = true;
+		return __method_ret_49_4_85_5;
+	end,
+
+	SelectTargetPos = function(this, npc)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(AiRandMove.__ori_SelectTargetPos, this, __cs2lua_func_info, npc);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_SelectTargetPos = function(this, __cs2lua_func_info, npc)
+		local pos;
+		pos = callexterninstancereturnstruct(npc:GetMovementStateInfo(), GameFramework.MovementStateInfo, "GetPosition3D");
+		local dx;
+		dx = (GameFramework.Helper.Random.Next__Int32(this.m_Radius) - invokeintegeroperator(0, "/", this.m_Radius, 2, System.Int32, System.Int32));
+		local dz;
+		dz = (GameFramework.Helper.Random.Next__Int32(this.m_Radius) - invokeintegeroperator(0, "/", this.m_Radius, 2, System.Int32, System.Int32));
+		pos.X = (pos.X + dx);
+		pos.Z = (pos.Z + dz);
+		npc:GetMovementStateInfo().TargetPosition = AiCommand.AiGetValidPosition(npc, wrapexternstructargument(pos, ScriptRuntime.Vector3, OperationKind.LocalReference, SymbolKind.Local), this.m_Radius);
+	end,
+
+	ctor = function(this)
+		AiRandMove.__ctor(this);
+	end,
+
+	__ctor = function(this)
+		if this.__ctor_called then 
+			return;
+		else
+			this.__ctor_called = true;
+		end;
+	end,
+	-------------------------------
+	------ instance fields -------
+	-------------------------------
+	__init_obj_fields = function(this)
+		rawset(this, "m_ObjId", 0);
+		rawset(this, "m_Time", 0);
+		rawset(this, "m_Radius", 0);
+		rawset(this, "m_ParamReaded", false);
+		rawset(this, "m_PursueInterval", 0);
+		rawset(this, "__ctor_called", false);
+	end,
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
 	__define_class = function()
-		local static = AiRandMove;
+		Utility.Warn("AiRandMove::__define_class begin");
 
-		local static_methods = {
-			cctor = function()
-			end,
+		local class = AiRandMove;
+		local obj_methods = {
+			Clone = rawget(class, "Clone"),
+			ResetState = rawget(class, "ResetState"),
+			ExecCommand = rawget(class, "ExecCommand"),
+			RandMoveHandler = rawget(class, "RandMoveHandler"),
+			SelectTargetPos = rawget(class, "SelectTargetPos"),
+			ctor = rawget(class, "ctor"),
+			__ctor = rawget(class, "__ctor"),
 		};
+		local tmp_obj_method = nil;
 
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
-		end;
-		local static_props = nil;
-		local static_events = nil;
-
-		local instance_methods = {
-			Clone = function(this)
-				return newobject(AiRandMove, "ctor", nil);
-			end,
-			ResetState = function(this)
-				this.m_ParamReaded = false;
-				this.m_PursueInterval = 0;
-			end,
-			ExecCommand = function(this, instance, _params, delta)
-				local args; args = _params.Values;
-				if (not this.m_ParamReaded) then
-					this.m_ParamReaded = true;
-					this.m_ObjId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32, false);
-					this.m_Time = typecast(System.Convert.ChangeType(getexterninstanceindexer(args, nil, "get_Item", 1), System.Int32), System.Int32, false);
-					this.m_Radius = typecast(System.Convert.ChangeType(getexterninstanceindexer(args, nil, "get_Item", 2), System.Int32), System.Int32, false);
-					local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
-					if ((nil ~= npc) and (not npc:IsUnderControl())) then
-						this:SelectTargetPos(npc);
-						return true;
-					end;
-				else
-					local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
-					if ((nil ~= npc) and (not npc:IsUnderControl())) then
-						local info; info = npc:GetAiStateInfo();
-						return this:RandMoveHandler(npc, info, delta);
-					end;
-				end;
-				return false;
-			end,
-			RandMoveHandler = function(this, npc, info, deltaTime)
-				info.Time = invokeintegeroperator(2, "+", info.Time, deltaTime, System.Int64, System.Int64);
-				this.m_PursueInterval = invokeintegeroperator(2, "+", this.m_PursueInterval, deltaTime, System.Int64, System.Int64);
-				if (info.Time > this.m_Time) then
-					info.Time = 0;
-					npc:GetMovementStateInfo().IsMoving = false;
-					AiCommand.AiStopPursue(npc);
-					info:ChangeToState(1);
-					local target; target = GameFramework.PluginFramework.Instance:GetEntityById(info.Target);
-					if (nil ~= target) then
-						local dir; dir = GameFramework.Geometry.GetYRadian(npc:GetMovementStateInfo():GetPosition3D(), target:GetMovementStateInfo():GetPosition3D());
-						npc:GetMovementStateInfo():SetFaceDir(dir);
-					end;
-					return false;
-				end;
-				if (this.m_PursueInterval < 100) then
-					return true;
-				else
-					this.m_PursueInterval = 0;
-				end;
-				local targetPos; targetPos = npc:GetMovementStateInfo().TargetPosition;
-				local srcPos; srcPos = npc:GetMovementStateInfo():GetPosition3D();
-				local distSqr; distSqr = GameFramework.Geometry.DistanceSquare(srcPos, targetPos);
-				if (distSqr <= 1) then
-					if npc:GetMovementStateInfo().IsMoving then
-						npc:GetMovementStateInfo().IsMoving = false;
-						AiCommand.AiStopPursue(npc);
-						info:ChangeToState(1);
-					end;
-				else
-					npc:GetMovementStateInfo().IsMoving = true;
-					AiCommand.AiPursue(npc, targetPos);
-				end;
-				return true;
-			end,
-			SelectTargetPos = function(this, npc)
-				local pos; pos = npc:GetMovementStateInfo():GetPosition3D();
-				local dx; dx = invokeintegeroperator(3, "-", GameFramework.Helper.Random.Next(this.m_Radius), invokeintegeroperator(0, "/", this.m_Radius, 2, System.Int32, System.Int32), System.Int32, System.Int32);
-				local dz; dz = invokeintegeroperator(3, "-", GameFramework.Helper.Random.Next(this.m_Radius), invokeintegeroperator(0, "/", this.m_Radius, 2, System.Int32, System.Int32), System.Int32, System.Int32);
-				pos.X = (pos.X + dx);
-				pos.Z = (pos.Z + dz);
-				npc:GetMovementStateInfo().TargetPosition = AiCommand.AiGetValidPosition(npc, pos, this.m_Radius);
-			end,
-			ctor = function(this)
-			end,
-		};
-
-		local instance_fields_build = function()
-			local instance_fields = {
-				m_ObjId = 0,
-				m_Time = 0,
-				m_Radius = 0,
-				m_ParamReaded = false,
-				m_PursueInterval = 0,
-			};
-			return instance_fields;
-		end;
-		local instance_props = nil;
-		local instance_events = nil;
-		local interfaces = {
-			"GameFramework.Plugin.ISimpleStoryCommandPlugin",
-		};
-
-		local interface_map = {
-			ISimpleStoryCommandPlugin_Clone = "Clone",
-			ISimpleStoryCommandPlugin_ResetState = "ResetState",
-			ISimpleStoryCommandPlugin_ExecCommand = "ExecCommand",
-		};
-
-
-		return defineclass(nil, "AiRandMove", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+		local __defineclass_return = defineclass(nil, "AiRandMove", "AiRandMove", class, obj_methods, false, false);
+		Utility.Warn("AiRandMove::__define_class end");
+		return __defineclass_return;
 	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+	__obj_fields = {
+		m_ObjId = true,
+		m_Time = true,
+		m_Radius = true,
+		m_ParamReaded = true,
+		m_PursueInterval = true,
+		__ctor_called = true,
+	},
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
+	__interfaces = {
+		"GameFramework.Plugin.ISimpleStoryCommandPlugin",
+	},
+	__method_info = {
+		RandMoveHandler = {
+			private = true,
+		},
+		SelectTargetPos = {
+			private = true,
+		},
+		ctor = {
+			ctor = true,
+		},
+	},
 };
 
 
-
-AiRandMove.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+require "aicommand";
+settempmetatable(AiRandMove);

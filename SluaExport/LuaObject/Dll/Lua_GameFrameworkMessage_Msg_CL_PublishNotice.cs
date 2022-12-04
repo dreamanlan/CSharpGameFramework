@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_CL_PublishNotice : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_PublishNotice o;
 			o=new GameFrameworkMessage.Msg_CL_PublishNotice();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_PublishNotice : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Content(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_PublishNotice self=(GameFrameworkMessage.Msg_CL_PublishNotice)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_PublishNotice : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Content(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_PublishNotice self=(GameFrameworkMessage.Msg_CL_PublishNotice)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_PublishNotice : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_RollNum(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_PublishNotice self=(GameFrameworkMessage.Msg_CL_PublishNotice)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_CL_PublishNotice : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_RollNum(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_CL_PublishNotice self=(GameFrameworkMessage.Msg_CL_PublishNotice)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_Msg_CL_PublishNotice : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_CL_PublishNotice");
+		addMember(l,ctor_s);
 		addMember(l,"m_Content",get_m_Content,set_m_Content,true);
 		addMember(l,"m_RollNum",get_m_RollNum,set_m_RollNum,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_CL_PublishNotice));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_CL_PublishNotice));
 	}
 }

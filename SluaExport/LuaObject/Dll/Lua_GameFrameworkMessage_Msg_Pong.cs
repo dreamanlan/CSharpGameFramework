@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_Pong : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_Pong o;
 			o=new GameFrameworkMessage.Msg_Pong();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_Msg_Pong : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_send_ping_time(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_Pong self=(GameFrameworkMessage.Msg_Pong)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_Msg_Pong : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_send_ping_time(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_Pong self=(GameFrameworkMessage.Msg_Pong)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_Msg_Pong : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_send_pong_time(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_Pong self=(GameFrameworkMessage.Msg_Pong)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_Msg_Pong : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_send_pong_time(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_Pong self=(GameFrameworkMessage.Msg_Pong)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_Msg_Pong : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_Pong");
+		addMember(l,ctor_s);
 		addMember(l,"send_ping_time",get_send_ping_time,set_send_ping_time,true);
 		addMember(l,"send_pong_time",get_send_pong_time,set_send_pong_time,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_Pong));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_Pong));
 	}
 }

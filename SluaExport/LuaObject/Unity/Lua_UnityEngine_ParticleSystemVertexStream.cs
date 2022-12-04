@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ParticleSystemVertexStream : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"UnityEngine.ParticleSystemVertexStream");
@@ -44,6 +44,13 @@ public class Lua_UnityEngine_ParticleSystemVertexStream : LuaObject {
 		addMember(l,36,"Custom2XY");
 		addMember(l,37,"Custom2XYZ");
 		addMember(l,38,"Custom2XYZW");
+		addMember(l,39,"NoiseSumX");
+		addMember(l,40,"NoiseSumXY");
+		addMember(l,41,"NoiseSumXYZ");
+		addMember(l,42,"NoiseImpulseX");
+		addMember(l,43,"NoiseImpulseXY");
+		addMember(l,44,"NoiseImpulseXYZ");
+		addMember(l,45,"MeshIndex");
 		LuaDLL.lua_pop(l, 1);
 	}
 }

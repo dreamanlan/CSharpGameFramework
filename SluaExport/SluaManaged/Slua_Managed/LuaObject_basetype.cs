@@ -171,8 +171,16 @@ namespace SLua
 		{
 		    LuaDLL.lua_pushinteger(l, v);
 		}
-               
-		#endregion
+
+        #endregion
+
+
+        #region interface
+        static public void pushInterface(IntPtr l,object i,Type t) {
+			ObjectCache oc = ObjectCache.get(l);
+            oc.pushInterface(l, i, t);
+        }
+        #endregion
 
 		#region int
 		static public bool checkType(IntPtr l, int p, out int v)
@@ -359,7 +367,7 @@ namespace SLua
 			{
 				int fref = LuaDLL.lua_tointeger(l, -1);
 				LuaDLL.lua_pop(l, 1); // pop ref value;
-				f = state.delgateMap[fref];
+				f = state.delegateMap[fref];
 				if (f == null)
 				{
 					f = newDelegate(l, p);

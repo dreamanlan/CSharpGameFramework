@@ -1,22 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
-		try {
-			UnityEngine.EventSystems.BaseInput o;
-			o=new UnityEngine.EventSystems.BaseInput();
-			pushValue(l,true);
-			pushValue(l,o);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetMouseButtonDown(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -32,6 +20,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetMouseButtonUp(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -47,6 +36,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetMouseButton(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -62,6 +52,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetTouch(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -77,6 +68,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetAxisRaw(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -92,6 +84,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetButtonDown(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -107,6 +100,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_compositionString(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -119,6 +113,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_imeCompositionMode(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -131,6 +126,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_imeCompositionMode(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -145,6 +141,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_compositionCursorPos(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -157,6 +154,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_compositionCursorPos(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -171,6 +169,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_mousePresent(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -183,6 +182,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_mousePosition(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -195,6 +195,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_mouseScrollDelta(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -207,6 +208,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_touchSupported(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -219,6 +221,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_touchCount(IntPtr l) {
 		try {
 			UnityEngine.EventSystems.BaseInput self=(UnityEngine.EventSystems.BaseInput)checkSelf(l);
@@ -230,6 +233,7 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.EventSystems.BaseInput");
 		addMember(l,GetMouseButtonDown);
@@ -246,6 +250,6 @@ public class Lua_UnityEngine_EventSystems_BaseInput : LuaObject {
 		addMember(l,"mouseScrollDelta",get_mouseScrollDelta,null,true);
 		addMember(l,"touchSupported",get_touchSupported,null,true);
 		addMember(l,"touchCount",get_touchCount,null,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.EventSystems.BaseInput),typeof(UnityEngine.EventSystems.UIBehaviour));
+		createTypeMetatable(l,null, typeof(UnityEngine.EventSystems.BaseInput),typeof(UnityEngine.EventSystems.UIBehaviour));
 	}
 }

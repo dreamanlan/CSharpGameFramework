@@ -1,9 +1,24 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_SkillSystem_ISkillTriger : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Clone(IntPtr l) {
+		try {
+			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
+			var ret=self.Clone();
+			pushValue(l,true);
+			pushValue(l,ret);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Init(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -20,6 +35,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int InitProperties(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -32,6 +48,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -44,6 +61,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Execute(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -65,6 +83,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_StartTime(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -77,6 +96,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_StartTime(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -91,6 +111,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Name(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -103,6 +124,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Name(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -117,6 +139,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_OrderInSkill(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -129,6 +152,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OrderInSkill(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -143,6 +167,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_OrderInSection(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -155,6 +180,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OrderInSection(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -169,6 +195,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_IsFinal(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -181,6 +208,7 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_IsFinal(IntPtr l) {
 		try {
 			SkillSystem.ISkillTriger self=(SkillSystem.ISkillTriger)checkSelf(l);
@@ -194,8 +222,10 @@ public class Lua_SkillSystem_ISkillTriger : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"SkillSystem.ISkillTriger");
+		addMember(l,Clone);
 		addMember(l,Init);
 		addMember(l,InitProperties);
 		addMember(l,Reset);

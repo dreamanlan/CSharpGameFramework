@@ -1,72 +1,131 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
-require "AiLogicUtility";
+require "cs2lua__namespaces"; 
 
 AiSelectSkill = {
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
 	__new_object = function(...)
-		return newobject(AiSelectSkill, nil, nil, ...);
+		local __cs2dsl_newobj;
+		__cs2dsl_newobj = newobject(AiSelectSkill, nil, nil, "ctor", 0, nil, ...);
+		return __cs2dsl_newobj;
 	end,
+
+	cctor = function()
+		AiSelectSkill.__cctor();
+	end,
+
+	__cctor = function()
+		if AiSelectSkill.__cctor_called then 
+			return;
+		else
+			AiSelectSkill.__cctor_called = true;
+		end;
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+	-------------------------------
+	------ instance methods -------
+	-------------------------------
+	SetProxy = function(this, result)
+		this.m_Proxy = result;
+	end,
+
+	Clone = function(this)
+		local __method_ret_17_4_20_5;
+		__method_ret_17_4_20_5 = newobject(AiSelectSkill, nil, nil, "ctor", 0, nil);
+		return __method_ret_17_4_20_5;
+	end,
+
+	Evaluate = function(this, instance, handler, _params)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(AiSelectSkill.__ori_Evaluate, this, __cs2lua_func_info, instance, handler, _params);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_Evaluate = function(this, __cs2lua_func_info, instance, handler, _params)
+		local args;
+		args = _params.Values;
+		local objId;
+		objId = invokeexternoperator(System.Int32, BoxedValue, "op_Implicit__Int32__BoxedValue", boxedvalue_list_get(__cs2lua_func_info, args, 1, 0));
+		local npc;
+		npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
+		if (not isequal(nil, npc)) then 
+			local skillInfo;
+			skillInfo = AiLogicUtility.NpcFindCanUseSkill(npc);
+			this.m_Proxy.Value = callexternstaticreturnstruct(BoxedValue, "FromObject", skillInfo);
+		end;
+	end,
+
+	ctor = function(this)
+		AiSelectSkill.__ctor(this);
+	end,
+
+	__ctor = function(this)
+		if this.__ctor_called then 
+			return;
+		else
+			this.__ctor_called = true;
+		end;
+	end,
+	-------------------------------
+	------ instance fields -------
+	-------------------------------
+	__init_obj_fields = function(this)
+		rawset(this, "__ctor_called", false);
+	end,
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
 	__define_class = function()
-		local static = AiSelectSkill;
+		Utility.Warn("AiSelectSkill::__define_class begin");
 
-		local static_methods = {
-			cctor = function()
-			end,
+		local class = AiSelectSkill;
+		local obj_methods = {
+			SetProxy = rawget(class, "SetProxy"),
+			Clone = rawget(class, "Clone"),
+			Evaluate = rawget(class, "Evaluate"),
+			ctor = rawget(class, "ctor"),
+			__ctor = rawget(class, "__ctor"),
 		};
+		local tmp_obj_method = nil;
 
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
-		end;
-		local static_props = nil;
-		local static_events = nil;
-
-		local instance_methods = {
-			SetProxy = function(this, result)
-				this.m_Proxy = result;
-			end,
-			Clone = function(this)
-				return newobject(AiSelectSkill, "ctor", nil);
-			end,
-			Evaluate = function(this, instance, _params)
-				local args; args = _params.Values;
-				local objId; objId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32, false);
-				local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(objId);
-				if (nil ~= npc) then
-					local skillInfo; skillInfo = AiLogicUtility.NpcFindCanUseSkill(npc);
-					this.m_Proxy.Value = skillInfo;
-				end;
-			end,
-			ctor = function(this)
-			end,
-		};
-
-		local instance_fields_build = function()
-			local instance_fields = {
-				m_Proxy = __cs2lua_nil_field_value,
-			};
-			return instance_fields;
-		end;
-		local instance_props = nil;
-		local instance_events = nil;
-		local interfaces = {
-			"GameFramework.Plugin.ISimpleStoryValuePlugin",
-		};
-
-		local interface_map = {
-			ISimpleStoryValuePlugin_SetProxy = "SetProxy",
-			ISimpleStoryValuePlugin_Clone = "Clone",
-			ISimpleStoryValuePlugin_Evaluate = "Evaluate",
-		};
-
-
-		return defineclass(nil, "AiSelectSkill", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+		local __defineclass_return = defineclass(nil, "AiSelectSkill", "AiSelectSkill", class, obj_methods, false, false);
+		Utility.Warn("AiSelectSkill::__define_class end");
+		return __defineclass_return;
 	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+	__obj_fields = {
+		m_Proxy = true,
+		__ctor_called = true,
+	},
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
+	__interfaces = {
+		"GameFramework.Plugin.ISimpleStoryValuePlugin",
+	},
+	__method_info = {
+		ctor = {
+			ctor = true,
+		},
+	},
 };
 
 
-
-AiSelectSkill.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+require "ailogicutility";
+settempmetatable(AiSelectSkill);

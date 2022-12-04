@@ -1,16 +1,31 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_GradientAlphaKey : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
+		try {
+			UnityEngine.GradientAlphaKey o;
+			o=new UnityEngine.GradientAlphaKey();
+			pushValue(l,true);
+			pushValue(l,o);
+			return 2;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor__Single__Single_s(IntPtr l) {
 		try {
 			UnityEngine.GradientAlphaKey o;
 			System.Single a1;
-			checkType(l,2,out a1);
+			checkType(l,1,out a1);
 			System.Single a2;
-			checkType(l,3,out a2);
+			checkType(l,2,out a2);
 			o=new UnityEngine.GradientAlphaKey(a1,a2);
 			pushValue(l,true);
 			pushValue(l,o);
@@ -21,6 +36,7 @@ public class Lua_UnityEngine_GradientAlphaKey : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_alpha(IntPtr l) {
 		try {
 			UnityEngine.GradientAlphaKey self;
@@ -34,6 +50,7 @@ public class Lua_UnityEngine_GradientAlphaKey : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_alpha(IntPtr l) {
 		try {
 			UnityEngine.GradientAlphaKey self;
@@ -41,7 +58,7 @@ public class Lua_UnityEngine_GradientAlphaKey : LuaObject {
 			System.Single v;
 			checkType(l,2,out v);
 			self.alpha=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -50,6 +67,7 @@ public class Lua_UnityEngine_GradientAlphaKey : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_time(IntPtr l) {
 		try {
 			UnityEngine.GradientAlphaKey self;
@@ -63,6 +81,7 @@ public class Lua_UnityEngine_GradientAlphaKey : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_time(IntPtr l) {
 		try {
 			UnityEngine.GradientAlphaKey self;
@@ -70,7 +89,7 @@ public class Lua_UnityEngine_GradientAlphaKey : LuaObject {
 			System.Single v;
 			checkType(l,2,out v);
 			self.time=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -78,10 +97,13 @@ public class Lua_UnityEngine_GradientAlphaKey : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.GradientAlphaKey");
+		addMember(l,ctor_s);
+		addMember(l,ctor__Single__Single_s);
 		addMember(l,"alpha",get_alpha,set_alpha,true);
 		addMember(l,"time",get_time,set_time,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.GradientAlphaKey),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.GradientAlphaKey),typeof(System.ValueType));
 	}
 }

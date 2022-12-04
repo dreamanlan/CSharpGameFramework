@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_NodeMessageWithAccountAndGuid : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeMessageWithAccountAndGuid o;
 			o=new GameFrameworkMessage.NodeMessageWithAccountAndGuid();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_NodeMessageWithAccountAndGuid : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Account(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeMessageWithAccountAndGuid self=(GameFrameworkMessage.NodeMessageWithAccountAndGuid)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_NodeMessageWithAccountAndGuid : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Account(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeMessageWithAccountAndGuid self=(GameFrameworkMessage.NodeMessageWithAccountAndGuid)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFrameworkMessage_NodeMessageWithAccountAndGuid : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Guid(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeMessageWithAccountAndGuid self=(GameFrameworkMessage.NodeMessageWithAccountAndGuid)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFrameworkMessage_NodeMessageWithAccountAndGuid : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Guid(IntPtr l) {
 		try {
 			GameFrameworkMessage.NodeMessageWithAccountAndGuid self=(GameFrameworkMessage.NodeMessageWithAccountAndGuid)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFrameworkMessage_NodeMessageWithAccountAndGuid : LuaObject 
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.NodeMessageWithAccountAndGuid");
+		addMember(l,ctor_s);
 		addMember(l,"m_Account",get_m_Account,set_m_Account,true);
 		addMember(l,"m_Guid",get_m_Guid,set_m_Guid,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.NodeMessageWithAccountAndGuid));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.NodeMessageWithAccountAndGuid));
 	}
 }

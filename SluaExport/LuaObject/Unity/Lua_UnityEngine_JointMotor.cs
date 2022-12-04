@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_JointMotor : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.JointMotor o;
 			o=new UnityEngine.JointMotor();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_JointMotor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_targetVelocity(IntPtr l) {
 		try {
 			UnityEngine.JointMotor self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_JointMotor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_targetVelocity(IntPtr l) {
 		try {
 			UnityEngine.JointMotor self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_JointMotor : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.targetVelocity=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_JointMotor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_force(IntPtr l) {
 		try {
 			UnityEngine.JointMotor self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_JointMotor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_force(IntPtr l) {
 		try {
 			UnityEngine.JointMotor self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_JointMotor : LuaObject {
 			float v;
 			checkType(l,2,out v);
 			self.force=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +80,7 @@ public class Lua_UnityEngine_JointMotor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_freeSpin(IntPtr l) {
 		try {
 			UnityEngine.JointMotor self;
@@ -88,6 +94,7 @@ public class Lua_UnityEngine_JointMotor : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_freeSpin(IntPtr l) {
 		try {
 			UnityEngine.JointMotor self;
@@ -95,7 +102,7 @@ public class Lua_UnityEngine_JointMotor : LuaObject {
 			bool v;
 			checkType(l,2,out v);
 			self.freeSpin=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -103,11 +110,13 @@ public class Lua_UnityEngine_JointMotor : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.JointMotor");
+		addMember(l,ctor_s);
 		addMember(l,"targetVelocity",get_targetVelocity,set_targetVelocity,true);
 		addMember(l,"force",get_force,set_force,true);
 		addMember(l,"freeSpin",get_freeSpin,set_freeSpin,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.JointMotor),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.JointMotor),typeof(System.ValueType));
 	}
 }

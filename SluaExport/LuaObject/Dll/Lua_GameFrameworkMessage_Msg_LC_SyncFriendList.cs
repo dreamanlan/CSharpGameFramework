@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_LC_SyncFriendList : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_SyncFriendList o;
 			o=new GameFrameworkMessage.Msg_LC_SyncFriendList();
@@ -16,21 +17,10 @@ public class Lua_GameFrameworkMessage_Msg_LC_SyncFriendList : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_m_Friends(IntPtr l) {
-		try {
-			GameFrameworkMessage.Msg_LC_SyncFriendList self=(GameFrameworkMessage.Msg_LC_SyncFriendList)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.m_Friends);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_LC_SyncFriendList");
-		addMember(l,"m_Friends",get_m_Friends,null,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_LC_SyncFriendList));
+		addMember(l,ctor_s);
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_LC_SyncFriendList));
 	}
 }

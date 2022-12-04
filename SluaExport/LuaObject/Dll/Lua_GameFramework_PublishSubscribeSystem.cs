@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_PublishSubscribeSystem : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.PublishSubscribeSystem o;
 			o=new GameFramework.PublishSubscribeSystem();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_PublishSubscribeSystem : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Subscribe(IntPtr l) {
 		try {
 			GameFramework.PublishSubscribeSystem self=(GameFramework.PublishSubscribeSystem)checkSelf(l);
@@ -36,6 +38,7 @@ public class Lua_GameFramework_PublishSubscribeSystem : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Unsubscribe(IntPtr l) {
 		try {
 			GameFramework.PublishSubscribeSystem self=(GameFramework.PublishSubscribeSystem)checkSelf(l);
@@ -50,6 +53,7 @@ public class Lua_GameFramework_PublishSubscribeSystem : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Publish(IntPtr l) {
 		try {
 			GameFramework.PublishSubscribeSystem self=(GameFramework.PublishSubscribeSystem)checkSelf(l);
@@ -67,11 +71,13 @@ public class Lua_GameFramework_PublishSubscribeSystem : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.PublishSubscribeSystem");
+		addMember(l,ctor_s);
 		addMember(l,Subscribe);
 		addMember(l,Unsubscribe);
 		addMember(l,Publish);
-		createTypeMetatable(l,constructor, typeof(GameFramework.PublishSubscribeSystem));
+		createTypeMetatable(l,null, typeof(GameFramework.PublishSubscribeSystem));
 	}
 }

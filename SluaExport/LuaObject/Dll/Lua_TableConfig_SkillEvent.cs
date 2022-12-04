@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_TableConfig_SkillEvent : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			TableConfig.SkillEvent o;
 			o=new TableConfig.SkillEvent();
@@ -17,6 +18,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadFromBinary(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -34,6 +36,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int WriteToBinary(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -48,6 +51,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_actorId(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -60,6 +64,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_actorId(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -74,6 +79,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_skillId(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -86,6 +92,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_skillId(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -100,6 +107,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_eventId(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -112,6 +120,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_eventId(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -126,6 +135,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_triggerBuffId(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -138,6 +148,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_triggerBuffId(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -152,6 +163,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_triggerSkillId(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -164,6 +176,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_triggerSkillId(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -178,6 +191,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_proc(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -190,6 +204,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_proc(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -204,6 +219,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_desc(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -216,6 +232,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_desc(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -230,6 +247,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_param1(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -242,6 +260,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_param1(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -256,6 +275,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_desc1(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -268,6 +288,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_desc1(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -282,6 +303,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_param2(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -294,6 +316,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_param2(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -308,6 +331,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_desc2(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -320,6 +344,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_desc2(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -334,6 +359,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_param3(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -346,6 +372,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_param3(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -360,6 +387,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_desc3(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -372,6 +400,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_desc3(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -386,6 +415,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_param4(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -398,6 +428,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_param4(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -412,6 +443,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_desc4(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -424,6 +456,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_desc4(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -438,6 +471,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_param5(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -450,6 +484,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_param5(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -464,6 +499,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_desc5(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -476,6 +512,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_desc5(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -490,6 +527,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_param6(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -502,6 +540,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_param6(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -516,6 +555,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_desc6(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -528,6 +568,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_desc6(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -542,6 +583,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_param7(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -554,6 +596,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_param7(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -568,6 +611,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_desc7(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -580,6 +624,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_desc7(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -594,6 +639,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_param8(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -606,6 +652,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_param8(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -620,6 +667,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_desc8(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -632,6 +680,7 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_desc8(IntPtr l) {
 		try {
 			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
@@ -645,34 +694,10 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int get_args(IntPtr l) {
-		try {
-			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
-			pushValue(l,true);
-			pushValue(l,self.args);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int set_args(IntPtr l) {
-		try {
-			TableConfig.SkillEvent self=(TableConfig.SkillEvent)checkSelf(l);
-			System.Collections.Generic.List<System.Int32> v;
-			checkType(l,2,out v);
-			self.args=v;
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"TableConfig.SkillEvent");
+		addMember(l,ctor_s);
 		addMember(l,ReadFromBinary);
 		addMember(l,WriteToBinary);
 		addMember(l,"actorId",get_actorId,set_actorId,true);
@@ -698,7 +723,6 @@ public class Lua_TableConfig_SkillEvent : LuaObject {
 		addMember(l,"desc7",get_desc7,set_desc7,true);
 		addMember(l,"param8",get_param8,set_param8,true);
 		addMember(l,"desc8",get_desc8,set_desc8,true);
-		addMember(l,"args",get_args,set_args,true);
-		createTypeMetatable(l,constructor, typeof(TableConfig.SkillEvent));
+		createTypeMetatable(l,null, typeof(TableConfig.SkillEvent));
 	}
 }

@@ -1,168 +1,330 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
+require "cs2lua__namespaces"; 
 
 BulletManager = {
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
 	__new_object = function(...)
-		return newobject(BulletManager, nil, nil, ...);
+		local __cs2dsl_newobj;
+		__cs2dsl_newobj = newobject(BulletManager, nil, nil, "ctor", 0, nil, ...);
+		return __cs2dsl_newobj;
 	end,
-	__define_class = function()
-		local static = BulletManager;
 
-		local static_methods = {
-			get_Instance = function()
-				return BulletManager.s_Instance;
-			end,
-			cctor = function()
-				BulletManager.__cctor();
-			end,
-			__cctor = function()
-				if BulletManager.__cctor_called then
-					return;
+	get_Instance = function()
+		local __method_ret_83_4_89_5;
+		__method_ret_83_4_89_5 = BulletManager.s_Instance;
+		return __method_ret_83_4_89_5;
+	end,
+
+	cctor = function()
+		BulletManager.__cctor();
+	end,
+
+	__cctor = function()
+		if BulletManager.__cctor_called then 
+			return;
+		else
+			BulletManager.__cctor_called = true;
+		end;
+		BulletManager.s_Instance = newobject(BulletManager, nil, nil, "ctor", 0, nil);
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+	-------------------------------
+	------ instance methods -------
+	-------------------------------
+	GetCollideObject = function(this, bullet)
+		local __cs2lua_func_info = luainitialize();
+		local __retval_0, __retval_1 = luapcall(BulletManager.__ori_GetCollideObject, this, __cs2lua_func_info, bullet);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+		if not __retval_0 then
+			lualog("{0}", __retval_1);
+			__retval_1 = nil;
+		end;
+		return __retval_1;
+	end,
+	__ori_GetCollideObject = function(this, __cs2lua_func_info, bullet)
+		local __method_ret_12_4_38_5;
+		local pos1;
+		pos1 = get_tranform_position(__cs2lua_func_info, bullet.transform);
+		local __foreach_15_8_36_9 = newiterator(__cs2lua_func_info, this.m_Bullets, System.Collections.Generic.Dictionary_TKey_TValue, System.Collections.Generic.Dictionary_TKey_TValue, true);
+		for pair in getiterator(__foreach_15_8_36_9) do
+			if pair == __cs2lua_nil then
+				pair = nil;
+			end;
+			local other;
+			other = pair.Value;
+			local otherObj;
+			otherObj = other.Obj;
+			if invokeexternoperator(System.Boolean, UnityEngine.Object, "op_Inequality", bullet, otherObj) then 
+				local pos2;
+				pos2 = get_tranform_position(__cs2lua_func_info, otherObj.transform);
+				local lastPos2;
+				lastPos2 = BulletManager.CollideInfo.GetLastPos(other);
+				lastPos2 = wrap_vector3(__cs2lua_func_info, lastPos2);
+				local distSqr;
+				distSqr = (invokeexternoperatorreturnstructimpl(__cs2lua_func_info, UnityEngine.Vector3, UnityEngine.Vector3, "op_Subtraction", wrap_vector3(__cs2lua_func_info, pos1), wrap_vector3(__cs2lua_func_info, pos2))).sqrMagnitude;
+				if (distSqr < 0.01000000) then 
+					UnityEngine.Debug.Log__Object(luastrtocsstr("distSqr<0.01f, collide."));
+					__method_ret_12_4_38_5 = otherObj;
+					return __method_ret_12_4_38_5;
 				else
-					BulletManager.__cctor_called = true;
-				end
-				BulletManager.s_Instance = newobject(BulletManager, "ctor", nil);
-			end,
-		};
-
-		local static_fields_build = function()
-			local static_fields = {
-				s_Instance = __cs2lua_nil_field_value,
-				__cctor_called = false,
-			};
-			return static_fields;
-		end;
-
-		local static_props = {
-			Instance = {
-				get = static_methods.get_Instance,
-			},
-		};
-
-		local static_events = nil;
-
-		local instance_methods = {
-			GetCollideObject = function(this, bullet)
-				local pos1; pos1 = bullet.transform.position;
-				for pair in getiterator(this.m_Bullets) do
-					local other; other = pair.Value;
-					local otherObj; otherObj = other.Obj;
-					if invokeexternoperator(UnityEngine.Object, "op_Inequality", bullet, otherObj) then
-						local pos2; pos2 = otherObj.transform.position;
-						local lastPos2; lastPos2 = other:GetLastPos();
-						local distSqr; distSqr = ( (pos1 - pos2) ).sqrMagnitude;
-						if (distSqr < 0.01) then
-							UnityEngine.Debug.Log("distSqr<0.01f, collide.");
-							return otherObj;
-						else
-							UnityEngine.Debug.Log(System.String.Format("Dist:{0}", distSqr));
-						end;
-						local dot; dot = UnityEngine.Vector3.Dot((lastPos2 - pos2), (pos1 - pos2));
-						if ((lastPos2.sqrMagnitude > 0.00) and (dot > 0)) then
-							UnityEngine.Debug.Log("cross, collide.");
-							return otherObj;
-						else
-							UnityEngine.Debug.Log(System.String.Format("lastPos2Sqr:{0} dot:{1}", lastPos2.sqrMagnitude, dot));
-						end;
-					end;
+					UnityEngine.Debug.Log__Object(System.String.Format__String__Object(luastrtocsstr("Dist:{0}"), distSqr));
 				end;
-				return nil;
-			end,
-			UpdatePos = function(this, bullet)
-				local info;
-				if (function() local __compiler_invoke_42; __compiler_invoke_42, info = this.m_Bullets:TryGetValue(bullet:GetInstanceID(), __cs2lua_out); return __compiler_invoke_42; end)() then
-					info:SetLastPos(bullet.transform.position);
+				local dot;
+				dot = UnityEngine.Vector3.Dot(invokeexternoperatorreturnstructimpl(__cs2lua_func_info, UnityEngine.Vector3, UnityEngine.Vector3, "op_Subtraction", wrap_vector3(__cs2lua_func_info, lastPos2), wrap_vector3(__cs2lua_func_info, pos2)), invokeexternoperatorreturnstructimpl(__cs2lua_func_info, UnityEngine.Vector3, UnityEngine.Vector3, "op_Subtraction", wrap_vector3(__cs2lua_func_info, pos1), wrap_vector3(__cs2lua_func_info, pos2)));
+				if ((lastPos2.sqrMagnitude > 0.00010000) and (dot > 0)) then 
+					UnityEngine.Debug.Log__Object(luastrtocsstr("cross, collide."));
+					__method_ret_12_4_38_5 = otherObj;
+					return __method_ret_12_4_38_5;
+				else
+					UnityEngine.Debug.Log__Object(System.String.Format__String__Object__Object(luastrtocsstr("lastPos2Sqr:{0} dot:{1}"), lastPos2.sqrMagnitude, dot));
 				end;
-			end,
-			AddBullet = function(this, bullet)
-				this.m_Bullets:Add(bullet:GetInstanceID(), newobject(BulletManager.CollideInfo, "ctor", (function(newobj) newobj.Obj = bullet; end)));
-			end,
-			RemoveBullet = function(this, bullet)
-				this.m_Bullets:Remove(bullet:GetInstanceID());
-			end,
-			ctor = function(this)
-			end,
-		};
-
-		local instance_fields_build = function()
-			local instance_fields = {
-				m_Bullets = newexterndictionary(System.Collections.Generic.Dictionary_TKey_TValue, "System.Collections.Generic.Dictionary_TKey_TValue", "ctor", {}),
-			};
-			return instance_fields;
+			end;
 		end;
-		local instance_props = nil;
-		local instance_events = nil;
-		local interfaces = nil;
-		local interface_map = nil;
-
-		return defineclass(nil, "BulletManager", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+		recycleiterator(__cs2lua_func_info, __foreach_15_8_36_9);
+		__method_ret_12_4_38_5 = nil;
+		return __method_ret_12_4_38_5;
 	end,
+
+	UpdatePos = function(this, bullet)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(BulletManager.__ori_UpdatePos, this, __cs2lua_func_info, bullet);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_UpdatePos = function(this, __cs2lua_func_info, bullet)
+		local info;
+		--
+		local __invoke_42_12_42_67;
+		__invoke_42_12_42_67,info = this.m_Bullets:TryGetValue(bullet:GetInstanceID(), __cs2lua_out);
+		if __invoke_42_12_42_67 then
+
+			BulletManager.CollideInfo.SetLastPos(info, get_tranform_position(__cs2lua_func_info, bullet.transform));
+		end;
+	end,
+
+	AddBullet = function(this, bullet)
+		this.m_Bullets:Add(bullet:GetInstanceID(), newobject(BulletManager.CollideInfo, nil, nil, "ctor", 0, function(newobj)
+			newobj.Obj = bullet;
+		end));
+	end,
+
+	RemoveBullet = function(this, bullet)
+		this.m_Bullets:Remove(bullet:GetInstanceID());
+	end,
+
+	ctor = function(this)
+		BulletManager.__ctor(this);
+	end,
+
+	__ctor = function(this)
+		if this.__ctor_called then 
+			return;
+		else
+			this.__ctor_called = true;
+		end;
+		this.m_Bullets = newexterndictionary(System.Collections.Generic.Dictionary_TKey_TValue, buildglobalinfoonce("g_System_Collections_Generic_Dictionary_System_Int32_BulletManager_CollideInfo_TypeArgs", getglobalinfo("g_System_Collections_Generic_Dictionary_System_Int32_BulletManager_CollideInfo_TypeArgs") or {System.Int32, BulletManager.CollideInfo}), buildglobalinfoonce("g_System_Collections_Generic_Dictionary_System_Int32_BulletManager_CollideInfo_TypeKinds", getglobalinfo("g_System_Collections_Generic_Dictionary_System_Int32_BulletManager_CollideInfo_TypeKinds") or {TypeKind.Structure, TypeKind.Class}), "ctor", 0, {});
+	end,
+	-------------------------------
+	------ instance fields -------
+	-------------------------------
+	__init_obj_fields = function(this)
+		rawset(this, "__ctor_called", false);
+	end,
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
+	__define_class = function()
+		Utility.Warn("BulletManager::__define_class begin");
+
+		local class = BulletManager;
+		local obj_methods = {
+			GetCollideObject = rawget(class, "GetCollideObject"),
+			UpdatePos = rawget(class, "UpdatePos"),
+			AddBullet = rawget(class, "AddBullet"),
+			RemoveBullet = rawget(class, "RemoveBullet"),
+			ctor = rawget(class, "ctor"),
+			__ctor = rawget(class, "__ctor"),
+		};
+		local tmp_obj_method = nil;
+
+		local __defineclass_return = defineclass(nil, "BulletManager", "BulletManager", class, obj_methods, false, false);
+		Utility.Warn("BulletManager::__define_class end");
+		return __defineclass_return;
+	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		s_Instance = true,
+		__cctor_called = true,
+	},
+
+	__obj_fields = {
+		m_Bullets = true,
+		__ctor_called = true,
+	},
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
+	__method_info = {
+		ctor = {
+			ctor = true,
+		},
+	},
 };
-
-
-
 
 BulletManager.CollideInfo = {
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
 	__new_object = function(...)
-		return newobject(BulletManager.CollideInfo, nil, nil, ...);
+		local __cs2dsl_newobj;
+		__cs2dsl_newobj = newobject(BulletManager.CollideInfo, nil, nil, "ctor", 0, nil, ...);
+		return __cs2dsl_newobj;
 	end,
+
+	cctor = function()
+		BulletManager.CollideInfo.__cctor();
+	end,
+
+	__cctor = function()
+		if BulletManager.CollideInfo.__cctor_called then 
+			return;
+		else
+			BulletManager.CollideInfo.__cctor_called = true;
+		end;
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+	-------------------------------
+	------ instance methods -------
+	-------------------------------
+	GetLastPos = function(this)
+		local __method_ret_62_8_69_9;
+		if (this.LastSetIndex == 0) then 
+			__method_ret_62_8_69_9 = this.LastPos2;
+			return __method_ret_62_8_69_9;
+		else
+			__method_ret_62_8_69_9 = this.LastPos1;
+			return __method_ret_62_8_69_9;
+		end;
+		return nil;
+	end,
+
+	SetLastPos = function(this, pos)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(BulletManager.CollideInfo.__ori_SetLastPos, this, __cs2lua_func_info, pos);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_SetLastPos = function(this, __cs2lua_func_info, pos)
+		this.LastSetIndex = (((this.LastSetIndex + 1)) % 2);
+		if (this.LastSetIndex == 0) then 
+			local __old_val_74_16_74_30;
+			__old_val_74_16_74_30 = this.LastPos1;
+			this.LastPos1 = pos;
+			this.LastPos1 = wrap_vector3(__cs2lua_func_info, this.LastPos1);
+			local __new_val_74_16_74_30;
+			__new_val_74_16_74_30 = this.LastPos1;
+			recycle_and_keep_vector3(__cs2lua_func_info, UnityEngine.Vector3, __old_val_74_16_74_30, __new_val_74_16_74_30);
+		else
+			local __old_val_76_16_76_30;
+			__old_val_76_16_76_30 = this.LastPos2;
+			this.LastPos2 = pos;
+			this.LastPos2 = wrap_vector3(__cs2lua_func_info, this.LastPos2);
+			local __new_val_76_16_76_30;
+			__new_val_76_16_76_30 = this.LastPos2;
+			recycle_and_keep_vector3(__cs2lua_func_info, UnityEngine.Vector3, __old_val_76_16_76_30, __new_val_76_16_76_30);
+		end;
+	end,
+
+	ctor = function(this)
+		BulletManager.CollideInfo.__ctor(this);
+	end,
+
+	__ctor = function(this)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(BulletManager.CollideInfo.__ori___ctor, this, __cs2lua_func_info);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori___ctor = function(this, __cs2lua_func_info)
+		if this.__ctor_called then 
+			return;
+		else
+			this.__ctor_called = true;
+		end;
+		this.LastPos1 = get_vector3_zero(__cs2lua_func_info);
+		recycle_and_keep_vector3(__cs2lua_func_info, UnityEngine.Vector3, nil, this.LastPos1);
+		this.LastPos2 = get_vector3_zero(__cs2lua_func_info);
+		recycle_and_keep_vector3(__cs2lua_func_info, UnityEngine.Vector3, nil, this.LastPos2);
+	end,
+	-------------------------------
+	------ instance fields -------
+	-------------------------------
+	__init_obj_fields = function(this)
+		rawset(this, "LastSetIndex", 0);
+		rawset(this, "__ctor_called", false);
+	end,
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
 	__define_class = function()
-		local static = BulletManager.CollideInfo;
+		Utility.Warn("BulletManager.CollideInfo::__define_class begin");
 
-		local static_methods = {
-			cctor = function()
-			end,
+		local class = BulletManager.CollideInfo;
+		local obj_methods = {
+			GetLastPos = rawget(class, "GetLastPos"),
+			SetLastPos = rawget(class, "SetLastPos"),
+			ctor = rawget(class, "ctor"),
+			__ctor = rawget(class, "__ctor"),
 		};
+		local tmp_obj_method = nil;
 
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
-		end;
-		local static_props = nil;
-		local static_events = nil;
-
-		local instance_methods = {
-			GetLastPos = function(this)
-				if (this.LastSetIndex == 0) then
-					return this.LastPos2;
-				else
-					return this.LastPos1;
-				end;
-			end,
-			SetLastPos = function(this, pos)
-				this.LastSetIndex = invokeintegeroperator(1, "%", ( invokeintegeroperator(2, "+", this.LastSetIndex, 1, System.Int32, System.Int32) ), 2, System.Int32, System.Int32);
-				if (this.LastSetIndex == 0) then
-					this.LastPos1 = pos;
-				else
-					this.LastPos2 = pos;
-				end;
-			end,
-			ctor = function(this)
-			end,
-		};
-
-		local instance_fields_build = function()
-			local instance_fields = {
-				LastPos1 = UnityEngine.Vector3.zero,
-				LastPos2 = UnityEngine.Vector3.zero,
-				Obj = __cs2lua_nil_field_value,
-				LastSetIndex = 0,
-			};
-			return instance_fields;
-		end;
-		local instance_props = nil;
-		local instance_events = nil;
-		local interfaces = nil;
-		local interface_map = nil;
-
-		return defineclass(nil, "BulletManager.CollideInfo", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+		local __defineclass_return = defineclass(nil, "BulletManager.CollideInfo", "CollideInfo", class, obj_methods, false, false);
+		Utility.Warn("BulletManager.CollideInfo::__define_class end");
+		return __defineclass_return;
 	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+	__obj_fields = {
+		LastPos1 = true,
+		LastPos2 = true,
+		Obj = true,
+		LastSetIndex = true,
+		__ctor_called = true,
+	},
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
+	__method_info = {
+		ctor = {
+			ctor = true,
+		},
+	},
 };
 
 
-
-BulletManager.CollideInfo.__define_class();
-BulletManager.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+settempmetatable(BulletManager.CollideInfo);
+settempmetatable(BulletManager);

@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ProtoBuf_Extensible : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetExtensionObject_s(IntPtr l) {
 		try {
 			ProtoBuf.IExtension a1;
@@ -21,6 +22,29 @@ public class Lua_ProtoBuf_Extensible : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int AppendValue_s(IntPtr l) {
+		try {
+			ProtoBuf.Meta.TypeModel a1;
+			checkType(l,1,out a1);
+			ProtoBuf.IExtensible a2;
+			checkType(l,2,out a2);
+			System.Int32 a3;
+			checkType(l,3,out a3);
+			ProtoBuf.DataFormat a4;
+			checkEnum(l,4,out a4);
+			System.Object a5;
+			checkType(l,5,out a5);
+			ProtoBuf.Extensible.AppendValue(a1,a2,a3,a4,a5);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int TryGetValue_s(IntPtr l) {
 		try {
 			ProtoBuf.Meta.TypeModel a1;
@@ -47,6 +71,7 @@ public class Lua_ProtoBuf_Extensible : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetValues_s(IntPtr l) {
 		try {
 			ProtoBuf.Meta.TypeModel a1;
@@ -68,33 +93,13 @@ public class Lua_ProtoBuf_Extensible : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int AppendValue_s(IntPtr l) {
-		try {
-			ProtoBuf.Meta.TypeModel a1;
-			checkType(l,1,out a1);
-			ProtoBuf.IExtensible a2;
-			checkType(l,2,out a2);
-			System.Int32 a3;
-			checkType(l,3,out a3);
-			ProtoBuf.DataFormat a4;
-			checkEnum(l,4,out a4);
-			System.Object a5;
-			checkType(l,5,out a5);
-			ProtoBuf.Extensible.AppendValue(a1,a2,a3,a4,a5);
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ProtoBuf.Extensible");
 		addMember(l,GetExtensionObject_s);
+		addMember(l,AppendValue_s);
 		addMember(l,TryGetValue_s);
 		addMember(l,GetValues_s);
-		addMember(l,AppendValue_s);
 		createTypeMetatable(l,null, typeof(ProtoBuf.Extensible));
 	}
 }

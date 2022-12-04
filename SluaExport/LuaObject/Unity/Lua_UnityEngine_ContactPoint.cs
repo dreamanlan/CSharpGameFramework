@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ContactPoint : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.ContactPoint o;
 			o=new UnityEngine.ContactPoint();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_ContactPoint : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_point(IntPtr l) {
 		try {
 			UnityEngine.ContactPoint self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_ContactPoint : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_normal(IntPtr l) {
 		try {
 			UnityEngine.ContactPoint self;
@@ -43,6 +46,7 @@ public class Lua_UnityEngine_ContactPoint : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_thisCollider(IntPtr l) {
 		try {
 			UnityEngine.ContactPoint self;
@@ -56,6 +60,7 @@ public class Lua_UnityEngine_ContactPoint : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_otherCollider(IntPtr l) {
 		try {
 			UnityEngine.ContactPoint self;
@@ -69,6 +74,7 @@ public class Lua_UnityEngine_ContactPoint : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_separation(IntPtr l) {
 		try {
 			UnityEngine.ContactPoint self;
@@ -81,13 +87,15 @@ public class Lua_UnityEngine_ContactPoint : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ContactPoint");
+		addMember(l,ctor_s);
 		addMember(l,"point",get_point,null,true);
 		addMember(l,"normal",get_normal,null,true);
 		addMember(l,"thisCollider",get_thisCollider,null,true);
 		addMember(l,"otherCollider",get_otherCollider,null,true);
 		addMember(l,"separation",get_separation,null,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.ContactPoint),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.ContactPoint),typeof(System.ValueType));
 	}
 }

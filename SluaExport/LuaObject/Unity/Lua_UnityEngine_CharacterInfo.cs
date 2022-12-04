@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_CharacterInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo o;
 			o=new UnityEngine.CharacterInfo();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_index(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_index(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			System.Int32 v;
 			checkType(l,2,out v);
 			self.index=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_size(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_size(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			System.Int32 v;
 			checkType(l,2,out v);
 			self.size=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +80,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_style(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -88,6 +94,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_style(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -95,7 +102,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			UnityEngine.FontStyle v;
 			checkEnum(l,2,out v);
 			self.style=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -104,6 +111,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_advance(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -117,6 +125,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_advance(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -124,7 +133,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.advance=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -133,6 +142,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_glyphWidth(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -146,6 +156,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_glyphWidth(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -153,7 +164,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.glyphWidth=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -162,6 +173,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_glyphHeight(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -175,6 +187,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_glyphHeight(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -182,7 +195,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.glyphHeight=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -191,6 +204,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_bearing(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -204,6 +218,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_bearing(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -211,7 +226,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.bearing=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -220,6 +235,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_minY(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -233,6 +249,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_minY(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -240,7 +257,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.minY=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -249,6 +266,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_maxY(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -262,6 +280,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_maxY(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -269,7 +288,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.maxY=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -278,6 +297,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_minX(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -291,6 +311,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_minX(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -298,7 +319,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.minX=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -307,6 +328,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_maxX(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -320,6 +342,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_maxX(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -327,7 +350,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			int v;
 			checkType(l,2,out v);
 			self.maxX=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -336,6 +359,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_uvBottomLeft(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -349,6 +373,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_uvBottomLeft(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -356,7 +381,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			UnityEngine.Vector2 v;
 			checkType(l,2,out v);
 			self.uvBottomLeft=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -365,6 +390,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_uvBottomRight(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -378,6 +404,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_uvBottomRight(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -385,7 +412,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			UnityEngine.Vector2 v;
 			checkType(l,2,out v);
 			self.uvBottomRight=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -394,6 +421,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_uvTopRight(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -407,6 +435,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_uvTopRight(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -414,7 +443,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			UnityEngine.Vector2 v;
 			checkType(l,2,out v);
 			self.uvTopRight=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -423,6 +452,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_uvTopLeft(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -436,6 +466,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_uvTopLeft(IntPtr l) {
 		try {
 			UnityEngine.CharacterInfo self;
@@ -443,7 +474,7 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			UnityEngine.Vector2 v;
 			checkType(l,2,out v);
 			self.uvTopLeft=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -451,8 +482,10 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.CharacterInfo");
+		addMember(l,ctor_s);
 		addMember(l,"index",get_index,set_index,true);
 		addMember(l,"size",get_size,set_size,true);
 		addMember(l,"style",get_style,set_style,true);
@@ -468,6 +501,6 @@ public class Lua_UnityEngine_CharacterInfo : LuaObject {
 		addMember(l,"uvBottomRight",get_uvBottomRight,set_uvBottomRight,true);
 		addMember(l,"uvTopRight",get_uvTopRight,set_uvTopRight,true);
 		addMember(l,"uvTopLeft",get_uvTopLeft,set_uvTopLeft,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.CharacterInfo),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.CharacterInfo),typeof(System.ValueType));
 	}
 }

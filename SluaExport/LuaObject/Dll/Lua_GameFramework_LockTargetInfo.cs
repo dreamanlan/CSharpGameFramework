@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_LockTargetInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.LockTargetInfo o;
 			o=new GameFramework.LockTargetInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_LockTargetInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_TargetId(IntPtr l) {
 		try {
 			GameFramework.LockTargetInfo self=(GameFramework.LockTargetInfo)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFramework_LockTargetInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_TargetId(IntPtr l) {
 		try {
 			GameFramework.LockTargetInfo self=(GameFramework.LockTargetInfo)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFramework_LockTargetInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Target(IntPtr l) {
 		try {
 			GameFramework.LockTargetInfo self=(GameFramework.LockTargetInfo)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFramework_LockTargetInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Target(IntPtr l) {
 		try {
 			GameFramework.LockTargetInfo self=(GameFramework.LockTargetInfo)checkSelf(l);
@@ -68,10 +73,12 @@ public class Lua_GameFramework_LockTargetInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.LockTargetInfo");
+		addMember(l,ctor_s);
 		addMember(l,"TargetId",get_TargetId,set_TargetId,true);
 		addMember(l,"Target",get_Target,set_Target,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.LockTargetInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.LockTargetInfo));
 	}
 }

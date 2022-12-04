@@ -1,110 +1,193 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
-require "AiCommand";
+require "cs2lua__namespaces"; 
 
 AiCastSkill = {
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
 	__new_object = function(...)
-		return newobject(AiCastSkill, nil, nil, ...);
+		local __cs2dsl_newobj;
+		__cs2dsl_newobj = newobject(AiCastSkill, nil, nil, "ctor", 0, nil, ...);
+		return __cs2dsl_newobj;
 	end,
-	__define_class = function()
-		local static = AiCastSkill;
 
-		local static_methods = {
-			cctor = function()
-			end,
-		};
+	cctor = function()
+		AiCastSkill.__cctor();
+	end,
 
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
+	__cctor = function()
+		if AiCastSkill.__cctor_called then 
+			return;
+		else
+			AiCastSkill.__cctor_called = true;
 		end;
-		local static_props = nil;
-		local static_events = nil;
+	end,
 
-		local instance_methods = {
-			Clone = function(this)
-				return newobject(AiCastSkill, "ctor", nil);
-			end,
-			ResetState = function(this)
-				this.m_ParamReaded = false;
-				this.m_SkillCasted = false;
-			end,
-			ExecCommand = function(this, instance, _params, delta)
-				local args; args = _params.Values;
-				if (not this.m_ParamReaded) then
-					this.m_ObjId = typecast(getexterninstanceindexer(args, nil, "get_Item", 0), System.Int32, false);
-					this.m_SkillInfo = typeas(getexterninstanceindexer(args, nil, "get_Item", 1), GameFramework.SkillInfo, false);
-				end;
-				if (not this.m_SkillCasted) then
-					local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
-					if ((nil ~= npc) and (not npc:IsUnderControl())) then
-						local targetId; targetId = npc:GetAiStateInfo().Target;
-						local target; target = GameFramework.PluginFramework.Instance:GetEntityById(targetId);
-						if (((nil ~= target) and (not target:IsDead())) and (GameFramework.Geometry.DistanceSquare(npc:GetMovementStateInfo():GetPosition3D(), target:GetMovementStateInfo():GetPosition3D()) <= (this.m_SkillInfo.Distance * this.m_SkillInfo.Distance))) then
-							local srcPos; srcPos = npc:GetMovementStateInfo():GetPosition3D();
-							local targetPos; targetPos = target:GetMovementStateInfo():GetPosition3D();
-							local dir; dir = GameFramework.Geometry.GetYRadian(srcPos, targetPos);
-							local curDir; curDir = npc:GetMovementStateInfo():GetFaceDir();
-							if (UnityEngine.Mathf.Abs((dir - curDir)) > 0.16) then
-								npc:GetMovementStateInfo():SetWantedFaceDir(dir);
-							else
-								this.m_SkillCasted = true;
-								AiCommand.AiStopPursue(npc);
-								AiCommand.AiSkill(npc, this.m_SkillInfo.SkillId);
-							end;
-							return true;
-						elseif (not this.m_SkillInfo.ConfigData.skillData.needTarget) then
-							this.m_SkillCasted = true;
-							AiCommand.AiStopPursue(npc);
-							AiCommand.AiSkill(npc, this.m_SkillInfo.SkillId);
-						end;
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+	-------------------------------
+	------ instance methods -------
+	-------------------------------
+	Clone = function(this)
+		local __method_ret_13_4_16_5;
+		__method_ret_13_4_16_5 = newobject(AiCastSkill, nil, nil, "ctor", 0, nil);
+		return __method_ret_13_4_16_5;
+	end,
+
+	ResetState = function(this)
+		this.m_ParamReaded = false;
+		this.m_SkillCasted = false;
+	end,
+
+	ExecCommand = function(this, instance, handler, _params, delta)
+		local __cs2lua_func_info = luainitialize();
+		local __retval_0, __retval_1 = luapcall(AiCastSkill.__ori_ExecCommand, this, __cs2lua_func_info, instance, handler, _params, delta);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+		if not __retval_0 then
+			lualog("{0}", __retval_1);
+			__retval_1 = false;
+		end;
+		return __retval_1;
+	end,
+	__ori_ExecCommand = function(this, __cs2lua_func_info, instance, handler, _params, delta)
+		local __method_ret_24_4_67_5;
+		local args;
+		args = _params.Values;
+		if (not this.m_ParamReaded) then 
+			local __old_val_28_12_28_29;
+			__old_val_28_12_28_29 = this.m_ObjId;
+			this.m_ObjId = invokeexternoperator(System.Int32, BoxedValue, "op_Implicit__Int32__BoxedValue", boxedvalue_list_get(__cs2lua_func_info, args, 1, 0));
+			local __new_val_28_12_28_29;
+			__new_val_28_12_28_29 = this.m_ObjId;
+			recycleandkeepstructvalue(System.Int32, __old_val_28_12_28_29, __new_val_28_12_28_29);
+			this.m_SkillInfo = typeas(boxedvalue_list_get(__cs2lua_func_info, args, 1, 1).ObjectVal, GameFramework.SkillInfo, TypeKind.Class);
+		end;
+		if (not this.m_SkillCasted) then 
+			local npc;
+			npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
+			if ((not isequal(nil, npc)) and (not npc:IsUnderControl())) then 
+				local targetId;
+				targetId = npc:GetAiStateInfo().Target;
+				local target;
+				target = GameFramework.PluginFramework.Instance:GetEntityById(targetId);
+				if (((not isequal(nil, target)) and (not target:IsDead())) and (GameFramework.Geometry.DistanceSquare__Vector3__Vector3(callexterninstancereturnstruct(npc:GetMovementStateInfo(), GameFramework.MovementStateInfo, "GetPosition3D"), callexterninstancereturnstruct(target:GetMovementStateInfo(), GameFramework.MovementStateInfo, "GetPosition3D")) <= (this.m_SkillInfo.Distance * this.m_SkillInfo.Distance))) then 
+					local srcPos;
+					srcPos = callexterninstancereturnstruct(npc:GetMovementStateInfo(), GameFramework.MovementStateInfo, "GetPosition3D");
+					local targetPos;
+					targetPos = callexterninstancereturnstruct(target:GetMovementStateInfo(), GameFramework.MovementStateInfo, "GetPosition3D");
+					local dir;
+					dir = GameFramework.Geometry.GetYRadian__Vector3__Vector3(wrapexternstructargument(srcPos, ScriptRuntime.Vector3, OperationKind.LocalReference, SymbolKind.Local), wrapexternstructargument(targetPos, ScriptRuntime.Vector3, OperationKind.LocalReference, SymbolKind.Local));
+					local curDir;
+					curDir = npc:GetMovementStateInfo():GetFaceDir();
+					if (UnityEngine.Mathf.Abs__Single((dir - curDir)) > 0.15700000) then 
+						npc:GetMovementStateInfo():SetWantedFaceDir(dir);
+					else
+						this.m_SkillCasted = true;
+						AiCommand.AiStopPursue(npc);
+						AiCommand.AiSkill(npc, this.m_SkillInfo.SkillId);
 					end;
+					__method_ret_24_4_67_5 = true;
+					return __method_ret_24_4_67_5;
+				elseif (not this.m_SkillInfo.ConfigData.skillData.needTarget) then 
+					this.m_SkillCasted = true;
+					AiCommand.AiStopPursue(npc);
+					AiCommand.AiSkill(npc, this.m_SkillInfo.SkillId);
+				end;
+			end;
+		else
+			local npc;
+			npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
+			if (not isequal(nil, npc)) then 
+				local info;
+				info = npc:GetAiStateInfo();
+				if npc:GetSkillStateInfo():IsSkillActivated() then 
+					__method_ret_24_4_67_5 = true;
+					return __method_ret_24_4_67_5;
 				else
-					local npc; npc = GameFramework.PluginFramework.Instance:GetEntityById(this.m_ObjId);
-					if (nil ~= npc) then
-						local info; info = npc:GetAiStateInfo();
-						if npc:GetSkillStateInfo():IsSkillActivated() then
-							return true;
-						else
-							return false;
-						end;
-					end;
+					__method_ret_24_4_67_5 = false;
+					return __method_ret_24_4_67_5;
 				end;
-				return false;
-			end,
-			ctor = function(this)
-			end,
-		};
-
-		local instance_fields_build = function()
-			local instance_fields = {
-				m_ObjId = 0,
-				m_SkillInfo = __cs2lua_nil_field_value,
-				m_SkillCasted = false,
-				m_ParamReaded = false,
-			};
-			return instance_fields;
+			end;
 		end;
-		local instance_props = nil;
-		local instance_events = nil;
-		local interfaces = {
-			"GameFramework.Plugin.ISimpleStoryCommandPlugin",
-		};
-
-		local interface_map = {
-			ISimpleStoryCommandPlugin_Clone = "Clone",
-			ISimpleStoryCommandPlugin_ResetState = "ResetState",
-			ISimpleStoryCommandPlugin_ExecCommand = "ExecCommand",
-		};
-
-
-		return defineclass(nil, "AiCastSkill", static, static_methods, static_fields_build, static_props, static_events, instance_methods, instance_fields_build, instance_props, instance_events, interfaces, interface_map, false);
+		__method_ret_24_4_67_5 = false;
+		return __method_ret_24_4_67_5;
 	end,
+
+	ctor = function(this)
+		AiCastSkill.__ctor(this);
+	end,
+
+	__ctor = function(this)
+		if this.__ctor_called then 
+			return;
+		else
+			this.__ctor_called = true;
+		end;
+	end,
+	-------------------------------
+	------ instance fields -------
+	-------------------------------
+	__init_obj_fields = function(this)
+		rawset(this, "m_ObjId", 0);
+		rawset(this, "m_SkillCasted", false);
+		rawset(this, "m_ParamReaded", false);
+		rawset(this, "__ctor_called", false);
+	end,
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
+	__define_class = function()
+		Utility.Warn("AiCastSkill::__define_class begin");
+
+		local class = AiCastSkill;
+		local obj_methods = {
+			Clone = rawget(class, "Clone"),
+			ResetState = rawget(class, "ResetState"),
+			ExecCommand = rawget(class, "ExecCommand"),
+			ctor = rawget(class, "ctor"),
+			__ctor = rawget(class, "__ctor"),
+		};
+		local tmp_obj_method = nil;
+
+		local __defineclass_return = defineclass(nil, "AiCastSkill", "AiCastSkill", class, obj_methods, false, false);
+		Utility.Warn("AiCastSkill::__define_class end");
+		return __defineclass_return;
+	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+	__obj_fields = {
+		m_ObjId = true,
+		m_SkillInfo = true,
+		m_SkillCasted = true,
+		m_ParamReaded = true,
+		__ctor_called = true,
+	},
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
+	__interfaces = {
+		"GameFramework.Plugin.ISimpleStoryCommandPlugin",
+	},
+	__method_info = {
+		ctor = {
+			ctor = true,
+		},
+	},
 };
 
 
-
-AiCastSkill.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+require "aicommand";
+settempmetatable(AiCastSkill);

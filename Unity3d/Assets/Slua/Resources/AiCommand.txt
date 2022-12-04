@@ -1,100 +1,174 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
+require "cs2lua__namespaces"; 
 
 AiCommand = {
-	__define_class = function()
-		local static = AiCommand;
-
-		local static_methods = {
-			NotifyAiDeath = function(npc)
-				local view; view = GameFramework.EntityViewModelManager.Instance:GetEntityViewById(npc:GetId());
-				view:Death();
-			end,
-			AiTarget = function(npc, target)
-				if (nil ~= target) then
-					if (nil ~= GameFramework.PluginFramework.Instance.SelectedTarget) then
-						local curTarget; curTarget = GameFramework.PluginFramework.Instance:GetEntityById(GameFramework.PluginFramework.Instance.SelectedTarget.TargetId);
-						if isequal(curTarget, GameFramework.PluginFramework.Instance.SelectedTarget.Target) then
-							return ;
-						end;
-					end;
-					GameFramework.PluginFramework.Instance:SetLockTarget(target:GetId());
-				end;
-			end,
-			AiFace = function(npc)
-				if (nil ~= npc) then
-					local dir; dir = npc:GetMovementStateInfo():GetFaceDir();
-					local actor; actor = GameFramework.EntityViewModelManager.Instance:GetGameObject(npc:GetId());
-					actor.transform.localRotation = UnityEngine.Quaternion.Euler(0, GameFramework.Geometry.RadianToDegree(dir), 0);
-				end;
-			end,
-			AiGetValidPosition = function(npc, target, maxDistance)
-				local navMeshHit;
-				local __compiler_invoke_39; __compiler_invoke_39, navMeshHit = UnityEngine.AI.NavMesh.SamplePosition(newexternobject(UnityEngine.Vector3, "UnityEngine.Vector3", "ctor", nil, target.X, target.Y, target.Z), __cs2lua_out, maxDistance, -1);
-				if (((not System.Single.IsInfinity(navMeshHit.position.x)) and (not System.Single.IsInfinity(navMeshHit.position.y))) and (not System.Single.IsInfinity(navMeshHit.position.z))) then
-					return newexternobject(ScriptRuntime.Vector3, "ScriptRuntime.Vector3", "ctor", nil, navMeshHit.position.x, navMeshHit.position.y, navMeshHit.position.z);
-				end;
-				return target;
-			end,
-			AiPursue = function(npc, target)
-				local npcView; npcView = GameFramework.EntityViewModelManager.Instance:GetEntityViewById(npc:GetId());
-				npcView:MoveTo(target.X, target.Y, target.Z);
-			end,
-			AiStopPursue = function(npc)
-				local npcView; npcView = GameFramework.EntityViewModelManager.Instance:GetEntityViewById(npc:GetId());
-				npcView:StopMove();
-			end,
-			AiSelectSkill = function(npc, skill)
-				if (skill == nil) then
-					npc:GetSkillStateInfo():SetCurSkillInfo(0);
-				else
-					npc:GetSkillStateInfo():SetCurSkillInfo(skill.SkillId);
-				end;
-				GameFramework.Utility.EventSystem:Publish("update_debug_state", "ui", System.String.Concat("try use skill:", tostring(skill.SkillId)));
-			end,
-			AiSkill = function(npc, skillId)
-				if (nil ~= npc) then
---            if (npc.GetAiStateInfo().Target > 0) {
---                PluginFramework.Instance.SetLockTarget(npc.GetAiStateInfo().Target);
---            }
---            
-					local skillInfo; skillInfo = npc:GetSkillStateInfo():GetSkillInfoById(skillId);
-					if (nil ~= skillInfo) then
-						GameFramework.Skill.GfxSkillSystem.Instance:StartSkill(npc:GetId(), skillInfo.ConfigData, 0);
-					end;
-				end;
-			end,
-			AiStopSkill = function(npc)
-				if (nil ~= npc) then
-					GameFramework.Skill.GfxSkillSystem.Instance:StopAllSkill(npc:GetId(), false);
-				end;
-			end,
-			AiAddImpact = function(npc, impactId)
-			end,
-			AiRemoveImpact = function(npc, impactId)
-			end,
-			AiSendStoryMessage = function(npc, msgId, ...)
-				local args = wraparray{...};
-				GameFramework.Story.GfxStorySystem.Instance:SendMessage(msgId, unpack(args));
-			end,
-			cctor = function()
-			end,
-		};
-
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
-		end;
-		local static_props = nil;
-		local static_events = nil;
-
-		return defineclass(nil, "AiCommand", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
+	NotifyAiDeath = function(npc)
+		local view;
+		view = GameFramework.EntityViewModelManager.Instance:GetEntityViewById(npc:GetId());
+		view:Death();
 	end,
+
+	AiTarget = function(npc, target)
+		if (not isequal(nil, target)) then 
+			if (not isequal(nil, GameFramework.PluginFramework.Instance.SelectedTarget)) then 
+				local curTarget;
+				curTarget = GameFramework.PluginFramework.Instance:GetEntityById(GameFramework.PluginFramework.Instance.SelectedTarget.TargetId);
+				if isequal(curTarget, GameFramework.PluginFramework.Instance.SelectedTarget.Target) then 
+					return;
+				end;
+			end;
+			GameFramework.PluginFramework.Instance:SetLockTarget(target:GetId());
+		end;
+	end,
+
+	AiFace = function(npc)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(AiCommand.__ori_AiFace, __cs2lua_func_info, npc);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_AiFace = function(__cs2lua_func_info, npc)
+		if (not isequal(nil, npc)) then 
+			local dir;
+			dir = npc:GetMovementStateInfo():GetFaceDir();
+			local actor;
+			actor = GameFramework.EntityViewModelManager.Instance:GetGameObject(npc:GetId());
+			actor.transform.localRotation = call_quaternion_euler(__cs2lua_func_info, 0, GameFramework.Geometry.RadianToDegree(dir), 0);
+		end;
+	end,
+
+	AiGetValidPosition = function(npc, target, maxDistance)
+		local __cs2lua_func_info = luainitialize();
+		local __retval_0, __retval_1 = luapcall(AiCommand.__ori_AiGetValidPosition, __cs2lua_func_info, npc, target, maxDistance);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+		if not __retval_0 then
+			lualog("{0}", __retval_1);
+			__retval_1 = nil;
+		end;
+		return __retval_1;
+	end,
+	__ori_AiGetValidPosition = function(__cs2lua_func_info, npc, target, maxDistance)
+		local __method_ret_36_4_44_5;
+		local navMeshHit;
+		local __invoke_39_8_39_132;
+		__invoke_39_8_39_132,navMeshHit = UnityEngine.AI.NavMesh.SamplePosition__Vector3__O_NavMeshHit__Single__Int32(new_vector3(__cs2lua_func_info, nil, target.X, target.Y, target.Z), __cs2lua_out, maxDistance, -1);
+		navMeshHit = wrapexternstruct(navMeshHit, UnityEngine.AI.NavMeshHit);
+		if (((not System.Single.IsInfinity(getexterninstancestructmember(SymbolKind.Property, navMeshHit, UnityEngine.AI.NavMeshHit, "position").x)) and (not System.Single.IsInfinity(getexterninstancestructmember(SymbolKind.Property, navMeshHit, UnityEngine.AI.NavMeshHit, "position").y))) and (not System.Single.IsInfinity(getexterninstancestructmember(SymbolKind.Property, navMeshHit, UnityEngine.AI.NavMeshHit, "position").z))) then 
+			__method_ret_36_4_44_5 = newexternstruct(ScriptRuntime.Vector3, nil, nil, "ctor__Single__Single__Single", 0, nil, getexterninstancestructmember(SymbolKind.Property, navMeshHit, UnityEngine.AI.NavMeshHit, "position").x, getexterninstancestructmember(SymbolKind.Property, navMeshHit, UnityEngine.AI.NavMeshHit, "position").y, getexterninstancestructmember(SymbolKind.Property, navMeshHit, UnityEngine.AI.NavMeshHit, "position").z);
+			return __method_ret_36_4_44_5;
+		end;
+		__method_ret_36_4_44_5 = target;
+		return __method_ret_36_4_44_5;
+	end,
+
+	AiPursue = function(npc, target)
+		local npcView;
+		npcView = GameFramework.EntityViewModelManager.Instance:GetEntityViewById(npc:GetId());
+		npcView:MoveTo(target.X, target.Y, target.Z);
+	end,
+
+	AiStopPursue = function(npc)
+		local npcView;
+		npcView = GameFramework.EntityViewModelManager.Instance:GetEntityViewById(npc:GetId());
+		npcView:StopMove();
+	end,
+
+	AiSelectSkill = function(npc, skill)
+		if isequal(skill, nil) then 
+			npc:GetSkillStateInfo():SetCurSkillInfo(0);
+		else
+			npc:GetSkillStateInfo():SetCurSkillInfo(skill.SkillId);
+		end;
+		GameFramework.Utility.EventSystem:Publish(luastrtocsstr("update_debug_state"), luastrtocsstr("ui"), stringconcat("try use skill:", tostring(skill.SkillId)));
+	end,
+
+	AiSkill = function(npc, skillId)
+		if (not isequal(nil, npc)) then 
+						--            if (npc.GetAiStateInfo().Target > 0) {
+			--                PluginFramework.Instance.SetLockTarget(npc.GetAiStateInfo().Target);
+			--            }
+			--            
+
+			local skillInfo;
+			skillInfo = npc:GetSkillStateInfo():GetSkillInfoById(skillId);
+			if (not isequal(nil, skillInfo)) then 
+				GameFramework.Skill.GfxSkillSystem.Instance:StartSkill(npc:GetId(), skillInfo.ConfigData, 0);
+			end;
+		end;
+	end,
+
+	AiStopSkill = function(npc)
+		if (not isequal(nil, npc)) then 
+			GameFramework.Skill.GfxSkillSystem.Instance:StopAllSkill__Int32__Boolean(npc:GetId(), false);
+		end;
+	end,
+
+	AiAddImpact = function(npc, impactId)
+	end,
+
+	AiRemoveImpact = function(npc, impactId)
+	end,
+
+	AiSendStoryMessage = function(npc, msgId, ...)
+		local __cs2lua_func_info = luainitialize();
+		luapcall(AiCommand.__ori_AiSendStoryMessage, __cs2lua_func_info, npc, msgId, ...);
+		__cs2lua_func_info = luafinalize(__cs2lua_func_info);
+	end,
+	__ori_AiSendStoryMessage = function(__cs2lua_func_info, npc, msgId, ...)
+		local args;
+		args = wrapparams({...}, System.Object, TypeKind.Class);
+		GameFramework.Story.GfxStorySystem.Instance:SendMessage__String__BoxedValue(msgId, invokeexternoperatorreturnstructimpl(__cs2lua_func_info, BoxedValue, BoxedValue, "op_Implicit__BoxedValue__A_Object", args));
+	end,
+
+	cctor = function()
+		AiCommand.__cctor();
+	end,
+
+	__cctor = function()
+		if AiCommand.__cctor_called then 
+			return;
+		else
+			AiCommand.__cctor_called = true;
+		end;
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
+	__define_class = function()
+		Utility.Warn("AiCommand::__define_class begin");
+
+		local class = AiCommand;
+		local obj_methods = nil;
+		local tmp_obj_method = nil;
+
+		local __defineclass_return = defineclass(nil, "AiCommand", "AiCommand", class, obj_methods, false, false);
+		Utility.Warn("AiCommand::__define_class end");
+		return __defineclass_return;
+	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
 };
 
 
-
-AiCommand.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+settempmetatable(AiCommand);

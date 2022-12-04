@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_SceneLogicConfig : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.SceneLogicConfig o;
 			o=new GameFramework.SceneLogicConfig();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_SceneLogicConfig : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_ConfigId(IntPtr l) {
 		try {
 			GameFramework.SceneLogicConfig self=(GameFramework.SceneLogicConfig)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFramework_SceneLogicConfig : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_ConfigId(IntPtr l) {
 		try {
 			GameFramework.SceneLogicConfig self=(GameFramework.SceneLogicConfig)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_GameFramework_SceneLogicConfig : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_LogicId(IntPtr l) {
 		try {
 			GameFramework.SceneLogicConfig self=(GameFramework.SceneLogicConfig)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_GameFramework_SceneLogicConfig : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_LogicId(IntPtr l) {
 		try {
 			GameFramework.SceneLogicConfig self=(GameFramework.SceneLogicConfig)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_GameFramework_SceneLogicConfig : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_Params(IntPtr l) {
 		try {
 			GameFramework.SceneLogicConfig self=(GameFramework.SceneLogicConfig)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_GameFramework_SceneLogicConfig : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_Params(IntPtr l) {
 		try {
 			GameFramework.SceneLogicConfig self=(GameFramework.SceneLogicConfig)checkSelf(l);
@@ -94,11 +101,13 @@ public class Lua_GameFramework_SceneLogicConfig : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.SceneLogicConfig");
+		addMember(l,ctor_s);
 		addMember(l,"m_ConfigId",get_m_ConfigId,set_m_ConfigId,true);
 		addMember(l,"m_LogicId",get_m_LogicId,set_m_LogicId,true);
 		addMember(l,"m_Params",get_m_Params,set_m_Params,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.SceneLogicConfig));
+		createTypeMetatable(l,null, typeof(GameFramework.SceneLogicConfig));
 	}
 }

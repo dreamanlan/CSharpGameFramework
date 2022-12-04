@@ -7,7 +7,7 @@ using GameFramework;
 
 class MiniMap : ITickPlugin
 {
-    public void Init(GameObject obj, MonoBehaviour behaviour)
+    public void Init(GameObject obj, MonoBehaviourProxy behaviour)
     {
         var rectTrans = obj.transform as RectTransform;
         m_RawImage = obj.GetComponent<RawImage>();

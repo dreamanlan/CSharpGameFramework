@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_SleepTimeout : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.SleepTimeout o;
 			o=new UnityEngine.SleepTimeout();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_SleepTimeout : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_NeverSleep(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -28,6 +30,7 @@ public class Lua_UnityEngine_SleepTimeout : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_SystemSetting(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -38,10 +41,12 @@ public class Lua_UnityEngine_SleepTimeout : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.SleepTimeout");
+		addMember(l,ctor_s);
 		addMember(l,"NeverSleep",get_NeverSleep,null,false);
 		addMember(l,"SystemSetting",get_SystemSetting,null,false);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.SleepTimeout));
+		createTypeMetatable(l,null, typeof(UnityEngine.SleepTimeout));
 	}
 }

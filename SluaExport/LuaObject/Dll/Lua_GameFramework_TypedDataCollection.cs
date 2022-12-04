@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_TypedDataCollection : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.TypedDataCollection o;
 			o=new GameFramework.TypedDataCollection();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_TypedDataCollection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetOrNewData(IntPtr l) {
 		try {
 			GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
@@ -33,66 +35,71 @@ public class Lua_GameFramework_TypedDataCollection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int AddData(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int AddData__Object(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
-				System.Object a1;
-				checkType(l,2,out a1);
-				self.AddData(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==3){
-				GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
-				System.Type a1;
-				checkType(l,2,out a1);
-				System.Object a2;
-				checkType(l,3,out a2);
-				self.AddData(a1,a2);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
+			System.Object a1;
+			checkType(l,2,out a1);
+			self.AddData(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int RemoveData(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int AddData__Type__Object(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
-				System.Type a1;
-				checkType(l,2,out a1);
-				self.RemoveData(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==3){
-				GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
-				System.Type a1;
-				checkType(l,2,out a1);
-				System.String a2;
-				checkType(l,3,out a2);
-				self.RemoveData(a1,a2);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
+			System.Type a1;
+			checkType(l,2,out a1);
+			System.Object a2;
+			checkType(l,3,out a2);
+			self.AddData(a1,a2);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int RemoveData__Type(IntPtr l) {
+		try {
+			GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
+			System.Type a1;
+			checkType(l,2,out a1);
+			self.RemoveData(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int RemoveData__Type__String(IntPtr l) {
+		try {
+			GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
+			System.Type a1;
+			checkType(l,2,out a1);
+			System.String a2;
+			checkType(l,3,out a2);
+			self.RemoveData(a1,a2);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetData(IntPtr l) {
 		try {
 			GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
@@ -108,6 +115,7 @@ public class Lua_GameFramework_TypedDataCollection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
@@ -119,44 +127,17 @@ public class Lua_GameFramework_TypedDataCollection : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Visit(IntPtr l) {
-		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
-				GameFramework.MyAction<System.Object,System.Object> a1;
-				LuaDelegation.checkDelegate(l,2,out a1);
-				self.Visit(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==3){
-				GameFramework.TypedDataCollection self=(GameFramework.TypedDataCollection)checkSelf(l);
-				GameFramework.MyAction<System.Object,System.Object> a1;
-				LuaDelegation.checkDelegate(l,2,out a1);
-				System.Object a2;
-				checkType(l,3,out a2);
-				self.Visit(a1,a2);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.TypedDataCollection");
+		addMember(l,ctor_s);
 		addMember(l,GetOrNewData);
-		addMember(l,AddData);
-		addMember(l,RemoveData);
+		addMember(l,AddData__Object);
+		addMember(l,AddData__Type__Object);
+		addMember(l,RemoveData__Type);
+		addMember(l,RemoveData__Type__String);
 		addMember(l,GetData);
 		addMember(l,Clear);
-		addMember(l,Visit);
-		createTypeMetatable(l,constructor, typeof(GameFramework.TypedDataCollection));
+		createTypeMetatable(l,null, typeof(GameFramework.TypedDataCollection));
 	}
 }

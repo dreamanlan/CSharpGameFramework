@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ITickPluginFactory : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int CreateInstance(IntPtr l) {
 		try {
 			ITickPluginFactory self=(ITickPluginFactory)checkSelf(l);
@@ -16,6 +17,7 @@ public class Lua_ITickPluginFactory : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ITickPluginFactory");
 		addMember(l,CreateInstance);

@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_Skill_PredefinedSkill : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReBuild(IntPtr l) {
 		try {
 			GameFramework.Skill.PredefinedSkill self=(GameFramework.Skill.PredefinedSkill)checkSelf(l);
@@ -16,6 +17,7 @@ public class Lua_GameFramework_Skill_PredefinedSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Preload(IntPtr l) {
 		try {
 			GameFramework.Skill.PredefinedSkill self=(GameFramework.Skill.PredefinedSkill)checkSelf(l);
@@ -28,6 +30,7 @@ public class Lua_GameFramework_Skill_PredefinedSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_c_EmitSkillId(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -39,6 +42,7 @@ public class Lua_GameFramework_Skill_PredefinedSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_c_HitSkillId(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -50,6 +54,7 @@ public class Lua_GameFramework_Skill_PredefinedSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_EmitSkillCfg(IntPtr l) {
 		try {
 			GameFramework.Skill.PredefinedSkill self=(GameFramework.Skill.PredefinedSkill)checkSelf(l);
@@ -62,6 +67,7 @@ public class Lua_GameFramework_Skill_PredefinedSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_HitSkillCfg(IntPtr l) {
 		try {
 			GameFramework.Skill.PredefinedSkill self=(GameFramework.Skill.PredefinedSkill)checkSelf(l);
@@ -74,6 +80,7 @@ public class Lua_GameFramework_Skill_PredefinedSkill : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Instance(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -84,6 +91,7 @@ public class Lua_GameFramework_Skill_PredefinedSkill : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.Skill.PredefinedSkill");
 		addMember(l,ReBuild);

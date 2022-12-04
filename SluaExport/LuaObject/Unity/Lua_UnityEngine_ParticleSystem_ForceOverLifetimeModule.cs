@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule o;
 			o=new UnityEngine.ParticleSystem.ForceOverLifetimeModule();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_enabled(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 			bool v;
 			checkType(l,2,out v);
 			self.enabled=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_x(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_x(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.x=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -75,6 +80,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_y(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -88,6 +94,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_y(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -95,7 +102,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.y=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -104,6 +111,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_z(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -117,6 +125,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_z(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -124,7 +133,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 			UnityEngine.ParticleSystem.MinMaxCurve v;
 			checkValueType(l,2,out v);
 			self.z=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -133,6 +142,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_xMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -146,6 +156,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_xMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -153,7 +164,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 			float v;
 			checkType(l,2,out v);
 			self.xMultiplier=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -162,6 +173,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_yMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -175,6 +187,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_yMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -182,7 +195,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 			float v;
 			checkType(l,2,out v);
 			self.yMultiplier=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -191,6 +204,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_zMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -204,6 +218,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_zMultiplier(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -211,7 +226,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 			float v;
 			checkType(l,2,out v);
 			self.zMultiplier=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -220,6 +235,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_space(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -233,6 +249,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_space(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -240,7 +257,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 			UnityEngine.ParticleSystemSimulationSpace v;
 			checkEnum(l,2,out v);
 			self.space=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -249,6 +266,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_randomized(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -262,6 +280,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_randomized(IntPtr l) {
 		try {
 			UnityEngine.ParticleSystem.ForceOverLifetimeModule self;
@@ -269,7 +288,7 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 			bool v;
 			checkType(l,2,out v);
 			self.randomized=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -277,8 +296,10 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.ParticleSystem.ForceOverLifetimeModule");
+		addMember(l,ctor_s);
 		addMember(l,"enabled",get_enabled,set_enabled,true);
 		addMember(l,"x",get_x,set_x,true);
 		addMember(l,"y",get_y,set_y,true);
@@ -288,6 +309,6 @@ public class Lua_UnityEngine_ParticleSystem_ForceOverLifetimeModule : LuaObject 
 		addMember(l,"zMultiplier",get_zMultiplier,set_zMultiplier,true);
 		addMember(l,"space",get_space,set_space,true);
 		addMember(l,"randomized",get_randomized,set_randomized,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.ParticleSystem.ForceOverLifetimeModule),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.ParticleSystem.ForceOverLifetimeModule),typeof(System.ValueType));
 	}
 }

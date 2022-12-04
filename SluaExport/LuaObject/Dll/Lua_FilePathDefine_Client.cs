@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_FilePathDefine_Client : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			FilePathDefine_Client o;
 			o=new FilePathDefine_Client();
@@ -17,6 +18,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_RootPath(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -28,6 +30,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_DslPath(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -39,6 +42,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_Actor(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -50,6 +54,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_AttrDefine(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -61,6 +66,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_Const(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -72,6 +78,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_Formation(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -83,6 +90,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_ImpactData(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -94,6 +102,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_LevelMonster(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -105,6 +114,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_Skill(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -116,6 +126,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_SkillData(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -127,6 +138,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_SkillEvent(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -138,6 +150,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_SkillResources(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -149,6 +162,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_Level(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -160,6 +174,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_StoryDlg(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -171,6 +186,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_StrDictionary(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -182,6 +198,7 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_C_UI(IntPtr l) {
 		try {
 			pushValue(l,true);
@@ -192,8 +209,10 @@ public class Lua_FilePathDefine_Client : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"FilePathDefine_Client");
+		addMember(l,ctor_s);
 		addMember(l,"C_RootPath",get_C_RootPath,null,false);
 		addMember(l,"C_DslPath",get_C_DslPath,null,false);
 		addMember(l,"C_Actor",get_C_Actor,null,false);
@@ -210,6 +229,6 @@ public class Lua_FilePathDefine_Client : LuaObject {
 		addMember(l,"C_StoryDlg",get_C_StoryDlg,null,false);
 		addMember(l,"C_StrDictionary",get_C_StrDictionary,null,false);
 		addMember(l,"C_UI",get_C_UI,null,false);
-		createTypeMetatable(l,constructor, typeof(FilePathDefine_Client));
+		createTypeMetatable(l,null, typeof(FilePathDefine_Client));
 	}
 }

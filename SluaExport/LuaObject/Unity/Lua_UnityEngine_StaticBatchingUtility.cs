@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_StaticBatchingUtility : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.StaticBatchingUtility o;
 			o=new UnityEngine.StaticBatchingUtility();
@@ -17,36 +18,41 @@ public class Lua_UnityEngine_StaticBatchingUtility : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Combine_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int Combine__GameObject_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==1){
-				UnityEngine.GameObject a1;
-				checkType(l,1,out a1);
-				UnityEngine.StaticBatchingUtility.Combine(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==2){
-				UnityEngine.GameObject[] a1;
-				checkArray(l,1,out a1);
-				UnityEngine.GameObject a2;
-				checkType(l,2,out a2);
-				UnityEngine.StaticBatchingUtility.Combine(a1,a2);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			UnityEngine.GameObject a1;
+			checkType(l,1,out a1);
+			UnityEngine.StaticBatchingUtility.Combine(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int Combine__A_GameObject__GameObject_s(IntPtr l) {
+		try {
+			UnityEngine.GameObject[] a1;
+			checkArray(l,1,out a1);
+			UnityEngine.GameObject a2;
+			checkType(l,2,out a2);
+			UnityEngine.StaticBatchingUtility.Combine(a1,a2);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.StaticBatchingUtility");
-		addMember(l,Combine_s);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.StaticBatchingUtility));
+		addMember(l,ctor_s);
+		addMember(l,Combine__GameObject_s);
+		addMember(l,Combine__A_GameObject__GameObject_s);
+		createTypeMetatable(l,null, typeof(UnityEngine.StaticBatchingUtility));
 	}
 }

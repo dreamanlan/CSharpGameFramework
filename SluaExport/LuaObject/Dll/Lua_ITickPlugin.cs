@@ -1,15 +1,16 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_ITickPlugin : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Init(IntPtr l) {
 		try {
 			ITickPlugin self=(ITickPlugin)checkSelf(l);
 			UnityEngine.GameObject a1;
 			checkType(l,2,out a1);
-			UnityEngine.MonoBehaviour a2;
+			MonoBehaviourProxy a2;
 			checkType(l,3,out a2);
 			self.Init(a1,a2);
 			pushValue(l,true);
@@ -20,6 +21,7 @@ public class Lua_ITickPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Update(IntPtr l) {
 		try {
 			ITickPlugin self=(ITickPlugin)checkSelf(l);
@@ -32,6 +34,7 @@ public class Lua_ITickPlugin : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Call(IntPtr l) {
 		try {
 			ITickPlugin self=(ITickPlugin)checkSelf(l);
@@ -47,6 +50,7 @@ public class Lua_ITickPlugin : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"ITickPlugin");
 		addMember(l,Init);

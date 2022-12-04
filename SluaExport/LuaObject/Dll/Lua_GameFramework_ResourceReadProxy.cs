@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_ResourceReadProxy : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadAsMemoryStream_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -18,6 +19,7 @@ public class Lua_GameFramework_ResourceReadProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int ReadAsArray_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -32,6 +34,7 @@ public class Lua_GameFramework_ResourceReadProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Exists_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -46,6 +49,7 @@ public class Lua_GameFramework_ResourceReadProxy : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_OnReadAsArray(IntPtr l) {
 		try {
 			GameFramework.ReadAsArrayDelegation v;
@@ -60,6 +64,7 @@ public class Lua_GameFramework_ResourceReadProxy : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.ResourceReadProxy");
 		addMember(l,ReadAsMemoryStream_s);

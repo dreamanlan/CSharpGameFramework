@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_ClientConcurrentTypedDataCollection : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.ClientConcurrentTypedDataCollection o;
 			o=new GameFramework.ClientConcurrentTypedDataCollection();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_ClientConcurrentTypedDataCollection : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Clear(IntPtr l) {
 		try {
 			GameFramework.ClientConcurrentTypedDataCollection self=(GameFramework.ClientConcurrentTypedDataCollection)checkSelf(l);
@@ -28,24 +30,11 @@ public class Lua_GameFramework_ClientConcurrentTypedDataCollection : LuaObject {
 			return error(l,e);
 		}
 	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int Visit(IntPtr l) {
-		try {
-			GameFramework.ClientConcurrentTypedDataCollection self=(GameFramework.ClientConcurrentTypedDataCollection)checkSelf(l);
-			GameFramework.MyAction<System.Object,System.Object> a1;
-			LuaDelegation.checkDelegate(l,2,out a1);
-			self.Visit(a1);
-			pushValue(l,true);
-			return 1;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.ClientConcurrentTypedDataCollection");
+		addMember(l,ctor_s);
 		addMember(l,Clear);
-		addMember(l,Visit);
-		createTypeMetatable(l,constructor, typeof(GameFramework.ClientConcurrentTypedDataCollection));
+		createTypeMetatable(l,null, typeof(GameFramework.ClientConcurrentTypedDataCollection));
 	}
 }

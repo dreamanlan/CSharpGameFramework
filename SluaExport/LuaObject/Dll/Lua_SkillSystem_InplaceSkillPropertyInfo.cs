@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_SkillSystem_InplaceSkillPropertyInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			SkillSystem.InplaceSkillPropertyInfo o;
 			o=new SkillSystem.InplaceSkillPropertyInfo();
@@ -17,6 +18,7 @@ public class Lua_SkillSystem_InplaceSkillPropertyInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Group(IntPtr l) {
 		try {
 			SkillSystem.InplaceSkillPropertyInfo self=(SkillSystem.InplaceSkillPropertyInfo)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_SkillSystem_InplaceSkillPropertyInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Group(IntPtr l) {
 		try {
 			SkillSystem.InplaceSkillPropertyInfo self=(SkillSystem.InplaceSkillPropertyInfo)checkSelf(l);
@@ -43,6 +46,7 @@ public class Lua_SkillSystem_InplaceSkillPropertyInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Key(IntPtr l) {
 		try {
 			SkillSystem.InplaceSkillPropertyInfo self=(SkillSystem.InplaceSkillPropertyInfo)checkSelf(l);
@@ -55,6 +59,7 @@ public class Lua_SkillSystem_InplaceSkillPropertyInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Key(IntPtr l) {
 		try {
 			SkillSystem.InplaceSkillPropertyInfo self=(SkillSystem.InplaceSkillPropertyInfo)checkSelf(l);
@@ -69,6 +74,7 @@ public class Lua_SkillSystem_InplaceSkillPropertyInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_Property(IntPtr l) {
 		try {
 			SkillSystem.InplaceSkillPropertyInfo self=(SkillSystem.InplaceSkillPropertyInfo)checkSelf(l);
@@ -81,6 +87,7 @@ public class Lua_SkillSystem_InplaceSkillPropertyInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_Property(IntPtr l) {
 		try {
 			SkillSystem.InplaceSkillPropertyInfo self=(SkillSystem.InplaceSkillPropertyInfo)checkSelf(l);
@@ -94,11 +101,13 @@ public class Lua_SkillSystem_InplaceSkillPropertyInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"SkillSystem.InplaceSkillPropertyInfo");
+		addMember(l,ctor_s);
 		addMember(l,"Group",get_Group,set_Group,true);
 		addMember(l,"Key",get_Key,set_Key,true);
 		addMember(l,"Property",get_Property,set_Property,true);
-		createTypeMetatable(l,constructor, typeof(SkillSystem.InplaceSkillPropertyInfo));
+		createTypeMetatable(l,null, typeof(SkillSystem.InplaceSkillPropertyInfo));
 	}
 }

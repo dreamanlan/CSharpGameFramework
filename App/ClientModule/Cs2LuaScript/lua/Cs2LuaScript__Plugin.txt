@@ -1,38 +1,63 @@
-require "cs2lua__utility";
-require "cs2lua__namespaces";
-require "cs2lua__externenums";
-require "cs2lua__interfaces";
+require "cs2lua__namespaces"; 
 
 Cs2LuaScript.Plugin = {
-	__define_class = function()
-		local static = Cs2LuaScript.Plugin;
-
-		local static_methods = {
-			get_Proxy = function()
-				return GameFramework.Plugin.PluginProxy.LuaProxy;
-			end,
-			cctor = function()
-			end,
-		};
-
-		local static_fields_build = function()
-			local static_fields = {
-			};
-			return static_fields;
-		end;
-
-		local static_props = {
-			Proxy = {
-				get = static_methods.get_Proxy,
-			},
-		};
-
-		local static_events = nil;
-
-		return defineclass(nil, "Cs2LuaScript.Plugin", static, static_methods, static_fields_build, static_props, static_events, nil, nil, nil, nil, nil, nil, false);
+	-------------------------------
+	-------- class methods --------
+	-------------------------------
+	get_Proxy = function()
+		local __method_ret_18_8_24_9;
+		__method_ret_18_8_24_9 = GameFramework.Plugin.PluginProxy.NativeProxy;
+		return __method_ret_18_8_24_9;
 	end,
+
+	cctor = function()
+		Cs2LuaScript.Plugin.__cctor();
+	end,
+
+	__cctor = function()
+		if Cs2LuaScript.Plugin.__cctor_called then 
+			return;
+		else
+			Cs2LuaScript.Plugin.__cctor_called = true;
+		end;
+	end,
+
+	-------------------------------
+	-------- class fields --------
+	-------------------------------
+	__cctor_called = false,
+
+
+	-------------------------------
+	--- define class and object ---
+	-------------------------------
+	__define_class = function()
+		Utility.Warn("Cs2LuaScript.Plugin::__define_class begin");
+
+		local class = Cs2LuaScript.Plugin;
+		local obj_methods = nil;
+		local tmp_obj_method = nil;
+
+		local __defineclass_return = defineclass(nil, "Cs2LuaScript.Plugin", "Plugin", class, obj_methods, false, false);
+		Utility.Warn("Cs2LuaScript.Plugin::__define_class end");
+		return __defineclass_return;
+	end,
+
+	-------------------------------
+	--------- fields info ---------
+	-------------------------------
+	__class_fields = {
+		__cctor_called = true,
+	},
+
+
+	-------------------------------
+	-------- metadata info --------
+	-------------------------------
 };
 
 
-
-Cs2LuaScript.Plugin.__define_class();
+require "cs2lua__syslib";
+require "cs2lua__externenums";
+require "cs2lua__interfaces";
+settempmetatable(Cs2LuaScript.Plugin);

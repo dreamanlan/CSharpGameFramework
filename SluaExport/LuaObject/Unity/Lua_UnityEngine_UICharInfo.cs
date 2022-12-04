@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_UICharInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			UnityEngine.UICharInfo o;
 			o=new UnityEngine.UICharInfo();
@@ -17,6 +18,7 @@ public class Lua_UnityEngine_UICharInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_cursorPos(IntPtr l) {
 		try {
 			UnityEngine.UICharInfo self;
@@ -30,6 +32,7 @@ public class Lua_UnityEngine_UICharInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_cursorPos(IntPtr l) {
 		try {
 			UnityEngine.UICharInfo self;
@@ -37,7 +40,7 @@ public class Lua_UnityEngine_UICharInfo : LuaObject {
 			UnityEngine.Vector2 v;
 			checkType(l,2,out v);
 			self.cursorPos=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -46,6 +49,7 @@ public class Lua_UnityEngine_UICharInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_charWidth(IntPtr l) {
 		try {
 			UnityEngine.UICharInfo self;
@@ -59,6 +63,7 @@ public class Lua_UnityEngine_UICharInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_charWidth(IntPtr l) {
 		try {
 			UnityEngine.UICharInfo self;
@@ -66,7 +71,7 @@ public class Lua_UnityEngine_UICharInfo : LuaObject {
 			System.Single v;
 			checkType(l,2,out v);
 			self.charWidth=v;
-			setBack(l,self);
+			setBack(l,(object)self);
 			pushValue(l,true);
 			return 1;
 		}
@@ -74,10 +79,12 @@ public class Lua_UnityEngine_UICharInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"UnityEngine.UICharInfo");
+		addMember(l,ctor_s);
 		addMember(l,"cursorPos",get_cursorPos,set_cursorPos,true);
 		addMember(l,"charWidth",get_charWidth,set_charWidth,true);
-		createTypeMetatable(l,constructor, typeof(UnityEngine.UICharInfo),typeof(System.ValueType));
+		createTypeMetatable(l,null, typeof(UnityEngine.UICharInfo),typeof(System.ValueType));
 	}
 }

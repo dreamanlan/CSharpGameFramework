@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_StorySystem_CustomCommandValueParser : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadStory_s(IntPtr l) {
 		try {
 			System.String a1;
@@ -18,11 +19,14 @@ public class Lua_StorySystem_CustomCommandValueParser : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int LoadStoryText_s(IntPtr l) {
 		try {
 			System.String a1;
 			checkType(l,1,out a1);
-			var ret=StorySystem.CustomCommandValueParser.LoadStoryText(a1);
+			System.Byte[] a2;
+			checkArray(l,2,out a2);
+			var ret=StorySystem.CustomCommandValueParser.LoadStoryText(a1,a2);
 			pushValue(l,true);
 			pushValue(l,ret);
 			return 2;
@@ -32,78 +36,70 @@ public class Lua_StorySystem_CustomCommandValueParser : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int LoadStoryCode_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int FirstParse__A_DslFile_s(IntPtr l) {
 		try {
-			System.String a1;
+			Dsl.DslFile[] a1;
+			checkParams(l,1,out a1);
+			StorySystem.CustomCommandValueParser.FirstParse(a1);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int FirstParse__ISyntaxComponent_s(IntPtr l) {
+		try {
+			Dsl.ISyntaxComponent a1;
 			checkType(l,1,out a1);
-			var ret=StorySystem.CustomCommandValueParser.LoadStoryCode(a1);
+			StorySystem.CustomCommandValueParser.FirstParse(a1);
 			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int FirstParse_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int FinalParse__A_DslFile_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,1,typeof(Dsl.DslInfo))){
-				Dsl.DslInfo a1;
-				checkType(l,1,out a1);
-				StorySystem.CustomCommandValueParser.FirstParse(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(matchType(l,argc,1,typeof(Dsl.DslFile[]))){
-				Dsl.DslFile[] a1;
-				checkParams(l,1,out a1);
-				StorySystem.CustomCommandValueParser.FirstParse(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			Dsl.DslFile[] a1;
+			checkParams(l,1,out a1);
+			StorySystem.CustomCommandValueParser.FinalParse(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int FinalParse_s(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int FinalParse__ISyntaxComponent_s(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(matchType(l,argc,1,typeof(Dsl.DslInfo))){
-				Dsl.DslInfo a1;
-				checkType(l,1,out a1);
-				StorySystem.CustomCommandValueParser.FinalParse(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(matchType(l,argc,1,typeof(Dsl.DslFile[]))){
-				Dsl.DslFile[] a1;
-				checkParams(l,1,out a1);
-				StorySystem.CustomCommandValueParser.FinalParse(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			Dsl.ISyntaxComponent a1;
+			checkType(l,1,out a1);
+			StorySystem.CustomCommandValueParser.FinalParse(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"StorySystem.CustomCommandValueParser");
 		addMember(l,LoadStory_s);
 		addMember(l,LoadStoryText_s);
-		addMember(l,LoadStoryCode_s);
-		addMember(l,FirstParse_s);
-		addMember(l,FinalParse_s);
+		addMember(l,FirstParse__A_DslFile_s);
+		addMember(l,FirstParse__ISyntaxComponent_s);
+		addMember(l,FinalParse__A_DslFile_s);
+		addMember(l,FinalParse__ISyntaxComponent_s);
 		createTypeMetatable(l,null, typeof(StorySystem.CustomCommandValueParser));
 	}
 }

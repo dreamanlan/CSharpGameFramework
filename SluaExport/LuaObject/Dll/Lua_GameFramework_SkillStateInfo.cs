@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_SkillStateInfo : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo o;
 			o=new GameFramework.SkillStateInfo();
@@ -17,6 +18,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Reset(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int IsSkillActivated(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -42,36 +45,39 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int AddSkill(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int AddSkill__SkillInfo(IntPtr l) {
 		try {
-			int argc = LuaDLL.lua_gettop(l);
-			if(argc==2){
-				GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
-				GameFramework.SkillInfo a1;
-				checkType(l,2,out a1);
-				self.AddSkill(a1);
-				pushValue(l,true);
-				return 1;
-			}
-			else if(argc==3){
-				GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
-				System.Int32 a1;
-				checkType(l,2,out a1);
-				GameFramework.SkillInfo a2;
-				checkType(l,3,out a2);
-				self.AddSkill(a1,a2);
-				pushValue(l,true);
-				return 1;
-			}
-			pushValue(l,false);
-			LuaDLL.lua_pushstring(l,"No matched override function to call");
-			return 2;
+			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
+			GameFramework.SkillInfo a1;
+			checkType(l,2,out a1);
+			self.AddSkill(a1);
+			pushValue(l,true);
+			return 1;
 		}
 		catch(Exception e) {
 			return error(l,e);
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
+	static public int AddSkill__Int32__SkillInfo(IntPtr l) {
+		try {
+			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
+			System.Int32 a1;
+			checkType(l,2,out a1);
+			GameFramework.SkillInfo a2;
+			checkType(l,3,out a2);
+			self.AddSkill(a1,a2);
+			pushValue(l,true);
+			return 1;
+		}
+		catch(Exception e) {
+			return error(l,e);
+		}
+	}
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetSkillLevel(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -87,6 +93,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetTotalSkillLevel(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -100,6 +107,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetCurSkillInfo(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -113,6 +121,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetSkillInfoById(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -128,6 +137,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetSkillInfoByIndex(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -143,19 +153,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetAllSkill(IntPtr l) {
-		try {
-			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
-			var ret=self.GetAllSkill();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int SetCurSkillInfo(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -170,6 +168,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RemoveSkill(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -184,6 +183,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RemoveAllSkill(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -196,6 +196,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int AddImpact(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -210,6 +211,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int GetImpactInfoBySeq(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -225,6 +227,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int FindImpactInfoById(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -240,19 +243,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int GetAllImpact(IntPtr l) {
-		try {
-			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
-			var ret=self.GetAllImpact();
-			pushValue(l,true);
-			pushValue(l,ret);
-			return 2;
-		}
-		catch(Exception e) {
-			return error(l,e);
-		}
-	}
-	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RemoveImpact(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -267,6 +258,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int RemoveAllImpact(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -279,6 +271,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_BuffChanged(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -291,6 +284,7 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_BuffChanged(IntPtr l) {
 		try {
 			GameFramework.SkillStateInfo self=(GameFramework.SkillStateInfo)checkSelf(l);
@@ -304,27 +298,28 @@ public class Lua_GameFramework_SkillStateInfo : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.SkillStateInfo");
+		addMember(l,ctor_s);
 		addMember(l,Reset);
 		addMember(l,IsSkillActivated);
-		addMember(l,AddSkill);
+		addMember(l,AddSkill__SkillInfo);
+		addMember(l,AddSkill__Int32__SkillInfo);
 		addMember(l,GetSkillLevel);
 		addMember(l,GetTotalSkillLevel);
 		addMember(l,GetCurSkillInfo);
 		addMember(l,GetSkillInfoById);
 		addMember(l,GetSkillInfoByIndex);
-		addMember(l,GetAllSkill);
 		addMember(l,SetCurSkillInfo);
 		addMember(l,RemoveSkill);
 		addMember(l,RemoveAllSkill);
 		addMember(l,AddImpact);
 		addMember(l,GetImpactInfoBySeq);
 		addMember(l,FindImpactInfoById);
-		addMember(l,GetAllImpact);
 		addMember(l,RemoveImpact);
 		addMember(l,RemoveAllImpact);
 		addMember(l,"BuffChanged",get_BuffChanged,set_BuffChanged,true);
-		createTypeMetatable(l,constructor, typeof(GameFramework.SkillStateInfo));
+		createTypeMetatable(l,null, typeof(GameFramework.SkillStateInfo));
 	}
 }

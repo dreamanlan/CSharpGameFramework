@@ -1,7 +1,7 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_UnityEngine_TextureFormat : LuaObject {
 	static public void reg(IntPtr l) {
 		getEnumTable(l,"UnityEngine.TextureFormat");
@@ -35,8 +35,6 @@ public class Lua_UnityEngine_TextureFormat : LuaObject {
 		addMember(l,32,"PVRTC_RGB4");
 		addMember(l,33,"PVRTC_RGBA4");
 		addMember(l,34,"ETC_RGB4");
-		addMember(l,35,"ATC_RGB4");
-		addMember(l,36,"ATC_RGBA8");
 		addMember(l,41,"EAC_R");
 		addMember(l,42,"EAC_R_SIGNED");
 		addMember(l,43,"EAC_RG");
@@ -44,12 +42,18 @@ public class Lua_UnityEngine_TextureFormat : LuaObject {
 		addMember(l,45,"ETC2_RGB");
 		addMember(l,46,"ETC2_RGBA1");
 		addMember(l,47,"ETC2_RGBA8");
+		addMember(l,48,"ASTC_4x4");
 		addMember(l,48,"ASTC_RGB_4x4");
 		addMember(l,49,"ASTC_RGB_5x5");
+		addMember(l,49,"ASTC_5x5");
 		addMember(l,50,"ASTC_RGB_6x6");
+		addMember(l,50,"ASTC_6x6");
+		addMember(l,51,"ASTC_8x8");
 		addMember(l,51,"ASTC_RGB_8x8");
+		addMember(l,52,"ASTC_10x10");
 		addMember(l,52,"ASTC_RGB_10x10");
 		addMember(l,53,"ASTC_RGB_12x12");
+		addMember(l,53,"ASTC_12x12");
 		addMember(l,54,"ASTC_RGBA_4x4");
 		addMember(l,55,"ASTC_RGBA_5x5");
 		addMember(l,56,"ASTC_RGBA_6x6");
@@ -58,10 +62,25 @@ public class Lua_UnityEngine_TextureFormat : LuaObject {
 		addMember(l,59,"ASTC_RGBA_12x12");
 		addMember(l,60,"ETC_RGB4_3DS");
 		addMember(l,61,"ETC_RGBA8_3DS");
-		addMember(l,-127,"PVRTC_4BPP_RGB");
-		addMember(l,-127,"PVRTC_4BPP_RGBA");
+		addMember(l,62,"RG16");
+		addMember(l,63,"R8");
+		addMember(l,64,"ETC_RGB4Crunched");
+		addMember(l,65,"ETC2_RGBA8Crunched");
+		addMember(l,66,"ASTC_HDR_4x4");
+		addMember(l,67,"ASTC_HDR_5x5");
+		addMember(l,68,"ASTC_HDR_6x6");
+		addMember(l,69,"ASTC_HDR_8x8");
+		addMember(l,70,"ASTC_HDR_10x10");
+		addMember(l,71,"ASTC_HDR_12x12");
+		addMember(l,72,"RG32");
+		addMember(l,73,"RGB48");
+		addMember(l,74,"RGBA64");
 		addMember(l,-127,"PVRTC_2BPP_RGB");
 		addMember(l,-127,"PVRTC_2BPP_RGBA");
+		addMember(l,-127,"ATC_RGB4");
+		addMember(l,-127,"PVRTC_4BPP_RGB");
+		addMember(l,-127,"ATC_RGBA8");
+		addMember(l,-127,"PVRTC_4BPP_RGBA");
 		LuaDLL.lua_pop(l, 1);
 	}
 }

@@ -1,9 +1,10 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFramework_Story_UiStoryInitializer : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int Init(IntPtr l) {
 		try {
 			GameFramework.Story.UiStoryInitializer self=(GameFramework.Story.UiStoryInitializer)checkSelf(l);
@@ -16,6 +17,7 @@ public class Lua_GameFramework_Story_UiStoryInitializer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_WindowName(IntPtr l) {
 		try {
 			GameFramework.Story.UiStoryInitializer self=(GameFramework.Story.UiStoryInitializer)checkSelf(l);
@@ -28,6 +30,7 @@ public class Lua_GameFramework_Story_UiStoryInitializer : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_WindowName(IntPtr l) {
 		try {
 			GameFramework.Story.UiStoryInitializer self=(GameFramework.Story.UiStoryInitializer)checkSelf(l);
@@ -41,6 +44,7 @@ public class Lua_GameFramework_Story_UiStoryInitializer : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFramework.Story.UiStoryInitializer");
 		addMember(l,Init);

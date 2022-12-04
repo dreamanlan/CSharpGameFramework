@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_Msg_LC_NotifyNewMail : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.Msg_LC_NotifyNewMail o;
 			o=new GameFrameworkMessage.Msg_LC_NotifyNewMail();
@@ -16,8 +17,10 @@ public class Lua_GameFrameworkMessage_Msg_LC_NotifyNewMail : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.Msg_LC_NotifyNewMail");
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.Msg_LC_NotifyNewMail));
+		addMember(l,ctor_s);
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.Msg_LC_NotifyNewMail));
 	}
 }

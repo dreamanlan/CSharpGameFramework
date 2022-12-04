@@ -1,10 +1,11 @@
 ﻿using System;
-
 using SLua;
 using System.Collections.Generic;
+[UnityEngine.Scripting.Preserve]
 public class Lua_GameFrameworkMessage_QueueingCountResult : LuaObject {
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
-	static public int constructor(IntPtr l) {
+	[UnityEngine.Scripting.Preserve]
+	static public int ctor_s(IntPtr l) {
 		try {
 			GameFrameworkMessage.QueueingCountResult o;
 			o=new GameFrameworkMessage.QueueingCountResult();
@@ -17,6 +18,7 @@ public class Lua_GameFrameworkMessage_QueueingCountResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int get_m_QueueingCount(IntPtr l) {
 		try {
 			GameFrameworkMessage.QueueingCountResult self=(GameFrameworkMessage.QueueingCountResult)checkSelf(l);
@@ -29,6 +31,7 @@ public class Lua_GameFrameworkMessage_QueueingCountResult : LuaObject {
 		}
 	}
 	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	[UnityEngine.Scripting.Preserve]
 	static public int set_m_QueueingCount(IntPtr l) {
 		try {
 			GameFrameworkMessage.QueueingCountResult self=(GameFrameworkMessage.QueueingCountResult)checkSelf(l);
@@ -42,9 +45,11 @@ public class Lua_GameFrameworkMessage_QueueingCountResult : LuaObject {
 			return error(l,e);
 		}
 	}
+	[UnityEngine.Scripting.Preserve]
 	static public void reg(IntPtr l) {
 		getTypeTable(l,"GameFrameworkMessage.QueueingCountResult");
+		addMember(l,ctor_s);
 		addMember(l,"m_QueueingCount",get_m_QueueingCount,set_m_QueueingCount,true);
-		createTypeMetatable(l,constructor, typeof(GameFrameworkMessage.QueueingCountResult));
+		createTypeMetatable(l,null, typeof(GameFrameworkMessage.QueueingCountResult));
 	}
 }
