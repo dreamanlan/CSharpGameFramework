@@ -17,15 +17,27 @@ DSL是我个人从事软件开发以来逐渐演化出的一种通用元语言�
 不管怎样，一个优秀的软件系统（程序层面）应该有一个优美的体系，一个优秀的游戏系统（策划层面）也应该是这样，就像数学与物理一样，简单、优雅并且广泛适用。
 
 [windows平台用法]
+
 1、buildall.bat是编译client与server端的批处理（调用2与3），但不包括slua与cs2lua
+
 2、buildclient.bat编译client，不包括slua与cs2lua，编译完成会拷贝相关文件到unity3d工程相应目录
+
 3、buildserver.bat编译server，编译完成会拷贝相关文件到server端运行环境目录(App/ServerModule/ServerEnv)
+
 4、buildslua.bat，运行前需要关闭unity3d编辑器，这个批处理应该在buildclient.bat后执行，它会调用unity3d来生成lua api代码，然后编译SluaExport工程并拷贝相关文件到unity3d工程相应目录
+
 5、RunServer.cmd是启动服务器的批处理
+
 6、StopServer.cmd是关闭服务器的批处理，其实就是kill掉服务器各进程
+
 7、copyroomdlls.bat是单独拷贝room server的exe/dll的批处理，一般用于room server开发时
+
 8、copyserverdlls.bat是单独拷贝各server的exe/dll的批处理，包括lobby、user server、room server与data cache服务器，主要用在开发服务端功能时
+
 9、cs2lua.bat翻译Cs2LuaScript.csproj到lua代码，并拷贝文件到unity3d工程相应目录，同时会将工程的文件调整为lua与动态dll加载的模式（仅mono下可以使用动态加载，目前仅用于windows下的测试）
+
 10、cs2luanative.bat翻译Cs2LuaScript.csproj到lua代码，并拷贝文件到unity3d工程相应目录，同时会将工程的文件调整为使用csharp dll的状态（这个是il2cpp模式下的用法，默认不启用lua，后续计划是前端功能组织成组件式，组件间仅通过预定的接口通信，无其他直接依赖，这样就可以实现某个组件运行时可替换为lua实现，思路上就是类似微软com组件的这类二进制组件机制）
+
 11、dslcopy.bat处理dsl与表格文件，并拷贝到server端与unity3d工程的相应目录，一般用于仅修改dsl或表格文件时
+
 12、generate_file_list.bat用于生成unity3d工程的streamingassets目录下的文件的列表文件list.txt，这个文件用于安卓与iOS上记录打包的散文件列表，开发中一般用不着
