@@ -44,7 +44,7 @@ namespace SkillSystem
             Dsl.DslFile dataFile = new Dsl.DslFile();
 #if DEBUG
             try {
-                if (dataFile.LoadFromString(text, "skill", LogSystem.Log)) {
+                if (dataFile.LoadFromString(text, LogSystem.Log)) {
                     Load(id, dataFile);
                 } else {
                     LogSystem.Error("LoadSkillText text:{0} failed", text);

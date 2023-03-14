@@ -70,7 +70,7 @@ namespace StorySystem
                 string text = Converter.FileContent2Utf8String(bytes);
                 try {
                     Dsl.DslFile dataFile = new Dsl.DslFile();
-                    if (dataFile.LoadFromString(text, file, LogSystem.Log)) {
+                    if (dataFile.LoadFromString(text, LogSystem.Log)) {
                         return dataFile;
                     }
                     else {
