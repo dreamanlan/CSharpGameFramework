@@ -163,7 +163,7 @@ namespace GameFramework
                     m_Dispatcher.HandleClientMsg(id, msg, this);
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
 
@@ -207,7 +207,7 @@ namespace GameFramework
                     float sx = m_LastClientPosition.X + enableDist * m_LastMoveDirSinAngle;
                     float sz = m_LastClientPosition.Z + enableDist * m_LastMoveDirCosAngle;
 
-                    LogSys.Log(LOG_TYPE.ERROR, "VerifyMoveData user:{0}({1},{2},{3}) t:{4} v:{5} x:{6} z:{7} sx:{8} sz:{9} distSqr:{10} enableDistSqr:{11}", RoleId, GetKey(), Guid, Name, t, v, x, z, sx, sz, distSqr, enableDistSqr);
+                    LogSys.Log(ServerLogType.ERROR, "VerifyMoveData user:{0}({1},{2},{3}) t:{4} v:{5} x:{6} z:{7} sx:{8} sz:{9} distSqr:{10} enableDistSqr:{11}", RoleId, GetKey(), Guid, Name, t, v, x, z, sx, sz, distSqr, enableDistSqr);
                 }
             }
             return ret;
@@ -222,7 +222,7 @@ namespace GameFramework
                 if (distSqr > maxEnabledDistSqr) {
                     ret = false;
 
-                    LogSys.Log(LOG_TYPE.ERROR, "VerifyNoMoveData user:{0}({1},{2},{3}) x:{4} z:{5} sx:{6} sz:{7}", RoleId, GetKey(), Guid, Name, x, z, m_LastClientPosition.X, m_LastClientPosition.Z);
+                    LogSys.Log(ServerLogType.ERROR, "VerifyNoMoveData user:{0}({1},{2},{3}) x:{4} z:{5} sx:{6} sz:{7}", RoleId, GetKey(), Guid, Name, x, z, m_LastClientPosition.X, m_LastClientPosition.Z);
                 }
             }
             return ret;
@@ -397,7 +397,7 @@ namespace GameFramework
         private int m_UserControlState;
         private long m_LastNotifyUserDropTime;
 
-        //移动校验数据
+        //绉诲姩鏍￠獙鏁版嵁
         private Vector3 m_LastClientPosition = Vector3.Zero;
         private float m_LastMoveVelocity = 0;
         private float m_LastMoveDirCosAngle = 0;

@@ -91,18 +91,18 @@ namespace GameFramework
             if (!m_DicPeer.TryAdd(conn, peer)) {
               AddToNeedAdd(conn, peer);
             }
-            LogSys.Log(LOG_TYPE.DEBUG, "OnPeerShakeHands success, key:{0}(user:{1}) from {2}", authKey, peer.Guid, conn.RemoteEndPoint.ToString());
+            LogSys.Log(ServerLogType.DEBUG, "OnPeerShakeHands success, key:{0}(user:{1}) from {2}", authKey, peer.Guid, conn.RemoteEndPoint.ToString());
             return true;
           } else {
-            LogSys.Log(LOG_TYPE.DEBUG, "OnPeerShakeHands failed because key error, right key is {0}(user:{1}), error key:{2} from {3}, ", peer.GetKey(), peer.Guid, authKey, conn.RemoteEndPoint.ToString());
+            LogSys.Log(ServerLogType.DEBUG, "OnPeerShakeHands failed because key error, right key is {0}(user:{1}), error key:{2} from {3}, ", peer.GetKey(), peer.Guid, authKey, conn.RemoteEndPoint.ToString());
             return false;
           }
         } else {
-          LogSys.Log(LOG_TYPE.DEBUG, "OnPeerShakeHands failed because peer.IsConnected(), key:{0}(user:{1}) from {2}", authKey, peer.Guid, conn.RemoteEndPoint.ToString());
+          LogSys.Log(ServerLogType.DEBUG, "OnPeerShakeHands failed because peer.IsConnected(), key:{0}(user:{1}) from {2}", authKey, peer.Guid, conn.RemoteEndPoint.ToString());
           return false;
         }
       }
-      LogSys.Log(LOG_TYPE.DEBUG, "OnPeerShakeHands failed because can't find peer, key:{0} from {1}", authKey, conn.RemoteEndPoint.ToString());
+      LogSys.Log(ServerLogType.DEBUG, "OnPeerShakeHands failed because can't find peer, key:{0} from {1}", authKey, conn.RemoteEndPoint.ToString());
       return false;
     }
 
@@ -194,7 +194,7 @@ namespace GameFramework
           }
         }
       } catch (Exception ex) {
-        LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+        LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
       }
     }
 

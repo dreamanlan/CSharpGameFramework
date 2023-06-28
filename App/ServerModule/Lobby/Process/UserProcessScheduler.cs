@@ -198,19 +198,19 @@ namespace Lobby
         m_LastLogTime = curTime;
 
         DebugPoolCount((string msg) => {
-          LogSys.Log(LOG_TYPE.INFO, "UserProcessScheduler.DispatchActionQueue {0}", msg);
+          LogSys.Log(ServerLogType.INFO, "UserProcessScheduler.DispatchActionQueue {0}", msg);
         });
         DebugActionCount((string msg) => {
-          LogSys.Log(LOG_TYPE.MONITOR, "UserProcessScheduler.DispatchActionQueue {0}", msg);
+          LogSys.Log(ServerLogType.MONITOR, "UserProcessScheduler.DispatchActionQueue {0}", msg);
         });
         m_Thread.DebugPoolCount((string msg) => {
-          LogSys.Log(LOG_TYPE.INFO, "UserProcessScheduler.ThreadActionQueue {0}", msg);
+          LogSys.Log(ServerLogType.INFO, "UserProcessScheduler.ThreadActionQueue {0}", msg);
         });
-        LogSys.Log(LOG_TYPE.MONITOR, "UserProcessScheduler.ThreadActionQueue Current Action {0}", m_Thread.CurActionNum);
+        LogSys.Log(ServerLogType.MONITOR, "UserProcessScheduler.ThreadActionQueue Current Action {0}", m_Thread.CurActionNum);
 
         m_NodeMessageManager.TickMonitor();
 
-        LogSys.Log(LOG_TYPE.MONITOR, "Lobby User Count:{0} ElapsedTickTime:{1}", m_ActiveUserGuids.Count, elapsedTickTime);
+        LogSys.Log(ServerLogType.MONITOR, "Lobby User Count:{0} ElapsedTickTime:{1}", m_ActiveUserGuids.Count, elapsedTickTime);
       }
 
       m_DeactiveUserGuids.Clear();

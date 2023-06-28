@@ -12,7 +12,7 @@ public enum ServerEventCode : int
   CreateHero = 20,
 }
 
-public enum LOG_TYPE
+public enum ServerLogType
 {
   DEBUG = 0,
   INFO = 1,
@@ -69,13 +69,13 @@ public class LogSys
   };
   #endregion console color
 
-  public static void Log(LOG_TYPE logtype, string format, params object[] args)
+  public static void Log(ServerLogType logtype, string format, params object[] args)
   {
     LogSys.Instance.LOG(logtype, null, format, args);
   }
 
   // see System.ConsoleColor for color names
-  public static void Log(LOG_TYPE logtype, ConsoleColor cc, string format, params object[] args)
+  public static void Log(ServerLogType logtype, ConsoleColor cc, string format, params object[] args)
   {
     LogSys.Instance.LOG(logtype, cc, format, args);
   }
@@ -123,7 +123,7 @@ public class LogSys
     bool bret = false;
     bret = InitConfig(config);
     if (bret) {
-      LOG(LOG_TYPE.DEBUG, null, "{0}", "Init Succ!");
+      LOG(ServerLogType.DEBUG, null, "{0}", "Init Succ!");
     }
     return bret;
   }
@@ -195,7 +195,7 @@ public class LogSys
     }
     return true;
   }
-  private void LOG(LOG_TYPE logtype, ConsoleColor? fg_color, string format, params object[] args)
+  private void LOG(ServerLogType logtype, ConsoleColor? fg_color, string format, params object[] args)
   {
     Log log;
     if (m_DicLogs.TryGetValue((int)logtype, out log)) {

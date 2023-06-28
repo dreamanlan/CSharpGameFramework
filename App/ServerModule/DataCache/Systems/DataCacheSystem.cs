@@ -25,7 +25,7 @@ internal class DataCacheSystem : MyServerThread
     {
         PersistentSystem.Instance.Init();
         Start();
-        LogSys.Log(LOG_TYPE.INFO, "DataCacheSystem initialized");
+        LogSys.Log(ServerLogType.INFO, "DataCacheSystem initialized");
     }
     //==========================通过QueueAction调用的方法===========================================
     //注意!回调函数目前在缓存线程与db线程都可能调用，回调函数的实现需要是线程安全的(目前一般都是发消息，满足此条件)。
@@ -76,7 +76,7 @@ internal class DataCacheSystem : MyServerThread
         }
         if (isLoadCache) {
             channel.Send(ret);
-            LogSys.Log(LOG_TYPE.INFO, "Load data from cache. MsgId:{0}, Key:{1}", msg.MsgId, KeyString.Wrap(msg.PrimaryKeys).ToString());
+            LogSys.Log(ServerLogType.INFO, "Load data from cache. MsgId:{0}, Key:{1}", msg.MsgId, KeyString.Wrap(msg.PrimaryKeys).ToString());
         } else {
             //查找DB交给DBLoad线程操作
             DbThreadManager.Instance.LoadActionQueue.QueueAction(DataLoadImplement.Load, msg, (MyAction<Msg_DL_LoadResult>)((Msg_DL_LoadResult result) => {
@@ -86,7 +86,7 @@ internal class DataCacheSystem : MyServerThread
                     }
                 }
                 channel.Send(result);
-                LogSys.Log(LOG_TYPE.INFO, "Load data from database. MsgId:{0}, Key:{1}", msg.MsgId, KeyString.Wrap(msg.PrimaryKeys).ToString());
+                LogSys.Log(ServerLogType.INFO, "Load data from database. MsgId:{0}, Key:{1}", msg.MsgId, KeyString.Wrap(msg.PrimaryKeys).ToString());
             }));
         }
     }
@@ -117,7 +117,7 @@ internal class DataCacheSystem : MyServerThread
             if (m_LastTickTime != 0) {
                 long elapsedTickTime = curTime - m_LastTickTime;
                 if (elapsedTickTime > c_WarningTickTime) {
-                    LogSys.Log(LOG_TYPE.MONITOR, "DataCacheSystem Tick:{0}", elapsedTickTime);
+                    LogSys.Log(ServerLogType.MONITOR, "DataCacheSystem Tick:{0}", elapsedTickTime);
                 }
             }
             m_LastTickTime = curTime;
@@ -125,15 +125,15 @@ internal class DataCacheSystem : MyServerThread
             if (m_LastLogTime + 60000 < curTime) {
                 m_LastLogTime = curTime;
                 DebugPoolCount((string msg) => {
-                    LogSys.Log(LOG_TYPE.INFO, "DataCacheSystem.ActionQueue {0}", msg);
+                    LogSys.Log(ServerLogType.INFO, "DataCacheSystem.ActionQueue {0}", msg);
                 });
                 m_LoadActionQueue.DebugPoolCount((string msg) => {
-                    LogSys.Log(LOG_TYPE.INFO, "DataCacheSystem.LoadActionQueue {0}", msg);
+                    LogSys.Log(ServerLogType.INFO, "DataCacheSystem.LoadActionQueue {0}", msg);
                 });
                 m_SaveActionQueue.DebugPoolCount((string msg) => {
-                    LogSys.Log(LOG_TYPE.INFO, "DataCacheSystem.SaveActionQueue {0}", msg);
+                    LogSys.Log(ServerLogType.INFO, "DataCacheSystem.SaveActionQueue {0}", msg);
                 });
-                LogSys.Log(LOG_TYPE.MONITOR, "DataCacheSystem.ActionQueue Current Action {0}", this.CurActionNum);
+                LogSys.Log(ServerLogType.MONITOR, "DataCacheSystem.ActionQueue Current Action {0}", this.CurActionNum);
             }
 
             if (curTime - m_LastCacheTickTime > c_CacheTickInterval) {
@@ -145,9 +145,9 @@ internal class DataCacheSystem : MyServerThread
             m_SaveActionQueue.HandleActions(4096);
             PersistentSystem.Instance.Tick();
         } catch (Exception ex) {
-            LogSys.Log(LOG_TYPE.ERROR, "DataCacheSystem ERROR:{0} \n StackTrace:{1}", ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "DataCacheSystem ERROR:{0} \n StackTrace:{1}", ex.Message, ex.StackTrace);
             if (ex.InnerException != null) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCacheSystem INNER ERROR:{0} \n StackTrace:{1}", ex.InnerException.Message, ex.InnerException.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCacheSystem INNER ERROR:{0} \n StackTrace:{1}", ex.InnerException.Message, ex.InnerException.StackTrace);
             }
         }
     }

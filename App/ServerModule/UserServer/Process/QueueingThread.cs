@@ -91,7 +91,7 @@ namespace GameFramework
             m_MaxOnlineUserCount = maxUserCount;
             m_MaxOnlineUserCountPerLogicServer = maxUserCountPerLogicServer;
             m_MaxQueueingCount = maxQueueingCount;
-            LogSys.Log(LOG_TYPE.WARN, "UpdateMaxUserCount {0} {1} {2} {3}", maxUserCount, maxUserCountPerLogicServer, maxQueueingCount, gowRobotType);
+            LogSys.Log(ServerLogType.WARN, "UpdateMaxUserCount {0} {1} {2} {3}", maxUserCount, maxUserCountPerLogicServer, maxQueueingCount, gowRobotType);
         }
         internal void TryAddLogoutQueueingAccount(string accountId)
         {
@@ -111,7 +111,7 @@ namespace GameFramework
             if (m_LastTickTime != 0) {
                 long elapsedTickTime = curTime - m_LastTickTime;
                 if (elapsedTickTime > c_WarningTickTime) {
-                    LogSys.Log(LOG_TYPE.MONITOR, "QueueingThread Tick:{0}", elapsedTickTime);
+                    LogSys.Log(ServerLogType.MONITOR, "QueueingThread Tick:{0}", elapsedTickTime);
                 }
             }
             m_LastTickTime = curTime;
@@ -119,9 +119,9 @@ namespace GameFramework
             if (m_LastLogTime + 60000 < curTime) {
                 m_LastLogTime = curTime;
                 DebugPoolCount((string msg) => {
-                    LogSys.Log(LOG_TYPE.INFO, "QueueingThread.ActionQueue {0}", msg);
+                    LogSys.Log(ServerLogType.INFO, "QueueingThread.ActionQueue {0}", msg);
                 });
-                LogSys.Log(LOG_TYPE.MONITOR, "QueueingThread.ActionQueue Current Action {0}", this.CurActionNum);
+                LogSys.Log(ServerLogType.MONITOR, "QueueingThread.ActionQueue Current Action {0}", this.CurActionNum);
             }
 
             const int c_MaxIterationPerTick = 10;
@@ -153,7 +153,7 @@ namespace GameFramework
                         for (LinkedListNode<string> node = m_QueueingAccounts.First; null != node && m_QueueingAccounts.Count > 0; ) {
                             ++ct;
                             if (ct > m_MaxQueueingCount) {
-                                LogSys.Log(LOG_TYPE.WARN, "QueueingThread.Tick maybe deadlock {0}", m_QueueingAccounts.Count);
+                                LogSys.Log(ServerLogType.WARN, "QueueingThread.Tick maybe deadlock {0}", m_QueueingAccounts.Count);
                                 break;
                             }
                             string accountId = node.Value;

@@ -147,7 +147,7 @@ namespace Lobby
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         internal void ForwardToWorld(string userSvrName, object msg)
@@ -173,7 +173,7 @@ namespace Lobby
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
 
@@ -201,38 +201,38 @@ namespace Lobby
                 try {
                     buffer = File.ReadAllBytes(filePath);
                 } catch (Exception e) {
-                    LogSys.Log(LOG_TYPE.ERROR, "Exception:{0}\n{1}", e.Message, e.StackTrace);
+                    LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", e.Message, e.StackTrace);
                     return null;
                 }
                 return buffer;
             });
-            LogSystem.OnOutput += (Log_Type type, string msg) => {
+            LogSystem.OnOutput += (GameLogType type, string msg) => {
                 switch (type) {
-                    case Log_Type.LT_Debug:
-                        LogSys.Log(LOG_TYPE.DEBUG, msg);
+                    case GameLogType.Debug:
+                        LogSys.Log(ServerLogType.DEBUG, msg);
                         break;
-                    case Log_Type.LT_Info:
-                        LogSys.Log(LOG_TYPE.INFO, msg);
+                    case GameLogType.Info:
+                        LogSys.Log(ServerLogType.INFO, msg);
                         break;
-                    case Log_Type.LT_Warn:
-                        LogSys.Log(LOG_TYPE.WARN, msg);
+                    case GameLogType.Warn:
+                        LogSys.Log(ServerLogType.WARN, msg);
                         break;
-                    case Log_Type.LT_Error:
-                    case Log_Type.LT_Assert:
-                        LogSys.Log(LOG_TYPE.ERROR, msg);
+                    case GameLogType.Error:
+                    case GameLogType.Assert:
+                        LogSys.Log(ServerLogType.ERROR, msg);
                         break;
                 }
             };
 
             LoadData();
-            LogSys.Log(LOG_TYPE.INFO, "Init Config ...");
+            LogSys.Log(ServerLogType.INFO, "Init Config ...");
             s_Instance = this;
             InstallMessageHandlers();
-            LogSys.Log(LOG_TYPE.INFO, "Init Messenger ...");
+            LogSys.Log(ServerLogType.INFO, "Init Messenger ...");
             m_RoomProcessThread.Init();
-            LogSys.Log(LOG_TYPE.INFO, "Init RoomProcessThread ...");
+            LogSys.Log(ServerLogType.INFO, "Init RoomProcessThread ...");
             Start();
-            LogSys.Log(LOG_TYPE.INFO, "Start Threads ...");
+            LogSys.Log(ServerLogType.INFO, "Start Threads ...");
         }
         private void Loop()
         {
@@ -242,7 +242,7 @@ namespace Lobby
                     if (m_LastTickTime != 0) {
                         long elapsedTickTime = curTime - m_LastTickTime;
                         if (elapsedTickTime > c_WarningTickTime) {
-                            LogSys.Log(LOG_TYPE.MONITOR, "Lobby Network Tick:{0}", curTime - m_LastTickTime);
+                            LogSys.Log(ServerLogType.MONITOR, "Lobby Network Tick:{0}", curTime - m_LastTickTime);
                         }
                     }
                     m_LastTickTime = curTime;
@@ -250,19 +250,19 @@ namespace Lobby
                     CenterClientApi.Tick();
                     Thread.Sleep(10);
                     if (m_WaitQuit) {
-                        //等待10s
+                        //绛夊緟10s
                         long startTime = TimeUtility.GetLocalMilliseconds();
                         while (startTime + 10000 > TimeUtility.GetLocalMilliseconds()) {
                             CenterClientApi.Tick();
                             Thread.Sleep(10);
                         }
-                        //关闭Lobby
-                        LogSys.Log(LOG_TYPE.MONITOR, "QuitStep_3. LastSaveDone. Lobby quit...");
+                        //鍏抽棴Lobby
+                        LogSys.Log(ServerLogType.MONITOR, "QuitStep_3. LastSaveDone. Lobby quit...");
                         CenterClientApi.Quit();
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Lobby.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Lobby.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void Release()
@@ -273,7 +273,7 @@ namespace Lobby
         }
         private void OnCenterLog(string msg, int size)
         {
-            LogSys.Log(LOG_TYPE.INFO, "{0}", msg);
+            LogSys.Log(ServerLogType.INFO, "{0}", msg);
         }
         private void OnNameHandleChanged(bool addOrUpdate, string name, int handle)
         {
@@ -292,7 +292,7 @@ namespace Lobby
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void OnCommand(int src, int dest, string command)
@@ -301,7 +301,7 @@ namespace Lobby
             const string c_ReloadConfig = "ReloadConfig";
             try {
                 if (0 == command.CompareTo(c_QuitLobby)) {
-                    LogSys.Log(LOG_TYPE.MONITOR, "receive {0} command, save data and then quitting ...", command);
+                    LogSys.Log(ServerLogType.MONITOR, "receive {0} command, save data and then quitting ...", command);
                     if (!m_WaitQuit) {
                         m_UserProcessScheduler.DispatchAction(m_UserProcessScheduler.DoCloseServers);
                         m_LastWaitQuitTime = TimeUtility.GetLocalMilliseconds();
@@ -310,10 +310,10 @@ namespace Lobby
                 } else if (0 == command.CompareTo(c_ReloadConfig)) {
                     CenterClientApi.ReloadConfigScript();
                     LobbyConfig.Init();
-                    LogSys.Log(LOG_TYPE.WARN, "receive {0} command.", command);
+                    LogSys.Log(ServerLogType.WARN, "receive {0} command.", command);
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void OnMessage(uint seq, int source_handle, int dest_handle,
@@ -345,7 +345,7 @@ namespace Lobby
                     m_RoomProcessThread.QueueAction(m_RoomSvrChannel.Dispatch, source_handle, seq, bytes);
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void OnMessageResultCallback(uint seq, int src, int dest, int result)
@@ -358,7 +358,7 @@ namespace Lobby
                 TableConfig.LevelProvider.Instance.LoadForServer();
                 TableConfig.ActorProvider.Instance.LoadForServer();
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void SetModuleLevelLock()
@@ -393,7 +393,7 @@ namespace Lobby
 
         private const long c_WarningTickTime = 1000;
         private long m_LastTickTime = 0;
-        private const long c_WaitQuitTimeInterval = 300000;      //重置等待退出状态的时间间隔,5mins
+        private const long c_WaitQuitTimeInterval = 300000;      //閲嶇疆绛夊緟閫�鍑虹姸鎬佺殑鏃堕棿闂撮殧,5mins
         private long m_LastWaitQuitTime = 0;
 
         private UserProcessScheduler m_UserProcessScheduler = new UserProcessScheduler();

@@ -35,7 +35,7 @@ namespace Lobby
             info.WorldId = worldId;
             info.UserCount = userCount;
 
-            LogSys.Log(LOG_TYPE.MONITOR, "UpdateLobbyServerInfo, world id:{0}, user count:{1}", worldId, userCount);
+            LogSys.Log(ServerLogType.MONITOR, "UpdateLobbyServerInfo, world id:{0}, user count:{1}", worldId, userCount);
         }
         internal void RegisterRoomServer(RoomServerInfo info)
         {
@@ -51,7 +51,7 @@ namespace Lobby
             Msg_LR_ReplyRegisterRoomServer resultBuilder = new Msg_LR_ReplyRegisterRoomServer();
             resultBuilder.IsOk = true;
             LobbyServer.Instance.RoomSvrChannel.Send(info.RoomServerName, resultBuilder);
-            LogSys.Log(LOG_TYPE.DEBUG, "RegisterRoomServer,name:{0},ip:{1},port:{2},max room num:{3}", info.RoomServerName, info.ServerIp, info.ServerPort, info.MaxRoomNum);
+            LogSys.Log(ServerLogType.DEBUG, "RegisterRoomServer,name:{0},ip:{1},port:{2},max room num:{3}", info.RoomServerName, info.ServerIp, info.ServerPort, info.MaxRoomNum);
         }
         internal void UpdateRoomServerInfo(RoomServerInfo info)
         {
@@ -195,7 +195,7 @@ namespace Lobby
                     user.CurrentState = UserState.Online;
                     user.LeftLife = UserInfo.c_LifeTimeWaitOffline;
                 }
-                LogSys.Log(LOG_TYPE.INFO, "QuitRoom Guid {0} state {1}", guid, user.CurrentState);
+                LogSys.Log(ServerLogType.INFO, "QuitRoom Guid {0} state {1}", guid, user.CurrentState);
             } else {
                 Msg_BL_QueryUserStateResult builder = new Msg_BL_QueryUserStateResult();
                 builder.Guid = guid;
@@ -218,7 +218,7 @@ namespace Lobby
                     resultBuilder.RoomId = user.CurrentRoomID;
                     LobbyServer.Instance.RoomSvrChannel.Send(room.RoomServerName, resultBuilder);
 
-                    LogSys.Log(LOG_TYPE.INFO, "BuyLife Guid {0}", guid);
+                    LogSys.Log(ServerLogType.INFO, "BuyLife Guid {0}", guid);
                 }
             }
         }
@@ -236,7 +236,7 @@ namespace Lobby
                     builder.Guid = guid;
                     LobbyServer.Instance.UserChannel.Send(srcHandle, builder);
 
-                    LogSys.Log(LOG_TYPE.INFO, "UserOffline, guid:{0}", guid);
+                    LogSys.Log(ServerLogType.INFO, "UserOffline, guid:{0}", guid);
                 }
             }
         }
@@ -253,7 +253,7 @@ namespace Lobby
                         urBuilder.RoomId = user.CurrentRoomID;
                         LobbyServer.Instance.RoomSvrChannel.Send(room.RoomServerName, urBuilder);
 
-                        LogSys.Log(LOG_TYPE.INFO, "User Restart GameClient , guid:{0}", guid);
+                        LogSys.Log(ServerLogType.INFO, "User Restart GameClient , guid:{0}", guid);
                     } else {
                         //房间已经关闭
                         user.ResetRoomInfo();
@@ -313,7 +313,7 @@ namespace Lobby
                             enterSceneResultMsg.m_ProtoData = protoData;
                             LobbyServer.Instance.TransmitToWorld(user, enterSceneResultMsg);
 
-                            LogSys.Log(LOG_TYPE.INFO, "user enter field success! guid {0} room {1} result {2}",
+                            LogSys.Log(ServerLogType.INFO, "user enter field success! guid {0} room {1} result {2}",
                               userGuid, roomID, (SceneOperationResultEnum)result);
                         } else {
                             LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
@@ -331,7 +331,7 @@ namespace Lobby
                 }
                 user.CurrentState = UserState.Online;
 
-                LogSys.Log(LOG_TYPE.INFO, "user enter field failed! guid {0} room {1} result {2}",
+                LogSys.Log(ServerLogType.INFO, "user enter field failed! guid {0} room {1} result {2}",
                   userGuid, roomID, (SceneOperationResultEnum)result);
 
                 LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
@@ -358,7 +358,7 @@ namespace Lobby
                                 msg.TargetRoomId = targetRoom.RoomId;
 
                                 LobbyServer.Instance.RoomSvrChannel.Send(curRoom.RoomServerName, msg);
-                                LogSys.Log(LOG_TYPE.INFO, "User change field ! , guid:{0} room:{1} target room:{2}", userGuid, curRoom.RoomId, targetRoom.RoomId);
+                                LogSys.Log(ServerLogType.INFO, "User change field ! , guid:{0} room:{1} target room:{2}", userGuid, curRoom.RoomId, targetRoom.RoomId);
                                 failed = false;
                             }
                         }
@@ -407,12 +407,12 @@ namespace Lobby
                         user.CurrentState = UserState.Online;
                         RequestEnterSceneRoom(user, targetRoomID, hp, mp, enterX, enterY);
                     }
-                    LogSys.Log(LOG_TYPE.INFO, "User change field success ! , guid:{0} room:{1} target room:{2} result:{3}", userGuid, roomID, targetRoomID, (SceneOperationResultEnum)result);
+                    LogSys.Log(ServerLogType.INFO, "User change field success ! , guid:{0} room:{1} target room:{2} result:{3}", userGuid, roomID, targetRoomID, (SceneOperationResultEnum)result);
                 } else {
                     LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
                 }
             } else {
-                LogSys.Log(LOG_TYPE.INFO, "User change field failed ! guid:{0} room:{1} target room:{2} result:{3}", userGuid, roomID, targetRoomID, (SceneOperationResultEnum)result);
+                LogSys.Log(ServerLogType.INFO, "User change field failed ! guid:{0} room:{1} target room:{2} result:{3}", userGuid, roomID, targetRoomID, (SceneOperationResultEnum)result);
 
                 LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
             }
@@ -465,7 +465,7 @@ namespace Lobby
                                     startGameResultMsg.m_ProtoData = protoData;
                                     LobbyServer.Instance.TransmitToWorld(user, startGameResultMsg);
                                     //重新进入房间成功
-                                    LogSys.Log(LOG_TYPE.INFO, "user reconnected roomServer success, guid {0}", userGuid);
+                                    LogSys.Log(ServerLogType.INFO, "user reconnected roomServer success, guid {0}", userGuid);
                                 }
                             }
                         }
@@ -474,7 +474,7 @@ namespace Lobby
                 case (int)Msg_RL_ReplyReconnectUser.ReconnectResultEnum.NotExist: {
                         //不存在，执行进场景流程
                         RequestEnterScene(userGuid, user.SceneId, roomID, 0);
-                        LogSys.Log(LOG_TYPE.INFO, "user reconnected roomserver, not exist, request enter scene ! guid {0}", userGuid);
+                        LogSys.Log(ServerLogType.INFO, "user reconnected roomserver, not exist, request enter scene ! guid {0}", userGuid);
                     }
                     break;
                 case (int)Msg_RL_ReplyReconnectUser.ReconnectResultEnum.Online: {
@@ -485,7 +485,7 @@ namespace Lobby
                         startGameResultMsg.m_ProtoData = protoData;
                         LobbyServer.Instance.TransmitToWorld(user, startGameResultMsg);
                         //room上玩家还是连接与在线状态，重连失败
-                        LogSys.Log(LOG_TYPE.INFO, "user reconnected roomserver, user already online, guid {0}", userGuid);
+                        LogSys.Log(ServerLogType.INFO, "user reconnected roomserver, user already online, guid {0}", userGuid);
                     }
                     break;
             }
@@ -511,7 +511,7 @@ namespace Lobby
                 }
                 LobbyServer.Instance.ForwardToWorld(user.UserSvrName, originalMsg);
 
-                LogSys.Log(LOG_TYPE.INFO, "RoomServer User Drop! Guid {0} State {1} IsEnd {2}", guid, user.CurrentState, isBattleEnd);
+                LogSys.Log(ServerLogType.INFO, "RoomServer User Drop! Guid {0} State {1} IsEnd {2}", guid, user.CurrentState, isBattleEnd);
             } else {
                 RoomInfo oldRoom = m_LobbyInfo.GetRoomByID(roomid);
                 if (null != oldRoom) {
@@ -521,7 +521,7 @@ namespace Lobby
                     LobbyServer.Instance.RoomSvrChannel.Send(oldRoom.RoomServerName, msg);
                 }
 
-                LogSys.Log(LOG_TYPE.INFO, "RoomServer User Drop! Guid {0} State Offline IsEnd {1}", guid, isBattleEnd);
+                LogSys.Log(ServerLogType.INFO, "RoomServer User Drop! Guid {0} State Offline IsEnd {1}", guid, isBattleEnd);
             }
         }
         internal void OnRoomUserQuit(int roomid, ulong guid, Msg_RL_UserQuit originalMsg)
@@ -543,7 +543,7 @@ namespace Lobby
 
                 LobbyServer.Instance.ForwardToWorld(user.UserSvrName, originalMsg);
 
-                LogSys.Log(LOG_TYPE.INFO, "RoomServer User Quit Guid {0} State {1}", guid, user.CurrentState);
+                LogSys.Log(ServerLogType.INFO, "RoomServer User Quit Guid {0} State {1}", guid, user.CurrentState);
             }
         }
         //拾取相关
@@ -592,7 +592,7 @@ namespace Lobby
 
                 LobbyServer.Instance.RoomSvrChannel.Send(room.RoomServerName, enterSceneMsg);
 
-                LogSys.Log(LOG_TYPE.DEBUG, "Request enter field, user {0} room {1}", info.Guid, roomId);
+                LogSys.Log(ServerLogType.DEBUG, "Request enter field, user {0} room {1}", info.Guid, roomId);
             }
         }
         protected override void OnStart()
@@ -606,7 +606,7 @@ namespace Lobby
             if (m_LastTickTime != 0) {
                 long elapsedTickTime = curTime - m_LastTickTime;
                 if (elapsedTickTime > c_WarningTickTime) {
-                    LogSys.Log(LOG_TYPE.MONITOR, "RoomProcessThread Tick:{0}", elapsedTickTime);
+                    LogSys.Log(ServerLogType.MONITOR, "RoomProcessThread Tick:{0}", elapsedTickTime);
                 }
             }
             m_LastTickTime = curTime;
@@ -615,9 +615,9 @@ namespace Lobby
                 m_LastLogTime = curTime;
 
                 DebugPoolCount((string msg) => {
-                    LogSys.Log(LOG_TYPE.INFO, "RoomProcessThread.ActionQueue {0}", msg);
+                    LogSys.Log(ServerLogType.INFO, "RoomProcessThread.ActionQueue {0}", msg);
                 });
-                LogSys.Log(LOG_TYPE.MONITOR, "RoomProcessThread.ActionQueue Current Action {0}", this.CurActionNum);
+                LogSys.Log(ServerLogType.MONITOR, "RoomProcessThread.ActionQueue Current Action {0}", this.CurActionNum);
 
                 int gameRoomCount = 0;
                 int gameUserCount = 0;
@@ -628,7 +628,7 @@ namespace Lobby
                         gameUserCount += room.UserCount;
                     }
                 }
-                LogSys.Log(LOG_TYPE.MONITOR, "Lobby Game Room Count:{0}, GameUserCount:{1}", gameRoomCount, gameUserCount);
+                LogSys.Log(ServerLogType.MONITOR, "Lobby Game Room Count:{0}, GameUserCount:{1}", gameRoomCount, gameUserCount);
             }
 
             m_LobbyInfo.Tick();

@@ -13,10 +13,10 @@ public class MsgPingHandler
   {
     Msg_Ping ping = msg as Msg_Ping;
     if (ping == null) {
-      LogSys.Log(LOG_TYPE.DEBUG, "warning: convert to ping message failed!");
+      LogSys.Log(ServerLogType.DEBUG, "warning: convert to ping message failed!");
       return;
     }
-    LogSys.Log(LOG_TYPE.DEBUG, "got {0} ping msg send ping time = {1}", peer.Guid, ping.send_ping_time);
+    LogSys.Log(ServerLogType.DEBUG, "got {0} ping msg send ping time = {1}", peer.Guid, ping.send_ping_time);
     Msg_Pong pongBuilder = new Msg_Pong();
     long curtime = TimeUtility.GetLocalMilliseconds();
     pongBuilder.send_ping_time = ping.send_ping_time;

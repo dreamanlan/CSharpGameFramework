@@ -39,7 +39,7 @@ namespace Lobby
                     m_UserChannel.Dispatch(src, session, msgData);
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
 

@@ -194,7 +194,7 @@ namespace GameFramework
             try {
                 //读取阻挡等场景相关数据
 
-                LogSys.Log(LOG_TYPE.DEBUG, "Scene {0} start Preloading.", resId);
+                LogSys.Log(ServerLogType.DEBUG, "Scene {0} start Preloading.", resId);
                                 
                 m_SceneState = SceneState.Preloading;
             } catch (Exception ex) {

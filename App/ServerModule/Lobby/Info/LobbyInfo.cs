@@ -96,7 +96,7 @@ namespace Lobby
 
         internal void InitSceneRooms()
         {
-            // ³õÊ¼»¯Ò°Íâ³¡¾°·¿¼ä
+            // åˆå§‹åŒ–é‡å¤–åœºæ™¯æˆ¿é—´
             MyDictionary<int, object> scenes = TableConfig.LevelProvider.Instance.LevelMgr.GetData();
             foreach (KeyValuePair<int, object> pair in scenes) {
                 TableConfig.Level cfg = pair.Value as TableConfig.Level;
@@ -237,7 +237,7 @@ namespace Lobby
                 RoomServerInfo info = pair.Value;
                 if (info.IdleRoomNum > info.AllocedRoomNum && info.UserNum < minNum) {
 
-                    LogSys.Log(LOG_TYPE.DEBUG, "GetIdlestRoomServer, Bubble process, Server:{0} UserNum:{1} < {2}", info.RoomServerName, info.UserNum, minNum);
+                    LogSys.Log(ServerLogType.DEBUG, "GetIdlestRoomServer, Bubble process, Server:{0} UserNum:{1} < {2}", info.RoomServerName, info.UserNum, minNum);
 
                     minNum = info.UserNum;
                     retInfo = info;
@@ -247,7 +247,7 @@ namespace Lobby
                 ++retInfo.AllocedRoomNum;
                 name = retInfo.RoomServerName;
             }
-            LogSys.Log(LOG_TYPE.DEBUG, "GetIdlestRoomServer, Name:{0} UserNum:{1}", name, minNum);
+            LogSys.Log(ServerLogType.DEBUG, "GetIdlestRoomServer, Name:{0} UserNum:{1}", name, minNum);
             return name;
         }
 

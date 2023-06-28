@@ -82,7 +82,7 @@ namespace GameFramework
         info.Data = data;
         m_MsgQueue.Enqueue(info);
       } catch (Exception ex) {
-        LogSys.Log(LOG_TYPE.ERROR, "NodeMessageThread.QueueMessage {0} {1} {2} {3} throw exception:{4}\n{5}", isGmTool, seq, sourceHandle, destHandle, ex.Message, ex.StackTrace);
+        LogSys.Log(ServerLogType.ERROR, "NodeMessageThread.QueueMessage {0} {1} {2} {3} throw exception:{4}\n{5}", isGmTool, seq, sourceHandle, destHandle, ex.Message, ex.StackTrace);
       }
     }
 
@@ -102,7 +102,7 @@ namespace GameFramework
                 }
                 m_MsgPool.Enqueue(info);
               } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "NodeMessageThread JsonMessageDispatcher.HandleDcoreMessage() throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "NodeMessageThread JsonMessageDispatcher.HandleDcoreMessage() throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
               }
             }
           } else {
@@ -110,7 +110,7 @@ namespace GameFramework
           }
         }
       } catch (Exception ex) {
-        LogSys.Log(LOG_TYPE.ERROR, "NodeMessageThread.HandleMessages throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+        LogSys.Log(ServerLogType.ERROR, "NodeMessageThread.HandleMessages throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
       }
     }
     
@@ -127,7 +127,7 @@ namespace GameFramework
           Thread.Sleep(m_TickSleepTime);
         }
       } catch (Exception ex) {
-        LogSys.Log(LOG_TYPE.ERROR, "NodeMessageThread.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+        LogSys.Log(ServerLogType.ERROR, "NodeMessageThread.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
       }
     }
 

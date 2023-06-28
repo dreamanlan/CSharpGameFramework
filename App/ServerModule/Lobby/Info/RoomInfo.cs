@@ -172,7 +172,7 @@ namespace Lobby
                 UserInfo info = dataProcess.GetUserInfo(user);
                 if (null != info) {
                     info.ResetRoomInfo();
-                    LogSys.Log(LOG_TYPE.DEBUG, "LeaveRoom:{0}", user);
+                    LogSys.Log(ServerLogType.DEBUG, "LeaveRoom:{0}", user);
                 }
                 m_Users.Remove(user);
             }
@@ -191,7 +191,7 @@ namespace Lobby
                         if (null != info)
                             info.ResetRoomInfo();
                         m_RecycledGuids.Add(guid);
-                        LogSys.Log(LOG_TYPE.DEBUG, "Room {0} has a exception user {1} !!!", m_RoomId, guid);
+                        LogSys.Log(ServerLogType.DEBUG, "Room {0} has a exception user {1} !!!", m_RoomId, guid);
                     }
                 }
                 if (m_RecycledGuids.Count > 0) {
@@ -223,7 +223,7 @@ namespace Lobby
             }
             m_Users.Clear();
             this.CurrentState = RoomState.Close;  //房间进入关闭状态
-            LogSys.Log(LOG_TYPE.INFO, "Lobby Room Close, roomID:{0}", RoomId);
+            LogSys.Log(ServerLogType.INFO, "Lobby Room Close, roomID:{0}", RoomId);
         }
 
         private string m_RoomServerName = "";

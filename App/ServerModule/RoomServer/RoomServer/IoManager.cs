@@ -63,13 +63,13 @@ namespace GameFramework
             m_Config.EnableMessageType(NetIncomingMessageType.WarningMessage);
 
             if (m_Config.IsMessageTypeEnabled(NetIncomingMessageType.DebugMessage))
-                LogSys.Log(LOG_TYPE.DEBUG, "Enable NetIncomingMessageType.DebugMessage");
+                LogSys.Log(ServerLogType.DEBUG, "Enable NetIncomingMessageType.DebugMessage");
             if (m_Config.IsMessageTypeEnabled(NetIncomingMessageType.VerboseDebugMessage))
-                LogSys.Log(LOG_TYPE.DEBUG, "Enable NetIncomingMessageType.VerboseDebugMessage");
+                LogSys.Log(ServerLogType.DEBUG, "Enable NetIncomingMessageType.VerboseDebugMessage");
             if (m_Config.IsMessageTypeEnabled(NetIncomingMessageType.ErrorMessage))
-                LogSys.Log(LOG_TYPE.DEBUG, "Enable NetIncomingMessageType.ErrorMessage");
+                LogSys.Log(ServerLogType.DEBUG, "Enable NetIncomingMessageType.ErrorMessage");
             if (m_Config.IsMessageTypeEnabled(NetIncomingMessageType.WarningMessage))
-                LogSys.Log(LOG_TYPE.DEBUG, "Enable NetIncomingMessageType.WarningMessage");
+                LogSys.Log(ServerLogType.DEBUG, "Enable NetIncomingMessageType.WarningMessage");
 
             m_NetServer = new NetServer(m_Config);
             m_NetServer.Start();
@@ -115,13 +115,13 @@ namespace GameFramework
                                 switch (im.MessageType) {
                                     case NetIncomingMessageType.DebugMessage:
                                     case NetIncomingMessageType.VerboseDebugMessage:
-                                        LogSys.Log(LOG_TYPE.DEBUG, "Debug Message: {0}", im.ReadString());
+                                        LogSys.Log(ServerLogType.DEBUG, "Debug Message: {0}", im.ReadString());
                                         break;
                                     case NetIncomingMessageType.ErrorMessage:
-                                        LogSys.Log(LOG_TYPE.DEBUG, "Error Message: {0}", im.ReadString());
+                                        LogSys.Log(ServerLogType.DEBUG, "Error Message: {0}", im.ReadString());
                                         break;
                                     case NetIncomingMessageType.WarningMessage:
-                                        LogSys.Log(LOG_TYPE.DEBUG, "Warning Message: {0}", im.ReadString());
+                                        LogSys.Log(ServerLogType.DEBUG, "Warning Message: {0}", im.ReadString());
                                         break;
                                     case NetIncomingMessageType.StatusChanged:
                                         NetConnectionStatus status = (NetConnectionStatus)im.ReadByte();
@@ -129,12 +129,12 @@ namespace GameFramework
                                         if (null != im.SenderConnection) {
                                             RoomPeer peer = RoomPeerMgr.Instance.GetPeerByConnection(im.SenderConnection);
                                             if (null != peer) {
-                                                LogSys.Log(LOG_TYPE.DEBUG, "Network Status Changed: {0} reason:{1} EndPoint:{2} Key:{3} User:{4}\nStatistic:{5}", status, reason, im.SenderEndPoint.ToString(), peer.GetKey(), peer.Guid, im.SenderConnection.Statistics.ToString());
+                                                LogSys.Log(ServerLogType.DEBUG, "Network Status Changed: {0} reason:{1} EndPoint:{2} Key:{3} User:{4}\nStatistic:{5}", status, reason, im.SenderEndPoint.ToString(), peer.GetKey(), peer.Guid, im.SenderConnection.Statistics.ToString());
                                             } else {
-                                                LogSys.Log(LOG_TYPE.DEBUG, "Network Status Changed: {0} reason:{1} EndPoint:{2}\nStatistic:{3}", status, reason, im.SenderEndPoint.ToString(), im.SenderConnection.Statistics.ToString());
+                                                LogSys.Log(ServerLogType.DEBUG, "Network Status Changed: {0} reason:{1} EndPoint:{2}\nStatistic:{3}", status, reason, im.SenderEndPoint.ToString(), im.SenderConnection.Statistics.ToString());
                                             }
                                         } else {
-                                            LogSys.Log(LOG_TYPE.DEBUG, "Network Status Changed:{0} reason:{1}", status, reason);
+                                            LogSys.Log(ServerLogType.DEBUG, "Network Status Changed:{0} reason:{1}", status, reason);
                                         }
                                         break;
                                     case NetIncomingMessageType.Data:
@@ -148,7 +148,7 @@ namespace GameFramework
                                             if (null != im.SenderConnection) {
                                                 RoomPeer peer = RoomPeerMgr.Instance.GetPeerByConnection(im.SenderConnection);
                                                 if (null != peer) {
-                                                    LogSys.Log(LOG_TYPE.WARN, "room server decode message error !!! from User:{0}({1})", peer.Guid, peer.GetKey());
+                                                    LogSys.Log(ServerLogType.WARN, "room server decode message error !!! from User:{0}({1})", peer.Guid, peer.GetKey());
                                                 }
                                             }
                                         }
@@ -158,12 +158,12 @@ namespace GameFramework
                                             if (null != im.SenderConnection) {
                                                 RoomPeer peer = RoomPeerMgr.Instance.GetPeerByConnection(im.SenderConnection);
                                                 if (null != peer) {
-                                                    LogSys.Log(LOG_TYPE.DEBUG, "got unknow message !!! from User:{0}({1})", peer.Guid, peer.GetKey());
+                                                    LogSys.Log(ServerLogType.DEBUG, "got unknow message !!! from User:{0}({1})", peer.Guid, peer.GetKey());
                                                 } else {
-                                                    LogSys.Log(LOG_TYPE.DEBUG, "got unknow message !!!");
+                                                    LogSys.Log(ServerLogType.DEBUG, "got unknow message !!!");
                                                 }
                                             } else {
-                                                LogSys.Log(LOG_TYPE.DEBUG, "got unknow message !!!");
+                                                LogSys.Log(ServerLogType.DEBUG, "got unknow message !!!");
                                             }
                                         }
                                         break;
@@ -175,16 +175,16 @@ namespace GameFramework
                                 break;
                             }
                         } catch (Exception ex) {
-                            LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                            LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
                         }
                     }
                     RoomPeerMgr.Instance.Tick();
                     long endTime = TimeUtility.GetElapsedTimeUs();
                     if (endTime - startTime >= 10000) {
-                        LogSys.Log(LOG_TYPE.DEBUG, "Warning, IOHandler() cost {0} us !\nNetPeer Statistic:{1}", endTime - startTime, m_NetServer.Statistics.ToString());
+                        LogSys.Log(ServerLogType.DEBUG, "Warning, IOHandler() cost {0} us !\nNetPeer Statistic:{1}", endTime - startTime, m_NetServer.Statistics.ToString());
                     }
                 } catch (Exception ex) {
-                    LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                    LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
                 }
 
                 Thread.Sleep(10);
@@ -199,11 +199,11 @@ namespace GameFramework
                 if (null != peer.GetConnection()) {
                     NetSendResult res = m_NetServer.SendMessage(om, peer.GetConnection(), NetDeliveryMethod.ReliableOrdered, 0);
                     if (res == NetSendResult.Dropped) {
-                        LogSys.Log(LOG_TYPE.ERROR, "SendPeerMessage {0} failed:dropped, User:{1}({2})", msg.ToString(), peer.Guid, peer.GetKey());
+                        LogSys.Log(ServerLogType.ERROR, "SendPeerMessage {0} failed:dropped, User:{1}({2})", msg.ToString(), peer.Guid, peer.GetKey());
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
 
@@ -216,11 +216,11 @@ namespace GameFramework
                 if (res == NetSendResult.Dropped) {
                     RoomPeer peer = RoomPeerMgr.Instance.GetPeerByConnection(conn);
                     if (null != peer) {
-                        LogSys.Log(LOG_TYPE.ERROR, "SendMessage {0} failed:dropped, User:{1}({2})", msg.ToString(), peer.Guid, peer.GetKey());
+                        LogSys.Log(ServerLogType.ERROR, "SendMessage {0} failed:dropped, User:{1}({2})", msg.ToString(), peer.Guid, peer.GetKey());
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
 
@@ -231,7 +231,7 @@ namespace GameFramework
                 om.Write(Serialize.Encode(msg, (int)id));
                 m_NetServer.SendUnconnectedMessage(om, conn.RemoteEndPoint);
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
     }

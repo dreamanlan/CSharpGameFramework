@@ -52,7 +52,7 @@ namespace GameFramework
                     IOManager.Instance.SendUnconnectedMessage(conn, RoomMessageDefine.Msg_RC_ShakeHands_Ret, builder);
 
                     conn.Disconnect("unauthed");
-                    LogSys.Log(LOG_TYPE.DEBUG, "unauthed peer {0} got message {1}, can't deal it!", conn.RemoteEndPoint.ToString(), msg.ToString());
+                    LogSys.Log(ServerLogType.DEBUG, "unauthed peer {0} got message {1}, can't deal it!", conn.RemoteEndPoint.ToString(), msg.ToString());
                     return;
                 }
 
@@ -67,7 +67,7 @@ namespace GameFramework
                 // 消息分发到peer
                 RoomPeerMgr.Instance.DispatchPeerMsg(peer, id, msg);
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
     }

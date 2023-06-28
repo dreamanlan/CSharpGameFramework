@@ -8,7 +8,7 @@ using GameFrameworkMessage;
 namespace GameFramework
 {
     /// <remarks>
-    /// ×¢ÒâÕâ¸öÀàµÄpublic·½·¨£¬¶¼Ó¦¿¼ÂÇ¿çÏß³Ìµ÷ÓÃÊÇ·ñ°²È«£¡£¡£¡
+    /// æ³¨æ„è¿™ä¸ªç±»çš„publicæ–¹æ³•ï¼Œéƒ½åº”è€ƒè™‘è·¨çº¿ç¨‹è°ƒç”¨æ˜¯å¦å®‰å…¨ï¼ï¼ï¼
     /// </remarks>
     public class RoomThread : MyServerThread
     {
@@ -34,7 +34,7 @@ namespace GameFramework
             user_pool_ = userpool;
             connector_ = conn;
             preactive_room_count_ = 0;
-            LogSys.Log(LOG_TYPE.DEBUG, "thread {0} init ok.", cur_thread_id_);
+            LogSys.Log(ServerLogType.DEBUG, "thread {0} init ok.", cur_thread_id_);
             return true;
         }
 
@@ -55,54 +55,54 @@ namespace GameFramework
 
         public void ActiveFieldRoom(int roomid, int sceneId)
         {
-            LogSys.Log(LOG_TYPE.INFO, "[0] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
+            LogSys.Log(ServerLogType.INFO, "[0] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             Room rm = room_pool_.NewRoom();
             if (null == rm) {
                 Interlocked.Decrement(ref preactive_room_count_);
 
-                LogSys.Log(LOG_TYPE.ERROR, "Failed active field room {0} in thread {1}, preactive room count {2}",
+                LogSys.Log(ServerLogType.ERROR, "Failed active field room {0} in thread {1}, preactive room count {2}",
                     roomid, cur_thread_id_, preactive_room_count_);
                 return;
             }
-            LogSys.Log(LOG_TYPE.INFO, "[1] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
+            LogSys.Log(ServerLogType.INFO, "[1] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             rm.ScenePool = scene_pool_;
             rm.Init(roomid, sceneId, user_pool_, connector_);
-            LogSys.Log(LOG_TYPE.INFO, "[2] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
+            LogSys.Log(ServerLogType.INFO, "[2] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
 
             rm.IsFieldRoom = true;
 
-            LogSys.Log(LOG_TYPE.INFO, "[3] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
+            LogSys.Log(ServerLogType.INFO, "[3] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
 
-            //¹¤×÷È«²¿Íê³ÉºóÔÙ¼Óµ½¼¤»î·¿¼äÁĞ±í£¬¿ªÊ¼tick
+            //å·¥ä½œå…¨éƒ¨å®Œæˆåå†åŠ åˆ°æ¿€æ´»æˆ¿é—´åˆ—è¡¨ï¼Œå¼€å§‹tick
             active_room_.Add(rm);
             Interlocked.Decrement(ref preactive_room_count_);
 
-            LogSys.Log(LOG_TYPE.DEBUG, "active field room {0} in thread {1}, preactive room count {2}",
+            LogSys.Log(ServerLogType.DEBUG, "active field room {0} in thread {1}, preactive room count {2}",
                 roomid, cur_thread_id_, preactive_room_count_);
         }
 
         public void ActiveRoom(int roomid, int sceneId, MyAction<bool> callbackOnFinish)
         {
-            LogSys.Log(LOG_TYPE.INFO, "[0] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
+            LogSys.Log(ServerLogType.INFO, "[0] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             Room rm = room_pool_.NewRoom();
             if (null == rm) {
-                //ÓÉÓÚ²¢·¢Ô­Òò£¬ÓĞ¿ÉÄÜlobby»òÖ÷Ïß³Ì»á¶à·¢ÆğÒ»Ğ©·¿¼ä¼¤»î¡£
-                //ÎÒÃÇÍ¨¹ıÔ¤ÁôÒ»¶¨ÊıÁ¿µÄ·¿¼äÀ´½µµÍÕâÖÖÇéĞÎ·¢ÉúµÄ¸ÅÂÊ¡£
+                //ç”±äºå¹¶å‘åŸå› ï¼Œæœ‰å¯èƒ½lobbyæˆ–ä¸»çº¿ç¨‹ä¼šå¤šå‘èµ·ä¸€äº›æˆ¿é—´æ¿€æ´»ã€‚
+                //æˆ‘ä»¬é€šè¿‡é¢„ç•™ä¸€å®šæ•°é‡çš„æˆ¿é—´æ¥é™ä½è¿™ç§æƒ…å½¢å‘ç”Ÿçš„æ¦‚ç‡ã€‚
                 Interlocked.Decrement(ref preactive_room_count_);
                 if (null != callbackOnFinish) {
                     callbackOnFinish(false);
                 }
 
-                LogSys.Log(LOG_TYPE.ERROR, "Failed active room {0} in thread {1}, preactive room count {2}",
+                LogSys.Log(ServerLogType.ERROR, "Failed active room {0} in thread {1}, preactive room count {2}",
                     roomid, cur_thread_id_, preactive_room_count_);
                 return;
             }
-            LogSys.Log(LOG_TYPE.INFO, "[1] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
+            LogSys.Log(ServerLogType.INFO, "[1] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             rm.ScenePool = scene_pool_;
             rm.Init(roomid, sceneId, user_pool_, connector_);
-            LogSys.Log(LOG_TYPE.INFO, "[2] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
+            LogSys.Log(ServerLogType.INFO, "[2] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             /*
-            //ÁÙÊ±Ìí¼Ó²âÊÔ¹Û²ìÕß
+            //ä¸´æ—¶æ·»åŠ æµ‹è¯•è§‚å¯Ÿè€…
             for (int obIx = 0; obIx < 5; ++obIx) {
               uint key = 0xf0000000 + (uint)((roomid << 4) + obIx);
               string observerName = "Observer_" + key;
@@ -113,14 +113,14 @@ namespace GameFramework
               }
             }
             */
-            //¹¤×÷È«²¿Íê³ÉºóÔÙ¼Óµ½¼¤»î·¿¼äÁĞ±í£¬¿ªÊ¼tick
+            //å·¥ä½œå…¨éƒ¨å®Œæˆåå†åŠ åˆ°æ¿€æ´»æˆ¿é—´åˆ—è¡¨ï¼Œå¼€å§‹tick
             active_room_.Add(rm);
             Interlocked.Decrement(ref preactive_room_count_);
             if (null != callbackOnFinish) {
                 callbackOnFinish(true);
             }
 
-            LogSys.Log(LOG_TYPE.DEBUG, "active room {0} in thread {1}, preactive room count {2}",
+            LogSys.Log(ServerLogType.DEBUG, "active room {0} in thread {1}, preactive room count {2}",
                 roomid, cur_thread_id_, preactive_room_count_);
         }
         public void AddUser(User user, int roomId, MyAction<bool, int, User> callbackOnFinish)
@@ -294,7 +294,7 @@ namespace GameFramework
                         object[] objArgs = args.ToArray();
                         curScene.StorySystem.SendMessage(msgId, objArgs);
                     } catch (Exception ex) {
-                        LogSys.Log(LOG_TYPE.ERROR, "Msg_CRC_StoryMessage throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                        LogSys.Log(ServerLogType.ERROR, "Msg_CRC_StoryMessage throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     }
                 }
             }
@@ -322,7 +322,7 @@ namespace GameFramework
         {
             ActionNumPerTick = 1024;
             TickSleepTime = 10;
-            LogSys.Log(LOG_TYPE.DEBUG, "thread {0} start.", cur_thread_id_);
+            LogSys.Log(ServerLogType.DEBUG, "thread {0} start.", cur_thread_id_);
 
             AttrCalculator.LoadConfig();
         }
@@ -334,7 +334,7 @@ namespace GameFramework
                 if (m_LastTickTime != 0) {
                     long elapsedTickTime = curTime - m_LastTickTime;
                     if (elapsedTickTime > c_WarningTickTime) {
-                        LogSys.Log(LOG_TYPE.MONITOR, "RoomThread Tick:{0}", elapsedTickTime);
+                        LogSys.Log(ServerLogType.MONITOR, "RoomThread Tick:{0}", elapsedTickTime);
                     }
                 }
                 m_LastTickTime = curTime;
@@ -343,9 +343,9 @@ namespace GameFramework
                     m_LastLogTime = curTime;
 
                     DebugPoolCount((string msg) => {
-                        LogSys.Log(LOG_TYPE.INFO, "RoomThread.ActionQueue {0}, thread {1}", msg, cur_thread_id_);
+                        LogSys.Log(ServerLogType.INFO, "RoomThread.ActionQueue {0}, thread {1}", msg, cur_thread_id_);
                     });
-                    LogSys.Log(LOG_TYPE.MONITOR, "RoomThread.ActionQueue Current Action {0}", this.CurActionNum);
+                    LogSys.Log(ServerLogType.MONITOR, "RoomThread.ActionQueue Current Action {0}", this.CurActionNum);
                 }
 
                 long tick_interval_us = tick_interval_ * 1000;
@@ -354,13 +354,13 @@ namespace GameFramework
                 long elapsedTime = TimeSnapshot.End();
                 if (elapsedTime >= tick_interval_us) {
                     if (elapsedTime >= tick_interval_us * 2) {
-                        LogSys.Log(LOG_TYPE.DEBUG, "*** Warning, RoomThread tick interval is {0} us !", elapsedTime);
+                        LogSys.Log(ServerLogType.DEBUG, "*** Warning, RoomThread tick interval is {0} us !", elapsedTime);
                         foreach (Room room in active_room_) {
                             Scene scene = room.ActiveScene;
                             if (null != scene) {
                                 if (scene.SceneState == SceneState.Running) {
                                     SceneProfiler profiler = scene.SceneProfiler;
-                                    LogSys.Log(LOG_TYPE.DEBUG, "{0}", profiler.GenerateLogString(scene.SceneResId, scene.GameTime.ElapseMilliseconds));
+                                    LogSys.Log(ServerLogType.DEBUG, "{0}", profiler.GenerateLogString(scene.SceneResId, scene.GameTime.ElapseMilliseconds));
                                 }
                             }
                         }
@@ -370,7 +370,7 @@ namespace GameFramework
                     Thread.Sleep((int)(tick_interval_ - elapsedTime / 1000));
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
 
@@ -427,10 +427,10 @@ namespace GameFramework
         // thread control attribute------------------------------------------------
         private static uint thread_id_creator_ = 1;
         private uint cur_thread_id_;
-        private uint tick_interval_;          // tickµÄ¼ä¸ô, ºÁÃë
+        private uint tick_interval_;          // tickçš„é—´éš”, æ¯«ç§’
 
         // room relative attribtes-------------
-        private List<Room> active_room_;               // ÒÑ¼¤»îµÄ·¿¼äIDÁĞ±í
+        private List<Room> active_room_;               // å·²æ¿€æ´»çš„æˆ¿é—´IDåˆ—è¡¨
         private List<Room> unused_room_;
         private RoomPool room_pool_;
         private uint max_room_count_;

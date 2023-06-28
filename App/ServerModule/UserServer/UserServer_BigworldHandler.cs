@@ -44,7 +44,7 @@ namespace GameFramework
                     m_BigworldChannel.Dispatch(src, session, msg_.Data);
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void HandleQueryUserStateResult(Msg_BL_QueryUserStateResult msg_, PBChannel channel, int src, uint session)

@@ -9,7 +9,7 @@ namespace GameFramework
     protected override void OnStart()
     {      
       TickSleepTime = 10;
-      LogSys.Log(LOG_TYPE.DEBUG, "scene load thread start.");
+      LogSys.Log(ServerLogType.DEBUG, "scene load thread start.");
     }
 
     protected override void OnTick()
@@ -19,7 +19,7 @@ namespace GameFramework
         if (m_LastTickTime != 0) {
           long elapsedTickTime = curTime - m_LastTickTime;
           if (elapsedTickTime > c_WarningTickTime) {
-            LogSys.Log(LOG_TYPE.MONITOR, "SceneLoadThread Tick:{0}", elapsedTickTime);
+            LogSys.Log(ServerLogType.MONITOR, "SceneLoadThread Tick:{0}", elapsedTickTime);
           }
         }
         m_LastTickTime = curTime;
@@ -28,12 +28,12 @@ namespace GameFramework
           m_LastLogTime = curTime;
 
           DebugPoolCount((string msg) => {
-            LogSys.Log(LOG_TYPE.INFO, "SceneLoadThread.ActionQueue {0}", msg);
+            LogSys.Log(ServerLogType.INFO, "SceneLoadThread.ActionQueue {0}", msg);
           });
-          LogSys.Log(LOG_TYPE.MONITOR, "SceneLoadThread.ActionQueue Current Action {0}", this.CurActionNum);
+          LogSys.Log(ServerLogType.MONITOR, "SceneLoadThread.ActionQueue Current Action {0}", this.CurActionNum);
         }
       } catch (Exception ex) {
-        LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+        LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
       }      
     }
 

@@ -9,11 +9,11 @@ using GameFramework.Network;
 namespace GameFramework
 {
   /// <summary>
-  /// nodeÏûÏ¢¸ñÊ½(¶ş½øÖÆĞÎÊ½£¬×îºóÓÃbase64±àÂë³É×Ö·û´®):
-  /// 2×Ö½Úid
-  /// 2×Ö½ÚnodeÏûÏ¢Í·´óĞ¡
-  /// nodeÏûÏ¢Í·
-  /// protoÊı¾İÏûÏ¢
+  /// nodeæ¶ˆæ¯æ ¼å¼(äºŒè¿›åˆ¶å½¢å¼ï¼Œæœ€åç”¨base64ç¼–ç æˆå­—ç¬¦ä¸²):
+  /// 2å­—èŠ‚id
+  /// 2å­—èŠ‚nodeæ¶ˆæ¯å¤´å¤§å°
+  /// nodeæ¶ˆæ¯å¤´
+  /// protoæ•°æ®æ¶ˆæ¯
   /// </summary>
   internal class NodeMessageHandlerInfo
   {
@@ -22,8 +22,8 @@ namespace GameFramework
     internal NodeMessageHandlerDelegate m_Handler = null;
   }
   /// <summary>
-  /// jsonÏûÏ¢¸ñÊ½:
-  /// 'id'|'jsonÏûÏ¢´®'|proto-bufÏûÏ¢£¨base64±àÂë³É×Ö·û´®£©
+  /// jsonæ¶ˆæ¯æ ¼å¼:
+  /// 'id'|'jsonæ¶ˆæ¯ä¸²'|proto-bufæ¶ˆæ¯ï¼ˆbase64ç¼–ç æˆå­—ç¬¦ä¸²ï¼‰
   /// </summary>
   internal class JsonMessageHandlerInfo
   {
@@ -126,9 +126,9 @@ namespace GameFramework
           }
         } catch (Exception ex) {
           if (null == msgStr) {
-            LogSys.Log(LOG_TYPE.ERROR, "[Exception] DecodeJsonMessage:{0}\n{1}", ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "[Exception] DecodeJsonMessage:{0}\n{1}", ex.Message, ex.StackTrace);
           } else {
-            LogSys.Log(LOG_TYPE.ERROR, "[Exception] DecodeJsonMessage:{0} {1}\n{2}", msgStr, ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "[Exception] DecodeJsonMessage:{0} {1}\n{2}", msgStr, ex.Message, ex.StackTrace);
           }
         }
       }
@@ -308,9 +308,9 @@ namespace GameFramework
           }
         } catch (Exception ex) {
           if (null == msgStr) {
-            LogSys.Log(LOG_TYPE.ERROR, "[Exception] DecodeJsonMessage:{0}\n{1}", ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "[Exception] DecodeJsonMessage:{0}\n{1}", ex.Message, ex.StackTrace);
           } else {
-            LogSys.Log(LOG_TYPE.ERROR, "[Exception] DecodeJsonMessage:{0} {1}\n{2}", msgStr, ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "[Exception] DecodeJsonMessage:{0} {1}\n{2}", msgStr, ex.Message, ex.StackTrace);
           }
         }
       }

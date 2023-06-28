@@ -26,7 +26,7 @@ namespace GameFramework
           m_GuidList[2].NextGuid = m_NextItemGuid;
           m_GuidList[3].NextGuid = m_NextMemberGuid;
         } else {
-          LogSys.Log(LOG_TYPE.ERROR, "GlobalData GuidSystem ERROR. Get GuidList error. GuidList Count:{0}", m_GuidList.Count);
+          LogSys.Log(ServerLogType.ERROR, "GlobalData GuidSystem ERROR. Get GuidList error. GuidList Count:{0}", m_GuidList.Count);
         }                
         return m_GuidList;
       }    

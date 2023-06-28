@@ -85,12 +85,12 @@ namespace GameFramework
             if (null != scene) {
               scene.SyncForNewObserver(this);
             }
-            LogSys.Log(LOG_TYPE.DEBUG, "Msg_CR_Observer from observer {0}({1})", Guid, Name);
+            LogSys.Log(ServerLogType.DEBUG, "Msg_CR_Observer from observer {0}({1})", Guid, Name);
           } else {
             Msg_CR_Quit quitMsg = msg as Msg_CR_Quit;
             if (null != quitMsg) {
               OwnRoomUserManager.DropObserver(this);
-              LogSys.Log(LOG_TYPE.DEBUG, "Msg_CR_Quit from observer {0}({1})", Guid, Name);
+              LogSys.Log(ServerLogType.DEBUG, "Msg_CR_Quit from observer {0}({1})", Guid, Name);
               break;
             } else {
               //LogSys.Log(LOG_TYPE.DEBUG, "msg {0} from observer {1}({2})", msg.GetType().Name, Guid, Name);
@@ -98,7 +98,7 @@ namespace GameFramework
           }
         }
       } catch (Exception ex) {
-        LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+        LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
       }
     }
 

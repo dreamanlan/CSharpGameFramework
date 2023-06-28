@@ -123,7 +123,7 @@ namespace GameFramework.DataCache
                     }
                 } else {
                     //新数据的dataVersion低,不更新缓存,输出警告日志
-                    LogSys.Log(LOG_TYPE.WARN, "Update cache version WARN. Key:{0}, NewCacheVersion:{1}, OldCacheVersion:{2}", key, cacheVersion, cacheItem.CacheVersion);
+                    LogSys.Log(ServerLogType.WARN, "Update cache version WARN. Key:{0}, NewCacheVersion:{1}, OldCacheVersion:{2}", key, cacheVersion, cacheItem.CacheVersion);
                 }
             }
         }

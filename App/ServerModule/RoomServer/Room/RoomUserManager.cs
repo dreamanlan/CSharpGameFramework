@@ -150,21 +150,21 @@ namespace GameFramework
                 if (us != null && us.Guid == newUser.Guid) {
                     //当前玩家已在游戏房间内
                     if (us.GetKey() == newUser.GetKey()) {
-                        LogSys.Log(LOG_TYPE.DEBUG, "Add user success: User already in the room! RoomId:{0}, Guid:{1}, OldUser[{2}]({3}) NewUser[{4}]({5}) ",
+                        LogSys.Log(ServerLogType.DEBUG, "Add user success: User already in the room! RoomId:{0}, Guid:{1}, OldUser[{2}]({3}) NewUser[{4}]({5}) ",
                         m_RoomId, us.Guid, us.LocalID, us.GetKey(), newUser.LocalID, newUser.GetKey());
-                        LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for new {1} {2}, [Room.AddNewUser]", newUser.LocalID, newUser.Guid, newUser.GetKey());
+                        LogSys.Log(ServerLogType.INFO, "FreeUser {0} for new {1} {2}, [Room.AddNewUser]", newUser.LocalID, newUser.Guid, newUser.GetKey());
                         m_UserPool.FreeUser(newUser.LocalID);
                         return true;
                     } else if (us.UserControlState != (int)UserControlState.User) {
-                        LogSys.Log(LOG_TYPE.DEBUG, "Add user success: User already in the room! RoomId:{0}, Guid:{1}, OldUser[{2}]({3}) NewUser[{4}]({5}) ",
+                        LogSys.Log(ServerLogType.DEBUG, "Add user success: User already in the room! RoomId:{0}, Guid:{1}, OldUser[{2}]({3}) NewUser[{4}]({5}) ",
                         m_RoomId, us.Guid, us.LocalID, us.GetKey(), newUser.LocalID, newUser.GetKey());
-                        LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for old {1} {2}, [Room.AddNewUser]", us.LocalID, us.Guid, us.GetKey());
+                        LogSys.Log(ServerLogType.INFO, "FreeUser {0} for old {1} {2}, [Room.AddNewUser]", us.LocalID, us.Guid, us.GetKey());
                         RemoveUser(us);
                         break;
                     } else {
-                        LogSys.Log(LOG_TYPE.DEBUG, "Add user false: User already in the room and online! RoomId:{0}, Guid:{1}, OldUser[{2}]({3}) NewUser[{4}]({5}) ",
+                        LogSys.Log(ServerLogType.DEBUG, "Add user false: User already in the room and online! RoomId:{0}, Guid:{1}, OldUser[{2}]({3}) NewUser[{4}]({5}) ",
                         m_RoomId, us.Guid, us.LocalID, us.GetKey(), newUser.LocalID, newUser.GetKey());
-                        LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for new {1} {2}, [Room.AddNewUser]", newUser.LocalID, newUser.Guid, newUser.GetKey());
+                        LogSys.Log(ServerLogType.INFO, "FreeUser {0} for new {1} {2}, [Room.AddNewUser]", newUser.LocalID, newUser.Guid, newUser.GetKey());
                         m_UserPool.FreeUser(newUser.LocalID);
                         return false;
                     }
@@ -189,7 +189,7 @@ namespace GameFramework
                 }
             }
             m_RoomUsers.Add(newUser);
-            LogSys.Log(LOG_TYPE.DEBUG, "Add user success ! RoomId:{0} , UserGuid:{1}({2})",
+            LogSys.Log(ServerLogType.DEBUG, "Add user success ! RoomId:{0} , UserGuid:{1}({2})",
               m_RoomId, newUser.Guid, newUser.GetKey());
             return true;
         }
@@ -200,7 +200,7 @@ namespace GameFramework
                 if (null != user.Info) {
                     //user.Info.Suicide();
                 }
-                LogSys.Log(LOG_TYPE.DEBUG, "Room {0} User {1}({2}) deleted.", RoomId, user.Guid, user.GetKey());
+                LogSys.Log(ServerLogType.DEBUG, "Room {0} User {1}({2}) deleted.", RoomId, user.Guid, user.GetKey());
             }
         }
         public void DropUser(User user)
@@ -217,7 +217,7 @@ namespace GameFramework
             if (null != user.Info) {
                 // user.Info.Suicide();
             }
-            LogSys.Log(LOG_TYPE.DEBUG, "Room {0} User {1}({2}) dropped.", RoomId, user.Guid, user.GetKey());
+            LogSys.Log(ServerLogType.DEBUG, "Room {0} User {1}({2}) dropped.", RoomId, user.Guid, user.GetKey());
         }
         public void RemoveUser(User user)
         {
@@ -244,7 +244,7 @@ namespace GameFramework
                 scene.LeaveScene(user);
             }
 
-            LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [Room.RemoveUser]", user.LocalID, user.Guid, user.GetKey());
+            LogSys.Log(ServerLogType.INFO, "FreeUser {0} for {1} {2}, [Room.RemoveUser]", user.LocalID, user.Guid, user.GetKey());
             m_RoomUsers.Remove(user);
             if (free) {
                 m_UserPool.FreeUser(user.LocalID);

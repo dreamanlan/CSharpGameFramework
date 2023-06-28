@@ -81,7 +81,7 @@ namespace Lobby
         info.Data = data;
         m_MsgQueue.Enqueue(info);
       } catch (Exception ex) {
-        LogSys.Log(LOG_TYPE.ERROR, "NodeMessageThread.QueueMessage {0} {1} {2} throw exception:{3}\n{4}", seq, sourceHandle, destHandle, ex.Message, ex.StackTrace);
+        LogSys.Log(ServerLogType.ERROR, "NodeMessageThread.QueueMessage {0} {1} {2} throw exception:{3}\n{4}", seq, sourceHandle, destHandle, ex.Message, ex.StackTrace);
       }
     }
 
@@ -97,7 +97,7 @@ namespace Lobby
                 NodeMessageDispatcher.HandleNodeMessage(info.Seq, info.SourceHandle, info.DestHandle, info.Data);
                 m_MsgPool.Enqueue(info);
               } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "NodeMessageThread NodeMessageDispatcher.HandleNodeMessage() throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "NodeMessageThread NodeMessageDispatcher.HandleNodeMessage() throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
               }
             }
           } else {
@@ -105,7 +105,7 @@ namespace Lobby
           }
         }
       } catch (Exception ex) {
-        LogSys.Log(LOG_TYPE.ERROR, "NodeMessageThread.HandleMessages throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+        LogSys.Log(ServerLogType.ERROR, "NodeMessageThread.HandleMessages throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
       }
     }
     
@@ -122,7 +122,7 @@ namespace Lobby
           Thread.Sleep(m_TickSleepTime);
         }
       } catch (Exception ex) {
-        LogSys.Log(LOG_TYPE.ERROR, "NodeMessageThread.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+        LogSys.Log(ServerLogType.ERROR, "NodeMessageThread.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
       }
     }
 

@@ -20,7 +20,7 @@ internal static class DataProcedureImplement
                 }
             } catch (Exception ex) {
                 DBConn.Close();
-                LogSys.Log(LOG_TYPE.ERROR, "GetDSNodeVersion procedure ERROR:{0}\n Stacktrace:{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "GetDSNodeVersion procedure ERROR:{0}\n Stacktrace:{1}", ex.Message, ex.StackTrace);
             }
             return version;
         } else {
@@ -43,7 +43,7 @@ internal static class DataProcedureImplement
                 }
             } catch (Exception ex) {
                 DBConn.Close();
-                LogSys.Log(LOG_TYPE.ERROR, "GetGlobalDataVersion procedure ERROR:{0}\n Stacktrace:{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "GetGlobalDataVersion procedure ERROR:{0}\n Stacktrace:{1}", ex.Message, ex.StackTrace);
             }
             return version;
         } else {
@@ -70,11 +70,11 @@ internal static class DataProcedureImplement
                     }
                 } catch (Exception ex) {
                     DBConn.Close();
-                    LogSys.Log(LOG_TYPE.ERROR, "SetGlobalDataVersion procedure ERROR:{0}\n Stacktrace:{1}", ex.Message, ex.StackTrace);
+                    LogSys.Log(ServerLogType.ERROR, "SetGlobalDataVersion procedure ERROR:{0}\n Stacktrace:{1}", ex.Message, ex.StackTrace);
                 }
             } else {
                 //数据库中的GlobalDataVersion大,异常情况!
-                LogSys.Log(LOG_TYPE.ERROR, "SetGlobalDataVersion ERROR. Old GlobalDataVersion is bigger. OldGlobalDataVersion:{0}, NewGlobalDataVersion:{1}",
+                LogSys.Log(ServerLogType.ERROR, "SetGlobalDataVersion ERROR. Old GlobalDataVersion is bigger. OldGlobalDataVersion:{0}, NewGlobalDataVersion:{1}",
                   oldDataVersion, dataVersion);
             }
         }

@@ -131,7 +131,7 @@ namespace GameFramework
         }
         public bool Init(int room_id, int scene_type, UserPool userpool, Connector conn)
         {
-            LogSys.Log(LOG_TYPE.INFO, "[0] Room.Init {0} scene {1}", room_id, scene_type);
+            LogSys.Log(ServerLogType.INFO, "[0] Room.Init {0} scene {1}", room_id, scene_type);
             m_RoomId = room_id;
             m_UserPool = userpool;
             m_Connector = conn;
@@ -141,7 +141,7 @@ namespace GameFramework
             m_RoomUserMgr.LocalRoomId = (int)m_LocalID;
             m_RoomUserMgr.UserPool = userpool;
             m_RoomUserMgr.ActiveScene = m_ScenePool.NewScene();
-            LogSys.Log(LOG_TYPE.INFO, "[1] Room.Init {0} scene {1}", room_id, scene_type);
+            LogSys.Log(ServerLogType.INFO, "[1] Room.Init {0} scene {1}", room_id, scene_type);
             m_RoomUserMgr.ActiveScene.SetRoomUserManager(m_RoomUserMgr);
             m_RoomUserMgr.ActiveScene.Init(scene_type);
             //场景数据加载由加载线程执行（注：场景没有加载完成，场景状态仍然是sleep，Scene.Tick不会有实际的动作）
@@ -150,12 +150,12 @@ namespace GameFramework
             m_ActiveTime = TimeUtility.GetLocalMilliseconds();
             CurrentState = RoomState.Active;
             m_CanFinish = false;
-            LogSys.Log(LOG_TYPE.DEBUG, "Room Initialize: {0}  Scene: {1}", room_id, scene_type);
+            LogSys.Log(ServerLogType.DEBUG, "Room Initialize: {0}  Scene: {1}", room_id, scene_type);
             return true;
         }
         public void Destroy()
         {
-            LogSys.Log(LOG_TYPE.INFO, "room {0}({1}) destroy.", RoomId, LocalID);
+            LogSys.Log(ServerLogType.INFO, "room {0}({1}) destroy.", RoomId, LocalID);
             OnDestroy();
             m_RoomUserMgr.ActiveScene.Reset();
             m_ScenePool.RecycleScene(m_RoomUserMgr.ActiveScene);
@@ -166,7 +166,7 @@ namespace GameFramework
             for (int i = userCt - 1; i >= 0; --i) {
                 User user = m_RoomUserMgr.RoomUsers[i];
                 if (null != user) {
-                    LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [Room.Destroy]", user.LocalID, user.Guid, user.GetKey());
+                    LogSys.Log(ServerLogType.INFO, "FreeUser {0} for {1} {2}, [Room.Destroy]", user.LocalID, user.Guid, user.GetKey());
                     user.Reset();
                     m_UserPool.FreeUser(user.LocalID);
                     m_RoomUserMgr.RoomUsers.RemoveAt(i);
@@ -200,7 +200,7 @@ namespace GameFramework
                 us.SendMessage(RoomMessageDefine.Msg_RC_ChangeScene, msg);
             }
 
-            LogSys.Log(LOG_TYPE.INFO, "Room.ChangeScene {0} scene {1}", m_RoomId, scene_type);
+            LogSys.Log(ServerLogType.INFO, "Room.ChangeScene {0} scene {1}", m_RoomId, scene_type);
         }
 
         public void Tick()
@@ -213,7 +213,7 @@ namespace GameFramework
                 if (m_LastLogTime + 60000 < curTime) {
                     m_LastLogTime = curTime;
 
-                    LogSys.Log(LOG_TYPE.INFO, "Room.Tick {0}", RoomId);
+                    LogSys.Log(ServerLogType.INFO, "Room.Tick {0}", RoomId);
                 }
 
                 if (this.CurrentState == RoomState.Active) {
@@ -285,7 +285,7 @@ namespace GameFramework
                     Deactive();
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
 
@@ -326,7 +326,7 @@ namespace GameFramework
             }
             this.CurrentState = RoomState.Finish;
             m_FinishTime = TimeUtility.GetLocalMilliseconds();
-            LogSys.Log(LOG_TYPE.DEBUG, "Room {0}({1}) EndBattle.", RoomId, LocalID);
+            LogSys.Log(ServerLogType.DEBUG, "Room {0}({1}) EndBattle.", RoomId, LocalID);
         }        
         public void NoticeRoomClosing()
         {
@@ -360,7 +360,7 @@ namespace GameFramework
             }
             this.CurrentState = RoomState.Deactive;
             m_CanCloseTime = TimeUtility.GetLocalMilliseconds();
-            LogSys.Log(LOG_TYPE.DEBUG, "Room {0}({1}) Deactive.", RoomId, LocalID);
+            LogSys.Log(ServerLogType.DEBUG, "Room {0}({1}) Deactive.", RoomId, LocalID);
         }
 
         private void OnInit()

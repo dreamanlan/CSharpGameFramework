@@ -48,7 +48,7 @@ namespace Lobby
       if (m_LastTickTime != 0) {
         long elapsedTickTime = curTime - m_LastTickTime;
         if (elapsedTickTime > c_WarningTickTime) {
-          LogSys.Log(LOG_TYPE.MONITOR, "GlobalProcessThread Tick:{0}", elapsedTickTime);
+          LogSys.Log(ServerLogType.MONITOR, "GlobalProcessThread Tick:{0}", elapsedTickTime);
         }
       }
       m_LastTickTime = curTime;
@@ -56,9 +56,9 @@ namespace Lobby
         m_LastLogTime = curTime;
 
         DebugPoolCount((string msg) => {
-          LogSys.Log(LOG_TYPE.INFO, "GlobalProcessThread.ActionQueue {0}", msg);
+          LogSys.Log(ServerLogType.INFO, "GlobalProcessThread.ActionQueue {0}", msg);
         });
-        LogSys.Log(LOG_TYPE.MONITOR, "GlobalProcessThread.ActionQueue Current Action {0}", this.CurActionNum);
+        LogSys.Log(ServerLogType.MONITOR, "GlobalProcessThread.ActionQueue Current Action {0}", this.CurActionNum);
       }
     }
     protected override void OnQuit()

@@ -89,7 +89,7 @@ namespace GameFramework.DataCache
         {
             foreach (var table in m_CacheTableDict) {
                 int deleteCount = table.Value.CleanExpiredItems();
-                LogSys.Log(LOG_TYPE.INFO, "Clean invalid or expired cache items. Msg:{0} Count:{1}", table.Key, deleteCount);
+                LogSys.Log(ServerLogType.INFO, "Clean invalid or expired cache items. Msg:{0} Count:{1}", table.Key, deleteCount);
             }
         }
 

@@ -229,14 +229,14 @@ namespace GameFramework
                 RequestSave(msg, (ret) => {
                     KeyString primaryKey = KeyString.Wrap(msg.PrimaryKeys);
                     if (ret.ErrorNo == Msg_DL_SaveResult.ErrorNoEnum.Success) {
-                        LogSys.Log(LOG_TYPE.INFO, "Save data success. MsgId:{0}, SerialNo:{1}, Key:{2}", msg.MsgId, msg.SerialNo, primaryKey);
+                        LogSys.Log(ServerLogType.INFO, "Save data success. MsgId:{0}, SerialNo:{1}, Key:{2}", msg.MsgId, msg.SerialNo, primaryKey);
                     } else {
-                        LogSys.Log(LOG_TYPE.ERROR, "Save data failed. MsgId:{0}, SerialNo:{1}, Key:{2}, Error:{3}, ErrorInfo:{4}",
+                        LogSys.Log(ServerLogType.ERROR, "Save data failed. MsgId:{0}, SerialNo:{1}, Key:{2}, Error:{3}, ErrorInfo:{4}",
                                                     msg.MsgId, msg.SerialNo, primaryKey, ret.ErrorNo, ret.ErrorInfo);
                     }
                 });
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
             }
         }
         //--------------------------------------------------------------------------------------
@@ -255,7 +255,7 @@ namespace GameFramework
             if (m_LastTickTime != 0) {
                 long elapsedTickTime = curTime - m_LastTickTime;
                 if (elapsedTickTime > c_WarningTickTime) {
-                    LogSys.Log(LOG_TYPE.MONITOR, "DataCacheThread Tick:{0}", elapsedTickTime);
+                    LogSys.Log(ServerLogType.MONITOR, "DataCacheThread Tick:{0}", elapsedTickTime);
                 }
             }
             m_LastTickTime = curTime;
@@ -263,13 +263,13 @@ namespace GameFramework
             if (m_LastLogTime + 60000 < curTime) {
                 m_LastLogTime = curTime;
                 DebugPoolCount((string msg) => {
-                    LogSys.Log(LOG_TYPE.INFO, "DataCacheThread.DispatchActionQueue {0}", msg);
+                    LogSys.Log(ServerLogType.INFO, "DataCacheThread.DispatchActionQueue {0}", msg);
                 });
                 DebugActionCount((string msg) => {
-                    LogSys.Log(LOG_TYPE.MONITOR, "DataCacheThread.DispatchActionQueue {0}", msg);
+                    LogSys.Log(ServerLogType.MONITOR, "DataCacheThread.DispatchActionQueue {0}", msg);
                 });
-                LogSys.Log(LOG_TYPE.MONITOR, "DataCacheThread.ThreadActionQueue Current Action {0}", m_Thread.CurActionNum);
-                LogSys.Log(LOG_TYPE.MONITOR, "DataCacheThread Load Request Count {0} Save Request Count {1}", CalcLoadRequestCount(), CalcSaveRequestCount());
+                LogSys.Log(ServerLogType.MONITOR, "DataCacheThread.ThreadActionQueue Current Action {0}", m_Thread.CurActionNum);
+                LogSys.Log(ServerLogType.MONITOR, "DataCacheThread Load Request Count {0} Save Request Count {1}", CalcLoadRequestCount(), CalcSaveRequestCount());
             }
             if (UserServerConfig.DataStoreAvailable == true) {
                 if (m_LastOperateTickTime + c_OperateTickInterval < curTime) {
@@ -317,7 +317,7 @@ namespace GameFramework
                             if (saveReqQueue.TryPeek(out req)) {
                                 if (req.m_LastSendTime + UserServerConfig.DSRequestTimeout < curTime) {
                                     //超时,重新发送
-                                    LogSys.Log(LOG_TYPE.ERROR, "DataCacheThread. SaveRequest timeout. MsgId:{0}, PrimaryKey:{1}, SerialNo:{2}",
+                                    LogSys.Log(ServerLogType.ERROR, "DataCacheThread. SaveRequest timeout. MsgId:{0}, PrimaryKey:{1}, SerialNo:{2}",
                                                                   msgId, KeyString.Wrap(req.m_Request.PrimaryKeys), req.m_Request.SerialNo);
                                     m_DataStoreChannel.Send(req.m_Request);
                                     req.m_LastSendTime = curTime;

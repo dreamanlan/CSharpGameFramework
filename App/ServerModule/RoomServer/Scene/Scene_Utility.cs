@@ -11,7 +11,7 @@ namespace GameFramework
     {
         private void LoadObjects()
         {
-            LogSys.Log(LOG_TYPE.DEBUG, "Scene {0} start Running.", m_SceneResId);
+            LogSys.Log(ServerLogType.DEBUG, "Scene {0} start Running.", m_SceneResId);
             m_GameTime.Start();
             m_SceneContext.StartTime = m_GameTime.StartTime;
 

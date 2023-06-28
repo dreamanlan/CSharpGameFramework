@@ -27,7 +27,7 @@ namespace RoomServer
                 TableConfig.FormationProvider.Instance.LoadForServer();
                 BuildFormationInfo();
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "LoadData Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "LoadData Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
 

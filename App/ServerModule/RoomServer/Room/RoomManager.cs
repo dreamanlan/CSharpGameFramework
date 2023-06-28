@@ -8,7 +8,7 @@ using GameFramework;
 namespace GameFramework
 {
     /// <remarks>
-    /// ×¢ÒâÕâ¸öÀàµÄpublic·½·¨£¬¶¼Ó¦¿¼ÂÇ¿çÏß³Ìµ÷ÓÃÊÇ·ñ°²È«£¡£¡£¡
+    /// æ³¨æ„è¿™ä¸ªç±»çš„publicæ–¹æ³•ï¼Œéƒ½åº”è€ƒè™‘è·¨çº¿ç¨‹è°ƒç”¨æ˜¯å¦å®‰å…¨ï¼ï¼ï¼
     /// </remarks>
     public class RoomManager
     {
@@ -44,7 +44,7 @@ namespace GameFramework
             m_ActiveRooms = new Dictionary<int, int>();
             m_UserPool.Init(m_UserPoolSize);
             
-            // ³õÊ¼»¯³¡¾°·¿¼ä
+            // åˆå§‹åŒ–åœºæ™¯æˆ¿é—´
             int startId = 1;
             MyDictionary<int, object> scenes = TableConfig.LevelProvider.Instance.LevelMgr.GetData();
             foreach (KeyValuePair<int, object> pair in scenes) {
@@ -71,7 +71,7 @@ namespace GameFramework
                     }
                 }
             }
-            // ³õÊ¼»¯·¿¼äÏß³Ì
+            // åˆå§‹åŒ–æˆ¿é—´çº¿ç¨‹
             for (int i = 0; i < m_ThreadAmount; ++i) {
                 m_RoomThreadList[i] = new RoomThread(this);
                 m_RoomThreadList[i].Init(m_ThreadTickInterval, m_RoomAmount, m_UserPool, m_Connector);
@@ -220,11 +220,11 @@ namespace GameFramework
                 Msg_LR_RoomUserInfo rui = msg.UserInfo;
 
                 User rsUser = m_UserPool.NewUser();
-                LogSys.Log(LOG_TYPE.INFO, "NewUser {0} for {1} {2}", rsUser.LocalID, rui.Guid, rui.Key);
+                LogSys.Log(ServerLogType.INFO, "NewUser {0} for {1} {2}", rsUser.LocalID, rui.Guid, rui.Key);
                 rsUser.Init();
                 if (!rsUser.SetKey(rui.Key)) {
-                    LogSys.Log(LOG_TYPE.WARN, "user who's key is {0} already in room!", rui.Key);
-                    LogSys.Log(LOG_TYPE.INFO, "FreeUser {0} for {1} {2}, [RoomManager.HandleEnterScene]", rsUser.LocalID, rui.Guid, rui.Key);
+                    LogSys.Log(ServerLogType.WARN, "user who's key is {0} already in room!", rui.Key);
+                    LogSys.Log(ServerLogType.INFO, "FreeUser {0} for {1} {2}, [RoomManager.HandleEnterScene]", rsUser.LocalID, rui.Guid, rui.Key);
                     m_UserPool.FreeUser(rsUser.LocalID);
                                         
                     Msg_RL_EnterSceneResult replyBuilder = new Msg_RL_EnterSceneResult();
@@ -289,7 +289,7 @@ namespace GameFramework
                 int targetIx = GetActiveRoomThreadIndex(targetRoomId, out targetIsFieldThread);
                 if (null != roomThread) {
                     if (targetIx >= 0) {
-                        //Í¬·şÇĞ³¡¾°
+                        //åŒæœåˆ‡åœºæ™¯
                         roomThread.QueueAction(roomThread.RemoveUser, guid, roomid, false, (MyAction<bool, int, User>)((bool success, int sceneId, User user) => {
                             if (success) {
                                 PlayerGotoRoom(user, roomid, targetRoomId);
@@ -303,7 +303,7 @@ namespace GameFramework
                             }
                         }));
                     } else {
-                        //¿ç·şÇĞ³¡¾°
+                        //è·¨æœåˆ‡åœºæ™¯
                         roomThread.QueueAction(roomThread.RemoveUser, guid, roomid, true, (MyAction<bool, int, User>)((bool success, int sceneId, User user) => {
                             if (success) {
                                 Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
@@ -337,7 +337,7 @@ namespace GameFramework
             List<ulong> users = msg.UserGuids;
             int thread_id = GetIdleThread();
             if (thread_id < 0) {
-                LogSys.Log(LOG_TYPE.ERROR, "all room are using, active room failed!");
+                LogSys.Log(ServerLogType.ERROR, "all room are using, active room failed!");
                 Msg_RL_ActiveSceneResult retMsg = new Msg_RL_ActiveSceneResult();
                 retMsg.UserGuids.AddRange(users);
                 retMsg.RoomId = roomid;
@@ -347,7 +347,7 @@ namespace GameFramework
             RoomThread roomThread = m_RoomThreadList[thread_id];
             AddActiveRoom(roomid, thread_id, false);
             roomThread.PreActiveRoom();
-            LogSys.Log(LOG_TYPE.INFO, "queue active room {0} scene {1} thread {2}", roomid, sceneId, thread_id);
+            LogSys.Log(ServerLogType.INFO, "queue active room {0} scene {1} thread {2}", roomid, sceneId, thread_id);
             roomThread.QueueAction(roomThread.ActiveRoom, roomid, sceneId, (MyAction<bool>)((bool val) => {
                 Msg_RL_ActiveSceneResult retMsg = new Msg_RL_ActiveSceneResult();
                 retMsg.UserGuids.AddRange(users);
@@ -505,14 +505,14 @@ namespace GameFramework
 
         // private attributes-------------------
         private const int c_FieldThreadIndexMask = 0x10000000;
-        private List<RoomThread> m_FieldRoomthreadList = new List<RoomThread>();     // Ò°Íâ·¿¼äÏß³ÌÁĞ±í
+        private List<RoomThread> m_FieldRoomthreadList = new List<RoomThread>();     // é‡å¤–æˆ¿é—´çº¿ç¨‹åˆ—è¡¨
         private Dictionary<int, HashSet<int>> m_FieldSceneRooms = new Dictionary<int, HashSet<int>>();
 
-        private uint m_ThreadAmount;                                                  // Ïß³ÌÊı
-        private uint m_RoomAmount;                                                    // Ã¿Ïß³Ì·¿¼äÊı
-        private RoomThread[] m_RoomThreadList;                                        // Ïß³ÌÁĞ±í
+        private uint m_ThreadAmount;                                                  // çº¿ç¨‹æ•°
+        private uint m_RoomAmount;                                                    // æ¯çº¿ç¨‹æˆ¿é—´æ•°
+        private RoomThread[] m_RoomThreadList;                                        // çº¿ç¨‹åˆ—è¡¨
 
-        private uint m_ThreadTickInterval;                                           // Ïß³ÌĞÄÌø¼ä¸ô
+        private uint m_ThreadTickInterval;                                           // çº¿ç¨‹å¿ƒè·³é—´éš”
         private uint m_UserPoolSize;
         private Dispatcher m_Dispatcher;
         private UserPool m_UserPool;

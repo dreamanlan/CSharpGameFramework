@@ -77,7 +77,7 @@ internal static class DataLoadImplement
             } catch (Exception ex) {
                 ret.ErrorNo = Msg_DL_LoadResult.ErrorNoEnum.PostError;
                 ret.ErrorInfo = ex.Message;
-                LogSys.Log(LOG_TYPE.ERROR, ConsoleColor.Red, "Load data from mysql ERROR. MsgId:{0}, Key:{1}\nErrorMessage:{2}\nStackTrace:{3}",
+                LogSys.Log(ServerLogType.ERROR, ConsoleColor.Red, "Load data from mysql ERROR. MsgId:{0}, Key:{1}\nErrorMessage:{2}\nStackTrace:{3}",
                               msg.MsgId, msg.PrimaryKeys, ex.Message, ex.StackTrace);
             } finally {
                 DataCacheSystem.Instance.QueueAction(callback, ret);

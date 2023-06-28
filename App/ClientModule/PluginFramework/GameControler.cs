@@ -126,15 +126,15 @@ namespace GameFramework
             HomePath.CurHomePath = dataPath;
             GlobalVariables.Instance.IsDebug = false;
 
-            LogSystem.OnOutput = (Log_Type type, string msg) => {
+            LogSystem.OnOutput = (GameLogType type, string msg) => {
 #if DEBUG
                 var curThread = System.Threading.Thread.CurrentThread;
                 if (curThread == s_Logger.IoThread || curThread == Network.NetworkSystem.Instance.NetThread) {
 
                 } else {
-                    if (type == Log_Type.LT_Warn) {
+                    if (type == GameLogType.Warn) {
                         Utility.GfxLog("{0}", msg);
-                    } else if (type == Log_Type.LT_Error) {
+                    } else if (type == GameLogType.Error) {
                         Utility.GfxErrorLog("{0}", msg);
                     }
                 }

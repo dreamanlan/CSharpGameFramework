@@ -18,7 +18,7 @@ namespace GameFramework
             if (m_LastElapsedTickTime != 0) {
                 long elapsedTickTime = curTime - m_LastElapsedTickTime;
                 if (elapsedTickTime > c_WarningTickTime) {
-                    LogSys.Log(LOG_TYPE.MONITOR, "DbThread Tick:{0} {1}", this.Thread.ManagedThreadId, elapsedTickTime);
+                    LogSys.Log(ServerLogType.MONITOR, "DbThread Tick:{0} {1}", this.Thread.ManagedThreadId, elapsedTickTime);
                 }
             }
             m_LastElapsedTickTime = curTime;
@@ -34,7 +34,7 @@ namespace GameFramework
                             cmd.ExecuteNonQuery();
                         }
                     } catch (Exception ex) {
-                        LogSys.Log(LOG_TYPE.ERROR, "DbThread.Tick keep connection exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                        LogSys.Log(ServerLogType.ERROR, "DbThread.Tick keep connection exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     }
                 }
             }
@@ -43,9 +43,9 @@ namespace GameFramework
                 m_LastLogTime = curTime;
 
                 DebugPoolCount((string msg) => {
-                    LogSys.Log(LOG_TYPE.INFO, "DbThread.ActionQueue {0} {1}", this.Thread.ManagedThreadId, msg);
+                    LogSys.Log(ServerLogType.INFO, "DbThread.ActionQueue {0} {1}", this.Thread.ManagedThreadId, msg);
                 });
-                LogSys.Log(LOG_TYPE.MONITOR, "DbThread.ActionQueue Current Action {0} {1}", this.Thread.ManagedThreadId, this.CurActionNum);
+                LogSys.Log(ServerLogType.MONITOR, "DbThread.ActionQueue Current Action {0} {1}", this.Thread.ManagedThreadId, this.CurActionNum);
             }
         }
         protected override void OnQuit()

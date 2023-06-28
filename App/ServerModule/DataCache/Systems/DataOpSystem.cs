@@ -17,13 +17,13 @@ internal class DataOpSystem
 
         InitDSNodeVersion();
         InitGlobalDataVersion();
-        LogSys.Log(LOG_TYPE.INFO, "DataOperator initialized");
+        LogSys.Log(ServerLogType.INFO, "DataOperator initialized");
     }
 
     private void DSConnectHandler(Msg_LD_Connect msg, PBChannel channel, int handle, uint seq)
     {
         try {
-            LogSys.Log(LOG_TYPE.INFO, "DataStoreClient connect :{0} ", msg.ClientName);
+            LogSys.Log(ServerLogType.INFO, "DataStoreClient connect :{0} ", msg.ClientName);
             var reply = new Msg_DL_Connect();
             reply.Result = true;
             reply.Error = string.Empty;
@@ -33,7 +33,7 @@ internal class DataOpSystem
             reply.Result = false;
             reply.Error = e.Message;
             channel.Send(reply);
-            LogSys.Log(LOG_TYPE.ERROR, "Connect failed. ClientName:{0}", msg.ClientName);
+            LogSys.Log(ServerLogType.ERROR, "Connect failed. ClientName:{0}", msg.ClientName);
         }
     }
 
@@ -49,7 +49,7 @@ internal class DataOpSystem
             errorReply.ErrorNo = Msg_DL_LoadResult.ErrorNoEnum.Exception;
             errorReply.ErrorInfo = e.Message;
             channel.Send(errorReply);
-            LogSys.Log(LOG_TYPE.ERROR, "Load data failed. MsgId:{0}, Key:{1} Error:{2} Detail:{3}", msg.MsgId, msg.PrimaryKeys, e.Message, e.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "Load data failed. MsgId:{0}, Key:{1} Error:{2} Detail:{3}", msg.MsgId, msg.PrimaryKeys, e.Message, e.StackTrace);
         }
     }
 
@@ -69,7 +69,7 @@ internal class DataOpSystem
         } catch (Exception e) {
             saveResult.ErrorNo = Msg_DL_SaveResult.ErrorNoEnum.PostError;
             saveResult.ErrorInfo = e.Message;
-            LogSys.Log(LOG_TYPE.ERROR, "Save data ERROR: MsgId:{0}, Key:{1}, Error:{2}, Detail:{3}", msg.MsgId, msg.PrimaryKeys, e.Message, e.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "Save data ERROR: MsgId:{0}, Key:{1}, Error:{2}, Detail:{3}", msg.MsgId, msg.PrimaryKeys, e.Message, e.StackTrace);
         }
         channel.Send(saveResult);
     }
@@ -77,7 +77,7 @@ internal class DataOpSystem
     internal void Release()
     {
         channel_ = null;
-        LogSys.Log(LOG_TYPE.INFO, "DataOperator disposed");
+        LogSys.Log(ServerLogType.INFO, "DataOperator disposed");
     }
 
     internal int GlobalDBDataVersion
@@ -89,7 +89,7 @@ internal class DataOpSystem
     {
         m_DBVersion = DataProcedureImplement.GetDSNodeVersion().Trim();
         if (m_DBVersion.Equals(DataCacheVersion.Version)) {
-            LogSys.Log(LOG_TYPE.INFO, "Init DSNodeVersion Success:{0}", m_DBVersion);
+            LogSys.Log(ServerLogType.INFO, "Init DSNodeVersion Success:{0}", m_DBVersion);
         } else {
             string errorMsg = string.Format("DSNodeVersion:{0} ,DBVersion:{1} do not match! Fatel ERROR!!!", DataCacheVersion.Version, m_DBVersion);
             throw new Exception(errorMsg);
@@ -100,7 +100,7 @@ internal class DataOpSystem
     {
         m_GlobalDataVersion = DataProcedureImplement.GetGlobalDataVersion();
         if (m_GlobalDataVersion >= 0) {
-            LogSys.Log(LOG_TYPE.INFO, "Init GlobalDataVersion Success. GlobalDataVersion = {0}", m_GlobalDataVersion);
+            LogSys.Log(ServerLogType.INFO, "Init GlobalDataVersion Success. GlobalDataVersion = {0}", m_GlobalDataVersion);
         } else {
             string errorMsg = string.Format("Init GlobalDataVersion ERROR!!! GlobalDataVersion:{0}", m_GlobalDataVersion);
             throw new Exception(errorMsg);
@@ -116,7 +116,7 @@ internal class DataOpSystem
     {
         m_GlobalDataVersion = m_GlobalDataVersion + 1;
         this.SaveGlobalDataVersion();
-        LogSys.Log(LOG_TYPE.MONITOR, ConsoleColor.Yellow, "IncreaseGlobalDataVersion: {0}", m_GlobalDataVersion);
+        LogSys.Log(ServerLogType.MONITOR, ConsoleColor.Yellow, "IncreaseGlobalDataVersion: {0}", m_GlobalDataVersion);
     }
 
     private PBChannel channel_;

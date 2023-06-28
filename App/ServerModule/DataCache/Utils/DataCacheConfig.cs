@@ -3,7 +3,7 @@ using System.Text;
 using CSharpCenterClient;
 
 /// <summary>
-/// mysql¡¨Ω”≈‰÷√
+/// mysqlËøûÊé•ÈÖçÁΩÆ
 /// </summary>
 internal class DataCacheConfig
 {
@@ -91,7 +91,7 @@ internal class DataCacheConfig
                     s_Instance.m_TablePieceCapacity = val;
             }
         } catch (Exception ex) {
-            LogSys.Log(LOG_TYPE.ERROR, "DataStoreConfig.Init throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "DataStoreConfig.Init throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
         }
     }
 

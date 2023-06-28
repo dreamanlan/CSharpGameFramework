@@ -21,7 +21,7 @@ internal class PersistentSystem
         m_LastTickTime = TimeUtility.GetLocalMilliseconds();
         m_SaveDataToDBInterval = DataCacheConfig.PersistentInterval;
         m_TablePieceCapacity = DataCacheConfig.TablePieceCapacity;
-        LogSys.Log(LOG_TYPE.INFO, "PersistentSystem initialized");
+        LogSys.Log(ServerLogType.INFO, "PersistentSystem initialized");
     }
     internal void Tick()
     {
@@ -56,7 +56,7 @@ internal class PersistentSystem
                         } else {
                             m_CurrentDBSaveState = SaveState.Failed;     //存储DB操作有失败
                         }
-                        LogSys.Log(LOG_TYPE.MONITOR, "SaveDirtyDataToDB finished. Result:{0}, NextSaveCount:{1}, CurrentSaveCounts:{2}, FailedCount:{3}",
+                        LogSys.Log(ServerLogType.MONITOR, "SaveDirtyDataToDB finished. Result:{0}, NextSaveCount:{1}, CurrentSaveCounts:{2}, FailedCount:{3}",
                           m_CurrentDBSaveState, m_NextSaveCount, m_CurrentSaveCounts.Count, failedCount);
                     }
                 }
@@ -64,22 +64,22 @@ internal class PersistentSystem
                     //最后一次存储结果
                     if (m_CurrentDBSaveState == SaveState.Success) {
                         m_LastSaveState = SaveState.Success;
-                        LogSys.Log(LOG_TYPE.INFO, "LastSaveFinished Result:{0}", m_LastSaveState);
+                        LogSys.Log(ServerLogType.INFO, "LastSaveFinished Result:{0}", m_LastSaveState);
                     } else if (m_CurrentDBSaveState == SaveState.Failed) {
                         m_LastSaveState = SaveState.Failed;
-                        LogSys.Log(LOG_TYPE.INFO, "LastSaveFinished Result:{0}", m_LastSaveState);
+                        LogSys.Log(ServerLogType.INFO, "LastSaveFinished Result:{0}", m_LastSaveState);
                     }
                 }
             }
         } catch (Exception ex) {
-            LogSys.Log(LOG_TYPE.ERROR, "DataCacheSystem ERROR:{0} \n StackTrace:{1}", ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "DataCacheSystem ERROR:{0} \n StackTrace:{1}", ex.Message, ex.StackTrace);
         }
     }
     internal void LastSaveToDB()
     {
         m_StartLastSaveResult = SaveState.Initial;
         if (m_LastSaveState != SaveState.Initial || m_CurrentDBSaveState == SaveState.Saving) {
-            LogSys.Log(LOG_TYPE.ERROR, "Start LastSaveToDB failed because the previous operation is not finish");
+            LogSys.Log(ServerLogType.ERROR, "Start LastSaveToDB failed because the previous operation is not finish");
             m_StartLastSaveResult = SaveState.Failed;
             return;
         }
@@ -108,11 +108,11 @@ internal class PersistentSystem
             var cacheItemList = pair.Value;
             dirtyCount += cacheItemList.Count;
         }
-        LogSys.Log(LOG_TYPE.MONITOR, "SaveDirtyDataToDB Start. SaveCount:{0}, DirtyCount:{1}, DataVersion:{2}", saveCount, dirtyCount, dbDataVersion);
+        LogSys.Log(ServerLogType.MONITOR, "SaveDirtyDataToDB Start. SaveCount:{0}, DirtyCount:{1}, DataVersion:{2}", saveCount, dirtyCount, dbDataVersion);
         m_CurrentSaveCounts.Clear();
         foreach (var dataTable in dataSet) {
             int batchCount = (int)(dataTable.Value.Count / m_TablePieceCapacity) + 1;
-            LogSys.Log(LOG_TYPE.MONITOR, "Start SaveDirtyTable. MsgId:{0}, SaveCount:{1}, DataCount:{2}, BatchCount:{3}, DataVersion:{4}",
+            LogSys.Log(ServerLogType.MONITOR, "Start SaveDirtyTable. MsgId:{0}, SaveCount:{1}, DataCount:{2}, BatchCount:{3}, DataVersion:{4}",
                                           dataTable.Key, saveCount, dataTable.Value.Count, batchCount, dbDataVersion);
             int beginIndex = 0;
             int endIndex = m_TablePieceCapacity;
@@ -127,7 +127,7 @@ internal class PersistentSystem
                 //DBThread按表批量处理
                 string saveCountKey = string.Format("{0}:{1}", dataTable.Key.ToString(), i);
                 m_CurrentSaveCounts.AddOrUpdate(saveCountKey, c_InitialSaveCount, (g, u) => c_InitialSaveCount);
-                LogSys.Log(LOG_TYPE.MONITOR, "Start SaveTablePiece. MsgId:{0}, DataCount:{1}, SaveCountKey:{2}, DataVersion:{3}",
+                LogSys.Log(ServerLogType.MONITOR, "Start SaveTablePiece. MsgId:{0}, DataCount:{1}, SaveCountKey:{2}, DataVersion:{3}",
                                 dataTable.Key, batchItemList.Count, saveCountKey, dbDataVersion);
                 DbThreadManager.Instance.SaveActionQueue.QueueAction(SaveDirtyTableToDB, dataTable.Key, batchItemList, saveCountKey, saveCount, dbDataVersion);
                 beginIndex = endIndex;
@@ -149,7 +149,7 @@ internal class PersistentSystem
             DataCacheSystem.Instance.QueueAction(() => {
                 cacheItem.DirtyState = DirtyState.Unsaved;
             });
-            LogSys.Log(LOG_TYPE.ERROR, "Save to MySQL ERROR:{0}, \nStacktrace:{1}", e.Message, e.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "Save to MySQL ERROR:{0}, \nStacktrace:{1}", e.Message, e.StackTrace);
         }
     }
     private void SaveDirtyTableToDB(int msgId, List<InnerCacheItem> cacheItemList, string saveCountKey, int saveCount, int dbDataVersion)
@@ -176,7 +176,7 @@ internal class PersistentSystem
 
             stopWatch.Stop();
             TimeSpan ts = stopWatch.Elapsed;
-            LogSys.Log(LOG_TYPE.MONITOR, "SaveTablePiece Success. MsgId:{0}, SaveCountKey:{1}, SaveCount:{2}, BatchDataCount:{3}, DataVersion:{4}, DBThreadId:{5}, Time:{6}",
+            LogSys.Log(ServerLogType.MONITOR, "SaveTablePiece Success. MsgId:{0}, SaveCountKey:{1}, SaveCount:{2}, BatchDataCount:{3}, DataVersion:{4}, DBThreadId:{5}, Time:{6}",
                           msgId, saveCountKey, saveCount, cacheItemList.Count, dbDataVersion, Thread.CurrentThread.ManagedThreadId, ts.TotalMilliseconds);
 
             m_CurrentSaveCounts.AddOrUpdate(saveCountKey, saveCount, (g, u) => saveCount);
@@ -190,9 +190,9 @@ internal class PersistentSystem
                 }
             });
             m_CurrentSaveCounts.AddOrUpdate(saveCountKey, c_FailedSaveCount, (g, u) => c_FailedSaveCount);
-            LogSys.Log(LOG_TYPE.MONITOR, "SaveTablePiece ERROR. MsgId:{0}, SaveCountKey:{1}, SaveCount:{2}, BatchDataCount:{3}, DataVersion:{4}, DBThreadId:{5}",
+            LogSys.Log(ServerLogType.MONITOR, "SaveTablePiece ERROR. MsgId:{0}, SaveCountKey:{1}, SaveCount:{2}, BatchDataCount:{3}, DataVersion:{4}, DBThreadId:{5}",
                     msgId, saveCountKey, saveCount, cacheItemList.Count, dbDataVersion, Thread.CurrentThread.ManagedThreadId);
-            LogSys.Log(LOG_TYPE.ERROR, "Save to MySQL ERROR:{0}, \nStacktrace:{1}", e.Message, e.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "Save to MySQL ERROR:{0}, \nStacktrace:{1}", e.Message, e.StackTrace);
         }
     }
 

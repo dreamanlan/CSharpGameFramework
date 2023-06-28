@@ -37,25 +37,25 @@ class DataCache
             try {
                 buffer = File.ReadAllBytes(filePath);
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception:{0}\n{1}", e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", e.Message, e.StackTrace);
                 return null;
             }
             return buffer;
         });
-        LogSystem.OnOutput += (Log_Type type, string msg) => {
+        LogSystem.OnOutput += (GameLogType type, string msg) => {
             switch (type) {
-                case Log_Type.LT_Debug:
-                    LogSys.Log(LOG_TYPE.DEBUG, msg);
+                case GameLogType.Debug:
+                    LogSys.Log(ServerLogType.DEBUG, msg);
                     break;
-                case Log_Type.LT_Info:
-                    LogSys.Log(LOG_TYPE.INFO, msg);
+                case GameLogType.Info:
+                    LogSys.Log(ServerLogType.INFO, msg);
                     break;
-                case Log_Type.LT_Warn:
-                    LogSys.Log(LOG_TYPE.WARN, msg);
+                case GameLogType.Warn:
+                    LogSys.Log(ServerLogType.WARN, msg);
                     break;
-                case Log_Type.LT_Error:
-                case Log_Type.LT_Assert:
-                    LogSys.Log(LOG_TYPE.ERROR, msg);
+                case GameLogType.Error:
+                case GameLogType.Assert:
+                    LogSys.Log(ServerLogType.ERROR, msg);
                     break;
             }
         };
@@ -63,7 +63,7 @@ class DataCache
         DbThreadManager.Instance.Init(DataCacheConfig.LoadThreadNum, DataCacheConfig.SaveThreadNum);
         DataOpSystem.Instance.Init(m_Channel);
         DataCacheSystem.Instance.Init();
-        LogSys.Log(LOG_TYPE.INFO, "DataCache initialized");
+        LogSys.Log(ServerLogType.INFO, "DataCache initialized");
     }
     private void Loop()
     {
@@ -73,7 +73,7 @@ class DataCache
                 if (m_LastTickTime != 0) {
                     long elapsedTickTime = curTime - m_LastTickTime;
                     if (elapsedTickTime > c_WarningTickTime) {
-                        LogSys.Log(LOG_TYPE.MONITOR, "DataCache Network Tick:{0}", curTime - m_LastTickTime);
+                        LogSys.Log(ServerLogType.MONITOR, "DataCache Network Tick:{0}", curTime - m_LastTickTime);
                     }
                 }
                 m_LastTickTime = curTime;
@@ -86,11 +86,11 @@ class DataCache
                         m_WaitQuit = false;
                     }
                     if (PersistentSystem.Instance.LastSaveState == PersistentSystem.SaveState.Success) {
-                        LogSys.Log(LOG_TYPE.MONITOR, "DataCache LastSave Success. DataCache quit ...");
+                        LogSys.Log(ServerLogType.MONITOR, "DataCache LastSave Success. DataCache quit ...");
                         Thread.Sleep(10000);
                         CenterClientApi.Quit();
                     } else if (PersistentSystem.Instance.LastSaveState == PersistentSystem.SaveState.Failed) {
-                        LogSys.Log(LOG_TYPE.MONITOR, "DataCache LastSave Failed. DataCache NOT quit ...");
+                        LogSys.Log(ServerLogType.MONITOR, "DataCache LastSave Failed. DataCache NOT quit ...");
                         PersistentSystem.Instance.LastSaveState = PersistentSystem.SaveState.Initial;
                         m_WaitQuit = false;
                     }
@@ -102,12 +102,12 @@ class DataCache
                 }
             }
         } catch (Exception ex) {
-            LogSys.Log(LOG_TYPE.ERROR, "DataCache.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "DataCache.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
         }
     }
     private void Release()
     {
-        LogSys.Log(LOG_TYPE.INFO, "DataCache release");
+        LogSys.Log(ServerLogType.INFO, "DataCache release");
         DataCacheSystem.Instance.Stop();
         DbThreadManager.Instance.Stop();
         CenterClientApi.Release();
@@ -115,14 +115,14 @@ class DataCache
     }
     private void OnCenterLog(string msg, int size)
     {
-        LogSys.Log(LOG_TYPE.INFO, "{0}", msg);
+        LogSys.Log(ServerLogType.INFO, "{0}", msg);
     }
     private void OnNameHandleChanged(bool addOrUpdate, string name, int handle)
     {
         try {
             m_Channel.OnUpdateNameHandle(addOrUpdate, name, handle);
         } catch (Exception ex) {
-            LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
         }
     }
     private void OnCommand(int src, int dest, string command)
@@ -131,7 +131,7 @@ class DataCache
         const string c_ReloadConfig = "ReloadConfig";
         try {
             if (0 == command.CompareTo(c_QuitDataStore)) {
-                LogSys.Log(LOG_TYPE.MONITOR, "receive {0} command, save data and then quitting ...", command);
+                LogSys.Log(ServerLogType.MONITOR, "receive {0} command, save data and then quitting ...", command);
                 if (!m_WaitQuit) {
                     DataCacheSystem.Instance.QueueAction(DataCacheSystem.Instance.DoLastSave);
                     m_WaitQuit = true;
@@ -139,10 +139,10 @@ class DataCache
             } else if (0 == command.CompareTo(c_ReloadConfig)) {
                 CenterClientApi.ReloadConfigScript();
                 DataCacheConfig.Init();
-                LogSys.Log(LOG_TYPE.WARN, "receive {0} command.", command);
+                LogSys.Log(ServerLogType.WARN, "receive {0} command.", command);
             }
         } catch (Exception ex) {
-            LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
         }
     }
     private void OnMessage(uint seq, int source_handle, int dest_handle,
@@ -153,7 +153,7 @@ class DataCache
             Marshal.Copy(data, bytes, 0, len);
             m_Channel.Dispatch(source_handle, seq, bytes);
         } catch (Exception ex) {
-            LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+            LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
         }
     }
 

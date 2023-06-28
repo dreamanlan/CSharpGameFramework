@@ -10,7 +10,7 @@ namespace GameFramework
     {
         public static void Execute(object msg, User user)
         {
-            LogSys.Log(LOG_TYPE.DEBUG, "Unhandled msg {0} user {1}({2},{3},{4})!!!", msg.GetType(), user.RoleId, user.GetKey(), user.Guid, user.Name);
+            LogSys.Log(ServerLogType.DEBUG, "Unhandled msg {0} user {1}({2},{3},{4})!!!", msg.GetType(), user.RoleId, user.GetKey(), user.Guid, user.Name);
         }
     }
 
@@ -22,7 +22,7 @@ namespace GameFramework
             if (enter_msg == null) {
                 return;
             }
-            LogSys.Log(LOG_TYPE.DEBUG, "user {0}({1},{2},{3}) enter.", user.RoleId, user.GetKey(), user.Guid, user.Name);
+            LogSys.Log(ServerLogType.DEBUG, "user {0}({1},{2},{3}) enter.", user.RoleId, user.GetKey(), user.Guid, user.Name);
             user.UserControlState = (int)UserControlState.User;
             user.IsEntered = true;
 
@@ -74,7 +74,7 @@ namespace GameFramework
                 return;
             EntityInfo charactor = user.Info;
             if (charactor == null) {
-                LogSys.Log(LOG_TYPE.DEBUG, "charactor {0}({1},{2},{3}) not exist", user.RoleId, user.GetKey(), user.Guid, user.Name);
+                LogSys.Log(ServerLogType.DEBUG, "charactor {0}({1},{2},{3}) not exist", user.RoleId, user.GetKey(), user.Guid, user.Name);
                 return;
             }
             ///
@@ -109,7 +109,7 @@ namespace GameFramework
                 return;
             EntityInfo userObj = user.Info;
             if (null == userObj) {
-                LogSys.Log(LOG_TYPE.DEBUG, "UseSkillHandler, charactor {0}({1},{2},{3}) not exist", user.RoleId, user.GetKey(), user.Guid, user.Name);
+                LogSys.Log(ServerLogType.DEBUG, "UseSkillHandler, charactor {0}({1},{2},{3}) not exist", user.RoleId, user.GetKey(), user.Guid, user.Name);
                 return;
             }
             Scene scene = user.OwnRoomUserManager.ActiveScene;
@@ -266,7 +266,7 @@ namespace GameFramework
                     object[] objArgs = args.ToArray();
                     scene.StorySystem.SendMessage(msgId, objArgs);
                 } catch (Exception ex) {
-                    LogSys.Log(LOG_TYPE.ERROR, "Msg_CRC_StoryMessage throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    LogSys.Log(ServerLogType.ERROR, "Msg_CRC_StoryMessage throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }
             }
         }

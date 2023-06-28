@@ -116,7 +116,7 @@ namespace GameFramework
         {
             UserInfo user = GetUserInfo(guid);
             if (user == null) {
-                LogSys.Log(LOG_TYPE.ERROR, "GetUserInfo ERROR. UserGuid:{0}", guid);
+                LogSys.Log(ServerLogType.ERROR, "GetUserInfo ERROR. UserGuid:{0}", guid);
             }
             return GetUserThread(user);
         }
@@ -152,10 +152,10 @@ namespace GameFramework
                         NodeMessageDispatcher.SendNodeMessage(user.NodeName, retMsg);
                     }
                 }
-                LogSys.Log(LOG_TYPE.MONITOR, "DoLastSaveUserData Step_1: Notice game client ServerShutdown. UserCount:{0}", m_ActiveUserGuids.Count);
+                LogSys.Log(ServerLogType.MONITOR, "DoLastSaveUserData Step_1: Notice game client ServerShutdown. UserCount:{0}", m_ActiveUserGuids.Count);
                 //2.等待10s
                 Thread.Sleep(10000);
-                LogSys.Log(LOG_TYPE.MONITOR, "DoLastSaveUserData Step_2: Wait for 10s.");
+                LogSys.Log(ServerLogType.MONITOR, "DoLastSaveUserData Step_2: Wait for 10s.");
                 //3.关闭Node
                 CenterHubApi.SendCommandByName(UserServerConfig.WorldId, "NodeJs1", "QuitNodeJs");
                 CenterHubApi.SendCommandByName(UserServerConfig.WorldId, "NodeJs2", "QuitNodeJs");
@@ -180,7 +180,7 @@ namespace GameFramework
                 CenterHubApi.SendCommandByName(UserServerConfig.WorldId, "RoomSvr16", "QuitRoomServer");
                 CenterHubApi.SendCommandByName(UserServerConfig.WorldId, "GmServer", "QuitGmServer");
                 CenterHubApi.SendCommandByName(UserServerConfig.WorldId, "ServerBridge", "QuitServerBridge");
-                LogSys.Log(LOG_TYPE.MONITOR, "DoLastSaveUserData Step_3: Close Servers.");
+                LogSys.Log(ServerLogType.MONITOR, "DoLastSaveUserData Step_3: Close Servers.");
                 //4.保存玩家数据
                 foreach (var guidPair in m_ActiveUserGuids) {
                     UserInfo user = GetUserInfo(guidPair.Key);
@@ -189,7 +189,7 @@ namespace GameFramework
                         this.GetUserThread(user).QueueAction(ds_thread.SaveUser, user, user.NextUserSaveCount);
                     }
                 }
-                LogSys.Log(LOG_TYPE.MONITOR, "DoLastSaveUserData Step_4: Start to save UserData for last. UserCount:{0}", m_ActiveUserGuids.Count);
+                LogSys.Log(ServerLogType.MONITOR, "DoLastSaveUserData Step_4: Start to save UserData for last. UserCount:{0}", m_ActiveUserGuids.Count);
             }
             m_IsLastSave = true;
         }
@@ -214,11 +214,11 @@ namespace GameFramework
             AccountInfo accountInfo = m_AccountSystem.FindAccountById(accountId);
             QueueingThread queueingThread = UserServer.Instance.QueueingThread;
             if (null != accountInfo || !queueingThread.NeedQueueing()) {
-                LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_3a: DoLogin without queueing. AccountId:{0}", accountId);
+                LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_3a: DoLogin without queueing. AccountId:{0}", accountId);
                 DoAccountLoginWithoutQueueing(accountId, password, clientInfo, nodeName);
             } else {
                 if (queueingThread.IsQueueingFull()) {
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Yellow, "LoginStep_3b1: Start queueing but queue full. AccountId:{0}", accountId);
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_3b1: Start queueing but queue full. AccountId:{0}", accountId);
 
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
                     GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
@@ -227,7 +227,7 @@ namespace GameFramework
                     replyMsg.m_ProtoData = protoMsg;
                     NodeMessageDispatcher.SendNodeMessage(nodeName, replyMsg);
                 } else {
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Yellow, "LoginStep_3b2: Start queueing. AccountId:{0}", accountId);
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_3b2: Start queueing. AccountId:{0}", accountId);
 
                     queueingThread.QueueAction(queueingThread.StartQueueing, accountId, password, clientInfo, nodeName);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
@@ -253,13 +253,13 @@ namespace GameFramework
                 var dsThread = UserServer.Instance.DataCacheThread;
                 if (dsThread.DataStoreAvailable == true) {
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_4: Load account from DataStore . AccountId:{0}", accountId);
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_4: Load account from DataStore . AccountId:{0}", accountId);
                     dsThread.DispatchAction(dsThread.LoadAccount, accountId);
                 } else {
                     accountInfo.UserGuid = UserServer.Instance.GlobalProcessThread.GenerateUserGuid();
                     accountInfo.CurrentState = AccountState.Online;
                     m_AccountSystem.AddAccountById(accountId, accountInfo);
-                    LogSys.Log(LOG_TYPE.INFO, "Account login success. Account:{0}", accountId);
+                    LogSys.Log(ServerLogType.INFO, "Account login success. Account:{0}", accountId);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
                     GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
                     protoMsg.m_AccountId = accountId;
@@ -272,7 +272,7 @@ namespace GameFramework
                 //当前账号在线
                 if (accountInfo.CurrentState == AccountState.Dropped || clientInfo == accountInfo.ClientInfo) {
                     //账号处在离线状态或同一设备重复登录，登录成功
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_5a: Account is dropped. Login SUCCESS. AccountId:{0}", accountId);
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_5a: Account is dropped. Login SUCCESS. AccountId:{0}", accountId);
                     accountInfo.AccountId = accountId;
                     accountInfo.Password = password;
                     accountInfo.ClientInfo = clientInfo;
@@ -290,7 +290,7 @@ namespace GameFramework
                     NodeMessageDispatcher.SendNodeMessage(nodeName, replyMsg);
                 } else {
                     //账号在别的设备上登录，登录失败
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Yellow, "LoginStep_5b: Account is online. Login FAILED. AccountId:{0}", accountId);
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_5b: Account is online. Login FAILED. AccountId:{0}", accountId);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
                     GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
                     protoMsg.m_AccountId = accountId;
@@ -321,7 +321,7 @@ namespace GameFramework
                                     accountInfo.FromProto(_msg as TableAccount);
                                     break;
                                 default:
-                                    LogSys.Log(LOG_TYPE.ERROR, ConsoleColor.Red, "Decode account data ERROR. Wrong message id. Account:{0}, WrongId:{1}", result.PrimaryKeys[0], msgEnum);
+                                    LogSys.Log(ServerLogType.ERROR, ConsoleColor.Red, "Decode account data ERROR. Wrong message id. Account:{0}, WrongId:{1}", result.PrimaryKeys[0], msgEnum);
                                     break;
                             }
                         }
@@ -333,14 +333,14 @@ namespace GameFramework
                         accountInfo.CurrentState = AccountState.Online;
                         accountInfo.LastLoginTime = TimeUtility.CurTimestamp;
                         m_AccountSystem.AddAccountById(accountId, accountInfo);
-                        LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_4a: Account login SUCCESS . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
+                        LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_4a: Account login SUCCESS . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
                         protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.Success;
                         protoMsg.m_UserGuid = accountInfo.UserGuid;                        
                     }
                 } else if (ret.ErrorNo == Msg_DL_LoadResult.ErrorNoEnum.NotFound) {
                     //账号首次进入游戏
                     accountInfo.UserGuid = UserServer.Instance.GlobalProcessThread.GenerateUserGuid();
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_4b: Load account NotFound . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_4b: Load account NotFound . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
                     accountInfo.CurrentState = AccountState.Online;
                     accountInfo.AccountId = accountId;
                     accountInfo.Password = accountInfo.Password;
@@ -352,10 +352,10 @@ namespace GameFramework
                     accountInfo.LastLoginTime = TimeUtility.CurTimestamp;
                 } else {
                     //数据加载失败       
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Yellow, "LoginStep_4c: Load account FAILED . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_4c: Load account FAILED . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Red, "ERROR LoginStep_4d. AccountId:{0}, LogicServerId:{1}, AccountId:{2}\nERROR Message:{3}\nStackTrace:{4}",
+                LogSys.Log(ServerLogType.INFO, ConsoleColor.Red, "ERROR LoginStep_4d. AccountId:{0}, LogicServerId:{1}, AccountId:{2}\nERROR Message:{3}\nStackTrace:{4}",
                             accountId, 0, accountId, ex.Message, ex.StackTrace);
             } finally {
                 if (protoMsg.m_Result != AccountLoginResult.AccountLoginResultEnum.Success && protoMsg.m_Result != AccountLoginResult.AccountLoginResultEnum.FirstLogin) {
@@ -380,12 +380,12 @@ namespace GameFramework
                     //踢掉账号
                     accountInfo.CurrentState = AccountState.Offline;
                     m_AccountSystem.RemoveAccountById(accountInfo.AccountId);
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LogoutStep: Account LOGOUT directly. AccountId:{0}",
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LogoutStep: Account LOGOUT directly. AccountId:{0}",
                       accountInfo.AccountId);
                 } else {
                     //AccountInfo设置为离线状态
                     accountInfo.CurrentState = AccountState.Dropped;
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LogoutStep: Account dropped. AccountId:{0}",
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LogoutStep: Account dropped. AccountId:{0}",
                       accountInfo.AccountId);
                 }
                 m_NicknameSystem.RevertAccountNicknames(accountId);
@@ -418,13 +418,13 @@ namespace GameFramework
                         protoData.Result = RoleEnterResult.RoleEnterResultEnum.Wait;
                         roleEnterResultMsg.m_ProtoData = protoData;
                         NodeMessageDispatcher.SendNodeMessage(user.NodeName, roleEnterResultMsg);
-                        LogSys.Log(LOG_TYPE.WARN, "RoleEnter AccountId:{0} Guid:{1} Wait Offline", accountId, userGuid);
+                        LogSys.Log(ServerLogType.WARN, "RoleEnter AccountId:{0} Guid:{1} Wait Offline", accountId, userGuid);
                     } else {
                         if (user.AccountId.Equals(accountInfo.AccountId)) {         
                             user.NodeName = accountInfo.NodeName;
                             user.LeftLife = UserInfo.LifeTimeOfNoHeartbeat;
                             DoUserRelogin(user);
-                            LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_8a: Role Reenter SUCCESS. AccountId:{0}, UserGuid:{1}, Nickname:{2}",
+                            LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_8a: Role Reenter SUCCESS. AccountId:{0}, UserGuid:{1}, Nickname:{2}",
                                 accountId, userGuid, user.Nickname);
                             //回复客户端
                             NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, user.AccountId, user.Guid);
@@ -438,14 +438,14 @@ namespace GameFramework
                             GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();
                             protoData.Result = RoleEnterResult.RoleEnterResultEnum.UnknownError;
                             roleEnterResultMsg.m_ProtoData = protoData;
-                            LogSys.Log(LOG_TYPE.ERROR, "LoginStep_8a: Role Reenter FAILED. AccountId:{0}, UserGuid:{1}, Nickname:{2}, UserAccountId:{3}",
+                            LogSys.Log(ServerLogType.ERROR, "LoginStep_8a: Role Reenter FAILED. AccountId:{0}, UserGuid:{1}, Nickname:{2}, UserAccountId:{3}",
                                 accountId, userGuid, user.Nickname, user.AccountId);
                         }
                     }
                 } else {
                     var ds_thread = UserServer.Instance.DataCacheThread;
                     if (ds_thread.DataStoreAvailable == true) {
-                        LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_8b: Load UserInfo. AccountId:{0}, UserGuid:{1}", accountId, userGuid);
+                        LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_8b: Load UserInfo. AccountId:{0}, UserGuid:{1}", accountId, userGuid);
                         ds_thread.DispatchAction(ds_thread.LoadUser, userGuid, accountId, nickname);
                     } else {
                         CreateRole(accountId, nickname, 1);
@@ -497,7 +497,7 @@ namespace GameFramework
                                 }
                                 break;
                             default:
-                                LogSys.Log(LOG_TYPE.ERROR, ConsoleColor.Red, "Decode user data ERROR. Wrong message id. UserGuid:{0}, WrongId:{1}", userGuid, msgEnum);
+                                LogSys.Log(ServerLogType.ERROR, ConsoleColor.Red, "Decode user data ERROR. Wrong message id. UserGuid:{0}, WrongId:{1}", userGuid, msgEnum);
                                 break;
                         }
                     }
@@ -520,7 +520,7 @@ namespace GameFramework
                 replyMsg.m_ProtoData = protoData;
                 NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, replyMsg);
             }
-            LogSys.Log(LOG_TYPE.INFO, "UserProcessScheduler-OnRoleEnter-EndLoadUser. AccountId:{0}, UserGuid:{1}, Result:{2}",
+            LogSys.Log(ServerLogType.INFO, "UserProcessScheduler-OnRoleEnter-EndLoadUser. AccountId:{0}, UserGuid:{1}, Result:{2}",
               accountId, userGuid, ret.ErrorNo);
         }
         internal void DoChangeName(ulong guid, string nickname)
@@ -534,7 +534,7 @@ namespace GameFramework
                         accountInfo.Nickname = nickname;
                     }
                     ui.Nickname = nickname;
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Yellow, "ChangeName SUCCESS. AccountId:{0}, Nickname:{1}",
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "ChangeName SUCCESS. AccountId:{0}, Nickname:{1}",
                       ui.AccountId, nickname);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.ChangeNameResult, ui.AccountId);
                     GameFrameworkMessage.ChangeNameResult protoMsg = new GameFrameworkMessage.ChangeNameResult();
@@ -542,7 +542,7 @@ namespace GameFramework
                     replyMsg.m_ProtoData = protoMsg;
                     NodeMessageDispatcher.SendNodeMessage(ui.NodeName, replyMsg);
                 } else {
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Yellow, "ChangeName FAILED. AccountId:{0}, Nickname:{1}",
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "ChangeName FAILED. AccountId:{0}, Nickname:{1}",
                       ui.AccountId, nickname);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.ChangeNameResult, ui.AccountId);
                     GameFrameworkMessage.ChangeNameResult protoMsg = new GameFrameworkMessage.ChangeNameResult();
@@ -619,7 +619,7 @@ namespace GameFramework
                     if (ds_thread.DataStoreAvailable == true) {
                         user.NextUserSaveCount = DataCacheThread.UltimateSaveCount;
                         this.GetUserThread(user.Guid).QueueAction(ds_thread.SaveUser, user, user.NextUserSaveCount);
-                        LogSys.Log(LOG_TYPE.INFO, "UserProcessScheduler-DoUserLogoff-StartSaveUser. UserGuid:{0}", guid);
+                        LogSys.Log(ServerLogType.INFO, "UserProcessScheduler-DoUserLogoff-StartSaveUser. UserGuid:{0}", guid);
                     }
                     m_Thread.QueueAction(this.AddWaitRecycleUser, guid);
                     user.CurrentState = UserState.DropOrOffline;
@@ -632,7 +632,7 @@ namespace GameFramework
             if (user != null) {
                 user.LeftLife = UserInfo.LifeTimeOfNoHeartbeat;
             } else {
-                LogSys.Log(LOG_TYPE.DEBUG, "DoUserHeartbeat,guid:{0} can't found.", guid);
+                LogSys.Log(ServerLogType.DEBUG, "DoUserHeartbeat,guid:{0} can't found.", guid);
             }
         }
         internal void AddKickedAccount(string accountId, long ms)
@@ -773,7 +773,7 @@ namespace GameFramework
                     ui.HeroId = heroId;
                     InitUserinfo(ui);
                     m_NicknameSystem.UpdateUsedNickname(nickname, ui.Guid);
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_7a: Create new role SUCCESS. AccountId:{0}, UserGuid:{1}, Nickname:{2}, HeroId:{3}",
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_7a: Create new role SUCCESS. AccountId:{0}, UserGuid:{1}, Nickname:{2}, HeroId:{3}",
                       accountId, accountInfo.AccountId, ui.Guid, ui.Nickname, ui.HeroId);
                     if (ds_thread.DataStoreAvailable) {
                         ds_thread.SaveCreateUser(accountInfo, nickname, ui.Guid);
@@ -782,7 +782,7 @@ namespace GameFramework
                     //游戏角色创建成功，直接进入游戏
                     ui.NodeName = accountInfo.NodeName;
                     this.DoUserLogin(ui);
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Green, "LoginStep_8c: New role enter SUCCESS. AccountId:{0}, UserGuid:{1}, Nickname:{2}",
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_8c: New role enter SUCCESS. AccountId:{0}, UserGuid:{1}, Nickname:{2}",
                       accountId, ui.Guid, ui.Nickname);
                     NodeMessage enterMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, ui.AccountId, ui.Guid);
                     GameFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(ui);
@@ -790,7 +790,7 @@ namespace GameFramework
                     enterMsg.m_ProtoData = protoData;
                     NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, enterMsg);
                 } else {
-                    LogSys.Log(LOG_TYPE.INFO, ConsoleColor.Yellow, "LoginStep_7b: Create new role FAILED. AccountId:{0}, Nickname:{1}",
+                    LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_7b: Create new role FAILED. AccountId:{0}, Nickname:{1}",
                       accountId, nickname);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.ChangeNameResult, accountId);
                     GameFrameworkMessage.ChangeNameResult protoMsg = new GameFrameworkMessage.ChangeNameResult();
@@ -829,21 +829,21 @@ namespace GameFramework
                 for (int threadIx = 0; threadIx < m_UserThreads.Length; ++threadIx) {
                     MyServerThread thread = m_UserThreads[threadIx];
                     thread.DebugPoolCount((string msg) => {
-                        LogSys.Log(LOG_TYPE.INFO, "UserProcessScheduler.DispatchActionQueue {0} {1}", threadIx, msg);
+                        LogSys.Log(ServerLogType.INFO, "UserProcessScheduler.DispatchActionQueue {0} {1}", threadIx, msg);
                     });
-                    LogSys.Log(LOG_TYPE.MONITOR, "UserProcessScheduler.DispatchActionQueue Current Action {0} {1}", threadIx, thread.CurActionNum);
+                    LogSys.Log(ServerLogType.MONITOR, "UserProcessScheduler.DispatchActionQueue Current Action {0} {1}", threadIx, thread.CurActionNum);
                 }
                 for (int threadIx = 0; threadIx < m_UserThreadUserCounts.Length; ++threadIx) {
-                    LogSys.Log(LOG_TYPE.MONITOR, "UserProcessScheduler.UserThread User Count {0} {1}", threadIx, m_UserThreadUserCounts[threadIx]);
+                    LogSys.Log(ServerLogType.MONITOR, "UserProcessScheduler.UserThread User Count {0} {1}", threadIx, m_UserThreadUserCounts[threadIx]);
                 }
                 m_Thread.DebugPoolCount((string msg) => {
-                    LogSys.Log(LOG_TYPE.INFO, "UserProcessScheduler.ThreadActionQueue {0}", msg);
+                    LogSys.Log(ServerLogType.INFO, "UserProcessScheduler.ThreadActionQueue {0}", msg);
                 });
-                LogSys.Log(LOG_TYPE.MONITOR, "UserProcessScheduler.ThreadActionQueue Current Action {0}", m_Thread.CurActionNum);
+                LogSys.Log(ServerLogType.MONITOR, "UserProcessScheduler.ThreadActionQueue Current Action {0}", m_Thread.CurActionNum);
 
                 m_NodeMessageManager.TickMonitor();
 
-                LogSys.Log(LOG_TYPE.MONITOR, "GameFramework User Count:{0} ElapsedTickTime:{1}", m_ActiveUserGuids.Count, elapsedTickTime);
+                LogSys.Log(ServerLogType.MONITOR, "GameFramework User Count:{0} ElapsedTickTime:{1}", m_ActiveUserGuids.Count, elapsedTickTime);
             }
 
             var ds_thread = UserServer.Instance.DataCacheThread;
@@ -877,7 +877,7 @@ namespace GameFramework
                     if (user.LeftLife <= 0) {
                         if (UserState.Room != user.CurrentState) {
                             this.GetUserThread(user).QueueAction(this.DoUserLogoff, guid, true);
-                            LogSys.Log(LOG_TYPE.INFO, "UserProcessScheduler-OnUserTick-UserLogout. UserGuid:{0}", user.Guid);
+                            LogSys.Log(ServerLogType.INFO, "UserProcessScheduler-OnUserTick-UserLogout. UserGuid:{0}", user.Guid);
                             user.LeftLife = 600000;
                         } else if (UserState.Room == user.CurrentState) {
                             user.LeftLife = UserInfo.LifeTimeOfNoHeartbeat;
@@ -889,7 +889,7 @@ namespace GameFramework
             }
             if (m_IsLastSave && userSaveDoneCount >= m_ActiveUserGuids.Count) {
                 if (m_LastSaveFinished == false) {
-                    LogSys.Log(LOG_TYPE.MONITOR, "DoLastSaveUserData Step_5: Save UserData done. UserCount:{0}", userSaveDoneCount);
+                    LogSys.Log(ServerLogType.MONITOR, "DoLastSaveUserData Step_5: Save UserData done. UserCount:{0}", userSaveDoneCount);
                     m_LastSaveFinished = true;
                     m_IsLastSave = false;
                 }
@@ -912,7 +912,7 @@ namespace GameFramework
                         AccountInfo accountInfo = m_AccountSystem.FindAccountById(user.AccountId);
                         if (accountInfo != null) {
                             m_AccountSystem.RemoveAccountById(accountInfo.AccountId);
-                            LogSys.Log(LOG_TYPE.INFO, "UserProcessScheduler-OnUserTick-AccountOfflineWithUser. AccountId:{0}, UserGuid:{1}",
+                            LogSys.Log(ServerLogType.INFO, "UserProcessScheduler-OnUserTick-AccountOfflineWithUser. AccountId:{0}, UserGuid:{1}",
                                                       accountInfo.AccountId, user.Guid);
                         }
                         FreeKey(user.Key);

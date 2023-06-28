@@ -36,7 +36,7 @@ namespace GameFramework
                 msgNickname.Data = DbDataSerializer.Encode(dataNickname);
                 DispatchAction(SaveInternal, msgNickname);
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCache Save ERROR. Msg:CreateUser, Key:{0}, Error:{1},\nStacktrace:{2}", ai.AccountId, e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCache Save ERROR. Msg:CreateUser, Key:{0}, Error:{1},\nStacktrace:{2}", ai.AccountId, e.Message, e.StackTrace);
             }
         }
         internal void SaveUser(UserInfo ui, int saveCount)
@@ -148,7 +148,7 @@ namespace GameFramework
                 ui.DeletedFriendInfos.Clear();
                 ui.CurrentUserSaveCount = saveCount;
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCache Save ERROR. Msg:SaveUser, Key:{0}, SaveCount:{1}, Error:{2},\nStacktrace:{3}", ui.Guid, saveCount, e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCache Save ERROR. Msg:SaveUser, Key:{0}, SaveCount:{1}, Error:{2},\nStacktrace:{3}", ui.Guid, saveCount, e.Message, e.StackTrace);
             }
         }
         internal void SaveGuid(string guidType, ulong guidValue)
@@ -163,7 +163,7 @@ namespace GameFramework
                 msg.Data = DbDataSerializer.Encode(dataGuid);
                 DispatchAction(SaveInternal, msg);
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
             }
         }
         internal void SaveGuid(List<GuidInfo> guidList, int saveCount)
@@ -180,7 +180,7 @@ namespace GameFramework
                     DispatchAction(SaveInternal, msg);
                 }
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
             }
         }
         internal void SaveMail(List<TableMailInfoWrap> mailList, int saveCount)
@@ -205,7 +205,7 @@ namespace GameFramework
                     DispatchAction(SaveInternal, msg);
                 }
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
             }
         }
         internal void SaveDeletedMail(List<TableMailInfoWrap> mailList, int saveCount)
@@ -221,7 +221,7 @@ namespace GameFramework
                     DispatchAction(SaveInternal, msg);
                 }
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
             }
         }
         internal int SaveNickname(TableNicknameInfo nick)
@@ -235,7 +235,7 @@ namespace GameFramework
                 RequestSave(msg);
                 return 0;
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
                 return 0;
             }
         }
@@ -250,7 +250,7 @@ namespace GameFramework
                 RequestSave(msg);
                 return 0;
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
                 return 0;
             }
         }
@@ -265,7 +265,7 @@ namespace GameFramework
                 RequestSave(msg);
                 return 0;
             } catch (Exception e) {
-                LogSys.Log(LOG_TYPE.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "DataCache Save ERROR:{0}, Stacktrace:{1}", e.Message, e.StackTrace);
                 return 0;
             }
         }

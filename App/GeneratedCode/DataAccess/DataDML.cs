@@ -389,7 +389,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;
@@ -580,7 +580,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;
@@ -858,7 +858,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;
@@ -1060,7 +1060,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;
@@ -1239,7 +1239,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;
@@ -1477,7 +1477,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;
@@ -1782,7 +1782,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;
@@ -2047,7 +2047,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;
@@ -2285,7 +2285,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;
@@ -2464,7 +2464,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;
@@ -2879,7 +2879,7 @@ namespace GameFramework
 			  }
 			} catch (Exception ex) {
 			  if (dataList.Count < 200) {
-			    LogSys.Log(LOG_TYPE.ERROR, "Error Sql statement:{0}", statement);
+			    LogSys.Log(ServerLogType.ERROR, "Error Sql statement:{0}", statement);
 			  }
 			  DBConn.Close();
 			  throw ex;

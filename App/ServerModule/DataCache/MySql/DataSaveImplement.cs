@@ -18,7 +18,7 @@ internal static class DataSaveImplement
                 DataDML.Save(msgId, cacheItem.Valid, dataVersion, cacheItem.DataMessage);
             } catch (Exception ex) {
                 DBConn.Close();
-                LogSys.Log(LOG_TYPE.ERROR, "SingleSaveItem ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "SingleSaveItem ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
                 throw ex;
             }
         }
@@ -32,10 +32,10 @@ internal static class DataSaveImplement
                 foreach (var cacheItem in cacheItemList) {
                     DataDML.Save(msgId, cacheItem.Valid, dataVersion, cacheItem.DataMessage);
                 }
-                LogSys.Log(LOG_TYPE.MONITOR, "BatchSaveItemsProc SUCCESS. MsgId:{0}, DataCount:{1}, DataVersion:{2}", msgId, cacheItemList.Count, dataVersion);
+                LogSys.Log(ServerLogType.MONITOR, "BatchSaveItemsProc SUCCESS. MsgId:{0}, DataCount:{1}, DataVersion:{2}", msgId, cacheItemList.Count, dataVersion);
             } catch (Exception ex) {
                 DBConn.Close();
-                LogSys.Log(LOG_TYPE.ERROR, "BatchSaveItemsProc ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "BatchSaveItemsProc ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
                 throw ex;
             }
         }
@@ -55,10 +55,10 @@ internal static class DataSaveImplement
                     dataList.Add(cacheItem.DataMessage);
                 }
                 count = DataDML.BatchSave(msgId, validList, dataList, dataVersion);
-                LogSys.Log(LOG_TYPE.MONITOR, "BatchSaveItemsSql SUCCESS. MsgId:{0}, DataCount:{1}, DataVersion:{2}", msgId, cacheItemList.Count, dataVersion);
+                LogSys.Log(ServerLogType.MONITOR, "BatchSaveItemsSql SUCCESS. MsgId:{0}, DataCount:{1}, DataVersion:{2}", msgId, cacheItemList.Count, dataVersion);
             } catch (Exception ex) {
                 DBConn.Close();
-                LogSys.Log(LOG_TYPE.ERROR, "BatchSaveItemsSql ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "BatchSaveItemsSql ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
                 throw ex;
             }
         } else {

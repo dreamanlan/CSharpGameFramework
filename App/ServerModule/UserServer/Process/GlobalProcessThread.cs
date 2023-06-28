@@ -101,7 +101,7 @@ namespace GameFramework
             if (m_LastTickTime != 0) {
                 long elapsedTickTime = curTime - m_LastTickTime;
                 if (elapsedTickTime > c_WarningTickTime) {
-                    LogSys.Log(LOG_TYPE.MONITOR, "GlobalProcessThread Tick:{0}", elapsedTickTime);
+                    LogSys.Log(ServerLogType.MONITOR, "GlobalProcessThread Tick:{0}", elapsedTickTime);
                 }
             }
             m_LastTickTime = curTime;
@@ -109,9 +109,9 @@ namespace GameFramework
                 m_LastLogTime = curTime;
 
                 DebugPoolCount((string msg) => {
-                    LogSys.Log(LOG_TYPE.INFO, "GlobalProcessThread.ActionQueue {0}", msg);
+                    LogSys.Log(ServerLogType.INFO, "GlobalProcessThread.ActionQueue {0}", msg);
                 });
-                LogSys.Log(LOG_TYPE.MONITOR, "GlobalProcessThread.ActionQueue Current Action {0}", this.CurActionNum);
+                LogSys.Log(ServerLogType.MONITOR, "GlobalProcessThread.ActionQueue Current Action {0}", this.CurActionNum);
             }
             //逻辑Tick
             GlobalData.Instance.Tick();
@@ -124,7 +124,7 @@ namespace GameFramework
                 if (m_GuidCounter.IsTimeToSave(curTime)) {
                     saveStartTime = TimeUtility.GetLocalMilliseconds();
                     dsThread.SaveGuid(m_GuidSystem.GuidList, m_GuidCounter.NextSaveCount);
-                    LogSys.Log(LOG_TYPE.DEBUG, "GlobalDataSave Guid SaveCount:{0}, Time:{1}", m_GuidCounter.NextSaveCount, TimeUtility.GetLocalMilliseconds() - saveStartTime);
+                    LogSys.Log(ServerLogType.DEBUG, "GlobalDataSave Guid SaveCount:{0}, Time:{1}", m_GuidCounter.NextSaveCount, TimeUtility.GetLocalMilliseconds() - saveStartTime);
                     m_GuidCounter.IncreaseNextSaveCount();
                 }
                 if (m_MailCounter.IsTimeToSave(curTime)) {
@@ -132,13 +132,13 @@ namespace GameFramework
                     dsThread.SaveMail(m_MailSystem.TotalMailList, m_MailCounter.NextSaveCount);
                     dsThread.SaveDeletedMail(m_MailSystem.TotalDeletedMailList, m_MailCounter.NextSaveCount);
                     m_MailSystem.ResetDeletedMailList();
-                    LogSys.Log(LOG_TYPE.DEBUG, "GlobalDataSave Mail SaveCount:{0}, Time:{1}", m_MailCounter.NextSaveCount, TimeUtility.GetLocalMilliseconds() - saveStartTime);
+                    LogSys.Log(ServerLogType.DEBUG, "GlobalDataSave Mail SaveCount:{0}, Time:{1}", m_MailCounter.NextSaveCount, TimeUtility.GetLocalMilliseconds() - saveStartTime);
                     m_MailCounter.IncreaseNextSaveCount();
                 }
                 if (m_IsLastSave && IsLastSaveAllDone()) {
                     if (m_LastSaveFinished == false) {
                         //全局数据（Guid、邮件）存储完成 
-                        LogSys.Log(LOG_TYPE.MONITOR, "DoLastSaveGlobalData Step_2: GlobalData last save done");
+                        LogSys.Log(ServerLogType.MONITOR, "DoLastSaveGlobalData Step_2: GlobalData last save done");
                         m_IsLastSave = false;
                         m_LastSaveFinished = true;
                     }
@@ -164,7 +164,7 @@ namespace GameFramework
         }
         internal void DoLastSaveGlobalData()
         {
-            LogSys.Log(LOG_TYPE.MONITOR, "DoLastSaveGlobalData Step_1: Start to save GlobalData.");
+            LogSys.Log(ServerLogType.MONITOR, "DoLastSaveGlobalData Step_1: Start to save GlobalData.");
             m_LastSaveFinished = false;
             m_GuidCounter.SetUltimateNextSaveCount();
 

@@ -53,31 +53,31 @@ namespace RoomServer
                 try {
                     buffer = File.ReadAllBytes(filePath);
                 } catch (Exception e) {
-                    LogSys.Log(LOG_TYPE.ERROR, "Exception:{0}\n{1}", e.Message, e.StackTrace);
+                    LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", e.Message, e.StackTrace);
                     return null;
                 }
                 return buffer;
             });
-            LogSystem.OnOutput += (Log_Type type, string msg) => {
+            LogSystem.OnOutput += (GameLogType type, string msg) => {
                 switch (type) {
-                    case Log_Type.LT_Debug:
-                        LogSys.Log(LOG_TYPE.DEBUG, msg);
+                    case GameLogType.Debug:
+                        LogSys.Log(ServerLogType.DEBUG, msg);
                         break;
-                    case Log_Type.LT_Info:
-                        LogSys.Log(LOG_TYPE.INFO, msg);
+                    case GameLogType.Info:
+                        LogSys.Log(ServerLogType.INFO, msg);
                         break;
-                    case Log_Type.LT_Warn:
-                        LogSys.Log(LOG_TYPE.WARN, msg);
+                    case GameLogType.Warn:
+                        LogSys.Log(ServerLogType.WARN, msg);
                         break;
-                    case Log_Type.LT_Error:
-                    case Log_Type.LT_Assert:
-                        LogSys.Log(LOG_TYPE.ERROR, msg);
+                    case GameLogType.Error:
+                    case GameLogType.Assert:
+                        LogSys.Log(ServerLogType.ERROR, msg);
                         break;
                 }
             };
 
             LoadData();
-            LogSys.Log(LOG_TYPE.DEBUG, "room server init ip: {0}  port: {1}", m_ServerIp, m_ServerPort);
+            LogSys.Log(ServerLogType.DEBUG, "room server init ip: {0}  port: {1}", m_ServerIp, m_ServerPort);
 
             uint tick_interval = 33;
             m_RoomMgr = new RoomManager(1280, c_ThreadCount, c_PerThreadRoomCount, tick_interval, m_LobbyConnector);
@@ -92,7 +92,7 @@ namespace RoomServer
             m_Channel.Register<Msg_LR_ReplyRegisterRoomServer>(HandleReplyRegisterRoomServer);
             m_RoomMgr.RegisterMsgHandler(m_Channel);
 
-            LogSys.Log(LOG_TYPE.DEBUG, "room server init ok.");
+            LogSys.Log(ServerLogType.DEBUG, "room server init ok.");
         }
         private void InitConfig()
         {
@@ -120,7 +120,7 @@ namespace RoomServer
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "RoomServer.InitConfig throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "RoomServer.InitConfig throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void Loop()
@@ -131,7 +131,7 @@ namespace RoomServer
                     if (m_LastTickTime != 0) {
                         long elapsedTickTime = curTime - m_LastTickTime;
                         if (elapsedTickTime > c_WarningTickTime) {
-                            LogSys.Log(LOG_TYPE.MONITOR, "RoomServer Network Tick:{0}", curTime - m_LastTickTime);
+                            LogSys.Log(ServerLogType.MONITOR, "RoomServer Network Tick:{0}", curTime - m_LastTickTime);
                         }
                     }
                     m_LastTickTime = curTime;
@@ -141,7 +141,7 @@ namespace RoomServer
                     Thread.Sleep(10);
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "RoomServer.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "RoomServer.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void Release()
@@ -167,7 +167,7 @@ namespace RoomServer
 
         private void OnCenterLog(string msg, int size)
         {
-            LogSys.Log(LOG_TYPE.INFO, "{0}", msg);
+            LogSys.Log(ServerLogType.INFO, "{0}", msg);
         }
         private void OnNameHandleChanged(bool addOrUpdate, string name, int handle)
         {
@@ -177,7 +177,7 @@ namespace RoomServer
                 }
                 m_Channel.OnUpdateNameHandle(addOrUpdate, name, handle);
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void OnCommand(int src, int dest, string command)
@@ -186,15 +186,15 @@ namespace RoomServer
             const string c_ReloadConfig = "ReloadConfig";
             try {
                 if (0 == command.CompareTo(c_QuitRoomServer)) {
-                    LogSys.Log(LOG_TYPE.MONITOR, "receive {0} command, quit", command);
+                    LogSys.Log(ServerLogType.MONITOR, "receive {0} command, quit", command);
                     CenterClientApi.Quit();
                 } else if (0 == command.CompareTo(c_ReloadConfig)) {
                     CenterClientApi.ReloadConfigScript();
                     InitConfig();
-                    LogSys.Log(LOG_TYPE.WARN, "receive {0} command.", command);
+                    LogSys.Log(ServerLogType.WARN, "receive {0} command.", command);
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void OnMessage(uint seq, int source_handle,
@@ -206,7 +206,7 @@ namespace RoomServer
                 Marshal.Copy(data, bytes, 0, len);
                 m_Channel.Dispatch(source_handle, seq, bytes);
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
 
@@ -223,7 +223,7 @@ namespace RoomServer
             rrsBuilder.ServerIp = m_ServerIp;
             rrsBuilder.ServerPort = m_ServerPort;
             m_Channel.Send(rrsBuilder);
-            LogSys.Log(LOG_TYPE.DEBUG, "register room server to Lobby.");
+            LogSys.Log(ServerLogType.DEBUG, "register room server to Lobby.");
         }
 
         private void SendRoomServerUpdateInfo()

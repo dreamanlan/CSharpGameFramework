@@ -4,16 +4,16 @@ using System;
 
 namespace GameFramework
 {
-    public enum Log_Type
+    public enum GameLogType
     {
-        LT_Debug,
-        LT_Info,
-        LT_Warn,
-        LT_Error,
-        LT_Assert,
-        LT_GM,
+        Debug,
+        Info,
+        Warn,
+        Error,
+        Assert,
+        GM,
     }
-    public delegate void LogSystemOutputDelegation(Log_Type type, string msg);
+    public delegate void LogSystemOutputDelegation(GameLogType type, string msg);
 
     public class LogSystem
     {
@@ -27,7 +27,7 @@ namespace GameFramework
                 string str = format;
                 if (args.Length > 0)
                     str = string.Format("[Debug]:" + format, args);
-                Output(Log_Type.LT_Debug, str);
+                Output(GameLogType.Debug, str);
             }
 #endif
         }
@@ -38,7 +38,7 @@ namespace GameFramework
                 string str = format;
                 if (args.Length > 0)
                     str = string.Format("[Info]:" + format, args);
-                Output(Log_Type.LT_Info, str);
+                Output(GameLogType.Info, str);
             }
         }
         public static void Warn(string format, params object[] args)
@@ -48,7 +48,7 @@ namespace GameFramework
                 string str = format;
                 if (args.Length > 0)
                     str = string.Format("[Warn]:" + format, args);
-                Output(Log_Type.LT_Warn, str);
+                Output(GameLogType.Warn, str);
             }
         }
         public static void Error(string format, params object[] args)
@@ -57,7 +57,7 @@ namespace GameFramework
             string str = format;
             if (args.Length > 0)
                 str = string.Format("[Error]:" + format, args);
-            Output(Log_Type.LT_Error, str);
+            Output(GameLogType.Error, str);
         }
         public static void Assert(bool check, string format, params object[] args)
         {
@@ -67,7 +67,7 @@ namespace GameFramework
                     string str = format;
                     if (args.Length > 0)
                         str = string.Format("[Assert]:" + format, args);
-                    Output(Log_Type.LT_Assert, str);
+                    Output(GameLogType.Assert, str);
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace GameFramework
         public static void Log(string msg)
         {
             if (!GlobalVariables.Instance.IsDevice || GlobalVariables.Instance.IsDebug) {
-                Output(Log_Type.LT_Info, msg);
+                Output(GameLogType.Info, msg);
             }
         }
         public static void GmLog(string format, params object[] args)
@@ -84,10 +84,10 @@ namespace GameFramework
             string str = format;
             if (args.Length > 0)
                 str = string.Format("[GmLog]:" + format, args);
-            Output(Log_Type.LT_GM, str);
+            Output(GameLogType.GM, str);
         }
 
-        private static void Output(Log_Type type, string msg)
+        private static void Output(GameLogType type, string msg)
         {
             if (null != OnOutput) {
                 OnOutput(type, msg);

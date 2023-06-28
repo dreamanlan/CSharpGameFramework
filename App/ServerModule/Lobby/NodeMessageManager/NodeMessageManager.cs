@@ -40,7 +40,7 @@ namespace Lobby
         NodeMessageThread thread = m_NodeMessageThreads[index];
         thread.QueueMessage(seq, sourceHandle, destHandle, data);
       } catch (Exception ex) {
-        LogSys.Log(LOG_TYPE.ERROR, "NodeMessageManager.DispatchMessage throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+        LogSys.Log(ServerLogType.ERROR, "NodeMessageManager.DispatchMessage throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
       }
     }
 
@@ -50,9 +50,9 @@ namespace Lobby
       for (int i = 0; i < threadNum; ++i) {
         NodeMessageThread thread = m_NodeMessageThreads[i];
 
-        LogSys.Log(LOG_TYPE.INFO, "NodeMessageManager.ThreadMessagePool {0} buffered {1} messages", thread.Thread.ManagedThreadId, thread.PoolCount);
+        LogSys.Log(ServerLogType.INFO, "NodeMessageManager.ThreadMessagePool {0} buffered {1} messages", thread.Thread.ManagedThreadId, thread.PoolCount);
 
-        LogSys.Log(LOG_TYPE.MONITOR, "NodeMessageManager.ThreadActionQueue ThreadActionCount {0} {1}", thread.Thread.ManagedThreadId, thread.CurActionNum);
+        LogSys.Log(ServerLogType.MONITOR, "NodeMessageManager.ThreadActionQueue ThreadActionCount {0} {1}", thread.Thread.ManagedThreadId, thread.CurActionNum);
       }
     }
 

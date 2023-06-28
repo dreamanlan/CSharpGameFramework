@@ -12,7 +12,7 @@ namespace GameFramework
     internal partial class UserServer
     {
         /// <summary>
-        /// ×¢Òâ£¬nodeÀ´µÄÏûÏ¢´¦ÀíĞèÒª·Ö·¢µ½DataProcessµÄÓÃ»§Ïß³ÌÀï½øĞĞ´¦Àí£¡
+        /// æ³¨æ„ï¼Œnodeæ¥çš„æ¶ˆæ¯å¤„ç†éœ€è¦åˆ†å‘åˆ°DataProcessçš„ç”¨æˆ·çº¿ç¨‹é‡Œè¿›è¡Œå¤„ç†ï¼
         /// </summary>
         private void InstallNodeHandlers()
         {
@@ -40,13 +40,13 @@ namespace GameFramework
             NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_DiscardItem, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_DiscardItem), HandleDiscardItem);
             NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CLC_StoryMessage, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CLC_StoryMessage), HandleStoryMessage);
             //---------------------------------------------------------------------------------------------------------------
-            //´óÊÀ½ç·¢¸ø¿Í»§¶ËµÄÏûÏ¢µÄ¹Û²ìÕß´¦Àí£¬´ËÀàÏûÏ¢µÄhandle±»ÖÃÎª0£¬Èç¹û·Ç0²»Ó¦¸Ã´¦Àí£¨ÏûÏ¢Îª¿Í»§¶ËÎ±Ôì£©¡£
+            //å¤§ä¸–ç•Œå‘ç»™å®¢æˆ·ç«¯çš„æ¶ˆæ¯çš„è§‚å¯Ÿè€…å¤„ç†ï¼Œæ­¤ç±»æ¶ˆæ¯çš„handleè¢«ç½®ä¸º0ï¼Œå¦‚æœé0ä¸åº”è¯¥å¤„ç†ï¼ˆæ¶ˆæ¯ä¸ºå®¢æˆ·ç«¯ä¼ªé€ ï¼‰ã€‚
             //---------------------------------------------------------------------------------------------------------------
             NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.EnterSceneResult, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.EnterSceneResult), ObserveEnterSceneResult);
 
             //--------------------------------------------------------------------------------------
-            //GMÖ¸ÁîÏûÏ¢Í³Ò»·ÅÒ»¿é£¬´¦Àíº¯Êı·Åµ½LobbyServer_GmJsonHandler.csÀï£¬±ãÓÚ°²È«¼ì²é
-            //²»ÒªÔÚÕâ¸ö×¢ÊÍºó×¢²áÏûÏ¢£¡£¡£¡
+            //GMæŒ‡ä»¤æ¶ˆæ¯ç»Ÿä¸€æ”¾ä¸€å—ï¼Œå¤„ç†å‡½æ•°æ”¾åˆ°LobbyServer_GmJsonHandler.csé‡Œï¼Œä¾¿äºå®‰å…¨æ£€æŸ¥
+            //ä¸è¦åœ¨è¿™ä¸ªæ³¨é‡Šåæ³¨å†Œæ¶ˆæ¯ï¼ï¼ï¼
             //--------------------------------------------------------------------------------------
         }
         //------------------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ namespace GameFramework
             bool isContinue = true;
             if (handle > 0) {
                 if (msg.m_ID == 0) {
-                    //Õâ¼¸¸öÏûÏ¢²»½øĞĞÊıÁ¿Í³¼Æ
+                    //è¿™å‡ ä¸ªæ¶ˆæ¯ä¸è¿›è¡Œæ•°é‡ç»Ÿè®¡
                 } else {
                     GameFrameworkMessage.NodeMessageWithGuid msgWithGuid = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
                     if (null != msgWithGuid) {
@@ -145,11 +145,11 @@ namespace GameFramework
                 if (null == m_UserProcessScheduler.GetUserInfo(heartbeatMsg.m_Guid)) {
                     NodeMessage retMsg = new NodeMessage(LobbyMessageDefine.KickUser, heartbeatMsg.m_Guid);
                     NodeMessageDispatcher.SendNodeMessage(handle, retMsg);
-                    LogSys.Log(LOG_TYPE.DEBUG, "HandleUserHeartbeat, guid:{0} can't found, kick.", heartbeatMsg.m_Guid);
+                    LogSys.Log(ServerLogType.DEBUG, "HandleUserHeartbeat, guid:{0} can't found, kick.", heartbeatMsg.m_Guid);
                 } else {
                     //echo
                     NodeMessageDispatcher.SendNodeMessage(handle, msg);
-                    //Âß¼­´¦Àí
+                    //é€»è¾‘å¤„ç†
                     m_UserProcessScheduler.GetUserThread(heartbeatMsg.m_Guid).QueueAction(m_UserProcessScheduler.DoUserHeartbeat, heartbeatMsg.m_Guid);
                 }
             }
@@ -258,7 +258,7 @@ namespace GameFramework
                         } else {
                             user.CurrentState = UserState.Online;
                         }
-                        LogSys.Log(LOG_TYPE.INFO, "QuitRoom Guid {0} state {1}", guid, user.CurrentState);
+                        LogSys.Log(ServerLogType.INFO, "QuitRoom Guid {0} state {1}", guid, user.CurrentState);
                     }
                 }
             }
@@ -380,7 +380,7 @@ namespace GameFramework
                     ulong guid = storyMsg.m_Guid;
                     UserThread userThread = m_UserProcessScheduler.GetUserThread(guid);
                     if (null != userThread) {
-                        //¿Í»§¶Ë·¢À´µÄÏûÏ¢¶¼¼ÓÉÏÇ°×ºclient£¬·ÀÖ¹Ö±½Óµ÷ÓÃ·şÎñÆ÷¶ËÂß¼­£¨·şÎñÆ÷ÏûÏ¢²»ÄÜÓÃclientÇ°×º£¡£©
+                        //å®¢æˆ·ç«¯å‘æ¥çš„æ¶ˆæ¯éƒ½åŠ ä¸Šå‰ç¼€clientï¼Œé˜²æ­¢ç›´æ¥è°ƒç”¨æœåŠ¡å™¨ç«¯é€»è¾‘ï¼ˆæœåŠ¡å™¨æ¶ˆæ¯ä¸èƒ½ç”¨clientå‰ç¼€ï¼ï¼‰
                         string msgId = string.Format("client:{0}", protoData.m_MsgId);
                         ArrayList args = new ArrayList();
                         args.Add(guid);

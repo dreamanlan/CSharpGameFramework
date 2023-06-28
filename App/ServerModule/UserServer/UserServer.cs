@@ -139,7 +139,7 @@ namespace GameFramework
                     m_BigworldChannel.Send(builder);
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         internal void TransmitToBigworld(object msg)
@@ -154,7 +154,7 @@ namespace GameFramework
                     m_BigworldChannel.Send(builder);
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
 
@@ -178,7 +178,7 @@ namespace GameFramework
 
             GlobalVariables.Instance.IsClient = false;
 
-            string key = "∑¿æ˝◊”≤ª∑¿–°»À";
+            string key = "Èò≤ÂêõÂ≠ê‰∏çÈò≤Â∞è‰∫∫";
             byte[] xor = Encoding.UTF8.GetBytes(key);
 
             ResourceReadProxy.OnReadAsArray = ((string filePath) => {
@@ -186,38 +186,38 @@ namespace GameFramework
                 try {
                     buffer = File.ReadAllBytes(filePath);
                 } catch (Exception e) {
-                    LogSys.Log(LOG_TYPE.ERROR, "Exception:{0}\n{1}", e.Message, e.StackTrace);
+                    LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", e.Message, e.StackTrace);
                     return null;
                 }
                 return buffer;
             });
-            LogSystem.OnOutput += (Log_Type type, string msg) => {
+            LogSystem.OnOutput += (GameLogType type, string msg) => {
                 switch (type) {
-                    case Log_Type.LT_Debug:
-                        LogSys.Log(LOG_TYPE.DEBUG, msg);
+                    case GameLogType.Debug:
+                        LogSys.Log(ServerLogType.DEBUG, msg);
                         break;
-                    case Log_Type.LT_Info:
-                        LogSys.Log(LOG_TYPE.INFO, msg);
+                    case GameLogType.Info:
+                        LogSys.Log(ServerLogType.INFO, msg);
                         break;
-                    case Log_Type.LT_Warn:
-                        LogSys.Log(LOG_TYPE.WARN, msg);
+                    case GameLogType.Warn:
+                        LogSys.Log(ServerLogType.WARN, msg);
                         break;
-                    case Log_Type.LT_Error:
-                    case Log_Type.LT_Assert:
-                        LogSys.Log(LOG_TYPE.ERROR, msg);
+                    case GameLogType.Error:
+                    case GameLogType.Assert:
+                        LogSys.Log(ServerLogType.ERROR, msg);
                         break;
                 }
             };
 
             LoadData();
-            LogSys.Log(LOG_TYPE.INFO, "Init Config ...");
+            LogSys.Log(ServerLogType.INFO, "Init Config ...");
             s_Instance = this;
             InstallMessageHandlers();
-            LogSys.Log(LOG_TYPE.INFO, "Init Messenger ...");
+            LogSys.Log(ServerLogType.INFO, "Init Messenger ...");
             m_DataCacheThread.Init(m_DataCacheChannel);
-            LogSys.Log(LOG_TYPE.INFO, "Init DataCache ...");
+            LogSys.Log(ServerLogType.INFO, "Init DataCache ...");
             Start();
-            LogSys.Log(LOG_TYPE.INFO, "Start Threads ...");
+            LogSys.Log(ServerLogType.INFO, "Start Threads ...");
         }
         private void Loop()
         {
@@ -227,7 +227,7 @@ namespace GameFramework
                     if (m_LastTickTime != 0) {
                         long elapsedTickTime = curTime - m_LastTickTime;
                         if (elapsedTickTime > c_WarningTickTime) {
-                            LogSys.Log(LOG_TYPE.MONITOR, "GameFramework Network Tick:{0}", curTime - m_LastTickTime);
+                            LogSys.Log(ServerLogType.MONITOR, "GameFramework Network Tick:{0}", curTime - m_LastTickTime);
                         }
                     }
                     m_LastTickTime = curTime;
@@ -236,41 +236,41 @@ namespace GameFramework
                     Thread.Sleep(10);
                     if (m_WaitQuit) {
                         if (m_GlobalProcessThread.LastSaveFinished && m_UserProcessScheduler.LastSaveFinished && m_QuitFinish == false) {
-                            //»´æ÷ ˝æ›∫ÕÕÊº“ ˝æ›¥Ê¥¢ÕÍ±œ 
+                            //ÂÖ®Â±ÄÊï∞ÊçÆÂíåÁé©ÂÆ∂Êï∞ÊçÆÂ≠òÂÇ®ÂÆåÊØï 
                             int saveReqCount = m_DataCacheThread.CalcSaveRequestCount();
-                            LogSys.Log(LOG_TYPE.MONITOR, "QuitStep_1. GlobalData and UserData last save done. SaveRequestCount:{0}", saveReqCount);
+                            LogSys.Log(ServerLogType.MONITOR, "QuitStep_1. GlobalData and UserData last save done. SaveRequestCount:{0}", saveReqCount);
                             if (saveReqCount > 0) {
-                                //µ»¥˝5s
+                                //Á≠âÂæÖ5s
                                 long startTime = TimeUtility.GetLocalMilliseconds();
                                 while (startTime + 5000 > TimeUtility.GetLocalMilliseconds()) {
                                     CenterClientApi.Tick();
                                     Thread.Sleep(10);
                                 }
                             } else {
-                                //Õ®÷™πÿ±’DataCache
+                                //ÈÄöÁü•ÂÖ≥Èó≠DataCache
                                 m_QuitFinish = true;
-                                LogSys.Log(LOG_TYPE.MONITOR, "QuitStep_2. Notice DataCache to quit.");
+                                LogSys.Log(ServerLogType.MONITOR, "QuitStep_2. Notice DataCache to quit.");
                                 CenterClientApi.SendCommandByName("DataCache", "QuitDataStore");
-                                //µ»¥˝10s
+                                //Á≠âÂæÖ10s
                                 long startTime = TimeUtility.GetLocalMilliseconds();
                                 while (startTime + 10000 > TimeUtility.GetLocalMilliseconds()) {
                                     CenterClientApi.Tick();
                                     Thread.Sleep(10);
                                 }
-                                //πÿ±’GameFramework
-                                LogSys.Log(LOG_TYPE.MONITOR, "QuitStep_3. LastSaveDone. GameFramework quit...");
+                                //ÂÖ≥Èó≠GameFramework
+                                LogSys.Log(ServerLogType.MONITOR, "QuitStep_3. LastSaveDone. GameFramework quit...");
                                 CenterClientApi.Quit();
                             }
                         } else {
                             if (curTime - m_LastWaitQuitTime > c_WaitQuitTimeInterval) {
                                 m_WaitQuit = false;
-                                LogSys.Log(LOG_TYPE.MONITOR, "QuitStep_-1. Reset m_WaitQuit to false.");
+                                LogSys.Log(ServerLogType.MONITOR, "QuitStep_-1. Reset m_WaitQuit to false.");
                             }
                         }
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "GameFramework.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "GameFramework.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void Release()
@@ -281,7 +281,7 @@ namespace GameFramework
         }
         private void OnCenterLog(string msg, int size)
         {
-            LogSys.Log(LOG_TYPE.INFO, "{0}", msg);
+            LogSys.Log(ServerLogType.INFO, "{0}", msg);
         }
         private void OnNameHandleChanged(int worldId, bool addOrUpdate, string name, int handle)
         {
@@ -298,7 +298,7 @@ namespace GameFramework
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void OnCommand(int worldId, int src, int dest, string command)
@@ -308,9 +308,9 @@ namespace GameFramework
             try {
                 if (worldId == UserServerConfig.WorldId) {
                     if (0 == command.CompareTo(c_QuitLobby)) {
-                        LogSys.Log(LOG_TYPE.MONITOR, "receive {0} command, save data and then quitting ...", command);
+                        LogSys.Log(ServerLogType.MONITOR, "receive {0} command, save data and then quitting ...", command);
                         if (!m_WaitQuit) {
-                            // ’µΩπÿ±’∑˛ŒÒ∆˜÷∏¡Ó,ÕÀ≥ˆ«∞±£¥Ê ˝æ›
+                            //Êî∂Âà∞ÂÖ≥Èó≠ÊúçÂä°Âô®Êåá‰ª§,ÈÄÄÂá∫Ââç‰øùÂ≠òÊï∞ÊçÆ
                             m_UserProcessScheduler.DefaultUserThread.QueueAction(m_UserProcessScheduler.DoLastSaveUserData);
                             m_GlobalProcessThread.QueueAction(m_GlobalProcessThread.DoLastSaveGlobalData);
                             m_LastWaitQuitTime = TimeUtility.GetLocalMilliseconds();
@@ -319,13 +319,13 @@ namespace GameFramework
                     } else if (0 == command.CompareTo(c_ReloadConfig)) {
                         CenterHubApi.ReloadConfigScript();
                         UserServerConfig.Init();
-                        LogSys.Log(LOG_TYPE.WARN, "receive {0} command.", command);
+                        LogSys.Log(ServerLogType.WARN, "receive {0} command.", command);
                     }
                 } else {
 
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void OnMessage(int worldId, uint seq, int source_handle, int dest_handle,
@@ -372,7 +372,7 @@ namespace GameFramework
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void OnMessageResultCallback(int worldId, uint seq, int src, int dest, int result)
@@ -388,7 +388,7 @@ namespace GameFramework
                 TableConfig.ActorProvider.Instance.LoadForServer();
                 TableConfig.UserScriptProvider.Instance.LoadForServer();
             } catch (Exception ex) {
-                LogSys.Log(LOG_TYPE.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void Start()
@@ -419,7 +419,7 @@ namespace GameFramework
         private const int c_MaxWaitLoginUserNum = 3000;
         private const long c_ChatStatisticInterval = 60000;
         private const long c_WarningTickTime = 1000;
-        private const long c_WaitQuitTimeInterval = 600000;      //÷ÿ÷√µ»¥˝ÕÀ≥ˆ◊¥Ã¨µƒ ±º‰º‰∏Ù,5mins
+        private const long c_WaitQuitTimeInterval = 600000;      //ÈáçÁΩÆÁ≠âÂæÖÈÄÄÂá∫Áä∂ÊÄÅÁöÑÊó∂Èó¥Èó¥Èöî,5mins
         private const long c_FightingScoreStatisticInterval = 60000;
 
         private int m_MaxGlobalActionNum = 500000;

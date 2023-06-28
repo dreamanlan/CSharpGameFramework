@@ -27,7 +27,7 @@ namespace GameFramework
     public void HandleClientMsg(int id, object msg, User user)
     {
       if (msg == null) {
-        LogSys.Log(LOG_TYPE.ERROR, "{0}", "can't handle null msg");
+        LogSys.Log(ServerLogType.ERROR, "{0}", "can't handle null msg");
         return;
       }
       ClientMsgHandler handler;
@@ -36,7 +36,7 @@ namespace GameFramework
         if (client_default_handler_ != null) {
           client_default_handler_(msg, user);
         } else {
-          LogSys.Log(LOG_TYPE.ERROR, "{0}", "message no deal&default handler!");
+          LogSys.Log(ServerLogType.ERROR, "{0}", "message no deal&default handler!");
         }
         return;
       }
