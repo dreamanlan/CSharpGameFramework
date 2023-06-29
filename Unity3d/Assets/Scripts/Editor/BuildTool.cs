@@ -36,42 +36,24 @@ public class BuildTool
         p.WaitForExit();
     }
 
-    [MenuItem("工具/Build/定义CS2LUA_DEBUG宏", false, 300)]
-    static void DefineCs2luaDebug()
+    [MenuItem("工具/Build/定义CS2DSL_DEBUG宏", false, 300)]
+    static void DefineCs2DslDebug()
     {
-        string macro = "CS2LUA_DEBUG";
+        string macro = "CS2DSL_DEBUG";
         string macros = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
         if (macros.IndexOf(macro) < 0) {
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, macros + ";" + macro);
         }
     }
 
-    [MenuItem("工具/Build/取消CS2LUA_DEBUG宏", false, 300)]
-    static void UndefineCs2luaDebug()
+    [MenuItem("工具/Build/取消CS2DSL_DEBUG宏", false, 300)]
+    static void UndefineCs2DslDebug()
     {
-        string macro = "CS2LUA_DEBUG";
+        string macro = "CS2DSL_DEBUG";
         string macros = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
         if (macros.IndexOf(macro) >=0) {
             PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, macros.Replace(macro, string.Empty).Replace(";;", ";"));
         }
-    }
-
-    [MenuItem("工具/Build/Cs2LuaNative", false, 400)]
-    static void CallCs2LuaNative()
-    {
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "CS2LUA_DEBUG");
-        string path = Path.Combine(Application.streamingAssetsPath, "..\\..\\..\\cs2luanative.bat");
-        System.Diagnostics.Process p = System.Diagnostics.Process.Start("cmd", string.Format("/c call {0} Debug", path));
-        p.WaitForExit();
-    }
-
-    [MenuItem("工具/Build/Cs2Lua", false, 400)]
-    static void CallCs2Lua()
-    {
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, "");
-        string path = Path.Combine(Application.streamingAssetsPath, "..\\..\\..\\cs2lua.bat");
-        System.Diagnostics.Process p = System.Diagnostics.Process.Start("cmd", string.Format("/c call {0} Debug", path));
-        p.WaitForExit();
     }
 
     [MenuItem("工具/Server/启动服务器", false, 500)]

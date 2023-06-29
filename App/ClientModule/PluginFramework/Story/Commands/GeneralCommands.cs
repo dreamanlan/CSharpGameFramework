@@ -2203,7 +2203,7 @@ namespace GameFramework.Story.Commands
             cmd.m_ObjPath = m_ObjPath.Clone();
             cmd.m_PluginClass = m_PluginClass.Clone();
             cmd.m_IsTickPlugin = m_IsTickPlugin.Clone();
-            cmd.m_UseLuaPlugin = m_UseLuaPlugin.Clone();
+            cmd.m_UseScriptPlugin = m_UseScriptPlugin.Clone();
             return cmd;
         }
 
@@ -2212,7 +2212,7 @@ namespace GameFramework.Story.Commands
             m_ObjPath.Evaluate(instance, handler, iterator, args);
             m_PluginClass.Evaluate(instance, handler, iterator, args);
             m_IsTickPlugin.Evaluate(instance, handler, iterator, args);
-            m_UseLuaPlugin.Evaluate(instance, handler, iterator, args);
+            m_UseScriptPlugin.Evaluate(instance, handler, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
@@ -2220,12 +2220,12 @@ namespace GameFramework.Story.Commands
             string objPath = m_ObjPath.Value;
             string pluginClass = m_PluginClass.Value;
             int isTickPlugin = m_IsTickPlugin.Value;
-            int useLuaPlugin = m_UseLuaPlugin.Value;
-            if (useLuaPlugin != 0) {
+            int useScriptPlugin = m_UseScriptPlugin.Value;
+            if (useScriptPlugin != 0) {
                 if (isTickPlugin != 0)
-                    Plugin.PluginProxy.LuaProxy.InstallTickPlugin(objPath, pluginClass);
+                    Plugin.PluginProxy.ScriptProxy.InstallTickPlugin(objPath, pluginClass);
                 else
-                    Plugin.PluginProxy.LuaProxy.InstallStartupPlugin(objPath, pluginClass);
+                    Plugin.PluginProxy.ScriptProxy.InstallStartupPlugin(objPath, pluginClass);
             } else {
                 if (isTickPlugin != 0)
                     Plugin.PluginProxy.NativeProxy.InstallTickPlugin(objPath, pluginClass);
@@ -2242,7 +2242,7 @@ namespace GameFramework.Story.Commands
                 m_ObjPath.InitFromDsl(callData.GetParam(0));
                 m_PluginClass.InitFromDsl(callData.GetParam(1));
                 m_IsTickPlugin.InitFromDsl(callData.GetParam(2));
-                m_UseLuaPlugin.InitFromDsl(callData.GetParam(3));
+                m_UseScriptPlugin.InitFromDsl(callData.GetParam(3));
             }
             return true;
         }
@@ -2250,7 +2250,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<string> m_ObjPath = new StoryValue<string>();
         private IStoryValue<string> m_PluginClass = new StoryValue<string>();
         private IStoryValue<int> m_IsTickPlugin = new StoryValue<int>();
-        private IStoryValue<int> m_UseLuaPlugin = new StoryValue<int>();
+        private IStoryValue<int> m_UseScriptPlugin = new StoryValue<int>();
     }
     /// <summary>
     /// removeplugin(obj_path, plugin_class, is_tick_plugin, use_lua_plugin);
@@ -2263,7 +2263,7 @@ namespace GameFramework.Story.Commands
             cmd.m_ObjPath = m_ObjPath.Clone();
             cmd.m_PluginClass = m_PluginClass.Clone();
             cmd.m_IsTickPlugin = m_IsTickPlugin.Clone();
-            cmd.m_UseLuaPlugin = m_UseLuaPlugin.Clone();
+            cmd.m_UseScriptPlugin = m_UseScriptPlugin.Clone();
             return cmd;
         }
 
@@ -2272,7 +2272,7 @@ namespace GameFramework.Story.Commands
             m_ObjPath.Evaluate(instance, handler, iterator, args);
             m_PluginClass.Evaluate(instance, handler, iterator, args);
             m_IsTickPlugin.Evaluate(instance, handler, iterator, args);
-            m_UseLuaPlugin.Evaluate(instance, handler, iterator, args);
+            m_UseScriptPlugin.Evaluate(instance, handler, iterator, args);
         }
 
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
@@ -2280,12 +2280,12 @@ namespace GameFramework.Story.Commands
             string objPath = m_ObjPath.Value;
             string pluginClass = m_PluginClass.Value;
             int isTickPlugin = m_IsTickPlugin.Value;
-            int useLuaPlugin = m_UseLuaPlugin.Value;
-            if (useLuaPlugin != 0) {
+            int useScriptPlugin = m_UseScriptPlugin.Value;
+            if (useScriptPlugin != 0) {
                 if (isTickPlugin != 0)
-                    Plugin.PluginProxy.LuaProxy.RemoveTickPlugin(objPath, pluginClass);
+                    Plugin.PluginProxy.ScriptProxy.RemoveTickPlugin(objPath, pluginClass);
                 else
-                    Plugin.PluginProxy.LuaProxy.RemoveStartupPlugin(objPath, pluginClass);
+                    Plugin.PluginProxy.ScriptProxy.RemoveStartupPlugin(objPath, pluginClass);
             } else {
                 if (isTickPlugin != 0)
                     Plugin.PluginProxy.NativeProxy.RemoveTickPlugin(objPath, pluginClass);
@@ -2302,7 +2302,7 @@ namespace GameFramework.Story.Commands
                 m_ObjPath.InitFromDsl(callData.GetParam(0));
                 m_PluginClass.InitFromDsl(callData.GetParam(1));
                 m_IsTickPlugin.InitFromDsl(callData.GetParam(2));
-                m_UseLuaPlugin.InitFromDsl(callData.GetParam(3));
+                m_UseScriptPlugin.InitFromDsl(callData.GetParam(3));
             }
             return true;
         }
@@ -2310,7 +2310,7 @@ namespace GameFramework.Story.Commands
         private IStoryValue<string> m_ObjPath = new StoryValue<string>();
         private IStoryValue<string> m_PluginClass = new StoryValue<string>();
         private IStoryValue<int> m_IsTickPlugin = new StoryValue<int>();
-        private IStoryValue<int> m_UseLuaPlugin = new StoryValue<int>();
+        private IStoryValue<int> m_UseScriptPlugin = new StoryValue<int>();
     }
     /// <summary>
     /// openurl(url);

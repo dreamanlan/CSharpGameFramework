@@ -25,13 +25,13 @@ namespace GameFramework.Plugin
             get { return m_NativeProxy; }
             set { m_NativeProxy = value; }
         }
-        public static IPluginProxy LuaProxy
+        public static IPluginProxy ScriptProxy
         {
-            get { return m_LuaProxy; }
-            set { m_LuaProxy = value; }
+            get { return m_ScriptProxy; }
+            set { m_ScriptProxy = value; }
         }
 
         private static IPluginProxy m_NativeProxy = null;
-        private static IPluginProxy m_LuaProxy = null;
+        private static IPluginProxy m_ScriptProxy = null;
     }
 }

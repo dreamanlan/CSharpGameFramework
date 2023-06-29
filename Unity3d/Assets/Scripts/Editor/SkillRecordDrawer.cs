@@ -199,7 +199,7 @@ public class SkillRecordDrawer : PropertyDrawer
         string path = GameFramework.HomePath.GetAbsolutePath("../../../Resource/DslTemplate/SkillTemplates.dsl");
         string txt = File.ReadAllText(path, Encoding.GetEncoding(936));
         Dsl.DslFile file = new Dsl.DslFile();
-        if (file.LoadFromString(txt, path, GameFramework.LogSystem.Log)) {
+        if (file.LoadFromString(txt, GameFramework.LogSystem.Log)) {
             List<GUIContent> menus = new List<GUIContent>();
             menus.Add(new GUIContent("取消创建"));
             s_SkillDslTemplates.Clear();

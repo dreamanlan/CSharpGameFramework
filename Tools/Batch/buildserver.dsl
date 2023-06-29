@@ -116,7 +116,7 @@ script(main)
     copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%", svrbin, "*.dll");
     copydir("%rootdir%/App/ServerModule/DataCache/bin/%cfg%", svrbin, "*.pdb");
 
-    cd(rootdir+"/App/ClientModule/Cs2LuaScript/bin/%cfg%");
+    cd(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%");
     echo("curdir:{0}",pwd());
     looplist(listfiles(svrbin,"*.dll")){
         $filename = getfilename($$);

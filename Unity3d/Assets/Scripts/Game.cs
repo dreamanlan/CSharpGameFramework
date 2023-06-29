@@ -30,7 +30,7 @@ public class Game : MonoBehaviour
 
     void Awake()
     {
-        Cs2LuaAssembly.Instance.Init();
+        PluginAssembly.Instance.Init();
     }
     void Start()
     {

@@ -1,3 +1,0 @@
-Cs2LuaScript = Cs2LuaScript or {};
-
-

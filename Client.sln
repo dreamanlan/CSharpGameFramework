@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.705
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCommon", "Infrastructure\Common\ServerCommon.csproj", "{8EAD2077-DE3A-435C-B770-09EFFE4153C1}"
 EndProject
@@ -21,11 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientProtoBuf", "App\Clien
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PluginFramework", "App\ClientModule\PluginFramework\PluginFramework.csproj", "{7549601E-E6A8-4ED3-86C8-5D129C331213}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cs2LuaScript", "App\ClientModule\Cs2LuaScript\Cs2LuaScript.csproj", "{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameObjects", "InformationService\GameObjects\GameObjects.csproj", "{E280220B-7EDA-4274-B3D5-4E922D98CAAD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SceneLogic", "InformationService\SceneLogic\SceneLogic.csproj", "{3452C105-45DD-4821-BCDA-E495B7748519}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientPlugins", "App\ClientModule\ClientPlugins\ClientPlugins.csproj", "{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -81,12 +81,6 @@ Global
 		{7549601E-E6A8-4ED3-86C8-5D129C331213}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7549601E-E6A8-4ED3-86C8-5D129C331213}.Release|x86.ActiveCfg = Release|x86
 		{7549601E-E6A8-4ED3-86C8-5D129C331213}.Release|x86.Build.0 = Release|x86
-		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Release|x86.ActiveCfg = Release|Any CPU
 		{E280220B-7EDA-4274-B3D5-4E922D98CAAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E280220B-7EDA-4274-B3D5-4E922D98CAAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E280220B-7EDA-4274-B3D5-4E922D98CAAD}.Debug|x86.ActiveCfg = Debug|Any CPU
@@ -103,6 +97,14 @@ Global
 		{3452C105-45DD-4821-BCDA-E495B7748519}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3452C105-45DD-4821-BCDA-E495B7748519}.Release|x86.ActiveCfg = Release|Any CPU
 		{3452C105-45DD-4821-BCDA-E495B7748519}.Release|x86.Build.0 = Release|Any CPU
+		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Debug|x86.Build.0 = Debug|Any CPU
+		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Release|x86.ActiveCfg = Release|Any CPU
+		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -114,9 +116,9 @@ Global
 		{562023AE-B38B-4CFF-B9A3-B6D91347BD59} = {DEA6F96F-9465-4C23-83C2-97AC894C5B29}
 		{C402FC70-3A7A-4CE2-956F-6AA1DFD5882E} = {3482E8E7-7D0E-4F42-93E6-C0A22A4FF777}
 		{7549601E-E6A8-4ED3-86C8-5D129C331213} = {3482E8E7-7D0E-4F42-93E6-C0A22A4FF777}
-		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1} = {3482E8E7-7D0E-4F42-93E6-C0A22A4FF777}
 		{E280220B-7EDA-4274-B3D5-4E922D98CAAD} = {3B3602AB-AA0C-4720-AF82-73C669BE3A78}
 		{3452C105-45DD-4821-BCDA-E495B7748519} = {3B3602AB-AA0C-4720-AF82-73C669BE3A78}
+		{2FFA63D0-F09D-4CEE-AFA9-76532A7B3EF1} = {3482E8E7-7D0E-4F42-93E6-C0A22A4FF777}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {82597C83-04D4-43F8-A846-6007591B07CB}
