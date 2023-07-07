@@ -7,6 +7,9 @@ using GameFramework.Story;
 using GameFramework.Skill;
 using System.IO;
 using System.Text;
+using UnityEngine.SceneManagement;
+using System.Drawing.Imaging;
+using UnityEditor.PackageManager;
 #if UNITY_EDITOR_WIN
 using UnityEditor;
 
@@ -46,6 +49,7 @@ public class SkillViewer : MonoBehaviour
 
     void Awake()
     {
+        PluginAssembly.Instance.Init();
     }
     
     void Start()
@@ -105,6 +109,42 @@ public class SkillViewer : MonoBehaviour
         //Pause按键暂停
         if (Input.GetKeyDown(KeyCode.Pause))
             Debug.Break();
+        var player = PluginFramework.Instance.GetEntityByUnitId(1000);
+        if (null != player) {
+            if (Input.GetKeyDown(KeyCode.Alpha1)) {
+                player.ManualSkillId = player.ConfigData.skill0;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2)) {
+                player.ManualSkillId = player.ConfigData.skill1;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3)) {
+                player.ManualSkillId = player.ConfigData.skill2;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha4)) {
+                player.ManualSkillId = player.ConfigData.skill3;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha5)) {
+                player.ManualSkillId = player.ConfigData.skill4;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha6)) {
+                player.ManualSkillId = player.ConfigData.skill5;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha7)) {
+                player.ManualSkillId = player.ConfigData.skill6;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha8)) {
+                player.ManualSkillId = player.ConfigData.skill7;
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha9)) {
+                player.ManualSkillId = player.ConfigData.skill8;
+            }
+            else if (Input.GetKeyDown(KeyCode.Equals)) {
+                player.ManualSkillId = player.ConfigData.bornskill;
+            }
+            else if (Input.GetKeyDown(KeyCode.Minus)) {
+                player.ManualSkillId = player.ConfigData.deadskill;
+            }
+        }
 #endif
     }
 
@@ -115,42 +155,36 @@ public class SkillViewer : MonoBehaviour
         }
     }
 
-    void OnBecameVisible()
-    {
-    }
-        
-    void OnLevelWasLoaded(int level)
-    {
-    }
-
-    private IEnumerator LoadLevel(TableConfig.Level lvl)
+    private IEnumerator LoadScene(TableConfig.Level lvl)
     {
         PluginFramework.Instance.OnSceneLoaded(lvl);
         yield return null;
     }
 
-    private IEnumerator PreloadObjects(IList<int> objLinkIds)
-    {
-        yield return null;
-        GfxStorySystem.Instance.SendMessage("load");
-    }
-
     private void OnLoadMainUiComplete(int levelId)
     {
-        LoadUi(levelId);
+        OnLoadCompleteForSkillViewer(levelId);
+    }
+    private void OnLoadSceneComplete(int levelId)
+    {
+        OnLoadCompleteForSkillViewer(levelId);
+    }
+    private void OnLoadBattleComplete(int levelId)
+    {
+        OnLoadCompleteForSkillViewer(levelId);
     }
 
-    //装载结束后加入BattleManager脚本
-    private void OnLoadBattleComplete(int levelId)
+    private void OnLoadCompleteForSkillViewer(int levelId)
     {
         GameObject obj = new GameObject();
         m_MainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         if (m_MainCamera) {
             Camera cameraMain = m_MainCamera.GetComponent<Camera>();
-            cameraMain.cullingMask &= ~(1 << 5);
+            int uiLayer = LayerMask.NameToLayer("UI");
+            cameraMain.cullingMask &= ~(1 << uiLayer);
         }
 
-        m_CameraController.OnLevelWasLoaded(null);
+        m_CameraController.OnLevelLoaded(null);
         GameObject cameraObj = ResourceSystem.Instance.NewObject("UI/UiCamera") as GameObject;
         if (null != cameraObj) {
             cameraObj.transform.parent = Camera.main.transform;
@@ -159,7 +193,6 @@ public class SkillViewer : MonoBehaviour
         OverHeadBarManager.Instance.Init();
         LoadUi(levelId);
     }
-
     private void LoadUi(int levelId)
     {
         TableConfig.Level level = TableConfig.LevelProvider.Instance.GetLevel(levelId);
@@ -190,26 +223,26 @@ public class SkillViewer : MonoBehaviour
             }
         }
     }
+
     private void OnStepChanged(int val)
     {
         s_IsStepPlay = val != 0;
     }
-
     private void OnCastSkill(object[] fargs)
     {
         if (null != fargs && fargs.Length == 2) {
             int objId = (int)fargs[0];
             int skillId = (int)fargs[1];
-            
-            bool bSuccess = PluginFramework.Instance.CastSkill(objId, skillId);
-            if (bSuccess) {
+
+            var npc = PluginFramework.Instance.GetEntityById(objId);
+            if (null != npc) {
+                npc.ManualSkillId = skillId;
                 if (s_IsStepPlay) {
                     s_NeedStep = true;
                 }
             }
         }
     }
-
     private void LoadViewedSkills(object[] fargs)
     {
         if (null != fargs && fargs.Length == 2) {
@@ -223,7 +256,7 @@ public class SkillViewer : MonoBehaviour
             if (UnityEditor.EditorUtility.DisplayDialog("关键信息", "从文件加载数据将同时覆盖正在编辑的数据，继续吗？（如果之前的数据没有保存到表格文件里，请利用剪贴板拷到表格文件！）", "我确定要继续", "不要继续，我还没保存呢")) {
                 SaveEditedSkills(HomePath.GetAbsolutePath("../../../edit_skills_bak.txt"));
                 CopyTableAndDslFiles();
-                m_CameraController.OnLevelWasLoaded(null);
+                m_CameraController.OnLevelLoaded(null);
                 PluginFramework.LoadTableConfig();       
                 PredefinedSkill.Instance.ReBuild();
                 GfxSkillSystem.Instance.Reset();
@@ -257,6 +290,10 @@ public class SkillViewer : MonoBehaviour
                                 args.Add(actorInfo.skill7);
                             if (actorInfo.skill8 > 0)
                                 args.Add(actorInfo.skill8);
+                            if (actorInfo.bornskill > 0)
+                                args.Add(actorInfo.bornskill);
+                            if (actorInfo.deadskill > 0)
+                                args.Add(actorInfo.deadskill);
 
                             RebuildVisualSkillInfo(actorId);
 
@@ -304,6 +341,8 @@ public class SkillViewer : MonoBehaviour
                     if (actorRecord.skill6 > 0) { ++skillCount; skillIds.Add(actorRecord.skill6); }
                     if (actorRecord.skill7 > 0) { ++skillCount; skillIds.Add(actorRecord.skill7); }
                     if (actorRecord.skill8 > 0) { ++skillCount; skillIds.Add(actorRecord.skill8); }
+                    if (actorRecord.bornskill > 0) { ++skillCount; skillIds.Add(actorRecord.bornskill); }
+                    if (actorRecord.deadskill > 0) { ++skillCount; skillIds.Add(actorRecord.deadskill); }
 
                     RebuildVisualSkillInfo(actorRecord.id);
 
@@ -357,6 +396,10 @@ public class SkillViewer : MonoBehaviour
                     args.Add(actorRecord.skill7);
                 if (actorRecord.skill8 > 0)
                     args.Add(actorRecord.skill8);
+                if (actorRecord.bornskill > 0)
+                    args.Add(actorRecord.bornskill);
+                if (actorRecord.deadskill > 0)
+                    args.Add(actorRecord.deadskill);
 
                 RebuildVisualSkillInfo(actorId);
 
@@ -418,20 +461,17 @@ public class SkillViewer : MonoBehaviour
             }
         }
     }
-
     private static void CopyTableAndDslFiles()
     {
         string path = HomePath.GetAbsolutePath("..\\..\\..\\dslcopy.bat");
         System.Diagnostics.Process p = System.Diagnostics.Process.Start("cmd", string.Format("/c call {0} Debug False", path));
         p.WaitForExit();
     }
-
     private static void SaveEditedSkills(string path)
     {
         string text = GetEditedSkillsText();
         File.WriteAllText(path, text);
     }
-
     private static string GetEditedSkillsText()
     {
         string ret = string.Empty;
@@ -484,7 +524,6 @@ public class SkillViewer : MonoBehaviour
             }
         }
     }
-
     private static void CheckEditedSkill(int skillId, List<SkillRecords.SkillRecord> records, ref bool isValid)
     {
         bool find = false;
@@ -506,6 +545,7 @@ public class SkillViewer : MonoBehaviour
             Debug.LogErrorFormat("Can't find skill config: {0}", skillId);
         }
     }
+
     private void ShowHideForSkill(object[] args)
     {
         if (null != args && args.Length >= 2) {
@@ -536,7 +576,8 @@ public class SkillViewer : MonoBehaviour
                 m_MainCamera = GameObject.FindGameObjectWithTag("MainCamera");
             }
             if (m_MainCamera != null) {
-                m_MainCamera.GetComponent<Camera>().cullingMask &= ~(1 << 5);
+                int uiLayer = LayerMask.NameToLayer("UI");
+                m_MainCamera.GetComponent<Camera>().cullingMask &= ~(1 << uiLayer);
                 /*
                 GrayCamera gcam = mMainCamera.GetComponent<GrayCamera>();
                 if (null == gcam) {
@@ -629,12 +670,10 @@ public class SkillViewer : MonoBehaviour
     {
         Utility.EventSystem.Publish("gm_resetdsl", "gm");
     }
-
     private void OnExecScript(string script)
     {
         Utility.EventSystem.Publish("gm_execscript", "gm", script);
     }
-
     private void OnExecCommand(string command)
     {
         Utility.EventSystem.Publish("gm_execcommand", "gm", command);

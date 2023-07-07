@@ -273,12 +273,12 @@ namespace GameFramework
                 if (null != user && null != curScene) {
                     try {
                         string msgId = string.Format("server:{0}", msg.MsgId);
-                        ArrayList args = new ArrayList();
+                        var args = curScene.StorySystem.NewBoxedValueList();
                         args.Add(user.RoleId);
                         for (int i = 0; i < msg.Args.Count; i++) {
                             switch (msg.Args[i].val_type) {
                                 case Msg_LRL_StoryMessage.ArgType.NULL://null
-                                    args.Add(null);
+                                    args.Add(BoxedValue.NullObject);
                                     break;
                                 case Msg_LRL_StoryMessage.ArgType.INT://int
                                     args.Add(int.Parse(msg.Args[i].str_val));
@@ -291,8 +291,7 @@ namespace GameFramework
                                     break;
                             }
                         }
-                        object[] objArgs = args.ToArray();
-                        curScene.StorySystem.SendMessage(msgId, objArgs);
+                        curScene.StorySystem.SendMessage(msgId, args);
                     } catch (Exception ex) {
                         LogSys.Log(ServerLogType.ERROR, "Msg_CRC_StoryMessage throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     }

@@ -478,11 +478,11 @@ internal class Msg_CRC_StoryMessage_Handler
             return;
         try {
             string msgId = _msg.m_MsgId;
-            ArrayList args = new ArrayList();
+            var args = GfxStorySystem.Instance.NewBoxedValueList();
             for (int i = 0; i < _msg.m_Args.Count; i++) {
                 switch (_msg.m_Args[i].val_type) {
                     case ArgType.NULL://null
-                        args.Add(null);
+                        args.Add(BoxedValue.NullObject);
                         break;
                     case ArgType.INT://int
                         args.Add(int.Parse(_msg.m_Args[i].str_val));
@@ -495,8 +495,7 @@ internal class Msg_CRC_StoryMessage_Handler
                         break;
                 }
             }
-            object[] objArgs = args.ToArray();
-            GfxStorySystem.Instance.SendMessage(msgId, objArgs);
+            GfxStorySystem.Instance.SendMessage(msgId, args);
         } catch (Exception ex) {
             LogSystem.Error("Msg_CRC_StoryMessage throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
         }

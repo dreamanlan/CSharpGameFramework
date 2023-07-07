@@ -8,13 +8,13 @@ story(skill_viewer)
   onmessage(start)
   {
   	while(1){
-  		@aiData = getaidata(@objid,"AiData_General");
-  		if(!isnull(@aiData)){
-  			@skillId = @aiData.ManualSkillId;
+  		@npcData = getentityinfo(@objid);
+  		if(!isnull(@npcData)){
+  			@skillId = @npcData.ManualSkillId;
   			if(@skillId>0 && cancastskill(@objid,@skillId)){
   				objsetaitarget(@objid,unitid2objid(1));
   				objcastskill(@objid,@skillId);
-  				@aiData.ManualSkillId = 0;
+				@npcData.ManualSkillId = 0;
   			};
   		};
   		wait(100);

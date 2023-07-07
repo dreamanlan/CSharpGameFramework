@@ -1,4 +1,18 @@
 //========actor========
-1		-1	-1	2	Prefabs/Characters/Ezreal	0	0	0	0	0	0	0	0	0	0	0	1	1	10	20	20
+1	主角1	5	0	2	Characters/monster	3	5	5	5	4	0	0	0	0	1	2	1	1	7	1000	1000
 //========skills========
+3			0	0	0	0	1	0	0	0	0	Skill/attack.dsl
+5			0	16	0	0	1	0	0	0	0	Skill/magicattack.dsl
+4			0	0	0	0	1	1	10	0	0	Skill/aoeattack.dsl
+1			0	0	0	0	1	0	0	0	0	Skill/born.dsl
+2			0	0	0	0	1	0	0	0	0	Skill/dead.dsl
 //========skillResources========
+3	selfEffect	Effects/shoot
+3	hitEffect	Effects/hit
+5	selfEffect	Effects/shoot
+5	emitEffect	Effects/sphere
+5	hitEffect	Effects/hit
+4	selfEffect	Effects/shoot
+4	hitEffect	Effects/hit
+
+

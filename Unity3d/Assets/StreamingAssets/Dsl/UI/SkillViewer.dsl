@@ -21,8 +21,8 @@ story(main)
     };
     @window.SetActive(changetype(1,"bool"));
     @playerPrefs = getunitytype("PlayerPrefs");
-    @actorId_Input.text = ""+@playerPrefs.GetInt("ActorId",101);
-    @targetId_Input.text = ""+@playerPrefs.GetInt("TargetId",103);
+    @actorId_Input.text = ""+@playerPrefs.GetInt("ActorId",1);
+    @targetId_Input.text = ""+@playerPrefs.GetInt("TargetId",2);
   };
   onnamespacedmessage("on_toggle")
   {
@@ -34,7 +34,7 @@ story(main)
   {
     log("SkillViewer:on_click:{0} {1} {2}",$0,$1,$2);
     if($0=="reload"){
-      sendgfxmessage("GameRoot","LoadViewedSkills", str2int(listget($1,0,"101")), str2int(listget($1,1,"1")));
+      sendgfxmessage("GameRoot","LoadViewedSkills", str2int(listget($1,0,"1")), str2int(listget($1,1,"2")));
     }elseif($0=="new"){
       sendgfxmessage("GameRoot","NewEditedSkills");
     }elseif($0=="review"){

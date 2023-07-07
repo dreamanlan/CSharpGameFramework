@@ -420,6 +420,7 @@ namespace GameFramework.Story.Values
                 string typeName = m_DataType.Value;
                 EntityInfo npc = PluginFramework.Instance.GetEntityById(objId);
                 if (null != npc) {
+                    m_Value = BoxedValue.FromObject(npc.GetAiStateInfo().AiDatas.GetData(typeName));
                 }
             }
         }

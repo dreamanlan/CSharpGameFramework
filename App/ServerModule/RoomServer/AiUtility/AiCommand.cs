@@ -79,7 +79,17 @@ public static class AiCommand
     public static void AiRemoveImpact(EntityInfo npc, int impactId)
     {
     }
-    public static void AiSendStoryMessage(EntityInfo npc, string msgId, params object[] args)
+    public static BoxedValueList AiNewBoxedValueList(EntityInfo npc)
+    {
+        if (null != npc) {
+            Scene scene = npc.SceneContext.CustomData as Scene;
+            if (null != scene) {
+                return scene.StorySystem.NewBoxedValueList();
+            }
+        }
+        return null;
+    }
+    public static void AiSendStoryMessage(EntityInfo npc, string msgId, BoxedValueList args)
     {
         if (null != npc) {
             Scene scene = npc.SceneContext.CustomData as Scene;

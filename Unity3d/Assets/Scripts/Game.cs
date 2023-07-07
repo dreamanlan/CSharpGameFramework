@@ -6,6 +6,7 @@ using GameFramework;
 using GameFramework.Story;
 using GameFramework.Skill;
 using System.IO;
+using UnityEngine.SceneManagement;
 
 #if UNITY_IPHONE && !UNITY_EDITOR
 using UnityEngine.iOS;
@@ -30,7 +31,9 @@ public class Game : MonoBehaviour
 
     void Awake()
     {
+        //加载插件
         PluginAssembly.Instance.Init();
+        SceneManager.sceneLoaded += this.OnLevelLoaded;
     }
     void Start()
     {
@@ -51,16 +54,16 @@ public class Game : MonoBehaviour
             Debug.Log("streamingAssetsPath=" + streamingAssetsPath);
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-	    GameControler.Init(tempPath, persistentDataPath);
-        GlobalVariables.Instance.IsDevice = true;
+	        GameControler.Init(tempPath, persistentDataPath);
+            GlobalVariables.Instance.IsDevice = true;
 #elif UNITY_IPHONE && !UNITY_EDITOR
-        GameControler.Init(tempPath, persistentDataPath);
-        GlobalVariables.Instance.IsDevice = true;
-        if ((int)Device.generation <= (int)iPhoneGeneration.iPhone4S) {
-            GlobalVariables.Instance.IsIphone4S = true;
-        } else {
-            GlobalVariables.Instance.IsIphone4S = false;
-        }
+            GameControler.Init(tempPath, persistentDataPath);
+            GlobalVariables.Instance.IsDevice = true;
+            if ((int)Device.generation <= (int)iPhoneGeneration.iPhone4S) {
+                GlobalVariables.Instance.IsIphone4S = true;
+            } else {
+                GlobalVariables.Instance.IsIphone4S = false;
+            }
 #else
             GlobalVariables.Instance.IsClient = true;
             GlobalVariables.Instance.IsDevice = false;
@@ -70,7 +73,8 @@ public class Game : MonoBehaviour
                 GameControler.Init(dataPath, streamingAssetsPath);
 #endif
             StartCoroutine(CheckAndUpdate());
-        } catch (System.Exception ex) {
+        }
+        catch (System.Exception ex) {
             Debug.LogErrorFormat("exception:{0}\n{1}", ex.Message, ex.StackTrace);
         }
     }
@@ -90,7 +94,7 @@ public class Game : MonoBehaviour
         LoadingManager.Instance.Init();
         PluginFramework.Instance.ChangeScene(1);
     }
-    
+
     void Update()
     {
         HighlightPromptManager.Instance.Update();
@@ -117,7 +121,8 @@ public class Game : MonoBehaviour
                         int objId = PluginFramework.Instance.GetGameObjectId(hit.collider.gameObject);
                         if (objId > 0) {
                             PluginFramework.Instance.ClickNpc(objId);
-                        } else {
+                        }
+                        else {
                             Vector3 pos = hit.point;
                             PluginFramework.Instance.MoveTo(pos.x, pos.y, pos.z);
                         }
@@ -151,12 +156,13 @@ public class Game : MonoBehaviour
         LoadingManager.Instance.Release();
         GameControler.Release();
     }
-        
-    void OnLevelWasLoaded(int level)
-    {
-        if (level == 2) {
+
+    void OnLevelLoaded(Scene scene, LoadSceneMode loadSceneMode)
+    {   
+        if (scene.buildIndex == 2) {
             HighlightPromptManager.Instance.Init();
-        } else if (level > 2) {
+        }
+        else if (scene.buildIndex > 2) {
             GameObject cameraObj = ResourceSystem.Instance.NewObject("UI/UiCamera") as GameObject;
             if (null != cameraObj) {
                 cameraObj.transform.parent = Camera.main.transform;
@@ -167,7 +173,7 @@ public class Game : MonoBehaviour
         }
         m_CameraController = new CameraController(Camera.main);
     }
-    
+
     private IEnumerator LoadScene(TableConfig.Level lvl)
     {
         LoadingManager.Instance.Show();
@@ -218,7 +224,7 @@ public class Game : MonoBehaviour
 
         LoadUi(levelId);
     }
-    
+
     private void OnLoadSceneComplete(int levelId)
     {
         this.m_LevelId = levelId;
@@ -227,7 +233,8 @@ public class Game : MonoBehaviour
         m_MainCamera = GameObject.FindGameObjectWithTag("MainCamera");
         if (m_MainCamera) {
             Camera cameraMain = m_MainCamera.GetComponent<Camera>();
-            cameraMain.cullingMask &= ~(1 << 5);
+            int uiLayer = LayerMask.NameToLayer("UI");
+            cameraMain.cullingMask &= ~(1 << uiLayer);
         }
 
         LoadUi(levelId);
@@ -268,7 +275,7 @@ public class Game : MonoBehaviour
             }
         }
     }
-	
+
     private void LoadUi(int levelId)
     {
         TableConfig.Level level = TableConfig.LevelProvider.Instance.GetLevel(levelId);
@@ -395,7 +402,7 @@ public class Game : MonoBehaviour
             m_CameraController.MoveFollowPath(new Vector3(poses[0], poses[1], poses[2]), true);
         }
     }
-    
+
     private void CameraFollow(int actorId)
     {
         m_CameraController.Follow(actorId);

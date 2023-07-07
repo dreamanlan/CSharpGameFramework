@@ -245,12 +245,12 @@ namespace GameFramework
                 try {
                     //客户端发来的消息都加上前缀client，防止直接调用服务器端逻辑（服务器消息不能用client前缀！）
                     string msgId = string.Format("client:{0}", target_msg.m_MsgId);
-                    ArrayList args = new ArrayList();
+                    var args = scene.StorySystem.NewBoxedValueList();
                     args.Add(user.RoleId);
                     for (int i = 0; i < target_msg.m_Args.Count; i++) {
                         switch (target_msg.m_Args[i].val_type) {
                             case ArgType.NULL://null
-                                args.Add(null);
+                                args.Add(BoxedValue.NullObject);
                                 break;
                             case ArgType.INT://int
                                 args.Add(int.Parse(target_msg.m_Args[i].str_val));
@@ -263,8 +263,7 @@ namespace GameFramework
                                 break;
                         }
                     }
-                    object[] objArgs = args.ToArray();
-                    scene.StorySystem.SendMessage(msgId, objArgs);
+                    scene.StorySystem.SendMessage(msgId, args);
                 } catch (Exception ex) {
                     LogSys.Log(ServerLogType.ERROR, "Msg_CRC_StoryMessage throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 }

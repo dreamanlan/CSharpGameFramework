@@ -254,7 +254,7 @@ public class SkillViewerCameraController
         curState = st;
     }
     
-    public void OnLevelWasLoaded(TableConfig.Level level)
+    public void OnLevelLoaded(TableConfig.Level level)
     {
         camera = Camera.main;
         cameraSetting = camera.gameObject.GetComponent<SkillViewerCameraSetting>();

@@ -8,10 +8,15 @@ namespace GameFramework
     {
         internal SceneLogicViewModel_General()
         {
+            AbstractSceneLogic.OnSceneLogicNewBoxedValueList += this.OnSceneLogicNewBoxedValueList;
             AbstractSceneLogic.OnSceneLogicSendStoryMessage += this.OnSceneLogicSendStoryMessage;
         }
 
-        internal void OnSceneLogicSendStoryMessage(SceneLogicInfo info, string msgId, object[] args)
+        internal BoxedValueList OnSceneLogicNewBoxedValueList(SceneLogicInfo info)
+        {
+            return GfxStorySystem.Instance.NewBoxedValueList();
+        }
+        internal void OnSceneLogicSendStoryMessage(SceneLogicInfo info, string msgId, BoxedValueList args)
         {
             GfxStorySystem.Instance.SendMessage(msgId, args);
         }

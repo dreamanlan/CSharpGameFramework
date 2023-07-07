@@ -195,7 +195,7 @@ namespace GameFramework
         }
         public void MoveTo(float x, float y, float z)
         {
-            if (!IsBattleState) {
+            if (!IsMainUiScene && !IsBattleState) {
                 Network.NetworkSystem.Instance.SyncPlayerMoveToPos(new ScriptRuntime.Vector3(x, y, z));
             } else {
                 GfxStorySystem.Instance.SendMessage("move_to", x, y, z);

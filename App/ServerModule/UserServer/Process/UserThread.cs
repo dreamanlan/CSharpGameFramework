@@ -26,7 +26,11 @@ namespace GameFramework
         }
         internal void SendStoryMessage(string msgId, params object[] args)
         {
-            m_StorySystem.SendMessage(msgId, args);
+            var bvlist = m_StorySystem.NewBoxedValueList();
+            foreach(var arg in args) {
+                bvlist.Add(BoxedValue.FromObject(arg));
+            }
+            m_StorySystem.SendMessage(msgId, bvlist);
         }
         internal void SendServerMessage(object msg)
         {

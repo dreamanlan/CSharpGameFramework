@@ -25,7 +25,7 @@ internal class PluginAssembly
     }
     internal void Init()
     {
-#if CS2LUA_DEBUG || UNITY_IOS
+#if CS2DSL_DEBUG || UNITY_IOS
         ClientPlugins.Program.Init();
 #else
         Load(LoadFileFromStreamingAssets("ClientPlugins.dll"));

@@ -67,11 +67,13 @@ namespace GameFramework
         }
         public void Clear()
         {
-            m_ObjectNum = 0;
-            for(int i = 0; i < m_Objects.Length; ++i) {
-                var obj = m_Objects[i];
-                if (null != obj) {
-                    obj.Object = null;
+            if (null != m_Objects) {
+                m_ObjectNum = 0;
+                for (int i = 0; i < m_Objects.Length; ++i) {
+                    var obj = m_Objects[i];
+                    if (null != obj) {
+                        obj.Object = null;
+                    }
                 }
             }
         }

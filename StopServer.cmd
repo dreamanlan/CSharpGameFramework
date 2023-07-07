@@ -8,3 +8,5 @@ cd %workdir%
 @taskkill /im Lobby.exe /f
 @taskkill /im DataCache.exe /f
 @taskkill /im ServerCenter.exe /f
+@taskkill /im ServerCenter.exe /f
+

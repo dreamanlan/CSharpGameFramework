@@ -21,20 +21,15 @@ namespace StorySystem
             bool ret = false;
             result = null;
             if (null != statementData) {
-                var first = statementData.First.AsFunction;
-                if (first.HaveId() && !first.HaveParamOrStatement()) {
+                var first = statementData.First;
+                if (first.HaveId() && first.IsValue) {
                     //命令行样式转换为函数样式
                     var func = new Dsl.FunctionData();
-                    func.CopyFrom(first);
+                    func.Name = first.AsValue;
                     func.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                     for (int i = 1; i < statementData.GetFunctionNum(); ++i) {
-                        var fd = statementData.GetFunction(i).AsFunction;
-                        if (fd.HaveId() && !fd.HaveParamOrStatement()) {
-                            func.AddParam(fd.Name);
-                        }
-                        else {
-                            func.AddParam(fd);
-                        }
+                        var fd = statementData.GetFunction(i);
+                        func.AddParam(fd);
                     }
                     result = func;
                     ret = true;
