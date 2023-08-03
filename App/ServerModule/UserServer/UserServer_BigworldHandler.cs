@@ -31,7 +31,7 @@ namespace GameFramework
             }
         }
 
-        private void HandleGeneralMessage(Msg_LBL_Message msg_, PBChannel channel, int src, uint session)
+        private void HandleGeneralMessage(Msg_LBL_Message msg_, PBChannel channel, ulong src, uint session)
         {
             try {
                 if (msg_.MsgType == Msg_LBL_Message.MsgTypeEnum.Node) {
@@ -47,7 +47,7 @@ namespace GameFramework
                 LogSys.Log(ServerLogType.ERROR, "Exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-        private void HandleQueryUserStateResult(Msg_BL_QueryUserStateResult msg_, PBChannel channel, int src, uint session)
+        private void HandleQueryUserStateResult(Msg_BL_QueryUserStateResult msg_, PBChannel channel, ulong src, uint session)
         {
             UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
             UserInfo user = dataProcess.GetUserInfo(msg_.Guid);
@@ -55,7 +55,7 @@ namespace GameFramework
                 user.CurrentState = UserState.Online;
             }
         }
-        private void HandleUserOffline(Msg_BL_UserOffline msg_, PBChannel channel, int src, uint session)
+        private void HandleUserOffline(Msg_BL_UserOffline msg_, PBChannel channel, ulong src, uint session)
         {
             UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
             UserInfo user = dataProcess.GetUserInfo(msg_.Guid);
@@ -64,11 +64,11 @@ namespace GameFramework
                 user.LeftLife = 0;
             }
         }
-        private void HandleBroadcastText(Msg_BL_BroadcastText msg_, PBChannel channel, int src, uint session)
+        private void HandleBroadcastText(Msg_BL_BroadcastText msg_, PBChannel channel, ulong src, uint session)
         {
             m_UserProcessScheduler.DefaultUserThread.QueueAction(m_UserProcessScheduler.HandleBroadcast, (BroadcastType)msg_.BroadcastType, msg_.Content, msg_.RollCount);
         }
-        private void HandleUserChangeScene(Msg_BL_UserChangeScene msg_, PBChannel channel, int src, uint session)
+        private void HandleUserChangeScene(Msg_BL_UserChangeScene msg_, PBChannel channel, ulong src, uint session)
         {
             UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
             UserInfo user = dataProcess.GetUserInfo(msg_.Guid);
@@ -76,10 +76,10 @@ namespace GameFramework
                 user.SceneId = msg_.SceneId;
             }
         }
-        private void HandleUserDrop(Msg_RL_UserDrop msg_, PBChannel channel, int src, uint session)
+        private void HandleUserDrop(Msg_RL_UserDrop msg_, PBChannel channel, ulong src, uint session)
         {
         }
-        private void HandleUserQuit(Msg_RL_UserQuit msg_, PBChannel channel, int src, uint session)
+        private void HandleUserQuit(Msg_RL_UserQuit msg_, PBChannel channel, ulong src, uint session)
         {
             UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
             UserThread userThread = dataProcess.GetUserThread(msg_.UserGuid);
@@ -89,13 +89,13 @@ namespace GameFramework
                 dataProcess.DefaultUserThread.QueueAction(dataProcess.DefaultUserThread.HandleUserQuit, msg_);
             }
         }
-        private void HandlePickMoney(Msg_RL_PickMoney msg_, PBChannel channel, int src, uint session)
+        private void HandlePickMoney(Msg_RL_PickMoney msg_, PBChannel channel, ulong src, uint session)
         {
         }
-        private void HandlePickItem(Msg_RL_PickItem msg_, PBChannel channel, int src, uint session)
+        private void HandlePickItem(Msg_RL_PickItem msg_, PBChannel channel, ulong src, uint session)
         {
         }
-        private void HandleRoomStoryMessage(Msg_LRL_StoryMessage msg_, PBChannel channel, int src, uint session)
+        private void HandleRoomStoryMessage(Msg_LRL_StoryMessage msg_, PBChannel channel, ulong src, uint session)
         {
             UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
             UserThread userThread = dataProcess.GetUserThread(msg_.UserGuid);

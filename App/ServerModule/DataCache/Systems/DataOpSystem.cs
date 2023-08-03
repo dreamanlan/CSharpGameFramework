@@ -20,7 +20,7 @@ internal class DataOpSystem
         LogSys.Log(ServerLogType.INFO, "DataOperator initialized");
     }
 
-    private void DSConnectHandler(Msg_LD_Connect msg, PBChannel channel, int handle, uint seq)
+    private void DSConnectHandler(Msg_LD_Connect msg, PBChannel channel, ulong handle, uint seq)
     {
         try {
             LogSys.Log(ServerLogType.INFO, "DataStoreClient connect :{0} ", msg.ClientName);
@@ -37,10 +37,10 @@ internal class DataOpSystem
         }
     }
 
-    private void DSLoadHandler(Msg_LD_Load msg, PBChannel channel, int handle, uint seq)
+    private void DSLoadHandler(Msg_LD_Load msg, PBChannel channel, ulong handle, uint seq)
     {
         try {
-            DataCacheSystem.Instance.LoadActionQueue.QueueAction<Msg_LD_Load, PBChannel, int>(DataCacheSystem.Instance.Load, msg, channel, handle);
+            DataCacheSystem.Instance.LoadActionQueue.QueueAction<Msg_LD_Load, PBChannel, ulong>(DataCacheSystem.Instance.Load, msg, channel, handle);
         } catch (Exception e) {
             var errorReply = new Msg_DL_LoadResult();
             errorReply.MsgId = msg.MsgId;
@@ -53,7 +53,7 @@ internal class DataOpSystem
         }
     }
 
-    private void DSSaveHandler(Msg_LD_Save msg, PBChannel channel, int handle, uint seq)
+    private void DSSaveHandler(Msg_LD_Save msg, PBChannel channel, ulong handle, uint seq)
     {
         var saveResult = new Msg_DL_SaveResult();
         saveResult.MsgId = msg.MsgId;

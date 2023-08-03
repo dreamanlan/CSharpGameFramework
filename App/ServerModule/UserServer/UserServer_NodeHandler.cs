@@ -50,7 +50,7 @@ namespace GameFramework
             //--------------------------------------------------------------------------------------
         }
         //------------------------------------------------------------------------------------------------------
-        private bool FilterMessage(NodeMessage msg, int handle, uint seq)
+        private bool FilterMessage(NodeMessage msg, ulong handle, uint seq)
         {
             bool isContinue = true;
             if (handle > 0) {
@@ -71,7 +71,7 @@ namespace GameFramework
             return isContinue;
         }
         //------------------------------------------------------------------------------------------------------
-        private void ObserveEnterSceneResult(NodeMessage msg, int handle, uint seq)
+        private void ObserveEnterSceneResult(NodeMessage msg, ulong handle, uint seq)
         {
             if (handle != 0)
                 return;
@@ -90,7 +90,7 @@ namespace GameFramework
             }
         }
         //------------------------------------------------------------------------------------------------------
-        private void HandleNodeRegister(NodeMessage msg, int handle, uint seq)
+        private void HandleNodeRegister(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeRegister nodeRegMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeRegister;
             if (null != nodeRegMsg) {
@@ -102,7 +102,7 @@ namespace GameFramework
             }
         }
         //------------------------------------------------------------------------------------------------------
-        private void HandleAccountLogin(NodeMessage msg, int handle, uint seq)
+        private void HandleAccountLogin(NodeMessage msg, ulong handle, uint seq)
         {
             StringBuilder stringBuilder = new StringBuilder(1024);
             int size = stringBuilder.Capacity;
@@ -117,7 +117,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleRequestNickname(NodeMessage msg, int handle, uint seq)
+        private void HandleRequestNickname(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithAccount nickMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithAccount;
             if (null != nickMsg) {
@@ -127,7 +127,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleRoleEnter(NodeMessage msg, int handle, uint seq)
+        private void HandleRoleEnter(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithAccount enterMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithAccount;
             if (null != enterMsg) {
@@ -138,7 +138,7 @@ namespace GameFramework
             }
         }
         //------------------------------------------------------------------------------------------------------
-        private void HandleUserHeartbeat(NodeMessage msg, int handle, uint seq)
+        private void HandleUserHeartbeat(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid heartbeatMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != heartbeatMsg) {
@@ -154,7 +154,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleChangeName(NodeMessage msg, int handle, uint seq)
+        private void HandleChangeName(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid nameMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != nameMsg) {
@@ -164,7 +164,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleEnterScene(NodeMessage msg, int handle, uint seq)
+        private void HandleEnterScene(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
@@ -197,7 +197,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleChangeSceneRoom(NodeMessage msg, int handle, uint seq)
+        private void HandleChangeSceneRoom(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
@@ -215,7 +215,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleRequestSceneRoomInfo(NodeMessage msg, int handle, uint seq)
+        private void HandleRequestSceneRoomInfo(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
@@ -228,7 +228,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleRequestSceneRoomList(NodeMessage msg, int handle, uint seq)
+        private void HandleRequestSceneRoomList(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
@@ -241,7 +241,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleQuitRoom(NodeMessage msg, int handle, uint seq)
+        private void HandleQuitRoom(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
@@ -263,7 +263,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleGetMailList(NodeMessage msg, int handle, uint seq)
+        private void HandleGetMailList(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid getMailListMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != getMailListMsg) {
@@ -276,7 +276,7 @@ namespace GameFramework
                 m_GlobalProcessThread.QueueAction(m_GlobalProcessThread.GetMailList, getMailListMsg.m_Guid);
             }
         }
-        private void HandleReadMail(NodeMessage msg, int handle, uint seq)
+        private void HandleReadMail(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid readMailMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != readMailMsg) {
@@ -286,7 +286,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleReceiveMail(NodeMessage msg, int handle, uint seq)
+        private void HandleReceiveMail(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid receiveMailMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != receiveMailMsg) {
@@ -296,7 +296,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleDeleteMail(NodeMessage msg, int handle, uint seq)
+        private void HandleDeleteMail(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid deleteMailMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != deleteMailMsg) {
@@ -306,7 +306,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleAddFriend(NodeMessage msg, int handle, uint seq)
+        private void HandleAddFriend(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != nodeMsg) {
@@ -319,7 +319,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleRemoveFriend(NodeMessage msg, int handle, uint seq)
+        private void HandleRemoveFriend(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != nodeMsg) {
@@ -332,7 +332,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleMarkBlack(NodeMessage msg, int handle, uint seq)
+        private void HandleMarkBlack(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != nodeMsg) {
@@ -345,7 +345,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleUseItem(NodeMessage msg, int handle, uint seq)
+        private void HandleUseItem(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != nodeMsg) {
@@ -358,7 +358,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleDiscardItem(NodeMessage msg, int handle, uint seq)
+        private void HandleDiscardItem(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid nodeMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != nodeMsg) {
@@ -371,7 +371,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleStoryMessage(NodeMessage msg, int handle, uint seq)
+        private void HandleStoryMessage(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid storyMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != storyMsg) {

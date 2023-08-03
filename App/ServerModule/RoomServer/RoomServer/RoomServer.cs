@@ -169,7 +169,7 @@ namespace RoomServer
         {
             LogSys.Log(ServerLogType.INFO, "{0}", msg);
         }
-        private void OnNameHandleChanged(bool addOrUpdate, string name, int handle)
+        private void OnNameHandleChanged(bool addOrUpdate, string name, ulong handle)
         {
             try {
                 if (name.CompareTo("Lobby") == 0 && !addOrUpdate) {
@@ -180,7 +180,7 @@ namespace RoomServer
                 LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-        private void OnCommand(int src, int dest, string command)
+        private void OnCommand(ulong src, ulong dest, string command)
         {
             const string c_QuitRoomServer = "QuitRoomServer";
             const string c_ReloadConfig = "ReloadConfig";
@@ -197,8 +197,8 @@ namespace RoomServer
                 LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-        private void OnMessage(uint seq, int source_handle,
-            int dest_handle,
+        private void OnMessage(uint seq, ulong source_handle,
+            ulong dest_handle,
             IntPtr data, int len)
         {
             try {
@@ -210,7 +210,7 @@ namespace RoomServer
             }
         }
 
-        private void OnMessageResultCallback(uint seq, int src, int dest, int result)
+        private void OnMessageResultCallback(uint seq, ulong src, ulong dest, int result)
         {
 
         }
@@ -241,7 +241,7 @@ namespace RoomServer
             }
         }
 
-        private void HandleReplyRegisterRoomServer(Msg_LR_ReplyRegisterRoomServer msg, PBChannel channel, int handle, uint seq)
+        private void HandleReplyRegisterRoomServer(Msg_LR_ReplyRegisterRoomServer msg, PBChannel channel, ulong handle, uint seq)
         {
             if (msg.IsOk == true) {
                 m_IsContinueRegister = false;

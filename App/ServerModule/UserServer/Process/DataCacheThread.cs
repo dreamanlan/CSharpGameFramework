@@ -169,11 +169,11 @@ namespace GameFramework
                 m_CurrentStatus = ConnectStatus.Connecting;
             }
         }
-        private void OnConnectDataStore(Msg_DL_Connect msg, PBChannel channel, int src, uint session)
+        private void OnConnectDataStore(Msg_DL_Connect msg, PBChannel channel, ulong src, uint session)
         {
             LoadGlobalData();
         }
-        private void OnLoadReply(Msg_DL_LoadResult msg, PBChannel channel, int src, uint session)
+        private void OnLoadReply(Msg_DL_LoadResult msg, PBChannel channel, ulong src, uint session)
         {
             KeyString key = KeyString.Wrap(msg.PrimaryKeys);
             ConcurrentDictionary<KeyString, LoadRequestInfo> dict;
@@ -192,7 +192,7 @@ namespace GameFramework
                 }
             }
         }
-        private void OnSaveReply(Msg_DL_SaveResult msg, PBChannel channel, int src, uint session)
+        private void OnSaveReply(Msg_DL_SaveResult msg, PBChannel channel, ulong src, uint session)
         {
             KeyString key = KeyString.Wrap(msg.PrimaryKeys);
             ConcurrentDictionary<KeyString, ConcurrentQueue<SaveRequestInfo>> dict;

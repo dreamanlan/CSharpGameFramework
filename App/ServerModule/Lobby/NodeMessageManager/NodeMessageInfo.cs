@@ -9,8 +9,8 @@ namespace Lobby
   internal class NodeMessageInfo
   {
     internal uint Seq;
-    internal int SourceHandle;
-    internal int DestHandle;
+    internal ulong SourceHandle;
+    internal ulong DestHandle;
     internal byte[] Data;
   }
 }

@@ -33,7 +33,7 @@ namespace Lobby
       }
     }
 
-    internal void DispatchMessage(uint seq, int sourceHandle, int destHandle, byte[] data)
+    internal void DispatchMessage(uint seq, ulong sourceHandle, ulong destHandle, byte[] data)
     {
       try {
         int index = Interlocked.Increment(ref m_TurnIndex) % m_ThreadNum;

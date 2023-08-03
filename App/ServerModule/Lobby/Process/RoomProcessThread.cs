@@ -177,7 +177,7 @@ namespace Lobby
             }
         }
 
-        internal void QuitRoom(ulong guid, bool is_quit_room, int srcHandle)
+        internal void QuitRoom(ulong guid, bool is_quit_room, ulong srcHandle)
         {
             UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(guid);
             if (user != null) {
@@ -222,7 +222,7 @@ namespace Lobby
                 }
             }
         }
-        internal void UserOffline(ulong guid, int srcHandle)
+        internal void UserOffline(ulong guid, ulong srcHandle)
         {
             UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(guid);
             if (user != null) {
@@ -240,7 +240,7 @@ namespace Lobby
                 }
             }
         }
-        internal void UserRelogin(ulong guid, int srcHandle)
+        internal void UserRelogin(ulong guid, ulong srcHandle)
         {
             UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(guid);
             if (user != null) {

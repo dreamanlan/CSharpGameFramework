@@ -207,7 +207,7 @@ namespace GameFramework
             }
         }
         
-        public void HandleReconnectUser(Msg_LR_ReconnectUser urMsg, PBChannel channel, int handle, uint seq)
+        public void HandleReconnectUser(Msg_LR_ReconnectUser urMsg, PBChannel channel, ulong handle, uint seq)
         {
             Msg_RL_ReplyReconnectUser.ReconnectResultEnum result;
             User us = GetUserByGuid(urMsg.UserGuid);

@@ -68,7 +68,7 @@ namespace Lobby
       }
     }
 
-    internal void QueueMessage(uint seq, int sourceHandle, int destHandle, byte[] data)
+    internal void QueueMessage(uint seq, ulong sourceHandle, ulong destHandle, byte[] data)
     {
       try {
         NodeMessageInfo info;

@@ -59,8 +59,8 @@ namespace Lobby
 
     internal static void HandleNodeMessage(
         uint seq,
-        int source_handle,
-        int dest_handle,
+        ulong source_handle,
+        ulong dest_handle,
         byte[] data)
     {
       if (s_Inited) {
@@ -77,7 +77,7 @@ namespace Lobby
       }
     }
 
-    internal static void HandleNodeMessage(NodeMessage msg, int handle, uint session)
+    internal static void HandleNodeMessage(NodeMessage msg, ulong handle, uint session)
     {
       if (s_Inited && msg != null) {
 
@@ -147,7 +147,7 @@ namespace Lobby
       return type;
     }
 
-    internal static void SendNodeMessage(int handle, NodeMessage msg)
+    internal static void SendNodeMessage(ulong handle, NodeMessage msg)
     {
       if (s_Inited) {
         byte[] data = BuildNodeMessage(msg);
@@ -167,7 +167,7 @@ namespace Lobby
       }
     }
 
-    internal static void ForwardMessage(int handle, byte[] data)
+    internal static void ForwardMessage(ulong handle, byte[] data)
     {
       if (s_Inited) {
         if (null != data) {

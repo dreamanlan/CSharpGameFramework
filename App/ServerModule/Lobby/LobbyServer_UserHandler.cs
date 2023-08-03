@@ -24,12 +24,12 @@ namespace Lobby
             m_UserChannel.Register<Msg_LRL_StoryMessage>(HandleStoryMessageFromUserServer);
         }
 
-        private void DispatchUserMessage(int source_handle, uint seq, byte[] data)
+        private void DispatchUserMessage(ulong source_handle, uint seq, byte[] data)
         {
             m_UserChannel.Dispatch(source_handle, seq, data);
         }
 
-        private void HandleGeneralMessage(Msg_LBL_Message msg_, PBChannel channel, int src, uint session)
+        private void HandleGeneralMessage(Msg_LBL_Message msg_, PBChannel channel, ulong src, uint session)
         {
             try {
                 if (msg_.MsgType == Msg_LBL_Message.MsgTypeEnum.Node) {
@@ -43,12 +43,12 @@ namespace Lobby
             }
         }
 
-        private void HandleUpdateUserServerInfo(Msg_LB_UpdateUserServerInfo msg_, PBChannel channel, int src, uint session)
+        private void HandleUpdateUserServerInfo(Msg_LB_UpdateUserServerInfo msg_, PBChannel channel, ulong src, uint session)
         {
             m_RoomProcessThread.QueueAction(m_RoomProcessThread.UpdateUserServerInfo, msg_.WorldId, msg_.UserCount);
         }
 
-        private void HandleQueryUserState(Msg_LB_QueryUserState msg_, PBChannel channel, int src, uint session)
+        private void HandleQueryUserState(Msg_LB_QueryUserState msg_, PBChannel channel, ulong src, uint session)
         {
             Msg_BL_QueryUserStateResult builder = new Msg_BL_QueryUserStateResult();
             builder.Guid = msg_.Guid;
@@ -63,28 +63,28 @@ namespace Lobby
             m_UserChannel.Send(src, builder);
         }
 
-        private void HandleUserOffline(Msg_LB_UserOffline msg_, PBChannel channel, int src, uint session)
+        private void HandleUserOffline(Msg_LB_UserOffline msg_, PBChannel channel, ulong src, uint session)
         {
             m_RoomProcessThread.QueueAction(m_RoomProcessThread.UserOffline, msg_.Guid, src);
         }
 
-        private void HandleUserRelogin(Msg_LB_UserRelogin msg_, PBChannel channel, int src, uint session)
+        private void HandleUserRelogin(Msg_LB_UserRelogin msg_, PBChannel channel, ulong src, uint session)
         {
             m_RoomProcessThread.QueueAction(m_RoomProcessThread.UserRelogin, msg_.Guid, src);
         }
 
-        private void HandleRequestEnterScene(Msg_LB_RequestEnterScene msg_, PBChannel channel, int src, uint session)
+        private void HandleRequestEnterScene(Msg_LB_RequestEnterScene msg_, PBChannel channel, ulong src, uint session)
         {
             UserProcessScheduler dataProcess = m_UserProcessScheduler;
             dataProcess.DispatchAction(dataProcess.RequestEnterScene, msg_);
         }
 
-        private void HandleStoryMessageFromUserServer(Msg_LRL_StoryMessage msg_, PBChannel channel, int src, uint session)
+        private void HandleStoryMessageFromUserServer(Msg_LRL_StoryMessage msg_, PBChannel channel, ulong src, uint session)
         {
             m_RoomProcessThread.QueueAction(m_RoomProcessThread.HandleRoomStoryMessage, msg_);
         }
 
-        private int GetMyHandle()
+        private ulong GetMyHandle()
         {
             if (0 == m_MyHandle) {
                 m_MyHandle = CenterClientApi.TargetHandle("Lobby");

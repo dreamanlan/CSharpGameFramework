@@ -52,23 +52,23 @@ namespace Lobby
         {
             get { return m_UserProcessScheduler; }
         }
-        internal bool IsUnknownServer(int handle)
+        internal bool IsUnknownServer(ulong handle)
         {
             return !IsNode(handle) && !IsRoomServer(handle) && !IsUserServer(handle) && !IsDataCache(handle);
         }
-        internal bool IsNode(int handle)
+        internal bool IsNode(ulong handle)
         {
             return m_NodeHandles.Contains(handle);
         }
-        internal bool IsRoomServer(int handle)
+        internal bool IsRoomServer(ulong handle)
         {
             return m_RoomSvrHandles.Contains(handle);
         }
-        internal bool IsUserServer(int handle)
+        internal bool IsUserServer(ulong handle)
         {
             return m_UserHandles.Contains(handle);
         }
-        internal bool IsDataCache(int handle)
+        internal bool IsDataCache(ulong handle)
         {
             return m_DataCacheChannel.DefaultServiceHandle == handle;
         }
@@ -127,13 +127,13 @@ namespace Lobby
         internal void TransmitToWorld(string userSvrName, string nodeName, NodeMessage msg)
         {
             if (!string.IsNullOrEmpty(userSvrName) && !string.IsNullOrEmpty(nodeName) && null != msg) {
-                int lobbyHandle = CenterClientApi.TargetHandle(userSvrName);
+                ulong lobbyHandle = CenterClientApi.TargetHandle(userSvrName);
                 if (lobbyHandle > 0) {
                     TransmitToWorld(lobbyHandle, nodeName, msg);
                 }
             }
         }
-        internal void TransmitToWorld(int userSvrHandle, string nodeName, NodeMessage msg)
+        internal void TransmitToWorld(ulong userSvrHandle, string nodeName, NodeMessage msg)
         {
             try {
                 if (!string.IsNullOrEmpty(nodeName) && null != msg) {
@@ -153,13 +153,13 @@ namespace Lobby
         internal void ForwardToWorld(string userSvrName, object msg)
         {
             if (!string.IsNullOrEmpty(userSvrName) && null != msg) {
-                int lobbyHandle = CenterClientApi.TargetHandle(userSvrName);
+                ulong lobbyHandle = CenterClientApi.TargetHandle(userSvrName);
                 if (lobbyHandle > 0) {
                     ForwardToWorld(lobbyHandle, msg);
                 }
             }
         }
-        internal void ForwardToWorld(int userSvrHandle, object msg)
+        internal void ForwardToWorld(ulong userSvrHandle, object msg)
         {
             try {
                 if (null != msg) {
@@ -275,7 +275,7 @@ namespace Lobby
         {
             LogSys.Log(ServerLogType.INFO, "{0}", msg);
         }
-        private void OnNameHandleChanged(bool addOrUpdate, string name, int handle)
+        private void OnNameHandleChanged(bool addOrUpdate, string name, ulong handle)
         {
             try {
                 m_DataCacheChannel.OnUpdateNameHandle(addOrUpdate, name, handle);
@@ -295,7 +295,7 @@ namespace Lobby
                 LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-        private void OnCommand(int src, int dest, string command)
+        private void OnCommand(ulong src, ulong dest, string command)
         {
             const string c_QuitLobby = "QuitLobby";
             const string c_ReloadConfig = "ReloadConfig";
@@ -316,7 +316,7 @@ namespace Lobby
                 LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-        private void OnMessage(uint seq, int source_handle, int dest_handle,
+        private void OnMessage(uint seq, ulong source_handle, ulong dest_handle,
             IntPtr data, int len)
         {
             try {
@@ -348,7 +348,7 @@ namespace Lobby
                 LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-        private void OnMessageResultCallback(uint seq, int src, int dest, int result)
+        private void OnMessageResultCallback(uint seq, ulong src, ulong dest, int result)
         {
 
         }
@@ -400,14 +400,14 @@ namespace Lobby
         private GlobalProcessThread m_GlobalProcessThread = new GlobalProcessThread();
         private RoomProcessThread m_RoomProcessThread = new RoomProcessThread();
 
-        private HashSet<int> m_NodeHandles = new HashSet<int>();
-        private HashSet<int> m_RoomSvrHandles = new HashSet<int>();
-        private HashSet<int> m_UserHandles = new HashSet<int>();
+        private HashSet<ulong> m_NodeHandles = new HashSet<ulong>();
+        private HashSet<ulong> m_RoomSvrHandles = new HashSet<ulong>();
+        private HashSet<ulong> m_UserHandles = new HashSet<ulong>();
         private PBChannel m_RoomSvrChannel = null;
         private PBChannel m_UserChannel = null;
         private PBChannel m_DataCacheChannel = null;
 
-        private int m_MyHandle = 0;
+        private ulong m_MyHandle = 0;
 
         private CenterClientApi.HandleNameHandleChangedCallback m_NameHandleCallback = null;
         private CenterClientApi.HandleMessageCallback m_MsgCallback = null;

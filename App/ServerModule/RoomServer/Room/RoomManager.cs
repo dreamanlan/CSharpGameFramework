@@ -198,7 +198,7 @@ namespace GameFramework
             channel.Register<Msg_LRL_StoryMessage>(HandleRoomStoryMessage);
         }
         //--------------------------------------
-        private void HandleEnterScene(Msg_LR_EnterScene msg, PBChannel channel, int handle, uint seq)
+        private void HandleEnterScene(Msg_LR_EnterScene msg, PBChannel channel, ulong handle, uint seq)
         {
             ulong guid = msg.UserGuid;
             int roomId = msg.RoomId;
@@ -264,7 +264,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleChangeScene(Msg_LR_ChangeScene msg, PBChannel channel, int handle, uint seq)
+        private void HandleChangeScene(Msg_LR_ChangeScene msg, PBChannel channel, ulong handle, uint seq)
         {
             ulong guid = msg.UserGuid;
             int roomid = msg.RoomId;
@@ -330,7 +330,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleActiveScene(Msg_LR_ActiveScene msg, PBChannel channel, int handle, uint seq)
+        private void HandleActiveScene(Msg_LR_ActiveScene msg, PBChannel channel, ulong handle, uint seq)
         {
             int roomid = msg.RoomId;
             int sceneId = msg.SceneId;
@@ -355,7 +355,7 @@ namespace GameFramework
                 retMsg.Result = val ? (int)SceneOperationResultEnum.Success : (int)SceneOperationResultEnum.Cant_Find_Room;
             }));
         }
-        private void HandleReconnectUser(Msg_LR_ReconnectUser urMsg, PBChannel channel, int handle, uint seq)
+        private void HandleReconnectUser(Msg_LR_ReconnectUser urMsg, PBChannel channel, ulong handle, uint seq)
         {
             bool isFieldThread;
             int ix = GetActiveRoomThreadIndex(urMsg.RoomId, out isFieldThread);
@@ -375,7 +375,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleUserRelive(Msg_LR_UserReLive msg, PBChannel channel, int handle, uint seq)
+        private void HandleUserRelive(Msg_LR_UserReLive msg, PBChannel channel, ulong handle, uint seq)
         {
             bool isFieldThread;
             int ix = GetActiveRoomThreadIndex(msg.RoomId, out isFieldThread);
@@ -389,7 +389,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleUserQuit(Msg_LR_UserQuit msg, PBChannel channel, int handle, uint seq)
+        private void HandleUserQuit(Msg_LR_UserQuit msg, PBChannel channel, ulong handle, uint seq)
         {
             bool isFieldThread;
             int ix = GetActiveRoomThreadIndex(msg.RoomId, out isFieldThread);
@@ -408,7 +408,7 @@ namespace GameFramework
                 channel.Send(replyBuilder);
             }
         }
-        private void HandleReclaimItem(Msg_LR_ReclaimItem msg, PBChannel channel, int handle, uint seq)
+        private void HandleReclaimItem(Msg_LR_ReclaimItem msg, PBChannel channel, ulong handle, uint seq)
         {
             bool isFieldThread;
             int ix = GetActiveRoomThreadIndex(msg.RoomId, out isFieldThread);
@@ -422,7 +422,7 @@ namespace GameFramework
                 }
             }
         }
-        private void HandleRoomStoryMessage(Msg_LRL_StoryMessage msg, PBChannel channel, int handle, uint seq)
+        private void HandleRoomStoryMessage(Msg_LRL_StoryMessage msg, PBChannel channel, ulong handle, uint seq)
         {
             bool isFieldRoom;
             int ix = GetActiveRoomThreadIndex(msg.RoomId, out isFieldRoom);

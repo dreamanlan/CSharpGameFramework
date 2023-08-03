@@ -80,7 +80,7 @@ namespace GameFramework
             });
         }
         //
-        internal void GMLoadAccount(string gmAccount, string accountId, int nodeHandle)
+        internal void GMLoadAccount(string gmAccount, string accountId, ulong nodeHandle)
         {
             Msg_LD_Load msg = new Msg_LD_Load();
             msg.MsgId = (int)DataEnum.TableAccount;
@@ -131,7 +131,7 @@ namespace GameFramework
                 JsonGmMessageDispatcher.SendNodeMessage(nodeHandle, resultMsg);
             });
         }
-        internal void GMLoadUser(string gmAccount, ulong userGuid, LobbyGmMessageDefine jsonMsgId, int nodeHandle)
+        internal void GMLoadUser(string gmAccount, ulong userGuid, LobbyGmMessageDefine jsonMsgId, ulong nodeHandle)
         {
             string key = userGuid.ToString();
             Msg_LD_Load msg = new Msg_LD_Load();

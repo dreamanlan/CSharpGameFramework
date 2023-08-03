@@ -51,27 +51,27 @@ namespace GameFramework
         {
             get { return m_UserProcessScheduler; }
         }
-        internal bool IsUnknownServerOnBigworld(int handle)
+        internal bool IsUnknownServerOnBigworld(ulong handle)
         {
             return !IsNodeOnBigworld(handle) && !IsLobbyOnBigworld(handle);
         }
-        internal bool IsNodeOnBigworld(int handle)
+        internal bool IsNodeOnBigworld(ulong handle)
         {
             return m_NodeHandlesOnBigworld.Contains(handle);
         }
-        internal bool IsLobbyOnBigworld(int handle)
+        internal bool IsLobbyOnBigworld(ulong handle)
         {
             return m_BigworldChannel.DefaultServiceHandle == handle;
         }
-        internal bool IsUnknownServer(int handle)
+        internal bool IsUnknownServer(ulong handle)
         {
             return !IsNode(handle) && !IsDataCache(handle);
         }
-        internal bool IsNode(int handle)
+        internal bool IsNode(ulong handle)
         {
             return m_NodeHandles.Contains(handle);
         }
-        internal bool IsDataCache(int handle)
+        internal bool IsDataCache(ulong handle)
         {
             return m_DataCacheChannel.DefaultServiceHandle == handle;
         }
@@ -283,7 +283,7 @@ namespace GameFramework
         {
             LogSys.Log(ServerLogType.INFO, "{0}", msg);
         }
-        private void OnNameHandleChanged(int worldId, bool addOrUpdate, string name, int handle)
+        private void OnNameHandleChanged(int worldId, bool addOrUpdate, string name, ulong handle)
         {
             try {
                 if (worldId == UserServerConfig.WorldId) {
@@ -301,7 +301,7 @@ namespace GameFramework
                 LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-        private void OnCommand(int worldId, int src, int dest, string command)
+        private void OnCommand(int worldId, ulong src, ulong dest, string command)
         {
             const string c_QuitLobby = "QuitLobby";
             const string c_ReloadConfig = "ReloadConfig";
@@ -328,7 +328,7 @@ namespace GameFramework
                 LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-        private void OnMessage(int worldId, uint seq, int source_handle, int dest_handle,
+        private void OnMessage(int worldId, uint seq, ulong source_handle, ulong dest_handle,
             IntPtr data, int len)
         {
             try {
@@ -375,7 +375,7 @@ namespace GameFramework
                 LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
-        private void OnMessageResultCallback(int worldId, uint seq, int src, int dest, int result)
+        private void OnMessageResultCallback(int worldId, uint seq, ulong src, ulong dest, int result)
         {
 
         }
@@ -433,8 +433,8 @@ namespace GameFramework
         private DataCacheThread m_DataCacheThread = new DataCacheThread();
         private UserProcessScheduler m_UserProcessScheduler = new UserProcessScheduler();
         private GlobalProcessThread m_GlobalProcessThread = new GlobalProcessThread();
-        private HashSet<int> m_NodeHandlesOnBigworld = new HashSet<int>();
-        private HashSet<int> m_NodeHandles = new HashSet<int>();
+        private HashSet<ulong> m_NodeHandlesOnBigworld = new HashSet<ulong>();
+        private HashSet<ulong> m_NodeHandles = new HashSet<ulong>();
         private PBChannel m_DataCacheChannel = null;
         private PBChannel m_BigworldChannel = null;
 

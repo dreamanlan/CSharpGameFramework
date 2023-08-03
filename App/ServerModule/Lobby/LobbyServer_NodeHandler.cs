@@ -25,7 +25,7 @@ namespace Lobby
             //--------------------------------------------------------------------------------------
         }
         //==========================================================================================================================
-        private void HandleEnterScene(NodeMessage msg, int handle, uint seq)
+        private void HandleEnterScene(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid startGameMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (startGameMsg != null) {
@@ -35,7 +35,7 @@ namespace Lobby
                 }
             }
         }
-        private void HandleQuitRoom(NodeMessage msg, int handle, uint seq)
+        private void HandleQuitRoom(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid quitClientMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != quitClientMsg) {
@@ -45,7 +45,7 @@ namespace Lobby
                 }
             }
         }
-        private void HandleChangeSceneRoom(NodeMessage msg, int handle, uint seq)
+        private void HandleChangeSceneRoom(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid changeSceneMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != changeSceneMsg) {
@@ -55,7 +55,7 @@ namespace Lobby
                 }
             }
         }
-        private void HandleRequestSceneRoomInfo(NodeMessage msg, int handle, uint seq)
+        private void HandleRequestSceneRoomInfo(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {
@@ -65,7 +65,7 @@ namespace Lobby
                 roomProcess.QueueAction(roomProcess.RequestSceneRoomInfo, guid);
             }
         }
-        private void HandleRequestSceneRoomList(NodeMessage msg, int handle, uint seq)
+        private void HandleRequestSceneRoomList(NodeMessage msg, ulong handle, uint seq)
         {
             GameFrameworkMessage.NodeMessageWithGuid headerMsg = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
             if (null != headerMsg) {

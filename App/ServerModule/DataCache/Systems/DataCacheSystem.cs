@@ -29,7 +29,7 @@ internal class DataCacheSystem : MyServerThread
     }
     //==========================通过QueueAction调用的方法===========================================
     //注意!回调函数目前在缓存线程与db线程都可能调用，回调函数的实现需要是线程安全的(目前一般都是发消息，满足此条件)。
-    internal void Load(Msg_LD_Load msg, PBChannel channel, int handle)
+    internal void Load(Msg_LD_Load msg, PBChannel channel, ulong handle)
     {
         //首先在缓存中查找数据,若未找到,则到DB中查找  
         bool isLoadCache = true;

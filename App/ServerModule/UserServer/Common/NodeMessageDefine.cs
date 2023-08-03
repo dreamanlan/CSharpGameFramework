@@ -68,8 +68,8 @@ namespace GameFramework
             header.m_Guid = guid;
         }
     }
-    internal delegate bool NodeMessageFilterDelegate(NodeMessage msg, int handle, uint seq);
-    internal delegate void NodeMessageHandlerDelegate(NodeMessage msg, int handle, uint seq);
+    internal delegate bool NodeMessageFilterDelegate(NodeMessage msg, ulong handle, uint seq);
+    internal delegate void NodeMessageHandlerDelegate(NodeMessage msg, ulong handle, uint seq);
 
     //----------------------------------------------------------------------------------------------
     // 来自GM工具的node消息
@@ -109,6 +109,6 @@ namespace GameFramework
         }
     }
 
-    internal delegate bool JsonMessageFilterDelegate(JsonMessage msg, int handle, uint seq);
-    internal delegate void JsonMessageHandlerDelegate(JsonMessage msg, int handle, uint seq);
+    internal delegate bool JsonMessageFilterDelegate(JsonMessage msg, ulong handle, uint seq);
+    internal delegate void JsonMessageHandlerDelegate(JsonMessage msg, ulong handle, uint seq);
 }

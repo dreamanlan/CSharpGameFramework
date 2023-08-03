@@ -60,7 +60,7 @@ namespace GameFramework
             }
             m_Thread.Stop();
         }
-        internal void DispatchJsonMessage(bool isGmTool, uint seq, int sourceHandle, int destHandle, byte[] data)
+        internal void DispatchJsonMessage(bool isGmTool, uint seq, ulong sourceHandle, ulong destHandle, byte[] data)
         {
             m_NodeMessageManager.DispatchMessage(isGmTool, seq, sourceHandle, destHandle, data);
         }

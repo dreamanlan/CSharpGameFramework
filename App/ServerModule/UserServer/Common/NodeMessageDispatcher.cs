@@ -68,8 +68,8 @@ namespace GameFramework
 
     internal static void HandleNodeMessage (
         uint seq,
-        int source_handle, 
-        int dest_handle,
+        ulong source_handle,
+        ulong dest_handle,
         byte[] data)
     {
       if (s_Inited) {
@@ -86,7 +86,7 @@ namespace GameFramework
       }
     }
 
-    internal static void HandleNodeMessage (NodeMessage msg, int handle, uint session)
+    internal static void HandleNodeMessage (NodeMessage msg, ulong handle, uint session)
     {
       if (s_Inited && msg!=null) {
 
@@ -156,7 +156,7 @@ namespace GameFramework
       return type;
     }
 
-    internal static void SendNodeMessage (int handle, NodeMessage msg)
+    internal static void SendNodeMessage (ulong handle, NodeMessage msg)
     {
       if (s_Inited) {
         byte[] data = BuildNodeMessage(msg);
@@ -176,7 +176,7 @@ namespace GameFramework
       }
     }
 
-    internal static void ForwardMessage(int handle, byte[] data)
+    internal static void ForwardMessage(ulong handle, byte[] data)
     {
       if (s_Inited) {
         if (null != data) {
@@ -256,8 +256,8 @@ namespace GameFramework
 
     internal static void HandleNodeMessage(
         uint seq,
-        int source_handle,
-        int dest_handle,
+        ulong source_handle,
+        ulong dest_handle,
         byte[] data)
     {
       if (s_Inited) {
@@ -268,7 +268,7 @@ namespace GameFramework
       }
     }
 
-    internal static void HandleNodeMessage(JsonMessage msg, int handle, uint session)
+    internal static void HandleNodeMessage(JsonMessage msg, ulong handle, uint session)
     {
       if (s_Inited && msg != null) {
         //LogSys.Log(LOG_TYPE.DEBUG, "Handle Json Message:{0}={1}", msg.m_ID, msg.GetType().Name);
@@ -326,7 +326,7 @@ namespace GameFramework
       return type;
     }
 
-    internal static void SendNodeMessage(int handle, JsonMessage msg)
+    internal static void SendNodeMessage(ulong handle, JsonMessage msg)
     {
       if (s_Inited) {
         byte[] data = BuildNodeMessage(msg);
@@ -346,7 +346,7 @@ namespace GameFramework
       }
     }
 
-    internal static void ForwardMessage(int handle, byte[] data)
+    internal static void ForwardMessage(ulong handle, byte[] data)
     {
       if (s_Inited) {
         if (null != data) {

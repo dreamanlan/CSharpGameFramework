@@ -10,8 +10,8 @@ namespace GameFramework
   {
     internal bool IsGmTool;
     internal uint Seq;
-    internal int SourceHandle;
-    internal int DestHandle;
+    internal ulong SourceHandle;
+    internal ulong DestHandle;
     internal byte[] Data;
   }
 }

@@ -66,6 +66,6 @@ namespace Lobby
       header.m_Guid = guid;
     }
   }
-  internal delegate bool NodeMessageFilterDelegate(NodeMessage msg, int handle, uint seq);
-  internal delegate void NodeMessageHandlerDelegate(NodeMessage msg, int handle, uint seq);
+  internal delegate bool NodeMessageFilterDelegate(NodeMessage msg, ulong handle, uint seq);
+  internal delegate void NodeMessageHandlerDelegate(NodeMessage msg, ulong handle, uint seq);
 }

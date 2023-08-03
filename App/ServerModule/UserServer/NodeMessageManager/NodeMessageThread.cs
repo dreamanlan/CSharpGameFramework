@@ -68,7 +68,7 @@ namespace GameFramework
       }
     }
 
-    internal void QueueMessage(bool isGmTool, uint seq, int sourceHandle, int destHandle, byte[] data)
+    internal void QueueMessage(bool isGmTool, uint seq, ulong sourceHandle, ulong destHandle, byte[] data)
     {
       try {
         NodeMessageInfo info;

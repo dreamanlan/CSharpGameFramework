@@ -30,7 +30,7 @@ namespace Lobby
             m_RoomSvrChannel.Register<Msg_RL_PickItem>(HandlePickItem);
             m_RoomSvrChannel.Register<Msg_LRL_StoryMessage>(HandleStoryMessageFromRoom);
         }
-        private void HandleRegisterRoomServer(Msg_RL_RegisterRoomServer msg_, PBChannel channel, int src, uint session)
+        private void HandleRegisterRoomServer(Msg_RL_RegisterRoomServer msg_, PBChannel channel, ulong src, uint session)
         {
             m_RoomProcessThread.RegisterRoomServer(new RoomServerInfo {
                 RoomServerName = msg_.ServerName,
@@ -39,7 +39,7 @@ namespace Lobby
                 ServerPort = msg_.ServerPort
             });
         }
-        private void HandleRoomServerUpdateInfo(Msg_RL_RoomServerUpdateInfo updateMsg, PBChannel channel, int src, uint session)
+        private void HandleRoomServerUpdateInfo(Msg_RL_RoomServerUpdateInfo updateMsg, PBChannel channel, ulong src, uint session)
         {
             //更新RoomServer信息
             m_RoomProcessThread.UpdateRoomServerInfo(new RoomServerInfo {
@@ -48,17 +48,17 @@ namespace Lobby
                 UserNum = updateMsg.UserNum
             });
         }
-        private void HandleEnterSceneResult(Msg_RL_EnterSceneResult msg, PBChannel channel, int src, uint session)
+        private void HandleEnterSceneResult(Msg_RL_EnterSceneResult msg, PBChannel channel, ulong src, uint session)
         {
             //响应RoomServer消息，进入野外场景结果消息
             m_RoomProcessThread.OnEnterSceneResult(msg.UserGuid, msg.RoomId, msg.Result);
         }
-        private void HandleChangeScene(Msg_RL_ChangeScene msg, PBChannel channel, int src, uint session)
+        private void HandleChangeScene(Msg_RL_ChangeScene msg, PBChannel channel, ulong src, uint session)
         {
             //响应RoomServer消息，进入野外场景结果消息
             m_RoomProcessThread.OnChangeScene(msg.UserGuids, msg.SceneId);
         }
-        private void HandleChangeSceneResult(Msg_RL_ChangeSceneResult msg, PBChannel channel, int src, uint session)
+        private void HandleChangeSceneResult(Msg_RL_ChangeSceneResult msg, PBChannel channel, ulong src, uint session)
         {
             //响应RoomServer消息，进入野外场景结果消息
             int hp = 0;
@@ -69,40 +69,40 @@ namespace Lobby
             }
             m_RoomProcessThread.OnChangeSceneResult(msg.UserGuid, msg.RoomId, msg.TargetRoomId, msg.Result, hp, mp);
         }
-        private void HandleActiveScene(Msg_RL_ActiveScene msg, PBChannel channel, int src, uint session)
+        private void HandleActiveScene(Msg_RL_ActiveScene msg, PBChannel channel, ulong src, uint session)
         {
             //响应RoomServer消息，激活副本请求消息
             m_RoomProcessThread.OnActiveScene(msg.UserGuids, msg.SceneId);
         }
-        private void HandleActiveSceneResult(Msg_RL_ActiveSceneResult msg, PBChannel channel, int src, uint session)
+        private void HandleActiveSceneResult(Msg_RL_ActiveSceneResult msg, PBChannel channel, ulong src, uint session)
         {
             //响应RoomServer消息，激活副本结果消息
             m_RoomProcessThread.OnActiveSceneResult(msg.UserGuids, msg.RoomId, msg.Result);
         }
-        private void HandleUserDrop(Msg_RL_UserDrop msg, PBChannel channel, int src, uint session)
+        private void HandleUserDrop(Msg_RL_UserDrop msg, PBChannel channel, ulong src, uint session)
         {
             //响应RoomServer游戏客户端退出消息
             m_RoomProcessThread.OnRoomUserDrop(msg.RoomId, msg.UserGuid, msg.IsBattleEnd, msg);
         }
-        private void HandleUserQuit(Msg_RL_UserQuit msg, PBChannel channel, int src, uint session)
+        private void HandleUserQuit(Msg_RL_UserQuit msg, PBChannel channel, ulong src, uint session)
         {
             //响应RoomServer回复lobby Msg_LR_UserQuit的消息
             m_RoomProcessThread.OnRoomUserQuit(msg.RoomId, msg.UserGuid, msg);
         }
-        private void HandlePickMoney(Msg_RL_PickMoney msg, PBChannel channel, int src, uint sesssion)
+        private void HandlePickMoney(Msg_RL_PickMoney msg, PBChannel channel, ulong src, uint sesssion)
         {
             m_RoomProcessThread.OnPickMoney(msg);
         }
-        private void HandlePickItem(Msg_RL_PickItem msg, PBChannel channel, int src, uint sesssion)
+        private void HandlePickItem(Msg_RL_PickItem msg, PBChannel channel, ulong src, uint sesssion)
         {
             m_RoomProcessThread.OnPickItem(msg);
         }
-        private void HandelReplyReconnectUser(Msg_RL_ReplyReconnectUser replyMsg, PBChannel channel, int src, uint session)
+        private void HandelReplyReconnectUser(Msg_RL_ReplyReconnectUser replyMsg, PBChannel channel, ulong src, uint session)
         {
             //响应RoomServer消息
             m_RoomProcessThread.OnReplyReconnectUser(replyMsg.UserGuid, replyMsg.RoomId, replyMsg.Result);
         }
-        private void HandleStoryMessageFromRoom(Msg_LRL_StoryMessage msg, PBChannel channel, int src, uint session)
+        private void HandleStoryMessageFromRoom(Msg_LRL_StoryMessage msg, PBChannel channel, ulong src, uint session)
         {
             UserInfo user = m_UserProcessScheduler.GetUserInfo(msg.UserGuid);
             if(null!=user){

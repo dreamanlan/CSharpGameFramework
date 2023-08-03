@@ -53,7 +53,7 @@ namespace Lobby
       StopTaskThreads();
       m_Thread.Stop();
     }
-    internal void DispatchJsonMessage(uint seq, int sourceHandle, int destHandle, byte[] data)
+    internal void DispatchJsonMessage(uint seq, ulong sourceHandle, ulong destHandle, byte[] data)
     {
       m_NodeMessageManager.DispatchMessage(seq, sourceHandle, destHandle, data);
     }
@@ -225,7 +225,7 @@ namespace Lobby
             if (UserState.Room != user.CurrentState) {
               if (user.Room != null) {
                 RoomProcessThread roomProcess = LobbyServer.Instance.RoomProcessThread;
-                roomProcess.QueueAction(roomProcess.QuitRoom, guid, true, 0);
+                roomProcess.QueueAction(roomProcess.QuitRoom, guid, true, (ulong)0);
               }
               m_DeactiveUserGuids.Add(guid);
             } else {
