@@ -3742,7 +3742,7 @@ namespace DslExpression
                 if (ix == 0)
                     fmt = v.AsString;
                 else
-                    al.Add(v);
+                    al.Add(v.GetObject());
             }
             v = string.Format(fmt, al.ToArray());
             return v;
@@ -5392,7 +5392,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
                 int v;
-                if (int.TryParse(str, out v)) {
+                if (int.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
                     r = v;
                 }
             }
@@ -5407,7 +5407,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
                 uint v;
-                if (uint.TryParse(str, out v)) {
+                if (uint.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
                     r = v;
                 }
             }
@@ -5422,7 +5422,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
                 long v;
-                if (long.TryParse(str, out v)) {
+                if (long.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
                     r = v;
                 }
             }
@@ -5437,7 +5437,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
                 ulong v;
-                if (ulong.TryParse(str, out v)) {
+                if (ulong.TryParse(str, System.Globalization.NumberStyles.Number, null, out v)) {
                     r = v;
                 }
             }
@@ -5452,7 +5452,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
                 float v;
-                if (float.TryParse(str, out v)) {
+                if (float.TryParse(str, System.Globalization.NumberStyles.Float, null, out v)) {
                     r = v;
                 }
             }
@@ -5467,7 +5467,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
                 double v;
-                if (double.TryParse(str, out v)) {
+                if (double.TryParse(str, System.Globalization.NumberStyles.Float, null, out v)) {
                     r = v;
                 }
             }
@@ -5482,7 +5482,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
                 int v;
-                if (int.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                if (int.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
                     r = v;
                 }
             }
@@ -5497,7 +5497,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
                 uint v;
-                if (uint.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                if (uint.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
                     r = v;
                 }
             }
@@ -5512,7 +5512,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
                 long v;
-                if (long.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                if (long.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
                     r = v;
                 }
             }
@@ -5527,7 +5527,7 @@ namespace DslExpression
             if (operands.Count >= 1) {
                 var str = operands[0].AsString;
                 ulong v;
-                if (ulong.TryParse(str, System.Globalization.NumberStyles.AllowHexSpecifier, null, out v)) {
+                if (ulong.TryParse(str, System.Globalization.NumberStyles.HexNumber, null, out v)) {
                     r = v;
                 }
             }
