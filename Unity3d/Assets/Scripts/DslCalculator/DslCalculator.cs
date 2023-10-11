@@ -6477,6 +6477,69 @@ namespace DslExpression
             return r;
         }
     }
+    internal class QuotePathExp : SimpleExpressionBase
+    {
+        protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+        {
+            CalculatorValue r = CalculatorValue.NullObject;
+            if (operands.Count >= 1) {
+                var path = operands[0].AsString;
+                bool onlyNeeded = operands.Count >= 2 ? operands[1].GetBool() : true;
+                bool singleQuotes = operands.Count >= 3 ? operands[2].GetBool() : false;
+                if (null != path && path.Length > 0) {
+                    path = Environment.ExpandEnvironmentVariables(path).Trim();
+                    if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
+                        //windows上文件名可以包含单引号，只能用双引号来引用路径
+                        string delim = "\"";
+                        if (onlyNeeded) {
+                            char first = path[0];
+                            char last = path[path.Length - 1];
+                            int ix = path.IndexOf(' ');
+                            if (ix > 0 && !CharIsQuote(first) && !CharIsQuote(last)) {
+                                path = delim + path + delim;
+                            }
+                        }
+                        else {
+                            char first = path[0];
+                            char last = path[path.Length - 1];
+                            if (!CharIsQuote(first) && !CharIsQuote(last)) {
+                                path = delim + path + delim;
+                            }
+                        }
+                    }
+                    else {
+                        string delim = singleQuotes ? "'" : "\"";
+                        if (onlyNeeded) {
+                            char first = path[0];
+                            char last = path[path.Length - 1];
+                            int ix = path.IndexOf(' ');
+                            if (ix > 0 && !CharIsQuote(first) && !CharIsQuote(last)) {
+                                path = delim + path + delim;
+                            }
+                        }
+                        else {
+                            char first = path[0];
+                            char last = path[path.Length - 1];
+                            if (!CharIsQuote(first) && !CharIsQuote(last)) {
+                                path = delim + path + delim;
+                            }
+                        }
+                    }
+                    r = path;
+                }
+            }
+            return r;
+        }
+        private static bool CharIsQuote(char c)
+        {
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
+                return c == '"';
+            }
+            else {
+                return c == '"' || c == '\'';
+            }
+        }
+    }
     internal class DebugBreakExp : SimpleExpressionBase
     {
         protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
@@ -8607,7 +8670,8 @@ namespace DslExpression
             Register("getextension", new ExpressionFactoryHelper<GetExtensionExp>());
             Register("getdirectoryname", new ExpressionFactoryHelper<GetDirectoryNameExp>());
             Register("combinepath", new ExpressionFactoryHelper<CombinePathExp>());
-            Register("changeextension", new ExpressionFactoryHelper<ChangeExtensionExp>());
+            Register("changeextension", new ExpressionFactoryHelper<ChangeExtensionExp>());            
+			Register("quotepath", new ExpressionFactoryHelper<QuotePathExp>());
             Register("debugbreak", new ExpressionFactoryHelper<DebugBreakExp>());
             Register("debuglog", new ExpressionFactoryHelper<DebugLogExp>());
             Register("debugwarning", new ExpressionFactoryHelper<DebugWarningExp>());
