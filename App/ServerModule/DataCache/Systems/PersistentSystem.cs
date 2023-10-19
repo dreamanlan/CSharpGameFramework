@@ -180,7 +180,7 @@ internal class PersistentSystem
                           msgId, saveCountKey, saveCount, cacheItemList.Count, dbDataVersion, Thread.CurrentThread.ManagedThreadId, ts.TotalMilliseconds);
 
             m_CurrentSaveCounts.AddOrUpdate(saveCountKey, saveCount, (g, u) => saveCount);
-            //LogSys.Log(LOG_TYPE.MONITOR, "SaveTablePiece Success. MsgId:{0}, SaveCountKey:{1}, SaveCount:{2}, BatchDataCount:{3}, DataVersion:{4}, DBThreadId:{5}",
+            //LogSys.Log(ServerLogType.MONITOR, "SaveTablePiece Success. MsgId:{0}, SaveCountKey:{1}, SaveCount:{2}, BatchDataCount:{3}, DataVersion:{4}, DBThreadId:{5}",
             //             msgId, saveCountKey, saveCount, cacheItemList.Count, dbDataVersion, Thread.CurrentThread.ManagedThreadId);
         } catch (Exception e) {
             //写入DB失败

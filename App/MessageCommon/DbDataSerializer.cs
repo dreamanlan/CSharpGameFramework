@@ -12,7 +12,7 @@ namespace GameFrameworkData
             if (null == msg)
                 return null;
             DataStream.SetLength(0);
-            Serializer.Serialize(DataStream, msg);
+            ProtoBuf.Serializer.Serialize(DataStream, msg);
             return DataStream.ToArray();
         }
         internal static bool Decode(byte[] msgbuf, Type t, out object msg)
@@ -22,7 +22,7 @@ namespace GameFrameworkData
                 DataStream.Write(msgbuf, 0, msgbuf.Length);
                 DataStream.Position = 0;
                 try {
-                    msg = Serializer.Deserialize(DataStream, null, t);
+                    msg = ProtoBuf.Serializer.Deserialize(t, DataStream);
                     if (msg == null) {
                         return false;
                     }
@@ -47,19 +47,8 @@ namespace GameFrameworkData
                 return s_Stream;
             }
         }
-        private static DataProtobufSerializer Serializer
-        {
-            get
-            {
-                if (null == s_Serializer)
-                    s_Serializer = new DataProtobufSerializer();
-                return s_Serializer;
-            }
-        }
 
         [ThreadStatic]
         private static MemoryStream s_Stream = null;
-        [ThreadStatic]
-        private static DataProtobufSerializer s_Serializer = null;
     }
 }

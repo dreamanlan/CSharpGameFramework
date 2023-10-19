@@ -57,8 +57,8 @@ script(main)
     mono=expand("%rootdir%/Tools/mono/mono.exe");
     pdb2mdb=expand("%rootdir%/Tools/lib/mono/4.5/pdb2mdb.exe");
 
-    dslcopy=expand("%rootdir%/Tools/DslCopy/bin/Release/DslCopy.exe");
-    tablecopy=expand("%rootdir%/Tools/TableReaderGenerator/bin/Debug/TableReaderGenerator.exe");
+    dslcopy=expand("%rootdir%/Tools/DslCopy/bin/Release/net6.0/DslCopy.exe");
+    tablecopy=expand("%rootdir%/Tools/TableReaderGenerator/bin/Debug/net6.0/TableReaderGenerator.exe");
     
     echo();
     looplist(listhashtable(envs())){

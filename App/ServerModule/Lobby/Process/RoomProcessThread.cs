@@ -337,7 +337,7 @@ namespace Lobby
                 LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
             }
         }
-        internal void OnChangeScene(List<ulong> userGuids, int sceneID)
+        internal void OnChangeScene(IList<ulong> userGuids, int sceneID)
         {
             bool failed = true;
             RoomInfo targetRoom = null;
@@ -417,11 +417,11 @@ namespace Lobby
                 LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
             }
         }
-        internal void OnActiveScene(List<ulong> guids, int sceneId)
+        internal void OnActiveScene(ulong[] guids, int sceneId)
         {
             Msg_LR_ActiveScene msg = new Msg_LR_ActiveScene();
-            msg.UserGuids.AddRange(guids);
-            msg.RoomId = m_LobbyInfo.CreateAutoRoom(guids.ToArray(), sceneId);
+            msg.UserGuids = guids;
+            msg.RoomId = m_LobbyInfo.CreateAutoRoom(guids, sceneId);
             msg.SceneId = sceneId;
 
             RoomInfo room = m_LobbyInfo.GetRoomByID(msg.RoomId);
@@ -429,11 +429,11 @@ namespace Lobby
                 LobbyServer.Instance.RoomSvrChannel.Send(room.RoomServerName, msg);
             }
         }
-        internal void OnActiveSceneResult(List<ulong> guids, int roomID, int result)
+        internal void OnActiveSceneResult(ulong[] guids, int roomID, int result)
         {
             //成功打开副本时，发起各个玩家的场景切换流程（注意是切到副本）
             if (result == (int)SceneOperationResultEnum.Success) {
-                for (int i = 0; i < guids.Count; ++i) {
+                for (int i = 0; i < guids.Length; ++i) {
                     ulong guid = guids[i];
                     RequestChangeSceneRoom(guid, 0, roomID);
                 }

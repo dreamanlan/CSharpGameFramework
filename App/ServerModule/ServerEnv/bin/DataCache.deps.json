@@ -1,0 +1,170 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "DataCache/1.0.0": {
+        "dependencies": {
+          "Common": "1.0.0",
+          "DataProtoBuf": "1.0.0",
+          "LogSys": "1.0.0",
+          "Messenger": "1.0.0",
+          "ServerCommon": "1.0.0",
+          "ServerProtoBuf": "1.0.0",
+          "CSharpCenterClient": "1.0.0.0",
+          "MySql.Data": "6.8.3.0",
+          "protobuf-net.Core": "3.0.0.0",
+          "protobuf-net": "3.0.0.0",
+          "ScriptFrameworkLibrary": "1.0.0.0"
+        },
+        "runtime": {
+          "DataCache.dll": {}
+        }
+      },
+      "Common/1.0.0": {
+        "runtime": {
+          "Common.dll": {}
+        }
+      },
+      "DataProtoBuf/1.0.0": {
+        "dependencies": {
+          "Common": "1.0.0"
+        },
+        "runtime": {
+          "DataProtoBuf.dll": {}
+        }
+      },
+      "LogSys/1.0.0": {
+        "runtime": {
+          "LogSys.dll": {}
+        }
+      },
+      "Messenger/1.0.0": {
+        "dependencies": {
+          "ServerProtoBuf": "1.0.0"
+        },
+        "runtime": {
+          "Messenger.dll": {}
+        }
+      },
+      "ServerCommon/1.0.0": {
+        "dependencies": {
+          "Common": "1.0.0"
+        },
+        "runtime": {
+          "ServerCommon.dll": {}
+        }
+      },
+      "ServerProtoBuf/1.0.0": {
+        "runtime": {
+          "ServerProtoBuf.dll": {}
+        }
+      },
+      "CSharpCenterClient/1.0.0.0": {
+        "runtime": {
+          "CSharpCenterClient.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "MySql.Data/6.8.3.0": {
+        "runtime": {
+          "MySql.Data.dll": {
+            "assemblyVersion": "6.8.3.0",
+            "fileVersion": "6.8.3.0"
+          }
+        }
+      },
+      "protobuf-net.Core/3.0.0.0": {
+        "runtime": {
+          "protobuf-net.Core.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.2.26.38424"
+          }
+        }
+      },
+      "protobuf-net/3.0.0.0": {
+        "runtime": {
+          "protobuf-net.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.2.26.38424"
+          }
+        }
+      },
+      "ScriptFrameworkLibrary/1.0.0.0": {
+        "runtime": {
+          "ScriptFrameworkLibrary.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "DataCache/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Common/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DataProtoBuf/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "LogSys/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Messenger/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ServerCommon/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ServerProtoBuf/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CSharpCenterClient/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "MySql.Data/6.8.3.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "protobuf-net.Core/3.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "protobuf-net/3.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ScriptFrameworkLibrary/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

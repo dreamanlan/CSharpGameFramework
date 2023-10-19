@@ -25,16 +25,16 @@ set tabledir=%workdir%\Resource\Tables
 
 rem dsl copy and convert *.dsl from txt to binary (only release version)
 if "%cfg%" EQU "Release" (
-  set dslcopy=%workdir%\Tools\DslCopy\bin\Debug\DslCopy.exe
+  set dslcopy=%workdir%\Tools\DslCopy\bin\Debug\net6.0\DslCopy.exe
 ) else (
-  set dslcopy=%workdir%\Tools\DslCopy\bin\Release\DslCopy.exe
+  set dslcopy=%workdir%\Tools\DslCopy\bin\Release\net6.0\DslCopy.exe
 )
 
 rem tabel copy
 if "%cfg%" EQU "Release" (
-  set tablecopy=%workdir%\Tools\TableReaderGenerator\bin\Debug\TableReaderGenerator.exe
+  set tablecopy=%workdir%\Tools\TableReaderGenerator\bin\Debug\net6.0\TableReaderGenerator.exe
 ) else (
-  set tablecopy=%workdir%\Tools\TableReaderGenerator\bin\Debug\TableReaderGenerator.exe
+  set tablecopy=%workdir%\Tools\TableReaderGenerator\bin\Debug\net6.0\TableReaderGenerator.exe
 )
 
 echo update dsl and table files

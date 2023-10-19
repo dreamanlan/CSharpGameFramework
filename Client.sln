@@ -1,9 +1,9 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCommon", "Infrastructure\Common\ServerCommon.csproj", "{8EAD2077-DE3A-435C-B770-09EFFE4153C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerCommon", "Infrastructure\Common\ServerCommon.csproj", "{8EAD2077-DE3A-435C-B770-09EFFE4153C1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Infrastructure\Common\Common.csproj", "{1C8280CD-EB93-4849-940E-A99EDDF811D6}"
 EndProject

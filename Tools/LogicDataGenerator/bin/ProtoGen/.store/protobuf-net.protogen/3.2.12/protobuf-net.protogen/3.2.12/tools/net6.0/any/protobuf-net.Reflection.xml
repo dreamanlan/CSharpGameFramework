@@ -1,0 +1,1292 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>protobuf-net.Reflection</name>
+    </assembly>
+    <members>
+        <member name="T:ProtoBuf.Reflection.CodeGenerator">
+            <summary>
+            Abstract root for a general purpose code-generator
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CodeGenerator.Name">
+            <summary>
+            The logical name of this code generator
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CodeGenerator.ToString">
+            <summary>
+            Get a string representation of the instance
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CodeGenerator.Generate(Google.Protobuf.Reflection.FileDescriptorSet,ProtoBuf.Reflection.NameNormalizer)">
+            <summary>
+            Execute the code generator against a FileDescriptorSet, yielding a sequence of files
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CodeGenerator.Generate(Google.Protobuf.Reflection.FileDescriptorSet,ProtoBuf.Reflection.NameNormalizer,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Execute the code generator against a FileDescriptorSet, yielding a sequence of files
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CodeGenerator.Compile(ProtoBuf.Reflection.CodeFile)">
+            <summary>
+            Eexecute this code generator against a code file
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CodeGenerator.Compile(ProtoBuf.Reflection.CodeFile[])">
+            <summary>
+            Eexecute this code generator against a set of code file
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.CommonCodeGenerator">
+            <summary>
+            Abstract base class for a code generator that uses a visitor pattern
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GetAccess(Google.Protobuf.Reflection.FileDescriptorProto)">
+            <summary>
+            Obtain the access of an item, accounting for the model's hierarchy
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GetLanguageVersion(Google.Protobuf.Reflection.FileDescriptorProto)">
+            <summary>
+            Get the language version for this language from a schema
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GetAccess(Google.Protobuf.Reflection.DescriptorProto)">
+            <summary>
+            Obtain the access of an item, accounting for the model's hierarchy
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GetAccess(Google.Protobuf.Reflection.FieldDescriptorProto)">
+            <summary>
+            Obtain the access of an item, accounting for the model's hierarchy
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GetAccess(Google.Protobuf.Reflection.EnumDescriptorProto)">
+            <summary>
+            Obtain the access of an item, accounting for the model's hierarchy
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GetAccess(Google.Protobuf.Reflection.ServiceDescriptorProto)">
+            <summary>
+            Obtain the access of an item, accounting for the model's hierarchy
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GetAccess(ProtoBuf.Reflection.Access)">
+            <summary>
+            Get the textual name of a given access level
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.Indent">
+            <summary>
+            The indentation used by this code generator
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.DefaultFileExtension">
+            <summary>
+            The file extension of the files generatred by this generator
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.IsCaseSensitive">
+            <summary>
+            Should case-sensitivity be used when computing conflicts?
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.Escape(System.String)">
+            <summary>
+            Handle keyword escaping in the language of this code generator
+            </summary>
+            <param name="identifier"></param>
+            <returns></returns>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.Generate(Google.Protobuf.Reflection.FileDescriptorSet,ProtoBuf.Reflection.NameNormalizer,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Execute the code generator against a FileDescriptorSet, yielding a sequence of files
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteFile(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto)">
+            <summary>
+            Emits the code for a file in a descriptor-set
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteNamespaceHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,System.String)">
+            <summary>
+            Opens the stated namespace
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteNamespaceFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,System.String)">
+            <summary>
+            Closes the stated namespace
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteExtension(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto)">
+            <summary>
+            Emit code representing an extension field
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteExtensionsHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            Emit code preceeding a set of extension fields
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteExtensionsFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            Emit code following a set of extension fields
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteExtensionsHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Emit code preceeding a set of extension fields
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteExtensionsFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Emit code following a set of extension fields
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteService(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.ServiceDescriptorProto)">
+            <summary>
+            Emit code representing a service
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteServiceFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.ServiceDescriptorProto,System.Object@)">
+            <summary>
+            Emit code following a set of service methods
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteServiceMethod(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.MethodDescriptorProto,System.Object@)">
+            <summary>
+            Emit code representing a service method
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteServiceHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.ServiceDescriptorProto,System.Object@)">
+            <summary>
+            Emit code preceeding a set of service methods
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.ShouldOmitMessage(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Check whether a particular message should be suppressed - for example because it represents a map
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteMessage(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto)">
+            <summary>
+            Emit code representing a message type
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteConstructorFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Emit code terminating a constructor, if one is required
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteInitField(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto,System.Object@,ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub[])">
+            <summary>
+            Emit code initializing field values inside a constructor, if one is required
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteContructorHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Emit code beginning a constructor, if one is required
+            </summary>
+            <returns>true if a constructor is required</returns>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteField(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto,System.Object@,ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub[])">
+            <summary>
+            Emit code representing a message field
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.TrackFieldPresence(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto,ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub[],ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub@)">
+            <summary>
+            Indicates whether field presence tracking is suggested for this field
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteMessageFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Emit code following a set of message fields
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteMessageHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Emit code preceeding a set of message fields
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteEnum(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.EnumDescriptorProto)">
+            <summary>
+            Emit code representing an enum type
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteOneOf(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub)">
+            <summary>
+            Emit code representing 'oneof' elements as an enum discriminator
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteEnumHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.EnumDescriptorProto,System.Object@)">
+            <summary>
+            Emit code preceeding a set of enum values
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteEnumValue(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.EnumValueDescriptorProto,System.Object@)">
+            <summary>
+            Emit code representing an enum value
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteEnumFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.EnumDescriptorProto,System.Object@)">
+            <summary>
+            Emit code following a set of enum values
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteFileHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            Emit code at the start of a file
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteFileFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            Emit code at the end of a file
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteOneOfEnumHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.OneofDescriptorProto,System.Object@)">
+            <summary>
+            Emit the start of an enum declaration for 'oneof' groups, including the 0/None element
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteOneOfEnumValue(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto,System.Object@)">
+            <summary>
+            Emit a field-based entry for a 'oneof' groups's enum
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteOneOfEnumFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.OneofDescriptorProto,System.Object@)">
+            <summary>
+            Emit the end of an enum declaration for 'oneof' groups
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.WriteOneOfDiscriminator(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.OneofDescriptorProto,System.Object@)">
+            <summary>
+            Emit  the discriminator accessor for 'oneof' groups
+            </summary>
+        </member>
+        <member name="F:ProtoBuf.Reflection.CommonCodeGenerator.OneOfEnumSuffixEnum">
+            <summary>
+            Convention-based suffix for 'oneof' enums
+            </summary>
+        </member>
+        <member name="F:ProtoBuf.Reflection.CommonCodeGenerator.OneOfEnumSuffixDiscriminator">
+            <summary>
+            Convention-based suffix for 'oneof' discriminators
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.CommonCodeGenerator.ServiceKinds">
+            <summary>
+            Indicates the kinds of service metadata that should be included
+            </summary>
+        </member>
+        <member name="F:ProtoBuf.Reflection.CommonCodeGenerator.ServiceKinds.None">
+            <summary>
+            No serivices should be included
+            </summary>
+        </member>
+        <member name="F:ProtoBuf.Reflection.CommonCodeGenerator.ServiceKinds.Wcf">
+            <summary>
+            Indicates service metadata defined by WCF (System.ServiceModel) should be included
+            </summary>
+        </member>
+        <member name="F:ProtoBuf.Reflection.CommonCodeGenerator.ServiceKinds.Grpc">
+            <summary>
+            Indicates service metadata defined by protobuf-net.Grpc should be included
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext">
+            <summary>
+            Represents the state of a code-generation invocation
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.File">
+            <summary>
+            The file being processed
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.IndentToken">
+            <summary>
+            The token to use for indentation
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.IndentLevel">
+            <summary>
+            The current indent level
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.NameNormalizer">
+            <summary>
+            The mechanism to use for name normalization
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.Output">
+            <summary>
+            The output for this code generation
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.Syntax">
+            <summary>
+            The effective syntax of this code-generation cycle, defaulting to "proto2" if not explicity specified
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.OneOfEnums">
+            <summary>
+            Whether to emit enums and discriminators for oneof groups
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.#ctor(ProtoBuf.Reflection.CommonCodeGenerator,Google.Protobuf.Reflection.FileDescriptorProto,ProtoBuf.Reflection.NameNormalizer,System.IO.TextWriter,System.String,System.Collections.Generic.Dictionary{System.String,System.String})">
+            <summary>
+            Create a new GeneratorContext instance
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.RepeatedAsList">
+            <summary>
+            Whether repeated fields should be lists
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.EmitListSetters">
+            <summary>
+            Whether lists should be written with getters
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.EmitNullWrappers">
+            <summary>
+            Whether wrappers.proto should be generated as C# nullable types (int?)
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.EmitCompatibilityLevelAttribute">
+            <summary>
+            Whether well-known types should be marked with <see cref="T:ProtoBuf.CompatibilityLevel"/> instead of <see cref="T:ProtoBuf.DataFormat"/>
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.EmitServices">
+            <summary>
+            Whether services should be emitted
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.EmitServicesFor(ProtoBuf.Reflection.CommonCodeGenerator.ServiceKinds)">
+            <summary>
+            What kinds of services should be emitted
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.IsEnabled(System.String,System.Boolean)">
+            <summary>
+            Whether a custom option is enabled
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.GetCustomOption(System.String)">
+            <summary>
+            Gets the value of an OPTION/VALUE pair provided to the system
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.EmitRequiredDefaults">
+            <summary>
+            Should default value initializers be emitted even for required values?
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.LanguageVersion">
+            <summary>
+            The specified language version (null if not specified)
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.WriteLine">
+            <summary>
+            Ends the current line
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.WriteLine(System.String)">
+            <summary>
+            Appends a value and ends the current line
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.Write(System.String)">
+            <summary>
+            Appends a value to the current line
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.Indent">
+            <summary>
+            Increases the indentation level
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.Outdent">
+            <summary>
+            Decreases the indentation level
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext.TryFind``1(System.String)">
+            <summary>
+            Try to find a descriptor of the type specified by T with the given full name
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub">
+            <summary>
+            Represents the union summary of a one-of declaration
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub.OneOf">
+            <summary>
+            The underlying descriptor
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub.Index">
+            <summary>
+            The effective index of this stub
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.CSharpCodeGenerator">
+            <summary>
+            A code generator that writes C#
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CSharpCodeGenerator.Default">
+            <summary>
+            Reusable code-generator instance
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.#ctor">
+            <summary>
+            Create a new CSharpCodeGenerator instance
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CSharpCodeGenerator.Name">
+            <summary>
+            Returns the language name
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CSharpCodeGenerator.DefaultFileExtension">
+            <summary>
+            Returns the default file extension
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.Escape(System.String)">
+            <summary>
+            Escapes language keywords
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.GetLanguageVersion(Google.Protobuf.Reflection.FileDescriptorProto)">
+            <summary>
+            Get the language version for this language from a schema
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteFileHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            Start a file
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteNamespaceHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteNamespaceFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteFileFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            End a file
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteEnumHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.EnumDescriptorProto,System.Object@)">
+            <summary>
+            Start an enum
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteEnumFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.EnumDescriptorProto,System.Object@)">
+            <summary>
+            End an enum
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteEnumValue(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.EnumValueDescriptorProto,System.Object@)">
+            <summary>
+            Write an enum value
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteMessageFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            End a message
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteMessageHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Start a message
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.GetAccess(ProtoBuf.Reflection.Access)">
+            <summary>
+            Get the language specific keyword representing an access level
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteContructorHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Emit code beginning a constructor, if one is required
+            </summary>
+            <returns>true if a constructor is required</returns>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteConstructorFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Emit code terminating a constructor, if one is required
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteInitField(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto,System.Object@,ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub[])">
+            <summary>
+            Emit code initializing field values inside a constructor, if one is required
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteField(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto,System.Object@,ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub[])">
+            <summary>
+            Write a field
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteExtensionsHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            Starts an extensions block
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteExtensionsFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            Ends an extensions block
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteExtensionsHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Starts an extensions block
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteExtensionsFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Ends an extensions block
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteExtension(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto)">
+            <summary>
+            Write an extension
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteOneOfEnumHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.OneofDescriptorProto,System.Object@)">
+            <summary>
+            Emit the start of an enum declaration for 'oneof' groups, including the 0/None element
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteOneOfEnumFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.OneofDescriptorProto,System.Object@)">
+            <summary>
+            Emit the end of an enum declaration for 'oneof' groups
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteOneOfEnumValue(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto,System.Object@)">
+            <summary>
+            Emit a field-based entry for a 'oneof' groups's enum
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteOneOfDiscriminator(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.OneofDescriptorProto,System.Object@)">
+            <summary>
+            Emit  the discriminator accessor for 'oneof' groups
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.UseArray(Google.Protobuf.Reflection.FieldDescriptorProto)">
+            <summary>
+            Indicate which types will commonly use arrays
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.MakeRelativeName(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,System.String)">
+            <summary>
+            Obtain a relative name from a type name
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteServiceHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.ServiceDescriptorProto,System.Object@)">
+            <summary>
+            Emit code preceeding a set of service methods
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteServiceFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.ServiceDescriptorProto,System.Object@)">
+            <summary>
+            Emit code following a set of service methods
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CSharpCodeGenerator.WriteServiceMethod(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.MethodDescriptorProto,System.Object@)">
+            <summary>
+            Emit code representing a service method
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.Internal.ErrorCode">
+            <summary>
+            Registry of known errors / warnings
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.NameNormalizer">
+            <summary>
+            Provides general purpose name suggestions
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.NullNormalizer.Pluralize(System.String)">
+            <summary>
+            Suggest a name with idiomatic pluralization
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.DefaultNormalizer.Pluralize(System.String)">
+            <summary>
+            Suggest a name with idiomatic pluralization
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.NoPluralNormalizer.Pluralize(System.String)">
+            <summary>
+            Suggest a name with idiomatic pluralization
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.AutoCapitalize(System.String)">
+            <summary>
+            Suggest a name with idiomatic name capitalization
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.AutoPluralize(System.String)">
+            <summary>
+            Suggest a name with idiomatic pluralization
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.NameNormalizer.Default">
+            <summary>
+            Name normalizer with default protobuf-net behaviour, using .NET idioms
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.NameNormalizer.Null">
+            <summary>
+            Name normalizer that passes through all identifiers without any changes
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.NameNormalizer.NoPlural">
+            <summary>
+            Name normalizer with default protobuf-net behaviour, using .NET idioms, without pluralization
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.GetName(System.String)">
+            <summary>
+            Suggest a normalized identifier
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.Pluralize(System.String)">
+            <summary>
+            Suggest a name with idiomatic pluralization
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.GetName(Google.Protobuf.Reflection.FileDescriptorProto)">
+            <summary>
+            Suggest a normalized identifier
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.GetName(Google.Protobuf.Reflection.OneofDescriptorProto)">
+            <summary>
+            Suggest a normalized identifier
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.GetName(Google.Protobuf.Reflection.DescriptorProto)">
+            <summary>
+            Suggest a normalized identifier
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.GetName(Google.Protobuf.Reflection.EnumDescriptorProto)">
+            <summary>
+            Suggest a normalized identifier
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.GetName(Google.Protobuf.Reflection.EnumValueDescriptorProto)">
+            <summary>
+            Suggest a normalized identifier
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.GetName(Google.Protobuf.Reflection.FieldDescriptorProto)">
+            <summary>
+            Suggest a normalized identifier
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.GetName(Google.Protobuf.Reflection.ServiceDescriptorProto)">
+            <summary>
+            Suggest a normalized identifier
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.GetName(Google.Protobuf.Reflection.MethodDescriptorProto)">
+            <summary>
+            Suggest a normalized identifier
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.BuildConflicts(Google.Protobuf.Reflection.DescriptorProto,System.Boolean)">
+            <summary>
+            Obtain a set of all names defined for a message
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.NameNormalizer.GetName(Google.Protobuf.Reflection.DescriptorProto,System.String,System.String,System.Boolean)">
+            <summary>
+            Get the preferred name for an element
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.DescriptorExtensions">
+            <summary>
+            Utility methods for descriptors
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.DescriptorExtensions.GetEnumType(Google.Protobuf.Reflection.FieldDescriptorProto)">
+            <summary>
+            Gets the resolved enum type associated with a field
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.DescriptorExtensions.GetMessageType(Google.Protobuf.Reflection.FieldDescriptorProto)">
+            <summary>
+            Gets the resolved message type associated with a field
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.DescriptorExtensions.GetFullyQualifiedName(Google.Protobuf.Reflection.EnumDescriptorProto)">
+            <summary>
+            Gets the fully qualified name of an enum
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.DescriptorExtensions.GetFullyQualifiedName(Google.Protobuf.Reflection.DescriptorProto)">
+            <summary>
+            Gets the fully qualified name of a message
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.CodeFile">
+            <summary>
+            Describes a generated file
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CodeFile.ToString">
+            <summary>
+            Get a string representation of this instance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:ProtoBuf.Reflection.CodeFile.#ctor(System.String,System.String)">
+            <summary>
+            Create a new CodeFile instance
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CodeFile.Name">
+            <summary>
+            The name (including path if necessary) of this file
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CodeFile.Text">
+            <summary>
+            The contents of this file
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.CompilerResult">
+            <summary>
+            Represents the overall result of a compilation process
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CompilerResult.Errors">
+            <summary>
+            The errors from this execution
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.CompilerResult.Files">
+            <summary>
+            The output files from this execution
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.Error">
+            <summary>
+            Describes an error that occurred during processing
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.Error.Parse(System.String,System.String)">
+            <summary>
+            Parse an error from a PROTOC error message
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.Error.ToString">
+            <summary>
+            Get a text representation of this instance
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:ProtoBuf.Reflection.Error.ErrorNumber">
+            <summary>
+            The error code defined for this scenario
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.Error.IsWarning">
+            <summary>
+            True if this instance represents a non-fatal warning
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.Error.IsError">
+            <summary>
+            True if this instance represents a fatal error
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.Error.File">
+            <summary>
+            The file in which this error was identified
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.Error.Text">
+            <summary>
+            The source text relating to this error
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.Error.Message">
+            <summary>
+            The error message
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.Error.LineContents">
+            <summary>
+            The entire line contents in the source in which this error was located
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.Error.LineNumber">
+            <summary>
+            The line number in which this error was located
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.Error.ColumnNumber">
+            <summary>
+            The column number in which this error was located
+            </summary>
+        </member>
+        <member name="T:ProtoBuf.Reflection.VBCodeGenerator">
+            <summary>
+            A code generator that writes VB
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.VBCodeGenerator.Default">
+            <summary>
+            Reusable code-generator instance
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.VBCodeGenerator.IsCaseSensitive">
+            <summary>
+            Should case-sensitivity be used when computing conflicts?
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.#ctor">
+            <summary>
+            Create a new VBCodeGenerator instance
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.VBCodeGenerator.Name">
+            <summary>
+            Returns the language name
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.GetLanguageVersion(Google.Protobuf.Reflection.FileDescriptorProto)">
+            <summary>
+            Get the language version for this language from a schema
+            </summary>
+        </member>
+        <member name="P:ProtoBuf.Reflection.VBCodeGenerator.DefaultFileExtension">
+            <summary>
+            Returns the default file extension
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.Escape(System.String)">
+            <summary>
+            Escapes language keywords
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteFileHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            Start a file
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteNamespaceHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteNamespaceFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteFileFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            End a file
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteEnumHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.EnumDescriptorProto,System.Object@)">
+            <summary>
+            Start an enum
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteEnumFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.EnumDescriptorProto,System.Object@)">
+            <summary>
+            End an enum
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteEnumValue(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.EnumValueDescriptorProto,System.Object@)">
+            <summary>
+            Write an enum value
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteOneOfDiscriminator(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.OneofDescriptorProto,System.Object@)">
+            <summary>
+            Emit  the discriminator accessor for 'oneof' groups
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteOneOfEnumFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.OneofDescriptorProto,System.Object@)">
+            <summary>
+            Emit the end of an enum declaration for 'oneof' groups
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteOneOfEnumHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.OneofDescriptorProto,System.Object@)">
+            <summary>
+            Emit the start of an enum declaration for 'oneof' groups, including the 0/None element
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteOneOfEnumValue(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto,System.Object@)">
+            <summary>
+            Emit a field-based entry for a 'oneof' groups's enum
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteMessageFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            End a message
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteMessageHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Start a message
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.GetAccess(ProtoBuf.Reflection.Access)">
+            <summary>
+            Get the language specific keyword representing an access level
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteField(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto,System.Object@,ProtoBuf.Reflection.CommonCodeGenerator.OneOfStub[])">
+            <summary>
+            Write a field
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteExtensionsHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            Starts an extgensions block
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteExtensionsFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FileDescriptorProto,System.Object@)">
+            <summary>
+            Ends an extgensions block
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteExtensionsHeader(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Starts an extensions block
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteExtensionsFooter(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.DescriptorProto,System.Object@)">
+            <summary>
+            Ends an extensions block
+            </summary>
+        </member>
+        <member name="M:ProtoBuf.Reflection.VBCodeGenerator.WriteExtension(ProtoBuf.Reflection.CommonCodeGenerator.GeneratorContext,Google.Protobuf.Reflection.FieldDescriptorProto)">
+            <summary>
+            Write an extension
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.FileDescriptorSet">
+            <summary>
+            The protocol compiler can output a FileDescriptorSet containing the .proto
+            files it parses.
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FileDescriptorSet.ImportValidator">
+            <summary>
+            Provides a callback to allow/deny individual imports.
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FileDescriptorSet.FileSystem">
+            <summary>
+            Provides a virtual file system (otherwise OS defaults are assumed)
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorSet.AddImportPath(System.String)">
+            <summary>
+            Adds a file system location for resolving imports
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorSet.GetErrors">
+            <summary>
+            Gets the errors encountered when calling <see cref="M:Google.Protobuf.Reflection.FileDescriptorSet.Process"/>
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FileDescriptorSet.AllowNameOnlyImport">
+            <summary>
+            When processing Foo/Bar/Some.proto, should Foo/Bar be treated as an implicit import location?
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorSet.Add(System.String,System.Boolean,System.IO.TextReader)">
+            <summary>
+            Adds an input file to the set for processing
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FileDescriptorSet.DefaultPackage">
+            <summary>
+            Default package to use when none is specified; can use #FILE# and #DIR# tokens
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorSet.Process">
+            <summary>
+            Process the added schemas; this resolves member types between schemas, and prepares the type hierarchy.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorSet.ApplyFileDependencyOrder">
+            <summary>
+            Reorders the <see cref="P:Google.Protobuf.Reflection.FileDescriptorSet.Files"/> so that they are in dependency order, i.e. dependencies come FIRST
+            </summary>
+            <remarks>This is mostly useful for compatibility with <c>protoc</c> with the <c>--descriptor_set_out --include_imports</c> switches</remarks>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorSet.Serialize``1(System.Func{Google.Protobuf.Reflection.FileDescriptorSet,System.Object,``0},System.Boolean,System.Object)">
+            <summary>
+            Serializes this instance using the provided serializer (which does not need to be protobuf)
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorSet.Serialize(ProtoBuf.Meta.TypeModel,System.IO.Stream,System.Boolean)">
+            <summary>
+            Serializes this instance using the provided <see cref="T:ProtoBuf.Meta.TypeModel"/>
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.FileDescriptorProto">
+            <summary>
+            The protocol compiler can output a FileDescriptorSet containing the .proto
+            files it parses.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorProto.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FileDescriptorProto.IncludeInOutput">
+            <summary>
+            Indicates whether this file is intended as part of the output set of the parse operation.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorProto.ShouldSerializeIncludeInOutput">
+            <summary>
+            Controls external serialization
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorProto.HasImports">
+            <summary>
+            Indicates whether this file has imports
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FileDescriptorProto.Parse(System.IO.TextReader,System.Collections.Generic.List{ProtoBuf.Reflection.Error},System.String)">
+            <summary>
+            Processes an individual file contents, but does <em>not</em> perform type resolution.
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.DescriptorProto">
+            <summary>
+            Describes a message type.
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.DescriptorProto.ReservedRange">
+            <summary>
+            Range of reserved tag numbers. Reserved tag numbers may not be used by
+            fields or extension ranges in the same message. Reserved ranges may
+            not overlap.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.DescriptorProto.GetExtensionData(ProtoBuf.IExtensible)">
+            <summary>
+            Gets the extension data associated with an object, as a byte-array
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.DescriptorProto.SetExtensionData(ProtoBuf.IExtensible,System.Byte[])">
+            <summary>
+            Sets the extension data associated with an object, as a byte-array
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.DescriptorProto.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.FieldDescriptorProto">
+            <summary>
+            Describes a field within a message.
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FieldDescriptorProto.ResolvedType">
+            <summary>
+            The resolved type if available.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FieldDescriptorProto.IsPacked(System.String)">
+            <summary>
+            Indicates whether this field is considered "packed" in the given schema
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.FieldDescriptorProto.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.OneofDescriptorProto">
+            <summary>
+            Describes a oneof.
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.EnumDescriptorProto">
+            <summary>
+            Describes an enum type.
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.EnumDescriptorProto.EnumReservedRange">
+             <summary>
+             Range of reserved numeric values. Reserved values may not be used by
+             entries in the same enum. Reserved ranges may not overlap.
+            
+             Note that this is distinct from DescriptorProto.ReservedRange in that it
+             is inclusive such that it can appropriately represent the entire int32
+             domain.
+             </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.EnumDescriptorProto.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.EnumValueDescriptorProto">
+            <summary>
+            Describes a value within an enum.
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.ServiceDescriptorProto">
+            <summary>
+            Describes a service.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.ServiceDescriptorProto.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.MethodDescriptorProto">
+            <summary>
+            Describes a method of a service.
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.MethodDescriptorProto.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.FileOptions">
+            <summary>
+            Options relating to a file
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FileOptions.ExtensionData">
+            <summary>
+            Gets or sets the extension data as a byte-array
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.MessageOptions">
+            <summary>
+            Options relating to a message
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.MessageOptions.ExtensionData">
+            <summary>
+            Gets or sets the extension data as a byte-array
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.FieldOptions">
+            <summary>
+            Options relating to a field
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.FieldOptions.ExtensionData">
+            <summary>
+            Gets or sets the extension data as a byte-array
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.OneofOptions">
+            <summary>
+            Options relating to a oneof
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.OneofOptions.ExtensionData">
+            <summary>
+            Gets or sets the extension data as a byte-array
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.EnumOptions">
+            <summary>
+            Options relating to an enum.
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.EnumOptions.ExtensionData">
+            <summary>
+            Gets or sets the extension data as a byte-array
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.EnumValueOptions">
+            <summary>
+            Options relating to an enum value
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.EnumValueOptions.ExtensionData">
+            <summary>
+            Gets or sets the extension data as a byte-array
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.ServiceOptions">
+            <summary>
+            Options relating to a service
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.ServiceOptions.ExtensionData">
+            <summary>
+            Gets or sets the extension data as a byte-array
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.MethodOptions">
+            <summary>
+            Options relating to a method
+            </summary>
+        </member>
+        <member name="P:Google.Protobuf.Reflection.MethodOptions.ExtensionData">
+            <summary>
+            Gets or sets the extension data as a byte-array
+            </summary>
+            <remarks>This is required for equivalence tests vs 'protoc'</remarks>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.UninterpretedOption">
+            <summary>
+            A message representing a option the parser does not recognize. This only
+            appears in options protos created by the compiler::Parser class.
+            DescriptorPool resolves these when building Descriptor objects. Therefore,
+            options protos in descriptor objects (e.g. returned by Descriptor::options(),
+            or produced by Descriptor::CopyTo()) will never have UninterpretedOptions
+            in them.
+            </summary>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.UninterpretedOption.NamePart">
+            <summary>
+            The name of the uninterpreted option.  Each string represents a segment in
+            a dot-separated name.  is_extension is true iff a segment represents an
+            extension (denoted with parentheses in options specs in .proto files).
+            E.g.,{ ["foo", false], ["bar.baz", true], ["qux", false] } represents
+            "foo.(bar.baz).qux".
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.UninterpretedOption.NamePart.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="T:Google.Protobuf.Reflection.IFileSystem">
+            <summary>
+            Represents a virtual file system
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.IFileSystem.Exists(System.String)">
+            <summary>
+            Indicates whether a specified file exists
+            </summary>
+        </member>
+        <member name="M:Google.Protobuf.Reflection.IFileSystem.OpenText(System.String)">
+            <summary>
+            Opens the specified file for text parsing
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,14 +1,14 @@
 @echo off
 del /f/q ProtoFiles\*.js ProtoFiles\*.cs ProtoFiles\*.proto
 
-LogicDataGenerator.exe genmsg
+net6.0\LogicDataGenerator.exe genmsg
 
-..\ProtoGen\protogen.exe -i:ProtoFiles\RoomMsg.proto -o:ProtoFiles\RoomMsg.cs
-..\ProtoGen\protogen.exe -i:ProtoFiles\LobbyMsg.proto -o:ProtoFiles\LobbyMsg.cs
-..\ProtoGen\protogen.exe -i:ProtoFiles\LobbyGmMsg.proto -o:ProtoFiles\LobbyGmMsg.cs
+..\ProtoGen\protogen.exe --proto_path=ProtoFiles --csharp_out=ProtoFiles +names=original RoomMsg.proto
+..\ProtoGen\protogen.exe --proto_path=ProtoFiles --csharp_out=ProtoFiles +names=original LobbyMsg.proto
+..\ProtoGen\protogen.exe --proto_path=ProtoFiles --csharp_out=ProtoFiles +names=original LobbyGmMsg.proto
 
-..\ProtoGen\protogen.exe -i:ProtoFiles\BigworldAndRoomServer.proto -o:ProtoFiles\BigworldAndRoomServerMessage.cs
-..\ProtoGen\protogen.exe -i:ProtoFiles\DataMessageDefine.proto -o:ProtoFiles\DataMessage.cs
+..\ProtoGen\protogen.exe --proto_path=ProtoFiles --csharp_out=ProtoFiles +names=original BigworldAndRoomServer.proto
+..\ProtoGen\protogen.exe --proto_path=ProtoFiles --csharp_out=ProtoFiles +names=original DataMessageDefine.proto
 
 xcopy ProtoFiles\*.cs ..\..\..\..\App\GeneratedCode\Message\ /y/d 
 xcopy ProtoFiles\*.js ..\..\..\..\App\ServerModule\ServerEnv\bin\nodejs\ /y/d 

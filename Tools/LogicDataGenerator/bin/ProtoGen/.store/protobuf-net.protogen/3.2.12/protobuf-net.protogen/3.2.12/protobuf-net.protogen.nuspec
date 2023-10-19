@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>protobuf-net.Protogen</id>
+    <version>3.2.12</version>
+    <title>protobuf-net command-line "global tool" for .NET code-generation from .proto schema files</title>
+    <authors>Marc Gravell</authors>
+    <owners>Marc Gravell</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">Apache-2.0</license>
+    <licenseUrl>https://licenses.nuget.org/Apache-2.0</licenseUrl>
+    <projectUrl>https://github.com/protobuf-net/protobuf-net</projectUrl>
+    <description>Package Description</description>
+    <releaseNotes>https://protobuf-net.github.io/protobuf-net/releasenotes#</releaseNotes>
+    <copyright>See https://github.com/protobuf-net/protobuf-net</copyright>
+    <tags>binary serialization protobuf</tags>
+    <packageTypes>
+      <packageType name="DotnetTool" />
+    </packageTypes>
+    <repository type="git" url="https://github.com/protobuf-net/protobuf-net" commit="24a9e80d1693b8ed8190cc2e9c9d2f4aafaf6928" />
+    <icon>protobuf-net.png</icon>
+  </metadata>
+</package>

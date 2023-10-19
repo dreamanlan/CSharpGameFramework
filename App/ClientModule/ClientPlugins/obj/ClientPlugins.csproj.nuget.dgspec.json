@@ -1,0 +1,549 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj": {}
+  },
+  "projects": {
+    "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj",
+        "projectName": "ClientPlugins",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj",
+        "projectName": "PluginFramework",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj",
+        "projectName": "ClientProtoBuf",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "dependencies": {
+            "protobuf-net": {
+              "target": "Package",
+              "version": "[3.2.26, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj",
+        "projectName": "GameObjects",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj",
+        "projectName": "SceneLogic",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
+              },
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
+        "projectName": "Common",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj",
+        "projectName": "SkillSystem",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj",
+        "projectName": "StorySystem",
+        "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

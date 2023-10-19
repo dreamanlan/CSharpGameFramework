@@ -1,0 +1,531 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETStandard,Version=v2.1": {
+      "protobuf-net/3.2.26": {
+        "type": "package",
+        "dependencies": {
+          "protobuf-net.Core": "3.2.26"
+        },
+        "compile": {
+          "lib/netstandard2.1/protobuf-net.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.1/protobuf-net.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "protobuf-net.Core/3.2.26": {
+        "type": "package",
+        "dependencies": {
+          "System.Collections.Immutable": "7.0.0"
+        },
+        "compile": {
+          "lib/netstandard2.1/protobuf-net.Core.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.1/protobuf-net.Core.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "System.Buffers/4.5.1": {
+        "type": "package",
+        "compile": {
+          "ref/netstandard2.0/System.Buffers.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Buffers.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "System.Collections.Immutable/7.0.0": {
+        "type": "package",
+        "dependencies": {
+          "System.Memory": "4.5.5",
+          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/System.Collections.Immutable.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Collections.Immutable.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "System.Memory/4.5.5": {
+        "type": "package",
+        "dependencies": {
+          "System.Buffers": "4.5.1",
+          "System.Numerics.Vectors": "4.4.0",
+          "System.Runtime.CompilerServices.Unsafe": "4.5.3"
+        },
+        "compile": {
+          "lib/netstandard2.0/System.Memory.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Memory.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "System.Numerics.Vectors/4.4.0": {
+        "type": "package",
+        "compile": {
+          "ref/netstandard2.0/System.Numerics.Vectors.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Numerics.Vectors.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "System.Runtime.CompilerServices.Unsafe/6.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll": {
+            "related": ".xml"
+          }
+        }
+      },
+      "ClientProtoBuf/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "protobuf-net": "3.2.26"
+        },
+        "compile": {
+          "bin/placeholder/ClientProtoBuf.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ClientProtoBuf.dll": {}
+        }
+      },
+      "Common/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "compile": {
+          "bin/placeholder/Common.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Common.dll": {}
+        }
+      },
+      "GameObjects/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Common": "1.0.0",
+          "StorySystem": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/GameObjects.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/GameObjects.dll": {}
+        }
+      },
+      "PluginFramework/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "ClientProtoBuf": "1.0.0",
+          "Common": "1.0.0",
+          "GameObjects": "1.0.0",
+          "SceneLogic": "1.0.0",
+          "SkillSystem": "1.0.0",
+          "StorySystem": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/PluginFramework.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/PluginFramework.dll": {}
+        }
+      },
+      "SceneLogic/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Common": "1.0.0",
+          "GameObjects": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/SceneLogic.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SceneLogic.dll": {}
+        }
+      },
+      "SkillSystem/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Common": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/SkillSystem.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/SkillSystem.dll": {}
+        }
+      },
+      "StorySystem/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Common": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/StorySystem.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/StorySystem.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "protobuf-net/3.2.26": {
+      "sha512": "zBzBiKs4yP+tzQOsRA5WbI/zayS6eFv8g0KIKNPI7/RUY1nk9Oe+STmtbUYkNUkO3T3SidEoZv+tF1nmgTSutQ==",
+      "type": "package",
+      "path": "protobuf-net/3.2.26",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net462/protobuf-net.dll",
+        "lib/net462/protobuf-net.xml",
+        "lib/net6.0/protobuf-net.dll",
+        "lib/net6.0/protobuf-net.xml",
+        "lib/netstandard2.0/protobuf-net.dll",
+        "lib/netstandard2.0/protobuf-net.xml",
+        "lib/netstandard2.1/protobuf-net.dll",
+        "lib/netstandard2.1/protobuf-net.xml",
+        "protobuf-net.3.2.26.nupkg.sha512",
+        "protobuf-net.nuspec",
+        "protobuf-net.png"
+      ]
+    },
+    "protobuf-net.Core/3.2.26": {
+      "sha512": "s8oJW9dBVxix4p8uqMbeG++DIGjgzOFAKoP2i5wayeeFOKBqG+cCBO2S/CAC4MAFlb5m1Os2m/miLcqRCgqJ7Q==",
+      "type": "package",
+      "path": "protobuf-net.core/3.2.26",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net462/protobuf-net.Core.dll",
+        "lib/net462/protobuf-net.Core.xml",
+        "lib/net6.0/protobuf-net.Core.dll",
+        "lib/net6.0/protobuf-net.Core.xml",
+        "lib/netstandard2.0/protobuf-net.Core.dll",
+        "lib/netstandard2.0/protobuf-net.Core.xml",
+        "lib/netstandard2.1/protobuf-net.Core.dll",
+        "lib/netstandard2.1/protobuf-net.Core.xml",
+        "protobuf-net.core.3.2.26.nupkg.sha512",
+        "protobuf-net.core.nuspec",
+        "protobuf-net.png"
+      ]
+    },
+    "System.Buffers/4.5.1": {
+      "sha512": "Rw7ijyl1qqRS0YQD/WycNst8hUUMgrMH4FCn1nNm27M4VxchZ1js3fVjQaANHO5f3sN4isvP4a+Met9Y4YomAg==",
+      "type": "package",
+      "path": "system.buffers/4.5.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Buffers.dll",
+        "lib/net461/System.Buffers.xml",
+        "lib/netcoreapp2.0/_._",
+        "lib/netstandard1.1/System.Buffers.dll",
+        "lib/netstandard1.1/System.Buffers.xml",
+        "lib/netstandard2.0/System.Buffers.dll",
+        "lib/netstandard2.0/System.Buffers.xml",
+        "lib/uap10.0.16299/_._",
+        "ref/net45/System.Buffers.dll",
+        "ref/net45/System.Buffers.xml",
+        "ref/netcoreapp2.0/_._",
+        "ref/netstandard1.1/System.Buffers.dll",
+        "ref/netstandard1.1/System.Buffers.xml",
+        "ref/netstandard2.0/System.Buffers.dll",
+        "ref/netstandard2.0/System.Buffers.xml",
+        "ref/uap10.0.16299/_._",
+        "system.buffers.4.5.1.nupkg.sha512",
+        "system.buffers.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "System.Collections.Immutable/7.0.0": {
+      "sha512": "dQPcs0U1IKnBdRDBkrCTi1FoajSTBzLcVTpjO4MBCMC7f4pDOIPzgBoX8JjG7X6uZRJ8EBxsi8+DR1JuwjnzOQ==",
+      "type": "package",
+      "path": "system.collections.immutable/7.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "README.md",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/net461/System.Collections.Immutable.targets",
+        "buildTransitive/net462/_._",
+        "buildTransitive/net6.0/_._",
+        "buildTransitive/netcoreapp2.0/System.Collections.Immutable.targets",
+        "lib/net462/System.Collections.Immutable.dll",
+        "lib/net462/System.Collections.Immutable.xml",
+        "lib/net6.0/System.Collections.Immutable.dll",
+        "lib/net6.0/System.Collections.Immutable.xml",
+        "lib/net7.0/System.Collections.Immutable.dll",
+        "lib/net7.0/System.Collections.Immutable.xml",
+        "lib/netstandard2.0/System.Collections.Immutable.dll",
+        "lib/netstandard2.0/System.Collections.Immutable.xml",
+        "system.collections.immutable.7.0.0.nupkg.sha512",
+        "system.collections.immutable.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "System.Memory/4.5.5": {
+      "sha512": "XIWiDvKPXaTveaB7HVganDlOCRoj03l+jrwNvcge/t8vhGYKvqV+dMv6G4SAX2NoNmN0wZfVPTAlFwZcZvVOUw==",
+      "type": "package",
+      "path": "system.memory/4.5.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/net461/System.Memory.dll",
+        "lib/net461/System.Memory.xml",
+        "lib/netcoreapp2.1/_._",
+        "lib/netstandard1.1/System.Memory.dll",
+        "lib/netstandard1.1/System.Memory.xml",
+        "lib/netstandard2.0/System.Memory.dll",
+        "lib/netstandard2.0/System.Memory.xml",
+        "ref/netcoreapp2.1/_._",
+        "system.memory.4.5.5.nupkg.sha512",
+        "system.memory.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "System.Numerics.Vectors/4.4.0": {
+      "sha512": "UiLzLW+Lw6HLed1Hcg+8jSRttrbuXv7DANVj0DkL9g6EnnzbL75EB7EWsw5uRbhxd/4YdG8li5XizGWepmG3PQ==",
+      "type": "package",
+      "path": "system.numerics.vectors/4.4.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net46/System.Numerics.Vectors.dll",
+        "lib/net46/System.Numerics.Vectors.xml",
+        "lib/netcoreapp2.0/_._",
+        "lib/netstandard1.0/System.Numerics.Vectors.dll",
+        "lib/netstandard1.0/System.Numerics.Vectors.xml",
+        "lib/netstandard2.0/System.Numerics.Vectors.dll",
+        "lib/netstandard2.0/System.Numerics.Vectors.xml",
+        "lib/portable-net45+win8+wp8+wpa81/System.Numerics.Vectors.dll",
+        "lib/portable-net45+win8+wp8+wpa81/System.Numerics.Vectors.xml",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net46/System.Numerics.Vectors.dll",
+        "ref/net46/System.Numerics.Vectors.xml",
+        "ref/netcoreapp2.0/_._",
+        "ref/netstandard1.0/System.Numerics.Vectors.dll",
+        "ref/netstandard1.0/System.Numerics.Vectors.xml",
+        "ref/netstandard2.0/System.Numerics.Vectors.dll",
+        "ref/netstandard2.0/System.Numerics.Vectors.xml",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "system.numerics.vectors.4.4.0.nupkg.sha512",
+        "system.numerics.vectors.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "System.Runtime.CompilerServices.Unsafe/6.0.0": {
+      "sha512": "/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg==",
+      "type": "package",
+      "path": "system.runtime.compilerservices.unsafe/6.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "buildTransitive/netcoreapp2.0/System.Runtime.CompilerServices.Unsafe.targets",
+        "buildTransitive/netcoreapp3.1/_._",
+        "lib/net461/System.Runtime.CompilerServices.Unsafe.dll",
+        "lib/net461/System.Runtime.CompilerServices.Unsafe.xml",
+        "lib/net6.0/System.Runtime.CompilerServices.Unsafe.dll",
+        "lib/net6.0/System.Runtime.CompilerServices.Unsafe.xml",
+        "lib/netcoreapp3.1/System.Runtime.CompilerServices.Unsafe.dll",
+        "lib/netcoreapp3.1/System.Runtime.CompilerServices.Unsafe.xml",
+        "lib/netstandard2.0/System.Runtime.CompilerServices.Unsafe.dll",
+        "lib/netstandard2.0/System.Runtime.CompilerServices.Unsafe.xml",
+        "system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+        "system.runtime.compilerservices.unsafe.nuspec",
+        "useSharedDesignerContext.txt"
+      ]
+    },
+    "ClientProtoBuf/1.0.0": {
+      "type": "project",
+      "path": "../../ClientProtoBuf/ClientProtoBuf.csproj",
+      "msbuildProject": "../../ClientProtoBuf/ClientProtoBuf.csproj"
+    },
+    "Common/1.0.0": {
+      "type": "project",
+      "path": "../../../Infrastructure/Common/Common.csproj",
+      "msbuildProject": "../../../Infrastructure/Common/Common.csproj"
+    },
+    "GameObjects/1.0.0": {
+      "type": "project",
+      "path": "../../../InformationService/GameObjects/GameObjects.csproj",
+      "msbuildProject": "../../../InformationService/GameObjects/GameObjects.csproj"
+    },
+    "PluginFramework/1.0.0": {
+      "type": "project",
+      "path": "../PluginFramework/PluginFramework.csproj",
+      "msbuildProject": "../PluginFramework/PluginFramework.csproj"
+    },
+    "SceneLogic/1.0.0": {
+      "type": "project",
+      "path": "../../../InformationService/SceneLogic/SceneLogic.csproj",
+      "msbuildProject": "../../../InformationService/SceneLogic/SceneLogic.csproj"
+    },
+    "SkillSystem/1.0.0": {
+      "type": "project",
+      "path": "../../../Infrastructure/SkillSystem/SkillSystem.csproj",
+      "msbuildProject": "../../../Infrastructure/SkillSystem/SkillSystem.csproj"
+    },
+    "StorySystem/1.0.0": {
+      "type": "project",
+      "path": "../../../Infrastructure/StorySystem/StorySystem.csproj",
+      "msbuildProject": "../../../Infrastructure/StorySystem/StorySystem.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETStandard,Version=v2.1": [
+      "ClientProtoBuf >= 1.0.0",
+      "Common >= 1.0.0",
+      "GameObjects >= 1.0.0",
+      "PluginFramework >= 1.0.0",
+      "SceneLogic >= 1.0.0",
+      "SkillSystem >= 1.0.0",
+      "StorySystem >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\dreamanlan\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj",
+      "projectName": "ClientPlugins",
+      "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj",
+      "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+      "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "netstandard2.1"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "projectReferences": {
+            "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj": {
+              "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\PluginFramework\\PluginFramework.csproj"
+            },
+            "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj": {
+              "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientProtoBuf\\ClientProtoBuf.csproj"
+            },
+            "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj": {
+              "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\GameObjects\\GameObjects.csproj"
+            },
+            "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj": {
+              "projectPath": "D:\\GitHub\\CSharpGameFramework\\InformationService\\SceneLogic\\SceneLogic.csproj"
+            },
+            "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+              "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+            },
+            "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj": {
+              "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj"
+            },
+            "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj": {
+              "projectPath": "D:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "netstandard2.1": {
+        "targetAlias": "netstandard2.1",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "NETStandard.Library": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

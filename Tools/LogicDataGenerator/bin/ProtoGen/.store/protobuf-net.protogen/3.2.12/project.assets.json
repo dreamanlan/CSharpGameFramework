@@ -1,0 +1,138 @@
+{
+  "version": 3,
+  "targets": {
+    "net7.0": {
+      "protobuf-net.Protogen/3.2.12": {
+        "type": "package"
+      }
+    },
+    "net7.0/any": {
+      "protobuf-net.Protogen/3.2.12": {
+        "type": "package",
+        "tools": {
+          "tools/net6.0/any/DotnetToolSettings.xml": {},
+          "tools/net6.0/any/Grpc.Core.Api.dll": {},
+          "tools/net6.0/any/Grpc.Net.Client.dll": {},
+          "tools/net6.0/any/Grpc.Net.Common.dll": {},
+          "tools/net6.0/any/Microsoft.Extensions.Logging.Abstractions.dll": {},
+          "tools/net6.0/any/System.Collections.Immutable.dll": {},
+          "tools/net6.0/any/protobuf-net.Core.dll": {},
+          "tools/net6.0/any/protobuf-net.Core.xml": {},
+          "tools/net6.0/any/protobuf-net.Grpc.Reflection.dll": {},
+          "tools/net6.0/any/protobuf-net.Grpc.dll": {},
+          "tools/net6.0/any/protobuf-net.Reflection.dll": {},
+          "tools/net6.0/any/protobuf-net.Reflection.xml": {},
+          "tools/net6.0/any/protobuf-net.dll": {},
+          "tools/net6.0/any/protobuf-net.xml": {},
+          "tools/net6.0/any/protogen.deps.json": {},
+          "tools/net6.0/any/protogen.dll": {},
+          "tools/net6.0/any/protogen.runtimeconfig.json": {},
+          "tools/net6.0/any/protogen.xml": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "protobuf-net.Protogen/3.2.12": {
+      "sha512": "X+ybtENor9Oq8jnhsnZNlB1U9MwGk6+V9+YGnKDY1w2s4d76whBzAgTmJ2+LMtD9bYU5+hLi65h/g5LTumsI8g==",
+      "type": "package",
+      "path": "protobuf-net.protogen/3.2.12",
+      "hasTools": true,
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "protobuf-net.png",
+        "protobuf-net.protogen.3.2.12.nupkg.sha512",
+        "protobuf-net.protogen.nuspec",
+        "tools/net6.0/any/DotnetToolSettings.xml",
+        "tools/net6.0/any/Grpc.Core.Api.dll",
+        "tools/net6.0/any/Grpc.Net.Client.dll",
+        "tools/net6.0/any/Grpc.Net.Common.dll",
+        "tools/net6.0/any/Microsoft.Extensions.Logging.Abstractions.dll",
+        "tools/net6.0/any/System.Collections.Immutable.dll",
+        "tools/net6.0/any/protobuf-net.Core.dll",
+        "tools/net6.0/any/protobuf-net.Core.xml",
+        "tools/net6.0/any/protobuf-net.Grpc.Reflection.dll",
+        "tools/net6.0/any/protobuf-net.Grpc.dll",
+        "tools/net6.0/any/protobuf-net.Reflection.dll",
+        "tools/net6.0/any/protobuf-net.Reflection.xml",
+        "tools/net6.0/any/protobuf-net.dll",
+        "tools/net6.0/any/protobuf-net.xml",
+        "tools/net6.0/any/protogen.deps.json",
+        "tools/net6.0/any/protogen.dll",
+        "tools/net6.0/any/protogen.runtimeconfig.json",
+        "tools/net6.0/any/protogen.xml"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net7.0": [
+      "protobuf-net.protogen >= 3.2.12"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\dreamanlan\\.dotnet\\tools\\.store\\.stage\\hmyf5e1q.dpp": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "C:\\Users\\dreamanlan\\AppData\\Local\\Temp\\df738e73-839a-4f45-a890-4d29c741d357\\restore.csproj",
+      "projectName": "restore",
+      "projectPath": "C:\\Users\\dreamanlan\\AppData\\Local\\Temp\\df738e73-839a-4f45-a890-4d29c741d357\\restore.csproj",
+      "packagesPath": "C:\\Users\\dreamanlan\\.dotnet\\tools\\.store\\.stage\\hmyf5e1q.dpp",
+      "outputPath": "C:\\Users\\dreamanlan\\.dotnet\\tools\\.store\\.stage\\hmyf5e1q.dpp\\",
+      "projectStyle": "DotnetToolReference",
+      "configFilePaths": [
+        "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net7.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net7.0": {
+        "targetAlias": "net7.0",
+        "dependencies": {
+          "protobuf-net.protogen": {
+            "target": "Package",
+            "version": "[3.2.12, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+      }
+    },
+    "runtimes": {
+      "any": {
+        "#import": []
+      }
+    }
+  }
+}

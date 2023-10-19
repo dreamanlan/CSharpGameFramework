@@ -35,7 +35,7 @@ namespace GameFramework.DataCache
                 if (value == DirtyState.Saved && m_DirtyState == DirtyState.Unsaved) {
                     //不允许由Unsaved状态直接变成Saved状态
                     m_DirtyState = DirtyState.Unsaved;
-                    //LogSys.Log(LOG_TYPE.MONITOR, "Switch DirtyState from Unsaved to Saved is forbidden! DataMessage:{0}", m_DataMessage.GetType().Name);
+                    //LogSys.Log(ServerLogType.MONITOR, "Switch DirtyState from Unsaved to Saved is forbidden! DataMessage:{0}", m_DataMessage.GetType().Name);
                 } else {
                     m_DirtyState = value;
                 }

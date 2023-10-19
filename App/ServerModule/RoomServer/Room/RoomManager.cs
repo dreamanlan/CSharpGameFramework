@@ -334,12 +334,12 @@ namespace GameFramework
         {
             int roomid = msg.RoomId;
             int sceneId = msg.SceneId;
-            List<ulong> users = msg.UserGuids;
+            var users = msg.UserGuids;
             int thread_id = GetIdleThread();
             if (thread_id < 0) {
                 LogSys.Log(ServerLogType.ERROR, "all room are using, active room failed!");
                 Msg_RL_ActiveSceneResult retMsg = new Msg_RL_ActiveSceneResult();
-                retMsg.UserGuids.AddRange(users);
+                retMsg.UserGuids = users;
                 retMsg.RoomId = roomid;
                 retMsg.Result = (int)SceneOperationResultEnum.Cant_Find_Room;
                 return;
@@ -350,7 +350,7 @@ namespace GameFramework
             LogSys.Log(ServerLogType.INFO, "queue active room {0} scene {1} thread {2}", roomid, sceneId, thread_id);
             roomThread.QueueAction(roomThread.ActiveRoom, roomid, sceneId, (MyAction<bool>)((bool val) => {
                 Msg_RL_ActiveSceneResult retMsg = new Msg_RL_ActiveSceneResult();
-                retMsg.UserGuids.AddRange(users);
+                retMsg.UserGuids = users;
                 retMsg.RoomId = roomid;
                 retMsg.Result = val ? (int)SceneOperationResultEnum.Success : (int)SceneOperationResultEnum.Cant_Find_Room;
             }));

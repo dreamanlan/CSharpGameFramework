@@ -1,1 +1,1 @@
-call Tools\GenerateFileList\bin\Debug\GenerateFileList.exe
+call Tools\GenerateFileList\bin\Debug\net6.0\GenerateFileList.exe

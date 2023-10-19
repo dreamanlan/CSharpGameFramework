@@ -1,56 +1,21 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7549601E-E6A8-4ED3-86C8-5D129C331213}</ProjectGuid>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GameFramework</RootNamespace>
-    <AssemblyName>PluginFramework</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>False</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;UNITY_5</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Dsl">
@@ -71,8 +36,6 @@
     <Reference Include="ScriptFrameworkLibrary">
       <HintPath>..\..\..\ExternalLibrary\ScriptFrameworkLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\ExternalLibrary\UnityEngine.dll</HintPath>
@@ -80,9 +43,6 @@
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\ExternalLibrary\UnityEngine.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="ProtobufSerializer">
-      <HintPath>..\..\ClientProtoBuf\bin\ProtobufSerializer.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -92,120 +52,13 @@
     <Compile Include="..\..\MessageCommon\ProtoNetSerialize.cs">
       <Link>RoomNetWork\ProtoNetSerialize.cs</Link>
     </Compile>
-    <Compile Include="PluginFramework.cs" />
-    <Compile Include="PluginFramework_Config.cs" />
-    <Compile Include="PluginFramework_Ai.cs" />
-    <Compile Include="PluginFramework_Entity.cs" />
-    <Compile Include="Common\DslUtility.cs" />
-    <Compile Include="GameControler.cs" />
-    <Compile Include="GameObjects\EntityViewModel_Base.cs" />
-    <Compile Include="GameObjects\EntityController.cs" />
-    <Compile Include="GameObjects\EntityViewModelManager.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="GameObjects\EntityDrawGizmos.cs" />
-    <Compile Include="GameObjects\EntityViewModel_Npc.cs" />
-    <Compile Include="GameObjects\SpaceInfoView.cs" />
-    <Compile Include="GmCommands\ClientGmStorySystem.cs" />
-    <Compile Include="GmCommands\GmCommands.cs" />
-    <Compile Include="Plugin\IAttrExpressionPlugin.cs" />
-    <Compile Include="Plugin\ISkillTriggerPlugin.cs" />
-    <Compile Include="Plugin\IStartupPlugin.cs" />
-    <Compile Include="Plugin\IStoryCommandPlugin.cs" />
-    <Compile Include="Plugin\IStoryValuePlugin.cs" />
-    <Compile Include="Plugin\ITickPlugin.cs" />
-    <Compile Include="Plugin\PluginManager.cs" />
-    <Compile Include="Plugin\PluginProxy.cs" />
-    <Compile Include="Plugin\PluginUtility.cs" />
-    <Compile Include="RichText\Parser\Parser.cs" />
-    <Compile Include="RichText\Parser\ParserHelper.cs" />
-    <Compile Include="RichText\Parser\Program.cs" />
-    <Compile Include="RichText\Parser\RichText.cs" />
-    <Compile Include="RichText\RichText.cs" />
-    <Compile Include="RichText\RichTextAsset.cs" />
-    <Compile Include="RichText\RichTextGraphic.cs" />
-    <Compile Include="RoomNetWork\MessageDispatch.cs" />
-    <Compile Include="RoomNetWork\MsgHandler.cs" />
-    <Compile Include="RoomNetWork\NetWorkSystem.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resource\AbstractScriptBehavior.cs" />
-    <Compile Include="Resource\AssetBundleManager.cs" />
-    <Compile Include="Resource\ResourceSystem.cs" />
-    <Compile Include="Resource\SpriteManager.cs" />
-    <Compile Include="Resource\UiResourceSystem.cs" />
-    <Compile Include="SceneLogic\SceneLogicViewModelManager.cs" />
-    <Compile Include="SceneLogic\SceneLogicViewModel\SceneLogicViewModel_General.cs" />
-    <Compile Include="Skill\GfxSkillSystem.cs" />
-    <Compile Include="Skill\HitFlight.cs" />
-    <Compile Include="Skill\Trigers\AnimationTrigger.cs" />
-    <Compile Include="Skill\Trigers\DamageTrigger.cs" />
-    <Compile Include="Skill\Trigers\FaceToTargetTrigger.cs" />
-    <Compile Include="Skill\Trigers\EffectTrigger.cs" />
-    <Compile Include="Skill\Trigers\GeneralTrigers.cs" />
-    <Compile Include="Skill\Trigers\ImpactTrigger.cs" />
-    <Compile Include="Skill\Trigers\MovementTrigger.cs" />
-    <Compile Include="Skill\Trigers\RestorePosTrigger.cs" />
-    <Compile Include="Skill\Trigers\RotateTrigger.cs" />
-    <Compile Include="Skill\Trigers\ShaderPropertyTrigger.cs" />
-    <Compile Include="Skill\Trigers\SoundTrigger.cs" />
-    <Compile Include="Skill\Trigers\SectionTrigger.cs" />
-    <Compile Include="Skill\Trigers\StopEffectTrigger.cs" />
-    <Compile Include="Skill\Trigers\TransformTrigger.cs" />
-    <Compile Include="Skill\Trigers\TriggerUtil.cs" />
-    <Compile Include="Story\Commands\ObjectCommands.cs" />
-    <Compile Include="Story\Commands\GameLogicCommands.cs" />
-    <Compile Include="Story\Commands\GeneralCommands.cs" />
-    <Compile Include="Story\Commands\NpcCommands.cs" />
-    <Compile Include="Story\GfxStorySystem.cs" />
-    <Compile Include="Story\UiStoryEventHandler.cs" />
-    <Compile Include="Story\UiStoryInitializer.cs" />
-    <Compile Include="Story\Values\ObjectValues.cs" />
-    <Compile Include="Story\Values\GameLogicValues.cs" />
-    <Compile Include="Story\Values\GeneralValues.cs" />
-    <Compile Include="Story\Values\NpcValues.cs" />
-    <Compile Include="UserData\ClientInfo.cs" />
-    <Compile Include="UserNetwork\UserMessageHandler.cs" />
-    <Compile Include="UserNetwork\UserNetworkSystem.cs" />
-    <Compile Include="UserNetwork\NodeMessageDefine.cs" />
-    <Compile Include="UserNetwork\NodeMessageDispatcher.cs" />
-    <Compile Include="UtilityForClient\UtilityForClient.cs" />
-    <Compile Include="UtilityForClient\PointController.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\InformationService\GameObjects\GameObjects.csproj">
-      <Project>{e280220b-7eda-4274-b3d5-4e922d98caad}</Project>
-      <Name>GameObjects</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\InformationService\SceneLogic\SceneLogic.csproj">
-      <Project>{3452c105-45dd-4821-bcda-e495b7748519}</Project>
-      <Name>SceneLogic</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj">
-      <Project>{1c8280cd-eb93-4849-940e-a99eddf811d6}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Infrastructure\SkillSystem\SkillSystem.csproj">
-      <Project>{562023ae-b38b-4cff-b9a3-b6d91347bd59}</Project>
-      <Name>SkillSystem</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\Infrastructure\StorySystem\StorySystem.csproj">
-      <Project>{f1d962e1-3b17-4597-b542-bcb657e75829}</Project>
-      <Name>StorySystem</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\ClientProtoBuf\ClientProtoBuf.csproj">
-      <Project>{c402fc70-3a7a-4ce2-956f-6aa1dfd5882e}</Project>
-      <Name>ClientProtoBuf</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\..\..\InformationService\GameObjects\GameObjects.csproj" />
+    <ProjectReference Include="..\..\..\InformationService\SceneLogic\SceneLogic.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\SkillSystem\SkillSystem.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\StorySystem\StorySystem.csproj" />
+    <ProjectReference Include="..\..\ClientProtoBuf\ClientProtoBuf.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="RichText\Parser\Parser.peg" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

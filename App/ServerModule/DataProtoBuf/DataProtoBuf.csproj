@@ -1,67 +1,22 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F261F4C6-33DB-44EE-87FE-AEC3D6FE395E}</ProjectGuid>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DataProtoBuf</RootNamespace>
-    <AssemblyName>DataProtoBuf</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\GeneratedCode\DataAccess\Data.cs" Link="Data.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj" />
+  </ItemGroup>
   <ItemGroup>
     <Reference Include="protobuf-net">
-      <HintPath>..\..\..\ExternalLibrary\protobuf-net.dll</HintPath>
+      <HintPath>..\..\..\ExternalLibrary\protobuf-net\protobuf-net.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="protobuf-net.Core">
+      <HintPath>..\..\..\ExternalLibrary\protobuf-net\protobuf-net.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\..\GeneratedCode\DataAccess\DataStruct.cs">
-      <Link>DataStruct.cs</Link>
-    </Compile>
-    <Compile Include="Helper.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj">
-      <Project>{1c8280cd-eb93-4849-940e-a99eddf811d6}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>..\..\Precompile\precompile.exe DataProtoBuf.dll -o:..\DataProtobufSerializer.dll -t:DataProtobufSerializer</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <PropertyGroup />
 </Project>

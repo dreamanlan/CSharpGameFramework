@@ -1,9 +1,9 @@
 @echo off
 del /f/q DataProto\*.cs DataProto\*.proto DataProto\*.sql
 
-LogicDataGenerator.exe
+net6.0\LogicDataGenerator.exe
 
-..\ProtoGen\protogen.exe -i:DataProto\Data.proto -o:DataProto\DataStruct.cs
+..\ProtoGen\protogen.exe --proto_path=DataProto --csharp_out=DataProto +names=original Data.proto
 
 xcopy DataProto\*.cs ..\..\..\..\App\GeneratedCode\DataAccess\ /y/d 
 @pause

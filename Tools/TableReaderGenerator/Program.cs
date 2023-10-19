@@ -83,201 +83,210 @@ namespace TableReaderGenerator
                     return false;
                 }
                 bool haveError = false;
-                foreach (DslInfo info in file.DslInfos) {
+                foreach (var dslInfo in file.DslInfos) {
+                    var info = dslInfo as FunctionData;
+                    if (null == info) {
+                        LogSystem.Error("{0} {1} must end with ';' ! line {2}", dslInfo.GetId(), dslInfo.ToScriptString(false), dslInfo.GetLine());
+                        haveError = true;
+                        continue;
+                    }
                     if (info.GetId() == "tool") {
-                        if (info.Functions.Count == 1) {
-                            FunctionData funcData = info.First;
-                            if (null != funcData && funcData.HaveExternScript()) {
-                                string toolFile;
-                                FunctionData callData = funcData.Call;
-                                if (null != callData && callData.GetParamNum() == 1) {
-                                    toolFile = callData.GetParamId(0);
-                                } else {
-                                    toolFile = m_DefToolCsFileName;
-                                }
-                                List<string> codes;
-                                if (!m_ToolCodes.TryGetValue(toolFile, out codes)) {
-                                    codes = new List<string>();
-                                    m_ToolCodes.Add(toolFile, codes);
-                                }
-                                codes.Add(funcData.GetExternScript());
+                        FunctionData funcData = info;
+                        if (funcData.IsHighOrder && funcData.HaveExternScript()) {
+                            string toolFile;
+                            FunctionData callData = funcData.LowerOrderFunction;
+                            if (null != callData && callData.GetParamNum() == 1) {
+                                toolFile = callData.GetParamId(0);
+                            } else {
+                                toolFile = m_DefToolCsFileName;
                             }
-                        } else {
-                            LogSystem.Error("tool {0} must end with ';' ! line {1}", info.ToScriptString(false), info.GetLine());
-                            haveError = true;
+                            List<string> codes;
+                            if (!m_ToolCodes.TryGetValue(toolFile, out codes)) {
+                                codes = new List<string>();
+                                m_ToolCodes.Add(toolFile, codes);
+                            }
+                            codes.Add(funcData.GetParamId(0));
                         }
                     } else if (info.GetId() == "global") {
-                        if (info.Functions.Count == 1) {
-                            FunctionData funcData = info.First;
-                            if (null != funcData && funcData.HaveExternScript()) {
-                                string globalFile;
-                                FunctionData callData = funcData.Call;
-                                if (null != callData && callData.GetParamNum() == 1) {
-                                    globalFile = callData.GetParamId(0);
-                                } else {
-                                    globalFile = m_DefGlobalCsFileName;
-                                }
-                                List<string> codes;
-                                if (!m_GlobalCodes.TryGetValue(globalFile, out codes)) {
-                                    codes = new List<string>();
-                                    m_GlobalCodes.Add(globalFile, codes);
-                                }
-                                codes.Add(funcData.GetExternScript());
+                        FunctionData funcData = info;
+                        if (funcData.IsHighOrder && funcData.HaveExternScript()) {
+                            string globalFile;
+                            FunctionData callData = funcData.LowerOrderFunction;
+                            if (null != callData && callData.GetParamNum() == 1) {
+                                globalFile = callData.GetParamId(0);
+                            } else {
+                                globalFile = m_DefGlobalCsFileName;
                             }
-                        } else {
-                            LogSystem.Error("global {0} must end with ';' ! line {1}", info.ToScriptString(false), info.GetLine());
-                            haveError = true;
+                            List<string> codes;
+                            if (!m_GlobalCodes.TryGetValue(globalFile, out codes)) {
+                                codes = new List<string>();
+                                m_GlobalCodes.Add(globalFile, codes);
+                            }
+                            codes.Add(funcData.GetParamId(0));
                         }
                     } else if (info.GetId() == "typedef") {
-                        if (info.Functions.Count == 1) {
-                            FunctionData funcData = info.First;
-                            if (null != funcData) {
-                                FunctionData callData = funcData.Call;
-                                if (null != callData && callData.GetParamNum() == 1) {
-                                    string typeName = callData.GetParamId(0);
+                        FunctionData funcData = info;
+                        if (funcData.IsHighOrder) {
+                            FunctionData callData = funcData.LowerOrderFunction;
+                            if (null != callData && callData.GetParamNum() == 1) {
+                                string typeName = callData.GetParamId(0);
 
-                                    TypeDef typeDef = new TypeDef();
-                                    typeDef.m_TypeName = typeName;
-                                    if (m_Types.ContainsKey(typeName)) {
-                                        m_Types[typeName] = typeDef;
-                                    } else {
-                                        m_Types.Add(typeName, typeDef);
-                                    }
+                                TypeDef typeDef = new TypeDef();
+                                typeDef.m_TypeName = typeName;
+                                if (m_Types.ContainsKey(typeName)) {
+                                    m_Types[typeName] = typeDef;
+                                }
+                                else {
+                                    m_Types.Add(typeName, typeDef);
+                                }
 
-                                    foreach (ISyntaxComponent comp in funcData.Statements) {
-                                        FunctionData item = comp as FunctionData;
-                                        if (null != item) {
-                                            if (item.HaveExternScript()) {
-                                                if (item.GetId() == "binary") {
-                                                    typeDef.m_BinaryCode = item.GetExternScript();
-                                                } else if (item.GetId() == "record") {
-                                                    typeDef.m_RecordCode = item.GetExternScript();
-                                                }
-                                            } else {
-                                                LogSystem.Error("typedef {0} must contains code ! line {1}", comp.ToScriptString(false), comp.GetLine());
-                                                haveError = true;
+                                foreach (ISyntaxComponent comp in funcData.Params) {
+                                    FunctionData item = comp as FunctionData;
+                                    if (null != item) {
+                                        if (item.HaveExternScript()) {
+                                            if (item.GetId() == "binary") {
+                                                typeDef.m_BinaryCode = item.GetParamId(0);
                                             }
-                                        } else {
-                                            FunctionData call = comp as FunctionData;
-                                            if (null != call && call.GetParamNum() == 1) {
-                                                if (call.GetId() == "type") {
-                                                    typeDef.m_TypeCode = call.GetParamId(0);
-                                                }
-                                            } else {
-                                                LogSystem.Error("typedef {0} must have params or end with ';' ! line {1}", comp.ToScriptString(false), comp.GetLine());
-                                                haveError = true;
+                                            else if (item.GetId() == "record") {
+                                                typeDef.m_RecordCode = item.GetParamId(0);
                                             }
                                         }
-                                    }
-                                } else {
-                                    LogSystem.Error("typedef {0} must have 1 params ! line {1}", info.ToScriptString(false), info.GetLine());
-                                    haveError = true;
-                                }
-                            }
-                        } else {
-                            LogSystem.Error("typedef {0} must end with ';' ! line {1}", info.ToScriptString(false), info.GetLine());
-                            haveError = true;
-                        }
-                    } else if (info.GetId() == "tabledef") {
-                        if (info.Functions.Count == 1) {
-                            FunctionData funcData = info.First;
-                            if (null != funcData) {
-                                FunctionData callData = funcData.Call;
-                                if (null != callData && callData.GetParamNum() == 3) {
-                                    TableFileTypeEnum fileType = TableFileTypeEnum.PUBLIC;
-                                    string tableName, tableType, recordName, providerName;
-                                    tableName = callData.GetParamId(0);
-                                    tableType = callData.GetParamId(1);
-                                    recordName = tableName;
-                                    providerName = tableName + "Provider";
-
-                                    string fileTypeStr = callData.GetParamId(2);
-                                    if (0 == fileTypeStr.CompareTo("client")) {
-                                        fileType = TableFileTypeEnum.CLIENT;
-                                    } else if (0 == fileTypeStr.CompareTo("server")) {
-                                        fileType = TableFileTypeEnum.SERVER;
-                                    } else if (0 == fileTypeStr.CompareTo("multifile")) {
-                                        fileType = TableFileTypeEnum.MULTIFILE;
-                                    } else {
-                                        fileType = TableFileTypeEnum.PUBLIC;
-                                    }
-
-                                    TableDef tableDef = new TableDef();
-                                    tableDef.m_TableName = tableName;
-                                    tableDef.m_Type = tableType;
-                                    tableDef.m_FileType = fileType;
-                                    tableDef.m_RecordName = recordName;
-                                    tableDef.m_ProviderName = providerName;
-                                    if (m_Tables.ContainsKey(tableName)) {
-                                        m_Tables[tableName] = tableDef;
-                                    } else {
-                                        m_Tables.Add(tableName, tableDef);
-                                    }
-
-                                    foreach (ISyntaxComponent comp in funcData.Statements) {
-                                        FunctionData field = comp as FunctionData;
-                                        if (null != field) {
-                                            if (field.GetId() == "recordname") {
-                                                tableDef.m_RecordName = field.GetParamId(0);
-                                                tableDef.m_ProviderName = tableDef.m_RecordName + "Provider";
-                                            } else if (field.GetId() == "providername") {
-                                                tableDef.m_ProviderName = field.GetParamId(0);
-                                            } else if (field.GetId() == "filename") {
-                                                tableDef.m_CsFileName = field.GetParamId(0);
-                                            } else if (field.GetId() == "recordmodifier") {
-                                                tableDef.m_RecordModifier = field.GetParamId(0);
-                                                if (tableDef.m_RecordModifier.Length > 0 && tableDef.m_RecordModifier[0] != ' ') {
-                                                    tableDef.m_RecordModifier = " " + tableDef.m_RecordModifier;
-                                                }
-                                            } else if (field.GetId() == "providermodifier") {
-                                                tableDef.m_ProviderModifier = field.GetParamId(0);
-                                                if (tableDef.m_ProviderModifier.Length > 0 && tableDef.m_ProviderModifier[0] != ' ') {
-                                                    tableDef.m_ProviderModifier = " " + tableDef.m_ProviderModifier;
-                                                }
-                                            } else if (field.GetId() == "fielddef" && field.GetParamNum() >= 3) {
-                                                FieldDef fieldDef = new FieldDef();
-                                                fieldDef.m_MemberName = field.GetParamId(0);
-                                                fieldDef.m_FieldName = field.GetParamId(1);
-                                                fieldDef.m_Type = field.GetParamId(2);
-                                                if (field.GetParamNum() >= 4) {
-                                                    ISyntaxComponent param = field.GetParam(3);
-                                                    if (null != param) {
-                                                        fieldDef.m_Default = param.GetId();
-                                                    }
-                                                } else {
-                                                    if (0 == fieldDef.m_Type.CompareTo("string")) {
-                                                        fieldDef.m_Default = "";
-                                                    } else if (fieldDef.m_Type.Contains("_list") || fieldDef.m_Type.Contains("_array")) {
-                                                        fieldDef.m_Default = "null";
-                                                    } else if (0 == fieldDef.m_Type.CompareTo("bool")) {
-                                                        fieldDef.m_Default = "false";
-                                                    } else {
-                                                        fieldDef.m_Default = "0";
-                                                    }
-                                                }
-                                                if (field.GetParamNum() >= 5) {
-                                                    fieldDef.m_Access = field.GetParamId(4);
-                                                } else {
-                                                    fieldDef.m_Access = "public";
-                                                }
-                                                tableDef.m_Fields.Add(fieldDef);
-                                            } else {
-                                                LogSystem.Error("field {0} must have name (member and field) and type ! line {1}", comp.ToScriptString(false), comp.GetLine());
-                                                haveError = true;
-                                            }
-                                        } else {
-                                            LogSystem.Error("field {0} must have name (member and field) and type and end with ';' ! line {1}", comp.ToScriptString(false), comp.GetLine());
+                                        else {
+                                            LogSystem.Error("typedef {0} must contains code ! line {1}", comp.ToScriptString(false), comp.GetLine());
                                             haveError = true;
                                         }
                                     }
-                                } else {
-                                    LogSystem.Error("tabledef {0} must have 3 params ! line {1}", info.ToScriptString(false), info.GetLine());
-                                    haveError = true;
+                                    else {
+                                        FunctionData call = comp as FunctionData;
+                                        if (null != call && call.GetParamNum() == 1) {
+                                            if (call.GetId() == "type") {
+                                                typeDef.m_TypeCode = call.GetParamId(0);
+                                            }
+                                        }
+                                        else {
+                                            LogSystem.Error("typedef {0} must have params or end with ';' ! line {1}", comp.ToScriptString(false), comp.GetLine());
+                                            haveError = true;
+                                        }
+                                    }
                                 }
                             }
-                        } else {
-                            LogSystem.Error("tabledef {0} must end with ';' ! line {1}", info.ToScriptString(false), info.GetLine());
-                            haveError = true;
+                            else {
+                                LogSystem.Error("typedef {0} must have 1 params ! line {1}", info.ToScriptString(false), info.GetLine());
+                                haveError = true;
+                            }
+                        }
+                    } else if (info.GetId() == "tabledef") {
+                        FunctionData funcData = info;
+                        if (funcData.IsHighOrder) {
+                            FunctionData callData = funcData.LowerOrderFunction;
+                            if (null != callData && callData.GetParamNum() == 3) {
+                                TableFileTypeEnum fileType = TableFileTypeEnum.PUBLIC;
+                                string tableName, tableType, recordName, providerName;
+                                tableName = callData.GetParamId(0);
+                                tableType = callData.GetParamId(1);
+                                recordName = tableName;
+                                providerName = tableName + "Provider";
+
+                                string fileTypeStr = callData.GetParamId(2);
+                                if (0 == fileTypeStr.CompareTo("client")) {
+                                    fileType = TableFileTypeEnum.CLIENT;
+                                }
+                                else if (0 == fileTypeStr.CompareTo("server")) {
+                                    fileType = TableFileTypeEnum.SERVER;
+                                }
+                                else if (0 == fileTypeStr.CompareTo("multifile")) {
+                                    fileType = TableFileTypeEnum.MULTIFILE;
+                                }
+                                else {
+                                    fileType = TableFileTypeEnum.PUBLIC;
+                                }
+
+                                TableDef tableDef = new TableDef();
+                                tableDef.m_TableName = tableName;
+                                tableDef.m_Type = tableType;
+                                tableDef.m_FileType = fileType;
+                                tableDef.m_RecordName = recordName;
+                                tableDef.m_ProviderName = providerName;
+                                if (m_Tables.ContainsKey(tableName)) {
+                                    m_Tables[tableName] = tableDef;
+                                }
+                                else {
+                                    m_Tables.Add(tableName, tableDef);
+                                }
+
+                                foreach (ISyntaxComponent comp in funcData.Params) {
+                                    FunctionData field = comp as FunctionData;
+                                    if (null != field) {
+                                        if (field.GetId() == "recordname") {
+                                            tableDef.m_RecordName = field.GetParamId(0);
+                                            tableDef.m_ProviderName = tableDef.m_RecordName + "Provider";
+                                        }
+                                        else if (field.GetId() == "providername") {
+                                            tableDef.m_ProviderName = field.GetParamId(0);
+                                        }
+                                        else if (field.GetId() == "filename") {
+                                            tableDef.m_CsFileName = field.GetParamId(0);
+                                        }
+                                        else if (field.GetId() == "recordmodifier") {
+                                            tableDef.m_RecordModifier = field.GetParamId(0);
+                                            if (tableDef.m_RecordModifier.Length > 0 && tableDef.m_RecordModifier[0] != ' ') {
+                                                tableDef.m_RecordModifier = " " + tableDef.m_RecordModifier;
+                                            }
+                                        }
+                                        else if (field.GetId() == "providermodifier") {
+                                            tableDef.m_ProviderModifier = field.GetParamId(0);
+                                            if (tableDef.m_ProviderModifier.Length > 0 && tableDef.m_ProviderModifier[0] != ' ') {
+                                                tableDef.m_ProviderModifier = " " + tableDef.m_ProviderModifier;
+                                            }
+                                        }
+                                        else if (field.GetId() == "fielddef" && field.GetParamNum() >= 3) {
+                                            FieldDef fieldDef = new FieldDef();
+                                            fieldDef.m_MemberName = field.GetParamId(0);
+                                            fieldDef.m_FieldName = field.GetParamId(1);
+                                            fieldDef.m_Type = field.GetParamId(2);
+                                            if (field.GetParamNum() >= 4) {
+                                                ISyntaxComponent param = field.GetParam(3);
+                                                if (null != param) {
+                                                    fieldDef.m_Default = param.GetId();
+                                                }
+                                            }
+                                            else {
+                                                if (0 == fieldDef.m_Type.CompareTo("string")) {
+                                                    fieldDef.m_Default = "";
+                                                }
+                                                else if (fieldDef.m_Type.Contains("_list") || fieldDef.m_Type.Contains("_array")) {
+                                                    fieldDef.m_Default = "null";
+                                                }
+                                                else if (0 == fieldDef.m_Type.CompareTo("bool")) {
+                                                    fieldDef.m_Default = "false";
+                                                }
+                                                else {
+                                                    fieldDef.m_Default = "0";
+                                                }
+                                            }
+                                            if (field.GetParamNum() >= 5) {
+                                                fieldDef.m_Access = field.GetParamId(4);
+                                            }
+                                            else {
+                                                fieldDef.m_Access = "public";
+                                            }
+                                            tableDef.m_Fields.Add(fieldDef);
+                                        }
+                                        else {
+                                            LogSystem.Error("field {0} must have name (member and field) and type ! line {1}", comp.ToScriptString(false), comp.GetLine());
+                                            haveError = true;
+                                        }
+                                    }
+                                    else {
+                                        LogSystem.Error("field {0} must have name (member and field) and type and end with ';' ! line {1}", comp.ToScriptString(false), comp.GetLine());
+                                        haveError = true;
+                                    }
+                                }
+                            }
+                            else {
+                                LogSystem.Error("tabledef {0} must have 3 params ! line {1}", info.ToScriptString(false), info.GetLine());
+                                haveError = true;
+                            }
                         }
                     } else {
                         LogSystem.Error("Unknown part {0}, line {1}", info.GetId(), info.GetLine());
@@ -631,7 +640,8 @@ namespace TableReaderGenerator
     {
         static void Main(string[] args)
         {
-            LogSystem.OnOutput = (Log_Type type, string msg) => {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            LogSystem.OnOutput = (GameLogType type, string msg) => {
                 Console.WriteLine("{0}", msg);
             };
             ResourceReadProxy.OnReadAsArray = (string path) => {
@@ -676,7 +686,7 @@ namespace TableReaderGenerator
         {
             Dictionary<string, string> dict = new Dictionary<string, string>();
             try {
-                string basePath = "../../../../Resource/Tables";
+                string basePath = "../../../../../Resource/Tables";
                 string[] files = Directory.GetFiles(basePath, "*.txt", SearchOption.AllDirectories);
                 foreach (string file in files) {
                     string s = file.Substring(basePath.Length + 1);
@@ -697,7 +707,7 @@ namespace TableReaderGenerator
         {
             try {
                 File.Delete("table.dsl");
-                string basePath = "../../../../Resource/Tables";
+                string basePath = "../../../../../Resource/Tables";
                 string[] files = Directory.GetFiles(basePath, "*.txt", SearchOption.AllDirectories);
                 foreach (string file in files) {
                     GenDsl(file);

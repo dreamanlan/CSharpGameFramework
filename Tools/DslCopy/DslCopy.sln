@@ -1,56 +1,37 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DslCopy", "DslCopy.csproj", "{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DslCopy", "DslCopy.csproj", "{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TableReaderGenerator", "..\TableReaderGenerator\TableReaderGenerator.csproj", "{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TableReaderGenerator", "..\TableReaderGenerator\TableReaderGenerator.csproj", "{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateFileList", "..\GenerateFileList\GenerateFileList.csproj", "{CA4AF103-50F6-4E64-8BE6-EC16184403A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GenerateFileList", "..\GenerateFileList\GenerateFileList.csproj", "{CA4AF103-50F6-4E64-8BE6-EC16184403A2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|Mixed Platforms = Debug|Mixed Platforms
-		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
-		Release|Mixed Platforms = Release|Mixed Platforms
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Debug|x86.ActiveCfg = Debug|x86
-		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Debug|x86.Build.0 = Debug|x86
-		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Release|Any CPU.ActiveCfg = Release|x86
-		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Release|Mixed Platforms.Build.0 = Release|x86
-		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Release|x86.ActiveCfg = Release|x86
-		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Release|x86.Build.0 = Release|x86
+		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A648F47-3659-4C16-93B5-BF5B4B9CF3A8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{B54FA063-DC7B-4BE4-A7AD-F7E532F94AFB}.Release|x86.ActiveCfg = Release|Any CPU
 		{CA4AF103-50F6-4E64-8BE6-EC16184403A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA4AF103-50F6-4E64-8BE6-EC16184403A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CA4AF103-50F6-4E64-8BE6-EC16184403A2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{CA4AF103-50F6-4E64-8BE6-EC16184403A2}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{CA4AF103-50F6-4E64-8BE6-EC16184403A2}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{CA4AF103-50F6-4E64-8BE6-EC16184403A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA4AF103-50F6-4E64-8BE6-EC16184403A2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CA4AF103-50F6-4E64-8BE6-EC16184403A2}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{CA4AF103-50F6-4E64-8BE6-EC16184403A2}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{CA4AF103-50F6-4E64-8BE6-EC16184403A2}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BD26FC32-2205-4546-A259-B349B321F04C}
 	EndGlobalSection
 EndGlobal

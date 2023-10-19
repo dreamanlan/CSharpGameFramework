@@ -132,14 +132,14 @@ namespace GameFramework
         public void PlayerRequestActiveRoom(int targetSceneId, params ulong[] guids)
         {
             Msg_RL_ActiveScene builder = new Msg_RL_ActiveScene();
-            builder.UserGuids.AddRange(guids);
+            builder.UserGuids = guids;
             builder.SceneId = targetSceneId;
             m_Connector.SendMsgToLobby(builder);
         }
         public void PlayerRequestChangeRoom(int targetSceneId, params ulong[] guids)
         {
             Msg_RL_ChangeScene builder = new Msg_RL_ChangeScene();
-            builder.UserGuids.AddRange(guids);
+            builder.UserGuids = guids;
             builder.SceneId = targetSceneId;
             m_Connector.SendMsgToLobby(builder);
         }

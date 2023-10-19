@@ -165,12 +165,12 @@ namespace GameFramework
                     callbackOnFinish(ret, sceneId, null);
             });
         }
-        public void RemoveUser(IList<ulong> guids, int roomId, bool free, MyAction<bool, int, IList<User>> callbackOnFinish)
+        public void RemoveUser(ulong[] guids, int roomId, bool free, MyAction<bool, int, IList<User>> callbackOnFinish)
         {
             Room room = GetRoomByID(roomId);
             if (null != room) {
                 List<User> users = new List<User>();
-                for (int i = 0; i < guids.Count; ++i) {
+                for (int i = 0; i < guids.Length; ++i) {
                     User user = room.GetUserByGuid(guids[i]);
                     if (null != user) {
                         room.RemoveUserFromRoomThread(user, free);

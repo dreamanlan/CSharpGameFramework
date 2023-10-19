@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>upgrade-assistant</id>
+    <version>0.5.261</version>
+    <authors>Microsoft</authors>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>dotnet-logo.png</icon>
+    <projectUrl>https://go.microsoft.com/fwlink/?LinkID=2202641</projectUrl>
+    <description>A tool to assist developers in upgrading .NET Framework and .NET applications to latest versions of .NET.</description>
+    <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+    <packageTypes>
+      <packageType name="DotnetTool" />
+    </packageTypes>
+    <repository type="git" commit="c8c062c68a1af067c39a561c55c5c4eb48a9b041" />
+    <contentFiles>
+      <files include="any/net6.0/appsettings.Development.json" buildAction="Content" />
+      <files include="any/net7.0/appsettings.Development.json" buildAction="Content" />
+      <files include="any/net6.0/appsettings.json" buildAction="Content" />
+      <files include="any/net7.0/appsettings.json" buildAction="Content" />
+    </contentFiles>
+  </metadata>
+</package>

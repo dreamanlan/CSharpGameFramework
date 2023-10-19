@@ -9,6 +9,7 @@ namespace GenerateFileList
     {
         static void Main(string[] args)
         {
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             List<string> result = new List<string>();
             string path = @"Unity3d\Assets\StreamingAssets";
             string targetFile = path + "\\list.txt";

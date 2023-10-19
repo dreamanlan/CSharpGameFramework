@@ -28,7 +28,7 @@ namespace GameFramework.Network
             } else {
                 DataStream.WriteByte((byte)id);
             }
-            Serializer.Serialize(DataStream, msg);
+            ProtoBuf.Serializer.Serialize(DataStream, msg);
             return DataStream.ToArray();
         }
         public static object Decode(byte[] msgbuf, out int id)
@@ -53,7 +53,7 @@ namespace GameFramework.Network
                 DataStream.Write(msgbuf, idLen, msgbuf.Length - idLen);
                 DataStream.Position = 0;
                 try {
-                    object msg = Serializer.Deserialize(DataStream, null, t);
+                    object msg = ProtoBuf.Serializer.Deserialize(t, DataStream);
                     if (msg == null) {
                         LogSystem.Error("decode message error:can't find id {0} len({1}) !!!", id, msgbuf.Length - idLen);
                         return null;
@@ -77,19 +77,8 @@ namespace GameFramework.Network
                 return s_Stream;
             }
         }
-        private static ProtobufSerializer Serializer
-        {
-            get
-            {
-                if (null == s_Serializer)
-                    s_Serializer = new ProtobufSerializer();
-                return s_Serializer;
-            }
-        }
 
         [ThreadStatic]
         private static MemoryStream s_Stream = null;
-        [ThreadStatic]
-        private static ProtobufSerializer s_Serializer = null;
     }
 }

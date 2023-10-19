@@ -19,7 +19,7 @@ namespace Messenger
       DataStream.SetLength(0);
       id = IPAddress.HostToNetworkOrder(id);
       DataStream.Write(BitConverter.GetBytes(id), 0, 4);
-      Serializer.Serialize(DataStream, msg);
+      ProtoBuf.Serializer.Serialize(DataStream, msg);
       return DataStream.ToArray();
     }
 
@@ -44,7 +44,7 @@ namespace Messenger
         DataStream.Write(data, 4, data.Length - 4);
         DataStream.Position = 0;
         try {
-          msg = Serializer.Deserialize(DataStream, null, t);
+          msg = ProtoBuf.Serializer.Deserialize(t, DataStream);
           if (msg == null) {
             ret = false;
           } else {
@@ -69,19 +69,8 @@ namespace Messenger
         return s_Stream;
       }
     }
-    private static ServerProtobufSerializer Serializer
-    {
-      get
-      {
-        if (null == s_Serializer)
-          s_Serializer = new ServerProtobufSerializer();
-        return s_Serializer;
-      }
-    }
 
     [ThreadStatic]
     private static MemoryStream s_Stream = null;
-    [ThreadStatic]
-    private static ServerProtobufSerializer s_Serializer = null;
   }
 }

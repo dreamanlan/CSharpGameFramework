@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {
+      "BatchCommand/1.0.0": {
+        "dependencies": {
+          "Dsl": "0.0.0.0"
+        },
+        "runtime": {
+          "BatchCommand.dll": {}
+        }
+      },
+      "Dsl/0.0.0.0": {
+        "runtime": {
+          "Dsl.dll": {
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "BatchCommand/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Dsl/0.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

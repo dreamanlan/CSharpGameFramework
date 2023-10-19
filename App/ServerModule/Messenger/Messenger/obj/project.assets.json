@@ -1,0 +1,96 @@
+{
+  "version": 3,
+  "targets": {
+    ".NETStandard,Version=v2.1": {
+      "ServerProtoBuf/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "compile": {
+          "bin/placeholder/ServerProtoBuf.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/ServerProtoBuf.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "ServerProtoBuf/1.0.0": {
+      "type": "project",
+      "path": "../../ServerProtoBuf/ServerProtoBuf.csproj",
+      "msbuildProject": "../../ServerProtoBuf/ServerProtoBuf.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    ".NETStandard,Version=v2.1": [
+      "ServerProtoBuf >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\dreamanlan\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj",
+      "projectName": "Messenger",
+      "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\Messenger.csproj",
+      "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+      "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\Messenger\\Messenger\\obj\\",
+      "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
+      "configFilePaths": [
+        "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "netstandard2.1"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "projectReferences": {
+            "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\ServerProtoBuf\\ServerProtoBuf.csproj": {
+              "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\ServerProtoBuf\\ServerProtoBuf.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "netstandard2.1": {
+        "targetAlias": "netstandard2.1",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "NETStandard.Library": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}

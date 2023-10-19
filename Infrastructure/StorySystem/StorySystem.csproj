@@ -1,61 +1,31 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{F1D962E1-3B17-4597-B542-BCB657E75829}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>StorySystem</RootNamespace>
-    <AssemblyName>StorySystem</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <FileAlignment>512</FileAlignment>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GenerateTargetFrameworkAttribute>False</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;ENABLE_ERROR_LOG;ENABLE_LOG</DefineConstants>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE;ENABLE_ERROR_LOG</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x86\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x86</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="Dsl">
       <HintPath>..\..\ExternalLibrary\Dsl.dll</HintPath>
     </Reference>
@@ -67,52 +37,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommonValues\Linq.cs" />
-    <Compile Include="CustomCommandValueParser.cs" />
-    <Compile Include="CommonCommands\Assign.cs" />
-    <Compile Include="CommonCommands\Composite.cs" />
-    <Compile Include="CommonCommands\Foreach.cs" />
-    <Compile Include="CommonCommands\IfElse.cs" />
-    <Compile Include="CommonCommands\Hashtable.cs" />
-    <Compile Include="CommonCommands\LocalMessage.cs" />
-    <Compile Include="CommonCommands\Log.cs" />
-    <Compile Include="CommonCommands\ReflectionCommand.cs" />
-    <Compile Include="CommonCommands\Terminate.cs" />
-    <Compile Include="CommonCommands\Wait.cs" />
-    <Compile Include="CommonCommands\While.cs" />
-    <Compile Include="CommonValues\Arithmetic.cs" />
-    <Compile Include="CommonValues\Compare.cs" />
-    <Compile Include="CommonValues\Composite.cs" />
-    <Compile Include="CommonValues\GeneralValues.cs" />
-    <Compile Include="CommonValues\Hashtable.cs" />
-    <Compile Include="CommonValues\Logic.cs" />
-    <Compile Include="CommonValues\ReflectionValue.cs" />
-    <Compile Include="CommonValues\String.cs" />
-    <Compile Include="CommonValues\Time.cs" />
-    <Compile Include="IStoryCommand.cs" />
-    <Compile Include="IStoryCommandFactory.cs" />
-    <Compile Include="IStoryValue.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StoryCommandHelper.cs" />
-    <Compile Include="StoryCommandManager.cs" />
-    <Compile Include="StoryConfigManager.cs" />
-    <Compile Include="StoryInstance.cs" />
-    <Compile Include="StoryValueHelper.cs" />
-    <Compile Include="StoryValueManager.cs" />
+    <ProjectReference Include="..\Common\Common.csproj" />
   </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <ProjectReference Include="..\Common\Common.csproj">
-      <Project>{1C8280CD-EB93-4849-940E-A99EDDF811D6}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

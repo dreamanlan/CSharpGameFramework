@@ -1,0 +1,79 @@
+{
+  "runtimeTarget": {
+    "name": ".NETStandard,Version=v2.1/",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETStandard,Version=v2.1": {},
+    ".NETStandard,Version=v2.1/": {
+      "Messenger/1.0.0": {
+        "dependencies": {
+          "ServerProtoBuf": "1.0.0",
+          "CSharpCenterClient": "1.0.0.0",
+          "protobuf-net.Core": "3.0.0.0",
+          "protobuf-net": "3.0.0.0"
+        },
+        "runtime": {
+          "Messenger.dll": {}
+        }
+      },
+      "ServerProtoBuf/1.0.0": {
+        "runtime": {
+          "ServerProtoBuf.dll": {}
+        }
+      },
+      "CSharpCenterClient/1.0.0.0": {
+        "runtime": {
+          "CSharpCenterClient.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
+      "protobuf-net.Core/3.0.0.0": {
+        "runtime": {
+          "protobuf-net.Core.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.2.26.38424"
+          }
+        }
+      },
+      "protobuf-net/3.0.0.0": {
+        "runtime": {
+          "protobuf-net.dll": {
+            "assemblyVersion": "3.0.0.0",
+            "fileVersion": "3.2.26.38424"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Messenger/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "ServerProtoBuf/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "CSharpCenterClient/1.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "protobuf-net.Core/3.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "protobuf-net/3.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

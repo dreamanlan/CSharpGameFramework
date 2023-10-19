@@ -1,0 +1,16 @@
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.csproj.AssemblyReference.cache
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.GeneratedMSBuildEditorConfig.editorconfig
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.csproj.CoreCompileInputs.cache
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\Messenger.deps.json
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\Messenger.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\Messenger.pdb
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\CSharpCenterClient.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\protobuf-net.Core.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\protobuf-net.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\ServerProtoBuf.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\ServerProtoBuf.pdb
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\protobuf-net.xml
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\protobuf-net.Core.xml
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.csproj.CopyComplete
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.dll
+D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.pdb
