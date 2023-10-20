@@ -21,7 +21,7 @@ namespace GameFramework
 
         public void Recycle()
         {
-            m_StoryInstance.Reset();
+            m_StoryInstance.Reset(false);
             m_IsUsed = false;
         }
     }

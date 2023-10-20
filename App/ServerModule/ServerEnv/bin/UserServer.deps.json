@@ -1,11 +1,11 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v6.0",
+    "name": ".NETCoreApp,Version=v7.0",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
-    ".NETCoreApp,Version=v6.0": {
+    ".NETCoreApp,Version=v7.0": {
       "UserServer/1.0.0": {
         "dependencies": {
           "ClientProtoBuf": "1.0.0",
@@ -48,18 +48,7 @@
           }
         }
       },
-      "System.Collections.Immutable/7.0.0": {
-        "dependencies": {
-          "System.Runtime.CompilerServices.Unsafe": "6.0.0"
-        },
-        "runtime": {
-          "lib/net6.0/System.Collections.Immutable.dll": {
-            "assemblyVersion": "7.0.0.0",
-            "fileVersion": "7.0.22.51805"
-          }
-        }
-      },
-      "System.Runtime.CompilerServices.Unsafe/6.0.0": {},
+      "System.Collections.Immutable/7.0.0": {},
       "ClientProtoBuf/1.0.0": {
         "dependencies": {
           "protobuf-net": "3.2.26"
@@ -74,9 +63,6 @@
         }
       },
       "DataProtoBuf/1.0.0": {
-        "dependencies": {
-          "Common": "1.0.0"
-        },
         "runtime": {
           "DataProtoBuf.dll": {}
         }
@@ -96,9 +82,6 @@
         }
       },
       "Messenger/1.0.0": {
-        "dependencies": {
-          "ServerProtoBuf": "1.0.0"
-        },
         "runtime": {
           "Messenger.dll": {}
         }
@@ -184,13 +167,6 @@
       "sha512": "sha512-dQPcs0U1IKnBdRDBkrCTi1FoajSTBzLcVTpjO4MBCMC7f4pDOIPzgBoX8JjG7X6uZRJ8EBxsi8+DR1JuwjnzOQ==",
       "path": "system.collections.immutable/7.0.0",
       "hashPath": "system.collections.immutable.7.0.0.nupkg.sha512"
-    },
-    "System.Runtime.CompilerServices.Unsafe/6.0.0": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-/iUeP3tq1S0XdNNoMz5C9twLSrM/TH+qElHkXWaPvuNOt+99G75NrV0OS2EqHx5wMN7popYjpc8oTjC1y16DLg==",
-      "path": "system.runtime.compilerservices.unsafe/6.0.0",
-      "hashPath": "system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
     },
     "ClientProtoBuf/1.0.0": {
       "type": "project",

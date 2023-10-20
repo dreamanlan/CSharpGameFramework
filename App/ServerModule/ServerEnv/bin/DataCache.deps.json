@@ -1,11 +1,11 @@
 {
   "runtimeTarget": {
-    "name": ".NETCoreApp,Version=v6.0",
+    "name": ".NETCoreApp,Version=v7.0",
     "signature": ""
   },
   "compilationOptions": {},
   "targets": {
-    ".NETCoreApp,Version=v6.0": {
+    ".NETCoreApp,Version=v7.0": {
       "DataCache/1.0.0": {
         "dependencies": {
           "Common": "1.0.0",
@@ -30,9 +30,6 @@
         }
       },
       "DataProtoBuf/1.0.0": {
-        "dependencies": {
-          "Common": "1.0.0"
-        },
         "runtime": {
           "DataProtoBuf.dll": {}
         }
@@ -43,9 +40,6 @@
         }
       },
       "Messenger/1.0.0": {
-        "dependencies": {
-          "ServerProtoBuf": "1.0.0"
-        },
         "runtime": {
           "Messenger.dll": {}
         }

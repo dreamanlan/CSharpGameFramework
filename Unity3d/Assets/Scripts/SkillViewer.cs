@@ -8,7 +8,7 @@ using GameFramework.Skill;
 using System.IO;
 using System.Text;
 using UnityEngine.SceneManagement;
-using System.Drawing.Imaging;
+//using System.Drawing.Imaging;
 using UnityEditor.PackageManager;
 #if UNITY_EDITOR_WIN
 using UnityEditor;

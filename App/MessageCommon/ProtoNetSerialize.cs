@@ -62,7 +62,7 @@ namespace GameFramework.Network
                     return msg;
                 } catch (Exception ex) {
                     LogSystem.Error("decode message error:id({0}) len({1}) {2}\n{3}\nData:\n{4}", id, msgbuf.Length - idLen, ex.Message, ex.StackTrace, Helper.BinToHex(msgbuf, idLen));
-                    throw ex;
+                    throw;
                 }
             }
             return null;

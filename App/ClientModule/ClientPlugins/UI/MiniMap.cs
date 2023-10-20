@@ -11,7 +11,7 @@ class MiniMap : ITickPlugin
     {
         var rectTrans = obj.transform as RectTransform;
         m_RawImage = obj.GetComponent<RawImage>();
-        m_MapPlayer = obj.transform.FindChild("Player");
+        m_MapPlayer = obj.transform.Find("Player");
         m_MapWidth = (int)rectTrans.rect.width;
         m_MapHeight = (int)rectTrans.rect.height;
         m_TerrainWidth = (int)Terrain.activeTerrain.terrainData.size.x;

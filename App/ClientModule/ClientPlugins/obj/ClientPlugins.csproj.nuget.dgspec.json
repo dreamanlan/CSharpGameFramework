@@ -202,12 +202,6 @@
       "frameworks": {
         "netstandard2.1": {
           "targetAlias": "netstandard2.1",
-          "dependencies": {
-            "protobuf-net": {
-              "target": "Package",
-              "version": "[3.2.26, )"
-            }
-          },
           "imports": [
             "net461",
             "net462",

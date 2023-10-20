@@ -9,18 +9,12 @@
     ".NETStandard,Version=v2.1/": {
       "Messenger/1.0.0": {
         "dependencies": {
-          "ServerProtoBuf": "1.0.0",
           "CSharpCenterClient": "1.0.0.0",
           "protobuf-net.Core": "3.0.0.0",
           "protobuf-net": "3.0.0.0"
         },
         "runtime": {
           "Messenger.dll": {}
-        }
-      },
-      "ServerProtoBuf/1.0.0": {
-        "runtime": {
-          "ServerProtoBuf.dll": {}
         }
       },
       "CSharpCenterClient/1.0.0.0": {
@@ -51,11 +45,6 @@
   },
   "libraries": {
     "Messenger/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "ServerProtoBuf/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

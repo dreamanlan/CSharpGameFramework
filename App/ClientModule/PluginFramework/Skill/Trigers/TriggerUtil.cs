@@ -87,15 +87,17 @@ namespace GameFramework.Skill.Trigers
         {
             GameObject obj = new GameObject();
             LineRenderer linerender = obj.AddComponent<LineRenderer>();
-            linerender.SetWidth(0.05f, 0.05f);
+            linerender.startWidth = 0.05f;
+            linerender.endWidth = 0.05f;
             Shader shader = Shader.Find("Particles/Additive");
             if (shader != null) {
                 linerender.material = new Material(shader);
             }
-            linerender.SetColors(color, color);
+            linerender.startColor = color;
+            linerender.endColor = color;
             float step_degree = Mathf.Atan(circle_step / 2) * 2;
             int count = (int)(2 * Mathf.PI / step_degree);
-            linerender.SetVertexCount(count + 1);
+            linerender.positionCount = count + 1;
             for (int i = 0; i < count + 1; i++) {
                 float angle = 2 * Mathf.PI / count * i;
                 Vector3 pos = center + new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;

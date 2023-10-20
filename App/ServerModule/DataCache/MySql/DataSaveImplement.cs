@@ -19,7 +19,7 @@ internal static class DataSaveImplement
             } catch (Exception ex) {
                 DBConn.Close();
                 LogSys.Log(ServerLogType.ERROR, "SingleSaveItem ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
-                throw ex;
+                throw;
             }
         }
         return 1;
@@ -36,7 +36,7 @@ internal static class DataSaveImplement
             } catch (Exception ex) {
                 DBConn.Close();
                 LogSys.Log(ServerLogType.ERROR, "BatchSaveItemsProc ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
-                throw ex;
+                throw;
             }
         }
         return cacheItemList.Count;
@@ -59,7 +59,7 @@ internal static class DataSaveImplement
             } catch (Exception ex) {
                 DBConn.Close();
                 LogSys.Log(ServerLogType.ERROR, "BatchSaveItemsSql ERROR. MsgId:{0}, Error:{1}\nStacktrace:{2}", msgId, ex.Message, ex.StackTrace);
-                throw ex;
+                throw;
             }
         } else {
             count = cacheItemList.Count;

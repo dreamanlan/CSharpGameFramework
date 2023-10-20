@@ -18,7 +18,4 @@
       <HintPath>..\..\..\..\ExternalLibrary\protobuf-net\protobuf-net.Core.dll</HintPath>
     </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\ServerProtoBuf\ServerProtoBuf.csproj" />
-  </ItemGroup>
 </Project>

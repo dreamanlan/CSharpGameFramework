@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UserServer": {
+      "commandName": "Project",
+      "workingDirectory": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\ServerEnv\\bin"
+    }
+  }
+}

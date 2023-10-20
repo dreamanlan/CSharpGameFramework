@@ -52,7 +52,7 @@ namespace GameFramework
         public static GameObject FindChildObjectByPath(GameObject gameObject, string name)
         {
             if (name.IndexOf('/') == -1) {
-                Transform child = gameObject.transform.FindChild(name);
+                Transform child = gameObject.transform.Find(name);
                 if (null == child) {
                     return null;
                 }
@@ -61,7 +61,7 @@ namespace GameFramework
                 string[] path = name.Split('/');
                 Transform child = gameObject.transform;
                 for (int i = 0; i < path.Length; i++) {
-                    child = child.FindChild(path[i]);
+                    child = child.Find(path[i]);
                     if (null == child) {
                         return null;
                     }
@@ -72,7 +72,7 @@ namespace GameFramework
         public static T FindComponentInChildren<T>(GameObject _gameObject, string _name)
         {
             if (_name.IndexOf('/') == -1) {
-                Transform child = _gameObject.transform.FindChild(_name);
+                Transform child = _gameObject.transform.Find(_name);
                 if (child == null)
                     return default(T);
                 return child.GetComponent<T>();
@@ -80,7 +80,7 @@ namespace GameFramework
                 string[] path = _name.Split('/');
                 Transform child = _gameObject.transform;
                 for (int i = 0; i < path.Length; i++) {
-                    child = child.FindChild(path[i]);
+                    child = child.Find(path[i]);
                     if (child == null) {
                         return default(T);
                     }

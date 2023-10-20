@@ -123,7 +123,7 @@ function(main)
 		stringMap.insert("ip","0.0.0.0");
 		if(argv(0)=="bigworld"){
 			stringMap.insert("port",@bigworldport);
-			log("center port:"+@bigworldport);
+			log("i'm bigworld, center port:"+@bigworldport);
 		}else{
 			stringMap.insert("port",@port);
 			log("center port:"+@port);

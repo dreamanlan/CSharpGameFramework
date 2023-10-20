@@ -102,9 +102,9 @@ script(main)
         call("setcolor");
     };
 
-    cd(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%");
+    cd(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%/netstandard2.1");
     echo("curdir:{0}",pwd());
-    looplist(listfiles(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%","*.dll")){
+    looplist(listfiles(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%/netstandard2.1","*.dll")){
         $filename = getfilename($$);
         $targetPath = plugindir+"/"+$filename;
         copyfile($$, $targetPath);
@@ -116,7 +116,9 @@ script(main)
         };
         //echo("copy {0} to {1}", $$, $targetPath);
     };
-    copydir(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%", plugindir, "*.mdb");
+    copydir(rootdir+"/App/ClientModule/ClientPlugins/bin/%cfg%/netstandard2.1", plugindir, "*.mdb");
+    copydir(rootdir+"/ExternalLibrary/protobuf-net", plugindir, "*.dll");
+    copydir(rootdir+"/ExternalLibrary/protobuf-net", plugindir, "*.xml");
 
     deletefile(plugindir+"/UnityEngine.dll");
     deletefile(plugindir+"/UnityEngine.UI.dll");

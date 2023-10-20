@@ -31,7 +31,7 @@ namespace Messenger
             }
             catch {
                 msg = null;
-                ret = false;
+                throw;
             }
             return ret;
         }

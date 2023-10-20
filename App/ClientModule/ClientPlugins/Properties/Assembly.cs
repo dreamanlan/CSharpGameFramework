@@ -2,4 +2,4 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: UnityEngine.UnityAPICompatibilityVersion("2021.3.14f1c1", true)]
+[assembly: UnityEngine.UnityAPICompatibilityVersion("2022.3.5f1", true)]

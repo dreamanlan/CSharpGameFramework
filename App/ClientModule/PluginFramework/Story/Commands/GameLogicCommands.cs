@@ -1233,8 +1233,8 @@ namespace GameFramework.Story.Commands
             }
             if (null != pobj) {
                 var argObj = m_Arg.Value;
-                if (argObj is int) {
-                    int unitId = (int)argObj;
+                if (argObj.IsInteger) {
+                    int unitId = argObj.GetInt();
                     EntityInfo npc = PluginFramework.Instance.GetEntityByUnitId(unitId);
                     if (null != npc) {
                         Utility.SendMessage(path, "CameraLookObjCopy", new object[] { pobj.transform, npc.GetId() });

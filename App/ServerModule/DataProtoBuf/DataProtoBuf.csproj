@@ -8,9 +8,6 @@
     <Compile Include="..\..\GeneratedCode\DataAccess\Data.cs" Link="Data.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="protobuf-net">
       <HintPath>..\..\..\ExternalLibrary\protobuf-net\protobuf-net.dll</HintPath>
     </Reference>

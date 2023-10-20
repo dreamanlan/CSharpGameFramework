@@ -25,7 +25,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="protobuf-net" Version="3.2.26" />
+    <Reference Include="protobuf-net">
+      <HintPath>..\..\ExternalLibrary\protobuf-net\protobuf-net.dll</HintPath>
+    </Reference>
+    <Reference Include="protobuf-net.Core">
+      <HintPath>..\..\ExternalLibrary\protobuf-net\protobuf-net.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <PropertyGroup />
 </Project>

@@ -1,16 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Q/RaJGR9q/whanaFeGN0mqv05x7PwIJIPbzKTyd1A+U+UdEy774bqrHO6Lt1iLtZvnmmHUY6ysDvkTWnrwnTPA==",
+  "dgSpecHash": "iO1yu0G1esyFK/NbzlG7wSnk0d5J9DkKr7jwchE9ZygmvlhddWrlRaW7DwBZVYHEn7m8/EoY4HcAeN8KH58kcg==",
   "success": true,
   "projectFilePath": "D:\\GitHub\\CSharpGameFramework\\App\\ClientModule\\ClientPlugins\\ClientPlugins.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\dreamanlan\\.nuget\\packages\\protobuf-net\\3.2.26\\protobuf-net.3.2.26.nupkg.sha512",
-    "C:\\Users\\dreamanlan\\.nuget\\packages\\protobuf-net.core\\3.2.26\\protobuf-net.core.3.2.26.nupkg.sha512",
-    "C:\\Users\\dreamanlan\\.nuget\\packages\\system.buffers\\4.5.1\\system.buffers.4.5.1.nupkg.sha512",
-    "C:\\Users\\dreamanlan\\.nuget\\packages\\system.collections.immutable\\7.0.0\\system.collections.immutable.7.0.0.nupkg.sha512",
-    "C:\\Users\\dreamanlan\\.nuget\\packages\\system.memory\\4.5.5\\system.memory.4.5.5.nupkg.sha512",
-    "C:\\Users\\dreamanlan\\.nuget\\packages\\system.numerics.vectors\\4.4.0\\system.numerics.vectors.4.4.0.nupkg.sha512",
-    "C:\\Users\\dreamanlan\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }

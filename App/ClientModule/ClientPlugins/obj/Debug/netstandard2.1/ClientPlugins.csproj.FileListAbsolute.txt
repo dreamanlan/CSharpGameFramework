@@ -22,7 +22,6 @@ D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstanda
 D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\SceneLogic.pdb
 D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\PluginFramework.pdb
 D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\ClientProtoBuf.pdb
-D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\Common.pdb
 D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\SkillSystem.pdb
 D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\StorySystem.pdb
 D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\Dsl.pdb
@@ -32,3 +31,8 @@ D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstanda
 D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.csproj.CopyComplete
 D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.dll
 D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.pdb
+D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\protobuf-net.dll
+D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\Common.pdb
+D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\protobuf-net.xml
+D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\protobuf-net.Core.dll
+D:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstandard2.1\protobuf-net.Core.xml
