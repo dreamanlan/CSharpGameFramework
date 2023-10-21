@@ -100,9 +100,9 @@ namespace StorySystem
                                 //obj.member(a,b,...) or obj[member](a,b,...) or obj.(member)(a,b,...) or obj.[member](a,b,...) or obj.{member}(a,b,...) -> execinstance(obj,member,a,b,...)
                                 Dsl.FunctionData newCall = new Dsl.FunctionData();
                                 if(innerCall.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD)
-                                    newCall.Name = new Dsl.ValueData("dotnetexec", Dsl.ValueData.ID_TOKEN);
+                                    newCall.Name = new Dsl.ValueData("dotnetcall", Dsl.ValueData.ID_TOKEN);
                                 else
-                                    newCall.Name = new Dsl.ValueData("collectionexec", Dsl.ValueData.ID_TOKEN);
+                                    newCall.Name = new Dsl.ValueData("collectioncall", Dsl.ValueData.ID_TOKEN);
                                 newCall.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);
                                 if (innerCall.IsHighOrder) {
                                     newCall.Params.Add(innerCall.LowerOrderFunction);
@@ -291,9 +291,9 @@ namespace StorySystem
             RegisterCommandFactory("listinsert", new StoryCommandFactoryHelper<CommonCommands.ListInsertCommand>());
             RegisterCommandFactory("listremoveat", new StoryCommandFactoryHelper<CommonCommands.ListRemoveAtCommand>());
             RegisterCommandFactory("listclear", new StoryCommandFactoryHelper<CommonCommands.ListClearCommand>());
-            RegisterCommandFactory("dotnetexec", new StoryCommandFactoryHelper<CommonCommands.DotnetExecCommand>());
+            RegisterCommandFactory("dotnetcall", new StoryCommandFactoryHelper<CommonCommands.DotnetCallCommand>());
             RegisterCommandFactory("dotnetset", new StoryCommandFactoryHelper<CommonCommands.DotnetSetCommand>());
-            RegisterCommandFactory("collectionexec", new StoryCommandFactoryHelper<CommonCommands.CollectionExecCommand>());
+            RegisterCommandFactory("collectioncall", new StoryCommandFactoryHelper<CommonCommands.CollectionCallCommand>());
             RegisterCommandFactory("collectionset", new StoryCommandFactoryHelper<CommonCommands.CollectionSetCommand>());
             RegisterCommandFactory("system", new StoryCommandFactoryHelper<CommonCommands.SystemCommand>());
             RegisterCommandFactory("writealllines", new StoryCommandFactoryHelper<CommonCommands.WriteAllLinesCommand>());

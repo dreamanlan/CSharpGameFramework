@@ -713,7 +713,7 @@ public struct BoxedValue
     public const int c_Color32Type = 20;
 
     [StructLayout(LayoutKind.Explicit)]
-    internal struct UnionValue
+    public struct UnionValue
     {
         [FieldOffset(0)]
         public bool BoolVal;
@@ -762,7 +762,7 @@ public struct BoxedValue
     }
     public int Type;
     public object ObjectVal;
-    private UnionValue Union;
+    public UnionValue Union;
 
     public static implicit operator BoxedValue(string v)
     {
@@ -1046,6 +1046,32 @@ public struct BoxedValue
     {
         get {
             return Type == c_CharType;
+        }
+    }
+    public bool IsSignedInteger {
+        get {
+            switch (Type) {
+                case c_SByteType:
+                case c_ShortType:
+                case c_IntType:
+                case c_LongType:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+    public bool IsUnsignedInteger {
+        get {
+            switch (Type) {
+                case c_ByteType:
+                case c_UShortType:
+                case c_UIntType:
+                case c_ULongType:
+                    return true;
+                default:
+                    return false;
+            }
         }
     }
     public bool IsInteger

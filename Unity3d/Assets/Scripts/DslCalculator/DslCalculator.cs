@@ -22,7 +22,7 @@ namespace DslExpression
     {
         public static CalculatorValue ToCalculatorValue<T>(T v)
         {
-            var from = s_FromBoxedValue as FromGenericDelegation<CalculatorValue, T>;
+            var from = s_FromVariantValue as FromGenericDelegation<CalculatorValue, T>;
             if (null != from)
                 return from(v);
             return CalculatorValue.NullObject;
@@ -135,7 +135,7 @@ namespace DslExpression
 
         public static T From<T>(CalculatorValue v)
         {
-            var from = s_FromBoxedValue as FromGenericDelegation<T, CalculatorValue>;
+            var from = s_FromVariantValue as FromGenericDelegation<T, CalculatorValue>;
             if (null != from)
                 return from(v);
             return default(T);
@@ -262,7 +262,7 @@ namespace DslExpression
         }
 
         private delegate R FromGenericDelegation<R, T>(T v);
-        private static FromGenericDelegation<CalculatorValue, CalculatorValue> s_FromBoxedValue = FromHelper<CalculatorValue>;
+        private static FromGenericDelegation<CalculatorValue, CalculatorValue> s_FromVariantValue = FromHelper<CalculatorValue>;
         private static FromGenericDelegation<bool, bool> s_FromBool = FromHelper<bool>;
         private static FromGenericDelegation<char, char> s_FromChar = FromHelper<char>;
         private static FromGenericDelegation<sbyte, sbyte> s_FromSByte = FromHelper<sbyte>;
@@ -302,7 +302,7 @@ namespace DslExpression
         public const int c_DecimalType = 14;
 
         [StructLayout(LayoutKind.Explicit)]
-        internal struct UnionValue
+        public struct UnionValue
         {
             [FieldOffset(0)]
             public bool BoolVal;
@@ -339,7 +339,7 @@ namespace DslExpression
         }
         public int Type;
         public object ObjectVal;
-        private UnionValue Union;
+        public UnionValue Union;
 
         public static implicit operator CalculatorValue(string v)
         {
