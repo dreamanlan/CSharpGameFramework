@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 namespace StorySystem.CommonValues
 {
-    internal sealed class FormatValue : IStoryValue
+    public sealed class FormatValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -92,7 +92,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class SubstringValue : IStoryValue
+    public sealed class SubstringValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -189,7 +189,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class StringContainsValue : IStoryValue
+    public sealed class StringContainsValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -274,7 +274,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class StringNotContainsValue : IStoryValue
+    public sealed class StringNotContainsValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -359,7 +359,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class StringContainsAnyValue : IStoryValue
+    public sealed class StringContainsAnyValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -449,7 +449,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class StringNotContainsAnyValue : IStoryValue
+    public sealed class StringNotContainsAnyValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -539,7 +539,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class StringToLowerValue : IStoryValue
+    public sealed class StringToLowerValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -589,7 +589,7 @@ namespace StorySystem.CommonValues
 
         private IStoryValue<string> m_StringVal = new StoryValue<string>();
     }
-    internal sealed class StringToUpperValue : IStoryValue
+    public sealed class StringToUpperValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -639,7 +639,7 @@ namespace StorySystem.CommonValues
 
         private IStoryValue<string> m_StringVal = new StoryValue<string>();
     }
-    internal sealed class Str2LowerValue : IStoryValue
+    public sealed class Str2LowerValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -689,7 +689,7 @@ namespace StorySystem.CommonValues
 
         private IStoryValue<string> m_StringVal = new StoryValue<string>();
     }
-    internal sealed class Str2UpperValue : IStoryValue
+    public sealed class Str2UpperValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -739,7 +739,7 @@ namespace StorySystem.CommonValues
 
         private IStoryValue<string> m_StringVal = new StoryValue<string>();
     }
-    internal sealed class Str2IntValue : IStoryValue
+    public sealed class Str2IntValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -794,7 +794,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class Str2FloatValue : IStoryValue
+    public sealed class Str2FloatValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {

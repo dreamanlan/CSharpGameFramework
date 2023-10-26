@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using StorySystem;
 namespace StorySystem.CommonValues
 {
-    internal sealed class AndOperator : IStoryValue
+    public sealed class AndOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -73,7 +73,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class OrOperator : IStoryValue
+    public sealed class OrOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -143,7 +143,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class NotOperator : IStoryValue
+    public sealed class NotOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {

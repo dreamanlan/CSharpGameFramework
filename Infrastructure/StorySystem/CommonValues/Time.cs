@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GameFramework;
 namespace StorySystem.CommonValues
 {
-    internal sealed class TimeValue : IStoryValue
+    public sealed class TimeValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {

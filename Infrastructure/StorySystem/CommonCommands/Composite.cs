@@ -26,7 +26,7 @@ namespace StorySystem.CommonCommands
     /// 2、因为自定义的命令与值在使用时有函数调用语义，需要可以访问传递的参数。而Evaluate接口只有一组参数，这限制了自定义
     /// 命令与值的形式至多是Function样式而不应支持Statement样式。
     /// </remarks>
-    internal sealed class CompositeCommand : AbstractStoryCommand
+    public sealed class CompositeCommand : AbstractStoryCommand
     {
         public override bool IsCompositeCommand { get { return true; } }
         internal string Name
@@ -234,7 +234,7 @@ namespace StorySystem.CommonCommands
         private Dictionary<string, Dsl.ISyntaxComponent> m_OptArgs = null;
         private List<IStoryCommand> m_InitialCommands = null;
     }
-    internal sealed class CompositeCommandFactory : IStoryCommandFactory
+    public sealed class CompositeCommandFactory : IStoryCommandFactory
     {
         public IStoryCommand Create()
         {
@@ -246,7 +246,7 @@ namespace StorySystem.CommonCommands
         }
         private CompositeCommand m_Cmd = null;
     }
-    internal sealed class CompositePrologueCommandHelper : AbstractStoryCommand
+    public sealed class CompositePrologueCommandHelper : AbstractStoryCommand
     {
         public CompositePrologueCommandHelper(CompositeCommand cmd)
         {
@@ -262,7 +262,7 @@ namespace StorySystem.CommonCommands
         }
         private CompositeCommand m_Cmd = null;
     }
-    internal sealed class CompositeEpilogueCommandHelper : AbstractStoryCommand
+    public sealed class CompositeEpilogueCommandHelper : AbstractStoryCommand
     {
         public CompositeEpilogueCommandHelper(CompositeCommand cmd)
         {
@@ -281,7 +281,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// substcmd(id, substId);
     /// </summary>
-    internal sealed class SubstCmdCommand : AbstractStoryCommand
+    public sealed class SubstCmdCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -322,7 +322,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// clearcmdsubsts();
     /// </summary>
-    internal sealed class ClearCmdSubstsCommand : AbstractStoryCommand
+    public sealed class ClearCmdSubstsCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -346,7 +346,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// substval(id, substId);
     /// </summary>
-    internal sealed class SubstValCommand : AbstractStoryCommand
+    public sealed class SubstValCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -387,7 +387,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// clearvalsubsts();
     /// </summary>
-    internal sealed class ClearValSubstsCommand : AbstractStoryCommand
+    public sealed class ClearValSubstsCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {

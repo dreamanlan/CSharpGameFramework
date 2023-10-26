@@ -6,7 +6,7 @@ using System.Diagnostics;
 
 namespace StorySystem.CommonValues
 {
-    internal sealed class LinqValue : IStoryValue
+    public sealed class LinqValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {

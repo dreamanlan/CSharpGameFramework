@@ -8,7 +8,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// dotnetexec(obj,method,arg1,arg2,...);
     /// </summary>
-    internal sealed class DotnetCallCommand : AbstractStoryCommand
+    public sealed class DotnetCallCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -94,7 +94,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// dotnetset(obj,method,arg1,arg2,...);
     /// </summary>
-    internal sealed class DotnetSetCommand : AbstractStoryCommand
+    public sealed class DotnetSetCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -177,7 +177,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// collectionexec(obj,method,arg1,arg2,...);
     /// </summary>
-    internal sealed class CollectionCallCommand : AbstractStoryCommand
+    public sealed class CollectionCallCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -253,7 +253,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// collectionset(obj,method,arg1,arg2,...);
     /// </summary>
-    internal sealed class CollectionSetCommand : AbstractStoryCommand
+    public sealed class CollectionSetCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -321,7 +321,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// system(file,args);
     /// </summary>
-    internal sealed class SystemCommand : AbstractStoryCommand
+    public sealed class SystemCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {

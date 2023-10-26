@@ -10,7 +10,7 @@ namespace StorySystem.CommonCommands
     /// or
     /// assign($var,value);
     /// </summary>
-    internal sealed class AssignCommand : AbstractStoryCommand
+    public sealed class AssignCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -49,7 +49,7 @@ namespace StorySystem.CommonCommands
     /// or
     /// inc($var,value);
     /// </summary>
-    internal sealed class IncCommand : AbstractStoryCommand
+    public sealed class IncCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -168,7 +168,7 @@ namespace StorySystem.CommonCommands
     /// or
     /// dec($var,value);
     /// </summary>
-    internal sealed class DecCommand : AbstractStoryCommand
+    public sealed class DecCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -283,7 +283,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// propset(name,value);
     /// </summary>
-    internal sealed class PropSetCommand : AbstractStoryCommand
+    public sealed class PropSetCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -320,7 +320,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// listset(list,index,value);
     /// </summary>
-    internal sealed class ListSetCommand : AbstractStoryCommand
+    public sealed class ListSetCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -368,7 +368,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// listadd(list,value);
     /// </summary>
-    internal sealed class ListAddCommand : AbstractStoryCommand
+    public sealed class ListAddCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -406,7 +406,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// listremove(list,value);
     /// </summary>
-    internal sealed class ListRemoveCommand : AbstractStoryCommand
+    public sealed class ListRemoveCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -444,7 +444,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// listinsert(list,index,value);
     /// </summary>
-    internal sealed class ListInsertCommand : AbstractStoryCommand
+    public sealed class ListInsertCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -487,7 +487,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// listremoveat(list,index);
     /// </summary>
-    internal sealed class ListRemoveAtCommand : AbstractStoryCommand
+    public sealed class ListRemoveAtCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -525,7 +525,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// listclear(list);
     /// </summary>
-    internal sealed class ListClearCommand : AbstractStoryCommand
+    public sealed class ListClearCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {

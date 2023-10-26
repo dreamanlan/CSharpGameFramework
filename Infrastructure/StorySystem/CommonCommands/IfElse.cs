@@ -19,7 +19,7 @@ namespace StorySystem.CommonCommands
     ///   missioncomplete();
     /// };
     /// </summary>
-    internal sealed class IfElseCommand : AbstractStoryCommand
+    public sealed class IfElseCommand : AbstractStoryCommand
     {
         public override bool IsCompositeCommand { get { return true; } }
         protected override IStoryCommand CloneCommand()

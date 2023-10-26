@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using StorySystem;
 namespace StorySystem.CommonValues
 {
-    internal sealed class AddOperator : IStoryValue
+    public sealed class AddOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -80,7 +80,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class SubOperator : IStoryValue
+    public sealed class SubOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -151,7 +151,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class MulOperator : IStoryValue
+    public sealed class MulOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -217,7 +217,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class DivOperator : IStoryValue
+    public sealed class DivOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -283,7 +283,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class ModOperator : IStoryValue
+    public sealed class ModOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -349,7 +349,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class AbsOperator : IStoryValue
+    public sealed class AbsOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -408,7 +408,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class FloorOperator : IStoryValue
+    public sealed class FloorOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -467,7 +467,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class CeilingOperator : IStoryValue
+    public sealed class CeilingOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -526,7 +526,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class RoundOperator : IStoryValue
+    public sealed class RoundOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -585,7 +585,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class PowOperator : IStoryValue
+    public sealed class PowOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -662,7 +662,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class LogOperator : IStoryValue
+    public sealed class LogOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -733,7 +733,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class SqrtOperator : IStoryValue
+    public sealed class SqrtOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -785,7 +785,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class SinOperator : IStoryValue
+    public sealed class SinOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -837,7 +837,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class CosOperator : IStoryValue
+    public sealed class CosOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -889,7 +889,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class SinhOperator : IStoryValue
+    public sealed class SinhOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -941,7 +941,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class CoshOperator : IStoryValue
+    public sealed class CoshOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -993,7 +993,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class MinOperator : IStoryValue
+    public sealed class MinOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -1081,7 +1081,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class MaxOperator : IStoryValue
+    public sealed class MaxOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {

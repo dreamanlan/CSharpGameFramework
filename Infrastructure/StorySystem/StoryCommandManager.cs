@@ -322,6 +322,10 @@ namespace StorySystem
             StoryValueManager.Instance.RegisterValueFactory("vector4", new StoryValueFactoryHelper<CommonValues.Vector4Value>());
             StoryValueManager.Instance.RegisterValueFactory("quaternion", new StoryValueFactoryHelper<CommonValues.QuaternionValue>());
             StoryValueManager.Instance.RegisterValueFactory("eular", new StoryValueFactoryHelper<CommonValues.EularValue>());
+            StoryValueManager.Instance.RegisterValueFactory("color", new StoryValueFactoryHelper<CommonValues.ColorValue>());
+            StoryValueManager.Instance.RegisterValueFactory("color32", new StoryValueFactoryHelper<CommonValues.Color32Value>());
+            StoryValueManager.Instance.RegisterValueFactory("vector2int", new StoryValueFactoryHelper<CommonValues.Vector2IntValue>());
+            StoryValueManager.Instance.RegisterValueFactory("vector3int", new StoryValueFactoryHelper<CommonValues.Vector3IntValue>());
             StoryValueManager.Instance.RegisterValueFactory("stringlist", new StoryValueFactoryHelper<CommonValues.StringListValue>());
             StoryValueManager.Instance.RegisterValueFactory("intlist", new StoryValueFactoryHelper<CommonValues.IntListValue>());
             StoryValueManager.Instance.RegisterValueFactory("floatlist", new StoryValueFactoryHelper<CommonValues.FloatListValue>());

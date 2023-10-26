@@ -17,7 +17,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// localmessage(msgid,arg1,arg2,...);
     /// </summary>
-    internal sealed class LocalMessageCommand : AbstractStoryCommand
+    public sealed class LocalMessageCommand : AbstractStoryCommand
     {
         public LocalMessageCommand(bool isConcurrent)
         {
@@ -69,14 +69,14 @@ namespace StorySystem.CommonCommands
         private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
         private bool m_IsConcurrent = false;
     }
-    internal sealed class LocalMessageCommandFactory : IStoryCommandFactory
+    public sealed class LocalMessageCommandFactory : IStoryCommandFactory
     {
         public IStoryCommand Create()
         {
             return new LocalMessageCommand(false);
         }
     }
-    internal sealed class LocalConcurrentMessageCommandFactory : IStoryCommandFactory
+    public sealed class LocalConcurrentMessageCommandFactory : IStoryCommandFactory
     {
         public IStoryCommand Create()
         {
@@ -86,7 +86,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// storylocalmessage(msgid,arg1,arg2,...);
     /// </summary>
-    internal sealed class StoryLocalMessageCommand : AbstractStoryCommand
+    public sealed class StoryLocalMessageCommand : AbstractStoryCommand
     {
         public StoryLocalMessageCommand(bool isConcurrent)
         {
@@ -141,14 +141,14 @@ namespace StorySystem.CommonCommands
         private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
         private bool m_IsConcurrent = false;
     }
-    internal sealed class StoryLocalMessageCommandFactory : IStoryCommandFactory
+    public sealed class StoryLocalMessageCommandFactory : IStoryCommandFactory
     {
         public IStoryCommand Create()
         {
             return new StoryLocalMessageCommand(false);
         }
     }
-    internal sealed class StoryLocalConcurrentMessageCommandFactory : IStoryCommandFactory
+    public sealed class StoryLocalConcurrentMessageCommandFactory : IStoryCommandFactory
     {
         public IStoryCommand Create()
         {
@@ -158,7 +158,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// clearmessage(msgid1,msgid2,...);
     /// </summary>
-    internal sealed class ClearMessageCommand : AbstractStoryCommand
+    public sealed class ClearMessageCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -198,7 +198,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// waitlocalmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal sealed class WaitLocalMessageCommand : AbstractStoryCommand
+    public sealed class WaitLocalMessageCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -320,7 +320,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// waitlocalmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal sealed class WaitLocalMessageHandlerCommand : AbstractStoryCommand
+    public sealed class WaitLocalMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -432,7 +432,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// storywaitlocalmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal sealed class StoryWaitLocalMessageCommand : AbstractStoryCommand
+    public sealed class StoryWaitLocalMessageCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -554,7 +554,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// storywaitlocalmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal sealed class StoryWaitLocalMessageHandlerCommand : AbstractStoryCommand
+    public sealed class StoryWaitLocalMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -666,7 +666,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// suspendlocalmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal sealed class SuspendLocalMessageHandlerCommand : AbstractStoryCommand
+    public sealed class SuspendLocalMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -707,7 +707,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// resumelocalmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal sealed class ResumeLocalMessageHandlerCommand : AbstractStoryCommand
+    public sealed class ResumeLocalMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -748,7 +748,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// localnamespacedmessage(msgid,arg1,arg2,...);
     /// </summary>
-    internal sealed class LocalNamespacedMessageCommand : AbstractStoryCommand
+    public sealed class LocalNamespacedMessageCommand : AbstractStoryCommand
     {
         public LocalNamespacedMessageCommand(bool isConcurrent)
         {
@@ -804,14 +804,14 @@ namespace StorySystem.CommonCommands
         private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
         private bool m_IsConcurrent = false;
     }
-    internal sealed class LocalNamespacedMessageCommandFactory : IStoryCommandFactory
+    public sealed class LocalNamespacedMessageCommandFactory : IStoryCommandFactory
     {
         public IStoryCommand Create()
         {
             return new LocalNamespacedMessageCommand(false);
         }
     }
-    internal sealed class LocalConcurrentNamespacedMessageCommandFactory : IStoryCommandFactory
+    public sealed class LocalConcurrentNamespacedMessageCommandFactory : IStoryCommandFactory
     {
         public IStoryCommand Create()
         {
@@ -821,7 +821,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// storylocalnamespacedmessage(msgid,arg1,arg2,...);
     /// </summary>
-    internal sealed class StoryLocalNamespacedMessageCommand : AbstractStoryCommand
+    public sealed class StoryLocalNamespacedMessageCommand : AbstractStoryCommand
     {
         public StoryLocalNamespacedMessageCommand(bool isConcurrent)
         {
@@ -880,14 +880,14 @@ namespace StorySystem.CommonCommands
         private List<IStoryValue> m_MsgArgs = new List<IStoryValue>();
         private bool m_IsConcurrent = false;
     }
-    internal sealed class StoryLocalNamespacedMessageCommandFactory : IStoryCommandFactory
+    public sealed class StoryLocalNamespacedMessageCommandFactory : IStoryCommandFactory
     {
         public IStoryCommand Create()
         {
             return new StoryLocalNamespacedMessageCommand(false);
         }
     }
-    internal sealed class StoryLocalConcurrentNamespacedMessageCommandFactory : IStoryCommandFactory
+    public sealed class StoryLocalConcurrentNamespacedMessageCommandFactory : IStoryCommandFactory
     {
         public IStoryCommand Create()
         {
@@ -897,7 +897,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// clearnamespacedmessage(msgid1,msgid2,...);
     /// </summary>
-    internal sealed class ClearNamespacedMessageCommand : AbstractStoryCommand
+    public sealed class ClearNamespacedMessageCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -944,7 +944,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// waitlocalnamespacedmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal sealed class WaitLocalNamespacedMessageCommand : AbstractStoryCommand
+    public sealed class WaitLocalNamespacedMessageCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -1076,7 +1076,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// waitlocalnamespacedmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal sealed class WaitLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    public sealed class WaitLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -1194,7 +1194,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// storywaitlocalnamespacedmessage(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal sealed class StoryWaitLocalNamespacedMessageCommand : AbstractStoryCommand
+    public sealed class StoryWaitLocalNamespacedMessageCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -1327,7 +1327,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// storywaitlocalnamespacedmessagehandler(msgid1,msgid2,...)[set(var,val)timeoutset(timeout,var,val)];
     /// </summary>
-    internal sealed class StoryWaitLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    public sealed class StoryWaitLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -1446,7 +1446,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// suspendlocalnamespacedmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal sealed class SuspendLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    public sealed class SuspendLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -1494,7 +1494,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// resumelocalnamespacedmessagehandler(msgid1,msgid2,...);
     /// </summary>
-    internal sealed class ResumeLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
+    public sealed class ResumeLocalNamespacedMessageHandlerCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {

@@ -7,7 +7,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// log(format,arg1,arg2,...);
     /// </summary>
-    internal sealed class LogCommand : AbstractStoryCommand
+    public sealed class LogCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {

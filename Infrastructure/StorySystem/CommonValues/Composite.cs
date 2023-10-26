@@ -24,7 +24,7 @@ namespace StorySystem.CommonValues
     /// 2、因为自定义的命令与值在使用时有函数调用语义，需要可以访问传递的参数。而Evaluate接口只有一组参数，这限制了自定义
     /// 命令与值的形式至多是Function样式而不应支持Statement样式。
     /// </remarks>
-    internal sealed class CompositeValue : IStoryValue
+    public sealed class CompositeValue : IStoryValue
     {
         public string Name
         {
@@ -219,7 +219,7 @@ namespace StorySystem.CommonValues
         private Dictionary<string, Dsl.ISyntaxComponent> m_OptArgs = null;
         private List<IStoryCommand> m_InitialCommands = null;
     }
-    internal sealed class CompositeValueFactory : IStoryValueFactory
+    public sealed class CompositeValueFactory : IStoryValueFactory
     {
         public IStoryValue Build()
         {
@@ -231,7 +231,7 @@ namespace StorySystem.CommonValues
         }
         private CompositeValue m_Val;
     }
-    internal sealed class GetCmdSubstValue : IStoryValue
+    public sealed class GetCmdSubstValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -286,7 +286,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetValSubstValue : IStoryValue
+    public sealed class GetValSubstValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {

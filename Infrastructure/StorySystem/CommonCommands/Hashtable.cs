@@ -8,7 +8,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// writealllines(file, val);
     /// </summary>
-    internal sealed class WriteAllLinesCommand : AbstractStoryCommand
+    public sealed class WriteAllLinesCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -55,7 +55,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// writefile(file, val);
     /// </summary>
-    internal sealed class WriteFileCommand : AbstractStoryCommand
+    public sealed class WriteFileCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -96,7 +96,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// hashtableadd(hashtable, key, val);
     /// </summary>
-    internal sealed class HashtableAddCommand : AbstractStoryCommand
+    public sealed class HashtableAddCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -142,7 +142,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// hashtableset(hashtable,key,val);
     /// </summary>
-    internal sealed class HashtableSetCommand : AbstractStoryCommand
+    public sealed class HashtableSetCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -190,7 +190,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// hashtableremove(hashtable,key);
     /// </summary>
-    internal sealed class HashtableRemoveCommand : AbstractStoryCommand
+    public sealed class HashtableRemoveCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -232,7 +232,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// hashtableclear(hashtable);
     /// </summary>
-    internal sealed class HashtableClearCommand : AbstractStoryCommand
+    public sealed class HashtableClearCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {

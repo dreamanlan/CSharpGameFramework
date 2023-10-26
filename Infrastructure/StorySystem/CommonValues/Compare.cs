@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 namespace StorySystem.CommonValues
 {
-    internal sealed class GreaterThanOperator : IStoryValue
+    public sealed class GreaterThanOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -59,7 +59,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GreaterEqualThanOperator : IStoryValue
+    public sealed class GreaterEqualThanOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -116,7 +116,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class EqualOperator : IStoryValue
+    public sealed class EqualOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -185,7 +185,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class NotEqualOperator : IStoryValue
+    public sealed class NotEqualOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -254,7 +254,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class LessThanOperator : IStoryValue
+    public sealed class LessThanOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -311,7 +311,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class LessEqualThanOperator : IStoryValue
+    public sealed class LessEqualThanOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -368,7 +368,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class IsNullOperator : IStoryValue
+    public sealed class IsNullOperator : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {

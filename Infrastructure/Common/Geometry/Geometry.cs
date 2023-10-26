@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using ScriptRuntime;
 using GameFramework;
+using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace GameFramework
 {
@@ -168,7 +170,7 @@ namespace GameFramework
         public static bool IsAabbDiskIntersect(Vector2 c, Vector2 h, Vector2 p, float r) {
             Vector2 v = Vector2.Max(p - c, c - p); // = Abs(p - c);
             Vector2 u = Vector2.Max(v - h, Vector2.Zero);
-            return u.LengthSquared()<= r * r;
+            return u.LengthSquared() <= r * r;
         }
         /// <summary>
         /// 圆与矩形求交
@@ -832,7 +834,7 @@ namespace GameFramework
                 }
                 lastPt = pt;
             }
-            for (int count = 1; count > 0; ) {
+            for (int count = 1; count > 0;) {
                 count = 0;
                 LinkedListNode<Vector2> node = links.First;
                 while (node != null) {
@@ -1407,7 +1409,7 @@ namespace GameFramework
                 }
                 lastPt = pt;
             }
-            for (int count = 1; count > 0; ) {
+            for (int count = 1; count > 0;) {
                 count = 0;
                 LinkedListNode<Vector3> node = links.First;
                 while (node != null) {
@@ -1429,6 +1431,662 @@ namespace GameFramework
             Vector3[] rpts = new Vector3[links.Count];
             links.CopyTo(rpts, 0);
             return rpts;
+        }
+    }
+}
+
+namespace ScriptRuntime
+{
+    public struct Vector2Int : IEquatable<Vector2Int>, IFormattable
+    {
+        private int m_X;
+
+        private int m_Y;
+
+        private static readonly Vector2Int s_Zero = new Vector2Int(0, 0);
+
+        private static readonly Vector2Int s_One = new Vector2Int(1, 1);
+
+        private static readonly Vector2Int s_Up = new Vector2Int(0, 1);
+
+        private static readonly Vector2Int s_Down = new Vector2Int(0, -1);
+
+        private static readonly Vector2Int s_Left = new Vector2Int(-1, 0);
+
+        private static readonly Vector2Int s_Right = new Vector2Int(1, 0);
+
+        public int x {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return m_X;
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set {
+                m_X = value;
+            }
+        }
+
+        public int y {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return m_Y;
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set {
+                m_Y = value;
+            }
+        }
+
+        public int this[int index] {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return index switch {
+                    0 => x,
+                    1 => y,
+                    _ => throw new IndexOutOfRangeException($"Invalid Vector2Int index addressed: {index}!"),
+                };
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set {
+                switch (index) {
+                    case 0:
+                        x = value;
+                        break;
+                    case 1:
+                        y = value;
+                        break;
+                    default:
+                        throw new IndexOutOfRangeException($"Invalid Vector2Int index addressed: {index}!");
+                }
+            }
+        }
+
+        public float magnitude {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return MathF.Sqrt(x * x + y * y);
+            }
+        }
+
+        public int sqrMagnitude {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return x * x + y * y;
+            }
+        }
+
+        public static Vector2Int zero {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Zero;
+            }
+        }
+
+        public static Vector2Int one {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_One;
+            }
+        }
+
+        public static Vector2Int up {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Up;
+            }
+        }
+
+        public static Vector2Int down {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Down;
+            }
+        }
+
+        public static Vector2Int left {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Left;
+            }
+        }
+
+        public static Vector2Int right {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Right;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector2Int(int x, int y)
+        {
+            m_X = x;
+            m_Y = y;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Set(int x, int y)
+        {
+            m_X = x;
+            m_Y = y;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Distance(Vector2Int a, Vector2Int b)
+        {
+            float diff_x = a.x - b.x;
+            float diff_y = a.y - b.y;
+            return (float)Math.Sqrt(diff_x * diff_x + diff_y * diff_y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int Min(Vector2Int lhs, Vector2Int rhs)
+        {
+            return new Vector2Int(Math.Min(lhs.x, rhs.y), Math.Min(lhs.y, rhs.y));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int Max(Vector2Int lhs, Vector2Int rhs)
+        {
+            return new Vector2Int(Math.Max(lhs.x, rhs.x), Math.Max(lhs.y, rhs.y));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int Scale(Vector2Int a, Vector2Int b)
+        {
+            return new Vector2Int(a.x * b.x, a.y * b.y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Scale(Vector2Int scale)
+        {
+            x *= scale.x;
+            y *= scale.y;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clamp(Vector2Int min, Vector2Int max)
+        {
+            x = Math.Max(min.x, x);
+            x = Math.Min(max.x, x);
+            y = Math.Max(min.y, y);
+            y = Math.Min(max.y, y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Vector2(Vector2Int v)
+        {
+            return new Vector2(v.x, v.y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Vector3Int(Vector2Int v)
+        {
+            return new Vector3Int(v.x, v.y, 0);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int FloorToInt(Vector2 v)
+        {
+            return new Vector2Int((int)Math.Floor(v.X), (int)Math.Floor(v.Y));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int CeilToInt(Vector2 v)
+        {
+            return new Vector2Int((int)Math.Ceiling(v.X), (int)Math.Ceiling(v.Y));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int RoundToInt(Vector2 v)
+        {
+            return new Vector2Int((int)Math.Round(v.X), (int)Math.Round(v.Y));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int operator -(Vector2Int v)
+        {
+            return new Vector2Int(-v.x, -v.y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int operator +(Vector2Int a, Vector2Int b)
+        {
+            return new Vector2Int(a.x + b.x, a.y + b.y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int operator -(Vector2Int a, Vector2Int b)
+        {
+            return new Vector2Int(a.x - b.x, a.y - b.y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int operator *(Vector2Int a, Vector2Int b)
+        {
+            return new Vector2Int(a.x * b.x, a.y * b.y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int operator *(int a, Vector2Int b)
+        {
+            return new Vector2Int(a * b.x, a * b.y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int operator *(Vector2Int a, int b)
+        {
+            return new Vector2Int(a.x * b, a.y * b);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector2Int operator /(Vector2Int a, int b)
+        {
+            return new Vector2Int(a.x / b, a.y / b);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Vector2Int lhs, Vector2Int rhs)
+        {
+            return lhs.x == rhs.x && lhs.y == rhs.y;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Vector2Int lhs, Vector2Int rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Equals(object other)
+        {
+            if (!(other is Vector2Int)) {
+                return false;
+            }
+            return Equals((Vector2Int)other);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Vector2Int other)
+        {
+            return x == other.x && y == other.y;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode()
+        {
+            return x.GetHashCode() ^ (y.GetHashCode() << 2);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string ToString()
+        {
+            return ToString(null, null);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ToString(string format)
+        {
+            return ToString(format, null);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            if (formatProvider == null) {
+                formatProvider = CultureInfo.InvariantCulture.NumberFormat;
+            }
+            return string.Format("({0}, {1})", x.ToString(format, formatProvider), y.ToString(format, formatProvider));
+        }
+    }
+    public struct Vector3Int : IEquatable<Vector3Int>, IFormattable
+    {
+        private int m_X;
+
+        private int m_Y;
+
+        private int m_Z;
+
+        private static readonly Vector3Int s_Zero = new Vector3Int(0, 0, 0);
+
+        private static readonly Vector3Int s_One = new Vector3Int(1, 1, 1);
+
+        private static readonly Vector3Int s_Up = new Vector3Int(0, 1, 0);
+
+        private static readonly Vector3Int s_Down = new Vector3Int(0, -1, 0);
+
+        private static readonly Vector3Int s_Left = new Vector3Int(-1, 0, 0);
+
+        private static readonly Vector3Int s_Right = new Vector3Int(1, 0, 0);
+
+        private static readonly Vector3Int s_Forward = new Vector3Int(0, 0, 1);
+
+        private static readonly Vector3Int s_Back = new Vector3Int(0, 0, -1);
+
+        public int x {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return m_X;
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set {
+                m_X = value;
+            }
+        }
+
+        public int y {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return m_Y;
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set {
+                m_Y = value;
+            }
+        }
+
+        public int z {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return m_Z;
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set {
+                m_Z = value;
+            }
+        }
+
+        public int this[int index] {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return index switch {
+                    0 => x,
+                    1 => y,
+                    2 => z,
+                    _ => throw new IndexOutOfRangeException(string.Format("Invalid Vector3Int index addressed: {0}!", index)),
+                };
+            }
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            set {
+                switch (index) {
+                    case 0:
+                        x = value;
+                        break;
+                    case 1:
+                        y = value;
+                        break;
+                    case 2:
+                        z = value;
+                        break;
+                    default:
+                        throw new IndexOutOfRangeException(string.Format("Invalid Vector3Int index addressed: {0}!", index));
+                }
+            }
+        }
+
+        public float magnitude {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return MathF.Sqrt(x * x + y * y + z * z);
+            }
+        }
+
+        public int sqrMagnitude {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return x * x + y * y + z * z;
+            }
+        }
+
+        public static Vector3Int zero {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Zero;
+            }
+        }
+
+        public static Vector3Int one {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_One;
+            }
+        }
+
+        public static Vector3Int up {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Up;
+            }
+        }
+
+        public static Vector3Int down {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Down;
+            }
+        }
+
+        public static Vector3Int left {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Left;
+            }
+        }
+
+        public static Vector3Int right {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Right;
+            }
+        }
+
+        public static Vector3Int forward {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Forward;
+            }
+        }
+
+        public static Vector3Int back {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get {
+                return s_Back;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector3Int(int x, int y)
+        {
+            m_X = x;
+            m_Y = y;
+            m_Z = 0;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Vector3Int(int x, int y, int z)
+        {
+            m_X = x;
+            m_Y = y;
+            m_Z = z;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Set(int x, int y, int z)
+        {
+            m_X = x;
+            m_Y = y;
+            m_Z = z;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float Distance(Vector3Int a, Vector3Int b)
+        {
+            return (a - b).magnitude;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int Min(Vector3Int lhs, Vector3Int rhs)
+        {
+            return new Vector3Int(Math.Min(lhs.x, rhs.x), Math.Min(lhs.y, rhs.y), Math.Min(lhs.z, rhs.z));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int Max(Vector3Int lhs, Vector3Int rhs)
+        {
+            return new Vector3Int(Math.Max(lhs.x, rhs.x), Math.Max(lhs.y, rhs.y), Math.Max(lhs.z, rhs.z));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int Scale(Vector3Int a, Vector3Int b)
+        {
+            return new Vector3Int(a.x * b.x, a.y * b.y, a.z * b.z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Scale(Vector3Int scale)
+        {
+            x *= scale.x;
+            y *= scale.y;
+            z *= scale.z;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Clamp(Vector3Int min, Vector3Int max)
+        {
+            x = Math.Max(min.x, x);
+            x = Math.Min(max.x, x);
+            y = Math.Max(min.y, y);
+            y = Math.Min(max.y, y);
+            z = Math.Max(min.z, z);
+            z = Math.Min(max.z, z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Vector3(Vector3Int v)
+        {
+            return new Vector3(v.x, v.y, v.z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static explicit operator Vector2Int(Vector3Int v)
+        {
+            return new Vector2Int(v.x, v.y);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int FloorToInt(Vector3 v)
+        {
+            return new Vector3Int((int)Math.Floor(v.X), (int)Math.Floor(v.Y), (int)Math.Floor(v.Z));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int CeilToInt(Vector3 v)
+        {
+            return new Vector3Int((int)Math.Ceiling(v.X), (int)Math.Ceiling(v.Y), (int)Math.Ceiling(v.Z));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int RoundToInt(Vector3 v)
+        {
+            return new Vector3Int((int)Math.Round(v.X), (int)Math.Round(v.Y), (int)Math.Round(v.Z));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int operator +(Vector3Int a, Vector3Int b)
+        {
+            return new Vector3Int(a.x + b.x, a.y + b.y, a.z + b.z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int operator -(Vector3Int a, Vector3Int b)
+        {
+            return new Vector3Int(a.x - b.x, a.y - b.y, a.z - b.z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int operator *(Vector3Int a, Vector3Int b)
+        {
+            return new Vector3Int(a.x * b.x, a.y * b.y, a.z * b.z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int operator -(Vector3Int a)
+        {
+            return new Vector3Int(-a.x, -a.y, -a.z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int operator *(Vector3Int a, int b)
+        {
+            return new Vector3Int(a.x * b, a.y * b, a.z * b);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int operator *(int a, Vector3Int b)
+        {
+            return new Vector3Int(a * b.x, a * b.y, a * b.z);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3Int operator /(Vector3Int a, int b)
+        {
+            return new Vector3Int(a.x / b, a.y / b, a.z / b);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Vector3Int lhs, Vector3Int rhs)
+        {
+            return lhs.x == rhs.x && lhs.y == rhs.y && lhs.z == rhs.z;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Vector3Int lhs, Vector3Int rhs)
+        {
+            return !(lhs == rhs);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Equals(object other)
+        {
+            if (!(other is Vector3Int)) {
+                return false;
+            }
+            return Equals((Vector3Int)other);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool Equals(Vector3Int other)
+        {
+            return this == other;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode()
+        {
+            int yHash = y.GetHashCode();
+            int zHash = z.GetHashCode();
+            return x.GetHashCode() ^ (yHash << 4) ^ (yHash >> 28) ^ (zHash >> 4) ^ (zHash << 28);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string ToString()
+        {
+            return ToString(null, null);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ToString(string format)
+        {
+            return ToString(format, null);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            if (formatProvider == null) {
+                formatProvider = CultureInfo.InvariantCulture.NumberFormat;
+            }
+            return string.Format("({0}, {1}, {2})", x.ToString(format, formatProvider), y.ToString(format, formatProvider), z.ToString(format, formatProvider));
         }
     }
 }

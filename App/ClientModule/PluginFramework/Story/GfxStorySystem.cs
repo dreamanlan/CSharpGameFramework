@@ -37,6 +37,7 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendskillmessage", new StoryCommandFactoryHelper<Story.Commands.SendSkillMessageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "creategameobject", new StoryCommandFactoryHelper<Story.Commands.CreateGameObjectCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "settransform", new StoryCommandFactoryHelper<Story.Commands.SetTransformCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "addtransform", new StoryCommandFactoryHelper<Story.Commands.AddTransformCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "destroygameobject", new StoryCommandFactoryHelper<Story.Commands.DestroyGameObjectCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setparent", new StoryCommandFactoryHelper<Story.Commands.SetParentCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setactive", new StoryCommandFactoryHelper<Story.Commands.SetActiveCommand>());
@@ -217,6 +218,9 @@ namespace GameFramework.Story
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getscalex", new StoryValueFactoryHelper<Story.Values.GetScaleXValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getscaley", new StoryValueFactoryHelper<Story.Values.GetScaleYValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getscalez", new StoryValueFactoryHelper<Story.Values.GetScaleZValue>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "position", new StoryValueFactoryHelper<StorySystem.CommonValues.Vector3Value>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "rotation", new StoryValueFactoryHelper<StorySystem.CommonValues.Vector3Value>());
+            StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "scale", new StoryValueFactoryHelper<StorySystem.CommonValues.Vector3Value>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "getcamp", new StoryValueFactoryHelper<Story.Values.GetCampValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "iscombatnpc", new StoryValueFactoryHelper<Story.Values.IsCombatNpcValue>());
             StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.GFX, "gethp", new StoryValueFactoryHelper<Story.Values.GetHpValue>());

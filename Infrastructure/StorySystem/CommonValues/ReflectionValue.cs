@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Diagnostics;
 namespace StorySystem.CommonValues
 {
-    internal sealed class GetTypeValue : IStoryValue
+    public sealed class GetTypeValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -59,7 +59,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class DotnetCallValue : IStoryValue
+    public sealed class DotnetCallValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -184,7 +184,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class DotnetGetValue : IStoryValue
+    public sealed class DotnetGetValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -306,7 +306,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class CollectionCallValue : IStoryValue
+    public sealed class CollectionCallValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -415,7 +415,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class CollectionGetValue : IStoryValue
+    public sealed class CollectionGetValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -518,7 +518,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class ChangeTypeValue : IStoryValue
+    public sealed class ChangeTypeValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -689,7 +689,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class ParseEnumValue : IStoryValue
+    public sealed class ParseEnumValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -761,7 +761,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class PgrepValue : IStoryValue
+    public sealed class PgrepValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -833,7 +833,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class PlistValue : IStoryValue
+    public sealed class PlistValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {

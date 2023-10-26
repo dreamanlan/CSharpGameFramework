@@ -1537,12 +1537,24 @@ namespace GameFramework.Story.Commands
         private void LoadOptional(Dsl.FunctionData callData)
         {
             string id = callData.GetId();
+            int num = callData.GetParamNum();
             if (id == "position") {
-                m_Position.InitFromDsl(callData.GetParam(0));
-            } else if (id == "rotation") {
-                m_Rotation.InitFromDsl(callData.GetParam(0));
-            } else if (id == "scale") {
-                m_Scale.InitFromDsl(callData.GetParam(0));
+                if (num == 3)
+                    m_Position.InitFromDsl(callData);
+                else
+                    m_Position.InitFromDsl(callData.GetParam(0));
+            }
+            else if (id == "rotation") {
+                if (num == 3)
+                    m_Rotation.InitFromDsl(callData);
+                else
+                    m_Rotation.InitFromDsl(callData.GetParam(0));
+            }
+            else if (id == "scale") {
+                if (num == 3)
+                    m_Scale.InitFromDsl(callData);
+                else
+                    m_Scale.InitFromDsl(callData.GetParam(0));
             }
         }
 
@@ -1653,12 +1665,148 @@ namespace GameFramework.Story.Commands
         private void LoadOptional(Dsl.FunctionData callData)
         {
             string id = callData.GetId();
+            int num = callData.GetParamNum();
             if (id == "position") {
-                m_Position.InitFromDsl(callData.GetParam(0));
+                if (num == 3)
+                    m_Position.InitFromDsl(callData);
+                else
+                    m_Position.InitFromDsl(callData.GetParam(0));
             } else if (id == "rotation") {
-                m_Rotation.InitFromDsl(callData.GetParam(0));
+                if (num == 3)
+                    m_Rotation.InitFromDsl(callData);
+                else
+                    m_Rotation.InitFromDsl(callData.GetParam(0));
             } else if (id == "scale") {
-                m_Scale.InitFromDsl(callData.GetParam(0));
+                if (num == 3)
+                    m_Scale.InitFromDsl(callData);
+                else
+                    m_Scale.InitFromDsl(callData.GetParam(0));
+            }
+        }
+
+        private IStoryValue m_ObjPath = new StoryValue();
+        private IStoryValue<int> m_LocalOrWorld = new StoryValue<int>();
+        private IStoryValue<ScriptRuntime.Vector3> m_Position = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryValue<ScriptRuntime.Vector3> m_Rotation = new StoryValue<ScriptRuntime.Vector3>();
+        private IStoryValue<ScriptRuntime.Vector3> m_Scale = new StoryValue<ScriptRuntime.Vector3>();
+    }
+    /// <summary>
+    /// addtransform(name, local_or_world){
+    ///     position(vector3(x,y,z));
+    ///     rotation(vector3(x,y,z));
+    ///     scale(vector3(x,y,z));
+    /// };
+    /// </summary>
+    internal class AddTransformCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            AddTransformCommand cmd = new AddTransformCommand();
+            cmd.m_ObjPath = m_ObjPath.Clone();
+            cmd.m_LocalOrWorld = m_LocalOrWorld.Clone();
+            cmd.m_Position = m_Position.Clone();
+            cmd.m_Rotation = m_Rotation.Clone();
+            cmd.m_Scale = m_Scale.Clone();
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_ObjPath.Evaluate(instance, handler, iterator, args);
+            m_LocalOrWorld.Evaluate(instance, handler, iterator, args);
+            m_Position.Evaluate(instance, handler, iterator, args);
+            m_Rotation.Evaluate(instance, handler, iterator, args);
+            m_Scale.Evaluate(instance, handler, iterator, args);
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            object objVal = m_ObjPath.Value.GetObject();
+            int localOrWorld = m_LocalOrWorld.Value;
+            string objPath = objVal as string;
+            UnityEngine.GameObject obj = null;
+            if (null != objPath) {
+                obj = UnityEngine.GameObject.Find(objPath);
+            }
+            else {
+                obj = objVal as UnityEngine.GameObject;
+                if (null == obj) {
+                    try {
+                        int id = (int)objVal;
+                        obj = PluginFramework.Instance.GetGameObject(id);
+                    }
+                    catch {
+                        obj = null;
+                    }
+                }
+            }
+            if (null != obj) {
+                if (m_Position.HaveValue) {
+                    var v = m_Position.Value;
+                    if (0 == localOrWorld)
+                        obj.transform.localPosition += new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                    else
+                        obj.transform.position += new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                }
+                if (m_Rotation.HaveValue) {
+                    var v = m_Rotation.Value;
+                    if (0 == localOrWorld)
+                        obj.transform.localEulerAngles += new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                    else
+                        obj.transform.eulerAngles += new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                }
+                if (m_Scale.HaveValue) {
+                    var v = m_Scale.Value;
+                    obj.transform.localScale += new UnityEngine.Vector3(v.X, v.Y, v.Z);
+                }
+            }
+            return false;
+        }
+        protected override bool Load(Dsl.FunctionData funcData)
+        {
+            if (funcData.IsHighOrder) {
+                LoadCall(funcData.LowerOrderFunction);
+            }
+            else if (funcData.HaveParam()) {
+                LoadCall(funcData);
+            }
+            if (funcData.HaveStatement()) {
+                foreach (var comp in funcData.Params) {
+                    var cd = comp as Dsl.FunctionData;
+                    if (null != cd) {
+                        LoadOptional(cd);
+                    }
+                }
+            }
+            return true;
+        }
+        private void LoadCall(Dsl.FunctionData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_ObjPath.InitFromDsl(callData.GetParam(0));
+                m_LocalOrWorld.InitFromDsl(callData.GetParam(1));
+            }
+        }
+        private void LoadOptional(Dsl.FunctionData callData)
+        {
+            string id = callData.GetId();
+            int num = callData.GetParamNum();
+            if (id == "position") {
+                if (num == 3)
+                    m_Position.InitFromDsl(callData);
+                else
+                    m_Position.InitFromDsl(callData.GetParam(0));
+            }
+            else if (id == "rotation") {
+                if (num == 3)
+                    m_Rotation.InitFromDsl(callData);
+                else
+                    m_Rotation.InitFromDsl(callData.GetParam(0));
+            }
+            else if (id == "scale") {
+                if (num == 3)
+                    m_Scale.InitFromDsl(callData);
+                else
+                    m_Scale.InitFromDsl(callData.GetParam(0));
             }
         }
 

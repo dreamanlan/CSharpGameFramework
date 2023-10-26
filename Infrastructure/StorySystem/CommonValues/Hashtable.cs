@@ -6,7 +6,7 @@ using StorySystem;
 using LitJson;
 namespace StorySystem.CommonValues
 {
-    internal sealed class ReadAllLinesValue : IStoryValue
+    public sealed class ReadAllLinesValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -60,7 +60,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class ReadFileValue : IStoryValue
+    public sealed class ReadFileValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -114,7 +114,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class ToJsonValue : IStoryValue
+    public sealed class ToJsonValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -211,7 +211,7 @@ namespace StorySystem.CommonValues
             }
         }
     }
-    internal sealed class FromJsonValue : IStoryValue
+    public sealed class FromJsonValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -299,7 +299,7 @@ namespace StorySystem.CommonValues
             }
         }
     }
-    internal sealed class HashtableValue : IStoryValue
+    public sealed class HashtableValue : IStoryValue
     {
         private class Pair
         {
@@ -408,7 +408,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class HashtableGetValue : IStoryValue
+    public sealed class HashtableGetValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -496,7 +496,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class HashtableSizeValue : IStoryValue
+    public sealed class HashtableSizeValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -558,7 +558,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class HashtableKeysValue : IStoryValue
+    public sealed class HashtableKeysValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -622,7 +622,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class HashtableValuesValue : IStoryValue
+    public sealed class HashtableValuesValue : IStoryValue
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {

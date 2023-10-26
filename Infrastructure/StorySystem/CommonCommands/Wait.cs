@@ -5,7 +5,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// sleep(milliseconds);
     /// </summary>
-    internal sealed class SleepCommand : AbstractStoryCommand
+    public sealed class SleepCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -74,7 +74,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// realsleep(milliseconds);
     /// </summary>
-    internal sealed class RealTimeSleepCommand : AbstractStoryCommand
+    public sealed class RealTimeSleepCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -145,7 +145,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// storysleep(milliseconds);
     /// </summary>
-    internal sealed class StorySleepCommand : AbstractStoryCommand
+    public sealed class StorySleepCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -220,7 +220,7 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// storyrealsleep(milliseconds);
     /// </summary>
-    internal sealed class StoryRealTimeSleepCommand : AbstractStoryCommand
+    public sealed class StoryRealTimeSleepCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
@@ -294,7 +294,7 @@ namespace StorySystem.CommonCommands
         private bool m_HaveCondition = false;
         private int m_RealStartTime = 0;
     }
-    internal sealed class StoryBreakCommand : AbstractStoryCommand
+    public sealed class StoryBreakCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
