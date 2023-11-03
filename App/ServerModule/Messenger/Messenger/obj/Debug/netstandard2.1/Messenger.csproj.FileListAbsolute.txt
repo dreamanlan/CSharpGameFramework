@@ -12,3 +12,17 @@ D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\net
 D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.csproj.CopyComplete
 D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.dll
 D:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.pdb
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\Messenger.deps.json
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\Messenger.dll
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\Messenger.pdb
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\CSharpCenterClient.dll
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\protobuf-net.Core.dll
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\protobuf-net.dll
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\protobuf-net.xml
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\netstandard2.1\protobuf-net.Core.xml
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.csproj.AssemblyReference.cache
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.GeneratedMSBuildEditorConfig.editorconfig
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.csproj.CoreCompileInputs.cache
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.csproj.CopyComplete
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.dll
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.pdb

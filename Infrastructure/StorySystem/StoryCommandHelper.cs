@@ -68,7 +68,7 @@ namespace StorySystem
                 m_Comments = null;
                 m_Config = null;
             }
-            return config is Dsl.FunctionData;
+            return config is Dsl.FunctionData || config is Dsl.ValueData;
         }
         public IStoryCommand Clone()
         {

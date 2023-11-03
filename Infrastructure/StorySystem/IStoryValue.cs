@@ -313,7 +313,7 @@ namespace StorySystem
                 string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
                 throw new Exception(err);
 #else
-        GameFramework.LogSystem.Error("Unknown value, id:{0}", param.GetId());
+        		GameFramework.LogSystem.Error("Unknown value, id:{0}", param.GetId());
 #endif
             }
         }
@@ -324,33 +324,38 @@ namespace StorySystem
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            Dsl.ValueData valueData = param as Dsl.ValueData;
-            if (null != valueData) {
-                string id = param.GetId();
-                int idType = param.GetIdType();
-                if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("$")) {
-                    if (0 == id.CompareTo("$$")) {
-                        SetArgument(StoryArgValue.c_Iterator);
-                    }
-                    else {
-                        string idName = id.Substring(1);
-                        if (idName.Length > 0 && char.IsDigit(idName[0])) {
-                            SetArgument(int.Parse(id.Substring(1)));
+            if (IsDslSyntax) {
+                CalcInitValue(param);
+            }
+            else {
+                Dsl.ValueData valueData = param as Dsl.ValueData;
+                if (null != valueData) {
+                    string id = param.GetId();
+                    int idType = param.GetIdType();
+                    if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("$")) {
+                        if (0 == id.CompareTo("$$")) {
+                            SetArgument(StoryArgValue.c_Iterator);
                         }
                         else {
-                            SetVariable(id);
+                            string idName = id.Substring(1);
+                            if (idName.Length > 0 && char.IsDigit(idName[0])) {
+                                SetArgument(int.Parse(id.Substring(1)));
+                            }
+                            else {
+                                SetVariable(id);
+                            }
                         }
                     }
-                }
-                else if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("@")) {
-                    SetVariable(id);
+                    else if (idType == Dsl.ValueData.ID_TOKEN && id.StartsWith("@")) {
+                        SetVariable(id);
+                    }
+                    else {
+                        CalcInitValue(param);
+                    }
                 }
                 else {
                     CalcInitValue(param);
                 }
-            }
-            else {
-                CalcInitValue(param);
             }
         }
         public IStoryValue<T> Clone()
@@ -413,44 +418,63 @@ namespace StorySystem
         }
         private void CalcInitValue(Dsl.ISyntaxComponent param)
         {
-            IStoryValue val = StoryValueManager.Instance.CalcValue(param);
-            if (null != val) {
-                //对初始化即能求得值的函数，不需要再记录函数表达式，直接转换为常量值。
-                if (val.HaveValue) {
-                    SetValue(val.Value.CastTo<T>());
-                }
-                else {
-                    SetProxy(val);
-                }
-            }
-            else if (param is Dsl.ValueData) {
-                string id = param.GetId();
-                int idType = param.GetIdType();
-                if (idType == Dsl.ValueData.NUM_TOKEN) {
-                    if (id.StartsWith("0x"))
-                        SetValue(StoryValueHelper.CastTo<T>(uint.Parse(id.Substring(2), System.Globalization.NumberStyles.HexNumber)));
-                    else if (id.IndexOf('.') >= 0 || id.IndexOf('e') > 0 || id.IndexOf('E') > 0)
-                        SetValue(StoryValueHelper.CastTo<T>(float.Parse(id, System.Globalization.NumberStyles.Float)));
-                    else
-                        SetValue(StoryValueHelper.CastTo<T>(int.Parse(id, System.Globalization.NumberStyles.Integer)));
-                }
-                else if (idType == Dsl.ValueData.ID_TOKEN && (id == "true" || id == "false")) {
-                    SetValue(StoryValueHelper.CastTo<T>(id == "true"));
-                }
-                else {
-                    SetValue(StoryValueHelper.CastTo<T>(id));
-                }
+            if (IsDslSyntax) {
+                SetValue((T)param);
             }
             else {
+                IStoryValue val = StoryValueManager.Instance.CalcValue(param);
+                if (null != val) {
+                    //对初始化即能求得值的函数，不需要再记录函数表达式，直接转换为常量值。
+                    if (val.HaveValue) {
+                        SetValue(val.Value.CastTo<T>());
+                    }
+                    else {
+                        SetProxy(val);
+                    }
+                }
+                else if (param is Dsl.ValueData) {
+                    string id = param.GetId();
+                    int idType = param.GetIdType();
+                    if (idType == Dsl.ValueData.NUM_TOKEN) {
+                        if (id.StartsWith("0x"))
+                            SetValue(StoryValueHelper.CastTo<T>(uint.Parse(id.Substring(2), System.Globalization.NumberStyles.HexNumber)));
+                        else if (id.IndexOf('.') >= 0 || id.IndexOf('e') > 0 || id.IndexOf('E') > 0)
+                            SetValue(StoryValueHelper.CastTo<T>(float.Parse(id, System.Globalization.NumberStyles.Float)));
+                        else
+                            SetValue(StoryValueHelper.CastTo<T>(int.Parse(id, System.Globalization.NumberStyles.Integer)));
+                    }
+                    else if (idType == Dsl.ValueData.ID_TOKEN && (id == "true" || id == "false")) {
+                        SetValue(StoryValueHelper.CastTo<T>(id == "true"));
+                    }
+                    else {
+                        SetValue(StoryValueHelper.CastTo<T>(id));
+                    }
+                }
+                else {
 #if DEBUG
-                string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
-                throw new Exception(err);
+                    string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
+                    throw new Exception(err);
 #else
-        GameFramework.LogSystem.Error("Unknown value, id:{0}", param.GetId());
+        			GameFramework.LogSystem.Error("Unknown value, id:{0}", param.GetId());
 #endif
+                }
             }
         }
 
         private IStoryValue m_Proxy = null;
+
+        private static bool IsDslSyntax
+        {
+            get {
+                if (!m_DslSyntaxInited) {
+                    m_DslSyntaxInited = true;
+
+                    m_IsDslSyntax = typeof(Dsl.ISyntaxComponent).IsAssignableFrom(typeof(T));
+                }
+                return m_IsDslSyntax;
+            }
+        }
+        private static bool m_DslSyntaxInited = false;
+        private static bool m_IsDslSyntax = false;
     }
 }
