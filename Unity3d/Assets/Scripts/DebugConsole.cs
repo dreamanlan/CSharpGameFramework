@@ -419,7 +419,7 @@ public class DebugConsole : MonoBehaviour
             }
         }
 
-        //GUI.FocusControl(ENTRYFIELD);
+        GUI.FocusControl(ENTRYFIELD);
     }
 #else
     [Conditional("UNITY_EDITOR"),
