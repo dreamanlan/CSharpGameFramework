@@ -1,16 +1,15 @@
-#define DEBUG_CONSOLE
-
 #if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
 #define MOBILE
 #endif
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-#if DEBUG_CONSOLE
 public class DebugConsole : MonoBehaviour
 {
     readonly string VERSION = "3.0";
@@ -34,47 +33,6 @@ public class DebugConsole : MonoBehaviour
     public Color outputColor = Message.outputColor;
 
     /// <summary>
-    /// Used to check (or toggle) the open state of the console.
-    /// </summary>
-    public static bool IsOpen
-    {
-        get { return DebugConsole.Instance._isOpen; }
-        set { DebugConsole.Instance._isOpen = value; }
-    }
-
-    public static bool IsLastHitUi
-    {
-        get { return DebugConsole.Instance._isLastHitUi; }
-        set { DebugConsole.Instance._isLastHitUi = value; }
-    }
-
-    /// <summary>
-    /// Static instance of the console.
-    ///
-    /// When you want to access the console without a direct
-    /// reference (which you do in mose cases), use DebugConsole.Instance and the required
-    /// GameObject initialization will be done for you.
-    /// </summary>
-    static DebugConsole Instance
-    {
-        get
-        {
-            if (_instance == null) {
-                _instance = FindObjectOfType(typeof(DebugConsole)) as DebugConsole;
-
-                if (_instance != null) {
-                    return _instance;
-                }
-
-                GameObject console = new GameObject("__Debug Console__");
-                _instance = console.AddComponent<DebugConsole>();
-            }
-
-            return _instance;
-        }
-    }
-
-    /// <summary>
     /// Key to press to toggle the visibility of the console.
     /// </summary>
     public static KeyCode toggleKey = KeyCode.BackQuote;
@@ -92,7 +50,7 @@ public class DebugConsole : MonoBehaviour
     Rect _fakeDragRect;
     bool dragging = false;
 #if UNITY_EDITOR
-  Vector2 prevMousePos;
+    Vector2 prevMousePos;
 #endif
 #endif
 
@@ -102,8 +60,8 @@ public class DebugConsole : MonoBehaviour
     Matrix4x4 restoreMatrix = Matrix4x4.identity;
     bool _scaled = false;
     bool _isOpen;
-    bool _isLastHitUi;
     StringBuilder _displayString = new StringBuilder();
+    string filter;
     bool dirty;
     #region GUI position values
     // Make these values public if you want to adjust layout of console window
@@ -124,8 +82,6 @@ public class DebugConsole : MonoBehaviour
     string[] tabs = new string[] { "Log", "View" };
 
     // Keep these private, their values are generated automatically
-    Rect nameRect;
-    Rect valueRect;
     Rect innerRect = new Rect(0, 0, 0, 0);
     int innerHeight = 0;
     int toolbarIndex = 0;
@@ -298,37 +254,56 @@ public class DebugConsole : MonoBehaviour
 
         public void Add(string item)
         {
+            history.RemoveAll((child) => child == item);
             history.Add(item);
             index = 0;
         }
 
         string current;
 
-        public string Fetch(string current, bool next)
+        public string Fetch(string current, bool next, string filter = "")
         {
+            List<string> list = (filter == null || filter == "" || filter == "`" || filter == "~") ? history : history.FindAll((item) => item.StartsWith(filter));
             if (index == 0) {
                 this.current = current;
             }
 
-            if (history.Count == 0) {
+            if (list.Count == 0) {
                 return current;
             }
 
             index += next ? -1 : 1;
 
-            if (history.Count + index < 0 || history.Count + index > history.Count - 1) {
+            if (list.Count + index < 0 || list.Count + index > list.Count - 1) {
                 index = 0;
                 return this.current;
             }
 
-            var result = history[history.Count + index];
+            var result = list[list.Count + index];
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            string rlt = "";
+            for (int i = 0; i < history.Count; i++) {
+                if (i > history.Count - 500) {
+                    rlt += history[i];
+                    rlt += i < history.Count - 1 ? "\n" : "";
+                }
+            }
+            return rlt;
+        }
+        public void FromString(string s)
+        {
+            history = new List<string>(s.Split('\n'));
         }
     }
 
     List<Message> _messages = new List<Message>();
     History _history = new History();
+    string _filter = string.Empty;
 
     void Awake()
     {
@@ -342,7 +317,9 @@ public class DebugConsole : MonoBehaviour
 
     void OnEnable()
     {
-        var scale = Screen.dpi / 160.0f;
+        filter = "";
+        _history.FromString(PlayerPrefs.GetString("debug_console_history"));
+        var scale = Screen.height / 500.0f;
 
         if (scale != 0.0f && scale >= 1.1f) {
             _scaled = true;
@@ -350,9 +327,6 @@ public class DebugConsole : MonoBehaviour
         }
 
         windowMethods = new GUI.WindowFunction[] { LogWindow, CopyLogWindow };
-
-        nameRect = messageLine;
-        valueRect = messageLine;
 
         Message.defaultColor = defaultColor;
         Message.warningColor = warningColor;
@@ -387,15 +361,45 @@ public class DebugConsole : MonoBehaviour
         this.RegisterCommandCallback("scp", CMDScript);
         this.RegisterCommandCallback("command", CMDCommand);
         this.RegisterCommandCallback("cmd", CMDCommand);
+        this.RegisterCommandCallback("gm", CMDGm);
+        this.RegisterCommandCallback("filter", CMDFilter);
         this.RegisterCommandCallback("/?", CMDHelp);
     }
 
-    [Conditional("DEBUG_CONSOLE"),
-     Conditional("UNITY_EDITOR"),
+    private void ShowImpl() {
+        this.enabled = true;
+        _isOpen = true;
+        filter = "";
+    }
+
+    private void HideImpl() {
+        _isOpen = false;
+        this.enabled = false;
+    }
+
+    [Conditional("UNITY_EDITOR"),
      Conditional("DEVELOPMENT_BUILD")]
     void OnGUI()
     {
         var evt = Event.current;
+
+        // 创建一个自定义的GUI皮肤
+        GUISkin customSkin = GUI.skin;
+
+        // 设置按钮的大小
+        customSkin.button.fixedHeight = 24;
+        customSkin.button.fontSize = 14;
+
+        // 设置滚动条的宽度
+        customSkin.verticalScrollbar.fixedWidth = 20;
+        customSkin.horizontalScrollbar.fixedHeight = 20;
+
+        // 设置滚动条滑块的大小
+        customSkin.verticalScrollbarThumb.fixedWidth = 20;
+        customSkin.horizontalScrollbarThumb.fixedHeight = 20;
+
+        // 应用自定义皮肤
+        GUI.skin = customSkin;
 
         if (_scaled) {
             restoreMatrix = GUI.matrix;
@@ -403,10 +407,7 @@ public class DebugConsole : MonoBehaviour
             GUI.matrix = GUI.matrix * Matrix4x4.Scale(_guiScale);
         }
 
-        while (_messages.Count > maxLinesForDisplay) {
-            _messages.RemoveAt(0);
-        }
-#if (!MOBILE) || UNITY_EDITOR
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
         // Toggle key shows the console in non-iOS dev builds
         if (evt.keyCode == toggleKey && evt.type == EventType.KeyUp)
             _isOpen = !_isOpen;
@@ -508,7 +509,7 @@ public class DebugConsole : MonoBehaviour
 
         innerRect.width = messageLine.width;
 #if !MOBILE
-        _windowRect = GUI.Window(-1111, _windowRect, windowMethods[toolbarIndex], string.Format("fps:{0:00.0} avgfps:{1:00.0}", GameFramework.TimeUtility.GfxFps, GameFramework.TimeUtility.GfxAvgFps));
+        _windowRect = GUI.Window(-1111, _windowRect, windowMethods[toolbarIndex], "");
         GUI.BringWindowToFront(-1111);
 #else
     GUI.BeginGroup(_windowRect);
@@ -525,7 +526,7 @@ public class DebugConsole : MonoBehaviour
       prevMousePos = Input.mousePosition;
     }
 #endif
-    GUI.Box(_fakeWindowRect, string.Format("fps:{0:00.0} avgfps:{1:00.0}", GameFramework.TimeUtility.GfxFps, GameFramework.TimeUtility.GfxAvgFps), dragging ? windowOnStyle : windowStyle);
+    GUI.Box(_fakeWindowRect, "", dragging ? windowOnStyle : windowStyle);
     windowMethods[toolbarIndex](0);
     GUI.EndGroup();
 #endif
@@ -535,10 +536,19 @@ public class DebugConsole : MonoBehaviour
                 if (evt.keyCode == KeyCode.Return) {
                     EvalInputString(_inputString);
                     _inputString = string.Empty;
-                } else if (evt.keyCode == KeyCode.UpArrow) {
-                    _inputString = _history.Fetch(_inputString, true);
-                } else if (evt.keyCode == KeyCode.DownArrow) {
-                    _inputString = _history.Fetch(_inputString, false);
+                    filter = "";
+                }
+                else if (evt.keyCode == KeyCode.UpArrow) {
+                    _inputString = _history.Fetch(_inputString, true, filter);
+                }
+                else if (evt.keyCode == KeyCode.DownArrow) {
+                    _inputString = _history.Fetch(_inputString, false, filter);
+                }
+                else if (evt.keyCode == toggleKey) {
+
+                }
+                else {
+                    filter = _inputString;
                 }
             }
         }
@@ -560,143 +570,12 @@ public class DebugConsole : MonoBehaviour
     {
         StopAllCoroutines();
     }
-    #region StaticAccessors
-
-    /// <summary>
-    /// Prints a message string to the console.
-    /// </summary>
-    /// <param name="message">Message to print.</param>
-    public static object Log(object message)
-    {
-        DebugConsole.Instance.LogMessage(Message.Log(message));
-
-        return message;
-    }
-
-    public static object LogFormat(string format, params object[] args)
-    {
-        return Log(string.Format(format, args));
-    }
-
-    /// <summary>
-    /// Prints a message string to the console.
-    /// </summary>
-    /// <param name="message">Message to print.</param>
-    /// <param name="messageType">The MessageType of the message. Used to provide
-    /// formatting in order to distinguish between message types.</param>
-    public static object Log(object message, MessageType messageType)
-    {
-        DebugConsole.Instance.LogMessage(new Message(message, messageType));
-
-        return message;
-    }
-
-    /// <summary>
-    /// Prints a message string to the console.
-    /// </summary>
-    /// <param name="message">Message to print.</param>
-    /// <param name="displayColor">The text color to use when displaying the message.</param>
-    public static object Log(object message, Color displayColor)
-    {
-        DebugConsole.Instance.LogMessage(new Message(message, displayColor));
-
-        return message;
-    }
-
-    /// <summary>
-    /// Prints a message string to the console.
-    /// </summary>
-    /// <param name="message">Messate to print.</param>
-    /// <param name="messageType">The MessageType of the message. Used to provide
-    /// formatting in order to distinguish between message types.</param>
-    /// <param name="displayColor">The color to use when displaying the message.</param>
-    /// <param name="useCustomColor">Flag indicating if the displayColor value should be used or
-    /// if the default color for the message type should be used instead.</param>
-    public static object Log(object message, MessageType messageType, Color displayColor)
-    {
-        DebugConsole.Instance.LogMessage(new Message(message, messageType, displayColor));
-
-        return message;
-    }
-
-    /// <summary>
-    /// Prints a message string to the console using the "Warning" message type formatting.
-    /// </summary>
-    /// <param name="message">Message to print.</param>
-    public static object LogWarning(object message)
-    {
-        DebugConsole.Instance.LogMessage(Message.Warning(message));
-
-        return message;
-    }
-
-    /// <summary>
-    /// Prints a message string to the console using the "Error" message type formatting.
-    /// </summary>
-    /// <param name="message">Message to print.</param>
-    public static object LogError(object message)
-    {
-        DebugConsole.Instance.LogMessage(Message.Error(message));
-
-        return message;
-    }
-
-    /// <summary>
-    /// Clears all console output.
-    /// </summary>
-    [Conditional("DEBUG_CONSOLE"),
-     Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
-    public static void Clear()
-    {
-        DebugConsole.Instance.ClearLog();
-    }
-
-    /// <summary>
-    /// Execute a console command directly from code.
-    /// </summary>
-    /// <param name="commandString">The command line you want to execute. For example: "sys"</param>
-    [Conditional("DEBUG_CONSOLE"),
-     Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
-    public static void Execute(string commandString)
-    {
-        DebugConsole.Instance.EvalInputString(commandString);
-    }
-
-    /// <summary>
-    /// Registers a debug command that is "fired" when the specified command string is entered.
-    /// </summary>
-    /// <param name="commandString">The string that represents the command. For example: "FOV"</param>
-    /// <param name="commandCallback">The method/function to call with the commandString is entered.
-    /// For example: "SetFOV"</param>
-    [Conditional("DEBUG_CONSOLE"),
-     Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
-    public static void RegisterCommand(string commandString, DebugCommand commandCallback)
-    {
-        DebugConsole.Instance.RegisterCommandCallback(commandString, commandCallback);
-    }
-
-    /// <summary>
-    /// Removes a previously-registered debug command.
-    /// </summary>
-    /// <param name="commandString">The string that represents the command.</param>
-    [Conditional("DEBUG_CONSOLE"),
-     Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
-    public static void UnRegisterCommand(string commandString)
-    {
-        DebugConsole.Instance.UnRegisterCommandCallback(commandString);
-    }
-
-    #endregion
-    #region Console commands
+#region Console commands
 
     //==== Built-in example DebugCommand handlers ====
     object CMDClose(params string[] args)
     {
-        _isOpen = false;
+        HideImpl();
 
         return "closed";
     }
@@ -730,39 +609,31 @@ public class DebugConsole : MonoBehaviour
         info.AppendFormat("Unity Ver: {0}\n", Application.unityVersion);
         info.AppendFormat("Platform: {0} Language: {1}\n", Application.platform, Application.systemLanguage);
         info.AppendFormat("Screen:({0},{1}) DPI:{2} Target:{3}fps\n", Screen.width, Screen.height, Screen.dpi, Application.targetFrameRate);
-        info.AppendFormat("Level: {0} ({1} of {2})\n", Application.loadedLevelName, Application.loadedLevel, Application.levelCount);
+        var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+        if (scene.IsValid()) {
+            info.AppendFormat("Level: {0} ({1} of {2})\n", scene.name, scene.buildIndex, UnityEngine.SceneManagement.SceneManager.sceneCount);
+        }
         info.AppendFormat("Quality: {0}\n", QualitySettings.names[QualitySettings.GetQualityLevel()]);
         info.AppendLine();
         info.AppendFormat("Data Path: {0}\n", Application.dataPath);
         info.AppendFormat("Cache Path: {0}\n", Application.temporaryCachePath);
         info.AppendFormat("Persistent Path: {0}\n", Application.persistentDataPath);
         info.AppendFormat("Streaming Path: {0}\n", Application.streamingAssetsPath);
-#if UNITY_WEBPLAYER
-    info.AppendLine();
-    info.AppendFormat("URL: {0}\n", Application.absoluteURL);
-    info.AppendFormat("srcValue: {0}\n", Application.srcValue);
-    info.AppendFormat("security URL: {0}\n", Application.webSecurityHostUrl);
-#endif
 #if MOBILE
-    info.AppendLine();
-    info.AppendFormat("Net Reachability: {0}\n", Application.internetReachability);
-    info.AppendFormat("Multitouch: {0}\n", Input.multiTouchEnabled);
+	    info.AppendLine();
+	    info.AppendFormat("Net Reachability: {0}\n", Application.internetReachability);
+	    info.AppendFormat("Multitouch: {0}\n", Input.multiTouchEnabled);
 #endif
 #if UNITY_EDITOR
         info.AppendLine();
         info.AppendFormat("editorApp: {0}\n", UnityEditor.EditorApplication.applicationPath);
         info.AppendFormat("editorAppContents: {0}\n", UnityEditor.EditorApplication.applicationContentsPath);
-        info.AppendFormat("scene: {0}\n", UnityEditor.EditorApplication.currentScene);
+        var editorScene = UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene();
+        if (null != editorScene) {
+            info.AppendFormat("scene: {0} ({1})\n", editorScene.name, editorScene.buildIndex);
+        }
 #endif
         info.AppendLine();
-        var devices = WebCamTexture.devices;
-        if (devices.Length > 0) {
-            info.AppendLine("Cameras: ");
-
-            foreach (var device in devices) {
-                info.AppendFormat("  {0} front:{1}\n", device.name, device.isFrontFacing);
-            }
-        }
 
         return info.ToString();
     }
@@ -834,6 +705,33 @@ public class DebugConsole : MonoBehaviour
         }
     }
 
+    object CMDGm(params string[] args)
+    {
+        if (args.Length == 2) {
+            GameObject obj = GameObject.Find("GameRoot");
+            if (null != obj) {
+                obj.SendMessage("OnExecCommand", "gm(\"" + args[1] + "\");");
+            }
+            return "gm " + args[1];
+        } else {
+            return "gm need argument command.";
+        }
+    }
+	
+    object CMDFilter(params string[] args)
+    {
+        if (args.Length == 2) {
+            _filter = args[1];
+            BuildDisplayString();
+            return "filter set to " + args[1];
+        }
+        else {
+            _filter = string.Empty;
+            BuildDisplayString();
+            return "filter set to empty.";
+        }
+    }
+
     #endregion
     #region GUI Window Methods
 
@@ -869,12 +767,16 @@ public class DebugConsole : MonoBehaviour
 
         _logScrollPos = GUI.BeginScrollView(scrollRect, _logScrollPos, innerRect, false, true);
 
-        if (_messages != null || _messages.Count > 0) {
+        if (_messages.Count > 0) {
             Color oldColor = GUI.contentColor;
 
             messageLine.y = 0;
 
             foreach (Message m in _messages) {
+                string txt = m.ToString();
+                if (!txt.Contains(_filter))
+                    continue;
+
                 GUI.contentColor = m.color;
 
                 guiContent.text = m.ToGUIString();
@@ -893,14 +795,12 @@ public class DebugConsole : MonoBehaviour
         GUI.EndScrollView();
 
         DrawBottomControls();
+
+        GUI.FocusControl(ENTRYFIELD);
     }
 
     string GetDisplayString()
     {
-        if (_messages == null) {
-            return string.Empty;
-        }
-
         return _displayString.ToString();
     }
 
@@ -909,6 +809,9 @@ public class DebugConsole : MonoBehaviour
         _displayString.Length = 0;
 
         foreach (Message m in _messages) {
+            string txt = m.ToString();
+            if (!txt.Contains(_filter))
+                continue;
             _displayString.AppendLine(m.ToString());
         }
     }
@@ -931,20 +834,27 @@ public class DebugConsole : MonoBehaviour
         DrawBottomControls();
     }
 
-    #endregion
-    #region InternalFunctionality
-    [Conditional("DEBUG_CONSOLE"),
-     Conditional("UNITY_EDITOR"),
+#endregion
+#region InternalFunctionality
+    [Conditional("UNITY_EDITOR"),
      Conditional("DEVELOPMENT_BUILD")]
     void LogMessage(Message msg)
     {
+        while (_messages.Count > maxLinesForDisplay) {
+            if (_messages.Count > maxLinesForDisplay + 1000)
+                _messages.Clear();
+            else
+                _messages.RemoveAt(0);
+        }
         _messages.Add(msg);
+        _logScrollPos.y = 50000.0f;
     }
 
     //--- Local version. Use the static version above instead.
     void ClearLog()
     {
         _messages.Clear();
+        _logScrollPos.y = 50000.0f;
     }
 
     //--- Local version. Use the static version above instead.
@@ -970,6 +880,9 @@ public class DebugConsole : MonoBehaviour
         }
         _history.Add(inputString);
 
+        string stringToSave = _history.ToString();
+        PlayerPrefs.SetString("debug_console_history", stringToSave);
+
         LogMessage(Message.Input(inputString));
 
         inputString = inputString.Trim();
@@ -980,7 +893,7 @@ public class DebugConsole : MonoBehaviour
             cmd = inputString.Substring(0, startIx).Trim().ToLower();
             string leftCmd = inputString.Substring(startIx + 1).Trim();
             input.Add(cmd);
-            if (0 == cmd.CompareTo("command") || 0 == cmd.CompareTo("cmd") || 0 == cmd.CompareTo("script") || 0 == cmd.CompareTo("scp")) {
+            if (0 == cmd.CompareTo("command") || 0 == cmd.CompareTo("cmd") || 0 == cmd.CompareTo("script") || 0 == cmd.CompareTo("scp") || 0 == cmd.CompareTo("gm")) {
                 input.Add(leftCmd);
             } else {
                 input.AddRange(leftCmd.Split(new char[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries));
@@ -999,55 +912,154 @@ public class DebugConsole : MonoBehaviour
             //LogMessage(Message.Output(string.Format("*** Unknown Command: {0} ***", cmd)));
         }
     }
+
+    #endregion
+
+    #region StaticAccessors
+
+    /// <summary>
+    /// Prints a message string to the console.
+    /// </summary>
+    /// <param name="message">Message to print.</param>
+    public static object Log(object message)
+    {
+        _instance?.LogMessage(Message.Log(message));
+
+        return message;
+    }
+
+    public static object LogFormat(string format, params object[] args)
+    {
+        return Log(string.Format(format, args));
+    }
+
+    /// <summary>
+    /// Prints a message string to the console.
+    /// </summary>
+    /// <param name="message">Message to print.</param>
+    /// <param name="messageType">The MessageType of the message. Used to provide
+    /// formatting in order to distinguish between message types.</param>
+    public static object Log(object message, MessageType messageType)
+    {
+        _instance?.LogMessage(new Message(message, messageType));
+
+        return message;
+    }
+
+    /// <summary>
+    /// Prints a message string to the console.
+    /// </summary>
+    /// <param name="message">Message to print.</param>
+    /// <param name="displayColor">The text color to use when displaying the message.</param>
+    public static object Log(object message, Color displayColor)
+    {
+        _instance?.LogMessage(new Message(message, displayColor));
+
+        return message;
+    }
+
+    /// <summary>
+    /// Prints a message string to the console.
+    /// </summary>
+    /// <param name="message">Messate to print.</param>
+    /// <param name="messageType">The MessageType of the message. Used to provide
+    /// formatting in order to distinguish between message types.</param>
+    /// <param name="displayColor">The color to use when displaying the message.</param>
+    /// <param name="useCustomColor">Flag indicating if the displayColor value should be used or
+    /// if the default color for the message type should be used instead.</param>
+    public static object Log(object message, MessageType messageType, Color displayColor)
+    {
+        _instance?.LogMessage(new Message(message, messageType, displayColor));
+
+        return message;
+    }
+
+    /// <summary>
+    /// Prints a message string to the console using the "Warning" message type formatting.
+    /// </summary>
+    /// <param name="message">Message to print.</param>
+    public static object LogWarning(object message)
+    {
+        _instance?.LogMessage(Message.Warning(message));
+
+        return message;
+    }
+
+    /// <summary>
+    /// Prints a message string to the console using the "Error" message type formatting.
+    /// </summary>
+    /// <param name="message">Message to print.</param>
+    public static object LogError(object message)
+    {
+        _instance?.LogMessage(Message.Error(message));
+
+        return message;
+    }
+
+    /// <summary>
+    /// Clears all console output.
+    /// </summary>
+    [Conditional("UNITY_EDITOR"),
+     Conditional("DEVELOPMENT_BUILD")]
+    public static void Clear()
+    {
+        _instance?.ClearLog();
+    }
+
+    /// <summary>
+    /// Execute a console command directly from code.
+    /// </summary>
+    /// <param name="commandString">The command line you want to execute. For example: "sys"</param>
+    [Conditional("UNITY_EDITOR"),
+     Conditional("DEVELOPMENT_BUILD")]
+    public static void Execute(string commandString)
+    {
+        _instance?.EvalInputString(commandString);
+    }
+
+    /// <summary>
+    /// Registers a debug command that is "fired" when the specified command string is entered.
+    /// </summary>
+    /// <param name="commandString">The string that represents the command. For example: "FOV"</param>
+    /// <param name="commandCallback">The method/function to call with the commandString is entered.
+    /// For example: "SetFOV"</param>
+    [Conditional("UNITY_EDITOR"),
+     Conditional("DEVELOPMENT_BUILD")]
+    public static void RegisterCommand(string commandString, DebugCommand commandCallback)
+    {
+        _instance?.RegisterCommandCallback(commandString, commandCallback);
+    }
+
+    /// <summary>
+    /// Removes a previously-registered debug command.
+    /// </summary>
+    /// <param name="commandString">The string that represents the command.</param>
+    [Conditional("UNITY_EDITOR"),
+     Conditional("DEVELOPMENT_BUILD")]
+    public static void UnRegisterCommand(string commandString)
+    {
+        _instance?.UnRegisterCommandCallback(commandString);
+    }
+
+    public static bool IsOpen
+    {
+        get {
+            bool result = (bool)(_instance?._isOpen);
+            return result;
+        }
+    }
+    [Conditional("UNITY_EDITOR"),
+     Conditional("DEVELOPMENT_BUILD")]
+    public static void Show()
+    {
+        _instance?.ShowImpl();
+    }
+    [Conditional("UNITY_EDITOR"),
+     Conditional("DEVELOPMENT_BUILD")]
+    public static void Hide()
+    {
+        _instance?.HideImpl();
+    }
+
     #endregion
 }
-#else
-public static class DebugConsole {
-  public static bool IsOpen;  
-  public static KeyCode toggleKey;
-  public delegate object DebugCommand(params string[] args);
-
-  public static object Log(object message) {
-    return message;
-  }
-
-  public static object LogFormat(string format, params object[] args) {
-    return string.Format(format, args);
-  }
-
-  public static object LogWarning(object message) {
-    return message;
-  }
-
-  public static object LogError(object message) {
-    return message;
-  }
-
-  public static object Log(object message, object messageType) {
-    return message;
-  }
-
-  public static object Log(object message, Color displayColor) {
-    return message;
-  }
-
-  public static object Log(object message, object messageType, Color displayColor) {
-    return message;
-  }
-
-  public static void Clear() {
-  }
-
-  public static void RegisterCommand(string commandString, DebugCommand commandCallback) {
-  }
-
-  public static void UnRegisterCommand(string commandString) {
-  }
-
-  public static void RegisterWatchVar(object watchVar) {
-  }
-
-  public static void UnRegisterWatchVar(string name) {
-  }
-}
-#endif
