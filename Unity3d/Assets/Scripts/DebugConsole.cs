@@ -1,3 +1,5 @@
+//#define EMBED_ONGUI
+
 #if (UNITY_IOS || UNITY_ANDROID) && !UNITY_EDITOR
 #define MOBILE
 #endif
@@ -7,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -20,78 +23,18 @@ public class DebugConsole : MonoBehaviour
     /// <summary>
     /// How many lines of text this console will display.
     /// </summary>
-    public int maxLinesForDisplay = 500;
+    public int MaxLinesForDisplay = 500;
 
     /// <summary>
     /// Default color of the standard display text.
     /// </summary>
-    public Color defaultColor = Message.defaultColor;
-    public Color warningColor = Message.warningColor;
-    public Color errorColor = Message.errorColor;
-    public Color systemColor = Message.systemColor;
-    public Color inputColor = Message.inputColor;
-    public Color outputColor = Message.outputColor;
+    public Color DefaultColor = Message.DefaultColor;
+    public Color WarningColor = Message.WarningColor;
+    public Color ErrorColor = Message.ErrorColor;
+    public Color SystemColor = Message.SystemColor;
+    public Color InputColor = Message.InputColor;
+    public Color OutputColor = Message.OutputColor;
 
-    /// <summary>
-    /// Key to press to toggle the visibility of the console.
-    /// </summary>
-    public static KeyCode toggleKey = KeyCode.BackQuote;
-    static DebugConsole _instance;
-    Dictionary<string, DebugCommand> _cmdTable = new Dictionary<string, DebugCommand>();
-    string _inputString = string.Empty;
-    Rect _windowRect;
-    GUIStyle windowOnStyle;
-    GUIStyle windowStyle;
-    GUIStyle labelStyle;
-    GUIStyle textareaStyle;
-    GUIStyle textfieldStyle;
-#if MOBILE
-    Rect _fakeWindowRect;
-    Rect _fakeDragRect;
-    bool dragging = false;
-#if UNITY_EDITOR
-    Vector2 prevMousePos;
-#endif
-#endif
-
-    Vector2 _logScrollPos = Vector2.zero;
-    Vector2 _viewScrollPos = Vector2.zero;
-    Vector3 _guiScale = Vector3.one;
-    Matrix4x4 restoreMatrix = Matrix4x4.identity;
-    bool _scaled = false;
-    bool _isOpen;
-    StringBuilder _displayString = new StringBuilder();
-    string filter;
-    bool dirty;
-    #region GUI position values
-    // Make these values public if you want to adjust layout of console window
-#if MOBILE
-    readonly Rect scrollRect = new Rect(10, 20, 280, 190);
-    readonly Rect inputRect = new Rect(10, 214, 228, 24);
-    readonly Rect enterRect = new Rect(240, 214, 50, 24);
-    readonly Rect toolbarRect = new Rect(16, 242, 266, 25);
-    Rect messageLine = new Rect(4, 0, 264, 20);
-#else
-    readonly Rect scrollRect = new Rect(10, 20, 280, 360);
-    readonly Rect inputRect = new Rect(10, 384, 228, 24);
-    readonly Rect enterRect = new Rect(240, 384, 50, 24);
-    readonly Rect toolbarRect = new Rect(16, 412, 266, 25);
-    Rect messageLine = new Rect(4, 0, 264, 20);
-#endif
-    int lineOffset = -4;
-    string[] tabs = new string[] { "Log", "View" };
-
-    // Keep these private, their values are generated automatically
-    Rect innerRect = new Rect(0, 0, 0, 0);
-    int innerHeight = 0;
-    int toolbarIndex = 0;
-    GUIContent guiContent = new GUIContent();
-    GUI.WindowFunction[] windowMethods;
-    #endregion
-
-    /// <summary>
-    /// This Enum holds the message types used to easily control the formatting and display of a message.
-    /// </summary>
     public enum MessageType
     {
         NORMAL,
@@ -102,33 +45,24 @@ public class DebugConsole : MonoBehaviour
         OUTPUT
     }
 
-    /// <summary>
-    /// Represents a single message, with formatting options.
-    /// </summary>
     struct Message
     {
-        string text;
-        string formatted;
-        MessageType type;
-        Color color_;
-
-        public Color color
+        public Color Color
         {
-            get
-            {
-                return color_;
+            get {
+                return m_Color;
             }
         }
 
-        public static Color defaultColor = Color.white;
-        public static Color warningColor = Color.yellow;
-        public static Color errorColor = Color.red;
-        public static Color systemColor = Color.green;
-        public static Color inputColor = Color.green;
-        public static Color outputColor = Color.cyan;
+        public static Color DefaultColor = Color.white;
+        public static Color WarningColor = Color.yellow;
+        public static Color ErrorColor = Color.red;
+        public static Color SystemColor = Color.green;
+        public static Color InputColor = Color.green;
+        public static Color OutputColor = Color.cyan;
 
         public Message(object messageObject)
-            : this(messageObject, MessageType.NORMAL, Message.defaultColor)
+            : this(messageObject, MessageType.NORMAL, Message.DefaultColor)
         {
         }
 
@@ -138,72 +72,72 @@ public class DebugConsole : MonoBehaviour
         }
 
         public Message(object messageObject, MessageType messageType)
-            : this(messageObject, messageType, Message.defaultColor)
+            : this(messageObject, messageType, Message.DefaultColor)
         {
             switch (messageType) {
                 case MessageType.ERROR:
-                    color_ = errorColor;
+                    m_Color = ErrorColor;
                     break;
                 case MessageType.SYSTEM:
-                    color_ = systemColor;
+                    m_Color = SystemColor;
                     break;
                 case MessageType.WARNING:
-                    color_ = warningColor;
+                    m_Color = WarningColor;
                     break;
                 case MessageType.OUTPUT:
-                    color_ = outputColor;
+                    m_Color = OutputColor;
                     break;
                 case MessageType.INPUT:
-                    color_ = inputColor;
+                    m_Color = InputColor;
                     break;
             }
         }
 
         public Message(object messageObject, MessageType messageType, Color displayColor)
         {
-            text = (messageObject == null ? "<null>" : messageObject.ToString());
-            formatted = string.Empty;
-            type = messageType;
-            color_ = displayColor;
+            m_Text = (messageObject == null ? "<null>" : messageObject.ToString());
+            m_Formatted = string.Empty;
+            m_Type = messageType;
+            m_Color = displayColor;
         }
 
         public static Message Log(object message)
         {
-            return new Message(message, MessageType.NORMAL, defaultColor);
+            return new Message(message, MessageType.NORMAL, DefaultColor);
         }
 
         public static Message System(object message)
         {
-            return new Message(message, MessageType.SYSTEM, systemColor);
+            return new Message(message, MessageType.SYSTEM, SystemColor);
         }
 
         public static Message Warning(object message)
         {
-            return new Message(message, MessageType.WARNING, warningColor);
+            return new Message(message, MessageType.WARNING, WarningColor);
         }
 
         public static Message Error(object message)
         {
-            return new Message(message, MessageType.ERROR, errorColor);
+            return new Message(message, MessageType.ERROR, ErrorColor);
         }
 
         public static Message Output(object message)
         {
-            return new Message(message, MessageType.OUTPUT, outputColor);
+            return new Message(message, MessageType.OUTPUT, OutputColor);
         }
 
         public static Message Input(object message)
         {
-            return new Message(message, MessageType.INPUT, inputColor);
+            return new Message(message, MessageType.INPUT, InputColor);
         }
 
         public override string ToString()
         {
-            switch (type) {
+            switch (m_Type) {
                 case MessageType.ERROR:
-                    return string.Format("[{0}] {1}", type, text);
+                    return string.Format("[{0}] {1}", m_Type, m_Text);
                 case MessageType.WARNING:
-                    return string.Format("[{0}] {1}", type, text);
+                    return string.Format("[{0}] {1}", m_Type, m_Text);
                 default:
                     return ToGUIString();
             }
@@ -211,75 +145,75 @@ public class DebugConsole : MonoBehaviour
 
         public string ToGUIString()
         {
-            if (!string.IsNullOrEmpty(formatted)) {
-                return formatted;
+            if (!string.IsNullOrEmpty(m_Formatted)) {
+                return m_Formatted;
             }
 
-            switch (type) {
+            switch (m_Type) {
                 case MessageType.INPUT:
-                    formatted = string.Format(">>> {0}", text);
+                    m_Formatted = string.Format(">>> {0}", m_Text);
                     break;
                 case MessageType.OUTPUT:
-                    var lines = text.Trim('\n').Split('\n');
+                    var lines = m_Text.Trim('\n').Split('\n');
                     var output = new StringBuilder();
 
                     foreach (var line in lines) {
                         output.AppendFormat("= {0}\n", line);
                     }
 
-                    formatted = output.ToString();
+                    m_Formatted = output.ToString();
                     break;
                 case MessageType.SYSTEM:
-                    formatted = string.Format("# {0}", text);
+                    m_Formatted = string.Format("# {0}", m_Text);
                     break;
                 case MessageType.WARNING:
-                    formatted = string.Format("* {0}", text);
+                    m_Formatted = string.Format("* {0}", m_Text);
                     break;
                 case MessageType.ERROR:
-                    formatted = string.Format("** {0}", text);
+                    m_Formatted = string.Format("** {0}", m_Text);
                     break;
                 default:
-                    formatted = text;
+                    m_Formatted = m_Text;
                     break;
             }
 
-            return formatted;
+            return m_Formatted;
         }
+
+        private string m_Text;
+        private string m_Formatted;
+        private MessageType m_Type;
+        private Color m_Color;
     }
 
     class History
     {
-        List<string> history = new List<string>();
-        int index = 0;
-
         public void Add(string item)
         {
-            history.RemoveAll((child) => child == item);
-            history.Add(item);
-            index = 0;
+            DoRemoveAll(item);
+            m_History.Add(item);
+            m_Index = 0;
         }
-
-        string current;
 
         public string Fetch(string current, bool next, string filter = "")
         {
-            List<string> list = (filter == null || filter == "" || filter == "`" || filter == "~") ? history : history.FindAll((item) => item.StartsWith(filter));
-            if (index == 0) {
-                this.current = current;
+            List<string> list = (filter == null || filter == string.Empty || filter == "`" || filter == "~") ? m_History : DoFilter(filter);
+            if (m_Index == 0) {
+                m_Current = current;
             }
 
             if (list.Count == 0) {
                 return current;
             }
 
-            index += next ? -1 : 1;
+            m_Index += next ? -1 : 1;
 
-            if (list.Count + index < 0 || list.Count + index > list.Count - 1) {
-                index = 0;
-                return this.current;
+            if (list.Count + m_Index < 0 || list.Count + m_Index > list.Count - 1) {
+                m_Index = 0;
+                return m_Current;
             }
 
-            var result = list[list.Count + index];
+            var result = list[list.Count + m_Index];
 
             return result;
         }
@@ -287,63 +221,91 @@ public class DebugConsole : MonoBehaviour
         public override string ToString()
         {
             string rlt = "";
-            for (int i = 0; i < history.Count; i++) {
-                if (i > history.Count - 500) {
-                    rlt += history[i];
-                    rlt += i < history.Count - 1 ? "\n" : "";
+            for (int i = 0; i < m_History.Count; i++) {
+                if (i > m_History.Count - 500) {
+                    rlt += m_History[i];
+                    rlt += i < m_History.Count - 1 ? "\n" : "";
                 }
             }
             return rlt;
         }
         public void FromString(string s)
         {
-            history = new List<string>(s.Split('\n'));
+            m_History = new List<string>(s.Split('\n'));
         }
-    }
 
-    List<Message> _messages = new List<Message>();
-    History _history = new History();
-    string _filter = string.Empty;
+        private void DoRemoveAll(string item)
+        {
+            var deletes = new Stack<int>();
+            for (int ix = 0; ix < m_History.Count; ++ix) {
+                var str = m_History[ix];
+                if (str == item) {
+                    deletes.Push(ix);
+                }
+            }
+            while (deletes.Count > 0) {
+                int ix = deletes.Pop();
+                m_History.RemoveAt(ix);
+            }
+        }
+        private List<string> DoFilter(string filter)
+        {
+            var list = new List<string>();
+            foreach (var msg in m_History) {
+                if (msg.StartsWith(filter)) {
+                    list.Add(msg);
+                }
+            }
+            return list;
+        }
+
+        private List<string> m_History = new List<string>();
+        private int m_Index = 0;
+        private string m_Current = string.Empty;
+    }
 
     void Awake()
     {
-        if (_instance != null && _instance != this) {
+        if (m_Instance != null && m_Instance != this) {
             DestroyImmediate(this, true);
             return;
         }
 
-        _instance = this;
+        m_Instance = this;
     }
 
     void OnEnable()
     {
-        filter = "";
-        _history.FromString(PlayerPrefs.GetString("debug_console_history"));
+        m_InputFilter = string.Empty;
+        m_Filter = string.Empty;
+        m_History.FromString(PlayerPrefs.GetString("debug_console_history"));
+#if !EMBED_ONGUI
         var scale = Screen.height / 500.0f;
-
         if (scale != 0.0f && scale >= 1.1f) {
-            _scaled = true;
-            _guiScale.Set(scale, scale, scale);
+            m_Scaled = true;
+            m_GuiScale.Set(scale, scale, scale);
         }
 
-        windowMethods = new GUI.WindowFunction[] { LogWindow, CopyLogWindow };
+        m_WindowMethods = new GUI.WindowFunction[] { LogWindow, CopyLogWindow };
 
-        Message.defaultColor = defaultColor;
-        Message.warningColor = warningColor;
-        Message.errorColor = errorColor;
-        Message.systemColor = systemColor;
-        Message.inputColor = inputColor;
-        Message.outputColor = outputColor;
+        Message.DefaultColor = DefaultColor;
+        Message.WarningColor = WarningColor;
+        Message.ErrorColor = ErrorColor;
+        Message.SystemColor = SystemColor;
+        Message.InputColor = InputColor;
+        Message.OutputColor = OutputColor;
 #if MOBILE
         this.useGUILayout = false;
-        //_windowRect = new Rect(5.0f, 5.0f, 300.0f, 450.0f);
-        _windowRect = new Rect(5.0f, 5.0f, 300.0f, 280.0f);
-        _fakeWindowRect = new Rect(0.0f, 0.0f, _windowRect.width, _windowRect.height);
-        _fakeDragRect = new Rect(0.0f, 0.0f, _windowRect.width - 32, 24);
+        //m_WindowRect = new Rect(5.0f, 5.0f, 300.0f, 450.0f);
+        m_WindowRect = new Rect(5.0f, 5.0f, 300.0f, 280.0f);
+        m_FakeWindowRect = new Rect(0.0f, 0.0f, m_WindowRect.width, m_WindowRect.height);
+        m_FakeDragRect = new Rect(0.0f, 0.0f, m_WindowRect.width - 32, 24);
 #else
-        _windowRect = new Rect(30.0f, 30.0f, 300.0f, 450.0f);
-        //_windowRect = new Rect(30.0f, 30.0f, 300.0f, 280.0f);
+        m_WindowRect = new Rect(30.0f, 30.0f, 300.0f, 450.0f);
+        //m_WindowRect = new Rect(30.0f, 30.0f, 300.0f, 280.0f);
 #endif
+
+#endif //EMBED_ONGUI
 
         LogMessage(Message.System(string.Format(" DebugConsole version {0}", VERSION)));
         LogMessage(Message.System(" Copyright 2008-2010 Jeremy Hollingsworth "));
@@ -354,7 +316,7 @@ public class DebugConsole : MonoBehaviour
         this.RegisterCommandCallback("close", CMDClose);
         this.RegisterCommandCallback("clear", CMDClear);
         this.RegisterCommandCallback("sys", CMDSystemInfo);
-        this.RegisterCommandCallback("level", CMDLevel);
+        this.RegisterCommandCallback("quality", CMDQuality);
         this.RegisterCommandCallback("vsync", CMDVSync);
         this.RegisterCommandCallback("resetdsl", CMDResetDsl);
         this.RegisterCommandCallback("script", CMDScript);
@@ -366,17 +328,100 @@ public class DebugConsole : MonoBehaviour
         this.RegisterCommandCallback("/?", CMDHelp);
     }
 
-    private void ShowImpl() {
+    private void ShowImpl()
+    {
         this.enabled = true;
-        _isOpen = true;
-        filter = "";
+        m_IsOpen = true;
+        m_Filter = string.Empty;
+        m_InputFilter = string.Empty;
     }
 
-    private void HideImpl() {
-        _isOpen = false;
+    private void HideImpl()
+    {
+        m_IsOpen = false;
         this.enabled = false;
     }
 
+#if EMBED_ONGUI
+    void OnEmbedGUI()
+    {
+        var evt = Event.current;
+
+        // 创建一个自定义的GUI皮肤
+        GUISkin customSkin = GUI.skin;
+
+        // 设置滚动条的宽度
+        customSkin.verticalScrollbar.fixedWidth = 30;
+        customSkin.horizontalScrollbar.fixedHeight = 30;
+
+        // 设置滚动条滑块的大小
+        customSkin.verticalScrollbarThumb.fixedWidth = 30;
+        customSkin.horizontalScrollbarThumb.fixedHeight = 30;
+
+        // 应用自定义皮肤
+        GUI.skin = customSkin;
+
+        GUILayout.BeginHorizontal();
+        m_ViewScrollPos = GUILayout.BeginScrollView(m_ViewScrollPos, true, true);
+
+        if (m_Messages.Count > 0)
+        {
+            Color oldColor = GUI.contentColor;
+            foreach (Message m in m_Messages)
+            {
+                string txt = m.ToString();
+                if (!txt.Contains(m_Filter))
+                    continue;
+
+                GUI.contentColor = m.Color;
+                string text = m.ToGUIString();
+                GUILayout.Label(text);
+            }
+            GUI.contentColor = oldColor;
+        }
+
+        GUILayout.EndScrollView();
+
+        GUILayout.EndHorizontal();
+        GUILayout.BeginHorizontal();
+
+        GUI.SetNextControlName(ENTRYFIELD);
+        m_InputText = GUILayout.TextField(m_InputText);
+        if (GUILayout.Button("Run", GUILayout.Width(80)))
+        {
+            EvalInputString(m_InputText);
+        }
+
+        GUILayout.EndHorizontal();
+
+        if (GUI.GetNameOfFocusedControl() == ENTRYFIELD)
+        {
+            if (evt.isKey && evt.type == EventType.KeyUp)
+            {
+                if (evt.keyCode == KeyCode.Return)
+                {
+                    EvalInputString(m_InputText);
+                    m_InputText = string.Empty;
+                    m_InputFilter = string.Empty;
+                }
+                else if (evt.keyCode == KeyCode.UpArrow)
+                {
+                    m_InputText = m_History.Fetch(m_InputText, true, m_InputFilter);
+                }
+                else if (evt.keyCode == KeyCode.DownArrow)
+                {
+                    m_InputText = m_History.Fetch(m_InputText, false, m_InputFilter);
+                }
+                else
+                {
+                    m_InputFilter = m_InputText;
+                }
+            }
+        }
+
+        //GUI.FocusControl(ENTRYFIELD);
+    }
+#else
     [Conditional("UNITY_EDITOR"),
      Conditional("DEVELOPMENT_BUILD")]
     void OnGUI()
@@ -401,16 +446,16 @@ public class DebugConsole : MonoBehaviour
         // 应用自定义皮肤
         GUI.skin = customSkin;
 
-        if (_scaled) {
-            restoreMatrix = GUI.matrix;
+        if (m_Scaled) {
+            m_RestoreMatrix = GUI.matrix;
 
-            GUI.matrix = GUI.matrix * Matrix4x4.Scale(_guiScale);
+            GUI.matrix = GUI.matrix * Matrix4x4.Scale(m_GuiScale);
         }
 
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR
         // Toggle key shows the console in non-iOS dev builds
-        if (evt.keyCode == toggleKey && evt.type == EventType.KeyUp)
-            _isOpen = !_isOpen;
+        if (evt.keyCode == ToggleKey && evt.type == EventType.KeyUp)
+            m_IsOpen = !m_IsOpen;
 #endif
 #if MOBILE
     if (Input.touchCount == 1) {
@@ -420,180 +465,270 @@ public class DebugConsole : MonoBehaviour
       if (evt.type == EventType.Repaint && (touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended) && touch.tapCount == 3/* && !_isLastHitUi*/) {
           Vector2 pos = touch.position;
           if (pos.x >= Screen.width * 1 / 3 && pos.x <= Screen.width * 2 / 3 && pos.y >= Screen.height * 2 / 3 && touch.deltaPosition.sqrMagnitude <= 25) {
-          _isOpen = !_isOpen;
+          m_IsOpen = !m_IsOpen;
           }
       }
-
-      if (_isOpen) {
+      if (m_IsOpen) {
         var pos = touch.position;
         pos.y = Screen.height - pos.y;
 
-        if (dragging && (touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended)) {
-          dragging = false;
+        if (m_Dragging && (touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended)) {
+          m_Dragging = false;
         }
-        else if (!dragging && (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Stationary)) {
-          var dragRect = _fakeDragRect;
+        else if (!m_Dragging && (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Stationary)) {
+          var dragRect = m_FakeDragRect;
 
-          dragRect.x = _windowRect.x * _guiScale.x;
-          dragRect.y = _windowRect.y * _guiScale.y;
-          dragRect.width *= _guiScale.x;
-          dragRect.height *= _guiScale.y;
+          dragRect.x = m_WindowRect.x * m_GuiScale.x;
+          dragRect.y = m_WindowRect.y * m_GuiScale.y;
+          dragRect.width *= m_GuiScale.x;
+          dragRect.height *= m_GuiScale.y;
 
           // check to see if the touch is inside the dragRect.
           if (dragRect.Contains(pos)) {
-            dragging = true;
+            m_Dragging = true;
           }
         }
 
-        if (dragging && evt.type == EventType.Repaint) {
+        if (m_Dragging && evt.type == EventType.Repaint) {
 #if UNITY_ANDROID && !UNITY_EDITOR
           var delta = touch.deltaPosition * 2.0f;
 #elif UNITY_IOS
           var delta = touch.deltaPosition;
-          delta.x /= _guiScale.x;
-          delta.y /= _guiScale.y;
+          delta.x /= m_GuiScale.x;
+          delta.y /= m_GuiScale.y;
 #endif
           delta.y = -delta.y;
 
-          _windowRect.center += delta;
+          m_WindowRect.center += delta;
         }
         else {
-          var tapRect = scrollRect;
-          tapRect.x += _windowRect.x * _guiScale.x;
-          tapRect.y += _windowRect.y * _guiScale.y;
+          var tapRect = m_ScrollRect;
+          tapRect.x += m_WindowRect.x * m_GuiScale.x;
+          tapRect.y += m_WindowRect.y * m_GuiScale.y;
           tapRect.width -= 32;
-          tapRect.width *= _guiScale.x;
-          tapRect.height *= _guiScale.y;
+          tapRect.width *= m_GuiScale.x;
+          tapRect.height *= m_GuiScale.y;
 
           if (tapRect.Contains(pos)) {
-            var scrollY = (tapRect.center.y - pos.y) / _guiScale.y;
+            var scrollY = (tapRect.center.y - pos.y) / m_GuiScale.y;
 
-            switch (toolbarIndex) {
+            switch (m_ToolbarIndex) {
             case 0:
-              _logScrollPos.y -= scrollY;
+              m_LogScrollPos.y -= scrollY;
               break;
             case 1:
-              _viewScrollPos.y -= scrollY;
+              m_ViewScrollPos.y -= scrollY;
               break;
             }
           }
         }
       }
     }
-    else if (dragging && Input.touchCount == 0) {
-      dragging = false;
+    else if (m_Dragging && Input.touchCount == 0) {
+      m_Dragging = false;
     }
 #endif
-        if (windowStyle == null) {
-            windowStyle = new GUIStyle(GUI.skin.window);
-            windowOnStyle = new GUIStyle(GUI.skin.window);
-            windowOnStyle.normal.background = GUI.skin.window.onNormal.background;
-            windowStyle.fontSize = 14;
-            windowOnStyle.fontSize = 14;
+        if (m_WindowStyle == null) {
+            m_WindowStyle = new GUIStyle(GUI.skin.window);
+            m_WindowOnStyle = new GUIStyle(GUI.skin.window);
+            m_WindowOnStyle.normal.background = GUI.skin.window.onNormal.background;
+            m_WindowStyle.fontSize = 14;
+            m_WindowOnStyle.fontSize = 14;
         }
-        if (labelStyle == null) {
-            labelStyle = new GUIStyle(GUI.skin.label);
-            labelStyle.fontSize = 14;
+        if (m_LabelStyle == null) {
+            m_LabelStyle = new GUIStyle(GUI.skin.label);
+            m_LabelStyle.fontSize = 14;
         }
-        if (textareaStyle == null) {
-            textareaStyle = new GUIStyle(GUI.skin.textArea);
-            textareaStyle.fontSize = 14;
+        if (m_TextareaStyle == null) {
+            m_TextareaStyle = new GUIStyle(GUI.skin.textArea);
+            m_TextareaStyle.fontSize = 14;
         }
-        if (textfieldStyle == null) {
-            textfieldStyle = new GUIStyle(GUI.skin.textField);
-            textfieldStyle.fontSize = 14;
+        if (m_TextfieldStyle == null) {
+            m_TextfieldStyle = new GUIStyle(GUI.skin.textField);
+            m_TextfieldStyle.fontSize = 14;
         }
-        if (!_isOpen) {
+        if (!m_IsOpen) {
             return;
         }
 
-        innerRect.width = messageLine.width;
+        m_InnerRect.width = m_MessageLine.width;
 #if !MOBILE
-        _windowRect = GUI.Window(-1111, _windowRect, windowMethods[toolbarIndex], "");
+        m_WindowRect = GUI.Window(-1111, m_WindowRect, m_WindowMethods[m_ToolbarIndex], "");
         GUI.BringWindowToFront(-1111);
 #else
-    GUI.BeginGroup(_windowRect);
+    GUI.BeginGroup(m_WindowRect);
 #if UNITY_EDITOR
-    if (GUI.RepeatButton(_fakeDragRect, string.Empty, GUIStyle.none)) {
-      Vector2 delta = (Vector2) Input.mousePosition - prevMousePos;
+    if (GUI.RepeatButton(m_FakeDragRect, string.Empty, GUIStyle.none)) {
+      Vector2 delta = (Vector2) Input.mousePosition - m_PrevMousePos;
       delta.y = -delta.y;
 
-      _windowRect.center += delta;
-      dragging = true;
+      m_WindowRect.center += delta;
+      m_Dragging = true;
     }
 
     if (evt.type == EventType.Repaint) {
-      prevMousePos = Input.mousePosition;
+      m_PrevMousePos = Input.mousePosition;
     }
 #endif
-    GUI.Box(_fakeWindowRect, "", dragging ? windowOnStyle : windowStyle);
-    windowMethods[toolbarIndex](0);
+    GUI.Box(m_FakeWindowRect, "", m_Dragging ? m_WindowOnStyle : m_WindowStyle);
+    m_WindowMethods[m_ToolbarIndex](0);
     GUI.EndGroup();
 #endif
 
         if (GUI.GetNameOfFocusedControl() == ENTRYFIELD) {
             if (evt.isKey && evt.type == EventType.KeyUp) {
                 if (evt.keyCode == KeyCode.Return) {
-                    EvalInputString(_inputString);
-                    _inputString = string.Empty;
-                    filter = "";
+                    EvalInputString(m_InputText);
+                    m_InputText = string.Empty;
+                    m_InputFilter = string.Empty;
                 }
                 else if (evt.keyCode == KeyCode.UpArrow) {
-                    _inputString = _history.Fetch(_inputString, true, filter);
+                    m_InputText = m_History.Fetch(m_InputText, true, m_InputFilter);
                 }
                 else if (evt.keyCode == KeyCode.DownArrow) {
-                    _inputString = _history.Fetch(_inputString, false, filter);
+                    m_InputText = m_History.Fetch(m_InputText, false, m_InputFilter);
                 }
-                else if (evt.keyCode == toggleKey) {
+                else if (evt.keyCode == ToggleKey) {
 
                 }
                 else {
-                    filter = _inputString;
+                    m_InputFilter = m_InputText;
                 }
             }
         }
 
-        if (_scaled) {
-            GUI.matrix = restoreMatrix;
+        if (m_Scaled) {
+            GUI.matrix = m_RestoreMatrix;
         }
 
-        if (dirty && evt.type == EventType.Repaint) {
-            _logScrollPos.y = 50000.0f;
-            _viewScrollPos.y = 50000.0f;
+        if (m_Dirty && evt.type == EventType.Repaint) {
+            m_LogScrollPos.y = 50000.0f;
+            m_ViewScrollPos.y = 50000.0f;
 
             BuildDisplayString();
-            dirty = false;
+            m_Dirty = false;
         }
     }
 
-    void OnDestroy()
+    private void DrawBottomControls()
     {
-        StopAllCoroutines();
+        GUI.SetNextControlName(ENTRYFIELD);
+        m_InputText = GUI.TextField(m_InputRect, m_InputText, m_TextfieldStyle);
+
+        if (GUI.Button(m_EnterRect, "Enter")) {
+            EvalInputString(m_InputText);
+            m_InputText = string.Empty;
+        }
+
+        var index = GUI.Toolbar(m_ToolbarRect, m_ToolbarIndex, m_Tabs);
+
+        if (index != m_ToolbarIndex) {
+            m_ToolbarIndex = index;
+
+            if (index > 0) {
+                m_Dirty = true;
+            }
+        }
+#if !MOBILE
+        GUI.DragWindow();
+#endif
     }
-#region Console commands
+    private void LogWindow(int windowID)
+    {
+        GUI.Box(m_ScrollRect, string.Empty);
+
+        m_InnerRect.height = m_InnerHeight < m_ScrollRect.height ? m_ScrollRect.height : m_InnerHeight;
+
+        m_LogScrollPos = GUI.BeginScrollView(m_ScrollRect, m_LogScrollPos, m_InnerRect, false, true);
+
+        if (m_Messages.Count > 0) {
+            Color oldColor = GUI.contentColor;
+
+            m_MessageLine.y = 0;
+
+            foreach (Message m in m_Messages) {
+                string txt = m.ToString();
+                if (!txt.Contains(m_Filter))
+                    continue;
+
+                GUI.contentColor = m.Color;
+
+                m_GuiContent.text = m.ToGUIString();
+
+                m_MessageLine.height = m_LabelStyle.CalcHeight(m_GuiContent, m_MessageLine.width);
+
+                GUI.Label(m_MessageLine, m_GuiContent, m_LabelStyle);
+
+                m_MessageLine.y += (m_MessageLine.height + m_LineOffset);
+
+                m_InnerHeight = m_MessageLine.y > m_ScrollRect.height ? (int)m_MessageLine.y : (int)m_ScrollRect.height;
+            }
+            GUI.contentColor = oldColor;
+        }
+
+        GUI.EndScrollView();
+
+        DrawBottomControls();
+
+        GUI.FocusControl(ENTRYFIELD);
+    }
+    private string GetDisplayString()
+    {
+        return m_DisplayString.ToString();
+    }
+    private void BuildDisplayString()
+    {
+        m_DisplayString.Length = 0;
+
+        foreach (Message m in m_Messages) {
+            string txt = m.ToString();
+            if (!txt.Contains(m_Filter))
+                continue;
+            m_DisplayString.AppendLine(m.ToString());
+        }
+    }
+    private void CopyLogWindow(int windowID)
+    {
+        m_GuiContent.text = GetDisplayString();
+
+        var calcHeight = GUI.skin.textArea.CalcHeight(m_GuiContent, m_MessageLine.width);
+
+        m_InnerRect.height = calcHeight < m_ScrollRect.height ? m_ScrollRect.height : calcHeight;
+
+        m_ViewScrollPos = GUI.BeginScrollView(m_ScrollRect, m_ViewScrollPos, m_InnerRect, false, true);
+
+        GUI.TextArea(m_InnerRect, m_GuiContent.text, m_TextareaStyle);
+
+        GUI.EndScrollView();
+
+        DrawBottomControls();
+    }
+#endif //EMBED_ONGUI
+
+    #region Console commands
 
     //==== Built-in example DebugCommand handlers ====
-    object CMDClose(params string[] args)
+    private object CMDClose(params string[] args)
     {
         HideImpl();
 
         return "closed";
     }
 
-    object CMDClear(params string[] args)
+    private object CMDClear(params string[] args)
     {
         this.ClearLog();
 
         return "clear";
     }
 
-    object CMDHelp(params string[] args)
+    private object CMDHelp(params string[] args)
     {
         var output = new StringBuilder();
 
         output.AppendLine(":: Command List ::");
 
-        foreach (string key in _cmdTable.Keys) {
+        foreach (string key in m_CmdTable.Keys) {
             output.AppendLine(key);
         }
 
@@ -602,7 +737,7 @@ public class DebugConsole : MonoBehaviour
         return output.ToString();
     }
 
-    object CMDSystemInfo(params string[] args)
+    private object CMDSystemInfo(params string[] args)
     {
         var info = new StringBuilder();
 
@@ -638,19 +773,19 @@ public class DebugConsole : MonoBehaviour
         return info.ToString();
     }
 
-    object CMDLevel(params string[] args)
+    private object CMDQuality(params string[] args)
     {
-        int level = 0;
+        int quality = 0;
         if (args.Length == 2) {
-            level = int.Parse(args[1]);
-            QualitySettings.SetQualityLevel(level, true);
+            quality = int.Parse(args[1]);
+            QualitySettings.SetQualityLevel(quality, true);
         }
-        level = QualitySettings.GetQualityLevel();
-        string name = QualitySettings.names[level];
-        return string.Format("{0}({1})", name, level);
+        quality = QualitySettings.GetQualityLevel();
+        string name = QualitySettings.names[quality];
+        return string.Format("{0}({1})", name, quality);
     }
 
-    object CMDVSync(params string[] args)
+    private object CMDVSync(params string[] args)
     {
         int count = 1;
         if (args.Length == 2) {
@@ -666,7 +801,7 @@ public class DebugConsole : MonoBehaviour
         return string.Format("frame rate:{0} vsync count:{1}", frameRate, count);
     }
 
-    object CMDResetDsl(params string[] args)
+    private object CMDResetDsl(params string[] args)
     {
         GameObject obj = GameObject.Find("GameRoot");
         if (null != obj) {
@@ -675,7 +810,7 @@ public class DebugConsole : MonoBehaviour
         return "resetdsl finish.";
     }
 
-    object CMDScript(params string[] args)
+    private object CMDScript(params string[] args)
     {
         if (args.Length == 2) {
             GameObject obj = GameObject.Find("GameRoot");
@@ -683,7 +818,8 @@ public class DebugConsole : MonoBehaviour
                 obj.SendMessage("OnExecScript", args[1]);
             }
             return "script " + args[1];
-        } else {
+        }
+        else {
             GameObject obj = GameObject.Find("GameRoot");
             if (null != obj) {
                 obj.SendMessage("OnExecScript", "");
@@ -692,7 +828,7 @@ public class DebugConsole : MonoBehaviour
         }
     }
 
-    object CMDCommand(params string[] args)
+    private object CMDCommand(params string[] args)
     {
         if (args.Length == 2) {
             GameObject obj = GameObject.Find("GameRoot");
@@ -700,12 +836,13 @@ public class DebugConsole : MonoBehaviour
                 obj.SendMessage("OnExecCommand", args[1]);
             }
             return "command " + args[1];
-        } else {
-            return "gm command need argument command.";
+        }
+        else {
+            return "cmd need argument command.";
         }
     }
 
-    object CMDGm(params string[] args)
+    private object CMDGm(params string[] args)
     {
         if (args.Length == 2) {
             GameObject obj = GameObject.Find("GameRoot");
@@ -713,174 +850,72 @@ public class DebugConsole : MonoBehaviour
                 obj.SendMessage("OnExecCommand", "gm(\"" + args[1] + "\");");
             }
             return "gm " + args[1];
-        } else {
+        }
+        else {
             return "gm need argument command.";
         }
     }
-	
-    object CMDFilter(params string[] args)
+
+    private object CMDFilter(params string[] args)
     {
         if (args.Length == 2) {
-            _filter = args[1];
+            m_Filter = args[1];
+#if !EMBED_ONGUI
             BuildDisplayString();
+#endif
             return "filter set to " + args[1];
         }
         else {
-            _filter = string.Empty;
+            m_Filter = string.Empty;
+#if !EMBED_ONGUI
             BuildDisplayString();
+#endif
             return "filter set to empty.";
         }
     }
 
     #endregion
-    #region GUI Window Methods
 
-    void DrawBottomControls()
+    private void LogMessage(Message msg)
     {
-        GUI.SetNextControlName(ENTRYFIELD);
-        _inputString = GUI.TextField(inputRect, _inputString, textfieldStyle);
-
-        if (GUI.Button(enterRect, "Enter")) {
-            EvalInputString(_inputString);
-            _inputString = string.Empty;
-        }
-
-        var index = GUI.Toolbar(toolbarRect, toolbarIndex, tabs);
-
-        if (index != toolbarIndex) {
-            toolbarIndex = index;
-
-            if (index > 0) {
-                dirty = true;
-            }
-        }
-#if !MOBILE
-        GUI.DragWindow();
-#endif
-    }
-
-    void LogWindow(int windowID)
-    {
-        GUI.Box(scrollRect, string.Empty);
-
-        innerRect.height = innerHeight < scrollRect.height ? scrollRect.height : innerHeight;
-
-        _logScrollPos = GUI.BeginScrollView(scrollRect, _logScrollPos, innerRect, false, true);
-
-        if (_messages.Count > 0) {
-            Color oldColor = GUI.contentColor;
-
-            messageLine.y = 0;
-
-            foreach (Message m in _messages) {
-                string txt = m.ToString();
-                if (!txt.Contains(_filter))
-                    continue;
-
-                GUI.contentColor = m.color;
-
-                guiContent.text = m.ToGUIString();
-
-                messageLine.height = labelStyle.CalcHeight(guiContent, messageLine.width);
-
-                GUI.Label(messageLine, guiContent, labelStyle);
-
-                messageLine.y += (messageLine.height + lineOffset);
-
-                innerHeight = messageLine.y > scrollRect.height ? (int)messageLine.y : (int)scrollRect.height;
-            }
-            GUI.contentColor = oldColor;
-        }
-
-        GUI.EndScrollView();
-
-        DrawBottomControls();
-
-        GUI.FocusControl(ENTRYFIELD);
-    }
-
-    string GetDisplayString()
-    {
-        return _displayString.ToString();
-    }
-
-    void BuildDisplayString()
-    {
-        _displayString.Length = 0;
-
-        foreach (Message m in _messages) {
-            string txt = m.ToString();
-            if (!txt.Contains(_filter))
-                continue;
-            _displayString.AppendLine(m.ToString());
-        }
-    }
-
-    void CopyLogWindow(int windowID)
-    {
-
-        guiContent.text = GetDisplayString();
-
-        var calcHeight = GUI.skin.textArea.CalcHeight(guiContent, messageLine.width);
-
-        innerRect.height = calcHeight < scrollRect.height ? scrollRect.height : calcHeight;
-
-        _viewScrollPos = GUI.BeginScrollView(scrollRect, _viewScrollPos, innerRect, false, true);
-
-        GUI.TextArea(innerRect, guiContent.text, textareaStyle);
-
-        GUI.EndScrollView();
-
-        DrawBottomControls();
-    }
-
-#endregion
-#region InternalFunctionality
-    [Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
-    void LogMessage(Message msg)
-    {
-        while (_messages.Count > maxLinesForDisplay) {
-            if (_messages.Count > maxLinesForDisplay + 1000)
-                _messages.Clear();
+        while (m_Messages.Count > MaxLinesForDisplay) {
+            if (m_Messages.Count > MaxLinesForDisplay + 1000)
+                m_Messages.Clear();
             else
-                _messages.RemoveAt(0);
+                m_Messages.RemoveAt(0);
         }
-        _messages.Add(msg);
-        _logScrollPos.y = 50000.0f;
+        m_Messages.Add(msg);
+        m_LogScrollPos.y = 50000.0f;
     }
-
     //--- Local version. Use the static version above instead.
-    void ClearLog()
+    private void ClearLog()
     {
-        _messages.Clear();
-        _logScrollPos.y = 50000.0f;
+        m_Messages.Clear();
+        m_LogScrollPos.y = 50000.0f;
     }
-
     //--- Local version. Use the static version above instead.
-    void RegisterCommandCallback(string commandString, DebugCommand commandCallback)
+    private void RegisterCommandCallback(string commandString, DebugCommand commandCallback)
     {
 #if !UNITY_FLASH
-        _cmdTable[commandString.ToLower()] = new DebugCommand(commandCallback);
+        m_CmdTable[commandString.ToLower()] = new DebugCommand(commandCallback);
 #endif
     }
-
     //--- Local version. Use the static version above instead.
-    void UnRegisterCommandCallback(string commandString)
+    private void UnRegisterCommandCallback(string commandString)
     {
-        _cmdTable.Remove(commandString.ToLower());
+        m_CmdTable.Remove(commandString.ToLower());
     }
 
-    void EvalInputString(string inputString)
+    private void EvalInputString(string inputString)
     {
         inputString = inputString.Trim();
         if (string.IsNullOrEmpty(inputString)) {
             LogMessage(Message.Input(string.Empty));
             return;
         }
-        _history.Add(inputString);
+        m_History.Add(inputString);
 
-        string stringToSave = _history.ToString();
+        string stringToSave = m_History.ToString();
         PlayerPrefs.SetString("debug_console_history", stringToSave);
 
         LogMessage(Message.Input(inputString));
@@ -895,25 +930,85 @@ public class DebugConsole : MonoBehaviour
             input.Add(cmd);
             if (0 == cmd.CompareTo("command") || 0 == cmd.CompareTo("cmd") || 0 == cmd.CompareTo("script") || 0 == cmd.CompareTo("scp") || 0 == cmd.CompareTo("gm")) {
                 input.Add(leftCmd);
-            } else {
+            }
+            else {
                 input.AddRange(leftCmd.Split(new char[] { ' ' }, System.StringSplitOptions.RemoveEmptyEntries));
             }
-        } else {
+        }
+        else {
             cmd = inputString.ToLower();
             input.Add(inputString);
         }
-        if (_cmdTable.ContainsKey(cmd)) {
-            Log(_cmdTable[cmd](input.ToArray()), MessageType.OUTPUT);
-        } else {
+        if (m_CmdTable.ContainsKey(cmd)) {
+            Log(m_CmdTable[cmd](input.ToArray()), MessageType.OUTPUT);
+        }
+        else {
             input.Clear();
             input.Add("cmd");
             input.Add(inputString);
-            Log(_cmdTable["cmd"](input.ToArray()), MessageType.OUTPUT);
+            Log(m_CmdTable["cmd"](input.ToArray()), MessageType.OUTPUT);
             //LogMessage(Message.Output(string.Format("*** Unknown Command: {0} ***", cmd)));
         }
     }
 
-    #endregion
+    private Dictionary<string, DebugCommand> m_CmdTable = new Dictionary<string, DebugCommand>();
+    private List<Message> m_Messages = new List<Message>();
+    private History m_History = new History();
+    private string m_Filter = string.Empty;
+    private string m_InputFilter = string.Empty;
+    private string m_InputText = string.Empty;
+    private bool m_IsOpen;
+
+#if EMBED_ONGUI
+    private Vector2 m_ViewScrollPos = Vector2.zero;
+#else
+    private Vector2 m_ViewScrollPos = Vector2.zero;
+    private Vector2 m_LogScrollPos = Vector2.zero;
+    private Rect m_WindowRect;
+    private GUIStyle m_WindowOnStyle;
+    private GUIStyle m_WindowStyle;
+    private GUIStyle m_LabelStyle;
+    private GUIStyle m_TextareaStyle;
+    private GUIStyle m_TextfieldStyle;
+#if MOBILE
+    private Rect m_FakeWindowRect;
+    private Rect m_FakeDragRect;
+    private bool m_Dragging = false;
+#if UNITY_EDITOR
+    private Vector2 m_PrevMousePos;
+#endif
+#endif
+
+    private Vector3 m_GuiScale = Vector3.one;
+    private Matrix4x4 m_RestoreMatrix = Matrix4x4.identity;
+    private bool m_Scaled = false;
+    private StringBuilder m_DisplayString = new StringBuilder();
+    private bool m_Dirty;
+
+    // Make these values public if you want to adjust layout of console window
+#if MOBILE
+    private readonly Rect m_ScrollRect = new Rect(10, 20, 280, 190);
+    private readonly Rect m_InputRect = new Rect(10, 214, 228, 24);
+    private readonly Rect m_EnterRect = new Rect(240, 214, 50, 24);
+    private readonly Rect m_ToolbarRect = new Rect(16, 242, 266, 25);
+    private Rect m_MessageLine = new Rect(4, 0, 264, 20);
+#else
+    private readonly Rect m_ScrollRect = new Rect(10, 20, 280, 360);
+    private readonly Rect m_InputRect = new Rect(10, 384, 228, 24);
+    private readonly Rect m_EnterRect = new Rect(240, 384, 50, 24);
+    private readonly Rect m_ToolbarRect = new Rect(16, 412, 266, 25);
+    private Rect m_MessageLine = new Rect(4, 0, 264, 20);
+#endif
+    private int m_LineOffset = -4;
+    private string[] m_Tabs = new string[] { "Log", "View" };
+
+    // Keep these private, their values are generated automatically
+    private Rect m_InnerRect = new Rect(0, 0, 0, 0);
+    private int m_InnerHeight = 0;
+    private int m_ToolbarIndex = 0;
+    private GUIContent m_GuiContent = new GUIContent();
+    private GUI.WindowFunction[] m_WindowMethods;
+#endif //EMBED_ONGUI
 
     #region StaticAccessors
 
@@ -923,16 +1018,14 @@ public class DebugConsole : MonoBehaviour
     /// <param name="message">Message to print.</param>
     public static object Log(object message)
     {
-        _instance?.LogMessage(Message.Log(message));
+        m_Instance?.LogMessage(Message.Log(message));
 
         return message;
     }
-
     public static object LogFormat(string format, params object[] args)
     {
         return Log(string.Format(format, args));
     }
-
     /// <summary>
     /// Prints a message string to the console.
     /// </summary>
@@ -941,11 +1034,10 @@ public class DebugConsole : MonoBehaviour
     /// formatting in order to distinguish between message types.</param>
     public static object Log(object message, MessageType messageType)
     {
-        _instance?.LogMessage(new Message(message, messageType));
+        m_Instance?.LogMessage(new Message(message, messageType));
 
         return message;
     }
-
     /// <summary>
     /// Prints a message string to the console.
     /// </summary>
@@ -953,11 +1045,10 @@ public class DebugConsole : MonoBehaviour
     /// <param name="displayColor">The text color to use when displaying the message.</param>
     public static object Log(object message, Color displayColor)
     {
-        _instance?.LogMessage(new Message(message, displayColor));
+        m_Instance?.LogMessage(new Message(message, displayColor));
 
         return message;
     }
-
     /// <summary>
     /// Prints a message string to the console.
     /// </summary>
@@ -969,29 +1060,27 @@ public class DebugConsole : MonoBehaviour
     /// if the default color for the message type should be used instead.</param>
     public static object Log(object message, MessageType messageType, Color displayColor)
     {
-        _instance?.LogMessage(new Message(message, messageType, displayColor));
+        m_Instance?.LogMessage(new Message(message, messageType, displayColor));
 
         return message;
     }
-
     /// <summary>
     /// Prints a message string to the console using the "Warning" message type formatting.
     /// </summary>
     /// <param name="message">Message to print.</param>
     public static object LogWarning(object message)
     {
-        _instance?.LogMessage(Message.Warning(message));
+        m_Instance?.LogMessage(Message.Warning(message));
 
         return message;
     }
-
     /// <summary>
     /// Prints a message string to the console using the "Error" message type formatting.
     /// </summary>
     /// <param name="message">Message to print.</param>
     public static object LogError(object message)
     {
-        _instance?.LogMessage(Message.Error(message));
+        m_Instance?.LogMessage(Message.Error(message));
 
         return message;
     }
@@ -999,67 +1088,65 @@ public class DebugConsole : MonoBehaviour
     /// <summary>
     /// Clears all console output.
     /// </summary>
-    [Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
     public static void Clear()
     {
-        _instance?.ClearLog();
+        m_Instance?.ClearLog();
     }
-
     /// <summary>
     /// Execute a console command directly from code.
     /// </summary>
     /// <param name="commandString">The command line you want to execute. For example: "sys"</param>
-    [Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
     public static void Execute(string commandString)
     {
-        _instance?.EvalInputString(commandString);
+        m_Instance?.EvalInputString(commandString);
     }
-
     /// <summary>
     /// Registers a debug command that is "fired" when the specified command string is entered.
     /// </summary>
     /// <param name="commandString">The string that represents the command. For example: "FOV"</param>
     /// <param name="commandCallback">The method/function to call with the commandString is entered.
     /// For example: "SetFOV"</param>
-    [Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
     public static void RegisterCommand(string commandString, DebugCommand commandCallback)
     {
-        _instance?.RegisterCommandCallback(commandString, commandCallback);
+        m_Instance?.RegisterCommandCallback(commandString, commandCallback);
     }
-
     /// <summary>
     /// Removes a previously-registered debug command.
     /// </summary>
     /// <param name="commandString">The string that represents the command.</param>
-    [Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
     public static void UnRegisterCommand(string commandString)
     {
-        _instance?.UnRegisterCommandCallback(commandString);
+        m_Instance?.UnRegisterCommandCallback(commandString);
     }
 
     public static bool IsOpen
     {
         get {
-            bool result = (bool)(_instance?._isOpen);
+            bool result = (bool)(m_Instance?.m_IsOpen);
             return result;
         }
     }
-    [Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
     public static void Show()
     {
-        _instance?.ShowImpl();
+        m_Instance?.ShowImpl();
     }
-    [Conditional("UNITY_EDITOR"),
-     Conditional("DEVELOPMENT_BUILD")]
     public static void Hide()
     {
-        _instance?.HideImpl();
+        m_Instance?.HideImpl();
     }
+    public static void DoEmbedGUI()
+    {
+#if EMBED_ONGUI
+        m_Instance?.OnEmbedGUI();
+#endif
+    }
+
+    /// <summary>
+    /// Key to press to toggle the visibility of the console.
+    /// </summary>
+    public static KeyCode ToggleKey = KeyCode.BackQuote;
+
+    private static DebugConsole m_Instance;
 
     #endregion
 }
