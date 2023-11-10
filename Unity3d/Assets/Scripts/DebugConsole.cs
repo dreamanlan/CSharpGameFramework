@@ -15,19 +15,10 @@ using UnityEngine.SceneManagement;
 
 public class DebugConsole : MonoBehaviour
 {
-    readonly string VERSION = "3.0";
-    readonly string ENTRYFIELD = "DebugConsoleEntryField";
-
     public delegate object DebugCommand(params string[] args);
 
-    /// <summary>
-    /// How many lines of text this console will display.
-    /// </summary>
     public int MaxLinesForDisplay = 500;
 
-    /// <summary>
-    /// Default color of the standard display text.
-    /// </summary>
     public Color DefaultColor = Message.DefaultColor;
     public Color WarningColor = Message.WarningColor;
     public Color ErrorColor = Message.ErrorColor;
@@ -1147,6 +1138,9 @@ public class DebugConsole : MonoBehaviour
     public static KeyCode ToggleKey = KeyCode.BackQuote;
 
     private static DebugConsole m_Instance;
+
+    private const string VERSION = "3.0";
+    private const string ENTRYFIELD = "DebugConsoleEntryField";
 
     #endregion
 }
