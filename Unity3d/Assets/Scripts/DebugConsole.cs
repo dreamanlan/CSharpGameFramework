@@ -257,12 +257,12 @@ public class DebugConsole : MonoBehaviour
 
     void Awake()
     {
-        if (m_Instance != null && m_Instance != this) {
+        if (s_Instance != null && s_Instance != this) {
             DestroyImmediate(this, true);
             return;
         }
 
-        m_Instance = this;
+        s_Instance = this;
     }
 
     void OnEnable()
@@ -271,7 +271,7 @@ public class DebugConsole : MonoBehaviour
         m_Filter = string.Empty;
         m_History.FromString(PlayerPrefs.GetString("debug_console_history"));
 #if !EMBED_ONGUI
-        var scale = Screen.height / 500.0f;
+        var scale = 1.0f;
         if (scale != 0.0f && scale >= 1.1f) {
             m_Scaled = true;
             m_GuiScale.Set(scale, scale, scale);
@@ -287,13 +287,29 @@ public class DebugConsole : MonoBehaviour
         Message.OutputColor = OutputColor;
 #if MOBILE
         this.useGUILayout = false;
-        //m_WindowRect = new Rect(5.0f, 5.0f, 300.0f, 450.0f);
-        m_WindowRect = new Rect(5.0f, 5.0f, 300.0f, 280.0f);
+        float left = 5.0f;
+        float top = 5.0f;
+        float width = Screen.width - left * 2;
+        float height = Screen.height - top * 2;
+        m_WindowRect = new Rect(left, top, width, height);
         m_FakeWindowRect = new Rect(0.0f, 0.0f, m_WindowRect.width, m_WindowRect.height);
         m_FakeDragRect = new Rect(0.0f, 0.0f, m_WindowRect.width - 32, 24);
+        m_ScrollRect = new Rect(10, 20, width - 20, height - 110);
+        m_InputRect = new Rect(10, height - 80, width - 110, 30);
+        m_EnterRect = new Rect(width - 90, height - 80, 80, 30);
+        m_ToolbarRect = new Rect(16, height - 40, width - 32, 30);
+        m_MessageLine = new Rect(4, 0, width - 8, 30);
 #else
-        m_WindowRect = new Rect(30.0f, 30.0f, 300.0f, 450.0f);
-        //m_WindowRect = new Rect(30.0f, 30.0f, 300.0f, 280.0f);
+        float left = 30.0f;
+        float top = 30.0f;
+        float width = Screen.width - left * 2;
+        float height = Screen.height - top * 2;
+        m_WindowRect = new Rect(left, top, width, height);
+        m_ScrollRect = new Rect(10, 20, width - 20, height - 110);
+        m_InputRect = new Rect(10, height - 80, width - 110, 30);
+        m_EnterRect = new Rect(width - 90, height - 80, 80, 30);
+        m_ToolbarRect = new Rect(16, height - 40, width - 32, 30);
+        m_MessageLine = new Rect(4, 0, width - 8, 30);
 #endif
 
 #endif //EMBED_ONGUI
@@ -321,7 +337,6 @@ public class DebugConsole : MonoBehaviour
 
     private void ShowImpl()
     {
-        this.enabled = true;
         m_IsOpen = true;
         m_Filter = string.Empty;
         m_InputFilter = string.Empty;
@@ -330,7 +345,6 @@ public class DebugConsole : MonoBehaviour
     private void HideImpl()
     {
         m_IsOpen = false;
-        this.enabled = false;
     }
 
 #if EMBED_ONGUI
@@ -422,9 +436,14 @@ public class DebugConsole : MonoBehaviour
         // 创建一个自定义的GUI皮肤
         GUISkin customSkin = GUI.skin;
 
+        customSkin.label.fontSize = 20;
+        customSkin.textField.fontSize = 20;
+        customSkin.textArea.fontSize = 20;
+        customSkin.textField.fixedHeight = 30;
+
         // 设置按钮的大小
-        customSkin.button.fixedHeight = 24;
-        customSkin.button.fontSize = 14;
+        customSkin.button.fixedHeight = 30;
+        customSkin.button.fontSize = 20;
 
         // 设置滚动条的宽度
         customSkin.verticalScrollbar.fixedWidth = 20;
@@ -523,20 +542,20 @@ public class DebugConsole : MonoBehaviour
             m_WindowStyle = new GUIStyle(GUI.skin.window);
             m_WindowOnStyle = new GUIStyle(GUI.skin.window);
             m_WindowOnStyle.normal.background = GUI.skin.window.onNormal.background;
-            m_WindowStyle.fontSize = 14;
-            m_WindowOnStyle.fontSize = 14;
+            m_WindowStyle.fontSize = 20;
+            m_WindowOnStyle.fontSize = 20;
         }
         if (m_LabelStyle == null) {
             m_LabelStyle = new GUIStyle(GUI.skin.label);
-            m_LabelStyle.fontSize = 14;
+            m_LabelStyle.fontSize = 20;
         }
         if (m_TextareaStyle == null) {
             m_TextareaStyle = new GUIStyle(GUI.skin.textArea);
-            m_TextareaStyle.fontSize = 14;
+            m_TextareaStyle.fontSize = 20;
         }
         if (m_TextfieldStyle == null) {
             m_TextfieldStyle = new GUIStyle(GUI.skin.textField);
-            m_TextfieldStyle.fontSize = 14;
+            m_TextfieldStyle.fontSize = 20;
         }
         if (!m_IsOpen) {
             return;
@@ -976,20 +995,12 @@ public class DebugConsole : MonoBehaviour
     private StringBuilder m_DisplayString = new StringBuilder();
     private bool m_Dirty;
 
-    // Make these values public if you want to adjust layout of console window
-#if MOBILE
-    private readonly Rect m_ScrollRect = new Rect(10, 20, 280, 190);
-    private readonly Rect m_InputRect = new Rect(10, 214, 228, 24);
-    private readonly Rect m_EnterRect = new Rect(240, 214, 50, 24);
-    private readonly Rect m_ToolbarRect = new Rect(16, 242, 266, 25);
-    private Rect m_MessageLine = new Rect(4, 0, 264, 20);
-#else
-    private readonly Rect m_ScrollRect = new Rect(10, 20, 280, 360);
-    private readonly Rect m_InputRect = new Rect(10, 384, 228, 24);
-    private readonly Rect m_EnterRect = new Rect(240, 384, 50, 24);
-    private readonly Rect m_ToolbarRect = new Rect(16, 412, 266, 25);
-    private Rect m_MessageLine = new Rect(4, 0, 264, 20);
-#endif
+    private Rect m_ScrollRect = new Rect(0, 0, 0, 0);
+    private Rect m_InputRect = new Rect(0, 0, 0, 0);
+    private Rect m_EnterRect = new Rect(0, 0, 0, 0);
+    private Rect m_ToolbarRect = new Rect(0, 0, 0, 0);
+    private Rect m_MessageLine = new Rect(0, 0, 0, 0);
+
     private int m_LineOffset = -4;
     private string[] m_Tabs = new string[] { "Log", "View" };
 
@@ -1009,7 +1020,7 @@ public class DebugConsole : MonoBehaviour
     /// <param name="message">Message to print.</param>
     public static object Log(object message)
     {
-        m_Instance?.LogMessage(Message.Log(message));
+        s_Instance?.LogMessage(Message.Log(message));
 
         return message;
     }
@@ -1025,7 +1036,7 @@ public class DebugConsole : MonoBehaviour
     /// formatting in order to distinguish between message types.</param>
     public static object Log(object message, MessageType messageType)
     {
-        m_Instance?.LogMessage(new Message(message, messageType));
+        s_Instance?.LogMessage(new Message(message, messageType));
 
         return message;
     }
@@ -1036,7 +1047,7 @@ public class DebugConsole : MonoBehaviour
     /// <param name="displayColor">The text color to use when displaying the message.</param>
     public static object Log(object message, Color displayColor)
     {
-        m_Instance?.LogMessage(new Message(message, displayColor));
+        s_Instance?.LogMessage(new Message(message, displayColor));
 
         return message;
     }
@@ -1051,7 +1062,7 @@ public class DebugConsole : MonoBehaviour
     /// if the default color for the message type should be used instead.</param>
     public static object Log(object message, MessageType messageType, Color displayColor)
     {
-        m_Instance?.LogMessage(new Message(message, messageType, displayColor));
+        s_Instance?.LogMessage(new Message(message, messageType, displayColor));
 
         return message;
     }
@@ -1061,7 +1072,7 @@ public class DebugConsole : MonoBehaviour
     /// <param name="message">Message to print.</param>
     public static object LogWarning(object message)
     {
-        m_Instance?.LogMessage(Message.Warning(message));
+        s_Instance?.LogMessage(Message.Warning(message));
 
         return message;
     }
@@ -1071,7 +1082,7 @@ public class DebugConsole : MonoBehaviour
     /// <param name="message">Message to print.</param>
     public static object LogError(object message)
     {
-        m_Instance?.LogMessage(Message.Error(message));
+        s_Instance?.LogMessage(Message.Error(message));
 
         return message;
     }
@@ -1081,7 +1092,7 @@ public class DebugConsole : MonoBehaviour
     /// </summary>
     public static void Clear()
     {
-        m_Instance?.ClearLog();
+        s_Instance?.ClearLog();
     }
     /// <summary>
     /// Execute a console command directly from code.
@@ -1089,7 +1100,7 @@ public class DebugConsole : MonoBehaviour
     /// <param name="commandString">The command line you want to execute. For example: "sys"</param>
     public static void Execute(string commandString)
     {
-        m_Instance?.EvalInputString(commandString);
+        s_Instance?.EvalInputString(commandString);
     }
     /// <summary>
     /// Registers a debug command that is "fired" when the specified command string is entered.
@@ -1099,7 +1110,7 @@ public class DebugConsole : MonoBehaviour
     /// For example: "SetFOV"</param>
     public static void RegisterCommand(string commandString, DebugCommand commandCallback)
     {
-        m_Instance?.RegisterCommandCallback(commandString, commandCallback);
+        s_Instance?.RegisterCommandCallback(commandString, commandCallback);
     }
     /// <summary>
     /// Removes a previously-registered debug command.
@@ -1107,28 +1118,28 @@ public class DebugConsole : MonoBehaviour
     /// <param name="commandString">The string that represents the command.</param>
     public static void UnRegisterCommand(string commandString)
     {
-        m_Instance?.UnRegisterCommandCallback(commandString);
+        s_Instance?.UnRegisterCommandCallback(commandString);
     }
 
     public static bool IsOpen
     {
         get {
-            bool result = (bool)(m_Instance?.m_IsOpen);
+            bool result = (bool)(s_Instance?.m_IsOpen);
             return result;
         }
     }
     public static void Show()
     {
-        m_Instance?.ShowImpl();
+        s_Instance?.ShowImpl();
     }
     public static void Hide()
     {
-        m_Instance?.HideImpl();
+        s_Instance?.HideImpl();
     }
     public static void DoEmbedGUI()
     {
 #if EMBED_ONGUI
-        m_Instance?.OnEmbedGUI();
+        s_Instance?.OnEmbedGUI();
 #endif
     }
 
@@ -1137,7 +1148,7 @@ public class DebugConsole : MonoBehaviour
     /// </summary>
     public static KeyCode ToggleKey = KeyCode.BackQuote;
 
-    private static DebugConsole m_Instance;
+    private static DebugConsole s_Instance;
 
     private const string VERSION = "3.0";
     private const string ENTRYFIELD = "DebugConsoleEntryField";
