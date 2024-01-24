@@ -1047,11 +1047,11 @@ namespace DslExpression
                 case c_ULongType:
                     return Union.ULongVal.ToString();
                 case c_FloatType:
-                    return Union.FloatVal.ToString(s_FloatFormat);
+                    return FloatToString(Union.FloatVal);
                 case c_DoubleType:
-                    return Union.DoubleVal.ToString(s_DoubleFormat);
+                    return DoubleToString(Union.DoubleVal);
                 case c_DecimalType:
-                    return Union.DecimalVal.ToString(s_FloatFormat);
+                    return DecimalToString(Union.DecimalVal);
             }
             return string.Empty;
         }
@@ -1767,8 +1767,29 @@ namespace DslExpression
         private static CalculatorValue s_NullObject = CalculatorValue.FromObject(null);
         private static CalculatorValue s_EmptyString = CalculatorValue.From(string.Empty);
 
+        private static string FloatToString(float v)
+        {
+            if (v > 1e-7 && v < 1e28)
+                return v.ToString(s_FloatFormat);
+            else
+                return string.Format("{0}", v);
+        }
+        private static string DecimalToString(decimal v)
+        {
+            if (v > (decimal)1e-7 && v < (decimal)1e28)
+                return v.ToString(s_FloatFormat);
+            else
+                return string.Format("{0}", v);
+        }
+        private static string DoubleToString(double v)
+        {
+            if (v > 1e-16 && v < 10e28)
+                return v.ToString(s_DoubleFormat);
+            else
+                return string.Format("{0}", v);
+        }
         private static string s_FloatFormat = "###########################0.00#####";
-        private static string s_DoubleFormat = "###########################0.00#############";
+        private static string s_DoubleFormat = "###########################0.00##############";
     }
     public class CalculatorValueListPool
     {
