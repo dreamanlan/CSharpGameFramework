@@ -3156,6 +3156,46 @@ namespace DslExpression
 
         private IExpression m_Op1;
     }
+    internal sealed class ItofExp : AbstractExpression
+    {
+        protected override CalculatorValue DoCalc()
+        {
+            int v1 = m_Op1.Calc().GetInt();
+            float v2 = 0;
+            unsafe {
+                v2 = *(float*)&v1;
+            }
+            CalculatorValue v = v2;
+            return v;
+        }
+        protected override bool Load(IList<IExpression> exps)
+        {
+            m_Op1 = exps[0];
+            return true;
+        }
+
+        private IExpression m_Op1;
+    }
+    internal sealed class FtoiExp : AbstractExpression
+    {
+        protected override CalculatorValue DoCalc()
+        {
+            float v1 = m_Op1.Calc().GetFloat();
+            int v2 = 0;
+            unsafe {
+                v2 = *(int*)&v1;
+            }
+            CalculatorValue v = v2;
+            return v;
+        }
+        protected override bool Load(IList<IExpression> exps)
+        {
+            m_Op1 = exps[0];
+            return true;
+        }
+
+        private IExpression m_Op1;
+    }
     internal sealed class UtofExp : AbstractExpression
     {
         protected override CalculatorValue DoCalc()
@@ -3184,6 +3224,86 @@ namespace DslExpression
             uint v2 = 0;
             unsafe {
                 v2 = *(uint*)&v1;
+            }
+            CalculatorValue v = v2;
+            return v;
+        }
+        protected override bool Load(IList<IExpression> exps)
+        {
+            m_Op1 = exps[0];
+            return true;
+        }
+
+        private IExpression m_Op1;
+    }
+    internal sealed class LtodExp : AbstractExpression
+    {
+        protected override CalculatorValue DoCalc()
+        {
+            long v1 = m_Op1.Calc().GetLong();
+            double v2 = 0;
+            unsafe {
+                v2 = *(double*)&v1;
+            }
+            CalculatorValue v = v2;
+            return v;
+        }
+        protected override bool Load(IList<IExpression> exps)
+        {
+            m_Op1 = exps[0];
+            return true;
+        }
+
+        private IExpression m_Op1;
+    }
+    internal sealed class DtolExp : AbstractExpression
+    {
+        protected override CalculatorValue DoCalc()
+        {
+            double v1 = m_Op1.Calc().GetDouble();
+            long v2 = 0;
+            unsafe {
+                v2 = *(long*)&v1;
+            }
+            CalculatorValue v = v2;
+            return v;
+        }
+        protected override bool Load(IList<IExpression> exps)
+        {
+            m_Op1 = exps[0];
+            return true;
+        }
+
+        private IExpression m_Op1;
+    }
+    internal sealed class UtodExp : AbstractExpression
+    {
+        protected override CalculatorValue DoCalc()
+        {
+            ulong v1 = m_Op1.Calc().GetULong();
+            double v2 = 0;
+            unsafe {
+                v2 = *(double*)&v1;
+            }
+            CalculatorValue v = v2;
+            return v;
+        }
+        protected override bool Load(IList<IExpression> exps)
+        {
+            m_Op1 = exps[0];
+            return true;
+        }
+
+        private IExpression m_Op1;
+    }
+    internal sealed class DtouExp : AbstractExpression
+    {
+        protected override CalculatorValue DoCalc()
+        {
+            double v1 = m_Op1.Calc().GetDouble();
+            ulong v2 = 0;
+            unsafe {
+                v2 = *(ulong*)&v1;
             }
             CalculatorValue v = v2;
             return v;
@@ -8902,8 +9022,14 @@ namespace DslExpression
             Register("float", new ExpressionFactoryHelper<FloatExp>());
             Register("double", new ExpressionFactoryHelper<DoubleExp>());
             Register("decimal", new ExpressionFactoryHelper<DecimalExp>());
+            Register("ftoi", new ExpressionFactoryHelper<FtoiExp>());
+            Register("itof", new ExpressionFactoryHelper<ItofExp>());
             Register("ftou", new ExpressionFactoryHelper<FtouExp>());
             Register("utof", new ExpressionFactoryHelper<UtofExp>());
+            Register("dtol", new ExpressionFactoryHelper<DtolExp>());
+            Register("ltod", new ExpressionFactoryHelper<LtodExp>());
+            Register("dtou", new ExpressionFactoryHelper<DtouExp>());
+            Register("utod", new ExpressionFactoryHelper<UtodExp>());
             Register("lerp", new ExpressionFactoryHelper<LerpExp>());
             Register("lerpunclamped", new ExpressionFactoryHelper<LerpUnclampedExp>());
             Register("lerpangle", new ExpressionFactoryHelper<LerpAngleExp>());
