@@ -344,7 +344,7 @@ namespace StorySystem.CommonCommands
         }
     }
     /// <summary>
-    /// substval(id, substId);
+    /// substfunc(id, substId);
     /// </summary>
     public sealed class SubstFuncCommand : AbstractStoryCommand
     {
@@ -385,7 +385,7 @@ namespace StorySystem.CommonCommands
         private IStoryFunction<string> m_SubstId = new StoryValue<string>();
     }
     /// <summary>
-    /// clearvalsubsts();
+    /// clearfuncsubsts();
     /// </summary>
     public sealed class ClearFuncSubstsCommand : AbstractStoryCommand
     {
