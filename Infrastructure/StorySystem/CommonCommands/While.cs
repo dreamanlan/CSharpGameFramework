@@ -29,7 +29,7 @@ namespace StorySystem.CommonCommands
         protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             var localInfos = handler.LocalInfoStack.Peek();
-            var condition = localInfos.GetLocalInfo(m_LocalInfoIndex) as IStoryValue<int>;
+            var condition = localInfos.GetLocalInfo(m_LocalInfoIndex) as IStoryFunction<int>;
             condition.Evaluate(instance, handler, iterator, args);
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
@@ -40,7 +40,7 @@ namespace StorySystem.CommonCommands
             }
             bool ret = true;
             var localInfos = handler.LocalInfoStack.Peek();
-            var condition = localInfos.GetLocalInfo(m_LocalInfoIndex) as IStoryValue<int>;
+            var condition = localInfos.GetLocalInfo(m_LocalInfoIndex) as IStoryFunction<int>;
             if (null == condition) {
                 condition = m_LoadedCondition.Clone();
                 localInfos.SetLocalInfo(m_LocalInfoIndex, condition);
@@ -110,7 +110,7 @@ namespace StorySystem.CommonCommands
         }
 
         private int m_LocalInfoIndex;
-        private IStoryValue<int> m_LoadedCondition = new StoryValue<int>();
+        private IStoryFunction<int> m_LoadedCondition = new StoryValue<int>();
         private List<IStoryCommand> m_LoadedCommands = new List<IStoryCommand>();
     }
 }

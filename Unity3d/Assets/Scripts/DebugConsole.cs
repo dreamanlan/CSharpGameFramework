@@ -4,6 +4,7 @@
 #define MOBILE
 #endif
 
+using GameFramework;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -318,6 +319,7 @@ public class DebugConsole : MonoBehaviour
         LogMessage(Message.System(" Copyright 2008-2010 Jeremy Hollingsworth "));
         LogMessage(Message.System(" Ennanzus-Interactive.com "));
         LogMessage(Message.System(" type '/?' for available commands."));
+        LogMessage(Message.System(" type '/? filter' for available story commands."));
         LogMessage(Message.Log(""));
 
         this.RegisterCommandCallback("close", CMDClose);
@@ -734,15 +736,47 @@ public class DebugConsole : MonoBehaviour
 
     private object CMDHelp(params string[] args)
     {
+        string filter = string.Empty;
+        if (args.Length > 1) {
+            filter = args[1];
+        }
         var output = new StringBuilder();
 
-        output.AppendLine(":: Command List ::");
+        if (string.IsNullOrEmpty(filter)) {
+            output.AppendLine(":: Command List ::");
 
-        foreach (string key in m_CmdTable.Keys) {
-            output.AppendLine(key);
+            foreach (string key in m_CmdTable.Keys) {
+                output.AppendLine(key);
+            }
+
+            output.AppendLine(" ");
         }
+        else {
+            output.AppendLine(":: Story Command List ::");
 
-        output.AppendLine(" ");
+            foreach (var pair in PluginFramework.Instance.CommandDocs) {
+                if (pair.Key.Contains(filter) || pair.Value.Contains(filter)) {
+                    output.Append("[");
+                    output.Append(pair.Key);
+                    output.Append("]:");
+                    output.AppendLine(pair.Value);
+                }
+            }
+
+            output.AppendLine(" ");
+            output.AppendLine(":: Story Function List ::");
+
+            foreach (var pair in PluginFramework.Instance.FunctionDocs) {
+                if (pair.Key.Contains(filter) || pair.Value.Contains(filter)) {
+                    output.Append("[");
+                    output.Append(pair.Key);
+                    output.Append("]:");
+                    output.AppendLine(pair.Value);
+                }
+            }
+
+            output.AppendLine(" ");
+        }
 
         return output.ToString();
     }

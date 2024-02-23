@@ -90,24 +90,24 @@ internal class NativePluginProxy : IPluginProxy
         SkillTrigerManager.Instance.RegisterTrigerFactory(name, new NativeSkillTriggerFactory(implClass), true);
     }
 
-    public void RegisterStoryCommand(string name, string implClass)
+    public void RegisterStoryCommand(string name, string doc, string implClass)
     {
-        StoryCommandManager.Instance.RegisterCommandFactory(name, new NativeStoryCommandFactory(implClass), true);
+        StoryCommandManager.Instance.RegisterCommandFactory(name, doc, new NativeStoryCommandFactory(implClass), true);
     }
 
-    public void RegisterStoryValue(string name, string implClass)
+    public void RegisterStoryFunction(string name, string doc, string implClass)
     {
-        StoryValueManager.Instance.RegisterValueFactory(name, new NativeStoryValueFactory(implClass), true);
+        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new NativeStoryFunctionFactory(implClass), true);
     }
 
-    public void RegisterSimpleStoryCommand(string name, string implClass)
+    public void RegisterSimpleStoryCommand(string name, string doc, string implClass)
     {
-        StoryCommandManager.Instance.RegisterCommandFactory(name, new NativeSimpleStoryCommandFactory(implClass), true);
+        StoryCommandManager.Instance.RegisterCommandFactory(name, doc, new NativeSimpleStoryCommandFactory(implClass), true);
     }
 
-    public void RegisterSimpleStoryValue(string name, string implClass)
+    public void RegisterSimpleStoryFunction(string name, string doc, string implClass)
     {
-        StoryValueManager.Instance.RegisterValueFactory(name, new NativeSimpleStoryValueFactory(implClass), true);
+        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new NativeSimpleStoryValueFactory(implClass), true);
     }
 
     public void InstallStartupPlugin(string name, string implClass)
@@ -143,24 +143,24 @@ internal class ScriptPluginProxy : IPluginProxy
         SkillTrigerManager.Instance.RegisterTrigerFactory(name, new ScriptSkillTriggerFactory(implClass), true);
     }
 
-    public void RegisterStoryCommand(string name, string implClass)
+    public void RegisterStoryCommand(string name, string doc, string implClass)
     {
-        StoryCommandManager.Instance.RegisterCommandFactory(name, new ScriptStoryCommandFactory(implClass), true);
+        StoryCommandManager.Instance.RegisterCommandFactory(name, doc, new ScriptStoryCommandFactory(implClass), true);
     }
 
-    public void RegisterStoryValue(string name, string implClass)
+    public void RegisterStoryFunction(string name, string doc, string implClass)
     {
-        StoryValueManager.Instance.RegisterValueFactory(name, new ScriptSimpleStoryValueFactory(implClass), true);
+        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new ScriptSimpleStoryValueFactory(implClass), true);
     }
 
-    public void RegisterSimpleStoryCommand(string name, string implClass)
+    public void RegisterSimpleStoryCommand(string name, string doc, string implClass)
     {
-        StoryCommandManager.Instance.RegisterCommandFactory(name, new ScriptSimpleStoryCommandFactory(implClass), true);
+        StoryCommandManager.Instance.RegisterCommandFactory(name, doc, new ScriptSimpleStoryCommandFactory(implClass), true);
     }
 
-    public void RegisterSimpleStoryValue(string name, string implClass)
+    public void RegisterSimpleStoryFunction(string name, string doc, string implClass)
     {
-        StoryValueManager.Instance.RegisterValueFactory(name, new ScriptSimpleStoryValueFactory(implClass), true);
+        StoryFunctionManager.Instance.RegisterFunctionFactory(name, doc, new ScriptSimpleStoryValueFactory(implClass), true);
     }
 
     public void InstallStartupPlugin(string name, string implClass)

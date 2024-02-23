@@ -66,8 +66,8 @@ namespace StorySystem.CommonCommands
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
         }
-        private IStoryValue<int> m_Time = new StoryValue<int>();
-        private IStoryValue<int> m_Condition = new StoryValue<int>();
+        private IStoryFunction<int> m_Time = new StoryValue<int>();
+        private IStoryFunction<int> m_Condition = new StoryValue<int>();
         private bool m_HaveCondition = false;
         private int m_CurTime = 0;
     }
@@ -137,8 +137,8 @@ namespace StorySystem.CommonCommands
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
         }
-        private IStoryValue<int> m_Time = new StoryValue<int>();
-        private IStoryValue<int> m_Condition = new StoryValue<int>();
+        private IStoryFunction<int> m_Time = new StoryValue<int>();
+        private IStoryFunction<int> m_Condition = new StoryValue<int>();
         private bool m_HaveCondition = false;
         private int m_RealStartTime = 0;
     }
@@ -212,8 +212,8 @@ namespace StorySystem.CommonCommands
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
         }
-        private IStoryValue<int> m_Time = new StoryValue<int>();
-        private IStoryValue<int> m_Condition = new StoryValue<int>();
+        private IStoryFunction<int> m_Time = new StoryValue<int>();
+        private IStoryFunction<int> m_Condition = new StoryValue<int>();
         private bool m_HaveCondition = false;
         private int m_CurTime = 0;
     }
@@ -289,8 +289,8 @@ namespace StorySystem.CommonCommands
                 m_Condition.InitFromDsl(callData.GetParam(0));
             }
         }
-        private IStoryValue<int> m_Time = new StoryValue<int>();
-        private IStoryValue<int> m_Condition = new StoryValue<int>();
+        private IStoryFunction<int> m_Time = new StoryValue<int>();
+        private IStoryFunction<int> m_Condition = new StoryValue<int>();
         private bool m_HaveCondition = false;
         private int m_RealStartTime = 0;
     }
@@ -338,7 +338,7 @@ namespace StorySystem.CommonCommands
             return true;
         }
 
-        private IStoryValue<int> m_Condition = new StoryValue<int>();
+        private IStoryFunction<int> m_Condition = new StoryValue<int>();
         private bool m_HaveCondition = false;
     }
 }

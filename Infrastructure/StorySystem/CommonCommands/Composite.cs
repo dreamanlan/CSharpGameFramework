@@ -172,13 +172,13 @@ namespace StorySystem.CommonCommands
         }
         private bool LoadCall(Dsl.FunctionData callData)
         {
-            m_LoadedOptArgs = new Dictionary<string, IStoryValue>();
+            m_LoadedOptArgs = new Dictionary<string, IStoryFunction>();
             foreach (var pair in m_OptArgs) {
                 StoryValue val = new StoryValue();
                 val.InitFromDsl(pair.Value);
                 m_LoadedOptArgs.Add(pair.Key, val);
             }
-            m_LoadedArgs = new List<IStoryValue>();
+            m_LoadedArgs = new List<IStoryFunction>();
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
                 StoryValue val = new StoryValue();
@@ -224,8 +224,8 @@ namespace StorySystem.CommonCommands
             }
         }
 
-        private List<IStoryValue> m_LoadedArgs = null;
-        private Dictionary<string, IStoryValue> m_LoadedOptArgs = null;
+        private List<IStoryFunction> m_LoadedArgs = null;
+        private Dictionary<string, IStoryFunction> m_LoadedOptArgs = null;
         private CompositePrologueCommandHelper m_PrologueCommand = null;
         private CompositeEpilogueCommandHelper m_EpilogueCommand = null;
 
@@ -316,8 +316,8 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue<string> m_Id = new StoryValue<string>();
-        private IStoryValue<string> m_SubstId = new StoryValue<string>();
+        private IStoryFunction<string> m_Id = new StoryValue<string>();
+        private IStoryFunction<string> m_SubstId = new StoryValue<string>();
     }
     /// <summary>
     /// clearcmdsubsts();
@@ -346,11 +346,11 @@ namespace StorySystem.CommonCommands
     /// <summary>
     /// substval(id, substId);
     /// </summary>
-    public sealed class SubstValCommand : AbstractStoryCommand
+    public sealed class SubstFuncCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
-            SubstValCommand cmd = new SubstValCommand();
+            SubstFuncCommand cmd = new SubstFuncCommand();
             cmd.m_Id = m_Id.Clone();
             cmd.m_SubstId = m_SubstId.Clone();
             return cmd;
@@ -367,7 +367,7 @@ namespace StorySystem.CommonCommands
                 string id = m_Id.Value;
                 string substId = m_SubstId.Value;
                 if (!string.IsNullOrEmpty(id) && !string.IsNullOrEmpty(substId)) {
-                    StoryValueManager.Instance.Substitute(id, substId);
+                    StoryFunctionManager.Instance.Substitute(id, substId);
                 }
             }
             return false;
@@ -381,17 +381,17 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue<string> m_Id = new StoryValue<string>();
-        private IStoryValue<string> m_SubstId = new StoryValue<string>();
+        private IStoryFunction<string> m_Id = new StoryValue<string>();
+        private IStoryFunction<string> m_SubstId = new StoryValue<string>();
     }
     /// <summary>
     /// clearvalsubsts();
     /// </summary>
-    public sealed class ClearValSubstsCommand : AbstractStoryCommand
+    public sealed class ClearFuncSubstsCommand : AbstractStoryCommand
     {
         protected override IStoryCommand CloneCommand()
         {
-            ClearValSubstsCommand cmd = new ClearValSubstsCommand();
+            ClearFuncSubstsCommand cmd = new ClearFuncSubstsCommand();
             return cmd;
         }
         protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
@@ -399,7 +399,7 @@ namespace StorySystem.CommonCommands
         }
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
-            StoryValueManager.Instance.ClearSubstitutes();
+            StoryFunctionManager.Instance.ClearSubstitutes();
             return false;
         }
         protected override bool Load(Dsl.FunctionData callData)

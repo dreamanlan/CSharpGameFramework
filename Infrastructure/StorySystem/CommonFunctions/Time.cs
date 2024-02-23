@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameFramework;
-namespace StorySystem.CommonValues
+namespace StorySystem.CommonFunctions
 {
-    public sealed class TimeValue : IStoryValue
+    public sealed class TimeFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -11,9 +11,9 @@ namespace StorySystem.CommonValues
             if (null != callData) {
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            TimeValue val = new TimeValue();
+            TimeFunction val = new TimeFunction();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;

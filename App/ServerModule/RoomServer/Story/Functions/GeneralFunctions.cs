@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using StorySystem;
 using GameFramework;
 
-namespace GameFramework.Story.Values
+namespace GameFramework.Story.Functions
 {
-    public sealed class GetTimeValue : IStoryValue
+    public sealed class GetTimeFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -13,9 +13,9 @@ namespace GameFramework.Story.Values
             if (null != callData) {
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetTimeValue val = new GetTimeValue();
+            GetTimeFunction val = new GetTimeFunction();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -55,7 +55,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class GetTimeScaleValue : IStoryValue
+    public sealed class GetTimeScaleFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -63,9 +63,9 @@ namespace GameFramework.Story.Values
             if (null != callData) {
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetTimeScaleValue val = new GetTimeScaleValue();
+            GetTimeScaleFunction val = new GetTimeScaleFunction();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -105,7 +105,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class GetEntityInfoValue : IStoryValue
+    public sealed class GetEntityInfoFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -114,9 +114,9 @@ namespace GameFramework.Story.Values
                 m_ObjId.InitFromDsl(callData.GetParam(0));
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetEntityInfoValue val = new GetEntityInfoValue();
+            GetEntityInfoFunction val = new GetEntityInfoFunction();
             val.m_ObjId = m_ObjId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -154,7 +154,7 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using StorySystem;
 using GameFramework;
 
-namespace GameFramework.Story.Values
+namespace GameFramework.Story.Functions
 {
-    internal sealed class GetUserInfoValue : IStoryValue
+    internal sealed class GetUserInfoFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -14,9 +14,9 @@ namespace GameFramework.Story.Values
                 m_UserGuid.InitFromDsl(callData.GetParam(0));
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetUserInfoValue val = new GetUserInfoValue();
+            GetUserInfoFunction val = new GetUserInfoFunction();
             val.m_UserGuid = m_UserGuid.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -54,7 +54,7 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

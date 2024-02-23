@@ -49,8 +49,8 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue<string> m_File = new StoryValue<string>();
-        private IStoryValue m_Val = new StoryValue();
+        private IStoryFunction<string> m_File = new StoryValue<string>();
+        private IStoryFunction m_Val = new StoryValue();
     }
     /// <summary>
     /// writefile(file, val);
@@ -90,8 +90,8 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue<string> m_File = new StoryValue<string>();
-        private IStoryValue m_Val = new StoryValue();
+        private IStoryFunction<string> m_File = new StoryValue<string>();
+        private IStoryFunction m_Val = new StoryValue();
     }
     /// <summary>
     /// hashtableadd(hashtable, key, val);
@@ -135,9 +135,9 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue m_Var = new StoryValue();
-        private IStoryValue m_Key = new StoryValue();
-        private IStoryValue m_Value = new StoryValue();
+        private IStoryFunction m_Var = new StoryValue();
+        private IStoryFunction m_Key = new StoryValue();
+        private IStoryFunction m_Value = new StoryValue();
     }
     /// <summary>
     /// hashtableset(hashtable,key,val);
@@ -183,9 +183,9 @@ namespace StorySystem.CommonCommands
             return true;
         }
 
-        private IStoryValue m_Var = new StoryValue();
-        private IStoryValue m_Key = new StoryValue();
-        private IStoryValue m_Value = new StoryValue();
+        private IStoryFunction m_Var = new StoryValue();
+        private IStoryFunction m_Key = new StoryValue();
+        private IStoryFunction m_Value = new StoryValue();
     }
     /// <summary>
     /// hashtableremove(hashtable,key);
@@ -226,8 +226,8 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue m_Var = new StoryValue();
-        private IStoryValue m_Key = new StoryValue();
+        private IStoryFunction m_Var = new StoryValue();
+        private IStoryFunction m_Key = new StoryValue();
     }
     /// <summary>
     /// hashtableclear(hashtable);
@@ -265,6 +265,6 @@ namespace StorySystem.CommonCommands
             return true;
         }
 
-        private IStoryValue m_Var = new StoryValue();
+        private IStoryFunction m_Var = new StoryValue();
     }
 }

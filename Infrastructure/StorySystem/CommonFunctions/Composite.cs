@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics;
 
-namespace StorySystem.CommonValues
+namespace StorySystem.CommonFunctions
 {
     /// <summary>
     /// name(arg1,arg2,...)
@@ -24,7 +24,7 @@ namespace StorySystem.CommonValues
     /// 2、因为自定义的命令与值在使用时有函数调用语义，需要可以访问传递的参数。而Evaluate接口只有一组参数，这限制了自定义
     /// 命令与值的形式至多是Function样式而不应支持Statement样式。
     /// </remarks>
-    public sealed class CompositeValue : IStoryValue
+    public sealed class CompositeValue : IStoryFunction
     {
         public string Name
         {
@@ -56,13 +56,13 @@ namespace StorySystem.CommonValues
         }
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
-            m_LoadedArgs = new List<IStoryValue>();
+            m_LoadedArgs = new List<IStoryFunction>();
             Dsl.FunctionData funcData = param as Dsl.FunctionData;
             if (null != funcData) {
                 Load(funcData);
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             CompositeValue val = new CompositeValue();
             val.m_LoadedArgs = m_LoadedArgs;
@@ -157,7 +157,7 @@ namespace StorySystem.CommonValues
         }
         private void LoadCall(Dsl.FunctionData callData)
         {
-            m_LoadedOptArgs = new Dictionary<string, IStoryValue>();
+            m_LoadedOptArgs = new Dictionary<string, IStoryFunction>();
             foreach (var pair in m_OptArgs) {
                 StoryValue val = new StoryValue();
                 val.InitFromDsl(pair.Value);
@@ -210,8 +210,8 @@ namespace StorySystem.CommonValues
 
         private bool m_HaveValue;
         private BoxedValue m_Value;
-        private List<IStoryValue> m_LoadedArgs = null;
-        private Dictionary<string, IStoryValue> m_LoadedOptArgs = null;
+        private List<IStoryFunction> m_LoadedArgs = null;
+        private Dictionary<string, IStoryFunction> m_LoadedOptArgs = null;
 
         private string m_Name = string.Empty;
         private List<string> m_ArgNames = null;
@@ -219,9 +219,9 @@ namespace StorySystem.CommonValues
         private Dictionary<string, Dsl.ISyntaxComponent> m_OptArgs = null;
         private List<IStoryCommand> m_InitialCommands = null;
     }
-    public sealed class CompositeValueFactory : IStoryValueFactory
+    public sealed class CompositeValueFactory : IStoryFunctionFactory
     {
-        public IStoryValue Build()
+        public IStoryFunction Build()
         {
             return m_Val.Clone();
         }
@@ -231,7 +231,7 @@ namespace StorySystem.CommonValues
         }
         private CompositeValue m_Val;
     }
-    public sealed class GetCmdSubstValue : IStoryValue
+    public sealed class GetCmdSubstFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -241,9 +241,9 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetCmdSubstValue val = new GetCmdSubstValue();
+            GetCmdSubstFunction val = new GetCmdSubstFunction();
             val.m_Id = m_Id.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -282,11 +282,11 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private IStoryValue<string> m_Id = new StoryValue<string>();
+        private IStoryFunction<string> m_Id = new StoryValue<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class GetValSubstValue : IStoryValue
+    public sealed class GetFuncSubstFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -296,9 +296,9 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetValSubstValue val = new GetValSubstValue();
+            GetFuncSubstFunction val = new GetFuncSubstFunction();
             val.m_Id = m_Id.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -328,7 +328,7 @@ namespace StorySystem.CommonValues
                 string id = m_Id.Value;
                 m_HaveValue = true;
                 string substId;
-                if (StoryValueManager.Instance.TryGetSubstitute(id, out substId)) {
+                if (StoryFunctionManager.Instance.TryGetSubstitute(id, out substId)) {
                     m_Value = substId;
                 }
                 else {
@@ -337,7 +337,7 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private IStoryValue<string> m_Id = new StoryValue<string>();
+        private IStoryFunction<string> m_Id = new StoryValue<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

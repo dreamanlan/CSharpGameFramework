@@ -5,9 +5,9 @@ using GameFramework.Plugin;
 using GameFramework.Story;
 using StorySystem;
 
-internal class NativeSimpleStoryValueFactory : IStoryValueFactory
+internal class NativeSimpleStoryValueFactory : IStoryFunctionFactory
 {
-    public IStoryValue Build()
+    public IStoryFunction Build()
     {
         return new NativeSimpleStoryValue(m_ClassName);
     }
@@ -19,9 +19,9 @@ internal class NativeSimpleStoryValueFactory : IStoryValueFactory
     private string m_ClassName;
 }
 
-internal class ScriptSimpleStoryValueFactory : IStoryValueFactory
+internal class ScriptSimpleStoryValueFactory : IStoryFunctionFactory
 {
-    public IStoryValue Build()
+    public IStoryFunction Build()
     {
         return new ScriptSimpleStoryValue(m_ClassName);
     }
@@ -33,7 +33,7 @@ internal class ScriptSimpleStoryValueFactory : IStoryValueFactory
     private string m_ClassName;
 }
 
-internal class NativeSimpleStoryValue : IStoryValue
+internal class NativeSimpleStoryValue : IStoryFunction
 {
     public NativeSimpleStoryValue(string name)
         : this(name, true)
@@ -43,7 +43,7 @@ internal class NativeSimpleStoryValue : IStoryValue
         m_ClassName = name;
         if (create) {
             var module = PluginManager.Instance.CreateObject(m_ClassName);
-            m_Plugin = module as ISimpleStoryValuePlugin;
+            m_Plugin = module as ISimpleStoryFunctionPlugin;
             if (null != m_Plugin) {
                 m_Plugin.SetProxy(m_Proxy);
             }
@@ -54,7 +54,7 @@ internal class NativeSimpleStoryValue : IStoryValue
     {
         m_Params.InitFromDsl(param, 0, false);
     }
-    public IStoryValue Clone()
+    public IStoryFunction Clone()
     {
         var newObj = new NativeSimpleStoryValue(m_ClassName, false);
         newObj.m_Params = m_Params.Clone() as StoryValueParams;
@@ -96,9 +96,9 @@ internal class NativeSimpleStoryValue : IStoryValue
     private StoryValueResult m_Proxy = new StoryValueResult();
     private string m_ClassName;
 
-    private ISimpleStoryValuePlugin m_Plugin;
+    private ISimpleStoryFunctionPlugin m_Plugin;
 }
-internal class ScriptSimpleStoryValue : IStoryValue
+internal class ScriptSimpleStoryValue : IStoryFunction
 {
     public ScriptSimpleStoryValue(string name)
         : this(name, true)
@@ -122,7 +122,7 @@ internal class ScriptSimpleStoryValue : IStoryValue
     {
         m_Params.InitFromDsl(param, 0, false);
     }
-    public IStoryValue Clone()
+    public IStoryFunction Clone()
     {
         var newObj = new ScriptSimpleStoryValue(m_ClassName, false);
         newObj.m_Params = m_Params.Clone() as StoryValueParams;

@@ -191,15 +191,15 @@ namespace GameFramework.GmCommands
             if (!s_IsInited) {
                 s_IsInited = true;
                 //注册Gm命令
-                StoryCommandManager.Instance.RegisterCommandFactory("setposition", new StoryCommandFactoryHelper<SetPositionCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("levelto", new StoryCommandFactoryHelper<LevelToCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("full", new StoryCommandFactoryHelper<FullCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("clearequipments", new StoryCommandFactoryHelper<ClearEquipmentsCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("addequipment", new StoryCommandFactoryHelper<AddEquipmentCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("clearskills", new StoryCommandFactoryHelper<ClearSkillsCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("addskill", new StoryCommandFactoryHelper<AddSkillCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("clearbuffs", new StoryCommandFactoryHelper<ClearBuffsCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory("addbuff", new StoryCommandFactoryHelper<AddBuffCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory("setposition", "setposition command", new StoryCommandFactoryHelper<SetPositionCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory("levelto", "levelto command", new StoryCommandFactoryHelper<LevelToCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory("full", "full command", new StoryCommandFactoryHelper<FullCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory("clearequipments", "clearequipments command", new StoryCommandFactoryHelper<ClearEquipmentsCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory("addequipment", "addequipment command", new StoryCommandFactoryHelper<AddEquipmentCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory("clearskills", "clearskills command", new StoryCommandFactoryHelper<ClearSkillsCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory("addskill", "addskill command", new StoryCommandFactoryHelper<AddSkillCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory("clearbuffs", "clearbuffs command", new StoryCommandFactoryHelper<ClearBuffsCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory("addbuff", "addbuff command", new StoryCommandFactoryHelper<AddBuffCommand>());
 
                 //注册值与函数处理
             }

@@ -160,7 +160,7 @@ namespace StorySystem
         {
             get { return m_P1.Value; }
         }
-        private IStoryValue<P1> m_P1 = new StoryValue<P1>();
+        private IStoryFunction<P1> m_P1 = new StoryValue<P1>();
     }
     public sealed class StoryValueParam<P1, P2> : IStoryValueParam
     {
@@ -211,8 +211,8 @@ namespace StorySystem
         {
             get { return m_P2.Value; }
         }
-        private IStoryValue<P1> m_P1 = new StoryValue<P1>();
-        private IStoryValue<P2> m_P2 = new StoryValue<P2>();
+        private IStoryFunction<P1> m_P1 = new StoryValue<P1>();
+        private IStoryFunction<P2> m_P2 = new StoryValue<P2>();
     }
     public sealed class StoryValueParam<P1, P2, P3> : IStoryValueParam
     {
@@ -270,9 +270,9 @@ namespace StorySystem
         {
             get { return m_P3.Value; }
         }
-        private IStoryValue<P1> m_P1 = new StoryValue<P1>();
-        private IStoryValue<P2> m_P2 = new StoryValue<P2>();
-        private IStoryValue<P3> m_P3 = new StoryValue<P3>();
+        private IStoryFunction<P1> m_P1 = new StoryValue<P1>();
+        private IStoryFunction<P2> m_P2 = new StoryValue<P2>();
+        private IStoryFunction<P3> m_P3 = new StoryValue<P3>();
     }
     public sealed class StoryValueParam<P1, P2, P3, P4> : IStoryValueParam
     {
@@ -337,10 +337,10 @@ namespace StorySystem
         {
             get { return m_P4.Value; }
         }
-        private IStoryValue<P1> m_P1 = new StoryValue<P1>();
-        private IStoryValue<P2> m_P2 = new StoryValue<P2>();
-        private IStoryValue<P3> m_P3 = new StoryValue<P3>();
-        private IStoryValue<P4> m_P4 = new StoryValue<P4>();
+        private IStoryFunction<P1> m_P1 = new StoryValue<P1>();
+        private IStoryFunction<P2> m_P2 = new StoryValue<P2>();
+        private IStoryFunction<P3> m_P3 = new StoryValue<P3>();
+        private IStoryFunction<P4> m_P4 = new StoryValue<P4>();
     }
     public sealed class StoryValueParam<P1, P2, P3, P4, P5> : IStoryValueParam
     {
@@ -412,11 +412,11 @@ namespace StorySystem
         {
             get { return m_P5.Value; }
         }
-        private IStoryValue<P1> m_P1 = new StoryValue<P1>();
-        private IStoryValue<P2> m_P2 = new StoryValue<P2>();
-        private IStoryValue<P3> m_P3 = new StoryValue<P3>();
-        private IStoryValue<P4> m_P4 = new StoryValue<P4>();
-        private IStoryValue<P5> m_P5 = new StoryValue<P5>();
+        private IStoryFunction<P1> m_P1 = new StoryValue<P1>();
+        private IStoryFunction<P2> m_P2 = new StoryValue<P2>();
+        private IStoryFunction<P3> m_P3 = new StoryValue<P3>();
+        private IStoryFunction<P4> m_P4 = new StoryValue<P4>();
+        private IStoryFunction<P5> m_P5 = new StoryValue<P5>();
     }
     public sealed class StoryValueParam<P1, P2, P3, P4, P5, P6> : IStoryValueParam
     {
@@ -495,12 +495,12 @@ namespace StorySystem
         {
             get { return m_P6.Value; }
         }
-        private IStoryValue<P1> m_P1 = new StoryValue<P1>();
-        private IStoryValue<P2> m_P2 = new StoryValue<P2>();
-        private IStoryValue<P3> m_P3 = new StoryValue<P3>();
-        private IStoryValue<P4> m_P4 = new StoryValue<P4>();
-        private IStoryValue<P5> m_P5 = new StoryValue<P5>();
-        private IStoryValue<P6> m_P6 = new StoryValue<P6>();
+        private IStoryFunction<P1> m_P1 = new StoryValue<P1>();
+        private IStoryFunction<P2> m_P2 = new StoryValue<P2>();
+        private IStoryFunction<P3> m_P3 = new StoryValue<P3>();
+        private IStoryFunction<P4> m_P4 = new StoryValue<P4>();
+        private IStoryFunction<P5> m_P5 = new StoryValue<P5>();
+        private IStoryFunction<P6> m_P6 = new StoryValue<P6>();
     }
     public sealed class StoryValueParam<P1, P2, P3, P4, P5, P6, P7> : IStoryValueParam
     {
@@ -586,13 +586,13 @@ namespace StorySystem
         {
             get { return m_P7.Value; }
         }
-        private IStoryValue<P1> m_P1 = new StoryValue<P1>();
-        private IStoryValue<P2> m_P2 = new StoryValue<P2>();
-        private IStoryValue<P3> m_P3 = new StoryValue<P3>();
-        private IStoryValue<P4> m_P4 = new StoryValue<P4>();
-        private IStoryValue<P5> m_P5 = new StoryValue<P5>();
-        private IStoryValue<P6> m_P6 = new StoryValue<P6>();
-        private IStoryValue<P7> m_P7 = new StoryValue<P7>();
+        private IStoryFunction<P1> m_P1 = new StoryValue<P1>();
+        private IStoryFunction<P2> m_P2 = new StoryValue<P2>();
+        private IStoryFunction<P3> m_P3 = new StoryValue<P3>();
+        private IStoryFunction<P4> m_P4 = new StoryValue<P4>();
+        private IStoryFunction<P5> m_P5 = new StoryValue<P5>();
+        private IStoryFunction<P6> m_P6 = new StoryValue<P6>();
+        private IStoryFunction<P7> m_P7 = new StoryValue<P7>();
     }
     public sealed class StoryValueParam<P1, P2, P3, P4, P5, P6, P7, P8> : IStoryValueParam
     {
@@ -685,14 +685,14 @@ namespace StorySystem
         {
             get { return m_P8.Value; }
         }
-        private IStoryValue<P1> m_P1 = new StoryValue<P1>();
-        private IStoryValue<P2> m_P2 = new StoryValue<P2>();
-        private IStoryValue<P3> m_P3 = new StoryValue<P3>();
-        private IStoryValue<P4> m_P4 = new StoryValue<P4>();
-        private IStoryValue<P5> m_P5 = new StoryValue<P5>();
-        private IStoryValue<P6> m_P6 = new StoryValue<P6>();
-        private IStoryValue<P7> m_P7 = new StoryValue<P7>();
-        private IStoryValue<P8> m_P8 = new StoryValue<P8>();
+        private IStoryFunction<P1> m_P1 = new StoryValue<P1>();
+        private IStoryFunction<P2> m_P2 = new StoryValue<P2>();
+        private IStoryFunction<P3> m_P3 = new StoryValue<P3>();
+        private IStoryFunction<P4> m_P4 = new StoryValue<P4>();
+        private IStoryFunction<P5> m_P5 = new StoryValue<P5>();
+        private IStoryFunction<P6> m_P6 = new StoryValue<P6>();
+        private IStoryFunction<P7> m_P7 = new StoryValue<P7>();
+        private IStoryFunction<P8> m_P8 = new StoryValue<P8>();
     }
     public sealed class StoryValueParams<P> : IStoryValueParam
     {
@@ -726,7 +726,7 @@ namespace StorySystem
         {
             StoryValueParams<P> val = new StoryValueParams<P>();
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<P> arg = m_Args[i];
+                IStoryFunction<P> arg = m_Args[i];
                 val.m_Args.Add(arg.Clone());
                 m_Values.Add(default(P));
             }
@@ -735,12 +735,12 @@ namespace StorySystem
         public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<P> val = m_Args[i];
+                IStoryFunction<P> val = m_Args[i];
                 val.Evaluate(instance, handler, iterator, args);
             }
 
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue<P> val = m_Args[i];
+                IStoryFunction<P> val = m_Args[i];
                 m_Values[i] = val.Value;
             }
         }
@@ -749,7 +749,7 @@ namespace StorySystem
             get {
                 bool ret = true;
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    IStoryValue<P> val = m_Args[i];
+                    IStoryFunction<P> val = m_Args[i];
                     if (!val.HaveValue) {
                         ret = false;
                         break;
@@ -764,7 +764,7 @@ namespace StorySystem
                 return m_Values;
             }
         }
-        private List<IStoryValue<P>> m_Args = new List<IStoryValue<P>>();
+        private List<IStoryFunction<P>> m_Args = new List<IStoryFunction<P>>();
         private List<P> m_Values = new List<P>();
     }
     public sealed class StoryValueParams : IStoryValueParam
@@ -799,7 +799,7 @@ namespace StorySystem
         {
             StoryValueParams val = new StoryValueParams();
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue arg = m_Args[i];
+                IStoryFunction arg = m_Args[i];
                 val.m_Args.Add(arg.Clone());
                 val.m_Values.Add(BoxedValue.NullObject);
             }
@@ -808,12 +808,12 @@ namespace StorySystem
         public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue val = m_Args[i];
+                IStoryFunction val = m_Args[i];
                 val.Evaluate(instance, handler, iterator, args);
             }
 
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue val = m_Args[i];
+                IStoryFunction val = m_Args[i];
                 m_Values[i] = val.Value;
             }
         }
@@ -822,7 +822,7 @@ namespace StorySystem
             get {
                 bool ret = true;
                 for (int i = 0; i < m_Args.Count; ++i) {
-                    IStoryValue val = m_Args[i];
+                    IStoryFunction val = m_Args[i];
                     if (!val.HaveValue) {
                         ret = false;
                         break;
@@ -837,7 +837,7 @@ namespace StorySystem
                 return m_Values;
             }
         }
-        private List<IStoryValue> m_Args = new List<IStoryValue>();
+        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
         private BoxedValueList m_Values = new BoxedValueList();
     }
 }

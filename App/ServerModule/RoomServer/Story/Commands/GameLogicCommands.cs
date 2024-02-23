@@ -78,8 +78,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<string> m_AttrName = new StoryValue<string>();
-        private IStoryValue m_Value = new StoryValue();
+        private IStoryFunction<string> m_AttrName = new StoryValue<string>();
+        private IStoryFunction m_Value = new StoryValue();
     }
     /// <summary>
     /// camerafollow(npc_unit_id1,npc_unit_id2,...)[touser(userid)];
@@ -150,7 +150,7 @@ namespace GameFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryValue<int> val = new StoryValue<int>();
+                IStoryFunction<int> val = new StoryValue<int>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_UnitIds.Add(val);
             }
@@ -179,8 +179,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryValue<int> m_UserId = new StoryValue<int>();
-        private List<IStoryValue<int>> m_UnitIds = new List<IStoryValue<int>>();
+        private IStoryFunction<int> m_UserId = new StoryValue<int>();
+        private List<IStoryFunction<int>> m_UnitIds = new List<IStoryFunction<int>>();
     }
     /// <summary>
     /// camerafollowrange(npc_unit_id_begin,npc_unit_id_end)[touser(userid)];
@@ -278,9 +278,9 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryValue<int> m_UserId = new StoryValue<int>();
-        private IStoryValue<int> m_BeginUnitId = new StoryValue<int>();
-        private IStoryValue<int> m_EndUnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UserId = new StoryValue<int>();
+        private IStoryFunction<int> m_BeginUnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_EndUnitId = new StoryValue<int>();
     }
     /// <summary>
     /// cameralookat(npc_unit_id)[touser(userid)];
@@ -412,8 +412,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryValue<int> m_UserId = new StoryValue<int>();
-        private IStoryValue m_Arg = new StoryValue();
+        private IStoryFunction<int> m_UserId = new StoryValue<int>();
+        private IStoryFunction m_Arg = new StoryValue();
     }
     /// <summary>
     /// camerafollowpath()[touser(userid)];
@@ -491,7 +491,7 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryValue<int> m_UserId = new StoryValue<int>();
+        private IStoryFunction<int> m_UserId = new StoryValue<int>();
     }
     /// <summary>
     /// lockframe(scale)[touser(userid)];
@@ -573,8 +573,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryValue<int> m_UserId = new StoryValue<int>();
-        private IStoryValue<float> m_Scale = new StoryValue<float>();
+        private IStoryFunction<int> m_UserId = new StoryValue<int>();
+        private IStoryFunction<float> m_Scale = new StoryValue<float>();
     }
     /// <summary>
     /// setleaderid([objid,]leaderid);
@@ -631,8 +631,8 @@ namespace GameFramework.Story.Commands
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
-        private IStoryValue<int> m_LeaderId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_LeaderId = new StoryValue<int>();
     }
     /// <summary>
     /// showdlg(storyDlgId)[touser(userid)];
@@ -712,8 +712,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveUserId = false;
-        private IStoryValue<int> m_UserId = new StoryValue<int>();
-        private IStoryValue<int> m_StoryDlgId = new StoryValue<int>();
+        private IStoryFunction<int> m_UserId = new StoryValue<int>();
+        private IStoryFunction<int> m_StoryDlgId = new StoryValue<int>();
     }
     /// <summary>
     /// areadetect(pos,radius,type,callback)[set(var,val)];
@@ -828,13 +828,13 @@ namespace GameFramework.Story.Commands
             }
         }
 
-        private IStoryValue<Vector3> m_Pos = new StoryValue<Vector3>();
-        private IStoryValue<float> m_Radius = new StoryValue<float>();
-        private IStoryValue<string> m_Type = new StoryValue<string>();
-        private IStoryValue<string> m_EventName = new StoryValue<string>();
-        private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue m_SetVal = new StoryValue();
-        private IStoryValue m_ElseSetVal = new StoryValue();
+        private IStoryFunction<Vector3> m_Pos = new StoryValue<Vector3>();
+        private IStoryFunction<float> m_Radius = new StoryValue<float>();
+        private IStoryFunction<string> m_Type = new StoryValue<string>();
+        private IStoryFunction<string> m_EventName = new StoryValue<string>();
+        private IStoryFunction<string> m_SetVar = new StoryValue<string>();
+        private IStoryFunction m_SetVal = new StoryValue();
+        private IStoryFunction m_ElseSetVal = new StoryValue();
         private bool m_HaveSet = false;
     }
 }

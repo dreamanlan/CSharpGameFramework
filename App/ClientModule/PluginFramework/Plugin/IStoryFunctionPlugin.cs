@@ -6,18 +6,18 @@ using StorySystem;
 
 namespace GameFramework.Plugin
 {
-    public interface IStoryValuePlugin
+    public interface IStoryFunctionPlugin
     {
         void SetProxy(StoryValueResult result);
-        IStoryValuePlugin Clone();
+        IStoryFunctionPlugin Clone();
         void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args);
         void LoadFuncData(Dsl.FunctionData funcData);
         void LoadStatementData(Dsl.StatementData statementData);
     }
-    public interface ISimpleStoryValuePlugin
+    public interface ISimpleStoryFunctionPlugin
     {
         void SetProxy(StoryValueResult result);
-        ISimpleStoryValuePlugin Clone();
+        ISimpleStoryFunctionPlugin Clone();
         void Evaluate(StoryInstance instance, StoryMessageHandler handler, StoryValueParams _params);
     }
 }

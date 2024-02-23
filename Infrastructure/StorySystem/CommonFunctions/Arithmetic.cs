@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using StorySystem;
-namespace StorySystem.CommonValues
+namespace StorySystem.CommonFunctions
 {
-    public sealed class AddOperator : IStoryValue
+    public sealed class AddOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -19,7 +19,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             AddOperator val = new AddOperator();
             val.m_X = m_X.Clone();
@@ -75,12 +75,12 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class SubOperator : IStoryValue
+    public sealed class SubOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -96,7 +96,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             SubOperator val = new SubOperator();
             val.m_X = m_X.Clone();
@@ -146,12 +146,12 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class MulOperator : IStoryValue
+    public sealed class MulOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -162,7 +162,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             MulOperator val = new MulOperator();
             val.m_X = m_X.Clone();
@@ -212,12 +212,12 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class DivOperator : IStoryValue
+    public sealed class DivOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -228,7 +228,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             DivOperator val = new DivOperator();
             val.m_X = m_X.Clone();
@@ -278,12 +278,12 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class ModOperator : IStoryValue
+    public sealed class ModOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -294,7 +294,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             ModOperator val = new ModOperator();
             val.m_X = m_X.Clone();
@@ -344,12 +344,12 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class AbsOperator : IStoryValue
+    public sealed class AbsOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -361,7 +361,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             AbsOperator val = new AbsOperator();
             val.m_X = m_X.Clone();
@@ -404,11 +404,11 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class FloorOperator : IStoryValue
+    public sealed class FloorOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -420,7 +420,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             FloorOperator val = new FloorOperator();
             val.m_X = m_X.Clone();
@@ -463,11 +463,11 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class CeilingOperator : IStoryValue
+    public sealed class CeilingOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -479,7 +479,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             CeilingOperator val = new CeilingOperator();
             val.m_X = m_X.Clone();
@@ -522,11 +522,11 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class RoundOperator : IStoryValue
+    public sealed class RoundOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -538,7 +538,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             RoundOperator val = new RoundOperator();
             val.m_X = m_X.Clone();
@@ -581,11 +581,11 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class PowOperator : IStoryValue
+    public sealed class PowOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -601,7 +601,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             PowOperator val = new PowOperator();
             val.m_X = m_X.Clone();
@@ -657,12 +657,12 @@ namespace StorySystem.CommonValues
             }
         }
         private int m_ParamNum = 0;
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class LogOperator : IStoryValue
+    public sealed class LogOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -678,7 +678,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             LogOperator val = new LogOperator();
             val.m_X = m_X.Clone();
@@ -728,12 +728,12 @@ namespace StorySystem.CommonValues
             }
         }
         private int m_ParamNum = 0;
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class SqrtOperator : IStoryValue
+    public sealed class SqrtOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -743,7 +743,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             SqrtOperator val = new SqrtOperator();
             val.m_X = m_X.Clone();
@@ -781,11 +781,11 @@ namespace StorySystem.CommonValues
                 m_Value = (float)Math.Sqrt(x);
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class SinOperator : IStoryValue
+    public sealed class SinOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -795,7 +795,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             SinOperator val = new SinOperator();
             val.m_X = m_X.Clone();
@@ -833,11 +833,11 @@ namespace StorySystem.CommonValues
                 m_Value = (float)Math.Sin(x);
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class CosOperator : IStoryValue
+    public sealed class CosOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -847,7 +847,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             CosOperator val = new CosOperator();
             val.m_X = m_X.Clone();
@@ -885,11 +885,11 @@ namespace StorySystem.CommonValues
                 m_Value = (float)Math.Cos(x);
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class SinhOperator : IStoryValue
+    public sealed class SinhOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -899,7 +899,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             SinhOperator val = new SinhOperator();
             val.m_X = m_X.Clone();
@@ -937,11 +937,11 @@ namespace StorySystem.CommonValues
                 m_Value = (float)Math.Sinh(x);
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class CoshOperator : IStoryValue
+    public sealed class CoshOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -951,7 +951,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             CoshOperator val = new CoshOperator();
             val.m_X = m_X.Clone();
@@ -989,11 +989,11 @@ namespace StorySystem.CommonValues
                 m_Value = (float)Math.Cosh(x);
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class MinOperator : IStoryValue
+    public sealed class MinOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -1009,7 +1009,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             MinOperator val = new MinOperator();
             for (int i = 0; i < m_List.Count; i++) {
@@ -1077,11 +1077,11 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private List<IStoryValue> m_List = new List<IStoryValue>();
+        private List<IStoryFunction> m_List = new List<IStoryFunction>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class MaxOperator : IStoryValue
+    public sealed class MaxOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -1097,7 +1097,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             MaxOperator val = new MaxOperator();
             for (int i = 0; i < m_List.Count; i++) {
@@ -1165,7 +1165,7 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private List<IStoryValue> m_List = new List<IStoryValue>();
+        private List<IStoryFunction> m_List = new List<IStoryFunction>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

@@ -8897,7 +8897,7 @@ namespace DslExpression
             return true;
         }
 
-        private List<StoryScript.IStoryValue> m_Values = new List<StoryScript.IStoryValue>();
+        private List<StoryScript.IStoryFunction> m_Values = new List<StoryScript.IStoryFunction>();
     }
     internal class StoryCommandExp : AbstractExpression
     {

@@ -16,45 +16,82 @@ namespace StorySystem
             System.Threading.Interlocked.Increment(ref m_NextLocalInfoIndex);
             return index;
         }
-        public void RegisterCommandFactory(string type, IStoryCommandFactory factory)
+        public void RegisterCommandFactory(string name, string doc, IStoryCommandFactory factory)
         {
-            RegisterCommandFactory(type, factory, false);
+            RegisterCommandFactory(name, doc, factory, false);
         }
-        public void RegisterCommandFactory(string type, IStoryCommandFactory factory, bool replace)
+        public void RegisterCommandFactory(string name, string doc, IStoryCommandFactory factory, bool replace)
         {
             lock (m_Lock) {
-                if (!m_StoryCommandFactories.ContainsKey(type)) {
-                    m_StoryCommandFactories.Add(type, factory);
+                if (!m_StoryCommandFactories.ContainsKey(name)) {
+                    m_StoryCommandFactories.Add(name, factory);
                 }
                 else if (replace) {
-                    m_StoryCommandFactories[type] = factory;
+                    m_StoryCommandFactories[name] = factory;
                 }
                 else {
-                    //error
+                    //ignore or warning
+                }
+                if (!m_CommandDocs.ContainsKey(name)) {
+                    m_CommandDocs.Add(name, doc);
+                }
+                else if (replace) {
+                    m_CommandDocs[name] = doc;
+                }
+                else {
+                    //ignore or warning
                 }
             }
         }
-        public void RegisterCommandFactory(StoryCommandGroupDefine group, string type, IStoryCommandFactory factory)
+        public void RegisterCommandFactory(StoryCommandGroupDefine group, string name, string doc, IStoryCommandFactory factory)
         {
-            RegisterCommandFactory(group, type, factory, false);
+            RegisterCommandFactory(group, name, doc, factory, false);
         }
-        public void RegisterCommandFactory(StoryCommandGroupDefine group, string type, IStoryCommandFactory factory, bool replace)
+        public void RegisterCommandFactory(StoryCommandGroupDefine group, string name, string doc, IStoryCommandFactory factory, bool replace)
         {
             lock (m_Lock) {
                 int ix = (int)group;
                 if (ix >= 0 && ix < c_MaxCommandGroupNum) {
                     Dictionary<string, IStoryCommandFactory> factories = m_GroupedCommandFactories[ix];
-                    if (!factories.ContainsKey(type)) {
-                        factories.Add(type, factory);
+                    if (!factories.ContainsKey(name)) {
+                        factories.Add(name, factory);
                     }
                     else if (replace) {
-                        factories[type] = factory;
+                        factories[name] = factory;
                     }
                     else {
-                        //error
+                        //ignore or warning
+                    }
+                    SortedList<string, string> docs = m_GroupedCommandDocs[ix];
+                    if (!docs.ContainsKey(name)) {
+                        docs.Add(name, doc);
+                    }
+                    else if (replace) {
+                        docs[name] = doc;
+                    }
+                    else {
+                        //ignore or warning
                     }
                 }
             }
+        }
+        public SortedList<string, string> GenCommandDocs()
+        {
+            SortedList<string, string> docs;
+            lock (m_Lock) {
+                docs = new SortedList<string, string>(m_CommandDocs);
+                const ulong c_one = 1;
+                for (int ix = 0; ix < c_MaxCommandGroupNum; ++ix) {
+                    if ((s_ThreadCommandGroupsMask & (c_one << ix)) != 0) {
+                        foreach (var pair in m_GroupedCommandDocs[ix]) {
+                            if (!docs.ContainsKey(pair.Key)) {
+                                docs.Add(pair.Key, pair.Value);
+                            }
+                        }
+                    }
+                }
+            }
+            return docs;
         }
         public IStoryCommandFactory FindFactory(string type)
         {
@@ -215,9 +252,9 @@ namespace StorySystem
                     type = substType;
                 }
                 if (!m_StoryCommandFactories.TryGetValue(type, out factory)) {
-                    const ulong one = 1;
+                    const ulong c_one = 1;
                     for (int ix = 0; ix < c_MaxCommandGroupNum; ++ix) {
-                        if ((s_ThreadCommandGroupsMask & (one << ix)) != 0 && m_GroupedCommandFactories[ix].TryGetValue(type, out factory)) {
+                        if ((s_ThreadCommandGroupsMask & (c_one << ix)) != 0 && m_GroupedCommandFactories[ix].TryGetValue(type, out factory)) {
                             break;
                         }
                     }
@@ -229,182 +266,185 @@ namespace StorySystem
         {
             for (int i = 0; i < c_MaxCommandGroupNum; ++i) {
                 m_GroupedCommandFactories[i] = new Dictionary<string, IStoryCommandFactory>();
+                m_GroupedCommandDocs[i] = new SortedList<string, string>();
             }
             //注册通用命令
-            RegisterCommandFactory("=", new StoryCommandFactoryHelper<CommonCommands.AssignCommand>());
-            RegisterCommandFactory("assign", new StoryCommandFactoryHelper<CommonCommands.AssignCommand>());
-            RegisterCommandFactory("inc", new StoryCommandFactoryHelper<CommonCommands.IncCommand>());
-            RegisterCommandFactory("dec", new StoryCommandFactoryHelper<CommonCommands.DecCommand>());
-            RegisterCommandFactory("propset", new StoryCommandFactoryHelper<CommonCommands.PropSetCommand>());
-            RegisterCommandFactory("foreach", new StoryCommandFactoryHelper<CommonCommands.ForeachCommand>());
-            RegisterCommandFactory("looplist", new StoryCommandFactoryHelper<CommonCommands.LoopListCommand>());
-            RegisterCommandFactory("loop", new StoryCommandFactoryHelper<CommonCommands.LoopCommand>());
-            RegisterCommandFactory("wait", new StoryCommandFactoryHelper<CommonCommands.SleepCommand>());
-            RegisterCommandFactory("sleep", new StoryCommandFactoryHelper<CommonCommands.SleepCommand>());
-            RegisterCommandFactory("realtimewait", new StoryCommandFactoryHelper<CommonCommands.RealTimeSleepCommand>());
-            RegisterCommandFactory("realtimesleep", new StoryCommandFactoryHelper<CommonCommands.RealTimeSleepCommand>());
-            RegisterCommandFactory("storywait", new StoryCommandFactoryHelper<CommonCommands.StorySleepCommand>());
-            RegisterCommandFactory("storysleep", new StoryCommandFactoryHelper<CommonCommands.StorySleepCommand>());
-            RegisterCommandFactory("storyrealtimewait", new StoryCommandFactoryHelper<CommonCommands.StoryRealTimeSleepCommand>());
-            RegisterCommandFactory("storyrealtimesleep", new StoryCommandFactoryHelper<CommonCommands.StoryRealTimeSleepCommand>());
-            RegisterCommandFactory("storybreak", new StoryCommandFactoryHelper<CommonCommands.StoryBreakCommand>());
-            RegisterCommandFactory("break", new StoryCommandFactoryHelper<CommonCommands.BreakCommand>());
-            RegisterCommandFactory("continue", new StoryCommandFactoryHelper<CommonCommands.ContinueCommand>());
-            RegisterCommandFactory("return", new StoryCommandFactoryHelper<CommonCommands.ReturnCommand>());
-            RegisterCommandFactory("suspend", new StoryCommandFactoryHelper<CommonCommands.SuspendCommand>());
-            RegisterCommandFactory("terminate", new StoryCommandFactoryHelper<CommonCommands.TerminateCommand>());
-            RegisterCommandFactory("pause", new StoryCommandFactoryHelper<CommonCommands.PauseCommand>());
-            RegisterCommandFactory("localmessage", new CommonCommands.LocalMessageCommandFactory());
-            RegisterCommandFactory("localconcurrentmessage", new CommonCommands.LocalConcurrentMessageCommandFactory());
-            RegisterCommandFactory("storylocalmessage", new CommonCommands.StoryLocalMessageCommandFactory());
-            RegisterCommandFactory("storylocalconcurrentmessage", new CommonCommands.StoryLocalConcurrentMessageCommandFactory());
-            RegisterCommandFactory("clearmessage", new StoryCommandFactoryHelper<CommonCommands.ClearMessageCommand>());
-            RegisterCommandFactory("waitlocalmessage", new StoryCommandFactoryHelper<CommonCommands.WaitLocalMessageCommand>());
-            RegisterCommandFactory("waitlocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.WaitLocalMessageHandlerCommand>());
-            RegisterCommandFactory("storywaitlocalmessage", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalMessageCommand>());
-            RegisterCommandFactory("storywaitlocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalMessageHandlerCommand>());
-            RegisterCommandFactory("suspendlocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.SuspendLocalMessageHandlerCommand>());
-            RegisterCommandFactory("resumelocalmessagehandler", new StoryCommandFactoryHelper<CommonCommands.ResumeLocalMessageHandlerCommand>());
-            RegisterCommandFactory("localnamespacedmessage", new CommonCommands.LocalNamespacedMessageCommandFactory());
-            RegisterCommandFactory("localconcurrentnamespacedmessage", new CommonCommands.LocalConcurrentNamespacedMessageCommandFactory());
-            RegisterCommandFactory("storylocalnamespacedmessage", new CommonCommands.StoryLocalNamespacedMessageCommandFactory());
-            RegisterCommandFactory("storylocalconcurrentnamespacedmessage", new CommonCommands.StoryLocalConcurrentNamespacedMessageCommandFactory());
-            RegisterCommandFactory("clearnamespacedmessage", new StoryCommandFactoryHelper<CommonCommands.ClearNamespacedMessageCommand>());
-            RegisterCommandFactory("waitlocalnamespacedmessage", new StoryCommandFactoryHelper<CommonCommands.WaitLocalNamespacedMessageCommand>());
-            RegisterCommandFactory("waitlocalnamespacedmessagehandler", new StoryCommandFactoryHelper<CommonCommands.WaitLocalNamespacedMessageHandlerCommand>());
-            RegisterCommandFactory("storywaitlocalnamespacedmessage", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalNamespacedMessageCommand>());
-            RegisterCommandFactory("storywaitlocalnamespacedmessagehandler", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalNamespacedMessageHandlerCommand>());
-            RegisterCommandFactory("suspendlocalnamespacedmessagehandler", new StoryCommandFactoryHelper<CommonCommands.SuspendLocalNamespacedMessageHandlerCommand>());
-            RegisterCommandFactory("resumelocalnamespacedmessagehandler", new StoryCommandFactoryHelper<CommonCommands.ResumeLocalNamespacedMessageHandlerCommand>());
-            RegisterCommandFactory("while", new StoryCommandFactoryHelper<CommonCommands.WhileCommand>());
-            RegisterCommandFactory("if", new StoryCommandFactoryHelper<CommonCommands.IfElseCommand>());
-            RegisterCommandFactory("log", new StoryCommandFactoryHelper<CommonCommands.LogCommand>());
-            RegisterCommandFactory("listset", new StoryCommandFactoryHelper<CommonCommands.ListSetCommand>());
-            RegisterCommandFactory("listadd", new StoryCommandFactoryHelper<CommonCommands.ListAddCommand>());
-            RegisterCommandFactory("listremove", new StoryCommandFactoryHelper<CommonCommands.ListRemoveCommand>());
-            RegisterCommandFactory("listinsert", new StoryCommandFactoryHelper<CommonCommands.ListInsertCommand>());
-            RegisterCommandFactory("listremoveat", new StoryCommandFactoryHelper<CommonCommands.ListRemoveAtCommand>());
-            RegisterCommandFactory("listclear", new StoryCommandFactoryHelper<CommonCommands.ListClearCommand>());
-            RegisterCommandFactory("dotnetcall", new StoryCommandFactoryHelper<CommonCommands.DotnetCallCommand>());
-            RegisterCommandFactory("dotnetset", new StoryCommandFactoryHelper<CommonCommands.DotnetSetCommand>());
-            RegisterCommandFactory("collectioncall", new StoryCommandFactoryHelper<CommonCommands.CollectionCallCommand>());
-            RegisterCommandFactory("collectionset", new StoryCommandFactoryHelper<CommonCommands.CollectionSetCommand>());
-            RegisterCommandFactory("system", new StoryCommandFactoryHelper<CommonCommands.SystemCommand>());
-            RegisterCommandFactory("writealllines", new StoryCommandFactoryHelper<CommonCommands.WriteAllLinesCommand>());
-            RegisterCommandFactory("writefile", new StoryCommandFactoryHelper<CommonCommands.WriteFileCommand>());
-            RegisterCommandFactory("hashtableadd", new StoryCommandFactoryHelper<CommonCommands.HashtableAddCommand>());
-            RegisterCommandFactory("hashtableset", new StoryCommandFactoryHelper<CommonCommands.HashtableSetCommand>());
-            RegisterCommandFactory("hashtableremove", new StoryCommandFactoryHelper<CommonCommands.HashtableRemoveCommand>());
-            RegisterCommandFactory("hashtableclear", new StoryCommandFactoryHelper<CommonCommands.HashtableClearCommand>());
-            RegisterCommandFactory("substcmd", new StoryCommandFactoryHelper<CommonCommands.SubstCmdCommand>());
-            RegisterCommandFactory("clearcmdsubsts", new StoryCommandFactoryHelper<CommonCommands.ClearCmdSubstsCommand>());
-            RegisterCommandFactory("substval", new StoryCommandFactoryHelper<CommonCommands.SubstValCommand>());
-            RegisterCommandFactory("clearvalsubsts", new StoryCommandFactoryHelper<CommonCommands.ClearValSubstsCommand>());
+            RegisterCommandFactory("=", "assignment operator", new StoryCommandFactoryHelper<CommonCommands.AssignCommand>());
+            RegisterCommandFactory("assign", "assignment command", new StoryCommandFactoryHelper<CommonCommands.AssignCommand>());
+            RegisterCommandFactory("inc", "inc command", new StoryCommandFactoryHelper<CommonCommands.IncCommand>());
+            RegisterCommandFactory("dec", "dec command", new StoryCommandFactoryHelper<CommonCommands.DecCommand>());
+            RegisterCommandFactory("propset", "propset command", new StoryCommandFactoryHelper<CommonCommands.PropSetCommand>());
+            RegisterCommandFactory("foreach", "foreach statement", new StoryCommandFactoryHelper<CommonCommands.ForeachCommand>());
+            RegisterCommandFactory("looplist", "looplist statement", new StoryCommandFactoryHelper<CommonCommands.LoopListCommand>());
+            RegisterCommandFactory("loop", "loop statement", new StoryCommandFactoryHelper<CommonCommands.LoopCommand>());
+            RegisterCommandFactory("wait", "wait command", new StoryCommandFactoryHelper<CommonCommands.SleepCommand>());
+            RegisterCommandFactory("sleep", "sleep command", new StoryCommandFactoryHelper<CommonCommands.SleepCommand>());
+            RegisterCommandFactory("realtimewait", "realtimewait command", new StoryCommandFactoryHelper<CommonCommands.RealTimeSleepCommand>());
+            RegisterCommandFactory("realtimesleep", "realtimesleep command", new StoryCommandFactoryHelper<CommonCommands.RealTimeSleepCommand>());
+            RegisterCommandFactory("storywait", "storywait command", new StoryCommandFactoryHelper<CommonCommands.StorySleepCommand>());
+            RegisterCommandFactory("storysleep", "storysleep command", new StoryCommandFactoryHelper<CommonCommands.StorySleepCommand>());
+            RegisterCommandFactory("storyrealtimewait", "storyrealtimewait command", new StoryCommandFactoryHelper<CommonCommands.StoryRealTimeSleepCommand>());
+            RegisterCommandFactory("storyrealtimesleep", "storyrealtimesleep command", new StoryCommandFactoryHelper<CommonCommands.StoryRealTimeSleepCommand>());
+            RegisterCommandFactory("storybreak", "storybreak command", new StoryCommandFactoryHelper<CommonCommands.StoryBreakCommand>());
+            RegisterCommandFactory("break", "break statement", new StoryCommandFactoryHelper<CommonCommands.BreakCommand>());
+            RegisterCommandFactory("continue", "continue statement", new StoryCommandFactoryHelper<CommonCommands.ContinueCommand>());
+            RegisterCommandFactory("return", "return statement", new StoryCommandFactoryHelper<CommonCommands.ReturnCommand>());
+            RegisterCommandFactory("suspend", "suspend statement", new StoryCommandFactoryHelper<CommonCommands.SuspendCommand>());
+            RegisterCommandFactory("terminate", "terminate statement", new StoryCommandFactoryHelper<CommonCommands.TerminateCommand>());
+            RegisterCommandFactory("pause", "pause command", new StoryCommandFactoryHelper<CommonCommands.PauseCommand>());
+            RegisterCommandFactory("localmessage", "localmessage command", new CommonCommands.LocalMessageCommandFactory());
+            RegisterCommandFactory("localconcurrentmessage", "localconcurrentmessage command", new CommonCommands.LocalConcurrentMessageCommandFactory());
+            RegisterCommandFactory("storylocalmessage", "storylocalmessage command", new CommonCommands.StoryLocalMessageCommandFactory());
+            RegisterCommandFactory("storylocalconcurrentmessage", "storylocalconcurrentmessage command", new CommonCommands.StoryLocalConcurrentMessageCommandFactory());
+            RegisterCommandFactory("clearmessage", "clearmessage command", new StoryCommandFactoryHelper<CommonCommands.ClearMessageCommand>());
+            RegisterCommandFactory("waitlocalmessage", "waitlocalmessage command", new StoryCommandFactoryHelper<CommonCommands.WaitLocalMessageCommand>());
+            RegisterCommandFactory("waitlocalmessagehandler", "waitlocalmessagehandler command", new StoryCommandFactoryHelper<CommonCommands.WaitLocalMessageHandlerCommand>());
+            RegisterCommandFactory("storywaitlocalmessage", "storywaitlocalmessage command", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalMessageCommand>());
+            RegisterCommandFactory("storywaitlocalmessagehandler", "storywaitlocalmessagehandler command", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalMessageHandlerCommand>());
+            RegisterCommandFactory("suspendlocalmessagehandler", "suspendlocalmessagehandler command", new StoryCommandFactoryHelper<CommonCommands.SuspendLocalMessageHandlerCommand>());
+            RegisterCommandFactory("resumelocalmessagehandler", "resumelocalmessagehandler command", new StoryCommandFactoryHelper<CommonCommands.ResumeLocalMessageHandlerCommand>());
+            RegisterCommandFactory("localnamespacedmessage", "localnamespacedmessage command", new CommonCommands.LocalNamespacedMessageCommandFactory());
+            RegisterCommandFactory("localconcurrentnamespacedmessage", "localconcurrentnamespacedmessage command", new CommonCommands.LocalConcurrentNamespacedMessageCommandFactory());
+            RegisterCommandFactory("storylocalnamespacedmessage", "storylocalnamespacedmessage command", new CommonCommands.StoryLocalNamespacedMessageCommandFactory());
+            RegisterCommandFactory("storylocalconcurrentnamespacedmessage", "storylocalconcurrentnamespacedmessage command", new CommonCommands.StoryLocalConcurrentNamespacedMessageCommandFactory());
+            RegisterCommandFactory("clearnamespacedmessage", "clearnamespacedmessage command", new StoryCommandFactoryHelper<CommonCommands.ClearNamespacedMessageCommand>());
+            RegisterCommandFactory("waitlocalnamespacedmessage", "waitlocalnamespacedmessage command", new StoryCommandFactoryHelper<CommonCommands.WaitLocalNamespacedMessageCommand>());
+            RegisterCommandFactory("waitlocalnamespacedmessagehandler", "waitlocalnamespacedmessagehandler command", new StoryCommandFactoryHelper<CommonCommands.WaitLocalNamespacedMessageHandlerCommand>());
+            RegisterCommandFactory("storywaitlocalnamespacedmessage", "storywaitlocalnamespacedmessage command", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalNamespacedMessageCommand>());
+            RegisterCommandFactory("storywaitlocalnamespacedmessagehandler", "storywaitlocalnamespacedmessagehandler command", new StoryCommandFactoryHelper<CommonCommands.StoryWaitLocalNamespacedMessageHandlerCommand>());
+            RegisterCommandFactory("suspendlocalnamespacedmessagehandler", "suspendlocalnamespacedmessagehandler command", new StoryCommandFactoryHelper<CommonCommands.SuspendLocalNamespacedMessageHandlerCommand>());
+            RegisterCommandFactory("resumelocalnamespacedmessagehandler", "resumelocalnamespacedmessagehandler command", new StoryCommandFactoryHelper<CommonCommands.ResumeLocalNamespacedMessageHandlerCommand>());
+            RegisterCommandFactory("while", "while statement", new StoryCommandFactoryHelper<CommonCommands.WhileCommand>());
+            RegisterCommandFactory("if", "if statement", new StoryCommandFactoryHelper<CommonCommands.IfElseCommand>());
+            RegisterCommandFactory("log", "log command", new StoryCommandFactoryHelper<CommonCommands.LogCommand>());
+            RegisterCommandFactory("listset", "listset command", new StoryCommandFactoryHelper<CommonCommands.ListSetCommand>());
+            RegisterCommandFactory("listadd", "listadd command", new StoryCommandFactoryHelper<CommonCommands.ListAddCommand>());
+            RegisterCommandFactory("listremove", "listremove command", new StoryCommandFactoryHelper<CommonCommands.ListRemoveCommand>());
+            RegisterCommandFactory("listinsert", "listinsert command", new StoryCommandFactoryHelper<CommonCommands.ListInsertCommand>());
+            RegisterCommandFactory("listremoveat", "listremoveat command", new StoryCommandFactoryHelper<CommonCommands.ListRemoveAtCommand>());
+            RegisterCommandFactory("listclear", "listclear command", new StoryCommandFactoryHelper<CommonCommands.ListClearCommand>());
+            RegisterCommandFactory("dotnetcall", "dotnetcall command", new StoryCommandFactoryHelper<CommonCommands.DotnetCallCommand>());
+            RegisterCommandFactory("dotnetset", "dotnetset command", new StoryCommandFactoryHelper<CommonCommands.DotnetSetCommand>());
+            RegisterCommandFactory("collectioncall", "collectioncall command", new StoryCommandFactoryHelper<CommonCommands.CollectionCallCommand>());
+            RegisterCommandFactory("collectionset", "collectionset command", new StoryCommandFactoryHelper<CommonCommands.CollectionSetCommand>());
+            RegisterCommandFactory("system", "system command", new StoryCommandFactoryHelper<CommonCommands.SystemCommand>());
+            RegisterCommandFactory("writealllines", "writealllines command", new StoryCommandFactoryHelper<CommonCommands.WriteAllLinesCommand>());
+            RegisterCommandFactory("writefile", "writefile command", new StoryCommandFactoryHelper<CommonCommands.WriteFileCommand>());
+            RegisterCommandFactory("hashtableadd", "hashtableadd command", new StoryCommandFactoryHelper<CommonCommands.HashtableAddCommand>());
+            RegisterCommandFactory("hashtableset", "hashtableset command", new StoryCommandFactoryHelper<CommonCommands.HashtableSetCommand>());
+            RegisterCommandFactory("hashtableremove", "hashtableremove command", new StoryCommandFactoryHelper<CommonCommands.HashtableRemoveCommand>());
+            RegisterCommandFactory("hashtableclear", "hashtableclear command", new StoryCommandFactoryHelper<CommonCommands.HashtableClearCommand>());
+            RegisterCommandFactory("substcmd", "substcmd command", new StoryCommandFactoryHelper<CommonCommands.SubstCmdCommand>());
+            RegisterCommandFactory("clearcmdsubsts", "clearcmdsubsts command", new StoryCommandFactoryHelper<CommonCommands.ClearCmdSubstsCommand>());
+            RegisterCommandFactory("substfunc", "substfunc command", new StoryCommandFactoryHelper<CommonCommands.SubstFuncCommand>());
+            RegisterCommandFactory("clearfuncsubsts", "clearfuncsubsts command", new StoryCommandFactoryHelper<CommonCommands.ClearFuncSubstsCommand>());
             //注册通用值与内部函数
             //object
-            StoryValueManager.Instance.RegisterValueFactory("eval", new StoryValueFactoryHelper<CommonValues.EvalValue>());
-            StoryValueManager.Instance.RegisterValueFactory("namespace", new StoryValueFactoryHelper<CommonValues.NamespaceValue>());
-            StoryValueManager.Instance.RegisterValueFactory("storyid", new StoryValueFactoryHelper<CommonValues.StoryIdValue>());
-            StoryValueManager.Instance.RegisterValueFactory("messageid", new StoryValueFactoryHelper<CommonValues.MessageIdValue>());
-            StoryValueManager.Instance.RegisterValueFactory("countcommand", new StoryValueFactoryHelper<CommonValues.CountCommandValue>());
-            StoryValueManager.Instance.RegisterValueFactory("counthandlercommand", new StoryValueFactoryHelper<CommonValues.CountHandlerCommandValue>());
-            StoryValueManager.Instance.RegisterValueFactory("propget", new StoryValueFactoryHelper<CommonValues.PropGetValue>());
-            StoryValueManager.Instance.RegisterValueFactory("rndint", new StoryValueFactoryHelper<CommonValues.RandomIntValue>());
-            StoryValueManager.Instance.RegisterValueFactory("rndfloat", new StoryValueFactoryHelper<CommonValues.RandomFloatValue>());
-            StoryValueManager.Instance.RegisterValueFactory("vector2", new StoryValueFactoryHelper<CommonValues.Vector2Value>());
-            StoryValueManager.Instance.RegisterValueFactory("vector3", new StoryValueFactoryHelper<CommonValues.Vector3Value>());
-            StoryValueManager.Instance.RegisterValueFactory("vector4", new StoryValueFactoryHelper<CommonValues.Vector4Value>());
-            StoryValueManager.Instance.RegisterValueFactory("quaternion", new StoryValueFactoryHelper<CommonValues.QuaternionValue>());
-            StoryValueManager.Instance.RegisterValueFactory("eular", new StoryValueFactoryHelper<CommonValues.EularValue>());
-            StoryValueManager.Instance.RegisterValueFactory("color", new StoryValueFactoryHelper<CommonValues.ColorValue>());
-            StoryValueManager.Instance.RegisterValueFactory("color32", new StoryValueFactoryHelper<CommonValues.Color32Value>());
-            StoryValueManager.Instance.RegisterValueFactory("vector2int", new StoryValueFactoryHelper<CommonValues.Vector2IntValue>());
-            StoryValueManager.Instance.RegisterValueFactory("vector3int", new StoryValueFactoryHelper<CommonValues.Vector3IntValue>());
-            StoryValueManager.Instance.RegisterValueFactory("stringlist", new StoryValueFactoryHelper<CommonValues.StringListValue>());
-            StoryValueManager.Instance.RegisterValueFactory("intlist", new StoryValueFactoryHelper<CommonValues.IntListValue>());
-            StoryValueManager.Instance.RegisterValueFactory("floatlist", new StoryValueFactoryHelper<CommonValues.FloatListValue>());
-            StoryValueManager.Instance.RegisterValueFactory("vector2list", new StoryValueFactoryHelper<CommonValues.Vector2ListValue>());
-            StoryValueManager.Instance.RegisterValueFactory("vector3list", new StoryValueFactoryHelper<CommonValues.Vector3ListValue>());
-            StoryValueManager.Instance.RegisterValueFactory("array", new StoryValueFactoryHelper<CommonValues.ArrayValue>());
-            StoryValueManager.Instance.RegisterValueFactory("toarray", new StoryValueFactoryHelper<CommonValues.ToArrayValue>());
-            StoryValueManager.Instance.RegisterValueFactory("list", new StoryValueFactoryHelper<CommonValues.ListValue>());
-            StoryValueManager.Instance.RegisterValueFactory("rndfromlist", new StoryValueFactoryHelper<CommonValues.RandomFromListValue>());
-            StoryValueManager.Instance.RegisterValueFactory("listget", new StoryValueFactoryHelper<CommonValues.ListGetValue>());
-            StoryValueManager.Instance.RegisterValueFactory("listsize", new StoryValueFactoryHelper<CommonValues.ListSizeValue>());
-            StoryValueManager.Instance.RegisterValueFactory("listindexof", new StoryValueFactoryHelper<CommonValues.ListIndexOfValue>());
-            StoryValueManager.Instance.RegisterValueFactory("vector2dist", new StoryValueFactoryHelper<CommonValues.Vector2DistanceValue>());
-            StoryValueManager.Instance.RegisterValueFactory("vector3dist", new StoryValueFactoryHelper<CommonValues.Vector3DistanceValue>());
-            StoryValueManager.Instance.RegisterValueFactory("vector2to3", new StoryValueFactoryHelper<CommonValues.Vector2To3Value>());
-            StoryValueManager.Instance.RegisterValueFactory("vector3to2", new StoryValueFactoryHelper<CommonValues.Vector3To2Value>());
-            StoryValueManager.Instance.RegisterValueFactory("rndvector3", new StoryValueFactoryHelper<CommonValues.RandVector3Value>());
-            StoryValueManager.Instance.RegisterValueFactory("rndvector2", new StoryValueFactoryHelper<CommonValues.RandVector2Value>());
-            StoryValueManager.Instance.RegisterValueFactory("+", new StoryValueFactoryHelper<CommonValues.AddOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("-", new StoryValueFactoryHelper<CommonValues.SubOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("*", new StoryValueFactoryHelper<CommonValues.MulOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("/", new StoryValueFactoryHelper<CommonValues.DivOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("%", new StoryValueFactoryHelper<CommonValues.ModOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("abs", new StoryValueFactoryHelper<CommonValues.AbsOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("floor", new StoryValueFactoryHelper<CommonValues.FloorOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("ceiling", new StoryValueFactoryHelper<CommonValues.CeilingOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("round", new StoryValueFactoryHelper<CommonValues.RoundOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("pow", new StoryValueFactoryHelper<CommonValues.PowOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("log", new StoryValueFactoryHelper<CommonValues.LogOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("sqrt", new StoryValueFactoryHelper<CommonValues.SqrtOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("sin", new StoryValueFactoryHelper<CommonValues.SinOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("cos", new StoryValueFactoryHelper<CommonValues.CosOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("sinh", new StoryValueFactoryHelper<CommonValues.SinhOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("cosh", new StoryValueFactoryHelper<CommonValues.CoshOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("min", new StoryValueFactoryHelper<CommonValues.MinOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("max", new StoryValueFactoryHelper<CommonValues.MaxOperator>());
-            StoryValueManager.Instance.RegisterValueFactory(">", new StoryValueFactoryHelper<CommonValues.GreaterThanOperator>());
-            StoryValueManager.Instance.RegisterValueFactory(">=", new StoryValueFactoryHelper<CommonValues.GreaterEqualThanOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("==", new StoryValueFactoryHelper<CommonValues.EqualOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("!=", new StoryValueFactoryHelper<CommonValues.NotEqualOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("<", new StoryValueFactoryHelper<CommonValues.LessThanOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("<=", new StoryValueFactoryHelper<CommonValues.LessEqualThanOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("&&", new StoryValueFactoryHelper<CommonValues.AndOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("||", new StoryValueFactoryHelper<CommonValues.OrOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("!", new StoryValueFactoryHelper<CommonValues.NotOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("format", new StoryValueFactoryHelper<CommonValues.FormatValue>());
-            StoryValueManager.Instance.RegisterValueFactory("substring", new StoryValueFactoryHelper<CommonValues.SubstringValue>());
-            StoryValueManager.Instance.RegisterValueFactory("stringcontains", new StoryValueFactoryHelper<CommonValues.StringContainsValue>());
-            StoryValueManager.Instance.RegisterValueFactory("stringnotcontains", new StoryValueFactoryHelper<CommonValues.StringNotContainsValue>());
-            StoryValueManager.Instance.RegisterValueFactory("stringcontainsany", new StoryValueFactoryHelper<CommonValues.StringContainsAnyValue>());
-            StoryValueManager.Instance.RegisterValueFactory("stringnotcontainsany", new StoryValueFactoryHelper<CommonValues.StringNotContainsAnyValue>());
-            StoryValueManager.Instance.RegisterValueFactory("stringtolower", new StoryValueFactoryHelper<CommonValues.StringToLowerValue>());
-            StoryValueManager.Instance.RegisterValueFactory("stringtoupper", new StoryValueFactoryHelper<CommonValues.StringToUpperValue>());
-            StoryValueManager.Instance.RegisterValueFactory("str2lower", new StoryValueFactoryHelper<CommonValues.Str2LowerValue>());
-            StoryValueManager.Instance.RegisterValueFactory("str2upper", new StoryValueFactoryHelper<CommonValues.Str2UpperValue>());
-            StoryValueManager.Instance.RegisterValueFactory("str2int", new StoryValueFactoryHelper<CommonValues.Str2IntValue>());
-            StoryValueManager.Instance.RegisterValueFactory("str2float", new StoryValueFactoryHelper<CommonValues.Str2FloatValue>());
-            StoryValueManager.Instance.RegisterValueFactory("time", new StoryValueFactoryHelper<CommonValues.TimeValue>());
-            StoryValueManager.Instance.RegisterValueFactory("isnull", new StoryValueFactoryHelper<CommonValues.IsNullOperator>());
-            StoryValueManager.Instance.RegisterValueFactory("gettype", new StoryValueFactoryHelper<CommonValues.GetTypeValue>());
-            StoryValueManager.Instance.RegisterValueFactory("dotnetcall", new StoryValueFactoryHelper<CommonValues.DotnetCallValue>());
-            StoryValueManager.Instance.RegisterValueFactory("dotnetget", new StoryValueFactoryHelper<CommonValues.DotnetGetValue>());
-            StoryValueManager.Instance.RegisterValueFactory("collectioncall", new StoryValueFactoryHelper<CommonValues.CollectionCallValue>());
-            StoryValueManager.Instance.RegisterValueFactory("collectionget", new StoryValueFactoryHelper<CommonValues.CollectionGetValue>());
-            StoryValueManager.Instance.RegisterValueFactory("changetype", new StoryValueFactoryHelper<CommonValues.ChangeTypeValue>());
-            StoryValueManager.Instance.RegisterValueFactory("parseenum", new StoryValueFactoryHelper<CommonValues.ParseEnumValue>());
-            StoryValueManager.Instance.RegisterValueFactory("pgrep", new StoryValueFactoryHelper<CommonValues.PgrepValue>());
-            StoryValueManager.Instance.RegisterValueFactory("plist", new StoryValueFactoryHelper<CommonValues.PlistValue>());
-            StoryValueManager.Instance.RegisterValueFactory("linq", new StoryValueFactoryHelper<CommonValues.LinqValue>());
-            StoryValueManager.Instance.RegisterValueFactory("readalllines", new StoryValueFactoryHelper<CommonValues.ReadAllLinesValue>());
-            StoryValueManager.Instance.RegisterValueFactory("readfile", new StoryValueFactoryHelper<CommonValues.ReadFileValue>());
-            StoryValueManager.Instance.RegisterValueFactory("tojson", new StoryValueFactoryHelper<CommonValues.ToJsonValue>());
-            StoryValueManager.Instance.RegisterValueFactory("fromjson", new StoryValueFactoryHelper<CommonValues.FromJsonValue>());
-            StoryValueManager.Instance.RegisterValueFactory("hashtable", new StoryValueFactoryHelper<CommonValues.HashtableValue>());
-            StoryValueManager.Instance.RegisterValueFactory("hashtableget", new StoryValueFactoryHelper<CommonValues.HashtableGetValue>());
-            StoryValueManager.Instance.RegisterValueFactory("hashtablesize", new StoryValueFactoryHelper<CommonValues.HashtableSizeValue>());
-            StoryValueManager.Instance.RegisterValueFactory("hashtablekeys", new StoryValueFactoryHelper<CommonValues.HashtableKeysValue>());
-            StoryValueManager.Instance.RegisterValueFactory("hashtablevalues", new StoryValueFactoryHelper<CommonValues.HashtableValuesValue>());
-            StoryValueManager.Instance.RegisterValueFactory("getcmdsubst", new StoryValueFactoryHelper<CommonValues.GetCmdSubstValue>());
-            StoryValueManager.Instance.RegisterValueFactory("getvalsubst", new StoryValueFactoryHelper<CommonValues.GetValSubstValue>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("eval", "eval function", new StoryFunctionFactoryHelper<CommonFunctions.EvalFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("namespace", "namespace function", new StoryFunctionFactoryHelper<CommonFunctions.NamespaceFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("storyid", "storyid function", new StoryFunctionFactoryHelper<CommonFunctions.StoryIdFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("messageid", "messageid function", new StoryFunctionFactoryHelper<CommonFunctions.MessageIdFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("countcommand", "countcommand function", new StoryFunctionFactoryHelper<CommonFunctions.CountCommandFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("counthandlercommand", "counthandlercommand function", new StoryFunctionFactoryHelper<CommonFunctions.CountHandlerCommandFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("propget", "propget function", new StoryFunctionFactoryHelper<CommonFunctions.PropGetFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("rndint", "rndint function", new StoryFunctionFactoryHelper<CommonFunctions.RandomIntFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("rndfloat", "rndfloat function", new StoryFunctionFactoryHelper<CommonFunctions.RandomFloatFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2", "vector2 function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3", "vector3 function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector4", "vector4 function", new StoryFunctionFactoryHelper<CommonFunctions.Vector4Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("quaternion", "quaternion function", new StoryFunctionFactoryHelper<CommonFunctions.QuaternionFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("eular", "eular function", new StoryFunctionFactoryHelper<CommonFunctions.EularFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("color", "color function", new StoryFunctionFactoryHelper<CommonFunctions.ColorFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("color32", "color32 function", new StoryFunctionFactoryHelper<CommonFunctions.Color32Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2int", "vector2int function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2IntFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3int", "vector3int function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3IntFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("stringlist", "stringlist function", new StoryFunctionFactoryHelper<CommonFunctions.StringListFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("intlist", "intlist function", new StoryFunctionFactoryHelper<CommonFunctions.IntListFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("floatlist", "floatlist function", new StoryFunctionFactoryHelper<CommonFunctions.FloatListFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2list", "vector2list function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2ListFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3list", "vector3list function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3ListFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("array", "array function", new StoryFunctionFactoryHelper<CommonFunctions.ArrayFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("toarray", "toarray function", new StoryFunctionFactoryHelper<CommonFunctions.ToArrayFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("list", "list function", new StoryFunctionFactoryHelper<CommonFunctions.ListFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("rndfromlist", "rndfromlist function", new StoryFunctionFactoryHelper<CommonFunctions.RandomFromListFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("listget", "listget function", new StoryFunctionFactoryHelper<CommonFunctions.ListGetFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("listsize", "listsize function", new StoryFunctionFactoryHelper<CommonFunctions.ListSizeFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("listindexof", "listindexof function", new StoryFunctionFactoryHelper<CommonFunctions.ListIndexOfFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2dist", "vector2dist function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2DistanceFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3dist", "vector3dist function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3DistanceFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector2to3", "vector2to3 function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2To3Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("vector3to2", "vector3to2 function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3To2Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("rndvector3", "rndvector3 function", new StoryFunctionFactoryHelper<CommonFunctions.RandVector3Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("rndvector2", "rndvector2 function", new StoryFunctionFactoryHelper<CommonFunctions.RandVector2Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("+", "add operator", new StoryFunctionFactoryHelper<CommonFunctions.AddOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("-", "sub operator", new StoryFunctionFactoryHelper<CommonFunctions.SubOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("*", "mul operator", new StoryFunctionFactoryHelper<CommonFunctions.MulOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("/", "div operator", new StoryFunctionFactoryHelper<CommonFunctions.DivOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("%", "mod operator", new StoryFunctionFactoryHelper<CommonFunctions.ModOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("abs", "abs function", new StoryFunctionFactoryHelper<CommonFunctions.AbsOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("floor", "floor function", new StoryFunctionFactoryHelper<CommonFunctions.FloorOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("ceiling", "ceiling function", new StoryFunctionFactoryHelper<CommonFunctions.CeilingOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("round", "round function", new StoryFunctionFactoryHelper<CommonFunctions.RoundOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("pow", "pow function", new StoryFunctionFactoryHelper<CommonFunctions.PowOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("log", "log function", new StoryFunctionFactoryHelper<CommonFunctions.LogOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("sqrt", "sqrt function", new StoryFunctionFactoryHelper<CommonFunctions.SqrtOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("sin", "sin function", new StoryFunctionFactoryHelper<CommonFunctions.SinOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("cos", "cos function", new StoryFunctionFactoryHelper<CommonFunctions.CosOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("sinh", "sinh function", new StoryFunctionFactoryHelper<CommonFunctions.SinhOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("cosh", "cosh function", new StoryFunctionFactoryHelper<CommonFunctions.CoshOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("min", "min function", new StoryFunctionFactoryHelper<CommonFunctions.MinOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("max", "max function", new StoryFunctionFactoryHelper<CommonFunctions.MaxOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory(">", "great operator", new StoryFunctionFactoryHelper<CommonFunctions.GreaterThanOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory(">=", "great equal operator", new StoryFunctionFactoryHelper<CommonFunctions.GreaterEqualThanOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("==", "equal operator", new StoryFunctionFactoryHelper<CommonFunctions.EqualOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("!=", "not equal operator", new StoryFunctionFactoryHelper<CommonFunctions.NotEqualOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("<", "less operator", new StoryFunctionFactoryHelper<CommonFunctions.LessThanOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("<=", "less equal operator", new StoryFunctionFactoryHelper<CommonFunctions.LessEqualThanOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("&&", "and operator", new StoryFunctionFactoryHelper<CommonFunctions.AndOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("||", "or operator", new StoryFunctionFactoryHelper<CommonFunctions.OrOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("!", "not operator", new StoryFunctionFactoryHelper<CommonFunctions.NotOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("format", "format function", new StoryFunctionFactoryHelper<CommonFunctions.FormatFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("substring", "substring function", new StoryFunctionFactoryHelper<CommonFunctions.SubstringFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("stringcontains", "stringcontains function", new StoryFunctionFactoryHelper<CommonFunctions.StringContainsFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("stringnotcontains", "stringnotcontains function", new StoryFunctionFactoryHelper<CommonFunctions.StringNotContainsFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("stringcontainsany", "stringcontainsany function", new StoryFunctionFactoryHelper<CommonFunctions.StringContainsAnyFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("stringnotcontainsany", "stringnotcontainsany function", new StoryFunctionFactoryHelper<CommonFunctions.StringNotContainsAnyFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("stringtolower", "stringtolower function", new StoryFunctionFactoryHelper<CommonFunctions.StringToLowerFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("stringtoupper", "stringtoupper function", new StoryFunctionFactoryHelper<CommonFunctions.StringToUpperFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("str2lower", "str2lower function", new StoryFunctionFactoryHelper<CommonFunctions.Str2LowerFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("str2upper", "str2upper function", new StoryFunctionFactoryHelper<CommonFunctions.Str2UpperFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("str2int", "str2int function", new StoryFunctionFactoryHelper<CommonFunctions.Str2IntFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("str2float", "str2float function", new StoryFunctionFactoryHelper<CommonFunctions.Str2FloatFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("time", "time function", new StoryFunctionFactoryHelper<CommonFunctions.TimeFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("isnull", "isnull function", new StoryFunctionFactoryHelper<CommonFunctions.IsNullOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("gettype", "gettype function", new StoryFunctionFactoryHelper<CommonFunctions.GetTypeFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("dotnetcall", "dotnetcall function", new StoryFunctionFactoryHelper<CommonFunctions.DotnetCallFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("dotnetget", "dotnetget function", new StoryFunctionFactoryHelper<CommonFunctions.DotnetGetFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("collectioncall", "collectioncall function", new StoryFunctionFactoryHelper<CommonFunctions.CollectionCallFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("collectionget", "collectionget function", new StoryFunctionFactoryHelper<CommonFunctions.CollectionGetFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("changetype", "changetype function", new StoryFunctionFactoryHelper<CommonFunctions.ChangeTypeFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("parseenum", "parseenum function", new StoryFunctionFactoryHelper<CommonFunctions.ParseEnumFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("pgrep", "pgrep function", new StoryFunctionFactoryHelper<CommonFunctions.PgrepFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("plist", "plist function", new StoryFunctionFactoryHelper<CommonFunctions.PlistFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("linq", "linq function", new StoryFunctionFactoryHelper<CommonFunctions.LinqFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("readalllines", "readalllines function", new StoryFunctionFactoryHelper<CommonFunctions.ReadAllLinesFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("readfile", "readfile function", new StoryFunctionFactoryHelper<CommonFunctions.ReadFileFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("tojson", "tojson function", new StoryFunctionFactoryHelper<CommonFunctions.ToJsonFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("fromjson", "fromjson function", new StoryFunctionFactoryHelper<CommonFunctions.FromJsonFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("hashtable", "hashtable function", new StoryFunctionFactoryHelper<CommonFunctions.HashtableFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("hashtableget", "hashtableget function", new StoryFunctionFactoryHelper<CommonFunctions.HashtableGetFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("hashtablesize", "hashtablesize function", new StoryFunctionFactoryHelper<CommonFunctions.HashtableSizeFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("hashtablekeys", "hashtablekeys function", new StoryFunctionFactoryHelper<CommonFunctions.HashtableKeysFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("hashtablevalues", "hashtablevalues function", new StoryFunctionFactoryHelper<CommonFunctions.HashtableValuesFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("getcmdsubst", "getcmdsubst function", new StoryFunctionFactoryHelper<CommonFunctions.GetCmdSubstFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("getfuncsubst", "getfuncsubst function", new StoryFunctionFactoryHelper<CommonFunctions.GetFuncSubstFunction>());
         }
 
         private object m_Lock = new object();
         private Dictionary<string, IStoryCommandFactory> m_StoryCommandFactories = new Dictionary<string, IStoryCommandFactory>();
+        private SortedList<string, string> m_CommandDocs = new SortedList<string, string>();
         private Dictionary<string, IStoryCommandFactory>[] m_GroupedCommandFactories = new Dictionary<string, IStoryCommandFactory>[c_MaxCommandGroupNum];
+        private SortedList<string, string>[] m_GroupedCommandDocs = new SortedList<string, string>[c_MaxCommandGroupNum];
         private Dictionary<string, string> m_Substitutes = new Dictionary<string, string>();
         private int m_NextLocalInfoIndex = 0;
 

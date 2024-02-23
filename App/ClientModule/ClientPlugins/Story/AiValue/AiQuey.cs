@@ -9,26 +9,26 @@ using GameFramework.Skill;
 using SkillSystem;
 using StorySystem;
 
-public class AiQuery : IStoryValuePlugin
+public class AiQuery : IStoryFunctionPlugin
 {
     public void SetProxy(StoryValueResult result)
     {
         m_Proxy = result;
     }
-    public IStoryValuePlugin Clone()
+    public IStoryFunctionPlugin Clone()
     {
         var newObj = new AiQuery();
         if (null != m_Select) {
-            newObj.m_Select = m_Select.Clone() as IStoryValue;
+            newObj.m_Select = m_Select.Clone() as IStoryFunction;
         }
         if (null != m_From) {
-            newObj.m_From = m_From.Clone() as IStoryValue;
+            newObj.m_From = m_From.Clone() as IStoryFunction;
         }
         if (null != m_Where) {
-            newObj.m_Where = m_Where.Clone() as IStoryValue;
+            newObj.m_Where = m_Where.Clone() as IStoryFunction;
         }
         for (int i = 0; i < m_OrderBy.Count; ++i) {
-            newObj.m_OrderBy.Add(m_OrderBy[i].Clone() as IStoryValue);
+            newObj.m_OrderBy.Add(m_OrderBy[i].Clone() as IStoryFunction);
         }
         newObj.m_Desc = m_Desc;
         return newObj;
@@ -130,9 +130,9 @@ public class AiQuery : IStoryValuePlugin
     }
 
     private StoryValueResult m_Proxy = null;
-    private IStoryValue m_Select = null;
-    private IStoryValue m_From = null;
-    private IStoryValue m_Where = null;
-    private List<IStoryValue> m_OrderBy = new List<IStoryValue>();
+    private IStoryFunction m_Select = null;
+    private IStoryFunction m_From = null;
+    private IStoryFunction m_Where = null;
+    private List<IStoryFunction> m_OrderBy = new List<IStoryFunction>();
     private bool m_Desc = false;
 }

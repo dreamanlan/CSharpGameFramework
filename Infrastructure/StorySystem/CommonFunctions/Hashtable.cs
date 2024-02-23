@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.IO;
 using StorySystem;
 using LitJson;
-namespace StorySystem.CommonValues
+namespace StorySystem.CommonFunctions
 {
-    public sealed class ReadAllLinesValue : IStoryValue
+    public sealed class ReadAllLinesFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -16,9 +16,9 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            ReadAllLinesValue val = new ReadAllLinesValue();
+            ReadAllLinesFunction val = new ReadAllLinesFunction();
             val.m_String = m_String.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -56,11 +56,11 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private IStoryValue<string> m_String = new StoryValue<string>();
+        private IStoryFunction<string> m_String = new StoryValue<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class ReadFileValue : IStoryValue
+    public sealed class ReadFileFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -70,9 +70,9 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            ReadFileValue val = new ReadFileValue();
+            ReadFileFunction val = new ReadFileFunction();
             val.m_String = m_String.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -110,11 +110,11 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private IStoryValue<string> m_String = new StoryValue<string>();
+        private IStoryFunction<string> m_String = new StoryValue<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class ToJsonValue : IStoryValue
+    public sealed class ToJsonFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -124,9 +124,9 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            ToJsonValue val = new ToJsonValue();
+            ToJsonFunction val = new ToJsonFunction();
             val.m_Hashtable = m_Hashtable.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -166,7 +166,7 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private IStoryValue m_Hashtable = new StoryValue();
+        private IStoryFunction m_Hashtable = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -211,7 +211,7 @@ namespace StorySystem.CommonValues
             }
         }
     }
-    public sealed class FromJsonValue : IStoryValue
+    public sealed class FromJsonFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -221,9 +221,9 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            FromJsonValue val = new FromJsonValue();
+            FromJsonFunction val = new FromJsonFunction();
             val.m_String = m_String.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -259,7 +259,7 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private IStoryValue<string> m_String = new StoryValue<string>();
+        private IStoryFunction<string> m_String = new StoryValue<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
 
@@ -299,12 +299,12 @@ namespace StorySystem.CommonValues
             }
         }
     }
-    public sealed class HashtableValue : IStoryValue
+    public sealed class HashtableFunction : IStoryFunction
     {
         private class Pair
         {
-            internal IStoryValue m_Key = new StoryValue();
-            internal IStoryValue m_Value = new StoryValue();
+            internal IStoryFunction m_Key = new StoryValue();
+            internal IStoryFunction m_Value = new StoryValue();
             internal Pair Clone()
             {
                 Pair pair = new Pair();
@@ -337,9 +337,9 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            HashtableValue val = new HashtableValue();
+            HashtableFunction val = new HashtableFunction();
             for (int i = 0; i < m_Args.Count; i++) {
                 val.m_Args.Add(m_Args[i].Clone());
             }
@@ -408,7 +408,7 @@ namespace StorySystem.CommonValues
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class HashtableGetValue : IStoryValue
+    public sealed class HashtableGetFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -425,9 +425,9 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            HashtableGetValue cmd = new HashtableGetValue();
+            HashtableGetFunction cmd = new HashtableGetFunction();
             cmd.m_ParamNum = m_ParamNum;
             cmd.m_Var = m_Var.Clone();
             cmd.m_Key = m_Key.Clone();
@@ -490,13 +490,13 @@ namespace StorySystem.CommonValues
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue m_Var = new StoryValue();
-        private IStoryValue m_Key = new StoryValue();
-        private IStoryValue m_DefValue = new StoryValue();
+        private IStoryFunction m_Var = new StoryValue();
+        private IStoryFunction m_Key = new StoryValue();
+        private IStoryFunction m_DefValue = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class HashtableSizeValue : IStoryValue
+    public sealed class HashtableSizeFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -509,9 +509,9 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            HashtableSizeValue cmd = new HashtableSizeValue();
+            HashtableSizeFunction cmd = new HashtableSizeFunction();
             cmd.m_ParamNum = m_ParamNum;
             cmd.m_Var = m_Var.Clone();
             return cmd;
@@ -554,11 +554,11 @@ namespace StorySystem.CommonValues
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue m_Var = new StoryValue();
+        private IStoryFunction m_Var = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class HashtableKeysValue : IStoryValue
+    public sealed class HashtableKeysFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -571,9 +571,9 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            HashtableKeysValue cmd = new HashtableKeysValue();
+            HashtableKeysFunction cmd = new HashtableKeysFunction();
             cmd.m_ParamNum = m_ParamNum;
             cmd.m_Var = m_Var.Clone();
             return cmd;
@@ -618,11 +618,11 @@ namespace StorySystem.CommonValues
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue m_Var = new StoryValue();
+        private IStoryFunction m_Var = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class HashtableValuesValue : IStoryValue
+    public sealed class HashtableValuesFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -635,9 +635,9 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            HashtableValuesValue cmd = new HashtableValuesValue();
+            HashtableValuesFunction cmd = new HashtableValuesFunction();
             cmd.m_ParamNum = m_ParamNum;
             cmd.m_Var = m_Var.Clone();
             return cmd;
@@ -682,7 +682,7 @@ namespace StorySystem.CommonValues
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue m_Var = new StoryValue();
+        private IStoryFunction m_Var = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

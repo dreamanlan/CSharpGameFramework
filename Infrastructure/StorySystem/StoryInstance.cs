@@ -213,17 +213,17 @@ namespace StorySystem
         }
         private static SimpleObjectPool<StoryRuntime> s_StoryRuntimePool = new SimpleObjectPool<StoryRuntime>(8);
     }
-    public sealed class IStoryValueList : List<IStoryValue>
+    public sealed class IStoryValueList : List<IStoryFunction>
     {
         public IStoryValueList() { }
         public IStoryValueList(int capacity) : base(capacity) { }
-        public IStoryValueList(IEnumerable<IStoryValue> coll) : base(coll) { }
+        public IStoryValueList(IEnumerable<IStoryFunction> coll) : base(coll) { }
     }
-    public sealed class StrIStoryValueDict : Dictionary<string, IStoryValue>
+    public sealed class StrIStoryValueDict : Dictionary<string, IStoryFunction>
     {
         public StrIStoryValueDict() { }
         public StrIStoryValueDict(int capacity) : base(capacity) { }
-        public StrIStoryValueDict(IDictionary<string, IStoryValue> dict) : base(dict) { }
+        public StrIStoryValueDict(IDictionary<string, IStoryFunction> dict) : base(dict) { }
     }
     public sealed class StoryLocalInfoStack : Stack<StoryLocalInfo>
     {

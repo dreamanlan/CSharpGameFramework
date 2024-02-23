@@ -9,13 +9,13 @@ using GameFramework.Skill;
 using SkillSystem;
 using StorySystem;
 
-public class AiNeedChase : ISimpleStoryValuePlugin
+public class AiNeedChase : ISimpleStoryFunctionPlugin
 {
     public void SetProxy(StoryValueResult result)
     {
         m_Proxy = result;
     }
-    public ISimpleStoryValuePlugin Clone()
+    public ISimpleStoryFunctionPlugin Clone()
     {
         return new AiNeedChase();
     }

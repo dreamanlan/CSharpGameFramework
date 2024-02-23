@@ -18,6 +18,9 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Story\Functions\ssx1grrv.t12~" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Dsl">
       <HintPath>..\..\..\ExternalLibrary\Dsl.dll</HintPath>
     </Reference>

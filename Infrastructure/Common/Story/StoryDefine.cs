@@ -11,7 +11,7 @@ namespace GameFramework
     UI,
     NUM
   }
-  public enum StoryValueGroupDefine
+  public enum StoryFunctionGroupDefine
   {
     USER = 0,
     GM,

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-namespace StorySystem.CommonValues
+namespace StorySystem.CommonFunctions
 {
-    public sealed class GreaterThanOperator : IStoryValue
+    public sealed class GreaterThanOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -15,7 +15,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             GreaterThanOperator val = new GreaterThanOperator();
             val.m_X = m_X.Clone();
@@ -54,12 +54,12 @@ namespace StorySystem.CommonValues
                 m_Value = (x > y ? 1 : 0);
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class GreaterEqualThanOperator : IStoryValue
+    public sealed class GreaterEqualThanOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -72,7 +72,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             GreaterEqualThanOperator val = new GreaterEqualThanOperator();
             val.m_X = m_X.Clone();
@@ -111,12 +111,12 @@ namespace StorySystem.CommonValues
                 m_Value = (x >= y ? 1 : 0);
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class EqualOperator : IStoryValue
+    public sealed class EqualOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -129,7 +129,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             EqualOperator val = new EqualOperator();
             val.m_X = m_X.Clone();
@@ -180,12 +180,12 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class NotEqualOperator : IStoryValue
+    public sealed class NotEqualOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -198,7 +198,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             NotEqualOperator val = new NotEqualOperator();
             val.m_X = m_X.Clone();
@@ -249,12 +249,12 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class LessThanOperator : IStoryValue
+    public sealed class LessThanOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -267,7 +267,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             LessThanOperator val = new LessThanOperator();
             val.m_X = m_X.Clone();
@@ -306,12 +306,12 @@ namespace StorySystem.CommonValues
                 m_Value = (x < y ? 1 : 0);
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class LessEqualThanOperator : IStoryValue
+    public sealed class LessEqualThanOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -324,7 +324,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             LessEqualThanOperator val = new LessEqualThanOperator();
             val.m_X = m_X.Clone();
@@ -363,12 +363,12 @@ namespace StorySystem.CommonValues
                 m_Value = (x <= y ? 1 : 0);
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class IsNullOperator : IStoryValue
+    public sealed class IsNullOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -380,7 +380,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             IsNullOperator val = new IsNullOperator();
             val.m_X = m_X.Clone();
@@ -419,7 +419,7 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

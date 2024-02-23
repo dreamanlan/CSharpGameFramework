@@ -9,13 +9,13 @@ using GameFramework.Skill;
 using SkillSystem;
 using StorySystem;
 
-public class AiGetEntities : ISimpleStoryValuePlugin
+public class AiGetEntities : ISimpleStoryFunctionPlugin
 {
     public void SetProxy(StoryValueResult result)
     {
         m_Proxy = result;
     }
-    public ISimpleStoryValuePlugin Clone()
+    public ISimpleStoryFunctionPlugin Clone()
     {
         return new AiGetEntities();
     }

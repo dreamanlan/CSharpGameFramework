@@ -5,52 +5,61 @@ using LitJson;
 
 namespace StorySystem
 {
-    public interface IStoryValueFactory
+    public interface IStoryFunctionFactory
     {
-        IStoryValue Build();
+        IStoryFunction Build();
     }
-    public sealed class StoryValueFactoryHelper<C> : IStoryValueFactory where C : IStoryValue, new()
+    public sealed class StoryFunctionFactoryHelper<C> : IStoryFunctionFactory where C : IStoryFunction, new()
     {
-        public IStoryValue Build()
+        public IStoryFunction Build()
         {
             C c = new C();
             return c;
         }
     }
     /// <summary>
-    /// 这个类不加锁，约束条件：所有值注册必须在程序启动时完成。
+    /// 这个类不加锁，约束条件：所有值/函数注册必须在程序启动时完成。
     /// </summary>
-    public class StoryValueManager
+    public class StoryFunctionManager
     {
-        public const int c_MaxValueGroupNum = (int)StoryValueGroupDefine.NUM;
-        public void RegisterValueFactory(string name, IStoryValueFactory factory)
+        public const int c_MaxFunctionGroupNum = (int)StoryFunctionGroupDefine.NUM;
+        public void RegisterFunctionFactory(string name, string doc, IStoryFunctionFactory factory)
         {
-            RegisterValueFactory(name, factory, false);
+            RegisterFunctionFactory(name, doc, factory, false);
         }
-        public void RegisterValueFactory(string name, IStoryValueFactory factory, bool replace)
+        public void RegisterFunctionFactory(string name, string doc, IStoryFunctionFactory factory, bool replace)
         {
             lock (m_Lock) {
-                if (!m_ValueFactories.ContainsKey(name)) {
-                    m_ValueFactories.Add(name, factory);
+                if (!m_FunctionFactories.ContainsKey(name)) {
+                    m_FunctionFactories.Add(name, factory);
                 }
                 else if (replace) {
-                    m_ValueFactories[name] = factory;
+                    m_FunctionFactories[name] = factory;
                 }
                 else {
-                    //error
+                    //ignore or warning
+                }
+                if (!m_FunctionDocs.ContainsKey(name)) {
+                    m_FunctionDocs.Add(name, doc);
+                }
+                else if (replace) {
+                    m_FunctionDocs[name] = doc;
+                }
+                else {
+                    //ignore or warning
                 }
             }
         }
-        public void RegisterValueFactory(StoryValueGroupDefine group, string name, IStoryValueFactory factory)
+        public void RegisterFunctionFactory(StoryFunctionGroupDefine group, string name, string doc, IStoryFunctionFactory factory)
         {
-            RegisterValueFactory(group, name, factory, false);
+            RegisterFunctionFactory(group, name, doc, factory, false);
         }
-        public void RegisterValueFactory(StoryValueGroupDefine group, string name, IStoryValueFactory factory, bool replace)
+        public void RegisterFunctionFactory(StoryFunctionGroupDefine group, string name, string doc, IStoryFunctionFactory factory, bool replace)
         {
             lock (m_Lock) {
                 int ix = (int)group;
-                if (ix >= 0 && ix < c_MaxValueGroupNum) {
-                    Dictionary<string, IStoryValueFactory> handlers = m_GroupedValueFactories[ix];
+                if (ix >= 0 && ix < c_MaxFunctionGroupNum) {
+                    Dictionary<string, IStoryFunctionFactory> handlers = m_GroupedFunctionFactories[ix];
                     if (!handlers.ContainsKey(name)) {
                         handlers.Add(name, factory);
                     }
@@ -58,32 +67,60 @@ namespace StorySystem
                         handlers[name] = factory;
                     }
                     else {
-                        //error
+                        //ignore or warning
+                    }
+                    SortedList<string, string> docs = m_GroupedFunctionDocs[ix];
+                    if (!docs.ContainsKey(name)) {
+                        docs.Add(name, doc);
+                    }
+                    else if (replace) {
+                        docs[name] = doc;
+                    }
+                    else {
+                        //ignore or warning
                     }
                 }
             }
         }
-        public IStoryValueFactory FindFactory(string type)
+        public SortedList<string, string> GenFunctionDocs()
         {
-            IStoryValueFactory factory;
+            SortedList<string, string> docs;
             lock (m_Lock) {
-                m_ValueFactories.TryGetValue(type, out factory);
+                docs = new SortedList<string, string>(m_FunctionDocs);
+                const ulong c_one = 1;
+                for (int ix = 0; ix < c_MaxFunctionGroupNum; ++ix) {
+                    if ((s_ThreadFunctionGroupsMask & (c_one << ix)) != 0) {
+                        foreach(var pair in m_GroupedFunctionDocs[ix]) {
+                            if (!docs.ContainsKey(pair.Key)) {
+                                docs.Add(pair.Key, pair.Value);
+                            }
+                        }
+                    }
+                }
+            }
+            return docs;
+        }
+        public IStoryFunctionFactory FindFactory(string type)
+        {
+            IStoryFunctionFactory factory;
+            lock (m_Lock) {
+                m_FunctionFactories.TryGetValue(type, out factory);
             }
             return factory;
         }
-        public IStoryValueFactory FindFactory(StoryValueGroupDefine group, string type)
+        public IStoryFunctionFactory FindFactory(StoryFunctionGroupDefine group, string type)
         {
-            IStoryValueFactory factory = null;
+            IStoryFunctionFactory factory = null;
             lock (m_Lock) {
                 int ix = (int)group;
-                if (ix >= 0 && ix < c_MaxValueGroupNum) {
-                    Dictionary<string, IStoryValueFactory> factories = m_GroupedValueFactories[ix];
+                if (ix >= 0 && ix < c_MaxFunctionGroupNum) {
+                    Dictionary<string, IStoryFunctionFactory> factories = m_GroupedFunctionFactories[ix];
                     factories.TryGetValue(type, out factory);
                 }
             }
             return factory;
         }
-        public IStoryValue CalcValue(Dsl.ISyntaxComponent param)
+        public IStoryFunction CreateFunction(Dsl.ISyntaxComponent param)
         {
             lock (m_Lock) {
                 Dsl.StatementData statementData = param as Dsl.StatementData;
@@ -100,14 +137,14 @@ namespace StorySystem
                         case (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS:
                             if (callData.GetParamNum() > 0) {
                                 int ct = callData.GetParamNum();
-                                return CalcValue(callData.GetParam(ct - 1));
+                                return CreateFunction(callData.GetParam(ct - 1));
                             }
                             else {
                                 return null;
                             }
                         case (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET: {
-                                IStoryValue ret = null;
-                                IStoryValueFactory factory = GetFactory("array");
+                                IStoryFunction ret = null;
+                                IStoryFunctionFactory factory = GetFactory("array");
                                 if (null != factory) {
                                     try {
                                         ret = factory.Build();
@@ -130,8 +167,8 @@ namespace StorySystem
                         //处理大括弧
                         callData = funcData;
                         if (null == callData || !callData.HaveParam()) {
-                            IStoryValue ret = null;
-                            IStoryValueFactory factory = GetFactory("hashtable");
+                            IStoryFunction ret = null;
+                            IStoryFunctionFactory factory = GetFactory("hashtable");
                             if (null != factory) {
                                 try {
                                     ret = factory.Build();
@@ -187,7 +224,7 @@ namespace StorySystem
                                         newCall.Params.Add(p);
                                     }
                                 }
-                                return CalcValue(newCall);
+                                return CreateFunction(newCall);
                             }
                             else if (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PERIOD ||
                               callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET) {
@@ -206,13 +243,13 @@ namespace StorySystem
                                     newCall.Params.Add(callData.Name);
                                     newCall.Params.Add(ObjectMemberConverter.Convert(callData.GetParam(0), callData.GetParamClass()));
                                 }
-                                return CalcValue(newCall);
+                                return CreateFunction(newCall);
                             }
                         }
-                        IStoryValue ret = null;
+                        IStoryFunction ret = null;
                         string id = param.GetId();
                         if (param.GetIdType() == Dsl.ValueData.ID_TOKEN && id != "true" && id != "false") {
-                            IStoryValueFactory factory = GetFactory(id);
+                            IStoryFunctionFactory factory = GetFactory(id);
                             if (null != factory) {
                                 try {
                                     ret = factory.Build();
@@ -258,18 +295,18 @@ namespace StorySystem
                 m_Substitutes.Clear();
             }
         }
-        private IStoryValueFactory GetFactory(string id)
+        private IStoryFunctionFactory GetFactory(string id)
         {
-            IStoryValueFactory handler;
+            IStoryFunctionFactory handler;
             lock (m_Lock) {
                 string substId;
                 if (m_Substitutes.TryGetValue(id, out substId)) {
                     id = substId;
                 }
-                if (!m_ValueFactories.TryGetValue(id, out handler)) {
-                    const ulong one = 1;
-                    for (int ix = 0; ix < c_MaxValueGroupNum; ++ix) {
-                        if ((s_ThreadValueGroupsMask & (one << ix)) != 0 && m_GroupedValueFactories[ix].TryGetValue(id, out handler)) {
+                if (!m_FunctionFactories.TryGetValue(id, out handler)) {
+                    const ulong c_one = 1;
+                    for (int ix = 0; ix < c_MaxFunctionGroupNum; ++ix) {
+                        if ((s_ThreadFunctionGroupsMask & (c_one << ix)) != 0 && m_GroupedFunctionFactories[ix].TryGetValue(id, out handler)) {
                             break;
                         }
                     }
@@ -277,29 +314,32 @@ namespace StorySystem
             }
             return handler;
         }
-        private StoryValueManager()
+        private StoryFunctionManager()
         {
-            for (int i = 0; i < c_MaxValueGroupNum; ++i) {
-                m_GroupedValueFactories[i] = new Dictionary<string, IStoryValueFactory>();
+            for (int i = 0; i < c_MaxFunctionGroupNum; ++i) {
+                m_GroupedFunctionFactories[i] = new Dictionary<string, IStoryFunctionFactory>();
+                m_GroupedFunctionDocs[i] = new SortedList<string, string>();
             }
         }
         private object m_Lock = new object();
-        private Dictionary<string, IStoryValueFactory> m_ValueFactories = new Dictionary<string, IStoryValueFactory>();
-        private Dictionary<string, IStoryValueFactory>[] m_GroupedValueFactories = new Dictionary<string, IStoryValueFactory>[c_MaxValueGroupNum];
+        private Dictionary<string, IStoryFunctionFactory> m_FunctionFactories = new Dictionary<string, IStoryFunctionFactory>();
+        private SortedList<string, string> m_FunctionDocs = new SortedList<string, string>();
+        private Dictionary<string, IStoryFunctionFactory>[] m_GroupedFunctionFactories = new Dictionary<string, IStoryFunctionFactory>[c_MaxFunctionGroupNum];
+        private SortedList<string, string>[] m_GroupedFunctionDocs = new SortedList<string, string>[c_MaxFunctionGroupNum];
         private Dictionary<string, string> m_Substitutes = new Dictionary<string, string>();
-        public static ulong ThreadValueGroupsMask
+        public static ulong ThreadFunctionGroupsMask
         {
-            get { return s_ThreadValueGroupsMask; }
-            set { s_ThreadValueGroupsMask = value; }
+            get { return s_ThreadFunctionGroupsMask; }
+            set { s_ThreadFunctionGroupsMask = value; }
         }
         [ThreadStatic]
-        private static ulong s_ThreadValueGroupsMask = 0;
-        public static StoryValueManager Instance
+        private static ulong s_ThreadFunctionGroupsMask = 0;
+        public static StoryFunctionManager Instance
         {
             get {
                 return s_Instance;
             }
         }
-        private static StoryValueManager s_Instance = new StoryValueManager();
+        private static StoryFunctionManager s_Instance = new StoryFunctionManager();
     }
 }

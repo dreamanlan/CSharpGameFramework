@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameFrameworkMessage;
+using StorySystem;
 
 namespace GameFramework
 {
@@ -50,6 +51,9 @@ namespace GameFramework
             m_StorySystem.Init(this);
             m_GmStorySystem.Init(this);
             m_EntityController.Init(this, m_EntityMgr);
+
+            m_CommandDocs = StoryCommandManager.Instance.GenCommandDocs();
+            m_FunctionDocs = StoryFunctionManager.Instance.GenFunctionDocs();
         }
 
         public void Reset()
@@ -327,6 +331,14 @@ namespace GameFramework
                 return m_BlackBoard;
             }
         }
+        public SortedList<string, string> CommandDocs
+        {
+            get { return m_CommandDocs; }
+        }
+        public SortedList<string, string> FunctionDocs
+        {
+            get { return m_FunctionDocs; }
+        }
 
         public int SceneResId
         {
@@ -405,6 +417,8 @@ namespace GameFramework
 
         private GmCommands.GmStorySystem m_GmStorySystem = new GmCommands.GmStorySystem();
         private bool m_IsStoryState = false;
+        private SortedList<string, string> m_CommandDocs;
+        private SortedList<string, string> m_FunctionDocs;
 
         private RoomUserManager m_RoomInfo = null;
         private GameTimeUtil m_GameTime = new GameTimeUtil();

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "0tnzQ5dl6fZMzo97IYbxZQ8A4Rd3HYpVKj+RDDzKWm8iFK4iEWZ3XJuC4sNRiX5ZY5Njf48oAQ2zVyJWVY4KBw==",
+  "dgSpecHash": "XPBTyJSwQTNIGH/gckUknXv4iX+osFFpk0rUKgzsScvjvMA/GH3u3hWjBu/Gmf9XNYQ1b7xsixI0DPv9gr13oA==",
   "success": true,
-  "projectFilePath": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\LogSys.csproj",
+  "projectFilePath": "F:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\LogSys.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

@@ -87,9 +87,9 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue m_Object = new StoryValue();
-        private IStoryValue m_Method = new StoryValue();
-        private List<IStoryValue> m_Args = new List<IStoryValue>();
+        private IStoryFunction m_Object = new StoryValue();
+        private IStoryFunction m_Method = new StoryValue();
+        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
     /// dotnetset(obj,method,arg1,arg2,...);
@@ -170,9 +170,9 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue m_Object = new StoryValue();
-        private IStoryValue m_Method = new StoryValue();
-        private List<IStoryValue> m_Args = new List<IStoryValue>();
+        private IStoryFunction m_Object = new StoryValue();
+        private IStoryFunction m_Method = new StoryValue();
+        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
     /// collectionexec(obj,method,arg1,arg2,...);
@@ -246,9 +246,9 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue m_Object = new StoryValue();
-        private IStoryValue m_Method = new StoryValue();
-        private List<IStoryValue> m_Args = new List<IStoryValue>();
+        private IStoryFunction m_Object = new StoryValue();
+        private IStoryFunction m_Method = new StoryValue();
+        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
     /// collectionset(obj,method,arg1,arg2,...);
@@ -314,9 +314,9 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue m_Object = new StoryValue();
-        private IStoryValue m_Method = new StoryValue();
-        private List<IStoryValue> m_Args = new List<IStoryValue>();
+        private IStoryFunction m_Object = new StoryValue();
+        private IStoryFunction m_Method = new StoryValue();
+        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
     /// system(file,args);
@@ -354,7 +354,7 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue<string> m_FileName = new StoryValue<string>();
-        private IStoryValue<string> m_Arguments = new StoryValue<string>();
+        private IStoryFunction<string> m_FileName = new StoryValue<string>();
+        private IStoryFunction<string> m_Arguments = new StoryValue<string>();
     }
 }

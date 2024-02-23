@@ -17,14 +17,14 @@ namespace GameFramework.GmCommands
         internal void Init()
         {
             //注册Gm命令
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "enablecalculatorlog", new StoryCommandFactoryHelper<EnableCalculatorLogCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "resetdsl", new StoryCommandFactoryHelper<DoResetDslCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "scp", new StoryCommandFactoryHelper<DoScpCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "gm", new StoryCommandFactoryHelper<DoGmCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "setdebug", new StoryCommandFactoryHelper<SetDebugCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "allocmemory", new StoryCommandFactoryHelper<AllocMemoryCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "freememory", new StoryCommandFactoryHelper<FreeMemoryCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "consumecpu", new StoryCommandFactoryHelper<ConsumeCpuCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "enablecalculatorlog", "enablecalculatorlog command", new StoryCommandFactoryHelper<EnableCalculatorLogCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "resetdsl", "resetdsl command", new StoryCommandFactoryHelper<DoResetDslCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "scp", "scp command", new StoryCommandFactoryHelper<DoScpCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "gm", "gm command", new StoryCommandFactoryHelper<DoGmCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "setdebug", "setdebug command", new StoryCommandFactoryHelper<SetDebugCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "allocmemory", "allocmemory command", new StoryCommandFactoryHelper<AllocMemoryCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "freememory", "freememory command", new StoryCommandFactoryHelper<FreeMemoryCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "consumecpu", "consumecpu command", new StoryCommandFactoryHelper<ConsumeCpuCommand>());
 
             //注册值与函数处理
 

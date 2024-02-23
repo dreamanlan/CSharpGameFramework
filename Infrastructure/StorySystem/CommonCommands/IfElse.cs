@@ -26,7 +26,7 @@ namespace StorySystem.CommonCommands
         {
             IfElseCommand retCmd = new IfElseCommand();
             retCmd.m_LocalInfoIndex = m_LocalInfoIndex;
-            retCmd.m_LoadedConditions = new List<IStoryValue<int>>();
+            retCmd.m_LoadedConditions = new List<IStoryFunction<int>>();
             for (int i = 0; i < m_LoadedConditions.Count; ++i) {
                 retCmd.m_LoadedConditions.Add(m_LoadedConditions[i].Clone());
             }
@@ -48,7 +48,7 @@ namespace StorySystem.CommonCommands
         protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
         {
             var localInfos = handler.LocalInfoStack.Peek();
-            var conditions = localInfos.GetLocalInfo(m_LocalInfoIndex) as List<IStoryValue<int>>;
+            var conditions = localInfos.GetLocalInfo(m_LocalInfoIndex) as List<IStoryFunction<int>>;
             for (int i = 0; i < conditions.Count; ++i) {
                 conditions[i].Evaluate(instance, handler, iterator, args);
             }
@@ -60,9 +60,9 @@ namespace StorySystem.CommonCommands
                 return false;
             bool ret = false;
             var localInfos = handler.LocalInfoStack.Peek();
-            var conditions = localInfos.GetLocalInfo(m_LocalInfoIndex) as List<IStoryValue<int>>;
+            var conditions = localInfos.GetLocalInfo(m_LocalInfoIndex) as List<IStoryFunction<int>>;
             if (null == conditions) {
-                conditions = new List<IStoryValue<int>>();
+                conditions = new List<IStoryFunction<int>>();
                 for (int i = 0; i < m_LoadedConditions.Count; ++i) {
                     conditions.Add(m_LoadedConditions[i].Clone());
                 }
@@ -190,7 +190,7 @@ namespace StorySystem.CommonCommands
         }
 
         private int m_LocalInfoIndex;
-        private List<IStoryValue<int>> m_LoadedConditions = new List<IStoryValue<int>>();
+        private List<IStoryFunction<int>> m_LoadedConditions = new List<IStoryFunction<int>>();
         private List<List<IStoryCommand>> m_LoadedIfCommands = new List<List<IStoryCommand>>();
         private List<IStoryCommand> m_LoadedElseCommands = new List<IStoryCommand>();
     }

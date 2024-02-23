@@ -25,7 +25,7 @@ namespace GameFramework.Story.Commands
             cmd.m_Money = m_Money.Clone();
             cmd.m_Gold = m_Gold.Clone();
             for (int i = 0; i < m_MailItems.Count; ++i) {
-                IStoryValue<int> val = m_MailItems[i];
+                IStoryFunction<int> val = m_MailItems[i];
                 cmd.m_MailItems.Add(val.Clone());
             }
             return cmd;
@@ -45,7 +45,7 @@ namespace GameFramework.Story.Commands
             m_Money.Evaluate(instance, handler, iterator, args);
             m_Gold.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_MailItems.Count; ++i) {
-                IStoryValue<int> val = m_MailItems[i];
+                IStoryFunction<int> val = m_MailItems[i];
                 val.Evaluate(instance, handler, iterator, args);
             }
         }
@@ -112,15 +112,15 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_Receiver = new StoryValue<ulong>();
-        private IStoryValue<string> m_Title = new StoryValue<string>();
-        private IStoryValue<string> m_Content = new StoryValue<string>();
-        private IStoryValue<string> m_Sender = new StoryValue<string>();
-        private IStoryValue<int> m_LevelDemand = new StoryValue<int>();
-        private IStoryValue<int> m_ValidPeriod = new StoryValue<int>();
-        private IStoryValue<int> m_Money = new StoryValue<int>();
-        private IStoryValue<int> m_Gold = new StoryValue<int>();
-        private List<IStoryValue<int>> m_MailItems = new List<IStoryValue<int>>();
+        private IStoryFunction<ulong> m_Receiver = new StoryValue<ulong>();
+        private IStoryFunction<string> m_Title = new StoryValue<string>();
+        private IStoryFunction<string> m_Content = new StoryValue<string>();
+        private IStoryFunction<string> m_Sender = new StoryValue<string>();
+        private IStoryFunction<int> m_LevelDemand = new StoryValue<int>();
+        private IStoryFunction<int> m_ValidPeriod = new StoryValue<int>();
+        private IStoryFunction<int> m_Money = new StoryValue<int>();
+        private IStoryFunction<int> m_Gold = new StoryValue<int>();
+        private List<IStoryFunction<int>> m_MailItems = new List<IStoryFunction<int>>();
     }
     /// <summary>
     /// clearmembers(guid);
@@ -164,7 +164,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
     }
     /// <summary>
     /// addmember(guid, tableid, level);
@@ -220,9 +220,9 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryValue<int> m_TableId = new StoryValue<int>();
-        private IStoryValue<int> m_Level = new StoryValue<int>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<int> m_TableId = new StoryValue<int>();
+        private IStoryFunction<int> m_Level = new StoryValue<int>();
     }
     /// <summary>
     /// removemember(guid, id_or_guid);
@@ -290,8 +290,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryValue m_MemberId = new StoryValue();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction m_MemberId = new StoryValue();
     }
     /// <summary>
     /// syncmembers(guid);
@@ -332,7 +332,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
     }
     /// <summary>
     /// clearitems(guid);
@@ -376,7 +376,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
     }
     /// <summary>
     /// additem(guid, itemid, num);
@@ -428,9 +428,9 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryValue<int> m_ItemId = new StoryValue<int>();
-        private IStoryValue<int> m_ItemNum = new StoryValue<int>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<int> m_ItemId = new StoryValue<int>();
+        private IStoryFunction<int> m_ItemNum = new StoryValue<int>();
     }
     /// <summary>
     /// reduceitem(guid, itemid, num);
@@ -482,9 +482,9 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryValue<int> m_ItemId = new StoryValue<int>();
-        private IStoryValue<int> m_ItemNum = new StoryValue<int>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<int> m_ItemId = new StoryValue<int>();
+        private IStoryFunction<int> m_ItemNum = new StoryValue<int>();
     }
     /// <summary>
     /// removeitem(guid, id_or_guid);
@@ -542,8 +542,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryValue m_ItemId = new StoryValue();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction m_ItemId = new StoryValue();
     }
     /// <summary>
     /// syncitems(guid);
@@ -584,7 +584,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
     }
     /// <summary>
     /// clearuserdatas(guid);
@@ -630,7 +630,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
     }
     /// <summary>
     /// adduserdata(guid, key, val);
@@ -702,9 +702,9 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryValue<string> m_Key = new StoryValue<string>();
-        private IStoryValue m_Value = new StoryValue();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<string> m_Key = new StoryValue<string>();
+        private IStoryFunction m_Value = new StoryValue();
     }
     /// <summary>
     /// removeuserdata(guid, key, type);
@@ -762,9 +762,9 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<ulong> m_UserGuid = new StoryValue<ulong>();
-        private IStoryValue<string> m_Key = new StoryValue<string>();
-        private IStoryValue<string> m_Type = new StoryValue<string>();
+        private IStoryFunction<ulong> m_UserGuid = new StoryValue<ulong>();
+        private IStoryFunction<string> m_Key = new StoryValue<string>();
+        private IStoryFunction<string> m_Type = new StoryValue<string>();
     }
     /// <summary>
     /// clearglobaldatas(guid);
@@ -856,8 +856,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<string> m_Key = new StoryValue<string>();
-        private IStoryValue m_Value = new StoryValue();
+        private IStoryFunction<string> m_Key = new StoryValue<string>();
+        private IStoryFunction m_Value = new StoryValue();
     }
     /// <summary>
     /// removeglobaldata(key, type);
@@ -908,7 +908,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<string> m_Key = new StoryValue<string>();
-        private IStoryValue<string> m_Type = new StoryValue<string>();
+        private IStoryFunction<string> m_Key = new StoryValue<string>();
+        private IStoryFunction<string> m_Type = new StoryValue<string>();
     }
 }

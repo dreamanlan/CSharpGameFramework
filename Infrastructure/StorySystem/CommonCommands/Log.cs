@@ -55,7 +55,7 @@ namespace StorySystem.CommonCommands
             }
             return true;
         }
-        private IStoryValue m_Format = new StoryValue();
-        private List<IStoryValue> m_FormatArgs = new List<IStoryValue>();
+        private IStoryFunction m_Format = new StoryValue();
+        private List<IStoryFunction> m_FormatArgs = new List<IStoryFunction>();
     }
 }

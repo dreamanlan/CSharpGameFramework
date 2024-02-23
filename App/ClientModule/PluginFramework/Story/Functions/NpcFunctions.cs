@@ -4,9 +4,9 @@ using StorySystem;
 using GameFramework;
 using ScriptRuntime;
 
-namespace GameFramework.Story.Values
+namespace GameFramework.Story.Functions
 {
-    public sealed class NpcIdListValue : IStoryValue
+    internal sealed class NpcIdListFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -14,9 +14,9 @@ namespace GameFramework.Story.Values
             if (null != callData) {
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            NpcIdListValue val = new NpcIdListValue();
+            NpcIdListFunction val = new NpcIdListFunction();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -47,20 +47,18 @@ namespace GameFramework.Story.Values
 
         private void TryUpdateValue(StoryInstance instance)
         {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                List<object> npcs = new List<object>();
-                scene.EntityManager.Entities.VisitValues((EntityInfo npcInfo) => {
-                    npcs.Add(npcInfo.GetId());
-                });
-                m_HaveValue = true;
-                m_Value = BoxedValue.FromObject(npcs);
-            }
+            List<object> npcs = new List<object>();
+            PluginFramework.Instance.EntityManager.Entities.VisitValues((EntityInfo npcInfo) => {
+                npcs.Add(npcInfo.GetId());
+            });
+            m_HaveValue = true;
+            m_Value = BoxedValue.FromObject(npcs);
         }
+
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class CombatNpcCountValue : IStoryValue
+    internal sealed class CombatNpcCountFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -72,11 +70,11 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            CombatNpcCountValue val = new CombatNpcCountValue();
+            CombatNpcCountFunction val = new CombatNpcCountFunction();
             val.m_ParamNum = m_ParamNum;
-            val.m_CampId = m_CampId;
+            val.m_CampId = m_CampId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -106,22 +104,20 @@ namespace GameFramework.Story.Values
 
         private void TryUpdateValue(StoryInstance instance)
         {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                m_HaveValue = true;
-                if (m_ParamNum > 0) {
-                    m_Value = scene.GetBattleNpcCount(m_CampId.Value);
-                } else {
-                    m_Value = scene.GetBattleNpcCount();
-                }
+            m_HaveValue = true;
+            if (m_ParamNum > 0) {
+                m_Value = PluginFramework.Instance.GetBattleNpcCount(m_CampId.Value);
+            } else {
+                m_Value = PluginFramework.Instance.GetBattleNpcCount();
             }
         }
+
         private int m_ParamNum = 0;
-        private IStoryValue<int> m_CampId = new StoryValue<int>();
+        private IStoryFunction<int> m_CampId = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class NpcGetFormationValue : IStoryValue
+    internal sealed class NpcGetFormationFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -130,9 +126,9 @@ namespace GameFramework.Story.Values
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            NpcGetFormationValue val = new NpcGetFormationValue();
+            NpcGetFormationFunction val = new NpcGetFormationFunction();
             val.m_UnitId = m_UnitId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -161,21 +157,75 @@ namespace GameFramework.Story.Values
 
         private void TryUpdateValue(StoryInstance instance)
         {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
+            int unitId = m_UnitId.Value;
+            m_HaveValue = true;
+            EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
+            if (null != entity) {
+                m_Value = entity.GetMovementStateInfo().FormationIndex;
+            }
+        }
+
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private bool m_HaveValue;
+        private BoxedValue m_Value;
+    }
+    internal sealed class NpcGetNpcTypeFunction : IStoryFunction
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            if (null != callData && callData.GetParamNum() == 1) {
+                m_UnitId.InitFromDsl(callData.GetParam(0));
+            }
+        }
+        public IStoryFunction Clone()
+        {
+            NpcGetNpcTypeFunction val = new NpcGetNpcTypeFunction();
+            val.m_UnitId = m_UnitId.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_HaveValue = false;
+            m_UnitId.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue(instance);
+        }
+        public bool HaveValue
+        {
+            get
+            {
+                return m_HaveValue;
+            }
+        }
+        public BoxedValue Value
+        {
+            get
+            {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue(StoryInstance instance)
+        {
+            if (m_UnitId.HaveValue) {
                 int unitId = m_UnitId.Value;
                 m_HaveValue = true;
-                EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
-                if (null != entity) {
-                    m_Value = entity.GetMovementStateInfo().FormationIndex;
+                EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(unitId);
+                if (null != obj) {
+                    m_Value = obj.EntityType;
+                } else {
+                    m_Value = 0;
                 }
             }
         }
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
+
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class NpcGetNpcTypeValue : IStoryValue
+    internal sealed class NpcGetSummonerIdFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -184,9 +234,9 @@ namespace GameFramework.Story.Values
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            NpcGetNpcTypeValue val = new NpcGetNpcTypeValue();
+            NpcGetSummonerIdFunction val = new NpcGetSummonerIdFunction();
             val.m_UnitId = m_UnitId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -215,25 +265,23 @@ namespace GameFramework.Story.Values
 
         private void TryUpdateValue(StoryInstance instance)
         {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                if (m_UnitId.HaveValue) {
-                    int unitId = m_UnitId.Value;
-                    m_HaveValue = true;
-                    EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
-                    if (null != obj) {
-                        m_Value = obj.EntityType;
-                    } else {
-                        m_Value = 0;
-                    }
+            if (m_UnitId.HaveValue) {
+                int unitId = m_UnitId.Value;
+                m_HaveValue = true;
+                EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(unitId);
+                if (null != obj) {
+                    m_Value = obj.SummonerId;
+                } else {
+                    m_Value = 0;
                 }
             }
         }
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
+
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class NpcGetSummonerIdValue : IStoryValue
+    internal sealed class NpcGetSummonSkillIdFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -242,9 +290,9 @@ namespace GameFramework.Story.Values
                 m_UnitId.InitFromDsl(callData.GetParam(0));
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            NpcGetSummonerIdValue val = new NpcGetSummonerIdValue();
+            NpcGetSummonSkillIdFunction val = new NpcGetSummonSkillIdFunction();
             val.m_UnitId = m_UnitId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -273,83 +321,23 @@ namespace GameFramework.Story.Values
 
         private void TryUpdateValue(StoryInstance instance)
         {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                if (m_UnitId.HaveValue) {
-                    int unitId = m_UnitId.Value;
-                    m_HaveValue = true;
-                    EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
-                    if (null != obj) {
-                        m_Value = obj.SummonerId;
-                    } else {
-                        m_Value = 0;
-                    }
+            if (m_UnitId.HaveValue) {
+                int unitId = m_UnitId.Value;
+                m_HaveValue = true;
+                EntityInfo obj = PluginFramework.Instance.GetEntityByUnitId(unitId);
+                if (null != obj) {
+                    m_Value = obj.SummonSkillId;
+                } else {
+                    m_Value = 0;
                 }
-            }
-        }
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private bool m_HaveValue;
-        private BoxedValue m_Value;
-    }
-    public sealed class NpcGetSummonSkillIdValue : IStoryValue
-    {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
-        {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
-            if (null != callData && callData.GetParamNum() == 1) {
-                m_UnitId.InitFromDsl(callData.GetParam(0));
-            }
-        }
-        public IStoryValue Clone()
-        {
-            NpcGetSummonSkillIdValue val = new NpcGetSummonSkillIdValue();
-            val.m_UnitId = m_UnitId.Clone();
-            val.m_HaveValue = m_HaveValue;
-            val.m_Value = m_Value;
-            return val;
-        }
-        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_HaveValue = false;
-            m_UnitId.Evaluate(instance, handler, iterator, args);
-            TryUpdateValue(instance);
-        }
-        public bool HaveValue
-        {
-            get
-            {
-                return m_HaveValue;
-            }
-        }
-        public BoxedValue Value
-        {
-            get
-            {
-                return m_Value;
             }
         }
 
-        private void TryUpdateValue(StoryInstance instance)
-        {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                if (m_UnitId.HaveValue) {
-                    int unitId = m_UnitId.Value;
-                    m_HaveValue = true;
-                    EntityInfo obj = scene.SceneContext.GetEntityByUnitId(unitId);
-                    if (null != obj) {
-                        m_Value = obj.SummonSkillId;
-                    } else {
-                        m_Value = 0;
-                    }
-                }
-            }
-        }
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class NpcFindImpactSeqByIdValue : IStoryValue
+    internal sealed class NpcFindImpactSeqByIdFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -359,9 +347,9 @@ namespace GameFramework.Story.Values
                 m_ImpactId.InitFromDsl(callData.GetParam(1));
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            NpcFindImpactSeqByIdValue val = new NpcFindImpactSeqByIdValue();
+            NpcFindImpactSeqByIdFunction val = new NpcFindImpactSeqByIdFunction();
             val.m_UnitId = m_UnitId.Clone();
             val.m_ImpactId = m_ImpactId.Clone();
             val.m_HaveValue = m_HaveValue;
@@ -392,28 +380,26 @@ namespace GameFramework.Story.Values
 
         private void TryUpdateValue(StoryInstance instance)
         {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                int unitId = m_UnitId.Value;
-                int impactId = m_ImpactId.Value;
-                m_HaveValue = true;
-                EntityInfo entity = scene.SceneContext.GetEntityByUnitId(unitId);
-                if (null != entity) {
-                    ImpactInfo impactInfo = entity.GetSkillStateInfo().FindImpactInfoById(impactId);
-                    if (null != impactInfo) {
-                        m_Value = impactInfo.Seq;
-                    } else {
-                        m_Value = 0;
-                    }
+            int unitId = m_UnitId.Value;
+            int impactId = m_ImpactId.Value;
+            m_HaveValue = true;
+            EntityInfo entity = PluginFramework.Instance.GetEntityByUnitId(unitId);
+            if (null != entity) {
+                ImpactInfo impactInfo = entity.GetSkillStateInfo().FindImpactInfoById(impactId);
+                if (null != impactInfo) {
+                    m_Value = impactInfo.Seq;
+                } else {
+                    m_Value = 0;
                 }
             }
         }
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_ImpactId = new StoryValue<int>();
+
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_ImpactId = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class NpcCountValue : IStoryValue
+    internal sealed class NpcCountFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -423,9 +409,9 @@ namespace GameFramework.Story.Values
                 m_EndUnitId.InitFromDsl(callData.GetParam(1));
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            NpcCountValue val = new NpcCountValue();
+            NpcCountFunction val = new NpcCountFunction();
             val.m_StartUnitId = m_StartUnitId.Clone();
             val.m_EndUnitId = m_EndUnitId.Clone();
             val.m_HaveValue = m_HaveValue;
@@ -456,16 +442,14 @@ namespace GameFramework.Story.Values
 
         private void TryUpdateValue(StoryInstance instance)
         {
-            Scene scene = instance.Context as Scene;
-            if (null != scene) {
-                m_HaveValue = true;
-                int startUnitId = m_StartUnitId.Value;
-                int endUnitId = m_EndUnitId.Value;
-                m_Value = scene.GetNpcCount(startUnitId, endUnitId);
-            }
+            m_HaveValue = true;
+            int startUnitId = m_StartUnitId.Value;
+            int endUnitId = m_EndUnitId.Value;
+            m_Value = PluginFramework.Instance.GetNpcCount(startUnitId, endUnitId);
         }
-        private IStoryValue<int> m_StartUnitId = new StoryValue<int>();
-        private IStoryValue<int> m_EndUnitId = new StoryValue<int>();
+
+        private IStoryFunction<int> m_StartUnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_EndUnitId = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

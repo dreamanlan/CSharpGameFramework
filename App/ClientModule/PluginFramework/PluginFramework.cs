@@ -130,6 +130,9 @@ namespace GameFramework
             Utility.EventSystem.Subscribe("gm_resetdsl", "gm", ResetDsl);
             Utility.EventSystem.Subscribe<string>("gm_execscript", "gm", ExecScript);
             Utility.EventSystem.Subscribe<string>("gm_execcommand", "gm", ExecCommand);
+
+            m_CommandDocs = StorySystem.StoryCommandManager.Instance.GenCommandDocs();
+            m_FunctionDocs = StorySystem.StoryFunctionManager.Instance.GenFunctionDocs();
         }
         public void Release()
         {
@@ -934,6 +937,14 @@ namespace GameFramework
         {
             get { return m_SceneContextInfo; }
         }
+        public SortedList<string, string> CommandDocs
+        {
+            get { return m_CommandDocs; }
+        }
+        public SortedList<string, string> FunctionDocs
+        {
+            get { return m_FunctionDocs; }
+        }
 
         #region delay action process (为了不触发jit编译，这里重新包装一次)
         public void QueueAction(MyAction action)
@@ -1109,5 +1120,7 @@ namespace GameFramework
         private Queue<int> m_NpcOnAttackedToDeadQueue = new Queue<int>();
 
         private List<EntityInfo> m_EntitiesForAi = new List<EntityInfo>();
+        private SortedList<string, string> m_CommandDocs;
+        private SortedList<string, string> m_FunctionDocs;
     }
 }

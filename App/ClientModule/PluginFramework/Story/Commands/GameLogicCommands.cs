@@ -73,8 +73,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<string> m_AttrName = new StoryValue<string>();
-        private IStoryValue m_Value = new StoryValue();
+        private IStoryFunction<string> m_AttrName = new StoryValue<string>();
+        private IStoryFunction m_Value = new StoryValue();
     }
     /// <summary>
     /// camerafollow(npc_unit_id1,npc_unit_id2,...)[with(camera_path)];
@@ -125,7 +125,7 @@ namespace GameFramework.Story.Commands
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryValue<int> val = new StoryValue<int>();
+                IStoryFunction<int> val = new StoryValue<int>();
                 val.InitFromDsl(callData.GetParam(i));
                 m_UnitIds.Add(val);
             }
@@ -153,8 +153,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private List<IStoryValue<int>> m_UnitIds = new List<IStoryValue<int>>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private List<IStoryFunction<int>> m_UnitIds = new List<IStoryFunction<int>>();
     }
     /// <summary>
     /// cameralookat(npc_unit_id)[with(camera_path)];
@@ -229,8 +229,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue m_Arg = new StoryValue();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction m_Arg = new StoryValue();
     }
     /// <summary>
     /// cameralookatimmediately(npc_unit_id)[with(camera_path)];
@@ -305,8 +305,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue m_Arg = new StoryValue();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction m_Arg = new StoryValue();
     }
     /// <summary>
     /// cameralooktoward(npc_unit_id)[with(camera_path)];
@@ -381,8 +381,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue m_Arg = new StoryValue();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction m_Arg = new StoryValue();
     }
     /// <summary>
     /// camerafixedyaw(yaw)[with(camera_path)];
@@ -445,8 +445,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
     }
     /// <summary>
     /// camerayaw(yaw, anglelag, snaplag)[with(camera_path)];
@@ -517,10 +517,10 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
-        private IStoryValue<float> m_Arg2 = new StoryValue<float>();
-        private IStoryValue<float> m_Arg3 = new StoryValue<float>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
+        private IStoryFunction<float> m_Arg2 = new StoryValue<float>();
+        private IStoryFunction<float> m_Arg3 = new StoryValue<float>();
     }
     /// <summary>
     /// cameraheight(height, lag)[with(camera_path)];
@@ -587,9 +587,9 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
-        private IStoryValue<float> m_Arg2 = new StoryValue<float>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
+        private IStoryFunction<float> m_Arg2 = new StoryValue<float>();
     }
     /// <summary>
     /// cameradistance(distance, lag)[with(camera_path)];
@@ -656,9 +656,9 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
-        private IStoryValue<float> m_Arg2 = new StoryValue<float>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
+        private IStoryFunction<float> m_Arg2 = new StoryValue<float>();
     }
     /// <summary>
     /// camerasetdistanceheight(distance, height)[with(camera_path)];
@@ -725,9 +725,9 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
-        private IStoryValue<float> m_Arg2 = new StoryValue<float>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
+        private IStoryFunction<float> m_Arg2 = new StoryValue<float>();
     }
     /// <summary>
     /// cameraresetdistanceheight()[with(camera_path)];
@@ -784,7 +784,7 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
     }
     /// <summary>
     /// camerasetfollowspeed(maxdist, mindist, maxspeed, minspeed, power)[with(camera_path)];
@@ -863,12 +863,12 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue<float> m_Arg1 = new StoryValue<float>();
-        private IStoryValue<float> m_Arg2 = new StoryValue<float>();
-        private IStoryValue<float> m_Arg3 = new StoryValue<float>();
-        private IStoryValue<float> m_Arg4 = new StoryValue<float>();
-        private IStoryValue<int> m_Arg5 = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<float> m_Arg1 = new StoryValue<float>();
+        private IStoryFunction<float> m_Arg2 = new StoryValue<float>();
+        private IStoryFunction<float> m_Arg3 = new StoryValue<float>();
+        private IStoryFunction<float> m_Arg4 = new StoryValue<float>();
+        private IStoryFunction<int> m_Arg5 = new StoryValue<int>();
     }
     /// <summary>
     /// cameraresetfollowspeed()[with(camera_path)];
@@ -925,7 +925,7 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
     }
     /// <summary>
     /// camerafollowobj(objid)[with(camera_path)];
@@ -990,8 +990,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
     }
     /// <summary>
     /// cameralookobj(objid)[with(camera_path)];
@@ -1057,8 +1057,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
     }
     /// <summary>
     /// cameralookobjimmediately(objid)[with(camera_path)];
@@ -1124,8 +1124,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
     }
     /// <summary>
     /// cameralooktowardobj(objid)[with(camera_path)];
@@ -1191,8 +1191,8 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
     }
     /// <summary>
     /// cameralookcopy(objpath, unitid or vector3(x,y,z))[with(camera_path)];
@@ -1277,9 +1277,9 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue m_ObjPath = new StoryValue();
-        private IStoryValue m_Arg = new StoryValue();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction m_ObjPath = new StoryValue();
+        private IStoryFunction m_Arg = new StoryValue();
     }
     /// <summary>
     /// cameralookobjcopy(objpath, objid)[with(camera_path)];
@@ -1355,9 +1355,9 @@ namespace GameFramework.Story.Commands
         }
 
         private bool m_HaveCameraPath = false;
-        private IStoryValue<string> m_CameraPath = new StoryValue<string>();
-        private IStoryValue m_ObjPath = new StoryValue();
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_CameraPath = new StoryValue<string>();
+        private IStoryFunction m_ObjPath = new StoryValue();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
     }
     /// <summary>
     /// cameraenable(name, 0_or_1);
@@ -1396,8 +1396,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<string> m_Path = new StoryValue<string>();
-        private IStoryValue<int> m_Arg = new StoryValue<int>();
+        private IStoryFunction<string> m_Path = new StoryValue<string>();
+        private IStoryFunction<int> m_Arg = new StoryValue<int>();
     }
     /// <summary>
     /// lockframe(scale);
@@ -1436,7 +1436,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<float> m_Scale = new StoryValue<float>();
+        private IStoryFunction<float> m_Scale = new StoryValue<float>();
     }
     /// <summary>
     /// setleaderid([objid,]leaderid);
@@ -1492,8 +1492,8 @@ namespace GameFramework.Story.Commands
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
-        private IStoryValue<int> m_LeaderId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_LeaderId = new StoryValue<int>();
     }
     /// <summary>
     /// showdlg(storyDlgId);
@@ -1532,7 +1532,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_StoryDlgId = new StoryValue<int>();
+        private IStoryFunction<int> m_StoryDlgId = new StoryValue<int>();
     }
     /// <summary>
     /// areadetect(name,radius,type,callback)[set(var,val)];
@@ -1649,13 +1649,13 @@ namespace GameFramework.Story.Commands
             }
         }
 
-        private IStoryValue<string> m_Name = new StoryValue<string>();
-        private IStoryValue<float> m_Radius = new StoryValue<float>();
-        private IStoryValue<string> m_Type = new StoryValue<string>();
-        private IStoryValue<string> m_EventName = new StoryValue<string>();
-        private IStoryValue<string> m_SetVar = new StoryValue<string>();
-        private IStoryValue m_SetVal = new StoryValue();
-        private IStoryValue m_ElseSetVal = new StoryValue();
+        private IStoryFunction<string> m_Name = new StoryValue<string>();
+        private IStoryFunction<float> m_Radius = new StoryValue<float>();
+        private IStoryFunction<string> m_Type = new StoryValue<string>();
+        private IStoryFunction<string> m_EventName = new StoryValue<string>();
+        private IStoryFunction<string> m_SetVar = new StoryValue<string>();
+        private IStoryFunction m_SetVal = new StoryValue();
+        private IStoryFunction m_ElseSetVal = new StoryValue();
         private bool m_HaveSet = false;
     }
     /// <summary>
@@ -1737,10 +1737,10 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<string> m_Name = new StoryValue<string>();
-        private IStoryValue<string> m_Prefab = new StoryValue<string>();
-        private IStoryValue<string> m_DslFile = new StoryValue<string>();
-        private IStoryValue<int> m_DontDestroyOld = new StoryValue<int>();
+        private IStoryFunction<string> m_Name = new StoryValue<string>();
+        private IStoryFunction<string> m_Prefab = new StoryValue<string>();
+        private IStoryFunction<string> m_DslFile = new StoryValue<string>();
+        private IStoryFunction<int> m_DontDestroyOld = new StoryValue<int>();
     }
     /// <summary>
     /// bindui(gameobject){
@@ -1953,8 +1953,8 @@ namespace GameFramework.Story.Commands
 
         private class VarInfo
         {
-            internal IStoryValue<string> m_VarName = null;
-            internal IStoryValue<string> m_ControlPath = null;
+            internal IStoryFunction<string> m_VarName = null;
+            internal IStoryFunction<string> m_ControlPath = null;
 
             internal VarInfo()
             {
@@ -1969,9 +1969,9 @@ namespace GameFramework.Story.Commands
         }
         private class EventInfo
         {
-            internal IStoryValue<string> m_Event = null;
-            internal IStoryValue<string> m_Tag = null;
-            internal IStoryValue<string> m_Path = null;
+            internal IStoryFunction<string> m_Event = null;
+            internal IStoryFunction<string> m_Tag = null;
+            internal IStoryFunction<string> m_Path = null;
 
             internal EventInfo()
             {
@@ -1987,19 +1987,19 @@ namespace GameFramework.Story.Commands
             }
         }
 
-        private IStoryValue m_Obj = new StoryValue();
+        private IStoryFunction m_Obj = new StoryValue();
         private List<VarInfo> m_VarInfos = new List<VarInfo>();
-        internal List<IStoryValue<string>> m_Inputs = new List<IStoryValue<string>>();
-        internal List<IStoryValue<string>> m_Toggles = new List<IStoryValue<string>>();
-        internal List<IStoryValue<string>> m_Sliders = new List<IStoryValue<string>>();
-        internal List<IStoryValue<string>> m_DropDowns = new List<IStoryValue<string>>();
+        internal List<IStoryFunction<string>> m_Inputs = new List<IStoryFunction<string>>();
+        internal List<IStoryFunction<string>> m_Toggles = new List<IStoryFunction<string>>();
+        internal List<IStoryFunction<string>> m_Sliders = new List<IStoryFunction<string>>();
+        internal List<IStoryFunction<string>> m_DropDowns = new List<IStoryFunction<string>>();
         private List<EventInfo> m_EventInfos = new List<EventInfo>();
 
-        private static void LoadPaths(List<IStoryValue<string>> List, Dsl.FunctionData callData)
+        private static void LoadPaths(List<IStoryFunction<string>> List, Dsl.FunctionData callData)
         {
             int num = callData.GetParamNum();
             for (int i = 0; i < num; ++i) {
-                IStoryValue<string> path = new StoryValue<string>();
+                IStoryFunction<string> path = new StoryValue<string>();
                 path.InitFromDsl(callData.GetParam(i));
                 List.Add(path);
             }

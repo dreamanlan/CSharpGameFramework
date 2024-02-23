@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Diagnostics;
 
-namespace StorySystem.CommonValues
+namespace StorySystem.CommonFunctions
 {
-    public sealed class LinqValue : IStoryValue
+    public sealed class LinqFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -24,9 +24,9 @@ namespace StorySystem.CommonValues
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            LinqValue val = new LinqValue();
+            LinqFunction val = new LinqFunction();
             val.m_Object = m_Object.Clone();
             val.m_Method = m_Method.Clone();
             for (int i = 0; i < m_Args.Count; i++) {
@@ -148,9 +148,9 @@ namespace StorySystem.CommonValues
             }
         }
 
-        private IStoryValue m_Object = new StoryValue();
-        private IStoryValue<string> m_Method = new StoryValue<string>();
-        private List<IStoryValue> m_Args = new List<IStoryValue>();
+        private IStoryFunction m_Object = new StoryValue();
+        private IStoryFunction<string> m_Method = new StoryValue<string>();
+        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

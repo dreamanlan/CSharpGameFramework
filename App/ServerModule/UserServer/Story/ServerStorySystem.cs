@@ -432,7 +432,7 @@ namespace GameFramework
         internal static void ThreadInitMask()
         {
             StoryCommandManager.ThreadCommandGroupsMask = (ulong)((1 << (int)StoryCommandGroupDefine.GM) + (1 << (int)StoryCommandGroupDefine.USER));
-            StoryValueManager.ThreadValueGroupsMask = (ulong)((1 << (int)StoryValueGroupDefine.GM) + (1 << (int)StoryValueGroupDefine.USER));
+            StoryFunctionManager.ThreadFunctionGroupsMask = (ulong)((1 << (int)StoryFunctionGroupDefine.GM) + (1 << (int)StoryFunctionGroupDefine.USER));
         }
         internal static void StaticInit()
         {
@@ -440,67 +440,67 @@ namespace GameFramework
                 s_IsInited = true;
 
                 //注册剧情命令
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "startstory", new StoryCommandFactoryHelper<Story.Commands.StartStoryCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "stopstory", new StoryCommandFactoryHelper<Story.Commands.StopStoryCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "waitstory", new StoryCommandFactoryHelper<Story.Commands.WaitStoryCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "pausestory", new StoryCommandFactoryHelper<Story.Commands.PauseStoryCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "resumestory", new StoryCommandFactoryHelper<Story.Commands.ResumeStoryCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "firemessage", new Story.Commands.FireMessageCommandFactory());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "fireconcurrentmessage", new Story.Commands.FireConcurrentMessageCommandFactory());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "waitallmessage", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "waitallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageHandlerCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "suspendallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.SuspendAllMessageHandlerCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "resumeallmessagehandler", new StoryCommandFactoryHelper<Story.Commands.ResumeAllMessageHandlerCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendserverstorymessage", new StoryCommandFactoryHelper<Story.Commands.SendServerStoryMessageCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendclientstorymessage", new StoryCommandFactoryHelper<Story.Commands.SendClientStoryMessageCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "publishgfxevent", new StoryCommandFactoryHelper<Story.Commands.PublishGfxEventCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendgfxmessage", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendgfxmessagewithtag", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageWithTagCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "startstory", "startstory command", new StoryCommandFactoryHelper<Story.Commands.StartStoryCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "stopstory", "stopstory command", new StoryCommandFactoryHelper<Story.Commands.StopStoryCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "waitstory", "waitstory command", new StoryCommandFactoryHelper<Story.Commands.WaitStoryCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "pausestory", "pausestory command", new StoryCommandFactoryHelper<Story.Commands.PauseStoryCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "resumestory", "resumestory command", new StoryCommandFactoryHelper<Story.Commands.ResumeStoryCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "firemessage", "firemessage command", new Story.Commands.FireMessageCommandFactory());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "fireconcurrentmessage", "fireconcurrentmessage command", new Story.Commands.FireConcurrentMessageCommandFactory());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "waitallmessage", "waitallmessage command", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "waitallmessagehandler", "waitallmessagehandler command", new StoryCommandFactoryHelper<Story.Commands.WaitAllMessageHandlerCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "suspendallmessagehandler", "suspendallmessagehandler command", new StoryCommandFactoryHelper<Story.Commands.SuspendAllMessageHandlerCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "resumeallmessagehandler", "resumeallmessagehandler command", new StoryCommandFactoryHelper<Story.Commands.ResumeAllMessageHandlerCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendserverstorymessage", "sendserverstorymessage command", new StoryCommandFactoryHelper<Story.Commands.SendServerStoryMessageCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendclientstorymessage", "sendclientstorymessage command", new StoryCommandFactoryHelper<Story.Commands.SendClientStoryMessageCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "publishgfxevent", "publishgfxevent command", new StoryCommandFactoryHelper<Story.Commands.PublishGfxEventCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendgfxmessage", "sendgfxmessage command", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendgfxmessagewithtag", "sendgfxmessagewithtag command", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageWithTagCommand>());
                 
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendmail", new StoryCommandFactoryHelper<Story.Commands.SendMailCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearmembers", new StoryCommandFactoryHelper<Story.Commands.ClearMembersCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "addmember", new StoryCommandFactoryHelper<Story.Commands.AddMemberCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removemember", new StoryCommandFactoryHelper<Story.Commands.RemoveMemberCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "syncmembers", new StoryCommandFactoryHelper<Story.Commands.SyncMembersCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearitems", new StoryCommandFactoryHelper<Story.Commands.ClearItemsCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "additem", new StoryCommandFactoryHelper<Story.Commands.AddItemCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "reduceitem", new StoryCommandFactoryHelper<Story.Commands.ReduceItemCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removeitem", new StoryCommandFactoryHelper<Story.Commands.RemoveItemCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "syncitems", new StoryCommandFactoryHelper<Story.Commands.SyncItemsCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearuserdatas", new StoryCommandFactoryHelper<Story.Commands.ClearUserDatasCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "adduserdata", new StoryCommandFactoryHelper<Story.Commands.AddUserDataCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removeuserdata", new StoryCommandFactoryHelper<Story.Commands.RemoveUserDataCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearglobaldatas", new StoryCommandFactoryHelper<Story.Commands.ClearGlobalDatasCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "addglobaldata", new StoryCommandFactoryHelper<Story.Commands.AddGlobalDataCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removeglobaldata", new StoryCommandFactoryHelper<Story.Commands.RemoveGlobalDataCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "sendmail", "sendmail command", new StoryCommandFactoryHelper<Story.Commands.SendMailCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearmembers", "clearmembers command", new StoryCommandFactoryHelper<Story.Commands.ClearMembersCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "addmember", "addmember command", new StoryCommandFactoryHelper<Story.Commands.AddMemberCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removemember", "removemember command", new StoryCommandFactoryHelper<Story.Commands.RemoveMemberCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "syncmembers", "syncmembers command", new StoryCommandFactoryHelper<Story.Commands.SyncMembersCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearitems", "clearitems command", new StoryCommandFactoryHelper<Story.Commands.ClearItemsCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "additem", "additem command", new StoryCommandFactoryHelper<Story.Commands.AddItemCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "reduceitem", "reduceitem command", new StoryCommandFactoryHelper<Story.Commands.ReduceItemCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removeitem", "removeitem command", new StoryCommandFactoryHelper<Story.Commands.RemoveItemCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "syncitems", "syncitems command", new StoryCommandFactoryHelper<Story.Commands.SyncItemsCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearuserdatas", "clearuserdatas command", new StoryCommandFactoryHelper<Story.Commands.ClearUserDatasCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "adduserdata", "adduserdata command", new StoryCommandFactoryHelper<Story.Commands.AddUserDataCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removeuserdata", "removeuserdata command", new StoryCommandFactoryHelper<Story.Commands.RemoveUserDataCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "clearglobaldatas", "clearglobaldatas command", new StoryCommandFactoryHelper<Story.Commands.ClearGlobalDatasCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "addglobaldata", "addglobaldata command", new StoryCommandFactoryHelper<Story.Commands.AddGlobalDataCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removeglobaldata", "removeglobaldata command", new StoryCommandFactoryHelper<Story.Commands.RemoveGlobalDataCommand>());
 
                 //注册值与函数处理
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getuserinfo", new StoryValueFactoryHelper<Story.Values.GetUserInfoValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getmembercount", new StoryValueFactoryHelper<Story.Values.GetMemberCountValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getmemberinfo", new StoryValueFactoryHelper<Story.Values.GetMemberInfoValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getfriendcount", new StoryValueFactoryHelper<Story.Values.GetFriendCountValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getfriendinfo", new StoryValueFactoryHelper<Story.Values.GetFriendInfoValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getitemcount", new StoryValueFactoryHelper<Story.Values.GetItemCountValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getiteminfo", new StoryValueFactoryHelper<Story.Values.GetItemInfoValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "finditeminfo", new StoryValueFactoryHelper<Story.Values.FindItemInfoValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "calcitemnum", new StoryValueFactoryHelper<Story.Values.CalcItemNumValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getfreeitemcount", new StoryValueFactoryHelper<Story.Values.GetFreeItemCountValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getuserdata", new StoryValueFactoryHelper<Story.Values.GetUserDataValue>());
-                StoryValueManager.Instance.RegisterValueFactory(StoryValueGroupDefine.USER, "getglobaldata", new StoryValueFactoryHelper<Story.Values.GetGlobalDataValue>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getuserinfo", "getuserinfo function", new StoryFunctionFactoryHelper<Story.Functions.GetUserInfoFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getmembercount", "getmembercount function", new StoryFunctionFactoryHelper<Story.Functions.GetMemberCountFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getmemberinfo", "getmemberinfo function", new StoryFunctionFactoryHelper<Story.Functions.GetMemberInfoFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getfriendcount", "getfriendcount function", new StoryFunctionFactoryHelper<Story.Functions.GetFriendCountFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getfriendinfo", "getfriendinfo function", new StoryFunctionFactoryHelper<Story.Functions.GetFriendInfoFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getitemcount", "getitemcount function", new StoryFunctionFactoryHelper<Story.Functions.GetItemCountFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getiteminfo", "getiteminfo function", new StoryFunctionFactoryHelper<Story.Functions.GetItemInfoFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "finditeminfo", "finditeminfo function", new StoryFunctionFactoryHelper<Story.Functions.FindItemInfoFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "calcitemnum", "calcitemnum function", new StoryFunctionFactoryHelper<Story.Functions.CalcItemNumFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getfreeitemcount", "getfreeitemcount function", new StoryFunctionFactoryHelper<Story.Functions.GetFreeItemCountFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getuserdata", "getuserdata function", new StoryFunctionFactoryHelper<Story.Functions.GetUserDataFunction>());
+                StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getglobaldata", "getglobaldata function", new StoryFunctionFactoryHelper<Story.Functions.GetGlobalDataFunction>());
 
-                LoadCustomCommandsAndValues();
+                LoadCustomCommandsAndFunctions();
             }
         }
         
-        private static void LoadCustomCommandsAndValues()
+        private static void LoadCustomCommandsAndFunctions()
         {
-            string valFile = HomePath.GetAbsolutePath(FilePathDefine_Server.C_DslPath + "Story/Common/CustomValues.dsl");
+            string valFile = HomePath.GetAbsolutePath(FilePathDefine_Server.C_DslPath + "Story/Common/CustomFunctions.dsl");
             string cmdFile = HomePath.GetAbsolutePath(FilePathDefine_Server.C_DslPath + "Story/Common/CustomCommands.dsl");
 
-            Dsl.DslFile file1 = CustomCommandValueParser.LoadStory(valFile);
-            Dsl.DslFile file2 = CustomCommandValueParser.LoadStory(cmdFile);
-            CustomCommandValueParser.FirstParse(file1, file2);
-            CustomCommandValueParser.FinalParse(file1, file2);
+            Dsl.DslFile file1 = CustomCommandFunctionParser.LoadStory(valFile);
+            Dsl.DslFile file2 = CustomCommandFunctionParser.LoadStory(cmdFile);
+            CustomCommandFunctionParser.FirstParse(file1, file2);
+            CustomCommandFunctionParser.FinalParse(file1, file2);
         }
         private static bool s_IsInited = false;
     }

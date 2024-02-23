@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\LogSys.csproj": {}
+    "F:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\LogSys.csproj": {}
   },
   "projects": {
-    "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\LogSys.csproj": {
+    "F:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\LogSys.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\LogSys.csproj",
+        "projectUniqueName": "F:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\LogSys.csproj",
         "projectName": "LogSys",
-        "projectPath": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\LogSys.csproj",
+        "projectPath": "F:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\LogSys.csproj",
         "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
-        "outputPath": "D:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\obj\\",
+        "outputPath": "F:\\GitHub\\CSharpGameFramework\\App\\ServerModule\\LogSys\\LogSys\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -59,7 +59,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.403\\RuntimeIdentifierGraph.json"
         }
       }
     }

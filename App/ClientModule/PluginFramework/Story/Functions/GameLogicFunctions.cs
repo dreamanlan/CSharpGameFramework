@@ -5,9 +5,9 @@ using ScriptRuntime;
 using StorySystem;
 using GameFramework;
 
-namespace GameFramework.Story.Values
+namespace GameFramework.Story.Functions
 {
-    internal sealed class BlackboardGetValue : IStoryValue
+    internal sealed class BlackboardGetFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -22,9 +22,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            BlackboardGetValue val = new BlackboardGetValue();
+            BlackboardGetFunction val = new BlackboardGetFunction();
             val.m_ParamNum = m_ParamNum;
             val.m_AttrName = m_AttrName.Clone();
             val.m_DefaultValue = m_DefaultValue.Clone();
@@ -76,12 +76,12 @@ namespace GameFramework.Story.Values
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue<string> m_AttrName = new StoryValue<string>();
-        private IStoryValue m_DefaultValue = new StoryValue();
+        private IStoryFunction<string> m_AttrName = new StoryValue<string>();
+        private IStoryFunction m_DefaultValue = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-	    internal sealed class OffsetSplineValue : IStoryValue
+	    internal sealed class OffsetSplineFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -91,9 +91,9 @@ namespace GameFramework.Story.Values
                 m_Offset.InitFromDsl(callData.GetParam(1));
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            OffsetSplineValue val = new OffsetSplineValue();
+            OffsetSplineFunction val = new OffsetSplineFunction();
             val.m_Spline = m_Spline.Clone();
             val.m_Offset = m_Offset.Clone();
             val.m_HaveValue = m_HaveValue;
@@ -154,12 +154,12 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        private IStoryValue<List<object>> m_Spline = new StoryValue<List<object>>();
-        private IStoryValue<Vector3> m_Offset = new StoryValue<Vector3>();
+        private IStoryFunction<List<object>> m_Spline = new StoryValue<List<object>>();
+        private IStoryFunction<Vector3> m_Offset = new StoryValue<Vector3>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class OffsetVector3Value : IStoryValue
+    internal sealed class OffsetVector3Function : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -175,9 +175,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            OffsetVector3Value val = new OffsetVector3Value();
+            OffsetVector3Function val = new OffsetVector3Function();
             val.m_ParamNum = m_ParamNum;
             val.m_Pt = m_Pt.Clone();
             val.m_Pt2 = m_Pt2.Clone();
@@ -226,13 +226,13 @@ namespace GameFramework.Story.Values
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue<Vector3> m_Pt = new StoryValue<Vector3>();
-        private IStoryValue<Vector3> m_Pt2 = new StoryValue<Vector3>();
-        private IStoryValue<Vector3> m_Offset = new StoryValue<Vector3>();
+        private IStoryFunction<Vector3> m_Pt = new StoryValue<Vector3>();
+        private IStoryFunction<Vector3> m_Pt2 = new StoryValue<Vector3>();
+        private IStoryFunction<Vector3> m_Offset = new StoryValue<Vector3>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetDialogItemValue : IStoryValue
+    internal sealed class GetDialogItemFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -245,9 +245,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetDialogItemValue val = new GetDialogItemValue();
+            GetDialogItemFunction val = new GetDialogItemFunction();
             val.m_DlgId = m_DlgId.Clone();
             val.m_Index = m_Index.Clone();
             val.m_HaveValue = m_HaveValue;
@@ -292,12 +292,12 @@ namespace GameFramework.Story.Values
             }
         }
 
-        private IStoryValue<int> m_DlgId = new StoryValue<int>();
-        private IStoryValue<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<int> m_DlgId = new StoryValue<int>();
+        private IStoryFunction<int> m_Index = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetMonsterInfoValue : IStoryValue
+    internal sealed class GetMonsterInfoFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -310,9 +310,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetMonsterInfoValue val = new GetMonsterInfoValue();
+            GetMonsterInfoFunction val = new GetMonsterInfoFunction();
             val.m_CampId = m_CampId.Clone();
             val.m_Index = m_Index.Clone();
             val.m_HaveValue = m_HaveValue;
@@ -362,12 +362,12 @@ namespace GameFramework.Story.Values
             }
         }
 
-        private IStoryValue<int> m_CampId = new StoryValue<int>();
-        private IStoryValue<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<int> m_CampId = new StoryValue<int>();
+        private IStoryFunction<int> m_Index = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetAiDataValue : IStoryValue
+    internal sealed class GetAiDataFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -380,9 +380,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetAiDataValue val = new GetAiDataValue();
+            GetAiDataFunction val = new GetAiDataFunction();
             val.m_ObjId = m_ObjId.Clone();
             val.m_DataType = m_DataType.Clone();
             val.m_HaveValue = m_HaveValue;
@@ -425,12 +425,12 @@ namespace GameFramework.Story.Values
             }
         }
 
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
-        private IStoryValue<string> m_DataType = new StoryValue<string>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<string> m_DataType = new StoryValue<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetActorIconValue : IStoryValue
+    internal sealed class GetActorIconFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -442,9 +442,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetActorIconValue val = new GetActorIconValue();
+            GetActorIconFunction val = new GetActorIconFunction();
             val.m_Index = m_Index.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -485,11 +485,11 @@ namespace GameFramework.Story.Values
             }
         }
 
-        private IStoryValue<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<int> m_Index = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetActorValue : IStoryValue
+    internal sealed class GetActorFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -501,9 +501,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetActorValue val = new GetActorValue();
+            GetActorFunction val = new GetActorFunction();
             val.m_ObjId = m_ObjId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -540,11 +540,11 @@ namespace GameFramework.Story.Values
             }
         }
 
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetPlayerIdValue : IStoryValue
+    internal sealed class GetPlayerIdFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -552,9 +552,9 @@ namespace GameFramework.Story.Values
             if (null != callData) {
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetPlayerIdValue val = new GetPlayerIdValue();
+            GetPlayerIdFunction val = new GetPlayerIdFunction();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -588,7 +588,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetPlayerUnitIdValue : IStoryValue
+    internal sealed class GetPlayerUnitIdFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -596,9 +596,9 @@ namespace GameFramework.Story.Values
             if (null != callData) {
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetPlayerUnitIdValue val = new GetPlayerUnitIdValue();
+            GetPlayerUnitIdFunction val = new GetPlayerUnitIdFunction();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -632,7 +632,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetLeaderIdValue : IStoryValue
+    internal sealed class GetLeaderIdFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -644,9 +644,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetLeaderIdValue val = new GetLeaderIdValue();
+            GetLeaderIdFunction val = new GetLeaderIdFunction();
             val.m_ParamNum = m_ParamNum;
             val.m_ObjId = m_ObjId.Clone();
             val.m_HaveValue = m_HaveValue;
@@ -692,11 +692,11 @@ namespace GameFramework.Story.Values
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetLeaderTableIdValue : IStoryValue
+    internal sealed class GetLeaderTableIdFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -704,9 +704,9 @@ namespace GameFramework.Story.Values
             if (null != callData) {
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetLeaderTableIdValue val = new GetLeaderTableIdValue();
+            GetLeaderTableIdFunction val = new GetLeaderTableIdFunction();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -740,7 +740,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetMemberCountValue : IStoryValue
+    internal sealed class GetMemberCountFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -748,9 +748,9 @@ namespace GameFramework.Story.Values
             if (null != callData) {
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetMemberCountValue val = new GetMemberCountValue();
+            GetMemberCountFunction val = new GetMemberCountFunction();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -785,7 +785,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class IsClientValue : IStoryValue
+    internal sealed class IsClientFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -793,9 +793,9 @@ namespace GameFramework.Story.Values
             if (null != callData) {
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            IsClientValue val = new IsClientValue();
+            IsClientFunction val = new IsClientFunction();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -829,7 +829,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetSceneIdValue : IStoryValue
+    internal sealed class GetSceneIdFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -837,9 +837,9 @@ namespace GameFramework.Story.Values
             if (null != callData) {
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetSceneIdValue val = new GetSceneIdValue();
+            GetSceneIdFunction val = new GetSceneIdFunction();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -873,7 +873,7 @@ namespace GameFramework.Story.Values
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetMemberTableIdValue : IStoryValue
+    internal sealed class GetMemberTableIdFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -885,9 +885,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetMemberTableIdValue val = new GetMemberTableIdValue();
+            GetMemberTableIdFunction val = new GetMemberTableIdFunction();
             val.m_Index = m_Index.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -927,11 +927,11 @@ namespace GameFramework.Story.Values
             }
         }
 
-        private IStoryValue<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<int> m_Index = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class GetMemberLevelValue : IStoryValue
+    internal sealed class GetMemberLevelFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -943,9 +943,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            GetMemberLevelValue val = new GetMemberLevelValue();
+            GetMemberLevelFunction val = new GetMemberLevelFunction();
             val.m_Index = m_Index.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -985,11 +985,11 @@ namespace GameFramework.Story.Values
             }
         }
 
-        private IStoryValue<int> m_Index = new StoryValue<int>();
+        private IStoryFunction<int> m_Index = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class DictGetValue : IStoryValue
+    internal sealed class DictGetFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -1001,9 +1001,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            DictGetValue val = new DictGetValue();
+            DictGetFunction val = new DictGetFunction();
             val.m_DictId = m_DictId.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
@@ -1038,11 +1038,11 @@ namespace GameFramework.Story.Values
                 m_Value = Dict.Get(dictId);
             }
         }
-        private IStoryValue<string> m_DictId = new StoryValue<string>();
+        private IStoryFunction<string> m_DictId = new StoryValue<string>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    internal sealed class DictFormatValue : IStoryValue
+    internal sealed class DictFormatFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -1059,9 +1059,9 @@ namespace GameFramework.Story.Values
                 }
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
-            DictFormatValue val = new DictFormatValue();
+            DictFormatFunction val = new DictFormatFunction();
             val.m_DictId = m_DictId.Clone();
             for (int i = 0; i < m_FormatArgs.Count; i++) {
                 val.m_FormatArgs.Add(m_FormatArgs[i].Clone());
@@ -1107,8 +1107,8 @@ namespace GameFramework.Story.Values
                 m_Value = Dict.Format(dictId, args);
             }
         }
-        private IStoryValue<string> m_DictId = new StoryValue<string>();
-        private List<IStoryValue> m_FormatArgs = new List<IStoryValue>();
+        private IStoryFunction<string> m_DictId = new StoryValue<string>();
+        private List<IStoryFunction> m_FormatArgs = new List<IStoryFunction>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

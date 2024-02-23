@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using GameFrameworkMessage;
+using StorySystem;
 
 namespace GameFramework
 {
@@ -202,6 +203,14 @@ namespace GameFramework
         {
             get { return m_GmStorySystem; }
         }
+        internal SortedList<string, string> CommandDocs
+        {
+            get { return m_CommandDocs; }
+        }
+        internal SortedList<string, string> FunctionDocs
+        {
+            get { return m_FunctionDocs; }
+        }
 
         //---------------------------------------------------------------------------------------------
         internal void HandleUserQuit(Msg_RL_UserQuit msg)
@@ -245,6 +254,9 @@ namespace GameFramework
             m_StorySystem.Init(this);
             m_StorySystem.LoadStory("UserServer/main.dsl");
             m_StorySystem.StartStory("user_main");
+
+            m_CommandDocs = StoryCommandManager.Instance.GenCommandDocs();
+            m_FunctionDocs = StoryFunctionManager.Instance.GenFunctionDocs();
         }
         protected override void OnTick()
         {
@@ -254,6 +266,8 @@ namespace GameFramework
 
         private ServerStorySystem m_StorySystem = new ServerStorySystem();
         private GmCommands.GmStorySystem m_GmStorySystem = new GmCommands.GmStorySystem();
+        private SortedList<string, string> m_CommandDocs;
+        private SortedList<string, string> m_FunctionDocs;
 
         internal static Msg_LR_RoomUserInfo BuildRoomUserInfo(UserInfo info, float x, float y)
         {

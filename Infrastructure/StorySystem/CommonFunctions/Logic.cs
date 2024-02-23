@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using StorySystem;
-namespace StorySystem.CommonValues
+namespace StorySystem.CommonFunctions
 {
-    public sealed class AndOperator : IStoryValue
+    public sealed class AndOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -16,7 +16,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             AndOperator val = new AndOperator();
             val.m_X = m_X.Clone();
@@ -68,12 +68,12 @@ namespace StorySystem.CommonValues
                 m_Value = ((x != 0 && y != 0) ? 1 : 0);
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class OrOperator : IStoryValue
+    public sealed class OrOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -86,7 +86,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             OrOperator val = new OrOperator();
             val.m_X = m_X.Clone();
@@ -138,12 +138,12 @@ namespace StorySystem.CommonValues
                 m_Value = ((x != 0 || y != 0) ? 1 : 0);
             }
         }
-        private IStoryValue m_X = new StoryValue();
-        private IStoryValue m_Y = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
+        private IStoryFunction m_Y = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class NotOperator : IStoryValue
+    public sealed class NotOperator : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -155,7 +155,7 @@ namespace StorySystem.CommonValues
                 TryUpdateValue();
             }
         }
-        public IStoryValue Clone()
+        public IStoryFunction Clone()
         {
             NotOperator val = new NotOperator();
             val.m_X = m_X.Clone();
@@ -192,7 +192,7 @@ namespace StorySystem.CommonValues
                 m_Value = (x == 0 ? 1 : 0);
             }
         }
-        private IStoryValue m_X = new StoryValue();
+        private IStoryFunction m_X = new StoryValue();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }

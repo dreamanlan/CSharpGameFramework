@@ -145,17 +145,17 @@ namespace GameFramework.Story.Commands
             }
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
         private int m_ParamNum = 0;
-        private IStoryValue<Vector3> m_Pos = new StoryValue<Vector3>();
-        private IStoryValue<float> m_Dir = new StoryValue<float>();
-        private IStoryValue<int> m_Camp = new StoryValue<int>();
-        private IStoryValue<int> m_TableId = new StoryValue<int>();
-        private IStoryValue<string> m_AiLogic = new StoryValue<string>();
-        private IStoryValue<IEnumerable> m_AiParams = new StoryValue<IEnumerable>();
-        private IStoryValue<int> m_LeaderId = new StoryValue<int>();
+        private IStoryFunction<Vector3> m_Pos = new StoryValue<Vector3>();
+        private IStoryFunction<float> m_Dir = new StoryValue<float>();
+        private IStoryFunction<int> m_Camp = new StoryValue<int>();
+        private IStoryFunction<int> m_TableId = new StoryValue<int>();
+        private IStoryFunction<string> m_AiLogic = new StoryValue<string>();
+        private IStoryFunction<IEnumerable> m_AiParams = new StoryValue<IEnumerable>();
+        private IStoryFunction<int> m_LeaderId = new StoryValue<int>();
         private bool m_HaveObjId = false;
-        private IStoryValue<string> m_ObjIdVarName = new StoryValue<string>();
+        private IStoryFunction<string> m_ObjIdVarName = new StoryValue<string>();
     }
     /// <summary>
     /// destroynpc(npc_unit_id);
@@ -200,7 +200,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
     }
     /// <summary>
     /// destroynpcwithobjid(npc_obj_id);
@@ -245,7 +245,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_ObjId = new StoryValue<int>();
+        private IStoryFunction<int> m_ObjId = new StoryValue<int>();
     }
     /// <summary>
     /// npcface(npc_unit_id,dir);
@@ -295,8 +295,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<float> m_Dir = new StoryValue<float>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<float> m_Dir = new StoryValue<float>();
     }
     /// <summary>
     /// npcmove(npc_unit_id,vector3(x,y,z));
@@ -358,8 +358,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<Vector3> m_Pos = new StoryValue<Vector3>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<Vector3> m_Pos = new StoryValue<Vector3>();
     }
     /// <summary>
     /// npcmovewithwaypoints(npc_unit_id,vector3list("1 2 3 4 5 6"));
@@ -425,8 +425,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<List<object>> m_WayPoints = new StoryValue<List<object>>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<List<object>> m_WayPoints = new StoryValue<List<object>>();
     }
     /// <summary>
     /// npcstop(npc_unit_id);
@@ -478,7 +478,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
     }
     /// <summary>
     /// npcattack(npc_unit_id[,target_unit_id]);
@@ -534,8 +534,8 @@ namespace GameFramework.Story.Commands
         }
 
         private int m_ParamNum = 0;
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_TargetUnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_TargetUnitId = new StoryValue<int>();
     }
     /// <summary>
     /// setformation(npc_unit_id,index);
@@ -582,8 +582,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_FormationIndex = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_FormationIndex = new StoryValue<int>();
     }
     /// <summary>
     /// enableai(npc_unit_id,1_or_0);
@@ -630,8 +630,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_Enable = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_Enable = new StoryValue<int>();
     }
     /// <summary>
     /// setai(unitid,ai_logic_id,stringlist("param1 param2 param3 ..."));
@@ -690,9 +690,9 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<string> m_AiLogic = new StoryValue<string>();
-        private IStoryValue<IEnumerable> m_AiParams = new StoryValue<IEnumerable>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<string> m_AiLogic = new StoryValue<string>();
+        private IStoryFunction<IEnumerable> m_AiParams = new StoryValue<IEnumerable>();
     }
     /// <summary>
     /// setaitarget(unitid,targetId);
@@ -738,8 +738,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_TargetId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_TargetId = new StoryValue<int>();
     }
     /// <summary>
     /// npcanimation(unit_id, anim);
@@ -795,8 +795,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<string> m_Anim = new StoryValue<string>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<string> m_Anim = new StoryValue<string>();
     }
     /// <summary>
     /// npcaddimpact(unit_id, impactid, arg1, arg2, ...)[seq("@seq")];
@@ -809,7 +809,7 @@ namespace GameFramework.Story.Commands
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_ImpactId = m_ImpactId.Clone();
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue val = m_Args[i];
+                IStoryFunction val = m_Args[i];
                 cmd.m_Args.Add(val.Clone());
             }
             cmd.m_HaveSeq = m_HaveSeq;
@@ -826,7 +826,7 @@ namespace GameFramework.Story.Commands
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_ImpactId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue val = m_Args[i];
+                IStoryFunction val = m_Args[i];
                 val.Evaluate(instance, handler, iterator, args);
             }
             if (m_HaveSeq) {
@@ -911,11 +911,11 @@ namespace GameFramework.Story.Commands
             }
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_ImpactId = new StoryValue<int>();
-        private List<IStoryValue> m_Args = new List<IStoryValue>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_ImpactId = new StoryValue<int>();
+        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
         private bool m_HaveSeq = false;
-        private IStoryValue<string> m_SeqVarName = new StoryValue<string>();
+        private IStoryFunction<string> m_SeqVarName = new StoryValue<string>();
     }
     /// <summary>
     /// npcremoveimpact(unit_id, seq);
@@ -972,8 +972,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_Seq = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_Seq = new StoryValue<int>();
     }
     /// <summary>
     /// npccastskill(unit_id, skillid, arg1, arg2, ...);
@@ -986,7 +986,7 @@ namespace GameFramework.Story.Commands
             cmd.m_UnitId = m_UnitId.Clone();
             cmd.m_SkillId = m_SkillId.Clone();
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue val = m_Args[i];
+                IStoryFunction val = m_Args[i];
                 cmd.m_Args.Add(val.Clone());
             }
             return cmd;
@@ -1001,7 +1001,7 @@ namespace GameFramework.Story.Commands
             m_UnitId.Evaluate(instance, handler, iterator, args);
             m_SkillId.Evaluate(instance, handler, iterator, args);
             for (int i = 0; i < m_Args.Count; ++i) {
-                IStoryValue val = m_Args[i];
+                IStoryFunction val = m_Args[i];
                 val.Evaluate(instance, handler, iterator, args);
             }
         }
@@ -1054,9 +1054,9 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_SkillId = new StoryValue<int>();
-        private List<IStoryValue> m_Args = new List<IStoryValue>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_SkillId = new StoryValue<int>();
+        private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
     /// <summary>
     /// npcstopskill(unit_id);
@@ -1103,8 +1103,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_SkillId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_SkillId = new StoryValue<int>();
     }
     /// <summary>
     /// npcaddskill(unit_id, skillid);
@@ -1160,8 +1160,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_SkillId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_SkillId = new StoryValue<int>();
     }
     /// <summary>
     /// npcremoveskill(unit_id, skillid);
@@ -1215,8 +1215,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_SkillId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_SkillId = new StoryValue<int>();
     }
     /// <summary>
     /// npclisten(unit_id, 消息类别, true_or_false);
@@ -1274,9 +1274,9 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<string> m_Event = new StoryValue<string>();
-        private IStoryValue<string> m_Enable = new StoryValue<string>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<string> m_Event = new StoryValue<string>();
+        private IStoryFunction<string> m_Enable = new StoryValue<string>();
     }
     /// <summary>
     /// setcamp(npc_unit_id,camp_id);
@@ -1329,8 +1329,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_CampId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_CampId = new StoryValue<int>();
     }
     /// setsummonerid(unit_id, objid);
     /// </summary>
@@ -1378,8 +1378,8 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_SummonerId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_SummonerId = new StoryValue<int>();
     }
     /// setsummonskillid(unit_id, objid);
     /// </summary>
@@ -1427,7 +1427,7 @@ namespace GameFramework.Story.Commands
             return true;
         }
 
-        private IStoryValue<int> m_UnitId = new StoryValue<int>();
-        private IStoryValue<int> m_SummonSkillId = new StoryValue<int>();
+        private IStoryFunction<int> m_UnitId = new StoryValue<int>();
+        private IStoryFunction<int> m_SummonSkillId = new StoryValue<int>();
     }
 }

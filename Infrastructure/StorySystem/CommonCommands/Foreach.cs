@@ -50,7 +50,7 @@ namespace StorySystem.CommonCommands
             var localInfos = handler.LocalInfoStack.Peek();
             var localInfo = localInfos.GetLocalInfo(m_LocalInfoIndex) as LocalInfo;
             if (null == localInfo) {
-                localInfo = new LocalInfo { List = new List<IStoryValue>() };
+                localInfo = new LocalInfo { List = new List<IStoryFunction>() };
                 for (int i = 0; i < m_LoadedIterators.Count; ++i) {
                     localInfo.List.Add(m_LoadedIterators[i].Clone());
                 }
@@ -126,11 +126,11 @@ namespace StorySystem.CommonCommands
         private sealed class LocalInfo
         {
             internal Queue<object> Iterators = new Queue<object>();
-            internal List<IStoryValue> List = null;
+            internal List<IStoryFunction> List = null;
         }
 
         private int m_LocalInfoIndex;
-        private List<IStoryValue> m_LoadedIterators = new List<IStoryValue>();
+        private List<IStoryFunction> m_LoadedIterators = new List<IStoryFunction>();
         private List<IStoryCommand> m_LoadedCommands = new List<IStoryCommand>();
     }
     /// <summary>
@@ -246,11 +246,11 @@ namespace StorySystem.CommonCommands
         private sealed class LocalInfo
         {
             internal Queue<object> Iterators = new Queue<object>();
-            internal IStoryValue<IEnumerable> List = null;
+            internal IStoryFunction<IEnumerable> List = null;
         }
 
         private int m_LocalInfoIndex;
-        private IStoryValue<IEnumerable> m_LoadedList = new StoryValue<IEnumerable>();
+        private IStoryFunction<IEnumerable> m_LoadedList = new StoryValue<IEnumerable>();
         private List<IStoryCommand> m_LoadedCommands = new List<IStoryCommand>();
     }
     /// <summary>
@@ -363,12 +363,12 @@ namespace StorySystem.CommonCommands
 
         private sealed class LocalInfo
         {
-            internal IStoryValue<int> Count;
+            internal IStoryFunction<int> Count;
             internal int CurCount;
         }
 
         private int m_LocalInfoIndex;
-        private IStoryValue<int> m_LoadedCount = new StoryValue<int>();
+        private IStoryFunction<int> m_LoadedCount = new StoryValue<int>();
         private List<IStoryCommand> m_LoadedCommands = new List<IStoryCommand>();
     }
 }

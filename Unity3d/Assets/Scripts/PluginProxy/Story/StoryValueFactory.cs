@@ -5,13 +5,13 @@ using GameFramework.Plugin;
 using GameFramework.Story;
 using StorySystem;
 
-internal class NativeStoryValueFactory : IStoryValueFactory
+internal class NativeStoryFunctionFactory : IStoryFunctionFactory
 {
-    public IStoryValue Build()
+    public IStoryFunction Build()
     {
-        return new NativeStoryValue(m_ClassName);
+        return new NativeStoryFunction(m_ClassName);
     }
-    public NativeStoryValueFactory(string name)
+    public NativeStoryFunctionFactory(string name)
     {
         m_ClassName = name;
     }
@@ -19,13 +19,13 @@ internal class NativeStoryValueFactory : IStoryValueFactory
     private string m_ClassName;
 }
 
-internal class ScriptStoryValueFactory : IStoryValueFactory
+internal class ScriptStoryFunctionFactory : IStoryFunctionFactory
 {
-    public IStoryValue Build()
+    public IStoryFunction Build()
     {
-        return new ScriptStoryValue(m_ClassName);
+        return new ScriptStoryFunction(m_ClassName);
     }
-    public ScriptStoryValueFactory(string name)
+    public ScriptStoryFunctionFactory(string name)
     {
         m_ClassName = name;
     }
@@ -33,16 +33,16 @@ internal class ScriptStoryValueFactory : IStoryValueFactory
     private string m_ClassName;
 }
 
-internal class NativeStoryValue : IStoryValue
+internal class NativeStoryFunction : IStoryFunction
 {
-    public NativeStoryValue(string name) : this(name, true)
+    public NativeStoryFunction(string name) : this(name, true)
     { }
-    public NativeStoryValue(string name, bool create)
+    public NativeStoryFunction(string name, bool create)
     {
         m_ClassName = name;
         if (create) {
             var module = PluginManager.Instance.CreateObject(m_ClassName);
-            m_Plugin = module as IStoryValuePlugin;
+            m_Plugin = module as IStoryFunctionPlugin;
             if (null != m_Plugin) {
                 m_Plugin.SetProxy(m_Proxy);
             }
@@ -66,9 +66,9 @@ internal class NativeStoryValue : IStoryValue
             }
         }
     }
-    public IStoryValue Clone()
+    public IStoryFunction Clone()
     {
-        var newObj = new NativeStoryValue(m_ClassName, false);
+        var newObj = new NativeStoryFunction(m_ClassName, false);
         newObj.m_Proxy = m_Proxy.Clone();
         if (null != m_Plugin) {
             newObj.m_Plugin = m_Plugin.Clone();
@@ -114,15 +114,15 @@ internal class NativeStoryValue : IStoryValue
 
     private string m_ClassName;
     private StoryValueResult m_Proxy = new StoryValueResult();
-    private IStoryValuePlugin m_Plugin;
+    private IStoryFunctionPlugin m_Plugin;
 }
-internal class ScriptStoryValue : IStoryValue
+internal class ScriptStoryFunction : IStoryFunction
 {
-    public ScriptStoryValue(string name)
+    public ScriptStoryFunction(string name)
         : this(name, true)
     {
     }
-    public ScriptStoryValue(string name, bool callScript)
+    public ScriptStoryFunction(string name, bool callScript)
     {
         m_ClassName = name;
         m_FileName = m_ClassName.Replace(".", "__");
@@ -153,9 +153,9 @@ internal class ScriptStoryValue : IStoryValue
             }
         }
     }
-    public IStoryValue Clone()
+    public IStoryFunction Clone()
     {
-        var newObj = new ScriptStoryValue(m_ClassName, false);
+        var newObj = new ScriptStoryFunction(m_ClassName, false);
         newObj.m_Proxy = m_Proxy.Clone();
         if (null != m_Plugin) {
             var ret = m_Plugin.Clone();
