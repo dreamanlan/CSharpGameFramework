@@ -156,6 +156,43 @@ public sealed class TerrainEditWindow : EditorWindow
             TerrainEditUtility.Process(obj, m_DslFile, samplers, m_Caches, objects);
             Debug.Log("handle " + obj.name);
         }
+        if (objects.Count > 0) {
+            var root = GameObject.Find("objs");
+            if (null == root) {
+                root = new GameObject("objs");
+            }
+
+            List<UnityEngine.GameObject> objList = new List<GameObject>();
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("[");
+            int ct = objects.Count;
+            for (int i = 0; i < ct; ++i) {
+                var objInfo = objects[i];
+                string name = string.Format("obj{0}", i);
+                sb.Append("[");
+                sb.AppendFormat("\"{0}\", {1}, {2}, {3}", name, objInfo.X, objInfo.Y, objInfo.Z);
+                if (i < ct - 1) {
+                    sb.AppendLine("],");
+                } else {
+                    sb.AppendLine("]");
+                }
+
+                var prefab = Resources.Load(objInfo.Prefab);
+                var obj = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
+                obj.name = name;
+                obj.transform.SetParent(root.transform);
+                obj.transform.SetPositionAndRotation(new Vector3(objInfo.X, objInfo.Y, objInfo.Z), Quaternion.identity);
+                objList.Add(obj);
+
+                if (TerrainEditUtility.DisplayCancelableProgressBar("创建场景对象", i + 1, ct))
+                    break;
+            }
+            sb.AppendLine("]");
+            var list = sb.ToString();
+            var file = TerrainEditUtility.AssetPathToPath(m_ListFile);
+            File.WriteAllText(file, list);
+            EditorUtility.ClearProgressBar();
+        }
         EditorUtility.DisplayDialog("提示", "处理完成", "ok");
     }
 
@@ -280,6 +317,11 @@ internal static class TerrainEditUtility
             var terrain = root.GetComponent<Terrain>();
             var terrainData = terrain.terrainData;
             var datas = terrainData.GetHeights(0, 0, terrainData.heightmapResolution, terrainData.heightmapResolution);
+            for(int ix = 0; ix < datas.GetLength(0); ++ix) {
+                for(int iy = 0; iy < datas.GetLength(1); ++iy) {
+                    datas[ix, iy] = 0.5f;
+                }
+            }
             var alphamaps = terrainData.GetAlphamaps(0, 0, terrainData.alphamapWidth, terrainData.alphamapHeight);
             int alphanum = alphamaps.GetLength(2);
             int[] layers = terrainData.GetSupportedLayers(0, 0, terrainData.detailWidth, terrainData.detailHeight);
@@ -290,19 +332,20 @@ internal static class TerrainEditUtility
             }
             var calc = new DslExpression.DslCalculator();
             calc.Init();
-            calc.Register("getheight", new DslExpression.ExpressionFactoryHelper<GetHeightExp>());
-            calc.Register("getalphamap", new DslExpression.ExpressionFactoryHelper<GetAlphamapExp>());
-            calc.Register("getalpha", new DslExpression.ExpressionFactoryHelper<GetAlphaExp>());
-            calc.Register("setalpha", new DslExpression.ExpressionFactoryHelper<SetAlphaExp>());
-            calc.Register("getdetail", new DslExpression.ExpressionFactoryHelper<GetDetailExp>());
-            calc.Register("samplered", new DslExpression.ExpressionFactoryHelper<SampleRedExp>());
-            calc.Register("samplegreen", new DslExpression.ExpressionFactoryHelper<SampleGreenExp>());
-            calc.Register("sampleblue", new DslExpression.ExpressionFactoryHelper<SampleBlueExp>());
-            calc.Register("samplealpha", new DslExpression.ExpressionFactoryHelper<SampleAlphaExp>());
-            calc.Register("getcache", new DslExpression.ExpressionFactoryHelper<GetCacheExp>());
-            calc.Register("setcache", new DslExpression.ExpressionFactoryHelper<SetCacheExp>());
-            calc.Register("addtree", new DslExpression.ExpressionFactoryHelper<AddTreeExp>());
-            calc.Register("addobject", new DslExpression.ExpressionFactoryHelper<AddObjectExp>());
+            calc.Register("getheight", "getheight(x,y) api", new DslExpression.ExpressionFactoryHelper<GetHeightExp>());
+            calc.Register("getalphamap", "getalphamap(x,y,ix) api", new DslExpression.ExpressionFactoryHelper<GetAlphamapExp>());
+            calc.Register("getalpha", "getalpha(ix) api", new DslExpression.ExpressionFactoryHelper<GetAlphaExp>());
+            calc.Register("setalpha", "setalpha(ix,val) api", new DslExpression.ExpressionFactoryHelper<SetAlphaExp>());
+            calc.Register("clearalpha", "clearalpha() api", new DslExpression.ExpressionFactoryHelper<ClearAlphaExp>());
+            calc.Register("getdetail", "getdetail(x,y,ix) api", new DslExpression.ExpressionFactoryHelper<GetDetailExp>());
+            calc.Register("samplered", "samplered(key,x,y) api", new DslExpression.ExpressionFactoryHelper<SampleRedExp>());
+            calc.Register("samplegreen", "samplegreen(key,x,y) api", new DslExpression.ExpressionFactoryHelper<SampleGreenExp>());
+            calc.Register("sampleblue", "sampleblue(key,x,y) api", new DslExpression.ExpressionFactoryHelper<SampleBlueExp>());
+            calc.Register("samplealpha", "samplealpha(key,x,y) api", new DslExpression.ExpressionFactoryHelper<SampleAlphaExp>());
+            calc.Register("getcache", "getcache(key,x,y) api", new DslExpression.ExpressionFactoryHelper<GetCacheExp>());
+            calc.Register("setcache", "setcache(key,x,y,val) api", new DslExpression.ExpressionFactoryHelper<SetCacheExp>());
+            calc.Register("addtree", "addtree(ix,x,y,z,f_rot,w_scale,h_scale,u_color,u_lightmap) api", new DslExpression.ExpressionFactoryHelper<AddTreeExp>());
+            calc.Register("addobject", "addobject(x,y,z,prefab_str) api", new DslExpression.ExpressionFactoryHelper<AddObjectExp>());
             calc.SetGlobalVariable("samplers", CalculatorValue.FromObject(samplers));
             calc.SetGlobalVariable("caches", CalculatorValue.FromObject(caches));
             calc.SetGlobalVariable("trees", CalculatorValue.FromObject(trees));
@@ -617,7 +660,6 @@ internal static class TerrainEditUtility
         ++indent;
 
         AppendLine(sb, "{0}size{1};", GetIndent(indent), data.size);
-        AppendLine(sb, "{0}thickness({1});", GetIndent(indent), data.thickness);
         AppendLine(sb, "{0}basemapresolution({1});", GetIndent(indent), data.baseMapResolution);
 
         AppendLine(sb, "{0}heightmap(size({1}, {2}), resolution({3}), scale{4});", GetIndent(indent), data.heightmapResolution, data.heightmapResolution, data.heightmapResolution, data.heightmapScale);
@@ -626,7 +668,10 @@ internal static class TerrainEditUtility
         AppendLine(sb, "{0}{{", GetIndent(indent));
         ++indent;
         foreach(var tl in data.terrainLayers) {
-            AppendLine(sb, "{0}terrainlayer(texture(\"{1}\", {2}, {3}), normalmap{4}, tilesize({5}), tileoffset({6}), specular({7}), metallic({8}), smoothness({9}));", GetIndent(indent), tl.diffuseTexture.name, tl.diffuseTexture.width, tl.diffuseTexture.height, null != tl.normalMapTexture ? string.Format("(\"{1}\", {2}, {3})", tl.normalMapTexture.name, tl.normalMapTexture.width, tl.normalMapTexture.height) : "()", tl.tileSize, tl.tileOffset, tl.specular, tl.metallic, tl.smoothness);
+            AppendLine(sb, "{0}terrainlayer(texture(\"{1}\", {2}, {3}), normalmap{4}, tilesize({5}), tileoffset({6}), specular({7}), metallic({8}), smoothness({9}));", GetIndent(indent),
+                tl.diffuseTexture.name, tl.diffuseTexture.width, tl.diffuseTexture.height, 
+                null != tl.normalMapTexture ? string.Format("(\"{0}\", {1}, {2})", tl.normalMapTexture.name, tl.normalMapTexture.width, tl.normalMapTexture.height) : "()",
+                tl.tileSize, tl.tileOffset, tl.specular, tl.metallic, tl.smoothness);
         }
         --indent;
         AppendLine(sb, "{0}}};", GetIndent(indent));
@@ -635,7 +680,7 @@ internal static class TerrainEditUtility
         AppendLine(sb, "{0}{{", GetIndent(indent));
         ++indent;
         foreach(var dp in data.detailPrototypes) {
-            AppendLine(sb, "{0}prototype(texture(\"{1}\", {2}, {3}), rendermode({4}), usemesh({5}), minsize({6}, {7}), maxsize({8}, {9}), noisespread({10}), bendfactor({11}), healthcolor({12}), drycolor({13}));", GetIndent(indent), dp.prototypeTexture.name, dp.prototypeTexture.width, dp.prototypeTexture.height, dp.renderMode, dp.usePrototypeMesh, dp.minWidth, dp.minHeight, dp.maxWidth, dp.maxHeight, dp.noiseSpread, dp.bendFactor, dp.healthyColor, dp.dryColor);
+            AppendLine(sb, "{0}prototype(texture(\"{1}\", {2}, {3}), rendermode({4}), usemesh({5}), minsize({6}, {7}), maxsize({8}, {9}), noisespread({10}), healthcolor({11}), drycolor({12}));", GetIndent(indent), dp.prototypeTexture.name, dp.prototypeTexture.width, dp.prototypeTexture.height, dp.renderMode, dp.usePrototypeMesh, dp.minWidth, dp.minHeight, dp.maxWidth, dp.maxHeight, dp.noiseSpread, dp.healthyColor, dp.dryColor);
         }
         foreach (var layer in data.GetSupportedLayers(0, 0, data.detailWidth, data.detailHeight)) {
             AppendLine(sb, "{0}layer({1})", GetIndent(indent), layer);
@@ -859,6 +904,20 @@ internal class SetAlphaExp : DslExpression.SimpleExpressionBase
             var v = operands[1].GetDouble();
             datas[ix] = (float)v;
             r = v;
+        }
+        return r;
+    }
+}
+internal class ClearAlphaExp : DslExpression.SimpleExpressionBase
+{
+    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    {
+        int r = 0;
+        var datas = Calculator.GetGlobalVariable("alphas").As<float[]>();
+        for(int ix = 0; ix < datas.Length; ++ix) {
+            if (datas[ix] > float.Epsilon)
+                ++r;
+            datas[ix] = 0;
         }
         return r;
     }

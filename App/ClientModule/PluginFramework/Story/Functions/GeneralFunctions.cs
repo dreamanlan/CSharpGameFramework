@@ -493,18 +493,23 @@ namespace GameFramework.Story.Functions
         {
             Dsl.FunctionData callData = param as Dsl.FunctionData;
             if (null != callData) {
-                int num = callData.GetParamNum();
-                if (num > 1) {
+                m_ParamNum = callData.GetParamNum();
+                if (m_ParamNum > 1) {
                     m_ObjPath.InitFromDsl(callData.GetParam(0));
                     m_ComponentType.InitFromDsl(callData.GetParam(1));
+                }
+                if (m_ParamNum > 2) {
+                    m_IncludeInactive.InitFromDsl(callData.GetParam(2));
                 }
             }
         }
         public IStoryFunction Clone()
         {
             GetComponentInParentFunction val = new GetComponentInParentFunction();
+            val.m_ParamNum = m_ParamNum;
             val.m_ObjPath = m_ObjPath.Clone();
             val.m_ComponentType = m_ComponentType.Clone();
+            val.m_IncludeInactive = m_IncludeInactive.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;
             return val;
@@ -514,6 +519,9 @@ namespace GameFramework.Story.Functions
             m_HaveValue = false;
             m_ObjPath.Evaluate(instance, handler, iterator, args);
             m_ComponentType.Evaluate(instance, handler, iterator, args);
+            if (m_ParamNum > 2) {
+                m_IncludeInactive.Evaluate(instance, handler, iterator, args);
+            }
             TryUpdateValue(instance);
         }
         public bool HaveValue
@@ -534,6 +542,10 @@ namespace GameFramework.Story.Functions
                 m_HaveValue = true;
                 var objPath = m_ObjPath.Value;
                 var componentType = m_ComponentType.Value;
+                int includeInactive = 1;
+                if (m_ParamNum > 2) {
+                    includeInactive = m_IncludeInactive.Value;
+                }
                 UnityEngine.GameObject obj = objPath.IsObject ? objPath.ObjectVal as UnityEngine.GameObject : null;
                 if (null == obj) {
                     string path = objPath.IsString ? objPath.StringVal : null;
@@ -553,7 +565,7 @@ namespace GameFramework.Story.Functions
                 if (null != obj) {
                     Type t = componentType.IsObject ? componentType.ObjectVal as Type : null;
                     if (null != t) {
-                        UnityEngine.Component component = obj.GetComponentInParent(t);
+                        UnityEngine.Component component = obj.GetComponentInParent(t, includeInactive != 0);
                         m_Value = BoxedValue.FromObject(component);
                     }
                     else {
@@ -561,9 +573,10 @@ namespace GameFramework.Story.Functions
                         if (null != name) {
                             t = Utility.GetType(name);
                             if (null != t) {
-                                UnityEngine.Component component = obj.GetComponentInParent(t);
+                                UnityEngine.Component component = obj.GetComponentInParent(t, includeInactive != 0);
                                 m_Value = BoxedValue.FromObject(component);
-                            } else {
+                            }
+                            else {
                                 m_Value = BoxedValue.NullObject;
                             }
                         }
@@ -571,8 +584,11 @@ namespace GameFramework.Story.Functions
                 }
             }
         }
+
+        private int m_ParamNum = 0;
         private IStoryFunction m_ObjPath = new StoryValue();
         private IStoryFunction m_ComponentType = new StoryValue();
+        private IStoryFunction<int> m_IncludeInactive = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
