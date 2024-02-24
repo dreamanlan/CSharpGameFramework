@@ -9139,7 +9139,7 @@ namespace DslExpression
             Register("listclear", "listclear(list) api", new ExpressionFactoryHelper<ListClearExp>());
             Register("listsplit", "listsplit(list,ct) api, return list of list", new ExpressionFactoryHelper<ListSplitExp>());
             Register("hashtablesize", "hashtablesize(hash) api", new ExpressionFactoryHelper<HashtableSizeExp>());
-            Register("hashtable", "hashtable(k1=>v1,k2=>v2,...) object", new ExpressionFactoryHelper<HashtableExp>());
+            Register("hashtable", "hashtable(k1:v1,k2:v2,...) object", new ExpressionFactoryHelper<HashtableExp>());
             Register("hashtableget", "hashtableget(hash,key[,defval]) api", new ExpressionFactoryHelper<HashtableGetExp>());
             Register("hashtableset", "hashtableset(hash,key,val) api", new ExpressionFactoryHelper<HashtableSetExp>());
             Register("hashtableadd", "hashtableadd(hash,key,val) api", new ExpressionFactoryHelper<HashtableAddExp>());
