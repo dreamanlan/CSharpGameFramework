@@ -9125,7 +9125,7 @@ namespace DslExpression
             Register("shortdatestr", "shortdatestr() api", new ExpressionFactoryHelper<ShortDateStrExp>());
             Register("shorttimestr", "shorttimestr() api", new ExpressionFactoryHelper<ShortTimeStrExp>());
             Register("isnullorempty", "isnullorempty(str) api", new ExpressionFactoryHelper<IsNullOrEmptyExp>());
-            Register("array", "array(v1,v2,...) object", new ExpressionFactoryHelper<ArrayExp>());
+            Register("array", "[v1,v2,...] or array(v1,v2,...) object", new ExpressionFactoryHelper<ArrayExp>());
             Register("toarray", "toarray(list) api", new ExpressionFactoryHelper<ToArrayExp>());
             Register("listsize", "listsize(list) api", new ExpressionFactoryHelper<ListSizeExp>());
             Register("list", "list(v1,v2,...) object", new ExpressionFactoryHelper<ListExp>());
@@ -9139,7 +9139,7 @@ namespace DslExpression
             Register("listclear", "listclear(list) api", new ExpressionFactoryHelper<ListClearExp>());
             Register("listsplit", "listsplit(list,ct) api, return list of list", new ExpressionFactoryHelper<ListSplitExp>());
             Register("hashtablesize", "hashtablesize(hash) api", new ExpressionFactoryHelper<HashtableSizeExp>());
-            Register("hashtable", "hashtable(k1:v1,k2:v2,...) object", new ExpressionFactoryHelper<HashtableExp>());
+            Register("hashtable", "{k1=>v1,k2=>v2,...} or {k1:v1,k2:v2,...} or hashtable(k1=>v1,k2=>v2,...) or hashtable(k1:v1,k2:v2,...) object", new ExpressionFactoryHelper<HashtableExp>());
             Register("hashtableget", "hashtableget(hash,key[,defval]) api", new ExpressionFactoryHelper<HashtableGetExp>());
             Register("hashtableset", "hashtableset(hash,key,val) api", new ExpressionFactoryHelper<HashtableSetExp>());
             Register("hashtableadd", "hashtableadd(hash,key,val) api", new ExpressionFactoryHelper<HashtableAddExp>());
