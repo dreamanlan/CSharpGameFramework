@@ -9052,11 +9052,11 @@ namespace DslExpression
             Register("||", "logical or operator", new ExpressionFactoryHelper<OrExp>());
             Register("!", "logical not operator", new ExpressionFactoryHelper<NotExp>());
             Register("?", "conditional expression", new ExpressionFactoryHelper<CondExp>());
-            Register("if", "if statement", new ExpressionFactoryHelper<IfExp>());
-            Register("while", "while statement", new ExpressionFactoryHelper<WhileExp>());
-            Register("loop", "loop statement", new ExpressionFactoryHelper<LoopExp>());
-            Register("looplist", "looplist statement", new ExpressionFactoryHelper<LoopListExp>());
-            Register("foreach", "foreach statement", new ExpressionFactoryHelper<ForeachExp>());
+            Register("if", "if(cond)func(args); or if(cond){...}[elseif/elif(cond){...}else{...}]; statement", new ExpressionFactoryHelper<IfExp>());
+            Register("while", "while(cond)func(args); or while(cond){...}; statement, iterator is $$", new ExpressionFactoryHelper<WhileExp>());
+            Register("loop", "loop(ct)func(args); or loop(ct){...}; statement, iterator is $$", new ExpressionFactoryHelper<LoopExp>());
+            Register("looplist", "looplist(list)func(args); or looplist(list){...}; statement, iterator is $$", new ExpressionFactoryHelper<LoopListExp>());
+            Register("foreach", "foreach(args)func(args); or foreach(args){...}; statement, iterator is $$", new ExpressionFactoryHelper<ForeachExp>());
             Register("format", "format(fmt,arg1,arg2,...) api", new ExpressionFactoryHelper<FormatExp>());
             Register("gettypeassemblyname", "gettypeassemblyname(obj) api", new ExpressionFactoryHelper<GetTypeAssemblyNameExp>());
             Register("gettypefullname", "gettypefullname(obj) api", new ExpressionFactoryHelper<GetTypeFullNameExp>());
