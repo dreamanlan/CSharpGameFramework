@@ -2019,7 +2019,20 @@ namespace DslExpression
                 }
             }
         }
-
+        protected static Encoding GetEncoding(CalculatorValue v)
+        {
+            var name = v.AsString;
+            if (null != name) {
+                return Encoding.GetEncoding(name);
+            }
+            else if (v.IsInteger) {
+                int codePage = v.GetInt();
+                return Encoding.GetEncoding(codePage);
+            }
+            else {
+                return Encoding.UTF8;
+            }
+        }
         public static bool TryParseNumeric(string str, out DslExpression.CalculatorValue val)
         {
             string type = string.Empty;
