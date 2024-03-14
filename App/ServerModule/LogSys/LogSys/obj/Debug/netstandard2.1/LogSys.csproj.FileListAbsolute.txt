@@ -13,3 +13,4 @@ F:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstanda
 F:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.csproj.CoreCompileInputs.cache
 F:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.dll
 F:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.pdb
+F:\GitHub\CSharpGameFramework\App\ServerModule\LogSys\LogSys\obj\Debug\netstandard2.1\LogSys.sourcelink.json

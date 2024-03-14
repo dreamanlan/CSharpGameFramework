@@ -172,6 +172,11 @@ namespace StorySystem
             m_HaveValue = true;
             m_Value.GenericSet<T>(val);
         }
+        internal void SetValue(BoxedValue val)
+        {
+            m_HaveValue = true;
+            m_Value = val;
+        }
 
         protected virtual StoryConstValue NewValueObject()
         {
@@ -278,6 +283,12 @@ namespace StorySystem
             proxy.SetValue(val);
             m_Proxy = proxy;
         }
+        private void SetValue(BoxedValue val)
+        {
+            StoryConstValue proxy = new StoryConstValue();
+            proxy.SetValue(val);
+            m_Proxy = proxy;
+        }
         private void CalcInitValue(Dsl.ISyntaxComponent param)
         {
             IStoryFunction val = StoryFunctionManager.Instance.CreateFunction(param);
@@ -294,18 +305,21 @@ namespace StorySystem
                 string id = param.GetId();
                 int idType = param.GetIdType();
                 if (idType == Dsl.ValueData.NUM_TOKEN) {
-                    if (id.StartsWith("0x"))
-                        SetValue(uint.Parse(id.Substring(2), System.Globalization.NumberStyles.HexNumber));
-                    else if (id.IndexOf('.') >= 0 || id.IndexOf('e') > 0 || id.IndexOf('E') > 0)
-                        SetValue(float.Parse(id, System.Globalization.NumberStyles.Float));
-                    else
-                        SetValue(int.Parse(id, System.Globalization.NumberStyles.Integer));
-                }
-                else if (idType == Dsl.ValueData.ID_TOKEN && (id == "true" || id == "false")) {
-                    SetValue(id == "true");
+                    GameFramework.Converter.TryParseNumeric(id, out var v);
+                    SetValue(v);
                 }
                 else {
-                    SetValue(id);
+                    if (idType == Dsl.ValueData.ID_TOKEN) {
+                        if (GameFramework.Converter.TryParseBool(id, out var v)) {
+                            SetValue(v);
+                        }
+                        else {
+                            SetValue(id);
+                        }
+                    }
+                    else {
+                        SetValue(id);
+                    }
                 }
             }
             else {

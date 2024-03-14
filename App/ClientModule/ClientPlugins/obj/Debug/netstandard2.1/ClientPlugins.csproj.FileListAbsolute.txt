@@ -71,6 +71,7 @@ F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\bin\Debug\netstanda
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.csproj.AssemblyReference.cache
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.GeneratedMSBuildEditorConfig.editorconfig
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.csproj.CoreCompileInputs.cache
-F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.csproj.CopyComplete
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.dll
 F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.pdb
+F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPlugins.sourcelink.json
+F:\GitHub\CSharpGameFramework\App\ClientModule\ClientPlugins\obj\Debug\netstandard2.1\ClientPl.36C8B2C4.Up2Date

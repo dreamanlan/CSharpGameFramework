@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Globalization;
 
 namespace GameFramework
 {
@@ -8,6 +9,17 @@ namespace GameFramework
     {
         private static string[] s_ListSplitString = new string[] { ";", " ", "|" };
 
+        public static string FileContent2Utf8String(byte[] bytes)
+        {
+            if (null == bytes)
+                return string.Empty;
+            if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
+                return System.Text.Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
+            }
+            else {
+                return System.Text.Encoding.UTF8.GetString(bytes);
+            }
+        }
         public static string IntList2String(params int[] vals)
         {
             return IntList2String((IList<int>)vals);
@@ -378,15 +390,116 @@ namespace GameFramework
                 }
             }
         }
-        public static string FileContent2Utf8String(byte[] bytes)
+        public static bool TryParseNumeric(string str, out BoxedValue val)
         {
-            if (null == bytes)
-                return string.Empty;
-            if (bytes.Length >= 3 && bytes[0] == 0xEF && bytes[1] == 0xBB && bytes[2] == 0xBF) {
-                return System.Text.Encoding.UTF8.GetString(bytes, 3, bytes.Length - 3);
-            } else {
-                return System.Text.Encoding.UTF8.GetString(bytes);
-            }
+            string type = string.Empty;
+            return TryParseNumeric(str, ref type, out val);
         }
+        public static bool TryParseNumeric(string str, ref string type, out BoxedValue val)
+        {
+            bool ret = false;
+            val = BoxedValue.NullObject;
+            if (str.Length > 2 && str[0] == '0' && str[1] == 'x') {
+                char c = str[str.Length - 1];
+                if (c == 'u' || c == 'U') {
+                    str = str.Substring(0, str.Length - 1);
+                }
+                if (ulong.TryParse(str.Substring(2), NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, out var v)) {
+                    str = v.ToString();
+                }
+                type = "uint";
+            }
+            else if (str.Length >= 2) {
+                char c = str[str.Length - 1];
+                if (c == 'u' || c == 'U') {
+                    str = str.Substring(0, str.Length - 1);
+                    type = "uint";
+                }
+                else if (c == 'f' || c == 'F') {
+                    str = str.Substring(0, str.Length - 1);
+                    c = str[str.Length - 1];
+                    if (c == 'l' || c == 'L') {
+                        str = str.Substring(0, str.Length - 1);
+                    }
+                    type = "float";
+                }
+            }
+            if (type == "float" || str.IndexOfAny(s_FloatExponent) > 0) {
+                if (double.TryParse(str, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out var v)) {
+                    if (v >= float.MinValue && v <= float.MaxValue) {
+                        val.Set((float)v);
+                        type = "float";
+                    }
+                    else {
+                        val.Set(v);
+                        type = "double";
+                    }
+                    ret = true;
+                }
+            }
+            else if (str.Length > 1 && str[0] == '0') {
+                ulong v = Convert.ToUInt64(str, 8);
+                if (v >= uint.MinValue && v <= uint.MaxValue) {
+                    val.Set((uint)v);
+                    type = "uint";
+                }
+                else {
+                    val.Set(v);
+                    type = "ulong";
+                }
+                ret = true;
+            }
+            else if (long.TryParse(str, out var lv)) {
+                if (type == "uint") {
+                    ulong v = (ulong)lv;
+                    if (v >= uint.MinValue && v <= uint.MaxValue) {
+                        val.Set((uint)v);
+                        type = "uint";
+                    }
+                    else {
+                        val.Set(v);
+                        type = "ulong";
+                    }
+                }
+                else {
+                    if (lv >= int.MinValue && lv <= int.MaxValue) {
+                        val.Set((int)lv);
+                        type = "int";
+                    }
+                    else {
+                        val.Set(lv);
+                        type = "long";
+                    }
+                }
+                ret = true;
+            }
+            else if (TryParseBool(str, out var bv)) {
+                val.Set(bv);
+                type = "bool";
+                ret = true;
+            }
+            return ret;
+        }
+        public static bool TryParseBool(string v, out bool val)
+        {
+            if (bool.TryParse(v, out val)) {
+                return true;
+            }
+            else if (int.TryParse(v, out var ival)) {
+                val = ival != 0;
+                return true;
+            }
+            else if (v == "true") {
+                val = true;
+                return true;
+            }
+            else if (v == "false") {
+                val = false;
+                return true;
+            }
+            return false;
+        }
+
+        public static char[] s_FloatExponent = new char[] { 'e', 'E', '.' };
     }
 }

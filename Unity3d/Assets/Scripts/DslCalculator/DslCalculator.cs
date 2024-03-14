@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using System.IO;
+using System.Globalization;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Runtime.InteropServices;
@@ -2018,20 +2019,118 @@ namespace DslExpression
                 }
             }
         }
-        protected static Encoding GetEncoding(CalculatorValue v)
+
+        public static bool TryParseNumeric(string str, out DslExpression.CalculatorValue val)
         {
-            var name = v.AsString;
-            if (null != name) {
-                return Encoding.GetEncoding(name);
-            }
-            else if (v.IsInteger) {
-                int codePage = v.GetInt();
-                return Encoding.GetEncoding(codePage);
-            }
-            else {
-                return Encoding.UTF8;
-            }
+            string type = string.Empty;
+            return TryParseNumeric(str, ref type, out val);
         }
+        public static bool TryParseNumeric(string str, ref string type, out DslExpression.CalculatorValue val)
+        {
+            bool ret = false;
+            val = DslExpression.CalculatorValue.NullObject;
+            if (str.Length > 2 && str[0] == '0' && str[1] == 'x') {
+                char c = str[str.Length - 1];
+                if (c == 'u' || c == 'U') {
+                    str = str.Substring(0, str.Length - 1);
+                }
+                if (ulong.TryParse(str.Substring(2), NumberStyles.HexNumber, NumberFormatInfo.CurrentInfo, out var v)) {
+                    str = v.ToString();
+                }
+                type = "uint";
+            }
+            else if (str.Length >= 2) {
+                char c = str[str.Length - 1];
+                if (c == 'u' || c == 'U') {
+                    str = str.Substring(0, str.Length - 1);
+                    type = "uint";
+                }
+                else if (c == 'f' || c == 'F') {
+                    str = str.Substring(0, str.Length - 1);
+                    c = str[str.Length - 1];
+                    if (c == 'l' || c == 'L') {
+                        str = str.Substring(0, str.Length - 1);
+                    }
+                    type = "float";
+                }
+            }
+            if (type == "float" || str.IndexOfAny(s_FloatExponent) > 0) {
+                if (double.TryParse(str, NumberStyles.Float, NumberFormatInfo.CurrentInfo, out var v)) {
+                    if (v >= float.MinValue && v <= float.MaxValue) {
+                        val.Set((float)v);
+                        type = "float";
+                    }
+                    else {
+                        val.Set(v);
+                        type = "double";
+                    }
+                    ret = true;
+                }
+            }
+            else if (str.Length > 1 && str[0] == '0') {
+                ulong v = Convert.ToUInt64(str, 8);
+                if (v >= uint.MinValue && v <= uint.MaxValue) {
+                    val.Set((uint)v);
+                    type = "uint";
+                }
+                else {
+                    val.Set(v);
+                    type = "ulong";
+                }
+                ret = true;
+            }
+            else if (long.TryParse(str, out var lv)) {
+                if (type == "uint") {
+                    ulong v = (ulong)lv;
+                    if (v >= uint.MinValue && v <= uint.MaxValue) {
+                        val.Set((uint)v);
+                        type = "uint";
+                    }
+                    else {
+                        val.Set(v);
+                        type = "ulong";
+                    }
+                }
+                else {
+                    if (lv >= int.MinValue && lv <= int.MaxValue) {
+                        val.Set((int)lv);
+                        type = "int";
+                    }
+                    else {
+                        val.Set(lv);
+                        type = "long";
+                    }
+                }
+                ret = true;
+            }
+            else if (TryParseBool(str, out var bv)) {
+                val.Set(bv);
+                type = "bool";
+                ret = true;
+            }
+            return ret;
+        }
+        public static bool TryParseBool(string v, out bool val)
+        {
+            if (bool.TryParse(v, out val)) {
+                return true;
+            }
+            else if (int.TryParse(v, out var ival)) {
+                val = ival != 0;
+                return true;
+            }
+            else if (v == "true") {
+                val = true;
+                return true;
+            }
+            else if (v == "false") {
+                val = false;
+                return true;
+            }
+            return false;
+        }
+
+        public static char[] s_FloatExponent = new char[] { 'e', 'E', '.' };
     }
     public abstract class SimpleExpressionBase : AbstractExpression
     {
@@ -2243,42 +2342,16 @@ namespace DslExpression
             string id = valData.GetId();
             int idType = valData.GetIdType();
             if (idType == Dsl.ValueData.NUM_TOKEN) {
-                if (id.StartsWith("0x")) {
-                    long v = long.Parse(id.Substring(2), System.Globalization.NumberStyles.HexNumber);
-                    if (v >= int.MinValue && v <= int.MaxValue) {
-                        m_Val = (int)v;
-                    }
-                    else {
-                        m_Val = v;
-                    }
-                }
-                else if (id.IndexOf('.') < 0) {
-                    long v = long.Parse(id);
-                    if (v >= int.MinValue && v <= int.MaxValue) {
-                        m_Val = (int)v;
-                    }
-                    else {
-                        m_Val = v;
-                    }
-                }
-                else {
-                    double v = double.Parse(id);
-                    if (v >= float.MinValue && v <= float.MaxValue) {
-                        m_Val = (float)v;
-                    }
-                    else {
-                        m_Val = v;
-                    }
-                }
+                TryParseNumeric(id, out m_Val);
             }
             else {
                 if (idType == Dsl.ValueData.ID_TOKEN) {
-                    if (id == "true")
-                        m_Val = true;
-                    else if (id == "false")
-                        m_Val = false;
-                    else
+                    if (TryParseBool(id, out var v)) {
+                        m_Val = v;
+                    }
+                    else {
                         m_Val = id;
+                    }
                 }
                 else {
                     m_Val = id;
