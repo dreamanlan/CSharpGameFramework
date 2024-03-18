@@ -1772,21 +1772,21 @@ namespace DslExpression
 
         private static string FloatToString(float v)
         {
-            if (v > 1e-7 && v < 1e28)
+            if (v > -1e28 && v < 1e28)
                 return v.ToString(s_FloatFormat);
             else
                 return string.Format("{0}", v);
         }
         private static string DecimalToString(decimal v)
         {
-            if (v > (decimal)1e-7 && v < (decimal)1e28)
+            if (v > (decimal)-1e28 && v < (decimal)1e28)
                 return v.ToString(s_FloatFormat);
             else
                 return string.Format("{0}", v);
         }
         private static string DoubleToString(double v)
         {
-            if (v > 1e-16 && v < 10e28)
+            if (v > -1e28 && v < 1e28)
                 return v.ToString(s_DoubleFormat);
             else
                 return string.Format("{0}", v);
