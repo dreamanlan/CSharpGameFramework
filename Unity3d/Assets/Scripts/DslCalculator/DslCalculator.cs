@@ -10161,7 +10161,7 @@ namespace DslExpression
         }
         private static int NewProcessTask(string fileName, string args, ProcessStartOption option, Stream istream, Stream ostream, IList<string> input, StringBuilder output, StringBuilder error, bool redirectToConsole, Encoding encoding)
         {
-            //考虑到跨平台兼容性，不使用特定进程环境变量
+            //For cross-platform compatibility, process-specific environment variables are not used
             try {
                 System.Diagnostics.Process p = new System.Diagnostics.Process();
                 var psi = p.StartInfo;
