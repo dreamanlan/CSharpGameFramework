@@ -27,14 +27,14 @@ namespace GameFramework
     }
     public class SkillInfo
     {
-        public int SkillId;                 // 技能Id
-        public int SkillLevel;              // 技能等级
-        public bool IsSkillActivated;       // 是否正在释放技能
-        public long CdEndTime;              // CD结束时间
+        public int SkillId;                 // skill Id
+        public int SkillLevel;              // skill level
+        public bool IsSkillActivated;       // Whether skills are being released
+        public long CdEndTime;              // CD end time
 
-        public int ManualSkillId;           // 记录释放技能时的手动技能ID
-        
-        //校验数据
+        public int ManualSkillId;           // Record the manual skill ID when releasing the skill
+
+        //Check data
         public int m_SkillCDRefreshCount = 0;
 
         public TableConfig.Skill ConfigData;

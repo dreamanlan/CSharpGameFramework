@@ -3,7 +3,7 @@ using System.Text;
 using CSharpCenterClient;
 
 /// <summary>
-/// mysql连接配置
+/// mysql connection configuration
 /// </summary>
 internal class DataCacheConfig
 {

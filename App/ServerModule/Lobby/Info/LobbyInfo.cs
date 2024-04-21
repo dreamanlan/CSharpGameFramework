@@ -96,7 +96,7 @@ namespace Lobby
 
         internal void InitSceneRooms()
         {
-            // 初始化野外场景房间
+            // Initialize the outdoor scene room
             MyDictionary<int, object> scenes = TableConfig.LevelProvider.Instance.LevelMgr.GetData();
             foreach (KeyValuePair<int, object> pair in scenes) {
                 TableConfig.Level cfg = pair.Value as TableConfig.Level;

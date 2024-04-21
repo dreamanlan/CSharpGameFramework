@@ -119,7 +119,7 @@ namespace GameFramework.AttrCalc
                         Load(param);
                     } else {
                         string op = callData.GetId();
-                        if (op == "=") {//赋值
+                        if (op == "=") {//assignment
                             Dsl.FunctionData param1 = callData.GetParam(0) as Dsl.FunctionData;
                             Dsl.ISyntaxComponent param2 = callData.GetParam(1);
                             string name = param1.GetId();
@@ -130,26 +130,26 @@ namespace GameFramework.AttrCalc
                             } else if (name == "var") {
                                 m_Codes.Add(new Instruction(InsEnum.VARSET, id));
                             }
-                        } else if (op == "var") {//读属性
+                        } else if (op == "var") {//read attr
                             int id = int.Parse(callData.GetParamId(0));
                             m_Codes.Add(new Instruction(InsEnum.VAR, id));
-                        } else if (op == "attr") {//读属性
+                        } else if (op == "attr") {//read attr
                             int id = int.Parse(callData.GetParamId(0));
                             m_Codes.Add(new Instruction(InsEnum.ATTR, id));
-                        } else if (op == "attr2") {//读属性
+                        } else if (op == "attr2") {//read attr
                             int id = int.Parse(callData.GetParamId(0));
                             m_Codes.Add(new Instruction(InsEnum.ATTR2, id));
-                        } else if (op == "value") {//读常量表
+                        } else if (op == "value") {//read constant table
                             int id = int.Parse(callData.GetParamId(0));
                             m_Codes.Add(new Instruction(InsEnum.VALUE, id));
-                        } else if (op == "arg") {//读参数值
+                        } else if (op == "arg") {//read argument
                             int index = int.Parse(callData.GetParamId(0));
                             m_Codes.Add(new Instruction(InsEnum.ARG, index));
-                        } else if(op=="const") {//明确标明的常量值
-                            //普通常量
+                        } else if(op=="const") {//clearly marked constant values
+                            //common constant
                             long val = long.Parse(callData.GetParamId(0));
                             m_Codes.Add(new Instruction(InsEnum.CONST, val));
-                        } else {//二元及以上运算
+                        } else {//Binary and above operations
                             Dsl.ISyntaxComponent param1 = callData.GetParam(0);
                             Dsl.ISyntaxComponent param2 = callData.GetParam(1);
                             Load(param1);
@@ -170,7 +170,7 @@ namespace GameFramework.AttrCalc
                                 m_Codes.Add(new Instruction(InsEnum.DIV));
                             } else if (op == "%") {
                                 m_Codes.Add(new Instruction(InsEnum.MOD));
-                            } else {//三元及以上运算
+                            } else {//Ternary and above operations
                                 Dsl.ISyntaxComponent param3 = callData.GetParam(2);
                                 Load(param3);
                                 if (op == "clamp") {
@@ -182,7 +182,7 @@ namespace GameFramework.AttrCalc
                 } else {
                     Dsl.ValueData valueData = comp as Dsl.ValueData;
                     if (null != valueData && valueData.GetIdType() == Dsl.ValueData.NUM_TOKEN) {
-                        //普通常量
+                        //common constant
                         long val = long.Parse(valueData.GetId());
                         m_Codes.Add(new Instruction(InsEnum.CONST, val));
                     }

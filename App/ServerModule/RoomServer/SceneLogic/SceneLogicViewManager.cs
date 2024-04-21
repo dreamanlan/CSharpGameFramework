@@ -5,22 +5,22 @@ using System.Text;
 
 namespace GameFramework
 {
-  public sealed class SceneLogicViewManager
-  {
-    public void Init()
+    public sealed class SceneLogicViewManager
     {
-      //添加各个view实例
-      m_Views.Add(new SceneLogicView_General());
+        public void Init()
+        {
+            //Add each view instance
+            m_Views.Add(new SceneLogicView_General());
+        }
+
+        private SceneLogicViewManager() { }
+
+        private ArrayList m_Views = new ArrayList();
+
+        public static SceneLogicViewManager Instance
+        {
+            get { return s_Instance; }
+        }
+        private static SceneLogicViewManager s_Instance = new SceneLogicViewManager();
     }
-
-    private SceneLogicViewManager() { }
-
-    private ArrayList m_Views = new ArrayList();
-
-    public static SceneLogicViewManager Instance
-    {
-      get { return s_Instance; }
-    }
-    private static SceneLogicViewManager s_Instance = new SceneLogicViewManager();
-  }
 }

@@ -167,7 +167,7 @@ namespace StorySystem
                         }
                     }
                 }
-                //注册
+                //register
                 StoryCommandManager.Instance.RegisterCommandFactory(cmd.Name, doc, new CommonCommands.CompositeCommandFactory(cmd), true);
             }
             else if (id == "function") {
@@ -223,7 +223,7 @@ namespace StorySystem
                         }
                     }
                 }
-                //注册
+                //register
                 StoryFunctionManager.Instance.RegisterFunctionFactory(val.Name, doc, new CommonFunctions.CompositeValueFactory(val), true);
             }
         }

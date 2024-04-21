@@ -106,7 +106,7 @@ public class SkillViewer : MonoBehaviour
         }
 
 #if UNITY_EDITOR
-        //Pause按键暂停
+        //Pause
         if (Input.GetKeyDown(KeyCode.Pause))
             Debug.Break();
         var player = PluginFramework.Instance.GetEntityByUnitId(1000);

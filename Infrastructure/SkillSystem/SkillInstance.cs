@@ -545,12 +545,12 @@ namespace SkillSystem
             for (int i = 0; i < m_MessageHandlers.Count; i++) {
                 instance.m_MessageHandlers.Add(m_MessageHandlers[i].Clone());
             }
-            //嵌在技能内的技能实例只用作克隆的母本，可以为多个技能实例共享
+            //A skill instance embedded within a skill is only used as a parent for cloning and can be shared by multiple skill instances.
             instance.m_EmitSkillInstances = m_EmitSkillInstances;
             instance.m_HitSkillInstances = m_HitSkillInstances;
             instance.m_ImpactCount = m_ImpactCount;
             instance.m_DamageCount = m_DamageCount;
-            //用于写回dsl文件的解析后的dsl数据，调试模式在修改后可保存到代码文件
+            //Used to write back the parsed dsl data of the dsl file. The debug mode can be saved to the code file after modification.
             instance.m_SkillDsl = m_SkillDsl;
             return instance;
         }
@@ -1052,7 +1052,7 @@ namespace SkillSystem
                     return 1;
                 }
             });
-            //排序
+            //sort
             for (int i = 0; i < m_UseImpactsForInit.Count; ++i) {
                 var group = m_UseImpactsForInit[i];
                 Helper.BubbleSort(group.Triggers, comp);
@@ -1065,7 +1065,7 @@ namespace SkillSystem
                 var group = m_DamagesForInit[i];
                 Helper.BubbleSort(group.Triggers, comp);
             }
-            //确定impact信息
+            //Determine impact information
             for (int i = 0; i < m_ImpactsForInit.Count && i < m_UseImpactsForInit.Count; ++i) {
                 var refGroup = m_UseImpactsForInit[i];
                 var group = m_ImpactsForInit[i];
@@ -1104,7 +1104,7 @@ namespace SkillSystem
                     group.Triggers[j].IsEmitImpact = false;
                 }
             }
-            //message handler里面的impact与damage独立计数
+            //Impact and damage in the message handler are counted independently
             int ict = m_ImpactsForInit.Count;
             for (int i = 0; i < ict; ++i) {
                 var group = m_ImpactsForInit[i];
@@ -1135,7 +1135,7 @@ namespace SkillSystem
                     }
                 }
             }
-            //删除message handler
+            //Delete message handler
             int ct = m_ImpactsForInit.Count;
             for (int i = ct - 1; i >= 0; --i) {
                 var group = m_ImpactsForInit[i];
@@ -1150,7 +1150,7 @@ namespace SkillSystem
                     m_DamagesForInit.Remove(group);
                 }
             }
-            //对section里的impact与damage按整个skill计数
+            //Count the impact and damage in the section according to the entire skill
             int subDamageCount = 0;
             int index = 0;
             ict = m_ImpactsForInit.Count;
@@ -1198,7 +1198,7 @@ namespace SkillSystem
                 }
             }
             m_DamageCount = index + subDamageCount;
-            //信息获取完毕，清空缓存
+            //After obtaining the information, clear the cache
             m_UseImpactsForInit.Clear();
             m_UseImpactsForInit = null;
             m_ImpactsForInit.Clear();

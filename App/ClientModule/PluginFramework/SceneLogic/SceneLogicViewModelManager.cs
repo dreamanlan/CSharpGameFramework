@@ -7,8 +7,8 @@ namespace GameFramework
   {
     internal void Init()
     {
-      //添加各个view实例
-      m_Views.Add(new SceneLogicViewModel_General());
+        //Add each view instance
+        m_Views.Add(new SceneLogicViewModel_General());
     }
 
     private SceneLogicViewModelManager() { }

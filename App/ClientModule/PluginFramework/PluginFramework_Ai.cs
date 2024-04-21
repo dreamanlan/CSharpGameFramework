@@ -86,7 +86,7 @@ namespace GameFramework
         
         private static void DoMoveCommandState(EntityInfo npc, long deltaTime)
         {
-            //执行状态处理
+            //Execution status processing
             AiData_ForMoveCommand data = GetAiDataForMoveCommand(npc);
             if (null == data) return;
 
@@ -103,7 +103,7 @@ namespace GameFramework
                 }
             }
 
-            //判断是否状态结束并执行相应处理
+            //Determine whether the state has ended and perform corresponding processing
             if (data.IsFinish) {
                 if (!string.IsNullOrEmpty(data.Event)) {
                     GfxStorySystem.Instance.SendMessage(data.Event, npc.GetId(), npc.GetUnitId());

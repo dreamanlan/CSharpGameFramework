@@ -14,15 +14,15 @@ namespace GameFramework
         ConsumeResetTime = 4
     }
     /// <summary>
-    /// 全局数据（非玩家拥有的数据）处理线程，在这里处理邮件等数据。
+    /// Global data (data owned by non-players) processing thread, where data such as emails are processed.
     /// </summary>
     /// <remarks>
-    /// 其它线程不应直接调用此类方法，应通过QueueAction发起调用。
+    /// Other threads should not call such methods directly, but should initiate calls through QueueAction.
     /// </remarks>
     internal sealed class GlobalProcessThread : MyServerThread
     {
         //=========================================================================================
-        //全局数据初始化方法，由其它线程同步调用。
+        //Global data initialization method, called synchronously by other threads.
         //=========================================================================================
         internal bool LastSaveFinished
         {
@@ -57,11 +57,11 @@ namespace GameFramework
             m_MailSystem.InitMailData(mailList);
         }
         //=========================================================================================
-        //同步调用方法部分，其它线程可直接调用(需要考虑多线程安全)。
+        //For the synchronous calling method part, other threads can call it directly (multi-thread safety needs to be considered).
         //=========================================================================================
 
         //=========================================================================================
-        //异步调用方法部分，其它线程通过QueueAction调用。
+        //The asynchronous calling method part is called by other threads through QueueAction.
         //=========================================================================================
         internal void GetMailList(ulong user)
         {
@@ -113,11 +113,11 @@ namespace GameFramework
                 });
                 LogSys.Log(ServerLogType.MONITOR, "GlobalProcessThread.ActionQueue Current Action {0}", this.CurActionNum);
             }
-            //逻辑Tick
+            //logic Tick
             GlobalData.Instance.Tick();
             UserServer.Instance.UserProcessScheduler.NicknameSystem.Tick();
             m_MailSystem.Tick();
-            //全局数据存储
+            //global data save
             long saveStartTime = 0;
             var dsThread = UserServer.Instance.DataCacheThread;
             if (dsThread.DataStoreAvailable) {
@@ -137,7 +137,7 @@ namespace GameFramework
                 }
                 if (m_IsLastSave && IsLastSaveAllDone()) {
                     if (m_LastSaveFinished == false) {
-                        //全局数据（Guid、邮件）存储完成 
+                        //global data（Guid、Mail）save finish. 
                         LogSys.Log(ServerLogType.MONITOR, "DoLastSaveGlobalData Step_2: GlobalData last save done");
                         m_IsLastSave = false;
                         m_LastSaveFinished = true;
@@ -180,14 +180,14 @@ namespace GameFramework
 
         private GuidSystem m_GuidSystem = new GuidSystem();
         private MailSystem m_MailSystem = new MailSystem();
-        GlobalSaveCounter m_GuidCounter = new GlobalSaveCounter();              //Guid数据存储计数
-        GlobalSaveCounter m_MailCounter = new GlobalSaveCounter();              //Mail数据存储计数
+        GlobalSaveCounter m_GuidCounter = new GlobalSaveCounter();              //Guid data storage count
+        GlobalSaveCounter m_MailCounter = new GlobalSaveCounter();              //Mail data storage count
 
         private const long c_WarningTickTime = 1000;
         private long m_LastTickTime = 0;
         private long m_LastLogTime = 0;
-        private bool m_LastSaveFinished = false;                                //最后一次数据存储完成状态
-        private bool m_IsLastSave = false;                                      //是否在执行最后一次存储操作
+        private bool m_LastSaveFinished = false;                                //Last data storage completion status
+        private bool m_IsLastSave = false;                                      //Whether the last storage operation is being performed
 
         private const long c_TickInterval = 10000;
     }

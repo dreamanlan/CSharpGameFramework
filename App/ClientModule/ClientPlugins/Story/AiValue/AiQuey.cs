@@ -40,7 +40,7 @@ public class AiQuery : IStoryFunctionPlugin
             m_From.Evaluate(instance, handler, iterator, args);
             ArrayList coll = new ArrayList();
 
-            //筛选
+            //filter
             IEnumerable enumer = m_From.Value.ObjectVal as IEnumerable;
             if (null != enumer) {
                 var enumerator = enumer.GetEnumerator();
@@ -60,13 +60,13 @@ public class AiQuery : IStoryFunctionPlugin
                 }
             }
 
-            //排序
+            //sort
             int ct = m_OrderBy.Count;
             if (ct > 0) {
                 coll.Sort(new AiQueryComparer(m_Desc, ct));
             }
 
-            //收集结果
+            //get the results
             ArrayList result = new ArrayList();
             for (int i = 0; i < coll.Count; ++i) {
                 var ao = coll[i] as ArrayList;

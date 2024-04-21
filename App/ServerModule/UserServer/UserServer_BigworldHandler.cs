@@ -10,7 +10,8 @@ namespace GameFramework
     internal partial class UserServer
     {
         /// <summary>
-        /// 注意，bigworld的消息已经分发到RoomProcessThread线程里进行处理，不需要再QueueAction到RoomProcessThread线程
+        /// Note that bigworld messages have been distributed to the RoomProcessThread thread for processing,
+        /// and there is no need to QueueAction to the RoomProcessThread thread.
         /// </summary>
         private void InstallBigworldHandlers()
         {
@@ -36,9 +37,9 @@ namespace GameFramework
             try {
                 if (msg_.MsgType == Msg_LBL_Message.MsgTypeEnum.Node) {
                     byte[] msgData = msg_.Data;
-                    //观察
+                    //observer
                     m_UserProcessScheduler.DispatchJsonMessage(false, session, 0, 0, msgData);
-                    //转发
+                    //forward
                     NodeMessageDispatcher.ForwardMessage(msg_.TargetName, msgData);
                 } else if (msg_.MsgType == Msg_LBL_Message.MsgTypeEnum.Room) {
                     m_BigworldChannel.Dispatch(src, session, msg_.Data);

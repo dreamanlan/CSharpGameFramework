@@ -10,10 +10,10 @@ using LitJson;
 namespace Lobby
 {
     /// <summary>
-    /// 房间逻辑线程。处理玩家在大厅组队后的各种逻辑。
+    /// Room logic thread. Handle various logics after players form teams in the lobby.
     /// </summary>
     /// <remarks>
-    /// 其它线程不应直接调用此类方法，应通过QueueAction发起调用。
+    /// Other threads should not call such methods directly, but should initiate calls through QueueAction.
     /// </remarks>
     internal sealed class RoomProcessThread : MyServerThread
     {
@@ -67,7 +67,7 @@ namespace Lobby
         }
 
         //===================================================================
-        //野外分线相关处理
+        //Field line related processing
         //===================================================================
         internal void RequestSceneRoomInfo(ulong guid)
         {
@@ -143,7 +143,7 @@ namespace Lobby
                     if (null != roomUserMgr && roomUserMgr.UserCount < roomUserMgr.TotalCount) {
                         RequestEnterSceneRoom(info, wantRoomId, 0, 0, enterX, enterY);
                     } else {
-                        LobbyServer.Instance.HighlightPrompt(info, 42);//进入游戏失败，请稍后重试
+                        LobbyServer.Instance.HighlightPrompt(info, 42);//Failed to enter the game, please try again later.
                     }
                 }
             }
@@ -170,10 +170,10 @@ namespace Lobby
 
                     LobbyServer.Instance.RoomSvrChannel.Send(curRoom.RoomServerName, msg);
                 } else {
-                    LobbyServer.Instance.HighlightPrompt(info, 42);//进入游戏失败，请稍后重试
+                    LobbyServer.Instance.HighlightPrompt(info, 42);//Failed to enter the game, please try again later.
                 }
             } else {
-                LobbyServer.Instance.HighlightPrompt(info, 42);//进入游戏失败，请稍后重试
+                LobbyServer.Instance.HighlightPrompt(info, 42);//Failed to enter the game, please try again later.
             }
         }
 
@@ -208,7 +208,7 @@ namespace Lobby
             UserProcessScheduler scheduler = LobbyServer.Instance.UserProcessScheduler;
             if (null == scheduler)
                 return;
-            // 响应玩家要求复活
+            // Respond to player requests for resurrection
             UserInfo user = scheduler.GetUserInfo(guid);
             if (null != user) {
                 RoomInfo room = user.Room;
@@ -247,7 +247,7 @@ namespace Lobby
                 if (user.CurrentState == UserState.Room) {
                     RoomInfo room = m_LobbyInfo.GetRoomByID(user.CurrentRoomID);
                     if (room != null) {
-                        //向RoomServer发送消息，重新进入房间
+                        //Send a message to RoomServer to re-enter the room
                         Msg_LR_ReconnectUser urBuilder = new Msg_LR_ReconnectUser();
                         urBuilder.UserGuid = guid;
                         urBuilder.RoomId = user.CurrentRoomID;
@@ -255,7 +255,7 @@ namespace Lobby
 
                         LogSys.Log(ServerLogType.INFO, "User Restart GameClient , guid:{0}", guid);
                     } else {
-                        //房间已经关闭
+                        //The room has been closed
                         user.ResetRoomInfo();
                         user.CurrentState = UserState.Online;
 
@@ -286,8 +286,8 @@ namespace Lobby
             }
         }
         //===================================================================
-        //以下为与RoomServer之间的消息通信 
-        //响应RoomServer发来的房间创建反馈消息
+        //The following is the message communication with RoomServer
+        //Respond to room creation feedback messages sent by RoomServer
         internal void OnEnterSceneResult(ulong userGuid, int roomID, int result)
         {
             UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(userGuid);
@@ -316,13 +316,13 @@ namespace Lobby
                             LogSys.Log(ServerLogType.INFO, "user enter field success! guid {0} room {1} result {2}",
                               userGuid, roomID, (SceneOperationResultEnum)result);
                         } else {
-                            LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
+                            LobbyServer.Instance.HighlightPrompt(user, 42);//Failed to enter the game, please try again later.
                         }
                     } else {
-                        LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
+                        LobbyServer.Instance.HighlightPrompt(user, 42);//Failed to enter the game, please try again later.
                     }
                 } else {
-                    LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
+                    LobbyServer.Instance.HighlightPrompt(user, 42);//Failed to enter the game, please try again later.
                 }
             } else {
                 RoomInfo curRoom = user.Room;
@@ -334,7 +334,7 @@ namespace Lobby
                 LogSys.Log(ServerLogType.INFO, "user enter field failed! guid {0} room {1} result {2}",
                   userGuid, roomID, (SceneOperationResultEnum)result);
 
-                LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
+                LobbyServer.Instance.HighlightPrompt(user, 42);//Failed to enter the game, please try again later.
             }
         }
         internal void OnChangeScene(IList<ulong> userGuids, int sceneID)
@@ -370,7 +370,7 @@ namespace Lobby
                     ulong userGuid = userGuids[i];
                     UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(userGuid);
                     if (null != user) {
-                        LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
+                        LobbyServer.Instance.HighlightPrompt(user, 42);//Failed to enter the game, please try again later.
                     }
                 }
             }
@@ -409,12 +409,12 @@ namespace Lobby
                     }
                     LogSys.Log(ServerLogType.INFO, "User change field success ! , guid:{0} room:{1} target room:{2} result:{3}", userGuid, roomID, targetRoomID, (SceneOperationResultEnum)result);
                 } else {
-                    LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
+                    LobbyServer.Instance.HighlightPrompt(user, 42);//Failed to enter the game, please try again later.
                 }
             } else {
                 LogSys.Log(ServerLogType.INFO, "User change field failed ! guid:{0} room:{1} target room:{2} result:{3}", userGuid, roomID, targetRoomID, (SceneOperationResultEnum)result);
 
-                LobbyServer.Instance.HighlightPrompt(user, 42);//进入游戏失败，请稍后重试
+                LobbyServer.Instance.HighlightPrompt(user, 42);//Failed to enter the game, please try again later.
             }
         }
         internal void OnActiveScene(ulong[] guids, int sceneId)
@@ -431,7 +431,7 @@ namespace Lobby
         }
         internal void OnActiveSceneResult(ulong[] guids, int roomID, int result)
         {
-            //成功打开副本时，发起各个玩家的场景切换流程（注意是切到副本）
+            //When the dungeon is successfully opened, the scene switching process for each player is initiated (note that the dungeon is switched)
             if (result == (int)SceneOperationResultEnum.Success) {
                 for (int i = 0; i < guids.Length; ++i) {
                     ulong guid = guids[i];
@@ -439,7 +439,7 @@ namespace Lobby
                 }
             }
         }
-        //响应RoomServer玩家重新连接进入房间的反馈消息
+        //Respond to feedback messages from RoomServer players reconnecting to the room
         internal void OnReplyReconnectUser(ulong userGuid, int roomID, int result)
         {
             UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(userGuid);
@@ -464,7 +464,7 @@ namespace Lobby
 
                                     startGameResultMsg.m_ProtoData = protoData;
                                     LobbyServer.Instance.TransmitToWorld(user, startGameResultMsg);
-                                    //重新进入房间成功
+                                    //Re-entered the room successfully
                                     LogSys.Log(ServerLogType.INFO, "user reconnected roomServer success, guid {0}", userGuid);
                                 }
                             }
@@ -472,7 +472,7 @@ namespace Lobby
                     }
                     break;
                 case (int)Msg_RL_ReplyReconnectUser.ReconnectResultEnum.NotExist: {
-                        //不存在，执行进场景流程
+                        //Does not exist, execute the scene process
                         RequestEnterScene(userGuid, user.SceneId, roomID, 0);
                         LogSys.Log(ServerLogType.INFO, "user reconnected roomserver, not exist, request enter scene ! guid {0}", userGuid);
                     }
@@ -484,13 +484,13 @@ namespace Lobby
 
                         startGameResultMsg.m_ProtoData = protoData;
                         LobbyServer.Instance.TransmitToWorld(user, startGameResultMsg);
-                        //room上玩家还是连接与在线状态，重连失败
+                        //Players in the room are still connected and online, but reconnection fails.
                         LogSys.Log(ServerLogType.INFO, "user reconnected roomserver, user already online, guid {0}", userGuid);
                     }
                     break;
             }
         }
-        //响应RoomServer发来的房间内玩家掉线消息
+        //Respond to the message sent by RoomServer that players in the room are offline
         internal void OnRoomUserDrop(int roomid, ulong guid, bool isBattleEnd, Msg_RL_UserDrop originalMsg)
         {
             UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(guid);
@@ -546,7 +546,7 @@ namespace Lobby
                 LogSys.Log(ServerLogType.INFO, "RoomServer User Quit Guid {0} State {1}", guid, user.CurrentState);
             }
         }
-        //拾取相关
+        //Pickup related
         internal void OnPickMoney(Msg_RL_PickMoney msg)
         {
             UserInfo user = LobbyServer.Instance.UserProcessScheduler.GetUserInfo(msg.UserGuid);

@@ -254,7 +254,7 @@ namespace GameFramework
                     skillInfo.IsSkillActivated = true;
                     skillInfo.CdEndTime = TimeUtility.GetLocalMilliseconds() + (long)skillInfo.ConfigData.skillData.cooldown;
                     if (skillInfo.ConfigData.skillData.addsc > 0 && PluginFramework.Instance.IsBattleState) {
-                        //回蓝
+                        //restore mp
                         entity.Energy += skillInfo.ConfigData.skillData.addsc;
                         entity.EntityManager.FireDamageEvent(objId, 0, false, false, 0, -skillInfo.ConfigData.skillData.addsc);
                     }
@@ -933,7 +933,7 @@ namespace GameFramework
                     srcImpactInfo = myView.Entity.GetSkillStateInfo().GetImpactInfoBySeq(seq);
                 }
                 if (null != srcImpactInfo) {
-                    //如果当前技能配置有数据则继承当前配置数据，否则继承源impact记录的数据。
+                    //If the current skill configuration has data, the current configuration data will be inherited. Otherwise, the data recorded in the source impact will be inherited.
                     impactInfo.SenderPosition = srcImpactInfo.SenderPosition;
                     impactInfo.SkillId = srcImpactInfo.SkillId;
                     impactInfo.DurationTime = srcImpactInfo.DurationTime > 0 ? srcImpactInfo.DurationTime : impactInfo.ConfigData.impactData.duration;

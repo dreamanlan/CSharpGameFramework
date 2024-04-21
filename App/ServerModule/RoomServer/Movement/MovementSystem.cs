@@ -50,7 +50,8 @@ namespace GameFramework
                 return;
             }
             MovementStateInfo msi = obj.GetMovementStateInfo();
-            //npc执行移动时忽略阻挡与避让，这些行为由ai模块在规划其路径时执行。
+            //NPCs ignore blocking and avoidance when performing movement.
+            //These behaviors are performed by the AI module when planning its path.
             if (!obj.IsDead() && obj.CanMove && msi.IsMoving) {
                 ScriptRuntime.Vector3 pos = msi.GetPosition3D();
                 float speed = (float)obj.ActualProperty.GetFloat(CharacterPropertyEnum.x2011_最终速度);

@@ -248,7 +248,7 @@ namespace GameFramework
                         header.m_StrListOffset = (int)fs.Position;
                         WriteIntArray(fs, m_StrLists.ToArray());
 
-                        //重写文件头
+                        //Rewrite file header
                         fs.Position = 0;
                         WriteFileHeader(fs, header);
 

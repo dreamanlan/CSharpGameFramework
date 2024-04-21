@@ -8,8 +8,8 @@ public class SkillBar : MonoBehaviour
 {
     public class SkillInfo
     {
-        public int objID;//角色ID
-        public int skillID;//技能ID
+        public int objID;
+        public int skillID;
         public SkillIconInfo icon;
 
         public float cooldownTime;
@@ -109,7 +109,7 @@ public class SkillBar : MonoBehaviour
                 icon.mpChange.gameObject.SetActive(false);
             }
 
-            // 能释放大招，但没有目标时，置灰。
+            // Can release the ultimate move, but when there is no target, it will be grayed out.
             if (icon.disableMask)
             {
                 icon.disableMask.gameObject.SetActive(bSkillIsReady && !bCanFindSkillTarget && !forcePlayParticle);
@@ -130,11 +130,11 @@ public class SkillBar : MonoBehaviour
         }
     }
 
-    //绑定控件
+    //Bind controls
     public GameObject panelSkill;
     public GameObject prefabSkillIcon;
 
-    //回调外层
+    //Callback outer layer
     public delegate void SelectSkillFun(int objID,int skillID);
     public SelectSkillFun onSelectSkill;
     public delegate void FunOnDestroy();

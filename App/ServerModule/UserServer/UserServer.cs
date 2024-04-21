@@ -236,28 +236,28 @@ namespace GameFramework
                     Thread.Sleep(10);
                     if (m_WaitQuit) {
                         if (m_GlobalProcessThread.LastSaveFinished && m_UserProcessScheduler.LastSaveFinished && m_QuitFinish == false) {
-                            //全局数据和玩家数据存储完毕 
+                            //Global data and player data are stored
                             int saveReqCount = m_DataCacheThread.CalcSaveRequestCount();
                             LogSys.Log(ServerLogType.MONITOR, "QuitStep_1. GlobalData and UserData last save done. SaveRequestCount:{0}", saveReqCount);
                             if (saveReqCount > 0) {
-                                //等待5s
+                                //wait 5s
                                 long startTime = TimeUtility.GetLocalMilliseconds();
                                 while (startTime + 5000 > TimeUtility.GetLocalMilliseconds()) {
                                     CenterClientApi.Tick();
                                     Thread.Sleep(10);
                                 }
                             } else {
-                                //通知关闭DataCache
+                                //Notify to close DataCache
                                 m_QuitFinish = true;
                                 LogSys.Log(ServerLogType.MONITOR, "QuitStep_2. Notice DataCache to quit.");
                                 CenterClientApi.SendCommandByName("DataCache", "QuitDataStore");
-                                //等待10s
+                                //wait 10s
                                 long startTime = TimeUtility.GetLocalMilliseconds();
                                 while (startTime + 10000 > TimeUtility.GetLocalMilliseconds()) {
                                     CenterClientApi.Tick();
                                     Thread.Sleep(10);
                                 }
-                                //关闭GameFramework
+                                //close GameFramework
                                 LogSys.Log(ServerLogType.MONITOR, "QuitStep_3. LastSaveDone. GameFramework quit...");
                                 CenterClientApi.Quit();
                             }
@@ -310,7 +310,7 @@ namespace GameFramework
                     if (0 == command.CompareTo(c_QuitLobby)) {
                         LogSys.Log(ServerLogType.MONITOR, "receive {0} command, save data and then quitting ...", command);
                         if (!m_WaitQuit) {
-                            //收到关闭服务器指令,退出前保存数据
+                            //After receiving the instruction to shut down the server, save the data before exiting.
                             m_UserProcessScheduler.DefaultUserThread.QueueAction(m_UserProcessScheduler.DoLastSaveUserData);
                             m_GlobalProcessThread.QueueAction(m_GlobalProcessThread.DoLastSaveGlobalData);
                             m_LastWaitQuitTime = TimeUtility.GetLocalMilliseconds();
@@ -419,7 +419,7 @@ namespace GameFramework
         private const int c_MaxWaitLoginUserNum = 3000;
         private const long c_ChatStatisticInterval = 60000;
         private const long c_WarningTickTime = 1000;
-        private const long c_WaitQuitTimeInterval = 600000;      //重置等待退出状态的时间间隔,5mins
+        private const long c_WaitQuitTimeInterval = 600000;      //Reset the time interval for waiting for exit status,5mins
         private const long c_FightingScoreStatisticInterval = 60000;
 
         private int m_MaxGlobalActionNum = 500000;

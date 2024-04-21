@@ -11,7 +11,7 @@ using GameFrameworkMessage;
 namespace RoomServer
 {
     /// <remarks>
-    /// 注意这个类的消息处理的逻辑里调用的其它方法，都要检查跨线程调用是否安全！！！
+    /// Note that for other methods called in the message processing logic of this class, check whether cross-thread calls are safe! ! !
     /// </remarks>
     internal sealed partial class RoomServer
     {
@@ -248,14 +248,14 @@ namespace RoomServer
             }
         }
 
-        private const int c_TickIntervalMs = 5000;           // tick间隔
-        private const int c_SendIntervalMs = 1000;           // 发送间隔
+        private const int c_TickIntervalMs = 5000;           // tick interval
+        private const int c_SendIntervalMs = 1000;           // send interval
         private const long c_WarningTickTime = 1000;
         private long m_LastTickTimeForSend = 0;
 
         private RoomManager m_RoomMgr;
         private long m_LastTickTime;
-        private long m_LastSendRoomInfoTime;// 上一次发送房间信息的时间
+        private long m_LastSendRoomInfoTime;// The last time room information was sent
         private bool m_IsContinueRegister;
         private string m_ServerIp;
         private uint m_ServerPort;

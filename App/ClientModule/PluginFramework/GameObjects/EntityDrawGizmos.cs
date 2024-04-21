@@ -9,12 +9,12 @@ namespace GameFramework
 
 #if UNITY_EDITOR
         /// <summary>
-        /// 视野范围
+        /// Viewable range
         /// </summary>
         public Color viewRangeColor = Color.green;
 
         /// <summary>
-        /// 技能范围
+        /// Skill range
         /// </summary>
         public Color skillRangeColor = Color.red;
 

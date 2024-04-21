@@ -93,7 +93,8 @@ namespace GameFramework.Skill.Trigers
 
         private float GetFixedDeltaTime()
         {
-            //下面函数是引用C++库里的函数，不能直接捕获异常，必须封装一层C#函数再捕获。
+            //The following functions refer to functions in the C++ library. They cannot catch exceptions directly.
+            //They must be encapsulated with a layer of C# functions and then caught.
             return Time.fixedDeltaTime;
         }
         private float m_TimeScale = 1.0f;

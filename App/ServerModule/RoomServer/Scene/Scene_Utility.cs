@@ -107,7 +107,7 @@ namespace GameFramework
             if (null == npc)
                 return;
             UpdateKillCount(npc);
-            //死亡掉落
+            //Death drop
             EntityInfo userKiller = EntityManager.GetEntityInfo(npc.KillerId);
         }
         

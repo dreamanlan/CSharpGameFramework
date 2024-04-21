@@ -12,7 +12,7 @@ namespace Lobby
     internal partial class LobbyServer
     {
         /// <summary>
-        /// 注意，node来的消息直接分发到DataProcess的线程池里进行处理，需要考虑多线程安全！
+        /// Note that messages from node are directly distributed to the thread pool of DataProcess for processing, so multi-thread safety needs to be considered!
         /// </summary>
         private void InstallNodeHandlers()
         {

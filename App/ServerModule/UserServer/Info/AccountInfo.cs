@@ -8,13 +8,13 @@ namespace GameFramework
 {
     internal enum AccountState : int
     {
-        Unloaded,     //账号数据未加载    
-        Online,       //账号在线
-        Dropped,      //账号掉线
-        Offline,      //账号离线
+        Unloaded,     //Account data not loaded
+        Online,       //Account is online
+        Dropped,      //Account is dropped
+        Offline,      //Account is offline
     }
     /// <summary>
-    /// 玩家账号数据
+    /// Player account data
     /// </summary>
     public partial class AccountInfo
     {
@@ -38,7 +38,7 @@ namespace GameFramework
             get { return m_CurrentState; }
             set { m_CurrentState = value; }
         }
-        //玩家账号数据    
+        //Player account data
         private string m_AccountKey = string.Empty;
         private string m_ClientInfo = string.Empty;
         private AccountState m_CurrentState = AccountState.Offline;

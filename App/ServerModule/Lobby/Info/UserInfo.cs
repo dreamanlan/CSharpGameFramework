@@ -9,15 +9,16 @@ namespace Lobby
 {
     internal enum BroadcastType : int
     {
-        Chat = 1,//聊天公频
-        Roll = 2,//滚动公告
-        Both = 3,//聊天加滚动
+        Chat = 1,//Chat public channel
+        Roll = 2,//rolling announcement
+        Both = 3,//chat plus scroll
     }
     internal enum UserState : int
     {
-        Online = 0,           //玩家登录，但并未加入游戏
-        Room,                 //玩家在多人副本游戏中，PvP或多人PvE
-        DropOrOffline,        //掉线或离线状态（逻辑上区分掉线与离线意义不大）
+        Online = 0,           //Player is logged in but not joining the game
+        Room,                 //Players in multiplayer dungeon games, PvP or multiplayer PvE
+        DropOrOffline,        //Offline or offline status (logically, it makes little sense
+                              //to distinguish between offline and offline)
     }
     internal class UserInfo
     {
@@ -30,7 +31,7 @@ namespace Lobby
             get { return m_CurrentState; }
             set { m_CurrentState = value; }
         }
-        //基本数据
+        //basic data
         internal uint Key
         {
             get { return m_Key; }
@@ -84,7 +85,7 @@ namespace Lobby
         {
             get { return null == m_RoomUserInfo ? 0 : m_RoomUserInfo.Hero; }
         }
-        //游戏数据
+        //game data
         internal int Level
         {
             get { return null == m_RoomUserInfo ? 0 : m_RoomUserInfo.Level; }
@@ -107,7 +108,7 @@ namespace Lobby
             get { return m_RoomUserInfo; }
             set { m_RoomUserInfo = value; }
         }
-        //玩家当前游戏数据
+        //Player's current game data
         internal RoomInfo Room
         {
             get
@@ -130,7 +131,7 @@ namespace Lobby
             get { return m_curRoomID; }
             set { m_curRoomID = value; }
         }
-        //其它
+        //Other
         internal int LeftLife
         {
             get { return m_LeftLife; }

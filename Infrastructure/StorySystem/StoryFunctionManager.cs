@@ -18,7 +18,8 @@ namespace StorySystem
         }
     }
     /// <summary>
-    /// 这个类不加锁，约束条件：所有值/函数注册必须在程序启动时完成。
+    /// This class does not lock, constraint:
+    /// all value/function registration must be completed when the program starts.
     /// </summary>
     public class StoryFunctionManager
     {
@@ -132,7 +133,7 @@ namespace StorySystem
                 }
                 Dsl.FunctionData callData = param as Dsl.FunctionData;
                 if (null != callData && callData.IsValid() && callData.GetId().Length == 0 && !callData.IsHighOrder && (callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS || callData.GetParamClass() == (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_BRACKET)) {
-                    //处理圆括弧与方括弧
+                    //Handling parentheses and square brackets
                     switch (callData.GetParamClass()) {
                         case (int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS:
                             if (callData.GetParamNum() > 0) {
@@ -164,7 +165,7 @@ namespace StorySystem
                 else {
                     Dsl.FunctionData funcData = param as Dsl.FunctionData;
                     if (null != funcData && funcData.HaveStatement()) {
-                        //处理大括弧
+                        //Dealing with braces
                         callData = funcData;
                         if (null == callData || !callData.HaveParam()) {
                             IStoryFunction ret = null;
@@ -182,7 +183,7 @@ namespace StorySystem
                             return ret;
                         }
                         else {
-                            //不支持的语法
+                            //unsupported syntax
                             return null;
                         }
                     }

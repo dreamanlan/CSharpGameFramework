@@ -15,14 +15,16 @@ namespace StorySystem.CommonFunctions
     /// }];
     /// </summary>
     /// <remarks>
-    /// 这里的Name、ArgNames、OptArgs、ReturnName与InitialCommands为同一value定义的各个调用共享。
-    /// 由于解析时需要处理交叉引用，先克隆后InitFromDsl。
-    /// 这里的自定义函数支持递归(性能较低，仅处理小规模问题)，不支持基于时间的wait命令，亦即不支持挂起-恢复执行。
-    /// 注意：
-    /// 1、所有依赖InitialCommands等共享数据的其它成员，初始化需要写成lazy的样式，不要在Clone与InitFromDsl里初始化，因为
-    /// 此时共享数据可能还不完整！
-    /// 2、因为自定义的命令与值在使用时有函数调用语义，需要可以访问传递的参数。而Evaluate接口只有一组参数，这限制了自定义
-    /// 命令与值的形式至多是Function样式而不应支持Statement样式。
+    /// The Name, ArgNames, OptArgs, ReturnName and InitialCommands here are shared by each call defined by the same value.
+    /// Since cross-references need to be processed during parsing, clone first and then InitFromDsl.
+    /// The custom function here supports recursion (lower performance, only handles small-scale problems), and does not
+    /// support time-based wait commands, that is, it does not support suspend-resume execution.
+    /// Notice:
+    /// 1. All other members that rely on shared data such as InitialCommands need to be initialized in a lazy style.
+    /// Do not initialize in Clone and InitFromDsl, because the shared data may not be complete at this time!
+    /// 2. Because custom commands and values have function call semantics when used, the passed parameters need to be
+    /// accessible. The Evaluate interface has only one set of parameters, which limits the form of custom commands and
+    /// values to Function style at most and should not support Statement style.
     /// </remarks>
     public sealed class CompositeValue : IStoryFunction
     {
@@ -80,7 +82,8 @@ namespace StorySystem.CommonFunctions
         {
             var stackInfo = StoryLocalInfo.New();
             var runtime = StoryRuntime.New();
-            //调用实参部分需要在栈建立之前运算，结果需要记录在栈上
+            //The actual parameter part of the call needs to be calculated before the stack is established,
+            //and the result needs to be recorded on the stack.
             for (int i = 0; i < m_LoadedArgs.Count; ++i) {
                 stackInfo.Args.Add(m_LoadedArgs[i].Clone());
             }
@@ -97,7 +100,8 @@ namespace StorySystem.CommonFunctions
             foreach (var pair in stackInfo.OptArgs) {
                 pair.Value.Evaluate(instance, handler, iterator, args);
             }
-            //实参处理完，进入函数体执行，创建新的栈
+            //After the actual parameters are processed, enter the function body
+            //for execution and create a new stack.
             PushStack(instance, handler, stackInfo, runtime);
             try {
                 for (int i = 0; i < m_ArgNames.Count; ++i) {

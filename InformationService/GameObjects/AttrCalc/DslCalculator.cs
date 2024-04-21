@@ -1392,7 +1392,7 @@ namespace GameFramework.AttrCalc
             Dsl.ValueData valueData = comp as Dsl.ValueData;
             if (null != valueData) {
                 if (valueData.GetIdType() == Dsl.ValueData.NUM_TOKEN) {
-                    //普通常量
+                    //common constant
                     ConstGet constExp = new ConstGet();
                     constExp.Load(comp, this);
                     return constExp;
@@ -1422,7 +1422,7 @@ namespace GameFramework.AttrCalc
 #endif
                     } else {
                         string op = callData.GetId();
-                        if (op == "=") {//赋值
+                        if (op == "=") {//assignment
                             string name = callData.GetParamId(0);
                             IAttrExpression exp = null;
                             if (name == "attr") {

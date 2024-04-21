@@ -20,9 +20,10 @@ namespace GameFramework
         MaxCount,        
     }
     /// <summary>
-    /// 资源管理器，提供资源缓存重用机制。
+    /// Resource manager, which provides a resource cache reuse mechanism.
     /// 
-    /// todo:分包策略确定后需要修改为从分包里加载资源
+    /// todo:After the split package strategy is determined, it needs to be modified to
+    /// load resources from the subpackage.
     /// </summary>
     public class ResourceSystem
     {

@@ -95,7 +95,7 @@ public class InplaceSkillInfoDrawer : PropertyDrawer
                 position.y += c_FieldHeight;
                 group.IsFoldOut = EditorGUI.Foldout(position, group.IsFoldOut, "============<" + skillId + ">============");
                 if (group.IsFoldOut) {
-                    //技能可视编辑特性部分
+                    //Skill visual editing features section
                     if (null != group.PropertyList) {
                         string lastGroup = string.Empty;
                         foreach (var p in group.PropertyList) {
@@ -148,7 +148,7 @@ public class InplaceSkillInfoDrawer : PropertyDrawer
                             lastGroup = p.Group;
                         }
                     }
-                    //技能资源（这里就不允许新加资源了，只能修改）
+                    //Skill resources (new resources are not allowed here, only modifications can be made)
                     TableConfig.Skill skillCfg = TableConfig.SkillProvider.Instance.GetSkill(skillId);
                     if (null != skillCfg) {
                         position.x = x;

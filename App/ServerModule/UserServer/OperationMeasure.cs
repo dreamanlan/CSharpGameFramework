@@ -6,7 +6,7 @@ using GameFramework;
 namespace GameFramework
 {
   /// <summary>
-  /// !!!注意，这个类实例会在多个线程里调用。
+  /// !!!Note that this class instance will be called in multiple threads.
   /// </summary>
   internal sealed class OperationMeasure
   {

@@ -6,14 +6,14 @@ namespace GameFramework.DataCache
 {
     internal class InnerCacheSystem
     {
-        internal const long UltimateCacheVersion = -1;         //优先级最高的缓存数据CacheVersion 
-        internal const long InitialCacheVersion = 0;           //初始的缓存数据CacheVersion 
+        internal const long UltimateCacheVersion = -1;         //CacheVersion of the highest priority cache data
+        internal const long InitialCacheVersion = 0;           //Initial cache data CacheVersion
         /// <summary>
-        /// 主键查找
+        /// primary key lookup
         /// </summary>
-        /// <param name="msgId">数据类型ID</param>
-        /// <param name="key">主键</param>
-        /// <returns>查找成功返回对应数据对象，不存在返回null</returns>
+        /// <param name="msgId">Data type ID</param>
+        /// <param name="key">primary key</param>
+        /// <returns>If the search is successful, the corresponding data object is returned. If it does not exist, null is returned.</returns>
         internal InnerCacheItem Find(int msgId, KeyString key)
         {
             InnerCacheTable cacheTable = null;
@@ -24,10 +24,10 @@ namespace GameFramework.DataCache
             return null;
         }
         /// <summary>
-        /// 外键查找
+        /// foreign key lookup
         /// </summary>
-        /// <param name="msgId">数据类型ID</param>
-        /// <param name="key">外键</param>
+        /// <param name="msgId">Data type ID</param>
+        /// <param name="key">foreign key</param>
         /// <returns></returns>
         internal List<InnerCacheItem> FindByForeignKey(int msgId, KeyString foreignKey)
         {
@@ -39,11 +39,11 @@ namespace GameFramework.DataCache
             return new List<InnerCacheItem>();
         }
         /// <summary>
-        /// 删除
+        /// delete
         /// </summary>
-        /// <param name="msgId">数据类型ID</param>
+        /// <param name="msgId">Data type ID</param>
         /// <param name="key">Key</param>
-        /// <returns>删除成功返回true，失败返回false</returns>
+        /// <returns>Returns true if deletion is successful, false if failed.</returns>
         internal bool Remove(int msgId, KeyString key)
         {
             InnerCacheTable cacheTable = null;
@@ -54,11 +54,11 @@ namespace GameFramework.DataCache
             return false;
         }
         /// <summary>
-        /// 添加或更新
+        /// add or update
         /// </summary>
-        /// <param name="msgId">数据类型ID</param>
+        /// <param name="msgId">Data type ID</param>
         /// <param name="key">Key</param>
-        /// <param name="dataMessage">待添加的数据对象</param>
+        /// <param name="dataMessage">Data objects to be added</param>
         internal void AddOrUpdate(int msgId, KeyString key, KeyString foreignKey, byte[] dataMessage, long cacheVersion = InnerCacheSystem.InitialCacheVersion)
         {
             InnerCacheTable tableCache = null;
@@ -72,7 +72,7 @@ namespace GameFramework.DataCache
             }
         }
         /// <summary>
-        /// 从缓存中抽取出脏数据
+        /// Extract dirty data from cache
         /// </summary>
         /// <returns></returns>
         internal Dictionary<int, List<InnerCacheItem>> FetchDirtyCacheItems()

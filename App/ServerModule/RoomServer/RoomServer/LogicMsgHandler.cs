@@ -243,7 +243,8 @@ namespace GameFramework
             Scene scene = user.OwnRoomUserManager.ActiveScene;
             if (scene != null) {
                 try {
-                    //客户端发来的消息都加上前缀client，防止直接调用服务器端逻辑（服务器消息不能用client前缀！）
+                    //Messages sent from the client are prefixed with client to prevent direct calls to server-side logic
+                    //(server messages cannot be prefixed with client!)
                     string msgId = string.Format("client:{0}", target_msg.m_MsgId);
                     var args = scene.StorySystem.NewBoxedValueList();
                     args.Add(user.RoleId);

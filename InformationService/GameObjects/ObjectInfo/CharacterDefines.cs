@@ -14,12 +14,12 @@ namespace GameFramework
         FreedomCamp_End = 0x7fffffff,
     }
 
-    // 关系
+    // relationship
     public enum CharacterRelation : int
     {
         RELATION_INVALID = -1,
-        RELATION_ENEMY,				// 敌对
-        RELATION_FRIEND,			// 友好
+        RELATION_ENEMY,				// hostile
+        RELATION_FRIEND,			// friendly
         RELATION_NUMBERS
     }
 

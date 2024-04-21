@@ -6,15 +6,15 @@ namespace GameFramework
 {
     public class ImpactInfo
     {
-        public int Seq = 0;                        // 顺序号（添加到Character上时生成，在Character实例上唯一）
-        public int ImpactId = -1;                  // 效果ID
-        public int SkillId = -1;                   // 技能ID
-        public int ImpactSenderId = -1;            // 效果触发者的Id
+        public int Seq = 0;                        // Sequence number (generated when added to Character, unique on Character instance)
+        public int ImpactId = -1;                  // effect ID
+        public int SkillId = -1;                   // skill ID
+        public int ImpactSenderId = -1;            // The ID of the effect triggerer
         public Vector3 SenderPosition;
         public int TargetType = 0;
 
-        public long StartTime = 0;                 // 效果开始生效起始时间
-        public int DurationTime = 0;               // 持续时间
+        public long StartTime = 0;                 // The effect starts to take effect starting time
+        public int DurationTime = 0;               // duration
 
         public int CurDamageCount = 0;
 

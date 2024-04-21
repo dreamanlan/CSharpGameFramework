@@ -9,19 +9,19 @@ namespace GameFramework
 {
     internal enum BroadcastType : int
     {
-        Chat = 1,//聊天公频
-        Roll = 2,//滚动公告
-        Both = 3,//聊天加滚动
+        Chat = 1,//Chat public channel
+        Roll = 2,//rolling announcement
+        Both = 3,//chat plus scroll
     }
     internal enum UserState : int
     {
-        Online = 0,           //玩家登录，但并未加入游戏
-        Room,                 //玩家在多人副本游戏中，PvP或多人PvE
-        DropOrOffline,        //掉线或离线状态（逻辑上区分掉线与离线意义不大）
+        Online = 0,           //Player is logged in but not joining the game
+        Room,                 //Players in multiplayer dungeon games, PvP or multiplayer PvE
+        DropOrOffline,        //Offline or offline status (logically, it makes little sense to distinguish between offline and offline)
     }
     public sealed partial class UserInfo
     {
-        internal const int LifeTimeOfNoHeartbeat = 120000;    //玩家离线，如果心跳停止超过这个值认为玩家离线   
+        internal const int LifeTimeOfNoHeartbeat = 120000;    //The player is offline. If the heartbeat stops exceeding this value, the player is considered offline.
         internal UserInfo()
         {
         }
@@ -57,7 +57,7 @@ namespace GameFramework
             }
         }
 
-        //基本数据
+        //basic data
         internal string NodeName
         {
             get { return m_NodeName; }

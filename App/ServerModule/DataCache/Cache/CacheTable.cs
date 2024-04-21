@@ -5,16 +5,16 @@ using GameFramework;
 namespace GameFramework.DataCache
 {
     /// <summary>
-    /// 数据存储缓存数据表类型
-    /// 对应数据库的数据表
+    /// Data storage cache data table type
+    /// Data table corresponding to the database
     /// </summary>
     internal class InnerCacheTable
     {
         /// <summary>
-        /// 主键查询
+        /// Primary key query
         /// </summary>
-        /// <param name="key">主键</param>
-        /// <returns>若查找到返回唯一对应数据值，否则返回null</returns>
+        /// <param name="key">primary key</param>
+        /// <returns>If the unique corresponding data value is found, return null otherwise.</returns>
         internal InnerCacheItem Find(KeyString key)
         {
             InnerCacheItem cacheItem = null;
@@ -26,10 +26,10 @@ namespace GameFramework.DataCache
             }
         }
         /// <summary>
-        /// 外键查询
+        /// Foreign key query
         /// </summary>
-        /// <param name="foreignKey">外键</param>
-        /// <returns>外键所对应的数据值列表</returns>
+        /// <param name="foreignKey">foreign key</param>
+        /// <returns>List of data values corresponding to the foreign key</returns>
         internal List<InnerCacheItem> FindByForeignKey(KeyString foreignKey)
         {
             List<InnerCacheItem> cacheItemList = new List<InnerCacheItem>();
@@ -46,10 +46,10 @@ namespace GameFramework.DataCache
             return cacheItemList;
         }
         /// <summary>
-        /// 删除
+        /// Delete
         /// </summary>
-        /// <param name="key">主键</param>
-        /// <returns>删除成功返回true，失败为false</returns>
+        /// <param name="key">primary key</param>
+        /// <returns>Returns true if the deletion is successful, false if it fails.</returns>
         internal bool Remove(KeyString key)
         {
             KeyString foreignKey = null;
@@ -66,20 +66,20 @@ namespace GameFramework.DataCache
             return m_PrimaryDict.Remove(key);
         }
         /// <summary>
-        /// 添加或更新
+        /// add or update
         /// </summary>
-        /// <param name="key">主键,不能为空</param>
-        /// <param name="foreignKey">外键，可以为空</param>
-        /// <param name="dataMessage">数据值</param>
-        /// <param name="dataVersion">数据版本</param>
+        /// <param name="key">Primary key, cannot be null</param>
+        /// <param name="foreignKey">Foreign key, can be null</param>
+        /// <param name="dataMessage">data value</param>
+        /// <param name="dataVersion">Data version</param>
         internal void AddOrUpdate(KeyString key, KeyString foreignKey, byte[] dataMessage, long cacheVersion)
         {
             InnerCacheItem cacheItem = null;
             m_PrimaryDict.TryGetValue(key, out cacheItem);
             if (cacheItem == null) {
-                //数据不在缓存中
+                //Data is not in cache
                 if (dataMessage == null) {
-                    //被删除的数据
+                    //Deleted data
                     return;
                 }
                 cacheItem = new InnerCacheItem(dataMessage);
@@ -97,9 +97,9 @@ namespace GameFramework.DataCache
                     }
                 }
             } else {
-                //数据已在缓存中
+                //Data is already in cache
                 if (CompareDataVersion(cacheVersion, cacheItem.CacheVersion)) {
-                    //更新缓存
+                    //refresh cache
                     cacheItem.DirtyState = DirtyState.Unsaved;
                     cacheItem.Valid = true;
                     cacheItem.CacheVersion = cacheVersion;
@@ -108,7 +108,7 @@ namespace GameFramework.DataCache
                     } else {
                         cacheItem.DataMessage = dataMessage;
                     }
-                    //更新外键关系
+                    //Update foreign key relationship
                     if (!KeyString.IsNullOrEmpty(foreignKey)) {
                         m_PrimaryForeignDict[foreignKey] = key;
                         HashSet<KeyString> associateKeys = null;
@@ -122,13 +122,13 @@ namespace GameFramework.DataCache
                         }
                     }
                 } else {
-                    //新数据的dataVersion低,不更新缓存,输出警告日志
+                    //The dataVersion of the new data is low, the cache is not updated, and a warning log is output.
                     LogSys.Log(ServerLogType.WARN, "Update cache version WARN. Key:{0}, NewCacheVersion:{1}, OldCacheVersion:{2}", key, cacheVersion, cacheItem.CacheVersion);
                 }
             }
         }
         /// <summary>
-        /// 返回脏数据集合
+        /// Return dirty data collection
         /// </summary>
         /// <returns></returns>
         internal List<InnerCacheItem> GetDirtyCacheItems()
@@ -144,9 +144,9 @@ namespace GameFramework.DataCache
         }
 
         /// <summary>
-        /// 清理过期的数据缓存
+        /// Clean expired data cache
         /// </summary>
-        /// <returns>清理的缓存数目</returns>
+        /// <returns>Number of caches cleared</returns>
         internal int CleanExpiredItems()
         {
             List<KeyString> deleteKeys = new List<KeyString>();
@@ -162,11 +162,11 @@ namespace GameFramework.DataCache
             return deleteKeys.Count;
         }
         /// <summary>
-        /// 比较两个DataVersion的优先级
+        /// Compare the priority of two DataVersion
         /// </summary>
-        /// <param name="newVersion">新数据的DataVersion</param>
-        /// <param name="oldVersion">已有数据的DataVersion</param>
-        /// <returns>true:新数据版本更高;false:新数据的版本低</returns>
+        /// <param name="newVersion">DataVersion of new data</param>
+        /// <param name="oldVersion">DataVersion of existing data</param>
+        /// <returns>true: the new data version is higher; false: the new data version is lower</returns>
         private bool CompareDataVersion(long newVersion, long oldVersion)
         {
             if (newVersion == InnerCacheSystem.UltimateCacheVersion) {

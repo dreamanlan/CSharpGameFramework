@@ -23,7 +23,7 @@ namespace StorySystem
             if (null != statementData) {
                 var first = statementData.First;
                 if (first.HaveId() && first.IsValue) {
-                    //命令行样式转换为函数样式
+                    //Convert command line style to function style
                     var func = new Dsl.FunctionData();
                     func.Name = first.AsValue;
                     func.SetParamClass((int)Dsl.FunctionData.ParamClassEnum.PARAM_CLASS_PARENTHESIS);

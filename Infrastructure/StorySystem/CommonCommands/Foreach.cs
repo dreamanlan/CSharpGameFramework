@@ -67,7 +67,7 @@ namespace StorySystem.CommonCommands
                     runtime.Iterator = BoxedValue.FromObject(localInfo.Iterators.Dequeue());
                     runtime.Arguments = args;
                     ret = true;
-                    //没有wait之类命令直接执行
+                    //Execute directly without commands such as wait
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
                         handler.PopRuntime(instance);
@@ -76,7 +76,9 @@ namespace StorySystem.CommonCommands
                             break;
                         }
                     } else {
-                        //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
+                        //When encountering the wait command, jump out of execution, and then directly
+                        //execute the command queue on the top of the stack in StoryMessageHandler
+                        //(reducing overhead)
                         break;
                     }
                 } else {
@@ -190,7 +192,7 @@ namespace StorySystem.CommonCommands
                     runtime.Iterator = BoxedValue.FromObject(localInfo.Iterators.Dequeue());
                     runtime.Arguments = args;
                     ret = true;
-                    //没有wait之类命令直接执行
+                    //Execute directly without commands such as wait
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
                         handler.PopRuntime(instance);
@@ -199,7 +201,9 @@ namespace StorySystem.CommonCommands
                             break;
                         }
                     } else {
-                        //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
+                        //When encountering the wait command, jump out of execution, and then directly
+                        //execute the command queue on the top of the stack in StoryMessageHandler
+                        //(reducing overhead)
                         break;
                     }
                 } else {
@@ -307,7 +311,7 @@ namespace StorySystem.CommonCommands
                     runtime.Arguments = args;
                     ++localInfo.CurCount;
                     ret = true;
-                    //没有wait之类命令直接执行
+                    //Execute directly without commands such as wait
                     runtime.Tick(instance, handler, delta);
                     if (runtime.CommandQueue.Count == 0) {
                         handler.PopRuntime(instance);
@@ -316,7 +320,9 @@ namespace StorySystem.CommonCommands
                             break;
                         }
                     } else {
-                        //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
+                        //When encountering the wait command, jump out of execution, and then directly
+                        //execute the command queue on the top of the stack in StoryMessageHandler
+                        //(reducing overhead)
                         break;
                     }
                 } else {

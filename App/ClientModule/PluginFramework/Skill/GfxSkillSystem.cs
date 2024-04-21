@@ -51,7 +51,7 @@ namespace GameFramework.Skill
             cfg.dslFile = "Skill/predefined.dsl";
             cfg.type = (int)SkillOrImpactType.Impact;
             cfg.impactData = new TableConfig.ImpactData();
-            //添加到技能表数据中
+            //Added to skill table data
             var skills = TableConfig.SkillProvider.Instance.SkillMgr.GetData();
             skills[cfg.id] = cfg;
         }
@@ -208,7 +208,7 @@ namespace GameFramework.Skill
         }
         public void Init()
         {
-            //注册技能触发器
+            //Register skill trigger
             SkillTrigerManager.Instance.RegisterTrigerFactory("timescale", new SkillTrigerFactoryHelper<Trigers.TimeScaleTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("bornfinish", new SkillTrigerFactoryHelper<Trigers.BornFinishTriger>());
             SkillTrigerManager.Instance.RegisterTrigerFactory("deadfinish", new SkillTrigerFactoryHelper<Trigers.DeadFinishTriger>());
@@ -499,7 +499,7 @@ namespace GameFramework.Skill
             }
             return ret;
         }
-        //在技能未开始时取消技能（用于上层逻辑检查失败时）
+        //Cancel the skill when it has not started (used when the upper logic check fails)
         public void CancelSkill(int objId, int skillId, int seq)
         {
             GameObject obj = PluginFramework.Instance.GetGameObject(objId);

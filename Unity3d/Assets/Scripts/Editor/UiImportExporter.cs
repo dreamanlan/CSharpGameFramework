@@ -799,7 +799,7 @@ internal static class UiEditUtility
     {
         if (null == funcData)
             return;
-        //跳过非骨胳结点
+        //Skip non-skeletal nodes
         foreach (var statement in funcData.Params) {
             string id = statement.GetId();
             if (id == "asset" || id == "component") {

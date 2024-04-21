@@ -354,18 +354,18 @@ public class DebugConsole : MonoBehaviour
     {
         var evt = Event.current;
 
-        // 创建一个自定义的GUI皮肤
+        // Create a custom GUI skin
         GUISkin customSkin = GUI.skin;
 
-        // 设置滚动条的宽度
+        // Set the width of the scroll bar
         customSkin.verticalScrollbar.fixedWidth = 30;
         customSkin.horizontalScrollbar.fixedHeight = 30;
 
-        // 设置滚动条滑块的大小
+        // Set the size of the scroll bar slider
         customSkin.verticalScrollbarThumb.fixedWidth = 30;
         customSkin.horizontalScrollbarThumb.fixedHeight = 30;
 
-        // 应用自定义皮肤
+        // Apply a custom skin
         GUI.skin = customSkin;
 
         GUILayout.BeginHorizontal();
@@ -435,7 +435,7 @@ public class DebugConsole : MonoBehaviour
     {
         var evt = Event.current;
 
-        // 创建一个自定义的GUI皮肤
+        // Create a custom GUI skin
         GUISkin customSkin = GUI.skin;
 
         customSkin.label.fontSize = 20;
@@ -443,19 +443,19 @@ public class DebugConsole : MonoBehaviour
         customSkin.textArea.fontSize = 20;
         customSkin.textField.fixedHeight = 30;
 
-        // 设置按钮的大小
+        // Set button size
         customSkin.button.fixedHeight = 30;
         customSkin.button.fontSize = 20;
 
-        // 设置滚动条的宽度
+        // Set the width of the scroll bar
         customSkin.verticalScrollbar.fixedWidth = 20;
         customSkin.horizontalScrollbar.fixedHeight = 20;
 
-        // 设置滚动条滑块的大小
+        // Set the size of the scroll bar slider
         customSkin.verticalScrollbarThumb.fixedWidth = 20;
         customSkin.horizontalScrollbarThumb.fixedHeight = 20;
 
-        // 应用自定义皮肤
+        // Apply a custom skin
         GUI.skin = customSkin;
 
         if (m_Scaled) {

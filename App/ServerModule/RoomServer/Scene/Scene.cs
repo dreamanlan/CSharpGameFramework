@@ -196,7 +196,7 @@ namespace GameFramework
         public void LoadData(int resId)
         {
             try {
-                //读取阻挡等场景相关数据
+                //Read scene-related data such as blocking
 
                 LogSys.Log(ServerLogType.DEBUG, "Scene {0} start Preloading.", resId);
                                 
@@ -261,12 +261,12 @@ namespace GameFramework
                 EntityInfo userInfo = user.Info;
                 RoomUserManager roomUserMgr = GetRoomUserManager();
                 if (null != userInfo && null != roomUserMgr && null != roomUserMgr.ActiveScene) {
-                    //发阵营给自己
+                    //Send camp to yourself
                     Msg_RC_CampChanged msg = new Msg_RC_CampChanged();
                     msg.obj_id = 0;
                     msg.camp_id = user.LobbyUserData.Camp;
                     user.SendMessage(RoomMessageDefine.Msg_RC_CampChanged, msg);
-                    //同步场景数据给自己
+                    //Synchronize scene data to yourself
                     SyncSceneObjectsToUser(user);
                     SyncUserObjectToOtherUsers(user);
                 }
@@ -278,7 +278,7 @@ namespace GameFramework
             if (null != observer) {
                 RoomUserManager roomUserMgr = GetRoomUserManager();
                 if (null != roomUserMgr && null != roomUserMgr.ActiveScene) {
-                    //同步场景数据给观察者
+                    //Synchronize scene data to observers
                     for (LinkedListNode<EntityInfo> linkNode = EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                         EntityInfo npc = linkNode.Value;
                         if (null != npc) {

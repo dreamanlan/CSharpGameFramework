@@ -38,29 +38,29 @@ namespace GameFramework
         {
             m_Tree.Clear();
         }
-        //用传入数据构造一个最大堆(这里的最大是对IComparer接口的语义而言)
+        //Construct a maximum heap with the incoming data (the maximum here is for the semantics of the IComparer interface)
         public void Build(params ElementT[] vals)
         {
             m_Tree.Clear();
             m_Tree.AddRange(vals);
             int currentSize = Count;
             for (int i = currentSize / 2; i >= 1; --i) {
-                ElementT val = m_Tree[i - 1];//子树的根
-                //寻找放置i的位置
-                int c = 2 * i;//c的父结点是i的目标位置
+                ElementT val = m_Tree[i - 1];//the root of the sub tree
+                //Find where to place i
+                int c = 2 * i;//The parent node of c is the target position of i
                 while (c <= currentSize) {
-                    //m_Tree[c]应是较大的同胞结点
+                    //m_Tree[c] Should be the max sibling node
                     if (c < currentSize && m_Compare.Compare(m_Tree[c - 1], m_Tree[c]) < 0)
                         ++c;
                     if (m_Compare.Compare(val, m_Tree[c - 1]) >= 0)
                         break;
-                    m_Tree[c / 2 - 1] = m_Tree[c - 1];//将孩子结点上移
-                    c *= 2;//下移一层
+                    m_Tree[c / 2 - 1] = m_Tree[c - 1];//Move child node up
+                    c *= 2;//Move down one level
                 }
                 m_Tree[c / 2 - 1] = val;
             }
         }
-        //往堆里压入一个元素
+        //Push an element into the heap
         public void Push(ElementT val)
         {
             m_Tree.Add(default(ElementT));
@@ -71,57 +71,57 @@ namespace GameFramework
             }
             m_Tree[i - 1] = val;
         }
-        //弹出堆顶元素
+        //Pop the top element of the heap
         public ElementT Pop()
         {
             ElementT root = default(ElementT);
             int currentSize = Count;
             if (currentSize > 0) {
                 root = m_Tree[0];
-                ElementT last = m_Tree[currentSize - 1];//最后一个元素
-                int i = 1;//堆的当前结点
-                int ci = 2;//i的孩子结点
+                ElementT last = m_Tree[currentSize - 1];//last element
+                int i = 1;//The current node of the heap
+                int ci = 2;//child node of i
                 while (ci <= currentSize) {
-                    //m_Tree[ci]应是i的较大的孩子
+                    //m_Tree[ci] should be the max child of i
                     if (ci < currentSize && m_Compare.Compare(m_Tree[ci - 1], m_Tree[ci]) < 0)
                         ++ci;
                     if (m_Compare.Compare(last, m_Tree[ci - 1]) >= 0)
                         break;
-                    m_Tree[i - 1] = m_Tree[ci - 1];//将孩子结点上移
+                    m_Tree[i - 1] = m_Tree[ci - 1];//Move child node up
                     i = ci;
-                    ci *= 2;//下移一层
+                    ci *= 2;//Move down one level
                 }
                 m_Tree[i - 1] = last;
                 m_Tree.RemoveAt(currentSize - 1);
             }
             return root;
         }
-        //查询特定数据在堆内部数据里的索引，用于Update
+        //Query the index of specific data in the internal data of the heap for Update
         public int IndexOf(ElementT val)
         {
             return m_Tree.IndexOf(val);
         }
-        //更新指定索引的数据
+        //Update the data of the specified index
         public void Update(int index, ElementT val)
         {
             int currentSize = Count;
             if (index >= 0 && index < currentSize) {
-                //先删除
-                ElementT last = m_Tree[currentSize - 1];//最后一个元素
-                int i = index + 1;//要修改的堆的当前结点
-                int ci = i * 2;//i的孩子结点
+                //Delete first
+                ElementT last = m_Tree[currentSize - 1];//last element
+                int i = index + 1;//The current node of the heap to be modified
+                int ci = i * 2;//child node of i
                 while (ci <= currentSize) {
-                    //m_Tree[ci]应是i的较大的孩子
+                    //m_Tree[ci] should be the max child of i
                     if (ci < currentSize && m_Compare.Compare(m_Tree[ci - 1], m_Tree[ci]) < 0)
                         ++ci;
                     if (m_Compare.Compare(last, m_Tree[ci - 1]) >= 0)
                         break;
-                    m_Tree[i - 1] = m_Tree[ci - 1];//将孩子结点上移
+                    m_Tree[i - 1] = m_Tree[ci - 1];//Move child node up
                     i = ci;
-                    ci *= 2;//下移一层
+                    ci *= 2;//Move down one level
                 }
                 m_Tree[i - 1] = last;
-                //再添加
+                //Add it later
                 i = currentSize;
                 while (i > 1 && m_Compare.Compare(m_Tree[i / 2 - 1], val) < 0) {
                     m_Tree[i - 1] = m_Tree[i / 2 - 1];
@@ -130,7 +130,7 @@ namespace GameFramework
                 m_Tree[i - 1] = val;
             }
         }
-        //锁定堆，返回内部数据list引用，在Unlock时将对内部数据重新进行堆整理。
+        //Lock the heap and return the internal data list reference. When Unlocking, the internal data will be reorganized in the heap.
         public List<ElementT> LockData()
         {
             return m_Tree;
@@ -139,7 +139,7 @@ namespace GameFramework
         {
             m_IsDataDirty = true;
         }
-        //解除锁定，对内部数据进行重新整理（锁定后外部可以对内部数据进行增删减操作）
+        //Unlock and reorganize internal data (after locking, external data can be added, deleted, or deleted)
         public void UnlockData()
         {
             if (m_IsDataDirty) {

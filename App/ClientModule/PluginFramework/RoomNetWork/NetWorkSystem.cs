@@ -202,7 +202,8 @@ namespace GameFramework.Network
 
         internal void OnRoomServerWaitStart()
         {
-            //网络被关闭又没有正常结束，有可能是服务器副本已经关闭，直接尝试结算
+            //The network was shut down and did not end normally. It is possible that
+            //the server copy has been shut down. Please try settlement directly.
             GameFramework.Story.GfxStorySystem.Instance.SendMessage("try_stag_clear", 0);
             ClearArgs();
             PluginFramework.Instance.QueueAction(this.ShutdownNetClient);
@@ -650,7 +651,7 @@ namespace GameFramework.Network
         private uint m_Key = 0;
         private int m_RoomSceneId = 0;
 
-        //消息统计
+        //Message statistics
         private Dictionary<int, MessageCountInfo> m_SendMessageCounts = new Dictionary<int, MessageCountInfo>();
         private Dictionary<int, MessageCountInfo> m_ReceiveMessageCounts = new Dictionary<int, MessageCountInfo>();
     }

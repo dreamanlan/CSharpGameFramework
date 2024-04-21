@@ -4,7 +4,8 @@ using System.Collections;
 namespace StorySystem.CommonCommands
 {
     /// <summary>
-    /// dummy命令，用于注册没有对应实现的命令（为了解析需要注册）。
+    /// The dummy command is used to register commands that have no corresponding implementation
+    /// (registration is required for parsing).
     /// </summary>
     public sealed class DummyCommand : AbstractStoryCommand
     {

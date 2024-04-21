@@ -5,10 +5,11 @@ using CSharpCenterClient;
 namespace Messenger
 {
     /// <summary>
-    /// 消息channel, 即表示了某一类dcore的消息类型的消息
+    /// Message channel, which represents a message type of a certain type of core
     /// </summary>
     /// <remarks>
-    /// 注意：这个类实例需要支持在多个线程调用，除初始化外，所有方法都应该是多线程安全的！！！
+    /// Note: This class instance needs to support calling from multiple threads.
+    /// Except for initialization, all methods should be multi-thread safe! ! !
     /// </remarks>
     public sealed class PBChannel
     {
@@ -17,10 +18,10 @@ namespace Messenger
         public delegate void DefaultMessageHandler(object msg, PBChannel channel, ulong src, uint session);
 
         /// <summary>
-        /// 内部初始化channel, 比较重要的是(id<->type)的相互查询函数
+        /// Internal initialization channel, the more important thing is the mutual query function of (id<->type)
         /// </summary>
-        /// <param name="msgid_query">id->type查询函数</param>
-        /// <param name="msgtype_query">type->id查询函数</param>
+        /// <param name="msgid_query">id->type query function</param>
+        /// <param name="msgtype_query">type->id query function</param>
         public PBChannel(MsgIdQuery msgid_query, MsgTypeQuery msgtype_query)
         {
             world_id_ = 0;
@@ -39,7 +40,9 @@ namespace Messenger
             }
         }
         /// <summary>
-        /// 这个特性的名字代表的涵义比较特别，指定worldid表明此Channel使用CenterHubApi进行通讯，设为0表明使用CenterClientApi进行通讯。
+        /// The name of this feature has a special meaning. Specifying worldid indicates that this Channel uses
+        /// CenterHubApi for communication, and setting it to 0 indicates that CenterClientApi is used
+        /// for communication.
         /// </summary>
         public int WorldId
         {
@@ -47,7 +50,9 @@ namespace Messenger
             set { world_id_ = value; }
         }
         /// <summary>
-        /// 指定缺省目标名限定了此Channel只与指定目标通讯，如果想要同时与多个不同目标通讯，不用指定目标名。
+        /// Specifying a default target name limits this Channel to only communicate with the
+        /// specified target. If you want to communicate with multiple different targets at
+        /// the same time, you do not need to specify a target name.
         /// </summary>
         public string DefaultServiceName
         {
@@ -74,14 +79,14 @@ namespace Messenger
         }
 
         /// <summary>
-        /// 注册对于类型是MsgType的消息的处理函数, 例如:
-        /// 对于MsgA
+        /// Register a processing function for messages of type MsgType, for example:
+        /// for MsgA
         /// c.Register<MsgA>(Handler);
-        /// Handler的定义是
+        /// Handler's definition is
         /// void Handler(MsgA msg, PBChannel channel, int src,uint session) { ... }
         /// </summary>
-        /// <typeparam name="MsgType">protobuf的消息类型</typeparam>
-        /// <param name="f">消息处理函数</param>
+        /// <typeparam name="MsgType">protobuf message type</typeparam>
+        /// <param name="f">message handler</param>
         public void Register<MsgType>(PBHandler<MsgType>.F f)
         {
             int id = msgid_query_(typeof(MsgType));
@@ -90,9 +95,9 @@ namespace Messenger
         }
 
         /// <summary>
-        /// 默认的消息处理函数, 凡是没有注册处理函数的消息, 都会调用到这个函数
+        /// The default message processing function. This function will be called for any message that does not have a registered processing function.
         /// </summary>
-        /// <param name="h">消息处理函数</param>
+        /// <param name="h">message handler</param>
         public void RegisterDefaultHandler(DefaultMessageHandler h)
         {
             default_handler_ = h;

@@ -72,7 +72,7 @@ public class AiDoNormal : ISimpleStoryCommandPlugin
         ///
         EntityInfo attackTarget = null;
         SkillStateInfo currSkInfo = npc.GetSkillStateInfo();
-        ///找到可以使用的技能
+        ///Find skills you can use
         SkillInfo skInfo = AiLogicUtility.NpcFindCanUseSkill(npc);
         AiCommand.AiSelectSkill(npc, skInfo);
         if (skInfo == null) {
@@ -88,7 +88,7 @@ public class AiDoNormal : ISimpleStoryCommandPlugin
         attackTarget = AiLogicUtility.GetNearstTargetHelper(
             npc, skInfo.Distance, relation);
 
-        if (attackTarget != null && null != skInfo) //攻击范围内找到可攻击目标
+        if (attackTarget != null && null != skInfo) //Find an attackable target within the attack range
             {
             info.Target = attackTarget.GetId();
             ScriptRuntime.Vector3 targetPos = attackTarget.GetMovementStateInfo().GetPosition3D();
@@ -98,15 +98,15 @@ public class AiDoNormal : ISimpleStoryCommandPlugin
                 npc.GetMovementStateInfo().SetWantedFaceDir(dir);
             } else {
                 AiCommand.AiStopPursue(npc);
-                AiCommand.AiSkill(npc, skInfo.SkillId); //攻击目标
+                AiCommand.AiSkill(npc, skInfo.SkillId); //attach the target
             }
             return true;
         }
         attackTarget = AiLogicUtility.GetNearstTargetHelper(
         npc, npc.ViewRange, relation);
-        if (attackTarget != null) //视野范围内找到可攻击目标
+        if (attackTarget != null) //Find an attackable target within your field of vision
             {
-            AiCommand.AiPursue(npc, attackTarget.GetMovementStateInfo().GetPosition3D()); // 追赶目标
+            AiCommand.AiPursue(npc, attackTarget.GetMovementStateInfo().GetPosition3D()); // chase the target
             return true;
         }
 

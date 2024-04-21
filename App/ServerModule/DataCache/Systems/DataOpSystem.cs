@@ -62,9 +62,11 @@ internal class DataOpSystem
         saveResult.ErrorNo = Msg_DL_SaveResult.ErrorNoEnum.Success;
         saveResult.ErrorInfo = string.Empty;
         try {
-            //写入数据缓存
-            //TODO:是否将byte[]解析出protobuf对象? 提前反序列化成对象的好处:1.若数据有错误,反序列化失败,可反馈给lobby;2.protobuf对象可重用?
-            //TODO:解析primaryKey和foreignKey     
+            //Write data cache
+            //TODO: Should byte[] be parsed out of protobuf objects? The benefits of deserializing into objects in advance:
+            //1. If the data has errors and deserialization fails, it can be fed back to the lobby;
+            //2. Can protobuf objects be reused?
+            //TODO: Parse primaryKey and foreignKey
             DataCacheSystem.Instance.SaveActionQueue.QueueAction(DataCacheSystem.Instance.Save, msg.MsgId, msg.PrimaryKeys, msg.ForeignKeys, msg.Data, msg.SerialNo);
         } catch (Exception e) {
             saveResult.ErrorNo = Msg_DL_SaveResult.ErrorNoEnum.PostError;

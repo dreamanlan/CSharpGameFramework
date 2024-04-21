@@ -19,7 +19,7 @@ public sealed class SkillBarManager
         skillBar = obj.GetComponent<SkillBar>();
         skillBar.Clear();
 
-        //订阅
+        //subscribe
         subscribes.Add(Utility.EventSystem.Subscribe<int, int, int>("ui_add_skill_button", "ui", AddSkillButton));
         subscribes.Add(Utility.EventSystem.Subscribe("ui_remove_skill_buttons", "ui", RemoveAllSkillButtons));
         subscribes.Add(Utility.EventSystem.Subscribe<int, float, int>("ui_actor_mp", "ui", ChangeMp));
@@ -28,8 +28,8 @@ public sealed class SkillBarManager
         subscribes.Add(Utility.EventSystem.Subscribe("ui_show", "ui", Show));
         subscribes.Add(Utility.EventSystem.Subscribe("ui_hide", "ui", Hide));
 
-        //发布
-        //队员技能
+        //publish
+        //member skill
         skillBar.onSelectSkill = (int objID,int skillID) => {
             Utility.SendMessage("GameRoot", "OnCastSkill", new object[] { objID, skillID });
         };

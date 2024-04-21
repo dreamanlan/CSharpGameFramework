@@ -6,13 +6,18 @@ using System.Text;
 namespace GameFramework
 {
     /// <summary>
-    /// 我们频繁用到增加与删除少，但根据id查询对象与遍历对象都很多的情形。这个类提供对这种应用场景具有较好性能的容器实现。
+    /// We frequently use situations where there are few additions and deletions,
+    /// but many objects are queried and traversed based on ID. This class provides
+    /// a container implementation with better performance for this application scenario.
     /// </summary>
     /// <typeparam name="KeyT"></typeparam>
     /// <typeparam name="ValueT"></typeparam>
     /// <remarks>
-    /// 频繁使用时需要注意foreach语句的开销，本类不期望用于foreach语句遍历(保留是为了兼容现有代码，逐渐会替换掉)。
-    /// 另，本类不提供id遍历，所以使用时KeyT应可由ValueT推导出来。
+    /// When using it frequently, you need to pay attention to the overhead of the foreach statement.
+    /// This class is not expected to be used for foreach statement traversal (it is retained for
+    /// compatibility with existing code and will be gradually replaced).
+    /// In addition, this class does not provide id traversal, so KeyT should be deduced from ValueT
+    /// when used.
     /// </remarks>
     public sealed class LinkedListDictionary<TKey, TValue>
     {
@@ -20,7 +25,8 @@ namespace GameFramework
         {
             return m_LinkNodeDictionary.ContainsKey(id);
         }
-        ///这里不考虑重复，外界调用时保证（性能考虑）
+        ///Duplication is not considered here,
+        ///it is guaranteed when called from the outside (performance considerations)
         public void AddFirst(TKey id, TValue obj)
         {
             LinkedListNode<TValue> linkNode = m_Objects.AddFirst(obj);

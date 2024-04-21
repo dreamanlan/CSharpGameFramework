@@ -9,10 +9,10 @@ namespace Messenger
     internal static class PBCodec
     {
         /// <summary>
-        /// 编码protobuf消息
+        /// encode protobuf message
         /// </summary>
-        /// <param name="id">消息id</param>
-        /// <param name="msg">消息object</param>
+        /// <param name="id">message id</param>
+        /// <param name="msg">message object</param>
         /// <returns></returns>
         public static byte[] Encode(int id, object msg)
         {
@@ -24,12 +24,12 @@ namespace Messenger
         }
 
         /// <summary>
-        /// 解码protobuf消息
+        /// decode protobuf message
         /// </summary>
-        /// <param name="data">字节数据</param>
-        /// <param name="t_query">消息(id->type)查询函数</param>
-        /// <param name="msg">返回的消息object</param>
-        /// <param name="id">返回的消息id</param>
+        /// <param name="data">bytes data</param>
+        /// <param name="t_query">message (id->type) query function</param>
+        /// <param name="msg">message object for return</param>
+        /// <param name="id">message id for return</param>
         /// <returns></returns>
         public static bool Decode(
             byte[] data, PBChannel.MsgTypeQuery t_query,

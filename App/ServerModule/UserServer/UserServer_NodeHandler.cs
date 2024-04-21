@@ -12,7 +12,7 @@ namespace GameFramework
     internal partial class UserServer
     {
         /// <summary>
-        /// 注意，node来的消息处理需要分发到DataProcess的用户线程里进行处理！
+        /// Note that message processing from node needs to be distributed to the user thread of DataProcess for processing!
         /// </summary>
         private void InstallNodeHandlers()
         {
@@ -40,13 +40,14 @@ namespace GameFramework
             NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CL_DiscardItem, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CL_DiscardItem), HandleDiscardItem);
             NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.Msg_CLC_StoryMessage, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.Msg_CLC_StoryMessage), HandleStoryMessage);
             //---------------------------------------------------------------------------------------------------------------
-            //大世界发给客户端的消息的观察者处理，此类消息的handle被置为0，如果非0不应该处理（消息为客户端伪造）。
+            //The observer handles the messages sent by the big world to the client. The handle of such messages is set to 0.
+            //If it is non-0, it should not be processed (the message is forged by the client).
             //---------------------------------------------------------------------------------------------------------------
             NodeMessageDispatcher.RegisterMessageHandler((int)LobbyMessageDefine.EnterSceneResult, typeof(GameFrameworkMessage.NodeMessageWithGuid), typeof(GameFrameworkMessage.EnterSceneResult), ObserveEnterSceneResult);
 
             //--------------------------------------------------------------------------------------
-            //GM指令消息统一放一块，处理函数放到LobbyServer_GmJsonHandler.cs里，便于安全检查
-            //不要在这个注释后注册消息！！！
+            //GM command messages are placed together, and the processing functions are placed in LobbyServer_GmJsonHandler.cs to facilitate security checks.
+            //Don't register messages after this comment! ! !
             //--------------------------------------------------------------------------------------
         }
         //------------------------------------------------------------------------------------------------------
@@ -55,8 +56,9 @@ namespace GameFramework
             bool isContinue = true;
             if (handle > 0) {
                 if (msg.m_ID == 0) {
-                    //这几个消息不进行数量统计
-                } else {
+                    //These messages will not be counted.
+                }
+                else {
                     GameFrameworkMessage.NodeMessageWithGuid msgWithGuid = msg.m_NodeHeader as GameFrameworkMessage.NodeMessageWithGuid;
                     if (null != msgWithGuid) {
                         ulong guid = msgWithGuid.m_Guid;
@@ -149,7 +151,7 @@ namespace GameFramework
                 } else {
                     //echo
                     NodeMessageDispatcher.SendNodeMessage(handle, msg);
-                    //逻辑处理
+                    //logical processing
                     m_UserProcessScheduler.GetUserThread(heartbeatMsg.m_Guid).QueueAction(m_UserProcessScheduler.DoUserHeartbeat, heartbeatMsg.m_Guid);
                 }
             }
@@ -380,7 +382,8 @@ namespace GameFramework
                     ulong guid = storyMsg.m_Guid;
                     UserThread userThread = m_UserProcessScheduler.GetUserThread(guid);
                     if (null != userThread) {
-                        //客户端发来的消息都加上前缀client，防止直接调用服务器端逻辑（服务器消息不能用client前缀！）
+                        //Messages sent from the client are prefixed with client to prevent direct calls to server-side logic
+                        //(server messages cannot be prefixed with client!)
                         string msgId = string.Format("client:{0}", protoData.m_MsgId);
                         ArrayList args = new ArrayList();
                         args.Add(guid);

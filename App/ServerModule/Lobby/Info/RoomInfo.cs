@@ -9,10 +9,10 @@ namespace Lobby
 {
     internal enum RoomState
     {
-        Prepare,    //准备
-        Game,       //游戏中
-        Close,      //房间关闭
-        Recycle,    //回收状态(未激活)
+        Prepare,    //preparing
+        Game,       //in gaming
+        Close,      //room closed
+        Recycle,    //recycle (not activated)
     }
 
     internal class RoomInfo
@@ -181,7 +181,7 @@ namespace Lobby
         
         internal void Tick()
         {
-            //清除不在游戏中的玩家数据
+            //Clear player data that is not in the game
             if (UserCount > 0) {
                 m_RecycledGuids.Clear();
                 foreach (KeyValuePair<ulong, WeakReference> pair in m_Users) {
@@ -209,7 +209,7 @@ namespace Lobby
         
         internal void CloseRoom()
         {
-            //清空房间内玩家数据 
+            //Clear player data in the room 
             foreach (KeyValuePair<ulong, WeakReference> pair in m_Users) {
                 WeakReference info = pair.Value;
                 UserInfo user = info.Target as UserInfo;
@@ -222,7 +222,7 @@ namespace Lobby
                 }
             }
             m_Users.Clear();
-            this.CurrentState = RoomState.Close;  //房间进入关闭状态
+            this.CurrentState = RoomState.Close;  //Room enters closed state
             LogSys.Log(ServerLogType.INFO, "Lobby Room Close, roomID:{0}", RoomId);
         }
 

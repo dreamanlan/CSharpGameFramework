@@ -421,7 +421,7 @@ namespace StorySystem
                 LogSystem.Error("Story {0} MessageHandler {1}, no body !", storyId, m_MessageId);
             }
             if (GameFramework.GlobalVariables.Instance.IsDevice) {
-                //在设备上不保留配置信息了
+                //Configuration information is no longer retained on the device
                 m_Comments = null;
             }
         }
@@ -483,7 +483,7 @@ namespace StorySystem
                 }
                 if (RuntimeStack.Count <= 0 || isReturn || m_CanSkip && (GameFramework.GlobalVariables.Instance.IsStorySkipped)) {
                     m_IsTriggered = false;
-                    //这里不用Reset，调用方会调用
+                    //There is no need for Reset here, the caller will call
                 }
             }
             finally {
@@ -831,7 +831,7 @@ namespace StorySystem
             }
             LogSystem.Debug("StoryInstance.Init message handler num:{0} {1}", m_MessageHandlers.Count, ret);
             if (GameFramework.GlobalVariables.Instance.IsDevice) {
-                //在设备上不保留配置信息了
+                //Configuration information is no longer retained on the device
                 m_Config = null;
             }
             return ret;
@@ -934,7 +934,7 @@ namespace StorySystem
                 ++m_MessageCount;
             }
             else {
-                //忽略没有处理的消息
+                //Ignore unprocessed messages
                 //LogSystem.Info("StoryInstance ignore message {0}", msgId);
             }
         }
@@ -978,7 +978,7 @@ namespace StorySystem
                 ++m_ConcurrentMessageCount;
             }
             else {
-                //忽略没有处理的消息
+                //Ignore unprocessed messages
                 //LogSystem.Info("StoryInstance ignore concurrent message {0}", msgId);
             }
         }

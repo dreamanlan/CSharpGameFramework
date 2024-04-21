@@ -341,7 +341,7 @@ namespace GameFramework.Story.Commands
                     data.Index = 0;
                     data.IsFinish = false;
                     entity.GetMovementStateInfo().TargetPosition = pos;
-                    aiInfo.Time = 1000;//下一帧即触发移动
+                    aiInfo.Time = 1000;//Movement is triggered on the next frame
                     aiInfo.ChangeToState((int)PredefinedAiStateId.MoveCommand);
                 }
             }
@@ -408,7 +408,7 @@ namespace GameFramework.Story.Commands
                     data.Index = 0;
                     data.IsFinish = false;
                     entity.GetMovementStateInfo().TargetPosition = waypoints[0];
-                    aiInfo.Time = 1000;//下一帧即触发移动
+                    aiInfo.Time = 1000;//Movement is triggered on the next frame
                     aiInfo.ChangeToState((int)PredefinedAiStateId.MoveCommand);
                 }
             }
@@ -1219,7 +1219,7 @@ namespace GameFramework.Story.Commands
         private IStoryFunction<int> m_SkillId = new StoryValue<int>();
     }
     /// <summary>
-    /// npclisten(unit_id, 消息类别, true_or_false);
+    /// npclisten(unit_id, message_type, true_or_false);
     /// </summary>
     public class NpcListenCommand : AbstractStoryCommand
     {

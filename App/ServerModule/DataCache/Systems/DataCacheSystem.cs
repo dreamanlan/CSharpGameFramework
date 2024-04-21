@@ -27,11 +27,11 @@ internal class DataCacheSystem : MyServerThread
         Start();
         LogSys.Log(ServerLogType.INFO, "DataCacheSystem initialized");
     }
-    //==========================通过QueueAction调用的方法===========================================
-    //注意!回调函数目前在缓存线程与db线程都可能调用，回调函数的实现需要是线程安全的(目前一般都是发消息，满足此条件)。
+    //==========================Methods called through QueueAction===========================================
+    //Note! The callback function may currently be called in both the cache thread and the db thread. The implementation of the callback function needs to be thread-safe (currently, messages are generally sent to meet this condition).
     internal void Load(Msg_LD_Load msg, PBChannel channel, ulong handle)
     {
-        //首先在缓存中查找数据,若未找到,则到DB中查找  
+        //First, search the data in the cache. If it is not found, search it in the DB.
         bool isLoadCache = true;
         Msg_DL_LoadResult ret = new Msg_DL_LoadResult();
         ret.MsgId = msg.MsgId;
@@ -52,7 +52,7 @@ internal class DataCacheSystem : MyServerThread
                             Msg_DL_SingleRowResult result = new Msg_DL_SingleRowResult();
                             result.MsgId = req.MsgId;
                             result.PrimaryKeys.AddRange(req.Keys);
-                            result.DataVersion = 0;         //TODO: 这个DataVersion有用吗?
+                            result.DataVersion = 0;         //TODO: Is this DataVersion useful?
                             result.Data = item.DataMessage;
                             ret.Results.Add(result);
                         } else {
@@ -66,7 +66,7 @@ internal class DataCacheSystem : MyServerThread
                             Msg_DL_SingleRowResult result = new Msg_DL_SingleRowResult();
                             result.MsgId = req.MsgId;
                             result.PrimaryKeys.AddRange(req.Keys);
-                            result.DataVersion = 0;         //TODO: 这个DataVersion有用吗?
+                            result.DataVersion = 0;         //TODO: Is this DataVersion useful?
                             result.Data = item.DataMessage;
                             ret.Results.Add(result);
                         }
@@ -78,7 +78,7 @@ internal class DataCacheSystem : MyServerThread
             channel.Send(ret);
             LogSys.Log(ServerLogType.INFO, "Load data from cache. MsgId:{0}, Key:{1}", msg.MsgId, KeyString.Wrap(msg.PrimaryKeys).ToString());
         } else {
-            //查找DB交给DBLoad线程操作
+            //Search DB and hand it over to DBLoad thread operation
             DbThreadManager.Instance.LoadActionQueue.QueueAction(DataLoadImplement.Load, msg, (MyAction<Msg_DL_LoadResult>)((Msg_DL_LoadResult result) => {
                 if (result.ErrorNo == Msg_DL_LoadResult.ErrorNoEnum.Success) {
                     foreach (Msg_DL_SingleRowResult row in result.Results) {
@@ -92,19 +92,19 @@ internal class DataCacheSystem : MyServerThread
     }
     internal void Save(int msgId, List<string> primaryKey, List<string> foreignKey, byte[] dataBytes, long serialNo)
     {
-        //更新缓存
+        //refresh cache
         m_InnerCacheSystem.AddOrUpdate(msgId, KeyString.Wrap(primaryKey), KeyString.Wrap(foreignKey), dataBytes, serialNo);
     }
     internal void DoLastSave()
     {
         PersistentSystem.Instance.LastSaveToDB();
     }
-    //==========================只能在本线程调用的方法===========================================
+    //==========================Methods that can only be called in this thread===========================================
     internal Dictionary<int, List<InnerCacheItem>> FetchDirtyCacheItems()
     {
         return m_InnerCacheSystem.FetchDirtyCacheItems();
     }
-    //=====================================================================
+    //===================================================================================================================
     protected override void OnStart()
     {
         TickSleepTime = 10;
@@ -156,7 +156,7 @@ internal class DataCacheSystem : MyServerThread
     private ServerAsyncActionProcessor m_SaveActionQueue = new ServerAsyncActionProcessor();
     private InnerCacheSystem m_InnerCacheSystem = new InnerCacheSystem();
     private long m_LastCacheTickTime = 0;
-    private const long c_CacheTickInterval = 60000;     //InnerCache的Tick周期:10min
+    private const long c_CacheTickInterval = 60000;     //Tick cycle of InnerCache:10min
     private long m_LastLogTime = 0;
     private const long c_WarningTickTime = 1000;
     private long m_LastTickTime = 0;

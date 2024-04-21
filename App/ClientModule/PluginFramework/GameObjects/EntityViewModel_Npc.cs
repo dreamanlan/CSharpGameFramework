@@ -180,7 +180,7 @@ namespace GameFramework
         }
 
         /// <summary>
-        /// 是否使用NavAgent
+        /// Whether to use NavAgent
         /// </summary>
         /// <param name="enable"></param>
         public void SetMoveAgentEnable(bool enable)

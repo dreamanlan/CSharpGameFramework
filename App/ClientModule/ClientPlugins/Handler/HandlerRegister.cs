@@ -8,7 +8,7 @@ public static class HandlerRegister
 {
     public static void Register()
     {
-        //在这里注册所有基于名字的消息处理
+        //Register all name-based message handling here
     }
     public static void Call(string name, params object[] args)
     {

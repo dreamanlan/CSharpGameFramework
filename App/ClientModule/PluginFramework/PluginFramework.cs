@@ -29,7 +29,7 @@ namespace GameFramework
 
         #endregion
 
-        #region 订阅的Event处理
+        #region Subscription Event processing
         private void ResetDsl()
         {
             try {
@@ -199,7 +199,7 @@ namespace GameFramework
             }
             m_KdTree.EndBuild();
 
-            //处理延迟调用
+            //Handle delayed calls
             m_AsyncActionProcessor.HandleActions(100);
 
             if (!m_IsSceneLoaded) {
@@ -229,7 +229,7 @@ namespace GameFramework
         public void TryEnterScene(uint key, string ip, int port, int campId, int sceneId)
         {
             if (!m_IsSceneLoaded) {
-                //等待当前场景成功进入后再切换场景
+                //Wait for the current scene to be successfully entered before switching scenes.
                 QueueAction(TryEnterScene, key, ip, port, campId, sceneId);
                 return;
             }
@@ -297,8 +297,8 @@ namespace GameFramework
         public void UnloadBattle(int levelId)
         {
             m_IsBattleState = false;
-            
-            //干掉全部客户端npc
+
+            //Kill all client NPCs
             for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 if (!info.IsServerEntity) {
@@ -321,7 +321,7 @@ namespace GameFramework
             if (m_IsSceneLoaded) {
                 if (NetworkSystem.Instance.ReconnectCount <= 18) {
                 } else {
-                    //连接了3分钟以上还连不上，失败
+                    //The connection failed after more than 3 minutes.
                     NetworkSystem.Instance.QuitBattlePassive();
                 }
             }
@@ -332,7 +332,8 @@ namespace GameFramework
                 if (SceneId == NetworkSystem.Instance.RoomSceneId) {
                     RefreshRoomScene();
                 } else {
-                    //多人副本在网络连接与验证通过后再切场景，防止卡住。
+                    //For multiplayer copies, the network connection and verification must be passed before
+                    //switching to the scene to prevent getting stuck.
                     QueueAction(this.ChangeScene, NetworkSystem.Instance.RoomSceneId);
                 }
             }
@@ -600,7 +601,7 @@ namespace GameFramework
             for (LinkedListNode<EntityInfo> linkNode = m_EntityManager.Entities.FirstNode; null != linkNode; linkNode = linkNode.Next) {
                 EntityInfo info = linkNode.Value;
                 info.RetireAttackerInfos(10000);
-                //Ai挂接与切换
+                //Ai hooking and switching
                 var aiStateInfo = info.GetAiStateInfo();
                 if (string.IsNullOrEmpty(aiStateInfo.AiLogic)) {
                     if (null != aiStateInfo.AiStoryInstanceInfo) {
@@ -611,13 +612,13 @@ namespace GameFramework
                         AttachAiLogic(info);
                     }
                 }
-                //属性计算
+                //Property calculation
                 if (info.LevelChanged || info.GetSkillStateInfo().BuffChanged) {
                     AttrCalculator.Calc(info);
                     info.LevelChanged = false;
                     info.GetSkillStateInfo().BuffChanged = false;
                 }
-                //buff时间检查
+                //buff time check
                 var impacts = info.GetSkillStateInfo().GetAllImpact();
                 for (int i = impacts.Count - 1; i >= 0; --i) {
                     var impact = impacts[i];
@@ -629,7 +630,7 @@ namespace GameFramework
                         }
                     }
                 }
-                //出生与死亡处理
+                //Birth and Death Processing
                 if (info.IsBorning) {
                     if (info.BornTime <= 0) {
                         SkillInfo skillInfo = info.GetSkillStateInfo().GetSkillInfoById(info.BornSkillId);
@@ -658,12 +659,12 @@ namespace GameFramework
                                 GfxSkillSystem.Instance.StopAllSkill(info.GetId(), true, false, true);
                                 GfxSkillSystem.Instance.StartSkill(info.GetId(), skillInfo.ConfigData, 0);
                                 OnEntityKilled(info);
-                                EntityDrop(info); // 掉落
+                                EntityDrop(info); // fall
                             } else {
                                 info.DeadTime = 0;
                                 info.NeedDelete = true;
                                 OnEntityKilled(info);
-                                EntityDrop(info); // 掉落
+                                EntityDrop(info); // fall
                             }
                         } else if (info.DeadTime + info.DeadTimeout < TimeUtility.GetLocalMilliseconds()) {
                             info.DeadTime = 0;
@@ -673,7 +674,9 @@ namespace GameFramework
                         info.CanDead = true;
                     }
                 } else {
-                    //每个tick复位CanDead，技能里需要鞭尸时应使用触发器每帧标记目标不可死亡（keeplive）
+                    //CanDead is reset with each tick. When you need to kill corpses in a skill,
+                    //you should use a trigger to mark the target as non-deadable (keeplive)
+                    //every frame.
                     info.CanDead = true;
                 }
                 if (info.NeedDelete) {
@@ -946,7 +949,7 @@ namespace GameFramework
             get { return m_FunctionDocs; }
         }
 
-        #region delay action process (为了不触发jit编译，这里重新包装一次)
+        #region delay action process (In order not to trigger jit compilation, repackage it here)
         public void QueueAction(MyAction action)
         {
             m_AsyncActionProcessor.QueueAction(action);

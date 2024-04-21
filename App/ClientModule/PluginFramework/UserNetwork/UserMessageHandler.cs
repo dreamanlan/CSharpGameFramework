@@ -99,7 +99,7 @@ namespace GameFramework.Network
         private void StopLoginLobby()
         {
             try {
-                //账号登录失败，取消自动登录，断开网络连接
+                //Account login failed, cancel automatic login, disconnect from the network
                 m_IsWaitStart = true;
                 m_HasLoggedOn = false;
                 if (IsConnected) {
@@ -163,7 +163,7 @@ namespace GameFramework.Network
             int enableLog = verifyResult.m_EnableLog;
             //GlobalVariables.Instance.ShopMask = verifyResult.m_ShopMask;
             if (0 == ret) {
-                //版本校验失败，提示用户需要更新版本。
+                //Version verification failed, prompting the user to update the version.
                 StopLoginLobby();
                 GfxStorySystem.Instance.SendMessage("version_verify_failed");
             } else {
@@ -172,7 +172,7 @@ namespace GameFramework.Network
                 } else {
                     GameControler.FileLogger.Enabled = true;
                 }
-                //向服务器发送登录消息
+                //Send login message to server
                 NodeMessage loginMsg = new NodeMessage(LobbyMessageDefine.AccountLogin, m_AccountId);
                 GameFrameworkMessage.AccountLogin protoMsg = new GameFrameworkMessage.AccountLogin();
                 loginMsg.m_ProtoData = protoMsg;
@@ -193,9 +193,9 @@ namespace GameFramework.Network
             GameFrameworkMessage.AccountLoginResult.AccountLoginResultEnum ret = protoData.m_Result;
             ulong userGuid = protoData.m_UserGuid;
             UserNetworkSystem.Instance.IsQueueing = false;
-            if (m_HasLoggedOn) {//重连处理
+            if (m_HasLoggedOn) {//Reconnection processing
                 if (ret == AccountLoginResult.AccountLoginResultEnum.Success) {
-                    //登录成功，向服务器请求玩家角色
+                    //Login successful, request player character from server
                     m_Guid = userGuid;
                     NodeMessage msg = new NodeMessage(LobbyMessageDefine.RoleEnter, m_AccountId);
                     GameFrameworkMessage.RoleEnter protoMsg = new GameFrameworkMessage.RoleEnter();
@@ -208,34 +208,35 @@ namespace GameFramework.Network
                 } else {
                     //PluginFramework.Instance.ReturnToLogin();
                 }
-            } else {//首次登录处理
+            } else {//First time login processing
                 if (ret == AccountLoginResult.AccountLoginResultEnum.Success) {
                     m_Guid = userGuid;
-                    //登录成功，向服务器请求玩家角色          
+                    //Login successful, request player character from server
                     NodeMessage msg = new NodeMessage(LobbyMessageDefine.RoleEnter, m_AccountId);
                     GameFrameworkMessage.RoleEnter protoMsg = new GameFrameworkMessage.RoleEnter();
                     protoMsg.m_Nickname = string.Empty;
                     msg.m_ProtoData = protoMsg;
                     SendMessage(msg);
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.FirstLogin) {
-                    //账号首次登录，需要指定昵称
+                    //When logging in to your account for the first time, you need to specify a nickname.
                     m_Guid = userGuid;
                     RequestNickname();
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.Wait) {
-                    //同时登录人太多，需要等待一段时间后再登录
+                    //Too many people are logging in at the same time. You need to wait for a while before logging in again.
                     PluginFramework.Instance.HighlightPrompt("Tip_TooManyPeople");
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.Banned) {
-                    //账号已被封停，禁止登录
-                } else if (ret == AccountLoginResult.AccountLoginResultEnum.Queueing) {
+                    //The account has been blocked and login is prohibited.
+                }
+                else if (ret == AccountLoginResult.AccountLoginResultEnum.Queueing) {
                     PluginFramework.Instance.HighlightPrompt("Tip_Queueing");
                     UserNetworkSystem.Instance.IsQueueing = true;
                     UserNetworkSystem.Instance.QueueingNum = -1;
                 } else if (ret == AccountLoginResult.AccountLoginResultEnum.QueueFull) {
-                    //排队满
+                    //The queue is full
                     StopLoginLobby();
                     PluginFramework.Instance.HighlightPrompt("Tip_QueueFull");
                 } else {
-                    //账号登录失败
+                    //Account login failed
                     PluginFramework.Instance.HighlightPrompt("Tip_AccountLoginFailed");
                 }
             }
@@ -279,17 +280,18 @@ namespace GameFramework.Network
                     LogSystem.Info("Retry RoleEnter {0} {1}", m_AccountId, m_Guid);
                     return;
                 } else if (ret == RoleEnterResult.RoleEnterResultEnum.Success) {
-                    //客户端接收服务器传来的数据，创建玩家对象
+                    //The client receives the data from the server and creates the player object.
                     m_WorldId = protoData.WorldId;
                     ///
                     m_IsLogining = false;
                     m_HasLoggedOn = true;
                     GfxStorySystem.Instance.SendMessage("start_game");
                 } else if (ret == RoleEnterResult.RoleEnterResultEnum.Reconnect) {
-                    //重连用户，等待服务器处理重连过程后返回进场景消息，这种情形不用做任何处理
+                    //Reconnect the user and wait for the server to process the reconnection process before
+                    //returning the scene message. This situation does not require any processing.
                     PluginFramework.Instance.HighlightPrompt("Tip_Reconnecting");
                 } else {
-                    //进入游戏失败
+                    //Failed to enter the game
                     PluginFramework.Instance.HighlightPrompt("Tip_RoleEnterFailed");
                 }
             }
@@ -306,7 +308,7 @@ namespace GameFramework.Network
                     int campId = protoData.camp_id;
                     int sceneId = protoData.scene_type;
                     ClientInfo.Instance.PropertyKey = protoData.prime;
-                    //延迟处理，防止当前正在切场景过程中
+                    //Delay processing to prevent the current scene from being cut.
                     PluginFramework.Instance.QueueAction(PluginFramework.Instance.TryEnterScene, key, ip, port, campId, sceneId);
                 } else {
                     PluginFramework.Instance.HighlightPrompt("Tip_SceneEnterFailed");

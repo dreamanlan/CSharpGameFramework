@@ -397,7 +397,7 @@ namespace GameFramework
         private int m_UserControlState;
         private long m_LastNotifyUserDropTime;
 
-        //移动校验数据
+        //Mobile check data
         private Vector3 m_LastClientPosition = Vector3.Zero;
         private float m_LastMoveVelocity = 0;
         private float m_LastMoveDirCosAngle = 0;

@@ -625,7 +625,7 @@ namespace GameFramework.Skill.Trigers
                 return false;
             }
             if (senderObj.ConfigData.type == (int)SkillOrImpactType.Skill) {
-                return false;//track只能在impact或buff里使用
+                return false;//track can only be used in impact or buff
             }
             GameObject obj = senderObj.GfxObj;
             if (null != obj) {

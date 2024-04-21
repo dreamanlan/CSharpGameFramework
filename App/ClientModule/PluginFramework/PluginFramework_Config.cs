@@ -12,7 +12,8 @@ namespace GameFramework
             string root = HomePath.CurHomePath + "/Tables/";
             LogSystem.Debug("table config root = {0}", root);
 
-            //字典表需要为字典功能提供查表机制
+            //The dictionary table needs to provide a table lookup mechanism for
+            //the dictionary function
             Dict.OnFindDictionary += (Dict.FindDictionaryDelegation)((string key) => {
                 TableConfig.StrDictionary cfg = TableConfig.StrDictionaryProvider.Instance.GetStrDictionary(key);
                 if (null != cfg)

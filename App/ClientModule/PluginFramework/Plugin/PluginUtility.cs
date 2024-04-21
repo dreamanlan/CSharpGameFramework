@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-//导出给lua使用的常用集合类型
+//Common collection types exported to Lua
 public class IntUobjDict : Dictionary<int, UnityEngine.Object>
 {
     public IntUobjDict() { }
@@ -56,7 +56,8 @@ public class UobjStack : Stack<UnityEngine.Object>
     public UobjStack(IEnumerable<UnityEngine.Object> coll) : base(coll) { }
 }
 
-//AiQuery的排序需要实现接口，但lua实现接口无法提供给C#类，需要在这里定义并导出
+//AiQuery's sorting requires the implementation of an interface, but the Lua implementation
+//interface cannot be provided to the C# class and needs to be defined and exported here.
 public class AiQueryComparer : IComparer
 {
     public int Compare(object x, object y)

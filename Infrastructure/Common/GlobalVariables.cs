@@ -5,7 +5,9 @@ using System.Text;
 namespace GameFramework
 {
     /// <summary>
-    /// 这里放客户端与服务器存在差异的变量值，供各公共模块使用（如果是各模块所需的逻辑数据，则不要放在这里，独立写读表器）。
+    /// Put the variable values that are different between the client and the server here
+    /// for use by each public module (if it is the logical data required by each module,
+    /// do not put it here and write the meter reader independently).
     /// </summary>
     public class GlobalVariables
     {

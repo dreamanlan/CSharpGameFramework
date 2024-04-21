@@ -7,16 +7,16 @@ using GameFrameworkMessage;
 namespace GameFramework
 {
     /// <summary>
-    /// 本邮件系统支持的邮件都是由系统发送，分为2类邮件：全员邮件与个人邮件。
-    /// 邮件都保存在邮件系统时，不保存到人身上。
-    /// 全员邮件邮件系统为所有人保存一份，每个人记录已经收取过的全员邮件（邮件打开后点击收取按钮为收取，查看邮件不会收取，通常只有带附件的邮件可以收取）。
+    /// The emails supported by this email system are all sent by the system and are divided into two types of emails: all-employee emails and personal emails.
+    /// When emails are saved in the mail system, they are not saved to the person.
+    /// The all-staff email system saves a copy for everyone, and each person records the all-staff emails that have been received (click the receive button after opening the email to receive it. Viewing the email will not collect it. Usually only emails with attachments can be received) .
     /// </summary>
     /// <remarks>
-    /// 除GlobalProcess处，不要直接调用本类的方法，邮件系统只在GlobalProcess线程进行处理，其它线程应调用GlobalProcess.QueueAction处理邮件。
+    /// Except for GlobalProcess, do not call methods of this class directly. The mail system only processes mails in the GlobalProcess thread. Other threads should call GlobalProcess.QueueAction to process mails.
     /// </remarks>
     internal sealed class MailSystem
     {
-        //全部邮件列表，包含全局邮件、模块邮件和个人邮件
+        //All mailing lists, including global mail, module mail and personal mail
         internal List<TableMailInfoWrap> TotalMailList
         {
             get
@@ -93,7 +93,7 @@ namespace GameFramework
                     }
                 }
                 MailStateInfo mailStateInfo = user.MailStateInfo;
-                //这里不对用户数据加锁，因为用户的邮件状态的改变都在这个线程完成（除上线时的数据加载）
+                //User data is not locked here because all changes to the user's email status are completed in this thread (except for data loading when going online)
                 int wholeMailCt = m_WholeMails.Count;
                 for (int ix = 0; ix < wholeMailCt; ++ix) {
                     TableMailInfoWrap mailInfo = m_WholeMails[ix];
@@ -303,7 +303,7 @@ namespace GameFramework
             long curTime = TimeUtility.GetLocalMilliseconds();
             if (m_LastTickTime + c_TickInterval < curTime) {
                 m_LastTickTime = curTime;
-                //清理过期邮件
+                //Clean up expired emails
                 int ct = m_WholeMails.Count;
                 for (int index = ct - 1; index >= 0; --index) {
                     TableMailInfoWrap mailInfo = m_WholeMails[index];

@@ -6,7 +6,7 @@ using System.Text;
 namespace SkillSystem
 {
     /// <summary>
-    /// 这个类不加锁，约束条件：所有触发器的注册必须在程序启动时完成。
+    /// This class does not lock, constraint: the registration of all triggers must be completed when the program starts.
     /// </summary>
     public sealed class SkillTrigerManager
     {
@@ -19,7 +19,7 @@ namespace SkillSystem
             if (!m_TrigerFactories.ContainsKey(type)) {
                 m_TrigerFactories.Add(type, factory);
             } else if(replace) {
-                //允许重载触发器
+                //Allow trigger reloading
                 m_TrigerFactories[type] = factory;
             } else {
                 //error

@@ -107,7 +107,7 @@ public sealed class OverHeadBarManager
     }
     private void Drop(int actorID)
     {
-        // 删除血条
+        // remove hp bar
         RemoveActor(actorID);
     }
     private void RemoveActor(int actorID)

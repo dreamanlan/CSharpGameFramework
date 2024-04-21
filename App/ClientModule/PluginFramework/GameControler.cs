@@ -113,7 +113,7 @@ namespace GameFramework
             private bool m_Enabled = true;
         }
         //----------------------------------------------------------------------
-        // 标准接口
+        // standard interface
         //----------------------------------------------------------------------
         public static bool IsInited
         {

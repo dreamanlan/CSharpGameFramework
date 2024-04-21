@@ -7,28 +7,28 @@ using GameFrameworkMessage;
 
 namespace GameFramework
 {
-  internal partial class UserServer
-  {
-    /// <summary>
-    /// 注意，node来的消息处理需要分发到DataProcess的用户线程里进行处理！
-    /// 注意，GM工具消息与客户端GM消息不要混用，实现代码要分开放（后面代码里有有标注，客户端的GM消息处理在前，GM工具的在后，中间有分隔区）！！！
-    /// </summary>
-    private void InstallGmJsonHandlers()
+    internal partial class UserServer
     {
-      //客户端GM消息
+        /// <summary>
+        /// Note that message processing from node needs to be distributed to the user thread of DataProcess for processing!
+        /// Note that GM tool messages and client GM messages should not be mixed, and the implementation codes must be separated (there is a mark in the following code, the client's GM message processing is in the front, the GM tool's is in the back, and there is a separation area in the middle)! ! !
+        /// </summary>
+        private void InstallGmJsonHandlers()
+        {
+            //Client GM message
+            if (UserServerConfig.WorldIdNum > 0) {
+                JsonGmMessageDispatcher.Init(UserServerConfig.WorldId1);
+                //GM tool news
+            }
+        }
 
-      if (UserServerConfig.WorldIdNum > 0) {
-        JsonGmMessageDispatcher.Init(UserServerConfig.WorldId1);
-        //GM工具消息
-      }
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        // Message processing that requires GM permissions
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+        // The GM tool message processing is finished, do not add logical messages after this,
+        // put it in the ordinary message processing file! ! !
+        //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     }
-
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //************************************************************需要GM权限的消息处理******************************************************************************************
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    //************************************************************GM工具消息处理结束，不要在这后面添加逻辑消息，放到普通消息处理文件里面！！！********************************************
-    //--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-  }
 }

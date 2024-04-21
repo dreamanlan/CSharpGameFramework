@@ -5,11 +5,14 @@ using System.Collections.Generic;
 namespace GameFramework
 {
     /// <remarks>
-    /// 这种方式主要用于数据层面不好抽象的场合，如果从业务角度能够对数据定义进行抽象，就尽量不要用这种动态的聚合数据的方式而尽量使用
-    /// 静态类型的关联。
-    /// 这个类仅用于管理若干不同类型的数据，如之前C++里用union管理不同数据的情形，使用限制：
-    /// 1、这个集合里每种类型的数据只能有一个实例。
-    /// 2、由于使用运行时类型信息及非强类型集合，运行效率较低。
+    /// This method is mainly used in situations where the data level is difficult to abstract.
+    /// If the data definition can be abstracted from a business perspective, try not to use
+    /// this dynamic data aggregation method and use it as much as possible.
+    /// Static type association.
+    /// This class is only used to manage several different types of data. For example, in the
+    /// previous situation where union was used to manage different data in C++, usage restrictions:
+    /// 1. There can only be one instance of each type of data in this collection.
+    /// 2. Due to the use of runtime type information and non-strongly typed collections, the operating efficiency is low.
     /// </remarks>
     public sealed class TypedDataCollection
     {

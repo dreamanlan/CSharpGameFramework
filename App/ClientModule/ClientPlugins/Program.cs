@@ -59,7 +59,7 @@ namespace ClientPlugins
         }
         public static void Init()
         {
-            //使用c#代码时需要的初始化（平台相关代码，不会转换为dsl脚本，cs2dsl在进行翻译时会添加宏__DSL__）
+            //Initialization required when using c# code (platform-related code will not be converted to dsl script, cs2dsl will add the macro __DSL__ when translating)
 #if __DSL__
 
 #else

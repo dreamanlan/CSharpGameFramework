@@ -395,7 +395,7 @@ public class StoryCamera : MonoBehaviour
     }
     private void SetUpRotation(Vector3 centerPos, Vector3 headPos)
     {
-        //height与distance变化时，需要保持lookat目标
+        //When height and distance change, the lookat target needs to be maintained
         float currentHeight = m_CameraTransform.position.y;
         if (m_NeedLookat) {
             if (!Geometry.IsSameFloat(currentHeight, m_TargetHeight) || !Geometry.IsSameFloat(m_CurDistance, m_Distance)) {

@@ -134,14 +134,14 @@ namespace GameFramework
     }
     public partial class Geometry
     {
-        #region miloyip《扇形与圆盘相交测试浅析》
+        #region miloyip "A Brief Analysis of Sector and Disk Intersection Test"
         //-------------------------------------------------------------------------------------------------------------------------------
-        //---------------------------------------下面这几个函数来自miloyip《扇形与圆盘相交测试浅析》----------------------------------------
+        //---------------------------------------The following functions come from miloyip's "A Brief Analysis of Sector and Disk Intersection Tests"----------------------------------------
         /// <summary>
-        /// 计算线段与点的最短平方距离
-        /// x0 线段起点
-        /// u  线段方向至末端点
-        /// x  任意点
+        /// Calculate the shortest square distance between a line segment and a point
+        /// x0 starting point of line segment
+        /// u  Line segment direction to end point
+        /// x  any point
         /// </summary>
         /// <returns></returns>
         public static float SegmentPointSqrDistance(Vector2 x0, Vector2 u, Vector2 x)
@@ -150,11 +150,11 @@ namespace GameFramework
             return (x - (x0 + MathHelper.Clamp(t, 0, 1) * u)).LengthSquared();
         }
         /// <summary>
-        /// x0 胶囊线段起点
-        /// u  胶囊线段方向至末端点
-        /// cr 胶囊半径
-        /// c 圆盘圆心
-        /// r 圆盘半径
+        /// x0 Starting point of capsule line segment
+        /// u  Capsule line segment direction to end point
+        /// cr capsule radius
+        /// c Disk center
+        /// r Disk radius
         /// </summary>
         /// <returns></returns>
         public static bool IsCapsuleDiskIntersect(Vector2 x0, Vector2 u, float cr, Vector2 c, float r)
@@ -162,10 +162,10 @@ namespace GameFramework
             return SegmentPointSqrDistance(x0, u, c) <= (cr + r) * (cr + r);
         }
         /// <summary>
-        /// c AABB的中心
-        /// h AABB的半长度
-        /// p 圆盘的圆心
-        /// r 圆盘的半径
+        /// c AABB Center
+        /// h AABB half length
+        /// p center of disc
+        /// r radius of disk
         /// </summary>
         public static bool IsAabbDiskIntersect(Vector2 c, Vector2 h, Vector2 p, float r) {
             Vector2 v = Vector2.Max(p - c, c - p); // = Abs(p - c);
@@ -173,13 +173,13 @@ namespace GameFramework
             return u.LengthSquared() <= r * r;
         }
         /// <summary>
-        /// 圆与矩形求交
+        /// Intersection of circle and rectangle
         /// </summary>
-        /// <param name="c">矩形中心</param>
-        /// <param name="h">矩形半长度</param>
-        /// <param name="angle">矩形方向</param>
-        /// <param name="p">圆心</param>
-        /// <param name="r">圆半径</param>
+        /// <param name="c">center of rectangle</param>
+        /// <param name="h">Rectangle half length</param>
+        /// <param name="angle">Rectangular direction</param>
+        /// <param name="p">center of circle</param>
+        /// <param name="r">circle radius</param>
         /// <returns></returns>
         public static bool IsObbDiskIntersect(Vector2 c, Vector2 h, float angle, Vector2 p, float r)
         {
@@ -188,31 +188,33 @@ namespace GameFramework
             return IsAabbDiskIntersect(nc, h, np, r);
         }
         ///<summary>
-        /// 扇形与圆盘相交测试
-        /// a 扇形圆心
-        /// u 扇形方向（单位矢量）
-        /// theta 扇形扫掠半角 
-        /// l 扇形边长
-        /// c 圆盘圆心
-        /// r 圆盘半径
+        /// Sector and disk intersection test
+        /// a Sector center
+        /// u Sector direction (unit vector)
+        /// theta Sector Sweep Half Angle
+        /// l Sector side length
+        /// c Disk center
+        /// r Disk radius
         ///</summary>
         public static bool IsSectorDiskIntersect(Vector2 a, Vector2 u, float theta, float l, Vector2 c, float r)
         {
-            // 1. 如果扇形圆心和圆盘圆心的方向能分离，两形状不相交
+            //UnityEngine.LogSystem.Warn("IsSectorDiskIntersect,u:" + u);
+            //UnityEngine.LogSystem.Warn("a:" + a + ",u:" + u + ",theta:" + theta + ",l" + l + ",c" + c + ",r:" + r);
+            // 1. If the directions of the center of the sector and the center of the disk can be separated, the two shapes will not intersect.
             Vector2 d = c - a;
             float rsum = l + r;
             if (d.LengthSquared() > rsum * rsum)
                 return false;
 
-            // 2. 计算出扇形局部空间的 p
+            // 2. Calculate p of the sector local space
             float px = Vector2.Dot(d, u);
             float py = MathHelper.Abs(Vector2.Dot(d, new Vector2(-u.Y, u.X)));
 
-            // 3. 如果 p_x > ||p|| cos theta，两形状相交
+            // 3. If p_x > ||p|| cos theta, the two shapes intersect
             if (px > d.Length() * MathHelper.Cos(theta))
                 return true;
 
-            // 4. 求左边线段与圆盘是否相交
+            // 4. Find whether the left line segment intersects the disk
             Vector2 q = l * new Vector2(MathHelper.Cos(theta), MathHelper.Sin(theta));
             Vector2 p = new Vector2(px, py);
             return SegmentPointSqrDistance(Vector2.Zero, q, p) <= r * r;
@@ -220,7 +222,11 @@ namespace GameFramework
         //-------------------------------------------------------------------------------------------------------------------------------
         #endregion
     }
-    //坐标系为左手坐标系，0度角为z轴正方向，旋转方向为z轴正方向向x轴正向旋转（沿y轴正向看逆时针旋转）
+    //The coordinate system is a left-handed coordinate system.
+    //The angle of 0 degrees is the positive direction of the z-axis.
+    //The rotation direction is the positive direction of the z-axis and the positive
+    //direction of the x-axis
+    //(counterclockwise rotation when viewed along the positive y-axis).
     public partial class Geometry
     {
         public static float GetYRadian(Vector2 fvPos1, Vector2 fvPos2)
@@ -274,38 +280,38 @@ namespace GameFramework
     public partial class Geometry
     {
         /// <summary>
-        /// 计算向量叉乘
+        /// Compute vector cross product
         /// </summary>
         /// <param name="sp"></param>
         /// <param name="ep"></param>
         /// <param name="op"></param>
         /// <returns>
-        /// ret>0 ep在opsp矢量逆时针方向
-        /// ret=0 共线
-        /// ret<0 ep在opsp矢量顺时针方向
+        /// ret>0 ep in opsp vector counterclockwise direction
+        /// ret=0 collinear
+        /// ret<0 ep in opsp vector clockwise direction
         /// </returns>
         public static float Multiply(Vector2 sp, Vector2 ep, Vector2 op)
         {
             return ((sp.X - op.X) * (ep.Y - op.Y) - (ep.X - op.X) * (sp.Y - op.Y));
         }
         /// <summary>
-        /// r=DotMultiply(p1,p2,p0),得到矢量(p1-p0)和(p2-p0)的点积。
-        /// 注：两个矢量必须是非零矢量
+        /// r=DotMultiply(p1,p2,p0), get the dot product of vectors (p1-p0) and (p2-p0).
+        /// Note: Both vectors must be non-zero vectors
         /// </summary>
         /// <param name="p1"></param>
         /// <param name="p2"></param>
         /// <param name="p0"></param>
         /// <returns>
-        /// r>0:两矢量夹角为锐角；
-        /// r=0：两矢量夹角为直角；
-        /// r<0:两矢量夹角为钝角
+        /// r>0:The angle between two vectors is an acute angle;
+        /// r=0:The angle between the two vectors is a right angle;
+        /// r<0:The angle between two vectors is an obtuse angle
         /// </returns>
         public static float DotMultiply(Vector2 p1, Vector2 p2, Vector2 p0)
         {
             return ((p1.X - p0.X) * (p2.X - p0.X) + (p1.Y - p0.Y) * (p2.Y - p0.Y));
         }
         /// <summary>
-        /// 判断p与线段p1p2的关系
+        /// Determine the relationship between p and line segment p1p2
         /// </summary>
         /// <param name="p"></param>
         /// <param name="p1"></param>
@@ -322,7 +328,7 @@ namespace GameFramework
             return DotMultiply(p, p2, p1) / DistanceSquare(p1, p2);
         }
         /// <summary>
-        /// 求垂足
+        /// Ask for a foothold
         /// </summary>
         /// <param name="p"></param>
         /// <param name="p1"></param>
@@ -337,7 +343,8 @@ namespace GameFramework
             return tp;
         }
         /// <summary>
-        /// 求点到线段的最小距离并返回距离最近的点。
+        /// Finds the minimum distance from a point to a line segment and
+        /// returns the closest point.
         /// </summary>
         /// <param name="p"></param>
         /// <param name="p1"></param>
@@ -373,7 +380,7 @@ namespace GameFramework
             return DistanceSquare(p, np);
         }
         /// <summary>
-        /// 求点到直线的距离
+        /// Find the distance from a point to a straight line
         /// </summary>
         /// <param name="p"></param>
         /// <param name="p1"></param>
@@ -388,8 +395,8 @@ namespace GameFramework
             return Math.Abs(Multiply(p, p2, p1)) / Distance(p1, p2);
         }
         /// <summary>
-        /// 求点到折线的最小距离并返回最小距离点。
-        /// 注：如果给定点不足以够成折线，则不会修改q的值
+        /// Find the minimum distance from the point to the polyline and return the minimum distance point.
+        /// Note: If the given point is not enough to form a polyline, the value of q will not be modified.
         /// </summary>
         /// <param name="p"></param>
         /// <param name="pts"></param>
@@ -468,11 +475,11 @@ namespace GameFramework
             dy = pt2.Y - pt1.Y;
             dx1 = pt.X - pt1.X;
             dy1 = pt.Y - pt1.Y;
-            if (pt.X == pt1.X && pt.Y == pt1.Y || pt.X == pt2.X && pt.Y == pt2.Y) {//在顶点上
+            if (pt.X == pt1.X && pt.Y == pt1.Y || pt.X == pt2.X && pt.Y == pt2.Y) {//on the vertex
                 retVal = true;
             } else {
-                if (Math.Abs(dx * dy1 - dy * dx1) < c_FloatPrecision) {//斜率相等//考虑计算误差
-                    //等于零在顶点上
+                if (Math.Abs(dx * dy1 - dy * dx1) < c_FloatPrecision) {//Slopes are equal//Consider calculation errors
+                    //equals zero at the vertex
                     if (dx1 * (dx1 - dx) < 0 | dy1 * (dy1 - dy) < 0) {
                         retVal = true;
                     } else {
@@ -485,7 +492,7 @@ namespace GameFramework
             return retVal;
         }
         /// <summary>
-        /// 判断两点是否重合
+        /// Determine whether two points coincide with each other
         /// </summary>
         /// <param name="pt0"></param>
         /// <param name="pt1"></param>
@@ -510,21 +517,21 @@ namespace GameFramework
             return true;
         }
         /// <summary>
-        /// 判断a是否在bc直线左侧
+        /// Determine whether a is to the left of line bc
         /// </summary>
         public static bool PointIsLeft(Vector2 a, Vector2 b, Vector2 c)
         {
             return Multiply(c, a, b) > 0;
         }
         /// <summary>
-        /// 判断a是否在bc直线左侧或线上
+        /// Determine whether a is to the left or on the line bc
         /// </summary>
         public static bool PointIsLeftOn(Vector2 a, Vector2 b, Vector2 c)
         {
             return Multiply(c, a, b) >= 0;
         }
         /// <summary>
-        /// 判断a、b、c三点是否共线
+        /// Determine whether the three points a, b, and c are collinear
         /// </summary>
         public static bool PointIsCollinear(Vector2 a, Vector2 b, Vector2 c)
         {
@@ -626,7 +633,7 @@ namespace GameFramework
             return ret;
         }
         /// <summary>
-        /// 计算多边形形心与半径
+        /// Calculate polygon centroid and radius
         /// </summary>
         /// <param name="pts"></param>
         /// <param name="start"></param>
@@ -661,7 +668,7 @@ namespace GameFramework
             return ret;
         }
         /// <summary>
-        /// 计算多边形轴对齐矩形包围盒
+        /// Compute polygonal axis-aligned rectangular bounding box
         /// </summary>
         /// <param name="pts"></param>
         /// <param name="start"></param>
@@ -691,7 +698,7 @@ namespace GameFramework
             }
         }
         /// <summary>
-        /// 判断点是否在多边形内
+        /// Determine whether a point is within a polygon
         /// </summary>
         /// <typeparam name="PointT"></typeparam>
         /// <param name="pt"></param>
@@ -699,9 +706,9 @@ namespace GameFramework
         /// <param name="start"></param>
         /// <param name="len"></param>
         /// <returns>
-        /// 1  -- 在多边形内
-        /// 0  -- 在多边形边上
-        /// -1 -- 在多边形外 
+        /// 1  -- within polygon
+        /// 0  -- on polygon edge
+        /// -1 -- outside the polygon 
         /// </returns>
         public static int PointInPolygon(Vector2 pt, IList<Vector2> pts, int start, int len)
         {
@@ -716,7 +723,7 @@ namespace GameFramework
         public static int PointInPolygon(Vector2 pt, IList<Vector2> pts, int start, int len, float minXval, float maxXval, float minYval, float maxYval)
         {
             if ((pt.X > maxXval) | (pt.X < minXval) | pt.Y > maxYval | pt.Y < minYval) {
-                return -1;//在多边形外
+                return -1;//outside the polygon
             } else {
                 int cnt = 0;
                 int lastStatus;
@@ -763,19 +770,18 @@ namespace GameFramework
         }
 
         /// <summary>
-        /// 判断一个点与其它三个点形成的三角形之间的关系
-        /// 注意：三角形的三个点A B C必须逆时针排列
-        ///  -1-在三角形外 0-在三角形内 1-在三角形边ab上 2-在三角形边bc上 3-在三角形边ca上 4-在三角形顶点上
-        /// </summary>
-        /// <param name="pn">点</param>
-        /// <param name="pa">三角形顶点A</param>
-        /// <param name="pb">三角形顶点B</param>
-        /// <param name="pc">三角形顶点C</param>
-        /// <returns>-1-在三角形外 0-在三角形内 1-在三角形边ab上 2-在三角形边bc上 3-在三角形边ca上 4-在三角形顶点上</returns>
+        /// Determine the relationship between a point and the triangle formed by three other points
+        /// Note: The three points A B C of the triangle must be arranged counterclockwise
+        /// -1-outside the triangle 0-inside the triangle 1-on the triangle side ab 2-on the triangle side bc 3-on the triangle side ca 4-on the triangle vertex/// </summary>
+        /// <param name="pn">point</param>
+        /// <param name="pa">triangle vertex A</param>
+        /// <param name="pb">triangle vertex B</param>
+        /// <param name="pc">triangle vertex C</param>
+        /// <returns>-1-Outside the triangle 0-Inside the triangle 1-On the triangle side ab 2-On the triangle side bc 3-On the triangle side ca 4-On the triangle vertex</returns>
         public static int PointInTriangle(Vector2 pn, Vector2 pa, Vector2 pb, Vector2 pc)
         {
-            //首先，判断是否在边上
-            //注意：三角形的三个点A B C必须逆时针排列
+            //First, determine whether it is on the edge
+            //Note: The three points A B C of the triangle must be arranged counterclockwise
             int num = 0;
             int side = 0;
             if (PointOnLine(pn, pa, pb)) {
@@ -802,7 +808,7 @@ namespace GameFramework
             }
         }
         /// <summary>
-        /// 计算三角形带符号面积，输入三角形三个顶点坐标
+        /// To calculate the signed area of a triangle, enter the coordinates of the three vertices of the triangle.
         /// </summary>
         /// <param name="na"></param>
         /// <param name="nb"></param>
@@ -813,13 +819,13 @@ namespace GameFramework
             return ((nb.X - na.X) * (nc.Y - na.Y) - (nb.Y - na.Y) * (nc.X - na.X)) / 2;
         }
         /// <summary>
-        /// 将一个多边形或折线抽稀。
+        /// Thin out a polygon or polyline.
         /// </summary>
         /// <typeparam name="PointT"></typeparam>
         /// <param name="pts"></param>
         /// <param name="start"></param>
         /// <param name="len"></param>
-        /// <param name="delta">指定的三点共线判断的距离</param>
+        /// <param name="delta">Distance to determine if three specified points are collinear</param>
         /// <returns></returns>
         public static IList<Vector2> Sparseness(IList<Vector2> pts, int start, int len, float delta)
         {
@@ -834,7 +840,7 @@ namespace GameFramework
                 }
                 lastPt = pt;
             }
-            for (int count = 1; count > 0;) {
+            for (int count = 1; count > 0; ) {
                 count = 0;
                 LinkedListNode<Vector2> node = links.First;
                 while (node != null) {
@@ -849,7 +855,7 @@ namespace GameFramework
                             count++;
                         }
                     }
-                    //不管是否删除结点，总是取下一结点，这样可以避免一些将圆弧抽成直线的情形。
+                    //Regardless of whether to delete a node, always remove the next node, which can avoid some situations where arcs are drawn into straight lines.
                     node = node.Next;
                 }
             }
@@ -861,38 +867,38 @@ namespace GameFramework
     public partial class Geometry
     {
         /// <summary>
-        /// 计算向量叉乘
+        /// Compute vector cross product
         /// </summary>
         /// <param name="sp"></param>
         /// <param name="ep"></param>
         /// <param name="op"></param>
         /// <returns>
-        /// ret>0 ep在opsp矢量逆时针方向
-        /// ret=0 共线
-        /// ret<0 ep在opsp矢量顺时针方向
+        /// ret>0 ep in opsp vector counterclockwise direction
+        /// ret=0 collinear
+        /// ret<0 ep in opsp vector clockwise direction
         /// </returns>
         public static float Multiply(Vector3 sp, Vector3 ep, Vector3 op)
         {
             return ((sp.X - op.X) * (ep.Z - op.Z) - (ep.X - op.X) * (sp.Z - op.Z));
         }
         /// <summary>
-        /// r=DotMultiply(p1,p2,p0),得到矢量(p1-p0)和(p2-p0)的点积。
-        /// 注：两个矢量必须是非零矢量
+        /// r=DotMultiply(p1,p2,p0), get the dot product of vectors (p1-p0) and (p2-p0).
+        /// Note: Both vectors must be non-zero vectors
         /// </summary>
         /// <param name="p1"></param>
         /// <param name="p2"></param>
         /// <param name="p0"></param>
         /// <returns>
-        /// r>0:两矢量夹角为锐角；
-        /// r=0：两矢量夹角为直角；
-        /// r<0:两矢量夹角为钝角
+        /// r>0: The angle between the two vectors is an acute angle;
+        /// r=0: The angle between the two vectors is a right angle;
+        /// r<0: The angle between the two vectors is an obtuse angle
         /// </returns>
         public static float DotMultiply(Vector3 p1, Vector3 p2, Vector3 p0)
         {
             return ((p1.X - p0.X) * (p2.X - p0.X) + (p1.Z - p0.Z) * (p2.Z - p0.Z));
         }
         /// <summary>
-        /// 判断p与线段p1p2的关系
+        /// Determine the relationship between p and line segment p1p2
         /// </summary>
         /// <param name="p"></param>
         /// <param name="p1"></param>
@@ -909,7 +915,7 @@ namespace GameFramework
             return DotMultiply(p, p2, p1) / DistanceSquare(p1, p2);
         }
         /// <summary>
-        /// 求垂足
+        /// Ask for a foothold
         /// </summary>
         /// <param name="p"></param>
         /// <param name="p1"></param>
@@ -924,7 +930,7 @@ namespace GameFramework
             return tp;
         }
         /// <summary>
-        /// 求点到线段的最小距离并返回距离最近的点。
+        /// Finds the minimum distance from a point to a line segment and returns the closest point.
         /// </summary>
         /// <param name="p"></param>
         /// <param name="p1"></param>
@@ -960,7 +966,7 @@ namespace GameFramework
             return DistanceSquare(p, np);
         }
         /// <summary>
-        /// 求点到直线的距离
+        /// Find the distance from a point to a straight line
         /// </summary>
         /// <param name="p"></param>
         /// <param name="p1"></param>
@@ -975,8 +981,8 @@ namespace GameFramework
             return Math.Abs(Multiply(p, p2, p1)) / Distance(p1, p2);
         }
         /// <summary>
-        /// 求点到折线的最小距离并返回最小距离点。
-        /// 注：如果给定点不足以够成折线，则不会修改q的值
+        /// Find the minimum distance from the point to the polyline and return the minimum distance point.
+        /// Note: If the given point is not enough to form a polyline, the value of q will not be modified.
         /// </summary>
         /// <param name="p"></param>
         /// <param name="pts"></param>
@@ -1055,11 +1061,11 @@ namespace GameFramework
             dy = pt2.Z - pt1.Z;
             dx1 = pt.X - pt1.X;
             dy1 = pt.Z - pt1.Z;
-            if (pt.X == pt1.X && pt.Z == pt1.Z || pt.X == pt2.X && pt.Z == pt2.Z) {//在顶点上
+            if (pt.X == pt1.X && pt.Z == pt1.Z || pt.X == pt2.X && pt.Z == pt2.Z) {//on the vertex
                 retVal = true;
             } else {
-                if (Math.Abs(dx * dy1 - dy * dx1) < c_FloatPrecision) {//斜率相等//考虑计算误差
-                    //等于零在顶点上
+                if (Math.Abs(dx * dy1 - dy * dx1) < c_FloatPrecision) {//Slopes are equal//Consider calculation errors
+                    //equals zero at the vertex
                     if (dx1 * (dx1 - dx) < 0 | dy1 * (dy1 - dy) < 0) {
                         retVal = true;
                     } else {
@@ -1072,7 +1078,7 @@ namespace GameFramework
             return retVal;
         }
         /// <summary>
-        /// 判断两点是否重合
+        /// Determine whether two points coincide with each other
         /// </summary>
         /// <param name="pt0"></param>
         /// <param name="pt1"></param>
@@ -1085,21 +1091,21 @@ namespace GameFramework
                 return false;
         }
         /// <summary>
-        /// 判断a是否在bc直线左侧
+        /// Determine whether a is to the left of line bc
         /// </summary>
         public static bool PointIsLeft(Vector3 a, Vector3 b, Vector3 c)
         {
             return Multiply(c, a, b) > 0;
         }
         /// <summary>
-        /// 判断a是否在bc直线左侧或线上
+        /// Determine whether a is to the left or on the line bc
         /// </summary>
         public static bool PointIsLeftOn(Vector3 a, Vector3 b, Vector3 c)
         {
             return Multiply(c, a, b) >= 0;
         }
         /// <summary>
-        /// 判断a、b、c三点是否共线
+        /// Determine whether the three points a, b, and c are collinear
         /// </summary>
         public static bool PointIsCollinear(Vector3 a, Vector3 b, Vector3 c)
         {
@@ -1201,7 +1207,7 @@ namespace GameFramework
             return ret;
         }
         /// <summary>
-        /// 计算多边形形心与半径
+        /// Calculate polygon centroid and radius
         /// </summary>
         /// <param name="pts"></param>
         /// <param name="start"></param>
@@ -1236,7 +1242,7 @@ namespace GameFramework
             return ret;
         }
         /// <summary>
-        /// 计算多边形轴对齐矩形包围盒
+        /// Compute polygonal axis-aligned rectangular bounding box
         /// </summary>
         /// <param name="pts"></param>
         /// <param name="start"></param>
@@ -1266,7 +1272,7 @@ namespace GameFramework
             }
         }
         /// <summary>
-        /// 判断点是否在多边形内
+        /// Determine whether a point is within a polygon
         /// </summary>
         /// <typeparam name="PointT"></typeparam>
         /// <param name="pt"></param>
@@ -1274,9 +1280,9 @@ namespace GameFramework
         /// <param name="start"></param>
         /// <param name="len"></param>
         /// <returns>
-        /// 1  -- 在多边形内
-        /// 0  -- 在多边形边上
-        /// -1 -- 在多边形外 
+        /// 1  -- within polygon
+        /// 0  -- on polygon edge
+        /// -1 -- outside the polygon 
         /// </returns>
         public static int PointInPolygon(Vector3 pt, IList<Vector3> pts, int start, int len)
         {
@@ -1291,7 +1297,7 @@ namespace GameFramework
         public static int PointInPolygon(Vector3 pt, IList<Vector3> pts, int start, int len, float minXval, float maxXval, float minYval, float maxYval)
         {
             if ((pt.X > maxXval) | (pt.X < minXval) | pt.Z > maxYval | pt.Z < minYval) {
-                return -1;//在多边形外
+                return -1;//outside the polygon
             } else {
                 int cnt = 0;
                 int lastStatus;
@@ -1338,19 +1344,19 @@ namespace GameFramework
         }
 
         /// <summary>
-        /// 判断一个点与其它三个点形成的三角形之间的关系
-        /// 注意：三角形的三个点A B C必须逆时针排列
-        ///  -1-在三角形外 0-在三角形内 1-在三角形边ab上 2-在三角形边bc上 3-在三角形边ca上 4-在三角形顶点上
+        /// Determine the relationship between a point and the triangle formed by three other points
+        /// Note: The three points A B C of the triangle must be arranged counterclockwise
+        /// -1-outside the triangle 0-inside the triangle 1-on the triangle side ab 2-on the triangle side bc 3-on the triangle side ca 4-on the triangle vertex
         /// </summary>
-        /// <param name="pn">点</param>
-        /// <param name="pa">三角形顶点A</param>
-        /// <param name="pb">三角形顶点B</param>
-        /// <param name="pc">三角形顶点C</param>
-        /// <returns>-1-在三角形外 0-在三角形内 1-在三角形边ab上 2-在三角形边bc上 3-在三角形边ca上 4-在三角形顶点上</returns>
+        /// <param name="pn">point</param>
+        /// <param name="pa">triangle vertex A</param>
+        /// <param name="pb">triangle vertex B</param>
+        /// <param name="pc">triangle vertex C</param>
+        /// <returns>-1-Outside the triangle 0-Inside the triangle 1-On the triangle side ab 2-On the triangle side bc 3-On the triangle side ca 4-On the triangle vertex</returns>
         public static int PointInTriangle(Vector3 pn, Vector3 pa, Vector3 pb, Vector3 pc)
         {
-            //首先，判断是否在边上
-            //注意：三角形的三个点A B C必须逆时针排列
+            //First, determine whether it is on the edge
+            //Note: The three points A B C of the triangle must be arranged counterclockwise
             int num = 0;
             int side = 0;
             if (PointOnLine(pn, pa, pb)) {
@@ -1377,7 +1383,7 @@ namespace GameFramework
             }
         }
         /// <summary>
-        /// 计算三角形带符号面积，输入三角形三个顶点坐标
+        /// To calculate the signed area of a triangle, enter the coordinates of the three vertices of the triangle.
         /// </summary>
         /// <param name="na"></param>
         /// <param name="nb"></param>
@@ -1388,13 +1394,13 @@ namespace GameFramework
             return ((nb.X - na.X) * (nc.Z - na.Z) - (nb.Z - na.Z) * (nc.X - na.X)) / 2;
         }
         /// <summary>
-        /// 将一个多边形或折线抽稀。
+        /// Thin out a polygon or polyline.
         /// </summary>
         /// <typeparam name="PointT"></typeparam>
         /// <param name="pts"></param>
         /// <param name="start"></param>
         /// <param name="len"></param>
-        /// <param name="delta">指定的三点共线判断的距离</param>
+        /// <param name="delta">Distance to determine if three specified points are collinear</param>
         /// <returns></returns>
         public static IList<Vector3> Sparseness(IList<Vector3> pts, int start, int len, float delta)
         {
@@ -1409,7 +1415,7 @@ namespace GameFramework
                 }
                 lastPt = pt;
             }
-            for (int count = 1; count > 0;) {
+            for (int count = 1; count > 0; ) {
                 count = 0;
                 LinkedListNode<Vector3> node = links.First;
                 while (node != null) {
@@ -1424,7 +1430,8 @@ namespace GameFramework
                             count++;
                         }
                     }
-                    //不管是否删除结点，总是取下一结点，这样可以避免一些将圆弧抽成直线的情形。
+                    //Regardless of whether to delete a node, always remove the next node,
+                    //which can avoid some situations where arcs are drawn into straight lines.
                     node = node.Next;
                 }
             }

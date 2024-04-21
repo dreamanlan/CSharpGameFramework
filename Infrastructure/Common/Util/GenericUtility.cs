@@ -1589,7 +1589,7 @@ public struct BoxedValue
             SetWithObjectType(val);
     }
 
-    //供lua或防止隐式转换出问题时使用
+    //Used by Lua or to prevent implicit conversion problems
     public void SetBool(bool v)
     {
         Set(v);
@@ -2586,7 +2586,7 @@ public struct BoxedValue
         bv.Set(v);
         return bv;
     }
-    //供lua或防止隐式转换出问题时使用
+    //Used by Lua or to prevent implicit conversion problems
     public static BoxedValue FromBool(bool v)
     {
         BoxedValue bv = new BoxedValue();

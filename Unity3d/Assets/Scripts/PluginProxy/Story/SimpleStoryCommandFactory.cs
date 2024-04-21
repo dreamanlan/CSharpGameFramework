@@ -94,7 +94,7 @@ internal class NativeSimpleStoryCommand : IStoryCommand
     public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
     {
         if (!m_LastExecResult) {
-            //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
+            //When executing repeatedly, the variable value does not need to be updated every tick. Each command is executed and the variable value is only read once.
             m_Params.Evaluate(instance, handler, iterator, args);
         }
         m_LastExecResult = ExecCommand(instance, handler, m_Params, delta);
@@ -193,7 +193,7 @@ internal class ScriptSimpleStoryCommand : IStoryCommand
     public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
     {
         if (!m_LastExecResult) {
-            //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
+            //When executing repeatedly, the variable value does not need to be updated every tick. Each command is executed and the variable value is only read once.
             m_Params.Evaluate(instance, handler, iterator, args);
         }
         m_LastExecResult = ExecCommand(instance, handler, m_Params, delta);

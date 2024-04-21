@@ -25,7 +25,7 @@ namespace GameFramework
         public void Dispatch(int id, object msg, NetConnection conn)
         {
             try {
-                // 特殊处理认证消息
+                // Special handling of authentication messages
                 if (id == (int)RoomMessageDefine.Msg_CR_ShakeHands) {
                     Msg_CR_ShakeHands shakehandsMsg = msg as Msg_CR_ShakeHands;
                     if (shakehandsMsg == null) {
@@ -45,7 +45,7 @@ namespace GameFramework
                 }
 
                 RoomPeer peer = RoomPeerMgr.Instance.GetPeerByConnection(conn);
-                // 没有认证连接的消息不进行处理
+                // Messages without authenticated connections are not processed.
                 if (peer == null) {
                     Msg_RC_ShakeHands_Ret builder = new Msg_RC_ShakeHands_Ret();
                     builder.auth_result = Msg_RC_ShakeHands_Ret.RetType.ERROR;
@@ -56,7 +56,7 @@ namespace GameFramework
                     return;
                 }
 
-                // 直接转发消息(或进行其它处理)
+                // Forward the message directly (or perform other processing)
                 MsgHandler msghandler;
                 if (m_DicHandler.TryGetValue(id, out msghandler)) {
                     msghandler(msg, peer);
@@ -64,7 +64,7 @@ namespace GameFramework
                 if (msg is Msg_Ping)
                     return;
 
-                // 消息分发到peer
+                // Distribute messages to peers
                 RoomPeerMgr.Instance.DispatchPeerMsg(peer, id, msg);
             } catch (Exception ex) {
                 LogSys.Log(ServerLogType.ERROR, "Exception {0}\n{1}", ex.Message, ex.StackTrace);

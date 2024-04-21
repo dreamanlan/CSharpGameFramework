@@ -3,7 +3,8 @@ using System.Collections.Generic;
 namespace StorySystem
 {
     /// <summary>
-    /// 简单的函数值基类，简化实现IStoryFunction需要写的代码行数(当前值类只支持FunctionData样式)
+    /// A simple function value base class that simplifies the number of lines of code needed to implement IStoryValue
+    /// (current value classes only support the FunctionData style)
     /// </summary>
     public abstract class SimpleStoryFunctionBase<SubClassType, ValueParamType> : IStoryFunction
         where SubClassType : SimpleStoryFunctionBase<SubClassType, ValueParamType>, new()
@@ -52,7 +53,8 @@ namespace StorySystem
         private StoryValueResult m_Result = new StoryValueResult();
     }
     /// <summary>
-    /// 简单的命令基类，简化实现IStoryCommand需要写的代码行数（通常这样的命令是一个FunctionData样式的命令）
+    /// A simple command base class that simplifies the number of lines of code needed
+    /// to implement IStoryCommand (usually such a command is a FunctionData style command)
     /// </summary>
     public abstract class SimpleStoryCommandBase<SubClassType, ValueParamType> : IStoryCommand
         where SubClassType : SimpleStoryCommandBase<SubClassType, ValueParamType>, new()
@@ -64,7 +66,7 @@ namespace StorySystem
             m_Config = config;
             m_Id = config.GetId();
             if (GameFramework.GlobalVariables.Instance.IsDevice) {
-                //在设备上不保留配置信息了
+                //Configuration information is no longer retained on the device
                 m_Comments = null;
                 m_Config = null;
             }
@@ -113,7 +115,8 @@ namespace StorySystem
         public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
         {
             if (!m_LastExecResult) {
-                //重复执行时不需要每个tick都更新变量值，每个命令每次执行，变量值只读取一次。
+                //When executing repeatedly, the variable value does not need to be updated every tick.
+                //Each command is executed and the variable value is only read once.
                 try {
                     m_Params.Evaluate(instance, handler, iterator, args);
                 }

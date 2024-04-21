@@ -13,7 +13,7 @@ using GameFrameworkData;
 namespace GameFramework
 {
     /// <summary>
-    /// 数据访问层线程。此类主要用于数据存储相关的操作
+    /// Data access layer thread. This class is mainly used for operations related to data storage
     /// </summary>  
     internal sealed partial class DataCacheThread : MyServerTaskDispatcher
     {
@@ -58,12 +58,12 @@ namespace GameFramework
             Connected,
             Disconnect,
         }
-        //全局数据加载状态
+        //Global data loading status
         internal enum DataInitStatus
         {
-            Unload = 0,   //未加载
-            Loading,      //从DS加载中
-            Done          //完成加载
+            Unload = 0,   //not loaded
+            Loading,      //Loading from DS
+            Done          //Complete loading
         }
         internal DataCacheThread()
             : base(3)
@@ -99,7 +99,7 @@ namespace GameFramework
         internal static char[] StringSeparator = new char[] { '|' };
         internal static string ListJoinSeparator = "|";
         internal static string DateTimeStringFormat = "yyyyMMddHHmmss";
-        internal const int UltimateSaveCount = -1;         //最后一次存储操作的存储计数 
+        internal const int UltimateSaveCount = -1;         //The store count of the last store operation
 
         internal int CalcLoadRequestCount()
         {
@@ -153,14 +153,14 @@ namespace GameFramework
                 info.m_Request = msg;
                 info.m_Callback = callback;
                 if (queue.Count == 0) {
-                    //当前队列为空时直接发送消息
+                    //Send message directly when the current queue is empty
                     info.m_LastSendTime = TimeUtility.GetLocalMilliseconds();
                     m_DataStoreChannel.Send(msg);
                 }
                 queue.Enqueue(info);
             }
         }
-        //与DataCache建立连接
+        //Establish a connection with DataCache
         private void ConnectDataStore()
         {
             Msg_LD_Connect connectMsg = new Msg_LD_Connect();
@@ -209,7 +209,7 @@ namespace GameFramework
                             if (reqQueue.TryDequeue(out delInfo)) {
                                 m_SaveRequestPool.Recycle(delInfo);
                             }
-                            //发送队列中的下一个消息
+                            //Send the next message in the queue
                             if (reqQueue.TryPeek(out info)) {
                                 info.m_LastSendTime = TimeUtility.GetLocalMilliseconds();
                                 m_DataStoreChannel.Send(info.m_Request);
@@ -221,7 +221,7 @@ namespace GameFramework
         }
 
         //--------------------------------------------------------------------------------------------------------------------------
-        //供内部通过DispatchAction(调用的方法，实际执行线程是DataCacheThread。
+        //For internal methods called through DispatchAction(, the actual execution thread is DataCacheThread.
         //--------------------------------------------------------------------------------------------------------------------------
         private void SaveInternal(Msg_LD_Save msg)
         {
@@ -240,7 +240,7 @@ namespace GameFramework
             }
         }
         //--------------------------------------------------------------------------------------
-        //内部线程，用于需要排队处理的逻辑。
+        //Internal thread, used for logic that needs to be queued.
         //--------------------------------------------------------------------------------------
         private void OnStart()
         {
@@ -274,7 +274,7 @@ namespace GameFramework
             if (UserServerConfig.DataStoreAvailable == true) {
                 if (m_LastOperateTickTime + c_OperateTickInterval < curTime) {
                     m_LastOperateTickTime = curTime;
-                    //Load操作
+                    //Load operation
                     foreach (var pair in m_LoadRequests) {
                         int msgId = pair.Key;
                         ConcurrentDictionary<KeyString, LoadRequestInfo> dict = pair.Value;
@@ -306,7 +306,7 @@ namespace GameFramework
                         }
                         m_WaitDeletedLoadRequests.Clear();
                     }
-                    //Save操作
+                    //Save operation
                     foreach (var pair in m_SaveRequestQueues) {
                         int msgId = pair.Key;
                         ConcurrentDictionary<KeyString, ConcurrentQueue<SaveRequestInfo>> dict = pair.Value;
@@ -316,7 +316,7 @@ namespace GameFramework
                             SaveRequestInfo req;
                             if (saveReqQueue.TryPeek(out req)) {
                                 if (req.m_LastSendTime + UserServerConfig.DSRequestTimeout < curTime) {
-                                    //超时,重新发送
+                                    //time out, resend
                                     LogSys.Log(ServerLogType.ERROR, "DataCacheThread. SaveRequest timeout. MsgId:{0}, PrimaryKey:{1}, SerialNo:{2}",
                                                                   msgId, KeyString.Wrap(req.m_Request.PrimaryKeys), req.m_Request.SerialNo);
                                     m_DataStoreChannel.Send(req.m_Request);
@@ -370,9 +370,9 @@ namespace GameFramework
         private const int c_MaxRecordPerMessage = 1000;
 
         private long m_LastOperateTickTime = 0;
-        private const long c_OperateTickInterval = 1000;    //超时Tick的时间间隔
+        private const long c_OperateTickInterval = 1000;    //Time interval of timeout Tick
         private long m_LastConnectTime = 0;
-        private const long c_ConnectInterval = 5000;      //连接DataCache的时间间隔
+        private const long c_ConnectInterval = 5000;      //Time interval for connecting to DataCache
 
         private const long c_WarningTickTime = 1000;
         private long m_LastTickTime = 0;

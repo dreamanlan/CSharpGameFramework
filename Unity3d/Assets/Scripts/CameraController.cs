@@ -6,10 +6,10 @@ public class CameraController
 {
     enum State
     {
-        FollowPath,//跟随路径
-        FollowToFixPose,//从跟随路径转换到固定点
-        FixPose,//固定点
-        FixPoseToFollow,//固定点到跟随
+        FollowPath,//follow the path
+        FollowToFixPose,//Convert from following path to fixed point
+        FixPose,//fixed point
+        FixPoseToFollow,//fixed point to follow
     }
 
     struct Pose
@@ -97,14 +97,14 @@ public class CameraController
         camera.transform.rotation = cameraSetting.GetRotation();
     }
 
-    //在场景上移动，平常状态和手指滑屏时使用
+    //Move on the scene, use it in normal state and when sliding the screen with your finger
     public void MoveFollowPath(Vector3 target,bool bSmoothMove) {
         followPose.pos = target + Vector3.up * 1.5f - followPose.rot * Vector3.forward * cameraSetting.distance;
         ToFollowPath();
     }
 
 
-    //平滑移动到固定点。
+    //Smooth movement to fixed point.
     public void MoveToFixedPosition(Vector3 targetPos,Quaternion targetRot, bool bSmoothMove) {
         //followPose.pos = targetPos + Vector3.up * 1.5f - followPose.rot * Vector3.forward * cameraSetting.distance;
         //followPose.rot = targetRot;
@@ -118,7 +118,7 @@ public class CameraController
         //}
     }
 
-    //平滑移动到跟随状态
+    //Move smoothly to follow state
     public void ToFollowPath()
     {
         //if (curState == State.FixPose) {

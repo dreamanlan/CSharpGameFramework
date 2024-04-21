@@ -30,7 +30,7 @@ namespace GameFramework
             public int QueueingNum;
         }
         //=========================================================================================
-        //同步调用方法部分，其它线程可直接调用(需要考虑多线程安全)。
+        //For the synchronous calling method part, other threads can call it directly (multi-thread safety needs to be considered).
         //=========================================================================================
         internal int MaxOnlineUserCountPerLogicServer
         {
@@ -58,7 +58,7 @@ namespace GameFramework
             return ret;
         }
         //=========================================================================================
-        //异步调用方法部分，需要通过QueueAction调用。
+        //The asynchronous calling method part needs to be called through QueueAction.
         //=========================================================================================
         internal void StartQueueing(string accountId, string password, string clientInfo, string nodeName)
         {
@@ -126,7 +126,7 @@ namespace GameFramework
 
             const int c_MaxIterationPerTick = 10;
             if (IsLobbyFull() || GetTotalQueueingCount() <= 0) {
-                //大厅已经满或者没有排队的玩家，多休息1秒
+                //If the lobby is full or there is no queue for players, take an extra second of rest.
                 System.Threading.Thread.Sleep(1000);
             } else {
                 UserProcessScheduler dataProcess = UserServer.Instance.UserProcessScheduler;
@@ -178,7 +178,7 @@ namespace GameFramework
 
         private int GetTotalQueueingCount()
         {
-            //注意这个函数不要跨线程调用
+            //Note that this function should not be called across threads
             int ct = m_QueueingAccounts.Count;
             return ct;
         }

@@ -144,7 +144,7 @@ namespace GameFramework
             LogSys.Log(ServerLogType.INFO, "[1] Room.Init {0} scene {1}", room_id, scene_type);
             m_RoomUserMgr.ActiveScene.SetRoomUserManager(m_RoomUserMgr);
             m_RoomUserMgr.ActiveScene.Init(scene_type);
-            //场景数据加载由加载线程执行（注：场景没有加载完成，场景状态仍然是sleep，Scene.Tick不会有实际的动作）
+            //Scene data loading is performed by the loading thread (note: the scene is not loaded, the scene state is still sleep, and Scene.Tick will not have actual actions)
             SceneLoadThread.Instance.QueueAction(m_RoomUserMgr.ActiveScene.LoadData, scene_type);
             OnInit();
             m_ActiveTime = TimeUtility.GetLocalMilliseconds();
@@ -189,7 +189,7 @@ namespace GameFramework
             m_CanCloseTime = 0;
             m_RoomUserMgr.ActiveScene = m_ScenePool.NewScene();
             m_RoomUserMgr.ActiveScene.SetRoomUserManager(m_RoomUserMgr);
-            //场景数据加载由加载线程执行（注：场景没有加载完成，场景状态仍然是sleep，Scene.Tick不会有实际的动作）
+            //Scene data loading is performed by the loading thread (note: the scene is not loaded, the scene state is still sleep, and Scene.Tick will not have actual actions)
             SceneLoadThread.Instance.QueueAction(m_RoomUserMgr.ActiveScene.LoadData, scene_type);
 
             OnChangeScene();
@@ -242,7 +242,7 @@ namespace GameFramework
                                         
                                         user.LastNotifyUserDropTime = curTime;
                                     }
-                                    //临时处理，踢掉断线的玩家
+                                    //Temporary solution: kick out disconnected players
                                     user.UserControlState = (int)UserControlState.Remove;
                                 }
                             }
@@ -254,7 +254,7 @@ namespace GameFramework
                     foreach (User user in m_RequestDeleteUsers) {
                         m_RoomUserMgr.RemoveUser(user);
                     }
-                    //todo:观察者掉线处理
+                    //todo:Observer offline processing
                     for (int i = 0; i < m_RoomUserMgr.RoomObservers.Length; ++i) {
                         Observer observer = m_RoomUserMgr.RoomObservers[i];
                         if (!observer.IsIdle) {
@@ -265,12 +265,12 @@ namespace GameFramework
                         int userCount = GetActiveRoomUserCount();
                         if (userCount <= 0 && CanFinish) {
                             if (GetMinimizeElapsedDroppedTime() > c_FinishTimeForNoUsers) {
-                                //若房间内玩家数目为0，结束战斗，关闭房间
+                                //If the number of players in the room is 0, the battle ends and the room is closed.
                                 Finish((int)CampIdEnum.Unkown);
                             }
                         }
                     }
-                    //每个Tick结束，将空间属性同步给Peer，用于Peer转发消息
+                    //At the end of each Tick, the spatial attributes are synchronized to the Peer for the Peer to forward messages.
                     foreach (User user in m_RoomUserMgr.RoomUsers) {
                         if (null != user && null != user.Info && null != user.Info.GetMovementStateInfo()) {
                             GameFramework.RoomPeer peer = user.GetPeer();
@@ -353,7 +353,7 @@ namespace GameFramework
 
         private void Deactive()
         {
-            //准备关闭房间
+            //Prepare to close the room
             for (int index = m_RoomUserMgr.RoomUsers.Count - 1; index >= 0; --index) {
                 User user = m_RoomUserMgr.RoomUsers[index];
                 m_RoomUserMgr.RemoveUser(user);

@@ -12,7 +12,7 @@ namespace GameFramework
         {
             get { return m_Lock; }
         }
-        //外部访问时先对Lock锁定！！！
+        //Lock first when accessing externally! ! !
         public Dictionary<ulong, MailState> WholeMailStates
         {
             get { return m_WholeMailStates; }

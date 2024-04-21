@@ -8,7 +8,7 @@ using GameFrameworkMessage;
 namespace GameFramework
 {
     /// <remarks>
-    /// 注意这个类的public方法，都应考虑跨线程调用是否安全！！！
+    /// Note that the public methods of this class should consider whether cross-thread calls are safe! ! !
     /// </remarks>
     public class RoomThread : MyServerThread
     {
@@ -73,7 +73,7 @@ namespace GameFramework
 
             LogSys.Log(ServerLogType.INFO, "[3] active field room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
 
-            //工作全部完成后再加到激活房间列表，开始tick
+            //After all the work is completed, add it to the active room list and start ticking.
             active_room_.Add(rm);
             Interlocked.Decrement(ref preactive_room_count_);
 
@@ -86,8 +86,8 @@ namespace GameFramework
             LogSys.Log(ServerLogType.INFO, "[0] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             Room rm = room_pool_.NewRoom();
             if (null == rm) {
-                //由于并发原因，有可能lobby或主线程会多发起一些房间激活。
-                //我们通过预留一定数量的房间来降低这种情形发生的概率。
+                //Due to concurrency reasons, it is possible that the lobby or the main thread will initiate more room activations.
+                //We reduce the probability of this happening by reserving a certain number of rooms.
                 Interlocked.Decrement(ref preactive_room_count_);
                 if (null != callbackOnFinish) {
                     callbackOnFinish(false);
@@ -102,7 +102,7 @@ namespace GameFramework
             rm.Init(roomid, sceneId, user_pool_, connector_);
             LogSys.Log(ServerLogType.INFO, "[2] active room {0} scene {1} thread {2}", roomid, sceneId, cur_thread_id_);
             /*
-            //临时添加测试观察者
+            //Temporarily add a test observer
             for (int obIx = 0; obIx < 5; ++obIx) {
               uint key = 0xf0000000 + (uint)((roomid << 4) + obIx);
               string observerName = "Observer_" + key;
@@ -113,7 +113,7 @@ namespace GameFramework
               }
             }
             */
-            //工作全部完成后再加到激活房间列表，开始tick
+            //After all the work is completed, add it to the active room list and start ticking.
             active_room_.Add(rm);
             Interlocked.Decrement(ref preactive_room_count_);
             if (null != callbackOnFinish) {
@@ -426,10 +426,10 @@ namespace GameFramework
         // thread control attribute------------------------------------------------
         private static uint thread_id_creator_ = 1;
         private uint cur_thread_id_;
-        private uint tick_interval_;          // tick的间隔, 毫秒
+        private uint tick_interval_;          // tick interval, milliseconds
 
         // room relative attribtes-------------
-        private List<Room> active_room_;               // 已激活的房间ID列表
+        private List<Room> active_room_;               // List of activated room IDs
         private List<Room> unused_room_;
         private RoomPool room_pool_;
         private uint max_room_count_;

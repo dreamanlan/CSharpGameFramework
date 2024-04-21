@@ -30,7 +30,7 @@ namespace GameFramework
         {
             if (cfg.attrValues.Count > 0) {
                 foreach (var pair in cfg.attrValues) {
-                    if (pair.Key != (int)CharacterPropertyEnum.x2012_护盾值) {//护盾的添加与删除放在触发器里处理了
+                    if (pair.Key != (int)CharacterPropertyEnum.x2012_护盾值) {//The addition and deletion of shields are handled in triggers.
                         obj.ActualProperty.IncreaseInt((CharacterPropertyEnum)pair.Key, pair.Value);
                     }
                 }

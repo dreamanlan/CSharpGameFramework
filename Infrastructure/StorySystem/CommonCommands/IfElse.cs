@@ -86,14 +86,16 @@ namespace StorySystem.CommonCommands
                 runtime.Iterator = iterator;
                 runtime.Arguments = args;
             }
-            //没有wait之类命令直接执行
+            //Execute directly without commands such as wait
             runtime = handler.PeekRuntime();
             runtime.Tick(instance, handler, delta);
             if (runtime.CommandQueue.Count == 0) {
                 handler.PopRuntime(instance);
                 ret = false;
             } else {
-                //遇到wait命令，跳出执行，之后直接在StoryMessageHandler里执行栈顶的命令队列（降低开销）
+                //When encountering the wait command, jump out of execution, and then directly
+                //execute the command queue on the top of the stack in StoryMessageHandler
+                //(reducing overhead)
                 ret = true;
             }
             return ret;

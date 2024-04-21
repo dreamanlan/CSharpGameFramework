@@ -23,7 +23,7 @@ namespace GameFramework
                 }
                 data.m_CurTime += info.Time;
                 info.Time = 0;
-                //执行逻辑
+                //execution logic
                 if (null != data && !data.m_IsTriggered && data.m_CurTime >= data.m_Timeout) {
                     data.m_IsTriggered = true;
                     SceneLogicSendStoryMessage(info, "timeout:" + info.ConfigId, data.m_Timeout);
@@ -44,7 +44,7 @@ namespace GameFramework
                     data = new SandClockLogicInfo();
                     info.LogicDatas.AddData<SandClockLogicInfo>(data);
                 }
-                //执行逻辑
+                //execution logic
                 DateTime time = DateTime.Now;
                 if (null != data && (time.Hour != data.m_LastHour || time.Minute != data.m_LastMinute)) {
                     data.m_LastHour = time.Hour;

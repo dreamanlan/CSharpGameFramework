@@ -148,7 +148,7 @@ namespace GameFramework
         {
             foreach (User us in m_RoomUsers) {
                 if (us != null && us.Guid == newUser.Guid) {
-                    //当前玩家已在游戏房间内
+                    //The current player is already in the game room
                     if (us.GetKey() == newUser.GetKey()) {
                         LogSys.Log(ServerLogType.DEBUG, "Add user success: User already in the room! RoomId:{0}, Guid:{1}, OldUser[{2}]({3}) NewUser[{4}]({5}) ",
                         m_RoomId, us.Guid, us.LocalID, us.GetKey(), newUser.LocalID, newUser.GetKey());
@@ -205,14 +205,14 @@ namespace GameFramework
         }
         public void DropUser(User user)
         {
-            //向Lobby发送玩家掉线消息
+            //Send player disconnect message to Lobby
             Msg_RL_UserDrop uaqBuilder = new Msg_RL_UserDrop();
             uaqBuilder.RoomId = RoomId;
             uaqBuilder.UserGuid = user.Guid;
             uaqBuilder.IsBattleEnd = false;
             m_Connector.SendMsgToLobby(uaqBuilder);
             user.LastNotifyUserDropTime = TimeUtility.GetLocalMilliseconds();
-            //控制状态改为掉线
+            //The control status changes to offline
             user.UserControlState = (int)UserControlState.UserDropped;
             if (null != user.Info) {
                 // user.Info.Suicide();
@@ -300,7 +300,9 @@ namespace GameFramework
         private bool m_IsFieldRoom = false;
         private Scene m_ActiveScene = null;
         private List<User> m_RoomUsers = null;
-        //每个房间固定几个观察者，就不另外使用内存池了(如果需要多人观战功能，应该独立开发观战服务器，观战服务器作观察者)
+        //There are a few observers fixed in each room, so there is no need to use another memory pool
+        //(if you need a multi-player viewing function, you should develop an independent viewing
+        //server and use the viewing server as an observer)
         private const int c_MaxObserverNum = 5;
         private Observer[] m_RoomObservers = new Observer[c_MaxObserverNum];
 

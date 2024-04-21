@@ -7,14 +7,14 @@ using GameFramework.Network;
 
 namespace Lobby
 {
-  /// <summary>
-  /// node消息格式(二进制形式，最后用base64编码成字符串):
-  /// 2字节id
-  /// 2字节node消息头大小
-  /// node消息头
-  /// proto数据消息
-  /// </summary>
-  internal class NodeMessageHandlerInfo
+    /// <summary>
+    /// node message format (binary form, finally encoded into a string with base64):
+    /// 2 byte id
+    /// 2 byte node message header sie
+    /// node message header
+    /// proto data message
+    /// </summary>
+    internal class NodeMessageHandlerInfo
   {
     internal Type m_Type = null;
     internal Type m_ProtoType = null;

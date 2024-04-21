@@ -7,7 +7,8 @@ using StorySystem;
 namespace StorySystem.CommonFunctions
 {
     /// <summary>
-    /// dummy值，用于注册没有对应实现的函数（为了解析需要注册）。
+    /// Dummy value, used to register functions that
+    /// have no corresponding implementation (registration is required for parsing).
     /// </summary>
     public sealed class DummyValue : IStoryFunction
     {

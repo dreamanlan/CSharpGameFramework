@@ -81,7 +81,7 @@ namespace GameFramework.Skill.Trigers
                 EntityViewModel npcView = (EntityViewModel)EntityController.Instance.GetEntityView(obj);
                 if (npcView != null) {
                     if (isEnable) {
-                        //贴地
+                        //Close to the ground
                         var pos = obj.transform.position;
                         TriggerUtil.GetRayCastPosInNavMesh(pos + UnityEngine.Vector3.up * 500, pos + UnityEngine.Vector3.down * 500, ref pos);
                         obj.transform.position = pos;
@@ -638,12 +638,13 @@ namespace GameFramework.Skill.Trigers
             var dy = tp.y - bp.y;
             var tempV = g * dx / (2 * speed * speed);
 
-            //speed是沿切线方向的初速度时
+            //When speed is the initial velocity along the tangential direction
             //var ta1 = (1 + Mathf.Sqrt(1 - 4 * tempV * (tempV + dy / dx))) / (2 * tempV);
             //var ta2 = (1 - Mathf.Sqrt(1 - 4 * tempV * (tempV + dy / dx))) / (2 * tempV);
             //return ta2;
 
-            //speed是水平方向初速度分量时等式更简单
+            //The equation is simpler when speed is the initial velocity component
+            //in the horizontal direction
             if (dx > Geometry.c_FloatPrecision)
                 return tempV + dy / dx;
             else

@@ -5,11 +5,11 @@ using System.Collections;
 public class PointController
 {
     /// <summary>
-    /// 获取曲线上面的所有点
+    /// Get all points on the curve
     /// </summary>
     /// <returns>The list.</returns>
-    /// <param name="path">需要穿过的点列表</param>
-    /// <param name="pointSize">两个点之间的节点数量</param>
+    /// <param name="path">List of points that need to be passed through</param>
+    /// <param name="pointSize">The number of nodes between two points</param>
     public static Vector3[] PointList(Vector3[] path, int pointSize) {
         Vector3[] controlPointList = PathControlPointGenerator(path);
 
@@ -29,7 +29,7 @@ public class PointController
     }
 
     /// <summary>
-    /// 获取控制点
+    /// Get control point
     /// </summary>
     /// <returns>The control point generator.</returns>
     /// <param name="path">Path.</param>
@@ -55,7 +55,7 @@ public class PointController
     }
 
     /// <summary>
-    /// 根据 T 获取曲线上面的点位置
+    /// Get the point position on the curve according to T
     /// </summary>
     /// <param name="pts">Pts.</param>
     /// <param name="t">T.</param>

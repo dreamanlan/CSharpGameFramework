@@ -31,7 +31,7 @@ public class Game : MonoBehaviour
 
     void Awake()
     {
-        //加载插件
+        //load plugin
         PluginAssembly.Instance.Init();
         SceneManager.sceneLoaded += this.OnLevelLoaded;
     }
@@ -81,15 +81,15 @@ public class Game : MonoBehaviour
 
     IEnumerator CheckAndUpdate()
     {
-        //1、检查更新
-        //2、解压资源（AssetBundle与散文件）
+        //1、Update check
+        //2、Extract resources（AssetBundle and loose files）
 #if UNITY_ANDROID || UNITY_IPHONE
         yield return StartCoroutine(ExtractDataFile());
 #endif
-        //3、启动游戏逻辑
+        //3、Init game logic
         GameControler.InitGame(true);
         yield return null;
-        //4、切换到第一个场景
+        //4、Change to the first scene
         SpriteManager.Init();
         LoadingManager.Instance.Init();
         PluginFramework.Instance.ChangeScene(1);
@@ -132,7 +132,7 @@ public class Game : MonoBehaviour
         }
 
 #if UNITY_EDITOR
-        //Pause按键暂停
+        //Pause
         if (Input.GetKeyDown(KeyCode.Pause))
             Debug.Break();
 #endif

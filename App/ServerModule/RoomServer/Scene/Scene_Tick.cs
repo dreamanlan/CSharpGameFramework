@@ -31,19 +31,19 @@ namespace GameFramework
                             EnterScene(us);
                         }
                     }
-                    //先让各客户端创建自己与场景相关信息
+                    //First let each client create its own information related to the scene.
                     foreach (User us in m_RoomInfo.RoomUsers) {
                         if (us.IsEntered) {
-                            //发玩家阵营给玩家
+                            //Send player camp to player
                             Msg_RC_CampChanged msg = new Msg_RC_CampChanged();
                             msg.obj_id = 0;
                             msg.camp_id = us.LobbyUserData.Camp;
                             us.SendMessage(RoomMessageDefine.Msg_RC_CampChanged, msg);
-                            //将场景里的对象发给玩家
+                            //Send objects in the scene to the player
                             SyncSceneObjectsToUser(us);
                         }
                     }
-                    //给观察者发初始玩家与场景对象信息
+                    //Send initial player and scene object information to observers
                     foreach (Observer observer in m_RoomInfo.RoomObservers) {
                         if (null != observer && !observer.IsIdle && observer.IsEntered) {
                             SyncForNewObserver(observer);
@@ -84,7 +84,7 @@ namespace GameFramework
             TickEntities();
             m_SceneProfiler.TickEntitiesTime = TimeSnapshot.DoCheckPoint();
 
-            //属性同步
+            //Property synchronization
             if (0 == m_LastTickTimeForTickPerSecond) {
                 m_LastTickTimeForTickPerSecond = TimeUtility.GetLocalMilliseconds();
                 TickProperty();
@@ -108,7 +108,7 @@ namespace GameFramework
             }
 
             m_SceneProfiler.TickAttrRecoverTime = TimeSnapshot.DoCheckPoint();
-            //空间信息调试
+            //Spatial information debugging
             TickDebugSpaceInfo();
             m_SceneProfiler.TickDebugSpaceInfoTime = TimeSnapshot.DoCheckPoint();
         }
@@ -145,7 +145,7 @@ namespace GameFramework
                 if (info.IsDead() && !info.NeedDelete) {
                     if (info.DeadTime <= 0) {
                         CalcKillIncome(info);
-                        //发送npc死亡消息
+                        //Send NPC death message
                         Msg_RC_NpcDead npcDeadBuilder = new Msg_RC_NpcDead();
                         npcDeadBuilder.npc_id = info.GetId();
                         NotifyAllUser(RoomMessageDefine.Msg_RC_NpcDead, npcDeadBuilder);
@@ -168,7 +168,7 @@ namespace GameFramework
                             info.DeadTime = 0;
                             info.NeedDelete = true;
 
-                            //重新发送npc死亡消息
+                            //Resend NPC death message
                             Msg_RC_NpcDead npcDeadBuilder = new Msg_RC_NpcDead();
                             npcDeadBuilder.npc_id = info.GetId();
                             NotifyAllUser(RoomMessageDefine.Msg_RC_NpcDead, npcDeadBuilder);
@@ -197,7 +197,7 @@ namespace GameFramework
                     } else if (CharacterRelation.RELATION_FRIEND == EntityInfo.GetRelation((int)CampIdEnum.Blue, ni.GetCampId())) {
                         ++friendCt;
                     }
-                    //发送npc消失消息
+                    //Send NPC disappearing message
                     destroyNpcBuilder.npc_id = ni.GetId();
                     NotifyAllUser(RoomMessageDefine.Msg_RC_DestroyNpc, destroyNpcBuilder);
                     DestroyEntity(ni);

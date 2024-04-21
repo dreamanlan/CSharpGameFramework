@@ -10,7 +10,7 @@ using GameFramework;
 
 internal static class DataSaveImplement
 {
-    //向DB中写入一条数据
+    //Write a piece of data to DB
     internal static int SingleSaveItem(int msgId, InnerCacheItem cacheItem, int dataVersion)
     {
         if (DataCacheConfig.IsPersistent) {
@@ -24,7 +24,7 @@ internal static class DataSaveImplement
         }
         return 1;
     }
-    //向DB中写入多条数据
+    //Write multiple pieces of data to DB
     internal static int BatchSaveItemsProc(int msgId, List<InnerCacheItem> cacheItemList, int dataVersion)
     {
         if (DataCacheConfig.IsPersistent) {
@@ -42,7 +42,7 @@ internal static class DataSaveImplement
         return cacheItemList.Count;
     }
 
-    //向DB中写入多条数据
+    //Write multiple pieces of data to DB
     internal static int BatchSaveItemsSql(int msgId, List<InnerCacheItem> cacheItemList, int dataVersion)
     {
         int count = 0;
@@ -68,10 +68,10 @@ internal static class DataSaveImplement
     }
 
     /// <summary>
-    /// 检测sql值字符串是否合法
+    /// Check whether the sql value string is legal
     /// </summary>
-    /// <param name="statement">待检测的sql值字符串</param>
-    /// <returns>合法返回true,非法返回false </returns>
+    /// <param name="statement">SQL value string to be detected</param>
+    /// <returns>Return true if legal, false if illegal</returns>
     private static bool ValidateSQLValue(string valueStr)
     {
         bool ret = false;
@@ -82,5 +82,5 @@ internal static class DataSaveImplement
         return ret;
     }
 
-    private const int c_SqlCommandTimeout = 120;  //数据库操作超时时间
+    private const int c_SqlCommandTimeout = 120;  //Database operation timeout
 }

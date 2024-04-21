@@ -5,24 +5,24 @@ using System.Text;
 
 namespace GameFramework.DataCache
 {
-    //数据存储Save操作返回结果类型
+    //Data storage Save operation return result type
     public enum DSSaveResult
     {
-        UnknownError = -1,  //未知错误  
-        Success = 0,        //成功
-        PrepError = 1,      //前置错误：消息发送之前错误
-        PostError = 2,      //后置错误：DS Save操作错误
-        TimeoutError = 3,   //超时错误
+        UnknownError = -1,  //unknown error
+        Success = 0,        //success
+        PrepError = 1,      //Prefix error: error before message is sent
+        PostError = 2,      //Post error: DS Save operation error
+        TimeoutError = 3,   //time out
     }
-    //数据存储Load操作返回结果类型
+    //Data storage Load operation return result type
     public enum DSLoadResult
     {
-        UnknownError = -1,  //未知错误  
-        Success = 0,        //成功    
-        NotFound = 1,       //数据库中不存在查询的数据
-        PrepError = 2,      //前置错误：消息发送之前错误
-        PostError = 3,      //后置错误：DS Load操作错误
-        TimeoutError = 4,   //超时错误
-        Undone = 5,         //数据传输未完成
+        UnknownError = -1,  //unknown error
+        Success = 0,        //success
+        NotFound = 1,       //The queried data does not exist in the database
+        PrepError = 2,      //Prefix error: error before message is sent
+        PostError = 3,      //Post error: DS Load operation error
+        TimeoutError = 4,   //time out
+        Undone = 5,         //Data transfer not completed
     }
 }

@@ -271,7 +271,7 @@ namespace GameFramework
 
         internal static Msg_LR_RoomUserInfo BuildRoomUserInfo(UserInfo info, float x, float y)
         {
-            //todo:加锁
+            //todo:lock
             Msg_LR_RoomUserInfo ruiBuilder = new Msg_LR_RoomUserInfo();
             ruiBuilder.Guid = info.Guid;
             ruiBuilder.Nick = info.Nickname;

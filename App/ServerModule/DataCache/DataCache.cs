@@ -82,7 +82,7 @@ class DataCache
                 Thread.Sleep(10);
                 if (m_WaitQuit) {
                     if (PersistentSystem.Instance.StartLastSaveResult == PersistentSystem.SaveState.Failed) {
-                        //发起存盘操作失败,重置m_WaitQuit
+                        //Failed to initiate save operation, reset m_WaitQuit
                         m_WaitQuit = false;
                     }
                     if (PersistentSystem.Instance.LastSaveState == PersistentSystem.SaveState.Success) {

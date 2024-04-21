@@ -131,7 +131,7 @@ namespace GameFramework
         private bool m_IsLogicFinished = false;
         private bool m_IsLogicPaused = false;
         private SceneContextInfo m_SceneContext = null;
-        private long m_Time = 0;//由于场景逻辑主要在Tick里工作，通常需要限制工作的频率，这一数据用于此目的（由于LogicDatas的读取比较费，所以抽出来放公共里）
+        private long m_Time = 0;//Since scene logic mainly works in Tick, it is usually necessary to limit the frequency of work. This data is used for this purpose (since the reading of LogicDatas is relatively expensive, it is extracted and put in the public)
         private TypedDataCollection m_LogicDatas = new TypedDataCollection();
     }
 }

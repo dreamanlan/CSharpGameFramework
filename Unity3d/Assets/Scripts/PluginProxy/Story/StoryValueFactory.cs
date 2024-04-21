@@ -58,7 +58,7 @@ internal class NativeStoryFunction : IStoryFunction
         else {
             Dsl.StatementData statementData = param as Dsl.StatementData;
             if (null != statementData) {
-                //是否支持语句类型的命令语法？
+                //Is statement type command syntax supported?
                 Load(statementData);
             }
             else {
@@ -145,7 +145,7 @@ internal class ScriptStoryFunction : IStoryFunction
         else {
             Dsl.StatementData statementData = param as Dsl.StatementData;
             if (null != statementData) {
-                //是否支持语句类型的命令语法？
+                //Is statement type command syntax supported?
                 Load(statementData);
             }
             else {

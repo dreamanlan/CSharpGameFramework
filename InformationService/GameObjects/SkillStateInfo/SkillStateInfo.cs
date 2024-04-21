@@ -7,10 +7,10 @@ namespace GameFramework
 {
     public class SkillStateInfo
     {
-        private List<SkillInfo> m_SkillList;   // 技能容器
-        private SkillInfo m_CurSkillInfo;      // 当前所释放的点技能
-        private List<ImpactInfo> m_ImpactList; // 效果容器
-        private bool m_BuffChanged;            // BUFF状态是否改变
+        private List<SkillInfo> m_SkillList;   // skill container
+        private SkillInfo m_CurSkillInfo;      // Point skills currently released
+        private List<ImpactInfo> m_ImpactList; // effects container
+        private bool m_BuffChanged;            // Whether the BUFF status changes
         private int m_NextImpactSeq;
 
         public SkillStateInfo()

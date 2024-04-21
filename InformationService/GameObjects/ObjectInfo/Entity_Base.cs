@@ -5,8 +5,9 @@ using ScriptRuntime;
 namespace GameFramework
 {
     public delegate void DamageDelegation(int receiver, int caster, bool isNormalDamage, bool isCritical, int hpDamage, int npDamage);
-        
-    //角色监听类别标记位，用于监听某类事件触发剧情消息
+
+    //Character monitoring category flag bit, used to monitor certain types of events
+    //to trigger plot messages
     public enum StoryListenFlagEnum
     {
         Damage = 1,
@@ -38,9 +39,9 @@ namespace GameFramework
         Story_Bit_27 = 1 << 26,
         Story_Bit_28 = 1 << 27,
         Story_Bit_29 = 1 << 28,
-        Story_Bit_30 = 1 << 29,           // 通用标记位 3
-        Story_Bit_31 = 1 << 30,           // 通用标记位 2
-        Story_Bit_32 = 1 << 31,           // 通用标记位 1
+        Story_Bit_30 = 1 << 29,           // Universal flag bit 3
+        Story_Bit_31 = 1 << 30,           // Universal flag bit 2
+        Story_Bit_32 = 1 << 31,           // Universal flag bit 1
     }
     public static class StoryListenFlagUtility
     {
@@ -588,7 +589,7 @@ namespace GameFramework
         private bool m_CanUseSkill = true;
         private int m_KillerId = 0;
         /************************************************************************/
-        /* 助攻列表                                                             */
+        /* assist list                                                          */
         /************************************************************************/
         private MyDictionary<int, AttackerInfo> m_AttackerInfos = new MyDictionary<int, AttackerInfo>();
         private long m_LastAttackedTime = 0;
@@ -607,11 +608,11 @@ namespace GameFramework
         private CombatStatisticInfo m_CombatStatisticInfo = new CombatStatisticInfo();
         private SceneContextInfo m_SceneContext = null;
 
-        //阵营可为Friendly、Hostile、Blue、Red
-        //Friendly 全部友好
-        //Hostile 全部敌对(同阵营友好)
-        //Blue 与Hostile与Red敌对
-        //Red 与Hostile与Blue敌对
+        //Camp:Friendly、Hostile、Blue、Red
+        //Friendly: friendly to everyone
+        //Hostile: hostile to everyone (but friendly to same camp)
+        //Blue and Hostile: hostile to Red
+        //Red and Hostile: hostile to Blue
         public static CharacterRelation GetRelation(EntityInfo pObj_A, EntityInfo pObj_B)
         {
             if (pObj_A == null || pObj_B == null) {

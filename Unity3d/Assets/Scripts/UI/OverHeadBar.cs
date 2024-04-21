@@ -7,13 +7,13 @@ using System;
 
 public class OverHeadBar : MonoBehaviour
 {
-	public float SLOW_HEALTH_STEP;		// 慢血条递减速度
-	public float SLOW_HEALTH_CD;		// 慢血条延时
-	
-    public Image health;				// 主血条
-	public Image health2;				// 主血条2
-	public Image healthSlow;			// 慢血条
-	public Image mp;
+	public float SLOW_HEALTH_STEP;      // Slow health bar decreasing speed
+    public float SLOW_HEALTH_CD;        // Slow health bar delay
+
+    public Image health;                // Main health bar
+    public Image health2;               // Main health bar2
+    public Image healthSlow;            // Slow health bar
+    public Image mp;
 	
     public GameObject panelBloodNums;
 
@@ -86,13 +86,13 @@ public class OverHeadBar : MonoBehaviour
 			RectTransform rect = (RectTransform)obj.transform;
 			rect.SetParent(panelBloodNums.transform, false);
 
-            //随机位置
+            //random location
             RectTransform rectTxt = txt.gameObject.transform as RectTransform;
             Vector3 pos = rectTxt.anchoredPosition;
             pos.x = UnityEngine.Random.Range(-20.0f, 20.0f);
             rectTxt.anchoredPosition = pos;
 
-			// 动画
+			//animation
 			Animation anim = obj.GetComponent<Animation> ();
 			if (anim != null) 
 			{
@@ -119,9 +119,9 @@ public class OverHeadBar : MonoBehaviour
             float defaultSize = canvasRect.rect.size.y * canvasRect.localScale.y;
             this.transform.localScale = new Vector3(1,1,0) * size / defaultSize;
         }
-        
-        // 慢血条
-		slowTime -= Time.deltaTime;
+
+        // Slow health bar
+        slowTime -= Time.deltaTime;
 		if(slowTime <= 0f)
 		{
 			slowTime = 0;

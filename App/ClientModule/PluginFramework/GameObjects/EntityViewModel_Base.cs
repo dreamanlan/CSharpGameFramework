@@ -81,7 +81,9 @@ namespace GameFramework
             if (m_Materials.Count > 0)
             {
                 for (int i = 0; i < m_Materials.Count; ++i)//
-                //现在把粒子绑在了骨骼上，不能直接修改所有材质，否则在受击时，进入隐身状态，所带受击粒子也会进行材质的改变 形成一个黑片
+                //Now that the particles are tied to the bones, all materials cannot be modified directly.
+                //Otherwise, when hit, the invisible state will be entered, and the texture of the hit
+                //particles will also be changed, forming a black patch.
                 {
                     Material mat = m_Materials[i];
                     if (mat.shader.name == "LOLL/Toon/toonwithStencil")
@@ -101,7 +103,7 @@ namespace GameFramework
         }
 
         /// <summary>
-        /// 隐身效果切换
+        /// Invisibility effect switch
         /// </summary>
         public void Hide(bool hide,bool bNPC = false)
         {
@@ -158,7 +160,9 @@ namespace GameFramework
                 if (m_Materials.Count > 0)
                 {
                     for (int i = 0; i <m_Materials.Count ; ++i)//
-                    //现在把粒子绑在了骨骼上，不能直接修改所有材质，否则在受击时，进入隐身状态，所带受击粒子也会进行材质的改变 形成一个黑片
+                    //Now that the particles are tied to the bones, all materials cannot be modified directly.
+                    //Otherwise, when hit, the invisible state will be entered, and the texture of the hit
+                    //particles will also be changed, forming a black patch.
                     {
                         Material mat = m_Materials[i];
                         if (mat.shader.name == "Tut/Shader/Toon/toon" || mat.shader.name == "Mobile/Diffuse"||mat.shader.name == "LOLL/Toon/toonwithStencil") 

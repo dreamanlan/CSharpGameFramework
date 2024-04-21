@@ -8,11 +8,11 @@ public class SkillViewerCameraController
 {
     enum State
     {
-        Lookat,     //盯着目标
-        ToLookat,   //切换到盯着目标
-        FixPose,    //固定点
-        ToFixPose,  //切换到固定点
-        Track,      //由外部控制摄像机轨迹
+        Lookat,     //Keep your eyes on the target
+        ToLookat,   //Switch to staring at target
+        FixPose,    //Fix point
+        ToFixPose,  //Switch to fix point
+        Track,      //Control camera trajectory externally
     }
 
     struct Pose
@@ -261,7 +261,7 @@ public class SkillViewerCameraController
         if (cameraSetting == null) {
             cameraSetting = camera.gameObject.AddComponent<SkillViewerCameraSetting>();
         }
-        //camera.transform.rotation = cameraSetting.GetRotation();// 注释掉，临时让摄像机设置不起作用 peterdou
+        //camera.transform.rotation = cameraSetting.GetRotation();
 
         SetState(State.Lookat);
         followPose.pos = camera.transform.position;

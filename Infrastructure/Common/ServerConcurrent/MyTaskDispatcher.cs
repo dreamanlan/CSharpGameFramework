@@ -346,9 +346,9 @@ namespace GameFramework
             for (int i = 0; i < threadNum; ++i) {
                 MyServerThread thread = null;
                 if (isPassive) {
-                    thread = new MyServerThread(tickSleepTime, actionNumPerTick, m_ActionQueue);//线程主动取策略
+                    thread = new MyServerThread(tickSleepTime, actionNumPerTick, m_ActionQueue);//Threads take the initiative to take strategies
                 } else {
-                    thread = new MyServerThread(tickSleepTime, actionNumPerTick);//dispatcher主动推策略
+                    thread = new MyServerThread(tickSleepTime, actionNumPerTick);//Dispatcher actively promotes strategies
                 }
                 m_Threads[i] = thread;
                 thread.Start();
@@ -356,12 +356,12 @@ namespace GameFramework
         }
         private IActionQueue GetActionQueue()
         {
-            //二种策略，dispatch主动推送到处理线程或者线程主动取
+            //Two strategies, dispatch actively pushes to the processing thread or the thread actively retrieves
             if (m_IsPassive) {
-                //主动取策略，所有线程共享一个ActionQueue
+                //Actively take strategies, all threads share an ActionQueue
                 return m_ActionQueue;
             } else {
-                //主动推送策略，此情形每个线程各有一个ActionQueue
+                //Active push strategy, in this case each thread has an ActionQueue
                 int index = Interlocked.Increment(ref m_TurnIndex) % m_ThreadNum;
                 return m_Threads[index];
             }

@@ -7,7 +7,7 @@ using GameFrameworkMessage;
 namespace GameFramework
 {
     //----------------------------------------------------------------------------------------------
-    // 来自客户端的node消息
+    // node messages from client
     //----------------------------------------------------------------------------------------------
     internal sealed class NodeMessage
     {
@@ -72,7 +72,7 @@ namespace GameFramework
     internal delegate void NodeMessageHandlerDelegate(NodeMessage msg, ulong handle, uint seq);
 
     //----------------------------------------------------------------------------------------------
-    // 来自GM工具的node消息
+    // node messages from GM tools
     //----------------------------------------------------------------------------------------------
     internal sealed class JsonMessage
     {

@@ -439,7 +439,7 @@ namespace GameFramework
             if (!s_IsInited) {
                 s_IsInited = true;
 
-                //注册剧情命令
+                //register story commands
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "startstory", "startstory command", new StoryCommandFactoryHelper<Story.Commands.StartStoryCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "stopstory", "stopstory command", new StoryCommandFactoryHelper<Story.Commands.StopStoryCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "waitstory", "waitstory command", new StoryCommandFactoryHelper<Story.Commands.WaitStoryCommand>());
@@ -474,7 +474,7 @@ namespace GameFramework
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "addglobaldata", "addglobaldata command", new StoryCommandFactoryHelper<Story.Commands.AddGlobalDataCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.USER, "removeglobaldata", "removeglobaldata command", new StoryCommandFactoryHelper<Story.Commands.RemoveGlobalDataCommand>());
 
-                //注册值与函数处理
+                //register value or functions
                 StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getuserinfo", "getuserinfo function", new StoryFunctionFactoryHelper<Story.Functions.GetUserInfoFunction>());
                 StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getmembercount", "getmembercount function", new StoryFunctionFactoryHelper<Story.Functions.GetMemberCountFunction>());
                 StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.USER, "getmemberinfo", "getmemberinfo function", new StoryFunctionFactoryHelper<Story.Functions.GetMemberInfoFunction>());

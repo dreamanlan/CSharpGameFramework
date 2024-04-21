@@ -10,7 +10,8 @@ namespace Lobby
     internal partial class LobbyServer
     {
         /// <summary>
-        /// 注意，userserver来的消息在主线程处理，再分发到其它线程
+        /// Note that messages from userserver are processed in the main thread and then
+        /// distributed to other threads.
         /// </summary>
         private void InstallUserHandlers()
         {

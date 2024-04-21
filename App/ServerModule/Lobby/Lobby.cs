@@ -250,13 +250,13 @@ namespace Lobby
                     CenterClientApi.Tick();
                     Thread.Sleep(10);
                     if (m_WaitQuit) {
-                        //等待10s
+                        //wait 10s
                         long startTime = TimeUtility.GetLocalMilliseconds();
                         while (startTime + 10000 > TimeUtility.GetLocalMilliseconds()) {
                             CenterClientApi.Tick();
                             Thread.Sleep(10);
                         }
-                        //关闭Lobby
+                        //close Lobby
                         LogSys.Log(ServerLogType.MONITOR, "QuitStep_3. LastSaveDone. Lobby quit...");
                         CenterClientApi.Quit();
                     }
@@ -393,7 +393,7 @@ namespace Lobby
 
         private const long c_WarningTickTime = 1000;
         private long m_LastTickTime = 0;
-        private const long c_WaitQuitTimeInterval = 300000;      //重置等待退出状态的时间间隔,5mins
+        private const long c_WaitQuitTimeInterval = 300000;      //Reset the time interval for waiting for exit status,5mins
         private long m_LastWaitQuitTime = 0;
 
         private UserProcessScheduler m_UserProcessScheduler = new UserProcessScheduler();

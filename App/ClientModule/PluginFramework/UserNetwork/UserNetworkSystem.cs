@@ -13,7 +13,8 @@ namespace GameFramework.Network
     {
         internal void Init(IActionQueue asyncQueue)
         {
-            //WebSocket的事件不是在当前线程触发的，我们需要自己进行线程调整
+            //WebSocket events are not triggered in the current thread,
+            //we need to make thread adjustments ourselves
             m_AsyncActionQueue = asyncQueue;
 
             NodeMessageDispatcher.Init();
@@ -61,7 +62,7 @@ namespace GameFramework.Network
                 } catch (Exception ex) {
                     LogSystem.Warn("m_WebSocket.Open throw exception {0}\n{1}", ex.Message, ex.StackTrace);
                     BuildWebSocket();
-                    //下次tick立即重连
+                    //Reconnect immediately next time tick
                     m_LastConnectTime = 0;
                 }
             }
@@ -75,11 +76,11 @@ namespace GameFramework.Network
                     if (!IsConnected) {
                         if (m_LastConnectTime + c_ConnectionTimeout < curTime) {
                             LogSystem.Info("IsConnected == false. CurTime {0} LastConnectTime {1}", curTime, m_LastConnectTime);
-                            Disconnect(true);//防止连接在稍后建立导致状态失效
+                            Disconnect(true);//Prevent the connection from being established later and causing state invalidation
                             ConnectIfNotOpen();
                         }
                     } else {
-                        if (m_IsQueueing) {//排队过程
+                        if (m_IsQueueing) {//in queueing
                             if (m_LastQueueingTime + c_GetQueueingCountInterval < curTime) {
                                 m_LastQueueingTime = curTime;
 
@@ -90,11 +91,11 @@ namespace GameFramework.Network
 
                                 PluginFramework.Instance.HighlightPromptWithDict("Tip_QueueingCount", m_QueueingNum);
                             }
-                        } else if (m_HasLoggedOn) {//断线重连过程与正常游戏情形
-                            if (m_IsLogining) {//登录中
+                        } else if (m_HasLoggedOn) {//Disconnection and reconnection process and normal game situation
+                            if (m_IsLogining) {//logining
                                 if (m_LastConnectTime + c_LoginTimeout < curTime) {
                                     LogSystem.Info("Login time out, disconnect and connect again. CurTime {0} LastConnectTime {1}", curTime, m_LastConnectTime);
-                                    //断开连接
+                                    //disconnect
                                     if (IsConnected) {
                                         Disconnect();
                                     }
@@ -109,7 +110,7 @@ namespace GameFramework.Network
                                 }
                                 if (m_LastReceiveHeartbeatTime > 0 && m_LastReceiveHeartbeatTime + c_PingTimeout < curTime) {
                                     LogSystem.Info("Heartbeat time out, disconnect and connect again. CurTime {0} LastReceiveHeartbeatTime {1} LastHeartbeatTime {2} LastConnectTime {3}", curTime, m_LastReceiveHeartbeatTime, m_LastHeartbeatTime, m_LastConnectTime);
-                                    //断开连接
+                                    //disconnect
                                     if (IsConnected) {
                                         Disconnect();
                                         m_LastReceiveHeartbeatTime = 0;
@@ -136,14 +137,14 @@ namespace GameFramework.Network
                 if (m_WebSocket != null) {
                     m_WebSocket.Close(disconnectImmediately);
                     if (!disconnectImmediately) {
-                        //等待3秒再触发重连
+                        //Wait 3 seconds before triggering reconnection
                         m_LastConnectTime = curTime - c_ConnectionTimeout + 3000;
                     }
                 }
             } catch (Exception ex) {
                 LogSystem.Warn("m_WebSocket.Close throw exception {0}\n{1}", ex.Message, ex.StackTrace);
                 BuildWebSocket();
-                //下次tick立即重连
+                //Reconnect immediately next time tick
                 m_LastConnectTime = 0;
             }
         }
@@ -277,7 +278,7 @@ namespace GameFramework.Network
 
         private void OnOpened()
         {
-            //首先校验版本
+            //Verify version first
             NodeMessage versionMsg = new NodeMessage(LobbyMessageDefine.VersionVerify, (uint)0x01010101);
             SendMessage(versionMsg);
         }
@@ -372,7 +373,7 @@ namespace GameFramework.Network
                         UnicastIPAddressInformationCollection uniCast = adapter.GetIPProperties().UnicastAddresses;
                         if (uniCast.Count > 0) {
                             foreach (UnicastIPAddressInformation uni in uniCast) {
-                                //得到IPv4的地址。 AddressFamily.InterNetwork指的是IPv4
+                                //Get the IPv4 address. AddressFamily.InterNetwork refers to IPv4
                                 if (uni.Address.AddressFamily == AddressFamily.InterNetwork) {
                                     ip = uni.Address.ToString();
                                 }
@@ -405,7 +406,7 @@ namespace GameFramework.Network
         private long m_LastShowQueueingTime = 0;
         private int m_QueueingNum = -1;
         private string m_Url;
-        private int m_WorldId = -1;       //客户端连接的WorldId
+        private int m_WorldId = -1;       //WorldId of client connection
         private ulong m_Guid;
 
         private string m_AccountId;

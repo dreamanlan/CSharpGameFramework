@@ -15,7 +15,7 @@ namespace GameFramework
     internal sealed partial class DataCacheThread
     {
         //--------------------------------------------------------------------------------------------------------------------------
-        // 供外部直接调用的方法，实际执行线程是调用线程。
+        // Methods for external direct calls, the actual execution thread is the calling thread.
         //--------------------------------------------------------------------------------------------------------------------------
         internal void SaveCreateUser(AccountInfo ai, string nickname, ulong userGuid)
         {

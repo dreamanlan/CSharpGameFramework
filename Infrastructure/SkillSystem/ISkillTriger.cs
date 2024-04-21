@@ -15,8 +15,8 @@ namespace SkillSystem
     }
     public interface IPropertyAccessor
     {
-        bool TryGetProperty(string key, out object val);//获取变量值
-        void SetProperty(string key, object val);//设置变量值
+        bool TryGetProperty(string key, out object val);//get variable value
+        void SetProperty(string key, object val);//set variable value
     }
     public sealed class PropertyAccessorHelper : IPropertyVisitor, IPropertyAccessor
     {
@@ -107,11 +107,11 @@ namespace SkillSystem
         int OrderInSkill { get; set; }
         int OrderInSection { get; set; }
         bool IsFinal { get; set; }
-        ISkillTriger Clone();//克隆触发器，触发器只会从DSL实例一次，之后都通过克隆产生新实例
-        void Init(Dsl.ISyntaxComponent config, SkillInstance instance);//从DSL语言初始化触发器实例
+        ISkillTriger Clone();//Clone a trigger. The trigger will only be instanced from the DSL once, and then new instances will be generated through cloning.
+        void Init(Dsl.ISyntaxComponent config, SkillInstance instance);//Initialize trigger instance from DSL language
         void InitProperties();
-        void Reset();//复位触发器到初始状态
-        bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime);//执行触发器，返回false表示触发器结束，下一tick不再执行
+        void Reset();//Reset trigger to initial state
+        bool Execute(object sender, SkillInstance instance, long delta, long curSectionTime);//Execute the trigger, return false to indicate the end of the trigger, and the next tick will not be executed.
     }
     public abstract class AbstractSkillTriger : ISkillTriger
     {
@@ -215,7 +215,7 @@ namespace SkillSystem
             newObj.IsFinal = IsFinal;
         }
 
-        //下面方法必须在子类的构造或重载的OnInitProperties里调用！
+        //The following methods must be called in the construction of the subclass or the overloaded OnInitProperties!
         public void AddProperty(string key, PropertyAccessorHelper.GetDelegation onGet, PropertyAccessorHelper.SetDelegation onSet)
         {
             m_AccessorHelper.AddProperty(key, onGet, onSet);
@@ -227,8 +227,8 @@ namespace SkillSystem
         private int m_OrderInSection = 0;
         private bool m_IsFinal = true;
         private PropertyAccessorHelper m_AccessorHelper = new PropertyAccessorHelper();
-        
-        //用于同步修改回加载Dsl实例的工具方法
+
+        //Tool method for synchronously modifying back to loading Dsl instance
         public static void SetParam(Dsl.FunctionData callData, int index, string val)
         {
             Dsl.ValueData valData = callData.GetParam(index) as Dsl.ValueData;

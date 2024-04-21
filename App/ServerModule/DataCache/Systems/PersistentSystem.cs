@@ -50,18 +50,18 @@ internal class PersistentSystem
                         }
                     }
                     if (unfinishedCount == 0) {
-                        //存储DB操作完成
+                        //Storage DB operation completed
                         if (failedCount == 0) {
-                            m_CurrentDBSaveState = SaveState.Success;    //存储DB操作成功
+                            m_CurrentDBSaveState = SaveState.Success;    //Storage DB operation successful
                         } else {
-                            m_CurrentDBSaveState = SaveState.Failed;     //存储DB操作有失败
+                            m_CurrentDBSaveState = SaveState.Failed;     //Storage DB operation failed
                         }
                         LogSys.Log(ServerLogType.MONITOR, "SaveDirtyDataToDB finished. Result:{0}, NextSaveCount:{1}, CurrentSaveCounts:{2}, FailedCount:{3}",
                           m_CurrentDBSaveState, m_NextSaveCount, m_CurrentSaveCounts.Count, failedCount);
                     }
                 }
                 if (m_LastSaveState == SaveState.Saving && m_NextSaveCount == c_UltimateSaveCount) {
-                    //最后一次存储结果
+                    //Last stored result
                     if (m_CurrentDBSaveState == SaveState.Success) {
                         m_LastSaveState = SaveState.Success;
                         LogSys.Log(ServerLogType.INFO, "LastSaveFinished Result:{0}", m_LastSaveState);
@@ -124,7 +124,7 @@ internal class PersistentSystem
                 if (batchItemList.Count <= 0) {
                     continue;
                 }
-                //DBThread按表批量处理
+                //DBThread batch processing by table
                 string saveCountKey = string.Format("{0}:{1}", dataTable.Key.ToString(), i);
                 m_CurrentSaveCounts.AddOrUpdate(saveCountKey, c_InitialSaveCount, (g, u) => c_InitialSaveCount);
                 LogSys.Log(ServerLogType.MONITOR, "Start SaveTablePiece. MsgId:{0}, DataCount:{1}, SaveCountKey:{2}, DataVersion:{3}",
@@ -135,17 +135,17 @@ internal class PersistentSystem
             }
         }
     }
-    //在DBThread线程中执行
+    //Executed in DBThread thread
     private void SaveDirtyItemToDB(int msgId, InnerCacheItem cacheItem, string saveCountKey, int saveCount, int dbDataVersion)
     {
         try {
             DataSaveImplement.SingleSaveItem(msgId, cacheItem, dbDataVersion);
-            //写入DB成功
+            //Write to DB successfully
             DataCacheSystem.Instance.QueueAction(() => {
                 cacheItem.DirtyState = DirtyState.Saved;
             });
         } catch (Exception e) {
-            //写入DB失败
+            //Writing to DB failed
             DataCacheSystem.Instance.QueueAction(() => {
                 cacheItem.DirtyState = DirtyState.Unsaved;
             });
@@ -157,15 +157,15 @@ internal class PersistentSystem
         try {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            //临时测试代码
+            //Temporary test code
             if (m_TablePieceCapacity % 2 == 0) {
                 DataSaveImplement.BatchSaveItemsProc(msgId, cacheItemList, dbDataVersion);
             } else {
                 DataSaveImplement.BatchSaveItemsSql(msgId, cacheItemList, dbDataVersion);
             }
-            //存储过程实现
+            //Stored procedure implementation
             //DataSaveImplement.BatchSaveItemsProc(msgId, cacheItemList, dbDataVersion);
-            //拼接sql实现
+            //splicing sql implementation
             //DataSaveImplement.BatchSaveItemsSql(msgId, cacheItemList, dbDataVersion);
 
             DataCacheSystem.Instance.QueueAction(() => {
@@ -183,7 +183,7 @@ internal class PersistentSystem
             //LogSys.Log(ServerLogType.MONITOR, "SaveTablePiece Success. MsgId:{0}, SaveCountKey:{1}, SaveCount:{2}, BatchDataCount:{3}, DataVersion:{4}, DBThreadId:{5}",
             //             msgId, saveCountKey, saveCount, cacheItemList.Count, dbDataVersion, Thread.CurrentThread.ManagedThreadId);
         } catch (Exception e) {
-            //写入DB失败
+            //Writing to DB failed
             DataCacheSystem.Instance.QueueAction(() => {
                 foreach (var dataValue in cacheItemList) {
                     dataValue.DirtyState = DirtyState.Unsaved;
@@ -196,19 +196,19 @@ internal class PersistentSystem
         }
     }
 
-    private SaveState m_CurrentDBSaveState = SaveState.Failed;     //存储DB操作状态 
-    private SaveState m_LastSaveState = SaveState.Initial;         //最后一次存储操作状态   
-    private SaveState m_StartLastSaveResult = SaveState.Initial;   //发起最后存储的结果  
+    private SaveState m_CurrentDBSaveState = SaveState.Failed;     //Store DB operation status
+    private SaveState m_LastSaveState = SaveState.Initial;         //Last stored operation status
+    private SaveState m_StartLastSaveResult = SaveState.Initial;   //Initiate the last stored result
     private long m_LastTickTime = 0;
-    private uint m_SaveDataToDBInterval = 360000;           //周期存储的时间间隔,默认为 6min  
-    private long m_LastCheckTime = 0;                       //上一次检查存储是否完成的时间
-    private const int c_SaveDataFinishInterval = 1000;      //检查一次存储操作是否完成的时间间隔
-    private int m_NextSaveCount = 1;                        //下一步存储计数
-    private ConcurrentDictionary<string, int> m_CurrentSaveCounts = new ConcurrentDictionary<string, int>();   //当前存储计数
-    private const int c_InitialSaveCount = 0;               //初始的存储计数
-    private const int c_UltimateSaveCount = -1;             //最终的存储计数
-    private const int c_FailedSaveCount = -2;               //失败的存储计数
-    private int m_TablePieceCapacity = 10000;               //分片的数据条数
+    private uint m_SaveDataToDBInterval = 360000;           //The time interval for periodic storage, the default is 6min
+    private long m_LastCheckTime = 0;                       //The time when the store was last checked for completion
+    private const int c_SaveDataFinishInterval = 1000;      //The time interval to check whether a storage operation is completed
+    private int m_NextSaveCount = 1;                        //Next store count
+    private ConcurrentDictionary<string, int> m_CurrentSaveCounts = new ConcurrentDictionary<string, int>();   //Current storage count
+    private const int c_InitialSaveCount = 0;               //initial storage count
+    private const int c_UltimateSaveCount = -1;             //final storage count
+    private const int c_FailedSaveCount = -2;               //failed storage count
+    private int m_TablePieceCapacity = 10000;               //Number of pieces of data in shards
 
     internal static PersistentSystem Instance
     {

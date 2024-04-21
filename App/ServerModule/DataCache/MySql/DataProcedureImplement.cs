@@ -56,7 +56,7 @@ internal static class DataProcedureImplement
         if (DataCacheConfig.IsPersistent) {
             int oldDataVersion = GetGlobalDataVersion();
             if (dataVersion > oldDataVersion) {
-                //数据库中的GlobalDataVersion小
+                //GlobalDataVersion in database is small
                 try {
                     using (MySqlCommand cmd = new MySqlCommand()) {
                         cmd.Connection = DBConn.MySqlConn;
@@ -73,7 +73,7 @@ internal static class DataProcedureImplement
                     LogSys.Log(ServerLogType.ERROR, "SetGlobalDataVersion procedure ERROR:{0}\n Stacktrace:{1}", ex.Message, ex.StackTrace);
                 }
             } else {
-                //数据库中的GlobalDataVersion大,异常情况!
+                //The GlobalDataVersion in the database is large, abnormal!
                 LogSys.Log(ServerLogType.ERROR, "SetGlobalDataVersion ERROR. Old GlobalDataVersion is bigger. OldGlobalDataVersion:{0}, NewGlobalDataVersion:{1}",
                   oldDataVersion, dataVersion);
             }

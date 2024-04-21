@@ -8,7 +8,7 @@ using GameFramework;
 namespace GameFramework
 {
     /// <remarks>
-    /// 注意这个类的public方法，都应考虑跨线程调用是否安全！！！
+    /// Note that the public methods of this class should consider whether cross-thread calls are safe! ! !
     /// </remarks>
     public class RoomManager
     {
@@ -43,8 +43,8 @@ namespace GameFramework
             m_Lock = new object();
             m_ActiveRooms = new Dictionary<int, int>();
             m_UserPool.Init(m_UserPoolSize);
-            
-            // 初始化场景房间
+
+            // Initialize scene room
             int startId = 1;
             MyDictionary<int, object> scenes = TableConfig.LevelProvider.Instance.LevelMgr.GetData();
             foreach (KeyValuePair<int, object> pair in scenes) {
@@ -71,7 +71,7 @@ namespace GameFramework
                     }
                 }
             }
-            // 初始化房间线程
+            // Initialize room thread
             for (int i = 0; i < m_ThreadAmount; ++i) {
                 m_RoomThreadList[i] = new RoomThread(this);
                 m_RoomThreadList[i].Init(m_ThreadTickInterval, m_RoomAmount, m_UserPool, m_Connector);
@@ -289,7 +289,7 @@ namespace GameFramework
                 int targetIx = GetActiveRoomThreadIndex(targetRoomId, out targetIsFieldThread);
                 if (null != roomThread) {
                     if (targetIx >= 0) {
-                        //同服切场景
+                        //Same server scenario
                         roomThread.QueueAction(roomThread.RemoveUser, guid, roomid, false, (MyAction<bool, int, User>)((bool success, int sceneId, User user) => {
                             if (success) {
                                 PlayerGotoRoom(user, roomid, targetRoomId);
@@ -303,7 +303,7 @@ namespace GameFramework
                             }
                         }));
                     } else {
-                        //跨服切场景
+                        //Cross-server switching scenarios
                         roomThread.QueueAction(roomThread.RemoveUser, guid, roomid, true, (MyAction<bool, int, User>)((bool success, int sceneId, User user) => {
                             if (success) {
                                 Msg_RL_ChangeSceneResult replyBuilder = new Msg_RL_ChangeSceneResult();
@@ -505,14 +505,14 @@ namespace GameFramework
 
         // private attributes-------------------
         private const int c_FieldThreadIndexMask = 0x10000000;
-        private List<RoomThread> m_FieldRoomthreadList = new List<RoomThread>();     // 野外房间线程列表
+        private List<RoomThread> m_FieldRoomthreadList = new List<RoomThread>();     // Wild room thread list
         private Dictionary<int, HashSet<int>> m_FieldSceneRooms = new Dictionary<int, HashSet<int>>();
 
-        private uint m_ThreadAmount;                                                  // 线程数
-        private uint m_RoomAmount;                                                    // 每线程房间数
-        private RoomThread[] m_RoomThreadList;                                        // 线程列表
+        private uint m_ThreadAmount;                                                  // Threads
+        private uint m_RoomAmount;                                                    // Number of rooms per thread
+        private RoomThread[] m_RoomThreadList;                                        // thread list
 
-        private uint m_ThreadTickInterval;                                           // 线程心跳间隔
+        private uint m_ThreadTickInterval;                                           // Thread heartbeat interval
         private uint m_UserPoolSize;
         private Dispatcher m_Dispatcher;
         private UserPool m_UserPool;

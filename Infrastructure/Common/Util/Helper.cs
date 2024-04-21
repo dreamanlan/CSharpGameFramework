@@ -62,14 +62,14 @@ namespace GameFramework
         }
         public static int CalcCrc8WithCrcPoly(byte[] data)
         {
-            byte crcPoly = 0x85;//CRC多项式，当做除数
+            byte crcPoly = 0x85;//CRC polynomial as divisor
             return CalcCrc8WithCrcPoly(crcPoly, data);
         }
         public static int CalcCrc8WithCrcPoly(byte crcPoly, byte[] data)
         {
             byte[] Data = data;
-            byte CRCTempResult = 0x00;//CRC结果运算的得数，但不是最后的值
-            byte CRCResult = 0x00;//CRC结果运算最后的值
+            byte CRCTempResult = 0x00;//The result of the CRC operation, but not the final value
+            byte CRCResult = 0x00;//CRC result operation final value
 
             CRCTempResult = (byte)(Data[0] ^ crcPoly);
 

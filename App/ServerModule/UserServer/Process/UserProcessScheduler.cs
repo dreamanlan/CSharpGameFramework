@@ -13,18 +13,18 @@ using CSharpCenterClient;
 namespace GameFramework
 {
     /// <summary>
-    /// 玩家数据处理调度器，玩家数据请求将被放到并行的若干个线程里进行处理。
-    /// 有2类线程：
-    /// 1、由GetUserThread().QueueAction或DefaultUserThread.QueueAction调用发起的操作，此时执行线程无法指定。
-    /// 2、调度器内部实例化一个线程，用以进行必须在一个线程里进行的操作。（未对外提供接口，目前假定用于为1中操作需要有序的服务。）
+    /// Player data processing scheduler, player data requests will be processed in several parallel threads.
+    /// There are 2 types of threads:
+    /// 1. For operations initiated by GetUserThread().QueueAction or DefaultUserThread.QueueAction, the execution thread cannot be specified at this time.
+    /// 2. Instantiate a thread internally in the scheduler to perform operations that must be performed in a thread. (The interface is not provided to the outside world. It is currently assumed to be used for orderly services required for operations in 1.)
     /// </summary>
     /// <remarks>
-    /// 这个类采用多线程操作数据，每个UserInfo在进游戏后到离线期间，相应操作都在一个线程处理，但由于全局线程与内部线程也会用到用户数据，仍然要考虑多线程问题。
-    /// 请注意几条约定：
-    /// 1、UserInfo一旦实例化，内存不会被释放（只回收到池子里供重用，RoomInfo也是这样）。
-    /// 2、对于只操作小于等于机器字长的数据的函数，不加锁（操作本来就是原子的）。
-    /// 3、在全局线程操作用户数据时，需要将操作排队到用户线程处理后再返回全局线程处理（会麻烦一些，但这样能避免加锁）。
-    /// 4、UserInfo中的集合数据在读写时要考虑所有访问这些数据的地方的并发情况，需要加锁的加锁。
+    /// This class uses multi-threading to operate data. Each UserInfo will be processed in one thread after entering the game and going offline. However, since the global thread and internal thread will also use user data, multi-threading issues still need to be considered. .
+    /// Please note a few conventions:
+    /// 1. Once UserInfo is instantiated, the memory will not be released (it will only be recycled into the pool for reuse, the same is true for RoomInfo).
+    /// 2. For functions that only operate data less than or equal to the machine word length, no locking is performed (the operation is inherently atomic).
+    /// 3. When the global thread operates user data, the operation needs to be queued to the user thread for processing and then returned to the global thread for processing (it will be more troublesome, but this can avoid locking).
+    /// 4. When reading and writing the collection data in UserInfo, the concurrency of all places accessing the data must be considered, and locking is required.
     /// </remarks>
     internal sealed class UserProcessScheduler
     {
@@ -65,7 +65,7 @@ namespace GameFramework
             m_NodeMessageManager.DispatchMessage(isGmTool, seq, sourceHandle, destHandle, data);
         }
         //--------------------------------------------------------------------------------------------------------------------------
-        //供外部直接调用的方法，需要保证多线程安全。
+        //Methods for direct external calls need to ensure multi-thread safety.
         //--------------------------------------------------------------------------------------------------------------------------
         internal NicknameSystem NicknameSystem
         {
@@ -85,19 +85,19 @@ namespace GameFramework
         {
             return m_AccountSystem.FindAccountById(accountId);
         }
-        //当前在线玩家中根据Nickname查找UserGuid
+        //Find UserGuid based on Nickname among current online players
         internal ulong GetGuidByNickname(string nickname)
         {
             ulong guid = 0;
             m_GuidByNickname.TryGetValue(nickname, out guid);
             return guid;
         }
-        //所有玩家根据Nickname查找UserGuid
+        //All players find UserGuid based on Nickname
         internal ulong FindUserGuidByNickname(string nickname)
         {
             return m_NicknameSystem.FindUserGuidByNickname(nickname);
         }
-        //所有玩家根据Nickname模糊查找UserGuid
+        //All players fuzzy search UserGuid based on Nickname
         internal List<ulong> FindUserGuidByFuzzyNickname(string fuzzyName)
         {
             return m_NicknameSystem.FindUserGuidByFuzzyNickname(fuzzyName);
@@ -141,10 +141,10 @@ namespace GameFramework
         internal void DoLastSaveUserData()
         {
             m_LastSaveFinished = false;
-            //服务器关闭前的最后一次存储操作
+            //The last storage operation before the server was shut down
             var ds_thread = UserServer.Instance.DataCacheThread;
             if (ds_thread.DataStoreAvailable == true) {
-                //1.通知客户端服务器关闭        
+                //1. Notify the client that the server is shut down
                 foreach (var guidPair in m_ActiveUserGuids) {
                     UserInfo user = GetUserInfo(guidPair.Key);
                     if (user != null) {
@@ -153,10 +153,10 @@ namespace GameFramework
                     }
                 }
                 LogSys.Log(ServerLogType.MONITOR, "DoLastSaveUserData Step_1: Notice game client ServerShutdown. UserCount:{0}", m_ActiveUserGuids.Count);
-                //2.等待10s
+                //2. Wait 10s
                 Thread.Sleep(10000);
                 LogSys.Log(ServerLogType.MONITOR, "DoLastSaveUserData Step_2: Wait for 10s.");
-                //3.关闭Node
+                //3. Close Node
                 CenterHubApi.SendCommandByName(UserServerConfig.WorldId, "NodeJs1", "QuitNodeJs");
                 CenterHubApi.SendCommandByName(UserServerConfig.WorldId, "NodeJs2", "QuitNodeJs");
                 CenterHubApi.SendCommandByName(UserServerConfig.WorldId, "NodeJs3", "QuitNodeJs");
@@ -181,7 +181,7 @@ namespace GameFramework
                 CenterHubApi.SendCommandByName(UserServerConfig.WorldId, "GmServer", "QuitGmServer");
                 CenterHubApi.SendCommandByName(UserServerConfig.WorldId, "ServerBridge", "QuitServerBridge");
                 LogSys.Log(ServerLogType.MONITOR, "DoLastSaveUserData Step_3: Close Servers.");
-                //4.保存玩家数据
+                //4. Save player data
                 foreach (var guidPair in m_ActiveUserGuids) {
                     UserInfo user = GetUserInfo(guidPair.Key);
                     if (user != null) {
@@ -200,15 +200,18 @@ namespace GameFramework
                 return m_LastSaveFinished;
             }
         }
-        //--------------------------------------------------------------------------------------------------------------------------
-        //供GM消息调用的方法，实际执行线程是在线程池的某个线程里执行，实现时需要注意并发问题，需要加锁的加锁。
-        //逻辑功能不要直接调用此类处理（会有gm权限判断，正式服会导致功能失效），应该调用逻辑上一个功能相同的方法（通常以Do开头命名）。
-        //--------------------------------------------------------------------------------------------------------------------------
+        //------------------------------------------------ -------------------------------------------------- --------------------------
+        //The method called by GM messages. The actual execution thread is executed in a thread in the thread pool. When implementing,
+        //you need to pay attention to concurrency issues and locks.
+        //Logical functions should not directly call this type of processing (it will be judged by gm permissions, and the official
+        //server will cause the function to fail). You should call a logical method with the same function (usually named starting with Do).
+        //------------------------------------------------ -------------------------------------------------- --------------------------
 
-        //--------------------------------------------------------------------------------------------------------------------------
-        //供外部通过QueueAction调用的方法，实际执行线程是在线程池的某个线程里执行，实现时需要注意并发问题，需要加锁的加锁。
-        //--------------------------------------------------------------------------------------------------------------------------
-        //登录流程相关方法
+        //------------------------------------------------ -------------------------------------------------- --------------------------
+        //For external calls through QueueAction, the actual execution thread is executed in a thread in the thread pool.
+        //When implementing, you need to pay attention to concurrency issues and locks.
+        //------------------------------------------------ -------------------------------------------------- --------------------------
+        //Login process related methods
         internal void DoAccountLogin(string accountId, string password, string clientInfo, string nodeName)
         {
             AccountInfo accountInfo = m_AccountSystem.FindAccountById(accountId);
@@ -243,7 +246,7 @@ namespace GameFramework
         {
             AccountInfo accountInfo = m_AccountSystem.FindAccountById(accountId);
             if (accountInfo == null) {
-                //当前accountId不在线
+                //The current accountId is not online
                 accountInfo = new AccountInfo();
                 accountInfo.AccountId = accountId;
                 accountInfo.Password = password;
@@ -269,9 +272,9 @@ namespace GameFramework
                     NodeMessageDispatcher.SendNodeMessage(nodeName, replyMsg);
                 }
             } else {
-                //当前账号在线
+                //The current accountId is online
                 if (accountInfo.CurrentState == AccountState.Dropped || clientInfo == accountInfo.ClientInfo) {
-                    //账号处在离线状态或同一设备重复登录，登录成功
+                    //The account is offline or the same device is logged in repeatedly, and the login is successful.
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_5a: Account is dropped. Login SUCCESS. AccountId:{0}", accountId);
                     accountInfo.AccountId = accountId;
                     accountInfo.Password = password;
@@ -289,7 +292,7 @@ namespace GameFramework
                     replyMsg.m_ProtoData = protoMsg;
                     NodeMessageDispatcher.SendNodeMessage(nodeName, replyMsg);
                 } else {
-                    //账号在别的设备上登录，登录失败
+                    //The account was logged in on another device, but the login failed.
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_5b: Account is online. Login FAILED. AccountId:{0}", accountId);
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.AccountLoginResult, accountId);
                     GameFrameworkMessage.AccountLoginResult protoMsg = new GameFrameworkMessage.AccountLoginResult();
@@ -327,7 +330,7 @@ namespace GameFramework
                         }
                     }
                     if (accountInfo.IsBanned) {
-                        //账号被封停
+                        //Account has been suspended
                         protoMsg.m_Result = AccountLoginResult.AccountLoginResultEnum.Banned;
                     } else {
                         accountInfo.CurrentState = AccountState.Online;
@@ -338,7 +341,7 @@ namespace GameFramework
                         protoMsg.m_UserGuid = accountInfo.UserGuid;                        
                     }
                 } else if (ret.ErrorNo == Msg_DL_LoadResult.ErrorNoEnum.NotFound) {
-                    //账号首次进入游戏
+                    //Account enters the game for the first time
                     accountInfo.UserGuid = UserServer.Instance.GlobalProcessThread.GenerateUserGuid();
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_4b: Load account NotFound . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
                     accountInfo.CurrentState = AccountState.Online;
@@ -351,7 +354,7 @@ namespace GameFramework
                     //norm log    
                     accountInfo.LastLoginTime = TimeUtility.CurTimestamp;
                 } else {
-                    //数据加载失败       
+                    //Data loading failed
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Yellow, "LoginStep_4c: Load account FAILED . AccountId:{0}, LogicServerId:{1}, AccountId:{2}", accountId, 0, accountId);
                 }
             } catch (Exception ex) {
@@ -370,20 +373,20 @@ namespace GameFramework
         {
             AccountInfo accountInfo = m_AccountSystem.FindAccountById(accountId);
             if (accountInfo != null) {
-                //检查当前账号是否有角色在线          
+                //Check whether there is a character online in the current account
                 bool isAccountKickable = true;
                 UserInfo ui = GetUserInfo(accountInfo.UserGuid);
                 if (ui != null) {
                     isAccountKickable = false;
                 }
                 if (isAccountKickable) {
-                    //踢掉账号
+                    //Kick account
                     accountInfo.CurrentState = AccountState.Offline;
                     m_AccountSystem.RemoveAccountById(accountInfo.AccountId);
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LogoutStep: Account LOGOUT directly. AccountId:{0}",
                       accountInfo.AccountId);
                 } else {
-                    //AccountInfo设置为离线状态
+                    //AccountInfo is set to offline status
                     accountInfo.CurrentState = AccountState.Dropped;
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LogoutStep: Account dropped. AccountId:{0}",
                       accountInfo.AccountId);
@@ -412,7 +415,7 @@ namespace GameFramework
                 UserInfo user = GetUserInfo(userGuid);
                 if (null != user) {
                     if (user.CurrentState == UserState.DropOrOffline) {
-                        //用户处在下线过程中，需要等待lobby离线流程完成
+                        //The user is in the offline process and needs to wait for the lobby offline process to be completed.
                         NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, accountId, user.Guid);
                         GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();
                         protoData.Result = RoleEnterResult.RoleEnterResultEnum.Wait;
@@ -426,14 +429,14 @@ namespace GameFramework
                             DoUserRelogin(user);
                             LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_8a: Role Reenter SUCCESS. AccountId:{0}, UserGuid:{1}, Nickname:{2}",
                                 accountId, userGuid, user.Nickname);
-                            //回复客户端
+                            //Reply to client
                             NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, user.AccountId, user.Guid);
                             GameFrameworkMessage.RoleEnterResult protoData = CreateRoleEnterResultMsg(user);
                             protoData.Result = RoleEnterResult.RoleEnterResultEnum.Reconnect;
                             roleEnterResultMsg.m_ProtoData = protoData;
                             NodeMessageDispatcher.SendNodeMessage(accountInfo.NodeName, roleEnterResultMsg);
                         } else {
-                            //角色AccountId与账号AccountId不匹配,进入游戏失败
+                            //The character AccountId does not match the account AccountId, and entry into the game fails.
                             NodeMessage roleEnterResultMsg = new NodeMessage(LobbyMessageDefine.RoleEnterResult, accountId, user.Guid);
                             GameFrameworkMessage.RoleEnterResult protoData = new GameFrameworkMessage.RoleEnterResult();
                             protoData.Result = RoleEnterResult.RoleEnterResultEnum.UnknownError;
@@ -461,7 +464,7 @@ namespace GameFramework
             }
             ulong userGuid = 0;// accountInfo.UserGuid;
             if (Msg_DL_LoadResult.ErrorNoEnum.Success == ret.ErrorNo) {
-                #region 由数据库数据构建UserInfo
+                #region Build UserInfo from database data
                 UserInfo ui = NewUserInfo();
                 foreach (var result in ret.Results) {
                     object _msg;
@@ -502,7 +505,7 @@ namespace GameFramework
                         }
                     }
                 }
-                //基础数据
+                //basic data
                 #endregion
                 ui.NodeName = accountInfo.NodeName;
                 this.DoUserLogin(ui);
@@ -547,10 +550,10 @@ namespace GameFramework
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.ChangeNameResult, ui.AccountId);
                     GameFrameworkMessage.ChangeNameResult protoMsg = new GameFrameworkMessage.ChangeNameResult();
                     if (ret == NicknameSystem.CheckNicknameResult.AlreadyUsed) {
-                        //昵称已经被使用
+                        //Nickname is already taken
                         protoMsg.m_Result = ChangeNameResult.ChangeNameResultEnum.NicknameError;
                     } else {
-                        //昵称不合法
+                        //Nickname is illegal
                         protoMsg.m_Result = ChangeNameResult.ChangeNameResultEnum.UnknownError;
                     }
                     replyMsg.m_ProtoData = protoMsg;
@@ -564,7 +567,7 @@ namespace GameFramework
             user.IsDisconnected = false;
             user.LeftLife = UserInfo.LifeTimeOfNoHeartbeat;
             user.LastSaveTime = TimeUtility.GetLocalMilliseconds();
-            //在这里生成游戏中要用的key
+            //Generate the key to be used in the game here
             if (user.Key == 0)
                 user.Key = GenerateKey();
             user.CurrentState = UserState.Online;
@@ -572,7 +575,8 @@ namespace GameFramework
             UserInfo oldInfo;
             if (m_UserInfos.TryGetValue(user.Guid, out oldInfo)) {
                 if (oldInfo != user) {
-                    //这里需要回收旧玩家数据（复位状态等），保证引用旧数据的地方能正确处理。
+                    //Here you need to recycle old player data (reset status, etc.) to ensure that places
+                    //that reference old data can be processed correctly.
                     FreeUserThread(oldInfo);
                     RecycleUserInfo(oldInfo);
                 }
@@ -610,7 +614,7 @@ namespace GameFramework
             UserInfo user = GetUserInfo(guid);
             if (user != null) {
                 user.IsDisconnected = true;
-                if (user.CurrentState == UserState.Room || user.CurrentState == UserState.DropOrOffline || forceLogoff) {//仅心跳超时(5分钟)或已经是离线状态才走离线流程
+                if (user.CurrentState == UserState.Room || user.CurrentState == UserState.DropOrOffline || forceLogoff) {//Only go offline if the heartbeat times out (5 minutes) or is already offline.
                     QueueingThread queueingThread = UserServer.Instance.QueueingThread;
 
                     double onlinetimes = TimeUtility.CurTimestamp - user.LastLoginTime;
@@ -655,7 +659,7 @@ namespace GameFramework
             m_NicknameSystem.InitNicknameData(nicknameList);
         }
         //--------------------------------------------------------------------------------------------------------------------------
-        //这些方法是一些工具方法，后面需要重新考虑并发相关的处理。
+        //These methods are tool methods, and concurrency-related processing needs to be reconsidered later.
         //--------------------------------------------------------------------------------------------------------------------------
         private UserInfo NewUserInfo()
         {
@@ -679,7 +683,7 @@ namespace GameFramework
         }
         private void AllocUserThread(UserInfo userInfo)
         {
-            //分配到当前人数最少的线程, 均匀分布
+            //Assigned to the thread with the smallest current number of people, evenly distributed
             int minIndex = 0;
             int minUserCount = m_UserThreadUserCounts[minIndex];
             for (int ix = 1; ix < m_UserThreadUserCounts.Length; ++ix) {
@@ -727,7 +731,7 @@ namespace GameFramework
             ui.Level = 1;
             ui.CreateTime = DateTime.Now;
             ui.SceneId = 200;
-            //加4个队员
+            //Add 4 team members
             for (int id = 2; id <= 5; ++id) {
                 MemberInfo member = new MemberInfo();
                 member.MemberGuid = UserServer.Instance.GlobalProcessThread.GenerateMemberGuid();
@@ -762,7 +766,7 @@ namespace GameFramework
             AccountInfo accountInfo = m_AccountSystem.FindAccountById(accountId);
             var ds_thread = UserServer.Instance.DataCacheThread;
             if (accountInfo != null) {
-                //检查昵称是否可用
+                //Check if nickname is available
                 NicknameSystem.CheckNicknameResult ret = m_NicknameSystem.CheckNickname(accountId, nickname);
                 if (ret == NicknameSystem.CheckNicknameResult.Success) {
                     accountInfo.Nickname = nickname;
@@ -779,7 +783,7 @@ namespace GameFramework
                         ds_thread.SaveCreateUser(accountInfo, nickname, ui.Guid);
                         ds_thread.SaveUser(ui, ui.NextUserSaveCount);
                     }
-                    //游戏角色创建成功，直接进入游戏
+                    //The game character is created successfully and enters the game directly.
                     ui.NodeName = accountInfo.NodeName;
                     this.DoUserLogin(ui);
                     LogSys.Log(ServerLogType.INFO, ConsoleColor.Green, "LoginStep_8c: New role enter SUCCESS. AccountId:{0}, UserGuid:{1}, Nickname:{2}",
@@ -795,10 +799,10 @@ namespace GameFramework
                     NodeMessage replyMsg = new NodeMessage(LobbyMessageDefine.ChangeNameResult, accountId);
                     GameFrameworkMessage.ChangeNameResult protoMsg = new GameFrameworkMessage.ChangeNameResult();
                     if (ret == NicknameSystem.CheckNicknameResult.AlreadyUsed) {
-                        //昵称已经被使用
+                        //Nickname is already taken
                         protoMsg.m_Result = ChangeNameResult.ChangeNameResultEnum.NicknameError;
                     } else {
-                        //昵称不合法
+                        //Nickname is illegal
                         protoMsg.m_Result = ChangeNameResult.ChangeNameResultEnum.UnknownError;
                     }
                     replyMsg.m_ProtoData = protoMsg;
@@ -808,7 +812,7 @@ namespace GameFramework
         }
 
         //--------------------------------------------------------------------------------------------------------------------------
-        //后面的方法都是在内部线程执行的方法，不涉及多线程操作，不用加锁，串行执行。
+        //The following methods are all executed in internal threads, do not involve multi-threaded operations, do not require locking, and are executed serially.
         //--------------------------------------------------------------------------------------------------------------------------
         private void OnTick()
         {
@@ -859,12 +863,12 @@ namespace GameFramework
                     if (user.CurrentUserSaveCount == DataCacheThread.UltimateSaveCount) {
                         userSaveDoneCount++;
                     }
-                    //定期存储UserInfo
+                    //Store UserInfo periodically
                     if (ds_thread.DataStoreAvailable) {
                         if (user.CurrentState != UserState.DropOrOffline && curTime - user.LastSaveTime > UserServerConfig.UserDSSaveInterval && user.NextUserSaveCount > 0) {
                             this.GetUserThread(user.Guid).QueueAction(ds_thread.SaveUser, user, user.NextUserSaveCount);
                             user.NextUserSaveCount++;
-                            //随机扰动
+                            //random disturbance
                             int random = m_Random.Next(c_UserSaveRandom * 2);
                             if (random > c_UserSaveRandom) {
                                 random = c_UserSaveRandom - random;
@@ -908,7 +912,7 @@ namespace GameFramework
                     if (!ds_thread.DataStoreAvailable || user.CurrentUserSaveCount == DataCacheThread.UltimateSaveCount) {
                         // norm log
                         int onlinetimes = (int)(TimeUtility.CurTimestamp - user.LastLoginTime);
-                        //user所属的AccountInfo下线
+                        //The AccountInfo to which user belongs is offline
                         AccountInfo accountInfo = m_AccountSystem.FindAccountById(user.AccountId);
                         if (accountInfo != null) {
                             m_AccountSystem.RemoveAccountById(accountInfo.AccountId);
@@ -972,7 +976,7 @@ namespace GameFramework
         private List<ulong> m_WaitRecycleUsers = new List<ulong>();
 
         private Random m_Random = new Random();
-        private const int c_UserSaveRandom = 15000;   //15s,随机扰动UserInfo的存储时间间隔,LobbyConfig.UserDSSaveInterval +- 15s 
+        private const int c_UserSaveRandom = 15000;   //15s, random perturbation of UserInfo storage time interval, LobbyConfig.UserDSSaveInterval +- 15s
         private MyServerThread m_Thread = null;
 
         //UserThreadManager
@@ -985,10 +989,11 @@ namespace GameFramework
         private long m_LastTickTime = 0;
         private long m_LastLogTime = 0;
         private DateTime m_BaseNormLogTime = new DateTime(2015, 1, 1, 0, 0, 0);
-        private bool m_IsLastSave = false;          //玩家数据最后存储是否正在执行
-        private bool m_LastSaveFinished = false;    //玩家数据最后存储完成状态    
+        private bool m_IsLastSave = false;          //Is the last storage of player data being executed?
+        private bool m_LastSaveFinished = false;    //Player data final storage completion status
 
-        //全局数据系统，因为与注册登录流程密切相关，故在UserProcessScheduler中实现
+        //The global data system is implemented in UserProcessScheduler because it is closely related to
+        //the registration and login process.
         private NicknameSystem m_NicknameSystem = new NicknameSystem();
     }
 }

@@ -1,7 +1,7 @@
 //
 // System.Collections.Generic.MyDictionary
 //
-// 修改版本以适应ios编译
+// Modify the version to adapt to ios compilation
 
 using System;
 using System.Collections;
