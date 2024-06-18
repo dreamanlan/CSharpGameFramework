@@ -12,9 +12,9 @@ namespace GameFramework.GmCommands
     /// (This system should be removed from the client when publishing.)
     /// 2. The plot script and the Gm plot script are not a system and have nothing to do with each other.
     /// </remarks>
-    internal sealed class ClientGmStorySystem
+    public sealed class ClientGmStorySystem
     {
-        internal void Init()
+        public void Init()
         {
             //register GM commands
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GM, "enablecalculatorlog", "enablecalculatorlog command", new StoryCommandFactoryHelper<EnableCalculatorLogCommand>());
@@ -30,18 +30,18 @@ namespace GameFramework.GmCommands
 
         }
 
-        internal int ActiveStoryCount
+        public int ActiveStoryCount
         {
             get
             {
                 return m_StoryLogicInfos.Count;
             }
         }
-        internal StrBoxedValueDict GlobalVariables
+        public StrBoxedValueDict GlobalVariables
         {
             get { return m_GlobalVariables; }
         }
-        internal void Reset()
+        public void Reset()
         {
             m_GlobalVariables.Clear();
             int count = m_StoryLogicInfos.Count;
@@ -53,23 +53,23 @@ namespace GameFramework.GmCommands
             }
             m_StoryLogicInfos.Clear();
         }
-        internal void LoadStory(string file)
+        public void LoadStory(string file)
         {
             m_StoryInstancePool.Clear();
             m_ConfigManager.Clear();
             m_ConfigManager.LoadStory(file, 0, string.Empty);
         }
-        internal void LoadStoryText(byte[] bytes)
+        public void LoadStoryText(byte[] bytes)
         {
             m_StoryInstancePool.Clear();
             m_ConfigManager.Clear();
             m_ConfigManager.LoadStoryText(string.Empty, bytes, 0, string.Empty);
         }
-        internal StoryInstance GetStory(string storyId)
+        public StoryInstance GetStory(string storyId)
         {
             return GetStoryInstance(storyId);
         }
-        internal void StartStory(string storyId)
+        public void StartStory(string storyId)
         {
             StoryInstance inst = NewStoryInstance(storyId);
             if (null != inst) {
@@ -82,7 +82,7 @@ namespace GameFramework.GmCommands
                 LogSystem.Info("StartStory {0}", storyId);
             }
         }
-        internal void StopStory(string storyId)
+        public void StopStory(string storyId)
         {
             int count = m_StoryLogicInfos.Count;
             for (int index = count - 1; index >= 0; --index) {
@@ -92,7 +92,7 @@ namespace GameFramework.GmCommands
                 }
             }
         }
-        internal void Tick()
+        public void Tick()
         {
             long time = TimeUtility.GetLocalMilliseconds();
             int ct = m_StoryLogicInfos.Count;
@@ -104,7 +104,7 @@ namespace GameFramework.GmCommands
                 }
             }
         }
-        internal void SendMessage(string msgId, BoxedValueList args)
+        public void SendMessage(string msgId, BoxedValueList args)
         {
             int ct = m_StoryLogicInfos.Count;
             for (int ix = ct - 1; ix >= 0; --ix) {
@@ -153,7 +153,7 @@ namespace GameFramework.GmCommands
 
         private StoryConfigManager m_ConfigManager = StoryConfigManager.NewInstance();
 
-        internal static ClientGmStorySystem Instance
+        public static ClientGmStorySystem Instance
         {
             get
             {

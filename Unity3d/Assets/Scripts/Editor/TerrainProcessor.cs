@@ -332,6 +332,7 @@ internal static class TerrainEditUtility
             }
             var calc = new DslExpression.DslCalculator();
             calc.Init();
+            UnityEditorApi.Register(calc);
             calc.Register("getheight", "getheight(x,y) api", new DslExpression.ExpressionFactoryHelper<GetHeightExp>());
             calc.Register("getalphamap", "getalphamap(x,y,ix) api", new DslExpression.ExpressionFactoryHelper<GetAlphamapExp>());
             calc.Register("getalpha", "getalpha(ix) api", new DslExpression.ExpressionFactoryHelper<GetAlphaExp>());
@@ -346,19 +347,19 @@ internal static class TerrainEditUtility
             calc.Register("setcache", "setcache(key,x,y,val) api", new DslExpression.ExpressionFactoryHelper<SetCacheExp>());
             calc.Register("addtree", "addtree(ix,x,y,z,f_rot,w_scale,h_scale,u_color,u_lightmap) api", new DslExpression.ExpressionFactoryHelper<AddTreeExp>());
             calc.Register("addobject", "addobject(x,y,z,prefab_str) api", new DslExpression.ExpressionFactoryHelper<AddObjectExp>());
-            calc.SetGlobalVariable("samplers", CalculatorValue.FromObject(samplers));
-            calc.SetGlobalVariable("caches", CalculatorValue.FromObject(caches));
-            calc.SetGlobalVariable("trees", CalculatorValue.FromObject(trees));
-            calc.SetGlobalVariable("objects", CalculatorValue.FromObject(objects));
+            calc.SetGlobalVariable("samplers", BoxedValue.FromObject(samplers));
+            calc.SetGlobalVariable("caches", BoxedValue.FromObject(caches));
+            calc.SetGlobalVariable("trees", BoxedValue.FromObject(trees));
+            calc.SetGlobalVariable("objects", BoxedValue.FromObject(objects));
             calc.SetGlobalVariable("heightscalex", terrainData.heightmapScale.x);
             calc.SetGlobalVariable("heightscaley", terrainData.heightmapScale.y);
             calc.SetGlobalVariable("heightscalez", terrainData.heightmapScale.z);
-            calc.SetGlobalVariable("heights", CalculatorValue.FromObject(datas));
-            calc.SetGlobalVariable("alphamaps", CalculatorValue.FromObject(alphamaps));
-            calc.SetGlobalVariable("alphanum", CalculatorValue.FromObject(alphanum));
-            calc.SetGlobalVariable("details", CalculatorValue.FromObject(details));
+            calc.SetGlobalVariable("heights", BoxedValue.FromObject(datas));
+            calc.SetGlobalVariable("alphamaps", BoxedValue.FromObject(alphamaps));
+            calc.SetGlobalVariable("alphanum", BoxedValue.FromObject(alphanum));
+            calc.SetGlobalVariable("details", BoxedValue.FromObject(details));
             calc.SetGlobalVariable("height", 0.0f);
-            calc.SetGlobalVariable("alphas", CalculatorValue.FromObject(new float[alphanum]));
+            calc.SetGlobalVariable("alphas", BoxedValue.FromObject(new float[alphanum]));
             calc.SetGlobalVariable("detail", 0);
             bool resetTrees = false;
             bool canContinue = true;
@@ -853,7 +854,7 @@ internal static class TerrainEditUtility
 
 internal class GetHeightExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         float r = 0;
         if (operands.Count >= 2) {
@@ -867,7 +868,7 @@ internal class GetHeightExp : DslExpression.SimpleExpressionBase
 }
 internal class GetAlphamapExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         float r = 0;
         if (operands.Count >= 3) {
@@ -882,7 +883,7 @@ internal class GetAlphamapExp : DslExpression.SimpleExpressionBase
 }
 internal class GetAlphaExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         float r = 0;
         if (operands.Count >= 1) {
@@ -895,7 +896,7 @@ internal class GetAlphaExp : DslExpression.SimpleExpressionBase
 }
 internal class SetAlphaExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         double r = 0;
         if (operands.Count >= 2) {
@@ -910,7 +911,7 @@ internal class SetAlphaExp : DslExpression.SimpleExpressionBase
 }
 internal class ClearAlphaExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         int r = 0;
         var datas = Calculator.GetGlobalVariable("alphas").As<float[]>();
@@ -924,7 +925,7 @@ internal class ClearAlphaExp : DslExpression.SimpleExpressionBase
 }
 internal class GetDetailExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
@@ -942,7 +943,7 @@ internal class GetDetailExp : DslExpression.SimpleExpressionBase
 }
 internal class SampleRedExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
@@ -964,7 +965,7 @@ internal class SampleRedExp : DslExpression.SimpleExpressionBase
 }
 internal class SampleGreenExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
@@ -986,7 +987,7 @@ internal class SampleGreenExp : DslExpression.SimpleExpressionBase
 }
 internal class SampleBlueExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
@@ -1008,7 +1009,7 @@ internal class SampleBlueExp : DslExpression.SimpleExpressionBase
 }
 internal class SampleAlphaExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
@@ -1030,7 +1031,7 @@ internal class SampleAlphaExp : DslExpression.SimpleExpressionBase
 }
 internal class GetCacheExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         int r = 0;
         if (operands.Count >= 3) {
@@ -1052,7 +1053,7 @@ internal class GetCacheExp : DslExpression.SimpleExpressionBase
 }
 internal class SetCacheExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         long r = 0;
         if (operands.Count >= 4) {
@@ -1076,7 +1077,7 @@ internal class SetCacheExp : DslExpression.SimpleExpressionBase
 }
 internal class AddTreeExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         long r = 0;
         if (operands.Count >= 9) {
@@ -1102,7 +1103,7 @@ internal class AddTreeExp : DslExpression.SimpleExpressionBase
 }
 internal class AddObjectExp : DslExpression.SimpleExpressionBase
 {
-    protected override CalculatorValue OnCalc(IList<CalculatorValue> operands)
+    protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
         string r = string.Empty;
         if (operands.Count >= 4) {

@@ -23,7 +23,8 @@ namespace StorySystem
     /// </summary>
     public class StoryFunctionManager
     {
-        public const int c_MaxFunctionGroupNum = (int)StoryFunctionGroupDefine.NUM;
+        public delegate bool CreateFailbackDelegation(Dsl.ISyntaxComponent comp, out IStoryFunction expression);
+        public CreateFailbackDelegation OnCreateFailback;
         public void RegisterFunctionFactory(string name, string doc, IStoryFunctionFactory factory)
         {
             RegisterFunctionFactory(name, doc, factory, false);
@@ -261,7 +262,7 @@ namespace StorySystem
                                     throw new Exception(msg, ex);
                                 }
                             }
-                            else {
+                            else if (null == OnCreateFailback || !OnCreateFailback(param, out ret)) {
 #if DEBUG
                                 string err = string.Format("[LoadStory] value:{0}[{1}] line:{2} failed.", id, param.ToScriptString(false), param.GetLine());
                                 GameFramework.LogSystem.Error("{0}", err);
@@ -296,6 +297,7 @@ namespace StorySystem
                 m_Substitutes.Clear();
             }
         }
+
         private IStoryFunctionFactory GetFactory(string id)
         {
             IStoryFunctionFactory handler;
@@ -328,6 +330,8 @@ namespace StorySystem
         private Dictionary<string, IStoryFunctionFactory>[] m_GroupedFunctionFactories = new Dictionary<string, IStoryFunctionFactory>[c_MaxFunctionGroupNum];
         private SortedList<string, string>[] m_GroupedFunctionDocs = new SortedList<string, string>[c_MaxFunctionGroupNum];
         private Dictionary<string, string> m_Substitutes = new Dictionary<string, string>();
+
+        public const int c_MaxFunctionGroupNum = (int)StoryFunctionGroupDefine.NUM;
         public static ulong ThreadFunctionGroupsMask
         {
             get { return s_ThreadFunctionGroupsMask; }

@@ -90,3 +90,12 @@ The following packages were updated:
   com.unity.test-framework from version 1.1.31 to 1.1.33
   com.unity.timeline from version 1.6.4 to 1.7.6
   com.unity.toolchain.win-x86_64-linux-x86_64 from version 2.0.3 to 2.0.4
+
+=== Tue Jun 18 20:26:01 2024
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.ide.rider from version 3.0.25 to 3.0.27
+  com.unity.ide.visualstudio from version 2.0.21 to 2.0.22
