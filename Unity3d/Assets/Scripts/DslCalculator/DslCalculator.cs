@@ -130,6 +130,10 @@ namespace DslExpression
         {
             get { return m_Calculator; }
         }
+        protected internal Dsl.ISyntaxComponent SyntaxComponent
+        {
+            get { return m_Dsl; }
+        }
 
         private DslCalculator m_Calculator = null;
         private Dsl.ISyntaxComponent m_Dsl = null;
@@ -622,6 +626,7 @@ namespace DslExpression
             }
             return false;
         }
+        internal string FuncName { get { return m_Func; } }
         private string m_Func = string.Empty;
         private List<IExpression> m_Args = new List<IExpression>();
     }
@@ -7200,6 +7205,15 @@ namespace DslExpression
                 }
             }
         }
+        public void CheckFuncXrefs()
+        {
+            foreach(var func in m_FuncCalls) {
+                if (!m_Funcs.ContainsKey(func.FuncName)) {
+                    //error
+                    Log("DslCalculator error, unknown func '{0}', {1} line {2}", func.FuncName, func.SyntaxComponent.ToScriptString(false), func.SyntaxComponent.GetLine());
+                }
+            }
+        }
         public List<BoxedValue> NewCalculatorValueList()
         {
             return m_Pool.Alloc();
@@ -7249,6 +7263,10 @@ namespace DslExpression
             FuncInfo funcInfo;
             if (m_Funcs.TryGetValue(func, out funcInfo)) {
                 ret = Calc<object>(args, null, funcInfo);
+            }
+            else {
+                //error
+                Log("DslCalculator error, unknown func {0}", func);
             }
             return ret;
         }
@@ -7600,8 +7618,17 @@ namespace DslExpression
             }
             IExpression ret = Create(comp.GetId());
             if (null == ret) {
-                if (null != funcData && !funcData.IsHighOrder) {
-                    ret = new FunctionCall();
+                // We enable the function to be called before it is defined, so failover is done first
+                if (null == OnLoadFailback || !OnLoadFailback(comp, this, out ret)) {
+                    if (null != funcData && !funcData.IsHighOrder) {
+                        var fc = new FunctionCall();
+                        m_FuncCalls.Add(fc);
+                        ret = fc;
+                    }
+                    else {
+                        //error
+                        Log("DslCalculator error, {0} line {1}", comp.ToScriptString(false), comp.GetLine());
+                    }
                 }
             }
             if (null != ret) {
@@ -7627,10 +7654,6 @@ namespace DslExpression
                     //error
                     Log("DslCalculator error, {0} line {1}", comp.ToScriptString(false), comp.GetLine());
                 }
-            }
-            else if (null == OnLoadFailback || !OnLoadFailback(comp, this, out ret)) {
-                //error
-                Log("DslCalculator error, {0} line {1}", comp.ToScriptString(false), comp.GetLine());
             }
             return ret;
         }
@@ -7839,7 +7862,8 @@ namespace DslExpression
         private Dictionary<string, IExpressionFactory> m_ApiFactories = new Dictionary<string, IExpressionFactory>();
         private SortedList<string, string> m_ApiDocs = new SortedList<string, string>();
         private BoxedValueListPool m_Pool = new BoxedValueListPool(16);
-
+        private List<FunctionCall> m_FuncCalls = new List<FunctionCall>();
+		
         internal static int CheckStartInterval
         {
             get { return s_CheckStartInterval; }
