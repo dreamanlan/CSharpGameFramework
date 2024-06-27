@@ -19,6 +19,7 @@ namespace StorySystem
             SubClassType val = new SubClassType();
             val.m_Params = m_Params.Clone();
             val.m_Result = m_Result.Clone();
+            val.CopyFields((SubClassType)this);
             return val;
         }
         public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
@@ -42,6 +43,7 @@ namespace StorySystem
                 return m_Result.Value;
             }
         }
+        protected virtual void CopyFields(SubClassType other) { }
         protected abstract void UpdateValue(StoryInstance instance, ValueParamType _params, StoryValueResult result);
         private void TryUpdateValue(StoryInstance instance)
         {
@@ -79,6 +81,7 @@ namespace StorySystem
             cmd.m_Comments = m_Comments;
             cmd.m_Config = m_Config;
             cmd.m_Id = m_Id;
+            cmd.CopyFields((SubClassType)this);
             return cmd;
         }
         public IStoryCommand PrologueCommand
@@ -143,6 +146,7 @@ namespace StorySystem
             }
             return false;
         }
+        protected virtual void CopyFields(SubClassType other) { }
         protected virtual void ResetState() { }
         protected virtual bool ExecCommand(StoryInstance instance, ValueParamType _params, long delta)
         {
