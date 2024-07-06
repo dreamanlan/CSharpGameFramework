@@ -355,6 +355,9 @@ namespace GameFramework
             else if (obj is T) {
                 return (T)obj;
             }
+            else if (typeof(T) == typeof(BoxedValue)) {
+                return GenericValueConverter.From<T>(BoxedValue.FromObject(obj));
+            }
             else {
                 try {
                     return (T)Convert.ChangeType(obj, typeof(T));
@@ -377,6 +380,9 @@ namespace GameFramework
             }
             else if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
                 return obj;
+            }
+            else if (t == typeof(BoxedValue)) {
+                return BoxedValue.FromObject(obj);
             }
             else {
                 try {

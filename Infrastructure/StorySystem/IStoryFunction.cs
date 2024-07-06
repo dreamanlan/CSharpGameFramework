@@ -437,10 +437,21 @@ namespace StorySystem
             proxy.SetValue(val);
             m_Proxy = proxy;
         }
+        private void SetValue(BoxedValue val)
+        {
+            StoryConstValue proxy = new StoryConstValue();
+            proxy.SetValue(val);
+            m_Proxy = proxy;
+        }
         private void CalcInitValue(Dsl.ISyntaxComponent param)
         {
             if (IsDslSyntax) {
-                SetValue((T)param);
+                if (typeof(T) == typeof(BoxedValue)) {
+                    SetValue(BoxedValue.FromObject(param));
+                }
+                else {
+                    SetValue((T)param);
+                }
             }
             else {
                 IStoryFunction val = StoryFunctionManager.Instance.CreateFunction(param);
