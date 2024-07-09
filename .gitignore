@@ -87,6 +87,7 @@ Tools/TableReaderGenerator/*.suo
 Tools/TableReaderGenerator/obj
 Tools/TableReaderGenerator/*.user
 Test
+Unity3d/.vs
 Unity3d/*.csproj
 Unity3d/*.sln
 Unity3d/*.suo
@@ -96,6 +97,7 @@ Unity3d/Library
 Unity3d/Game_Data
 Unity3d/obj
 Unity3d/Temp
+Unity3d/Logs
 Unity3d/Assets/Plugins/*.mdb
 Unity3d/Assets/Plugins/*.pdb
 *.ide-wal
