@@ -1,0 +1,15 @@
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net472\DotnetStoryScript_dotnet_framework.csproj.AssemblyReference.cache
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net472\DotnetStoryScript_dotnet_framework.GeneratedMSBuildEditorConfig.editorconfig
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net472\DotnetStoryScript_dotnet_framework.csproj.CoreCompileInputs.cache
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net472\DotnetStoryScript_dotnet_framework.sourcelink.json
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net472\DotnetStoryScript.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net472\DotnetStoryScript.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net472\Common.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net472\Dsl.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net472\LitJson.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net472\ScriptFrameworkLibrary.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net472\Common.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net472\Dsl.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net472\DotnetSt.B6BFFA7C.Up2Date
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net472\DotnetStoryScript.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net472\DotnetStoryScript.pdb

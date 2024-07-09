@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetStoryScript_dotnet_framework", "DotnetStoryScript_dotnet_framework.csproj", "{B274A39E-C905-4FD5-9F3C-1A3A886DC3C8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common_dotnet_framework", "..\Common\Common_dotnet_framework.csproj", "{FA0BF319-F08D-463A-B8D7-A10CF2F12C51}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B274A39E-C905-4FD5-9F3C-1A3A886DC3C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B274A39E-C905-4FD5-9F3C-1A3A886DC3C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B274A39E-C905-4FD5-9F3C-1A3A886DC3C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B274A39E-C905-4FD5-9F3C-1A3A886DC3C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FA0BF319-F08D-463A-B8D7-A10CF2F12C51}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA0BF319-F08D-463A-B8D7-A10CF2F12C51}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA0BF319-F08D-463A-B8D7-A10CF2F12C51}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA0BF319-F08D-463A-B8D7-A10CF2F12C51}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E9B6E056-D0C5-43B1-86FD-208A78A3484C}
+	EndGlobalSection
+EndGlobal

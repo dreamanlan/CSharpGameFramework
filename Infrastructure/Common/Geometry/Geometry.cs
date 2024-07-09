@@ -1487,11 +1487,11 @@ namespace ScriptRuntime
         public int this[int index] {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                return index switch {
-                    0 => x,
-                    1 => y,
-                    _ => throw new IndexOutOfRangeException($"Invalid Vector2Int index addressed: {index}!"),
-                };
+                switch (index) {
+                    case 0: return x;
+                    case 1: return y;
+                    default: throw new IndexOutOfRangeException($"Invalid Vector2Int index addressed: {index}!");
+                }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set {
@@ -1511,7 +1511,7 @@ namespace ScriptRuntime
         public float magnitude {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                return MathF.Sqrt(x * x + y * y);
+                return (float)Math.Sqrt(x * x + y * y);
             }
         }
 
@@ -1806,12 +1806,12 @@ namespace ScriptRuntime
         public int this[int index] {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                return index switch {
-                    0 => x,
-                    1 => y,
-                    2 => z,
-                    _ => throw new IndexOutOfRangeException(string.Format("Invalid Vector3Int index addressed: {0}!", index)),
-                };
+                switch (index) {
+                    case 0: return x;
+                    case 1: return y;
+                    case 2: return z;
+                    default: throw new IndexOutOfRangeException(string.Format("Invalid Vector3Int index addressed: {0}!", index));
+                }
             }
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             set {
@@ -1834,7 +1834,7 @@ namespace ScriptRuntime
         public float magnitude {
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
             get {
-                return MathF.Sqrt(x * x + y * y + z * z);
+                return (float)Math.Sqrt(x * x + y * y + z * z);
             }
         }
 

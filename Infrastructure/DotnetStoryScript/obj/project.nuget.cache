@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "RcCBmsNJZ/DJGLlr1Z6fan3N6j0pAWc9UqDmhyY+ub7C7TgnpZNuEu77XO7cMXv3IeCGhxzyT5yTNpP+FwzV2A==",
+  "dgSpecHash": "7pfMD0wNIbSZ6be2BDSqyd7hSC4spVRXA7iCpQyEeShBIlz5sLqNs3DX/BK981EHSprj+VU6k1IE++Q2vLywlw==",
   "success": true,
-  "projectFilePath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
+  "projectFilePath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript_dotnet_framework.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

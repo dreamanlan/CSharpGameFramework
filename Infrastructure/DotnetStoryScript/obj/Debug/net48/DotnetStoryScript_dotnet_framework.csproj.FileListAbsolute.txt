@@ -1,0 +1,4 @@
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\DotnetStoryScript_dotnet_framework.csproj.AssemblyReference.cache
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\DotnetStoryScript_dotnet_framework.GeneratedMSBuildEditorConfig.editorconfig
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\DotnetStoryScript_dotnet_framework.csproj.CoreCompileInputs.cache
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\DotnetStoryScript_dotnet_framework.sourcelink.json
