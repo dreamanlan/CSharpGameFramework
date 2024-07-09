@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using StoryScript;
+using StoryScript.DslExpression;
 
 public sealed class TerrainEditWindow : EditorWindow
 {
@@ -86,6 +87,8 @@ public sealed class TerrainEditWindow : EditorWindow
     {
         string path = EditorUtility.OpenFilePanel("请选择要执行的dsl文件", string.Empty, "dsl");
         if (!string.IsNullOrEmpty(path) && File.Exists(path)) {
+            m_Text = File.ReadAllText(path);
+
             Dsl.DslFile file = new Dsl.DslFile();
             if (file.Load(path, (string msg) => { Debug.Log(msg); })) {
                 m_DslFile = file;
@@ -329,23 +332,23 @@ internal static class TerrainEditUtility
                 var ds = terrainData.GetDetailLayer(0, 0, terrainData.detailWidth, terrainData.detailHeight, layer);
                 details.Add(layer, ds);
             }
-            var calc = new StoryScript.DslExpression.DslCalculator();
+            var calc = new DslCalculator();
             calc.Init();
-            StoryScript.DslExpression.UnityEditorApi.Register(calc);
-            calc.Register("getheight", "getheight(x,y) api", new StoryScript.DslExpression.ExpressionFactoryHelper<GetHeightExp>());
-            calc.Register("getalphamap", "getalphamap(x,y,ix) api", new StoryScript.DslExpression.ExpressionFactoryHelper<GetAlphamapExp>());
-            calc.Register("getalpha", "getalpha(ix) api", new StoryScript.DslExpression.ExpressionFactoryHelper<GetAlphaExp>());
-            calc.Register("setalpha", "setalpha(ix,val) api", new StoryScript.DslExpression.ExpressionFactoryHelper<SetAlphaExp>());
-            calc.Register("clearalpha", "clearalpha() api", new StoryScript.DslExpression.ExpressionFactoryHelper<ClearAlphaExp>());
-            calc.Register("getdetail", "getdetail(x,y,ix) api", new StoryScript.DslExpression.ExpressionFactoryHelper<GetDetailExp>());
-            calc.Register("samplered", "samplered(key,x,y) api", new StoryScript.DslExpression.ExpressionFactoryHelper<SampleRedExp>());
-            calc.Register("samplegreen", "samplegreen(key,x,y) api", new StoryScript.DslExpression.ExpressionFactoryHelper<SampleGreenExp>());
-            calc.Register("sampleblue", "sampleblue(key,x,y) api", new StoryScript.DslExpression.ExpressionFactoryHelper<SampleBlueExp>());
-            calc.Register("samplealpha", "samplealpha(key,x,y) api", new StoryScript.DslExpression.ExpressionFactoryHelper<SampleAlphaExp>());
-            calc.Register("getcache", "getcache(key,x,y) api", new StoryScript.DslExpression.ExpressionFactoryHelper<GetCacheExp>());
-            calc.Register("setcache", "setcache(key,x,y,val) api", new StoryScript.DslExpression.ExpressionFactoryHelper<SetCacheExp>());
-            calc.Register("addtree", "addtree(ix,x,y,z,f_rot,w_scale,h_scale,u_color,u_lightmap) api", new StoryScript.DslExpression.ExpressionFactoryHelper<AddTreeExp>());
-            calc.Register("addobject", "addobject(x,y,z,prefab_str) api", new StoryScript.DslExpression.ExpressionFactoryHelper<AddObjectExp>());
+            UnityEditorApi.Register(calc);
+            calc.Register("getheight", "getheight(x,y) api", new ExpressionFactoryHelper<GetHeightExp>());
+            calc.Register("getalphamap", "getalphamap(x,y,ix) api", new ExpressionFactoryHelper<GetAlphamapExp>());
+            calc.Register("getalpha", "getalpha(ix) api", new ExpressionFactoryHelper<GetAlphaExp>());
+            calc.Register("setalpha", "setalpha(ix,val) api", new ExpressionFactoryHelper<SetAlphaExp>());
+            calc.Register("clearalpha", "clearalpha() api", new ExpressionFactoryHelper<ClearAlphaExp>());
+            calc.Register("getdetail", "getdetail(x,y,ix) api", new ExpressionFactoryHelper<GetDetailExp>());
+            calc.Register("samplered", "samplered(key,x,y) api", new ExpressionFactoryHelper<SampleRedExp>());
+            calc.Register("samplegreen", "samplegreen(key,x,y) api", new ExpressionFactoryHelper<SampleGreenExp>());
+            calc.Register("sampleblue", "sampleblue(key,x,y) api", new ExpressionFactoryHelper<SampleBlueExp>());
+            calc.Register("samplealpha", "samplealpha(key,x,y) api", new ExpressionFactoryHelper<SampleAlphaExp>());
+            calc.Register("getcache", "getcache(key,x,y) api", new ExpressionFactoryHelper<GetCacheExp>());
+            calc.Register("setcache", "setcache(key,x,y,val) api", new ExpressionFactoryHelper<SetCacheExp>());
+            calc.Register("addtree", "addtree(ix,x,y,z,f_rot,w_scale,h_scale,u_color,u_lightmap) api", new ExpressionFactoryHelper<AddTreeExp>());
+            calc.Register("addobject", "addobject(x,y,z,prefab_str) api", new ExpressionFactoryHelper<AddObjectExp>());
             calc.SetGlobalVariable("samplers", BoxedValue.FromObject(samplers));
             calc.SetGlobalVariable("caches", BoxedValue.FromObject(caches));
             calc.SetGlobalVariable("trees", BoxedValue.FromObject(trees));
@@ -423,7 +426,7 @@ internal static class TerrainEditUtility
         }
     }
 
-    private static void ProcessWithDsl(Dsl.FunctionData funcData, string type, float[,] datas, float[, ,] alphamaps, Dictionary<int, int[,]> details, StoryScript.DslExpression.DslCalculator calc, string proc, ref bool resetTrees)
+    private static void ProcessWithDsl(Dsl.FunctionData funcData, string type, float[,] datas, float[, ,] alphamaps, Dictionary<int, int[,]> details, DslCalculator calc, string proc, ref bool resetTrees)
     {
         if (null == funcData)
             return;
@@ -502,7 +505,7 @@ internal static class TerrainEditUtility
         }
     }
 
-    private static void ProcessHeights(float[,] datas, StoryScript.DslExpression.DslCalculator calc, string proc, int x, int y, int w, int h)
+    private static void ProcessHeights(float[,] datas, DslCalculator calc, string proc, int x, int y, int w, int h)
     {
         for (int ix = 0; ix < w; ++ix) {
             for (int iy = 0; iy < h; ++iy) {
@@ -519,7 +522,7 @@ internal static class TerrainEditUtility
         quit:
         EditorUtility.ClearProgressBar();
     }
-    private static void ProcessHeights(float[,] datas, StoryScript.DslExpression.DslCalculator calc, string proc, int cx, int cy, int r)
+    private static void ProcessHeights(float[,] datas, DslCalculator calc, string proc, int cx, int cy, int r)
     {
         int x = cx - r;
         int y = cy - r;
@@ -545,7 +548,7 @@ internal static class TerrainEditUtility
         quit:
         EditorUtility.ClearProgressBar();
     }
-    private static void ProcessAlphamaps(float[,,] alphamaps, StoryScript.DslExpression.DslCalculator calc, string proc, int x, int y, int w, int h)
+    private static void ProcessAlphamaps(float[,,] alphamaps, DslCalculator calc, string proc, int x, int y, int w, int h)
     {
         int alphanum = alphamaps.GetLength(2);
         for (int ix = 0; ix < w; ++ix) {
@@ -568,7 +571,7 @@ internal static class TerrainEditUtility
         quit:
         EditorUtility.ClearProgressBar();
     }
-    private static void ProcessAlphamaps(float[,,] alphamaps, StoryScript.DslExpression.DslCalculator calc, string proc, int cx, int cy, int r)
+    private static void ProcessAlphamaps(float[,,] alphamaps, DslCalculator calc, string proc, int cx, int cy, int r)
     {
         int alphanum = alphamaps.GetLength(2);
         int x = cx - r;
@@ -600,7 +603,7 @@ internal static class TerrainEditUtility
         quit:
         EditorUtility.ClearProgressBar();
     }
-    private static void ProcessDetails(Dictionary<int, int[,]> details, StoryScript.DslExpression.DslCalculator calc, string proc, int x, int y, int w, int h)
+    private static void ProcessDetails(Dictionary<int, int[,]> details, DslCalculator calc, string proc, int x, int y, int w, int h)
     {
         for (int ix = 0; ix < w; ++ix) {
             for (int iy = 0; iy < h; ++iy) {
@@ -621,7 +624,7 @@ internal static class TerrainEditUtility
         quit:
         EditorUtility.ClearProgressBar();
     }
-    private static void ProcessDetails(Dictionary<int, int[,]> details, StoryScript.DslExpression.DslCalculator calc, string proc, int cx, int cy, int r)
+    private static void ProcessDetails(Dictionary<int, int[,]> details, DslCalculator calc, string proc, int cx, int cy, int r)
     {
         int x = cx - r;
         int y = cy - r;
@@ -851,7 +854,7 @@ internal static class TerrainEditUtility
     private const string c_IndentString = "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
 }
 
-internal class GetHeightExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class GetHeightExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -865,7 +868,7 @@ internal class GetHeightExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class GetAlphamapExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class GetAlphamapExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -880,7 +883,7 @@ internal class GetAlphamapExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class GetAlphaExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class GetAlphaExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -893,7 +896,7 @@ internal class GetAlphaExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class SetAlphaExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class SetAlphaExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -908,7 +911,7 @@ internal class SetAlphaExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class ClearAlphaExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class ClearAlphaExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -922,7 +925,7 @@ internal class ClearAlphaExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class GetDetailExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class GetDetailExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -940,7 +943,7 @@ internal class GetDetailExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class SampleRedExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class SampleRedExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -962,7 +965,7 @@ internal class SampleRedExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class SampleGreenExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class SampleGreenExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -984,7 +987,7 @@ internal class SampleGreenExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class SampleBlueExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class SampleBlueExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -1006,7 +1009,7 @@ internal class SampleBlueExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class SampleAlphaExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class SampleAlphaExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -1028,7 +1031,7 @@ internal class SampleAlphaExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class GetCacheExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class GetCacheExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -1050,7 +1053,7 @@ internal class GetCacheExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class SetCacheExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class SetCacheExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -1074,7 +1077,7 @@ internal class SetCacheExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class AddTreeExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class AddTreeExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
@@ -1100,7 +1103,7 @@ internal class AddTreeExp : StoryScript.DslExpression.SimpleExpressionBase
         return r;
     }
 }
-internal class AddObjectExp : StoryScript.DslExpression.SimpleExpressionBase
+internal class AddObjectExp : SimpleExpressionBase
 {
     protected override BoxedValue OnCalc(IList<BoxedValue> operands)
     {
