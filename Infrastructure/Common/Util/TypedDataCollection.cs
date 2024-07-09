@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     /// <remarks>
     /// This method is mainly used in situations where the data level is difficult to abstract.

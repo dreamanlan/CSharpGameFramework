@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using System.Text;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     /// <summary>
     /// We frequently use situations where there are few additions and deletions,

@@ -1,7 +1,7 @@
 ﻿using ScriptRuntime;
 using System;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 
 public enum AiStateId : int
 {

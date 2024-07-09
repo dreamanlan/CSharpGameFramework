@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public static class DslUtility
   {

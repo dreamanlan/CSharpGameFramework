@@ -2,7 +2,7 @@
 using System;
 using ScriptRuntime;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class KdTreeObject
     {

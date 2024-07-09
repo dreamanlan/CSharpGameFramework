@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public class ClientConcurrentActionProcessor : IActionQueue
   {

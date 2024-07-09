@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   /// <summary>
   /// !!!Note that this class instance will be called in multiple threads.

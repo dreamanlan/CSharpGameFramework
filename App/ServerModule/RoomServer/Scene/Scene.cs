@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameFrameworkMessage;
-using StorySystem;
+using DotnetStoryScript;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public enum SceneState : int
     {

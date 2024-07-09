@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     /// <remarks>
     /// This method is mainly used in situations where the data level is difficult to abstract. If the data definition can be abstracted from a business perspective, try not to use this dynamic data aggregation method and use it as much as possible.

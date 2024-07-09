@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using SkillSystem;
-using GameFramework;
-using GameFramework.Story;
+using DotnetSkillScript;
+using ScriptableFramework;
+using ScriptableFramework.Story;
 
-namespace GameFramework.Skill.Trigers
+namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
     /// timescale(start_time, scale[, duration]);

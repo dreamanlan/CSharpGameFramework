@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace GameFramework.DataCache
+namespace ScriptableFramework.DataCache
 {
     //Data storage Save operation return result type
     public enum DSSaveResult

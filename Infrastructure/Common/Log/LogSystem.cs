@@ -2,7 +2,7 @@
 using System;
 //using System.Diagnostics;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public enum GameLogType
     {

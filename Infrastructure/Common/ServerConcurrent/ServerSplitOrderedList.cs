@@ -3,7 +3,7 @@ using System.Threading;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using GameFramework;
+using ScriptableFramework;
 
 namespace System.Collections.Concurrent
 {

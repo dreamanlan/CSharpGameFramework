@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   internal class NodeMessageInfo
   {

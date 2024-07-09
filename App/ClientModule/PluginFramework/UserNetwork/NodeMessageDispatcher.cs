@@ -1,10 +1,10 @@
 using System;
 using System.Text;
 using LitJson;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
-namespace GameFramework.Network
+namespace ScriptableFramework.Network
 {
     internal class NodeMessageHandlerInfo
     {

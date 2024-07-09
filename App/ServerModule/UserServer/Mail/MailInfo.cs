@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkData;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public sealed class MailItem
     {

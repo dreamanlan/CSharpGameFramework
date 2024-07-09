@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkData;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal enum AccountState : int
     {

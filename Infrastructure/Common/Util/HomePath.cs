@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public class HomePath
   {

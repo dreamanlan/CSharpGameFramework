@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkData;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     /// <summary>
     /// The emails supported by this email system are all sent by the system and are divided into two types of emails: all-employee emails and personal emails.

@@ -4,7 +4,7 @@ using System.Text;
 using System.IO;
 using UnityEngine;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class UiResourceSystem
     {

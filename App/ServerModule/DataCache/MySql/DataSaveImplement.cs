@@ -5,8 +5,8 @@ using System.Threading;
 using System.Reflection;
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
-using GameFramework.DataCache;
-using GameFramework;
+using ScriptableFramework.DataCache;
+using ScriptableFramework;
 
 internal static class DataSaveImplement
 {

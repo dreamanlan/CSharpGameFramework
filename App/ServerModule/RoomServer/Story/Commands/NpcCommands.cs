@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using StorySystem;
+using DotnetStoryScript;
 using ScriptRuntime;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
-namespace GameFramework.Story.Commands
+namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
     /// createnpc(npc_unit_id,vector3(x,y,z),dir,camp,tableId[,ai,stringlist("param1 param2 param3 ..."),leaderId])[objid("@objid")];

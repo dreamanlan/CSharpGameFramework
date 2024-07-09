@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using StorySystem;
+using DotnetStoryScript;
 
-namespace GameFramework.GmCommands
+namespace ScriptableFramework.GmCommands
 {
     /// <summary>
     /// The Gm plot system is a special plot system composed of adding GM commands on top of the game plot system. The commands and values added by the game plot system can be used in the Gm plot script (and vice versa)
@@ -119,7 +119,7 @@ namespace GameFramework.GmCommands
             if (null == instance) {
                 instance = m_ConfigManager.NewStoryInstance(storyId, 0);
                 if (instance == null) {
-                    GameFramework.LogSystem.Error("Can't load story config, story:{0} !", storyId);
+                    ScriptableFramework.LogSystem.Error("Can't load story config, story:{0} !", storyId);
                     return null;
                 }
 

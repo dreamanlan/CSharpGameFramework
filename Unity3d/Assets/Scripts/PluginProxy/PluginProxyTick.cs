@@ -2,7 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Collections;
 using System.Reflection;
-using GameFramework.Plugin;
+using ScriptableFramework.Plugin;
 
 public class PluginProxyTick : MonoBehaviour
 {

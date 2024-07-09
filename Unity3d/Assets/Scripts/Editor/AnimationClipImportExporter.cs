@@ -306,7 +306,7 @@ public static class AnimationClipUtility
                                         } else if (key == "resample_curves") {
                                             importer.resampleCurves = bool.Parse(setting.GetParamId(0));
                                         } else if (key == "animation_compression") {
-                                            importer.animationCompression = GameFramework.Converter.ConvertStrToEnum<UnityEditor.ModelImporterAnimationCompression>(setting.GetParamId(0));
+                                            importer.animationCompression = ScriptableFramework.Converter.ConvertStrToEnum<UnityEditor.ModelImporterAnimationCompression>(setting.GetParamId(0));
                                         } else if (key == "rotation_error") {
                                             importer.animationRotationError = float.Parse(setting.GetParamId(0));
                                         } else if (key == "position_error") {
@@ -368,7 +368,7 @@ public static class AnimationClipUtility
                 ++indent;
                 sw.WriteLine("{0}import_animation({1});", GetIndent(indent), importer.importAnimation);
                 sw.WriteLine("{0}resample_curves({1});", GetIndent(indent), importer.resampleCurves);
-                sw.WriteLine("{0}animation_compression(\"{1}\");", GetIndent(indent), GameFramework.Converter.ConvertEnumToStr<UnityEditor.ModelImporterAnimationCompression>(importer.animationCompression));
+                sw.WriteLine("{0}animation_compression(\"{1}\");", GetIndent(indent), ScriptableFramework.Converter.ConvertEnumToStr<UnityEditor.ModelImporterAnimationCompression>(importer.animationCompression));
                 sw.WriteLine("{0}rotation_error({1});", GetIndent(indent), importer.animationRotationError);
                 sw.WriteLine("{0}position_error({1});", GetIndent(indent), importer.animationPositionError);
                 sw.WriteLine("{0}scale_error({1});", GetIndent(indent), importer.animationScaleError);

@@ -5,7 +5,7 @@ using System.Reflection;
 using Lidgren.Network;
 using GameFrameworkMessage;
 
-namespace GameFramework.Network
+namespace ScriptableFramework.Network
 {
   class MessageDispatch
   {

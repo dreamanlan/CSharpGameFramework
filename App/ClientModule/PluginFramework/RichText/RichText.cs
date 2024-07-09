@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using RichTextParser;
-using GameFramework;
+using ScriptableFramework;
 
 [System.Serializable]
 public class RichText : Text, IPointerClickHandler

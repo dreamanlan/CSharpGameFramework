@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using SkillSystem;
+using DotnetSkillScript;
 
-namespace GameFramework.Skill.Trigers
+namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
     /// replaceshaderandfadecolor(starttime,remaintime,"shadername",startcolor,changecolor[,changetime]);
@@ -116,7 +116,7 @@ namespace GameFramework.Skill.Trigers
         {
             int ct = m_Materials.Count;
             if (m_Shaders.Count != ct || m_Colors.Count != ct) {
-                GameFramework.LogSystem.Error("replaceshaderandfadecolor materials num is not equal shaders num !");
+                ScriptableFramework.LogSystem.Error("replaceshaderandfadecolor materials num is not equal shaders num !");
                 return;
             }
             for (int i = 0; i < ct; ++i) {

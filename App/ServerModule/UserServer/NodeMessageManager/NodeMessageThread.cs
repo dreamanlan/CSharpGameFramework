@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   internal class NodeMessageThread
   {

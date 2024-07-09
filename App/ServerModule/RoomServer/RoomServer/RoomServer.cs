@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Runtime.InteropServices;
-using GameFramework;
+using ScriptableFramework;
 using CSharpCenterClient;
 using Messenger;
 using GameFrameworkMessage;
@@ -87,7 +87,7 @@ namespace RoomServer
             SceneLogicViewManager.Instance.Init();
 
             ServerStorySystem.StaticInit();
-            GameFramework.GmCommands.GmStorySystem.StaticInit();
+            ScriptableFramework.GmCommands.GmStorySystem.StaticInit();
 
             m_Channel.Register<Msg_LR_ReplyRegisterRoomServer>(HandleReplyRegisterRoomServer);
             m_RoomMgr.RegisterMsgHandler(m_Channel);

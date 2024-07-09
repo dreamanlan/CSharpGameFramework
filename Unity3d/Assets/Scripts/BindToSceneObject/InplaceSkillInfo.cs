@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using GameFramework;
-using GameFramework.Skill;
-using SkillSystem;
+using ScriptableFramework;
+using ScriptableFramework.Skill;
+using DotnetSkillScript;
 
 public class InplaceSkillInfo : MonoBehaviour
 {

@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = SkillScript
+build_property.ProjectDir = F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

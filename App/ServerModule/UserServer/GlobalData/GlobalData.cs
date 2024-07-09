@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using GameFrameworkData;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public sealed class GlobalData
     {

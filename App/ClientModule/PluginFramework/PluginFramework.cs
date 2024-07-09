@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using GameFramework.GmCommands;
-using GameFramework.Story;
-using GameFramework.Skill;
-using GameFramework.Network;
+using ScriptableFramework.GmCommands;
+using ScriptableFramework.Story;
+using ScriptableFramework.Skill;
+using ScriptableFramework.Network;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class LockTargetInfo
     {
@@ -35,11 +35,11 @@ namespace GameFramework
             try {
                 GfxSkillSystem.Instance.Reset();
                 GfxSkillSystem.Instance.ClearSkillInstancePool();
-                SkillSystem.SkillConfigManager.Instance.Clear();
+                DotnetSkillScript.SkillConfigManager.Instance.Clear();
 
                 GfxStorySystem.Instance.Reset();
                 GfxStorySystem.Instance.ClearStoryInstancePool();
-                StorySystem.StoryConfigManager.Instance.Clear();
+                DotnetStoryScript.StoryConfigManager.Instance.Clear();
                 GfxStorySystem.Instance.SceneId = m_SceneId;
                 GfxStorySystem.Instance.LoadSceneStories();
                 GfxStorySystem.Instance.StartStory("local_main");
@@ -131,8 +131,8 @@ namespace GameFramework
             Utility.EventSystem.Subscribe<string>("gm_execscript", "gm", ExecScript);
             Utility.EventSystem.Subscribe<string>("gm_execcommand", "gm", ExecCommand);
 
-            m_CommandDocs = StorySystem.StoryCommandManager.Instance.GenCommandDocs();
-            m_FunctionDocs = StorySystem.StoryFunctionManager.Instance.GenFunctionDocs();
+            m_CommandDocs = DotnetStoryScript.StoryCommandManager.Instance.GenCommandDocs();
+            m_FunctionDocs = DotnetStoryScript.StoryFunctionManager.Instance.GenFunctionDocs();
         }
         public void Release()
         {
@@ -149,7 +149,7 @@ namespace GameFramework
             GmCommands.ClientGmStorySystem.Instance.Reset();
             GfxStorySystem.Instance.Reset();
             GfxStorySystem.Instance.ClearStoryInstancePool();
-            StorySystem.StoryConfigManager.Instance.Clear();
+            DotnetStoryScript.StoryConfigManager.Instance.Clear();
 
             GfxSkillSystem.Instance.Reset();
             GfxSkillSystem.Instance.ClearSkillInstancePool();

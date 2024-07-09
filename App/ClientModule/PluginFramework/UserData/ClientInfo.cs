@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class ClientInfo
     {

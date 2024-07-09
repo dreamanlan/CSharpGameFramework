@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   internal class PretendRandom<T> where T : IComparable
   {

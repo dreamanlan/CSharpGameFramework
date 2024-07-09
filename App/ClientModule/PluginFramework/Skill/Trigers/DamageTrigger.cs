@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using SkillSystem;
-using GameFramework;
+using DotnetSkillScript;
+using ScriptableFramework;
 
-namespace GameFramework.Skill.Trigers
+namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
     /// damage([start_time[,isFinal]]);

@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using GameFramework;
-using GameFramework.Plugin;
+using ScriptableFramework;
+using ScriptableFramework.Plugin;
 
 public class ScriptSimpleStoryCommandPlugin : ScriptPluginProxyBase
 {
@@ -13,7 +13,7 @@ public class ScriptSimpleStoryCommandPlugin : ScriptPluginProxyBase
 	public void ResetState()
 	{
 	}
-	public bool ExecCommand(StorySystem.StoryInstance instance, StorySystem.StoryMessageHandler handler, StorySystem.StoryValueParams _params, System.Int64 delta)
+	public bool ExecCommand(DotnetStoryScript.StoryInstance instance, DotnetStoryScript.StoryMessageHandler handler, DotnetStoryScript.StoryValueParams _params, System.Int64 delta)
 	{
 		return false;
 	}

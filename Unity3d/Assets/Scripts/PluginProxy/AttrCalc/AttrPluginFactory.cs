@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GameFramework.Plugin;
-using GameFramework.AttrCalc;
+using ScriptableFramework.Plugin;
+using ScriptableFramework.AttrCalc;
 
 public class NativeAttrPluginFactory : IAttrExpressionFactory
 {
@@ -35,7 +35,7 @@ public class ScriptAttrPluginFactory : IAttrExpressionFactory
 
 public class NativeAttrExpressionProxy : AbstractAttrExpression
 {
-    public override long Calc(GameFramework.SceneContextInfo context, GameFramework.CharacterProperty source, GameFramework.CharacterProperty target, long[] args)
+    public override long Calc(ScriptableFramework.SceneContextInfo context, ScriptableFramework.CharacterProperty source, ScriptableFramework.CharacterProperty target, long[] args)
     {
         if (null != m_Plugin) {
             return m_Plugin.Calc(context, source, target, args);
@@ -91,7 +91,7 @@ public class NativeAttrExpressionProxy : AbstractAttrExpression
 
 public class ScriptAttrExpressionProxy : AbstractAttrExpression
 {
-    public override long Calc(GameFramework.SceneContextInfo context, GameFramework.CharacterProperty source, GameFramework.CharacterProperty target, long[] args)
+    public override long Calc(ScriptableFramework.SceneContextInfo context, ScriptableFramework.CharacterProperty source, ScriptableFramework.CharacterProperty target, long[] args)
     {
         if (null != m_Plugin) {
             return m_Plugin.Calc(context, source, target, args);

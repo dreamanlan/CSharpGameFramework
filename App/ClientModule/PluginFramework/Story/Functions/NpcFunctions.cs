@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using StorySystem;
-using GameFramework;
+using DotnetStoryScript;
+using ScriptableFramework;
 using ScriptRuntime;
 
-namespace GameFramework.Story.Functions
+namespace ScriptableFramework.Story.Functions
 {
     internal sealed class NpcIdListFunction : IStoryFunction
     {

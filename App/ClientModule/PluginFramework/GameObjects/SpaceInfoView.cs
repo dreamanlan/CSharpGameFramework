@@ -5,7 +5,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal class SpaceInfoView
     {

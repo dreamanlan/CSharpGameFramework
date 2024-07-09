@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Collections.Generic;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public class SceneLoadThread : MyServerThread
   {

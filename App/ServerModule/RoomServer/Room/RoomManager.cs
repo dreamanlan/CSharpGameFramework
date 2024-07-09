@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Lidgren.Network;
 using Messenger;
 using GameFrameworkMessage;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     /// <remarks>
     /// Note that the public methods of this class should consider whether cross-thread calls are safe! ! !

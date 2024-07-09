@@ -3,7 +3,7 @@ using System.Collections.Generic;
 //using System.Diagnostics;
 using ScriptRuntime;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public class Geometry3D
   {

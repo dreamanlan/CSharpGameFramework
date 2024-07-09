@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Threading;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
 namespace Lobby

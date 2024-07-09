@@ -1,0 +1,12 @@
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\bin\Debug\SkillSystem.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\bin\Debug\SkillSystem.pdb
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\bin\Debug\Common.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\bin\Debug\Dsl.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\bin\Debug\Dsl.pdb
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\obj\Debug\SkillSystem.csproj.AssemblyReference.cache
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\obj\Debug\SkillSystem.csproj.CoreCompileInputs.cache
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\obj\Debug\SkillSystem.csproj.CopyComplete
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\obj\Debug\SkillSystem.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\obj\Debug\SkillSystem.pdb
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\bin\Debug\ScriptFrameworkLibrary.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\SkillSystem\bin\Debug\Common.pdb

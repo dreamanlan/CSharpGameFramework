@@ -3,7 +3,7 @@ using System.IO;
 using System.Text;
 using CSharpCenterClient;
 using Messenger;
-using GameFramework;
+using ScriptableFramework;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -12,7 +12,7 @@ using GameFrameworkData;
 using System.Threading;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal partial class UserServer
     {
@@ -227,7 +227,7 @@ namespace GameFramework
                     if (m_LastTickTime != 0) {
                         long elapsedTickTime = curTime - m_LastTickTime;
                         if (elapsedTickTime > c_WarningTickTime) {
-                            LogSys.Log(ServerLogType.MONITOR, "GameFramework Network Tick:{0}", curTime - m_LastTickTime);
+                            LogSys.Log(ServerLogType.MONITOR, "ScriptableFramework Network Tick:{0}", curTime - m_LastTickTime);
                         }
                     }
                     m_LastTickTime = curTime;
@@ -257,8 +257,8 @@ namespace GameFramework
                                     CenterClientApi.Tick();
                                     Thread.Sleep(10);
                                 }
-                                //close GameFramework
-                                LogSys.Log(ServerLogType.MONITOR, "QuitStep_3. LastSaveDone. GameFramework quit...");
+                                //close ScriptableFramework
+                                LogSys.Log(ServerLogType.MONITOR, "QuitStep_3. LastSaveDone. ScriptableFramework quit...");
                                 CenterClientApi.Quit();
                             }
                         } else {
@@ -270,7 +270,7 @@ namespace GameFramework
                     }
                 }
             } catch (Exception ex) {
-                LogSys.Log(ServerLogType.ERROR, "GameFramework.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSys.Log(ServerLogType.ERROR, "ScriptableFramework.Loop throw exception:{0}\n{1}", ex.Message, ex.StackTrace);
             }
         }
         private void Release()

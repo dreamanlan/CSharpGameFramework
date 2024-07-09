@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GameFramework.Plugin;
-using GameFramework.Skill;
-using SkillSystem;
+using ScriptableFramework.Plugin;
+using ScriptableFramework.Skill;
+using DotnetSkillScript;
 
 internal class NativeSkillTriggerFactory : ISkillTrigerFactory
 {

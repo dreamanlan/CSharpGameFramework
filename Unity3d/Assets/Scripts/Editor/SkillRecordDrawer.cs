@@ -4,7 +4,7 @@ using UnityEditor;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 
 [CustomPropertyDrawer(typeof(SkillRecords.SkillRecord))]
 public class SkillRecordDrawer : PropertyDrawer
@@ -185,7 +185,7 @@ public class SkillRecordDrawer : PropertyDrawer
             PlayerPrefs.SetString("DslEditorPath", s_DslEditorPath);
             PlayerPrefs.Save();
         }
-        string path = GameFramework.HomePath.GetAbsolutePath("../../../Resource/DslFile/" + filePath).Replace('/', '\\');
+        string path = ScriptableFramework.HomePath.GetAbsolutePath("../../../Resource/DslFile/" + filePath).Replace('/', '\\');
         if (!File.Exists(path)) {
             UnityEditor.EditorUtility.DisplayDialog("关键信息", "技能dsl文件不存在，请先点击创建按钮创建文件！", "确定");
             return;
@@ -196,10 +196,10 @@ public class SkillRecordDrawer : PropertyDrawer
     private static void ShowSkillDslTemplateMenu(string filePath, float x, float y)
     {
         string userData = filePath;
-        string path = GameFramework.HomePath.GetAbsolutePath("../../../Resource/DslTemplate/SkillTemplates.dsl");
+        string path = ScriptableFramework.HomePath.GetAbsolutePath("../../../Resource/DslTemplate/SkillTemplates.dsl");
         string txt = File.ReadAllText(path, Encoding.GetEncoding(936));
         Dsl.DslFile file = new Dsl.DslFile();
-        if (file.LoadFromString(txt, GameFramework.LogSystem.Log)) {
+        if (file.LoadFromString(txt, ScriptableFramework.LogSystem.Log)) {
             List<GUIContent> menus = new List<GUIContent>();
             menus.Add(new GUIContent("取消创建"));
             s_SkillDslTemplates.Clear();
@@ -237,7 +237,7 @@ public class SkillRecordDrawer : PropertyDrawer
     }
     private static void CreateSkillDslFile(string filePath, string content)
     {
-        string path = GameFramework.HomePath.GetAbsolutePath("../../../Resource/DslFile/" + filePath);
+        string path = ScriptableFramework.HomePath.GetAbsolutePath("../../../Resource/DslFile/" + filePath);
         if (File.Exists(path)) {
             if (!UnityEditor.EditorUtility.DisplayDialog("关键信息", "技能dsl文件已存在，要覆盖么？", "我确定", "不覆盖")) {
                 return;

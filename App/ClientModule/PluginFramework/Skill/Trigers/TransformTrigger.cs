@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using SkillSystem;
+using DotnetSkillScript;
 
-namespace GameFramework.Skill.Trigers
+namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
     /// transform(startime, bone, vector3(position) or objpath, eular(rotate) or objpath, relaitve_type, is_attach[, is_use_terrain_height=false][,randomrotate = Vector3.zero]);

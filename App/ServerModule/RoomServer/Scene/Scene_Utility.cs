@@ -5,7 +5,7 @@ using System.Text;
 using GameFrameworkMessage;
 using ScriptRuntime;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public sealed partial class Scene
     {

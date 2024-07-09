@@ -15,12 +15,12 @@ using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-using GameFramework.GmCommands;
-using StorySystem;
+using ScriptableFramework.GmCommands;
+using StoryScript;
 
 #region interpreter
 #pragma warning disable 8600,8601,8602,8603,8604,8618,8619,8620,8625
-namespace DslExpression
+namespace StoryScript.DslExpression
 {
     internal class AssetPath2GUIDExp : SimpleExpressionBase
     {
@@ -487,7 +487,7 @@ namespace DslExpression
                             ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
                             instance = ClientGmStorySystem.Instance.GetStory("main");
                         }
-                        instance.SetVariable(name, BoxedValue.FromObject(val.GetObject()));
+                        instance.SetVariable(name, ScriptableFramework.BoxedValue.FromObject(val.GetObject()));
                         ret = val;
                     }
                 }
@@ -498,7 +498,7 @@ namespace DslExpression
                         ClientGmStorySystem.Instance.LoadStoryText(Encoding.UTF8.GetBytes(txt));
                         instance = ClientGmStorySystem.Instance.GetStory("main");
                     }
-                    BoxedValue bv;
+                    ScriptableFramework.BoxedValue bv;
                     instance.TryGetVariable(name, out bv);
                     ret = BoxedValue.FromObject(bv.GetObject());
                 }
@@ -520,7 +520,7 @@ namespace DslExpression
             var handler = instance.GetMessageHandler("start");
             object ret = null;
             foreach (var exp in m_Values) {
-                exp.Evaluate(instance, handler, BoxedValue.NullObject, null);
+                exp.Evaluate(instance, handler, ScriptableFramework.BoxedValue.NullObject, null);
                 if (exp.HaveValue) {
                     ret = exp.Value.GetObject();
                 }
@@ -532,13 +532,13 @@ namespace DslExpression
             int num = callData.GetParamNum();
             for (int ix = 0; ix < num; ++ix) {
                 Dsl.ISyntaxComponent param = callData.GetParam(ix);
-                var exp = StoryFunctionManager.Instance.CreateFunction(param);
+                var exp = DotnetStoryScript.StoryFunctionManager.Instance.CreateFunction(param);
                 m_Values.Add(exp);
             }
             return true;
         }
 
-        private List<IStoryFunction> m_Values = new List<IStoryFunction>();
+        private List<DotnetStoryScript.IStoryFunction> m_Values = new List<DotnetStoryScript.IStoryFunction>();
     }
     internal class StoryCommandExp : AbstractExpression
     {
@@ -555,7 +555,7 @@ namespace DslExpression
                 cmd.Reset();
             }
             foreach (var cmd in m_Commands) {
-                cmd.Execute(instance, handler, 0, BoxedValue.NullObject, null);
+                cmd.Execute(instance, handler, 0, ScriptableFramework.BoxedValue.NullObject, null);
             }
             return BoxedValue.NullObject;
         }
@@ -564,13 +564,13 @@ namespace DslExpression
             int num = callData.GetParamNum();
             for (int ix = 0; ix < num; ++ix) {
                 Dsl.ISyntaxComponent param = callData.GetParam(ix);
-                var cmd = StoryCommandManager.Instance.CreateCommand(param);
+                var cmd = DotnetStoryScript.StoryCommandManager.Instance.CreateCommand(param);
                 m_Commands.Add(cmd);
             }
             return true;
         }
 
-        private List<IStoryCommand> m_Commands = new List<IStoryCommand>();
+        private List<DotnetStoryScript.IStoryCommand> m_Commands = new List<DotnetStoryScript.IStoryCommand>();
     }
 #endif
     public sealed class UnityEditorApi

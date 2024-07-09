@@ -2,8 +2,8 @@
 using System.Reflection;
 using System.Diagnostics;
 using System.Collections.Generic;
-using GameFramework;
-using GameFramework.DataCache;
+using ScriptableFramework;
+using ScriptableFramework.DataCache;
 using System.Threading;
 using System.Text;
 using Messenger;
@@ -12,11 +12,11 @@ using GameFrameworkData;
 
 internal class DataCacheSystem : MyServerThread
 {
-    internal GameFramework.ServerAsyncActionProcessor LoadActionQueue
+    internal ScriptableFramework.ServerAsyncActionProcessor LoadActionQueue
     {
         get { return m_LoadActionQueue; }
     }
-    internal GameFramework.ServerAsyncActionProcessor SaveActionQueue
+    internal ScriptableFramework.ServerAsyncActionProcessor SaveActionQueue
     {
         get { return m_SaveActionQueue; }
     }

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using ScriptRuntime;
-using StorySystem;
+using DotnetStoryScript;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public enum PredefinedAiStateId : int
     {

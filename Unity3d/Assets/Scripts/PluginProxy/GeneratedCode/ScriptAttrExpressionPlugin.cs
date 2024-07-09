@@ -1,15 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using GameFramework;
-using GameFramework.Plugin;
+using ScriptableFramework;
+using ScriptableFramework.Plugin;
 
 public class ScriptAttrExpressionPlugin : ScriptPluginProxyBase, IAttrExpressionPlugin
 {
-	public void SetCalculator(GameFramework.AttrCalc.DslCalculator calc)
+	public void SetCalculator(ScriptableFramework.AttrCalc.DslCalculator calc)
 	{
 	}
-	public System.Int64 Calc(GameFramework.SceneContextInfo context, GameFramework.CharacterProperty source, GameFramework.CharacterProperty target, params System.Int64[] args)
+	public System.Int64 Calc(ScriptableFramework.SceneContextInfo context, ScriptableFramework.CharacterProperty source, ScriptableFramework.CharacterProperty target, params System.Int64[] args)
 	{
 		return (System.Int64)0;
 	}
@@ -21,7 +21,7 @@ public class ScriptAttrExpressionPlugin : ScriptPluginProxyBase, IAttrExpression
 	{
 		return false;
 	}
-	public bool LoadExpressions(GameFramework.AttrCalc.AttrExpressionList exps)
+	public bool LoadExpressions(ScriptableFramework.AttrCalc.AttrExpressionList exps)
 	{
 		return false;
 	}

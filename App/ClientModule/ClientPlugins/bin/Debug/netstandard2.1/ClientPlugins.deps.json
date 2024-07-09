@@ -39,10 +39,27 @@
           "Common.dll": {}
         }
       },
+      "DotnetSkillScript/1.0.0": {
+        "dependencies": {
+          "Common": "1.0.0"
+        },
+        "runtime": {
+          "DotnetSkillScript.dll": {}
+        }
+      },
+      "DotnetStoryScript/1.0.0": {
+        "dependencies": {
+          "Common": "1.0.0"
+        },
+        "runtime": {
+          "DotnetStoryScript.dll": {}
+        }
+      },
       "GameObjects/1.0.0": {
         "dependencies": {
           "Common": "1.0.0",
-          "StorySystem": "1.0.0"
+          "DotnetSkillScript": "1.0.0",
+          "DotnetStoryScript": "1.0.0"
         },
         "runtime": {
           "GameObjects.dll": {}
@@ -52,6 +69,8 @@
         "dependencies": {
           "ClientProtoBuf": "1.0.0",
           "Common": "1.0.0",
+          "DotnetSkillScript": "1.0.0",
+          "DotnetStoryScript": "1.0.0",
           "GameObjects": "1.0.0",
           "SceneLogic": "1.0.0",
           "SkillSystem": "1.0.0",
@@ -64,26 +83,12 @@
       "SceneLogic/1.0.0": {
         "dependencies": {
           "Common": "1.0.0",
+          "DotnetSkillScript": "1.0.0",
+          "DotnetStoryScript": "1.0.0",
           "GameObjects": "1.0.0"
         },
         "runtime": {
           "SceneLogic.dll": {}
-        }
-      },
-      "SkillSystem/1.0.0": {
-        "dependencies": {
-          "Common": "1.0.0"
-        },
-        "runtime": {
-          "SkillSystem.dll": {}
-        }
-      },
-      "StorySystem/1.0.0": {
-        "dependencies": {
-          "Common": "1.0.0"
-        },
-        "runtime": {
-          "StorySystem.dll": {}
         }
       },
       "Cs2DslUtility/0.0.0.0": {
@@ -192,6 +197,16 @@
       "serviceable": false,
       "sha512": ""
     },
+    "DotnetSkillScript/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "DotnetStoryScript/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
     "GameObjects/1.0.0": {
       "type": "project",
       "serviceable": false,
@@ -203,16 +218,6 @@
       "sha512": ""
     },
     "SceneLogic/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "SkillSystem/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "StorySystem/1.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

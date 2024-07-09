@@ -1,7 +1,7 @@
 using System;
 using System.Threading;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class MyServerTaskDispatcher
     {

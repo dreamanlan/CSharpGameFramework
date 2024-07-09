@@ -8,11 +8,11 @@ using System.Reflection;
 using Lidgren.Network;
 using CSharpCenterClient;
 
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
-using GameFramework.Network;
+using ScriptableFramework.Network;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public enum RoomSrvStatus
     {

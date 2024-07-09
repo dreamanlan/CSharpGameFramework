@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using GameFramework;
-using GameFramework.Plugin;
-using SkillSystem;
-using StorySystem;
+using ScriptableFramework;
+using ScriptableFramework.Plugin;
+using DotnetSkillScript;
+using DotnetStoryScript;
 
 public enum PluginType
 {
@@ -82,7 +82,7 @@ internal class NativePluginProxy : IPluginProxy
 {
     public void RegisterAttrExpression(string name, string implClass)
     {
-        GameFramework.AttrCalc.DslCalculator.Register(name, new NativeAttrPluginFactory(implClass));
+        ScriptableFramework.AttrCalc.DslCalculator.Register(name, new NativeAttrPluginFactory(implClass));
     }
 
     public void RegisterSkillTrigger(string name, string implClass)
@@ -135,7 +135,7 @@ internal class ScriptPluginProxy : IPluginProxy
 {
     public void RegisterAttrExpression(string name, string implClass)
     {
-        GameFramework.AttrCalc.DslCalculator.Register(name, new ScriptAttrPluginFactory(implClass));
+        ScriptableFramework.AttrCalc.DslCalculator.Register(name, new ScriptAttrPluginFactory(implClass));
     }
 
     public void RegisterSkillTrigger(string name, string implClass)

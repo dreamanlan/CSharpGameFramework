@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 using GameFrameworkData;
-using GameFramework;
+using ScriptableFramework;
 using System.Diagnostics;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal sealed class NicknameSystem
     {

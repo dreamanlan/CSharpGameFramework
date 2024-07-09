@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
-using GameFramework;
-using GameFramework.Story;
-using GameFramework.Skill;
+using ScriptableFramework;
+using ScriptableFramework.Story;
+using ScriptableFramework.Skill;
 using System.IO;
 using UnityEngine.SceneManagement;
 
@@ -291,9 +291,9 @@ public class Game : MonoBehaviour
                         if (null != uiObj) {
                             uiObj.name = ui.name;
                             if (!string.IsNullOrEmpty(ui.dsl)) {
-                                GameFramework.Story.UiStoryInitializer initer = uiObj.GetComponent<GameFramework.Story.UiStoryInitializer>();
+                                ScriptableFramework.Story.UiStoryInitializer initer = uiObj.GetComponent<ScriptableFramework.Story.UiStoryInitializer>();
                                 if (null == initer) {
-                                    initer = uiObj.AddComponent<GameFramework.Story.UiStoryInitializer>();
+                                    initer = uiObj.AddComponent<ScriptableFramework.Story.UiStoryInitializer>();
                                 }
                                 if (null != initer) {
                                     initer.WindowName = ui.name;

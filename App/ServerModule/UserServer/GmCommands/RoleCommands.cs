@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using StorySystem;
+using DotnetStoryScript;
 using GameFrameworkMessage;
 
-namespace GameFramework.GmCommands
+namespace ScriptableFramework.GmCommands
 {
   //---------------------------------------------------------------------------------------------------------------------------------
   //********************************************************delimiter*******************************************************************

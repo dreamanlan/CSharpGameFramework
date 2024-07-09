@@ -22,12 +22,39 @@
           "bin/placeholder/Common.dll": {}
         }
       },
+      "DotnetSkillScript/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Common": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DotnetSkillScript.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DotnetSkillScript.dll": {}
+        }
+      },
+      "DotnetStoryScript/1.0.0": {
+        "type": "project",
+        "framework": ".NETStandard,Version=v2.1",
+        "dependencies": {
+          "Common": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/DotnetStoryScript.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DotnetStoryScript.dll": {}
+        }
+      },
       "GameObjects/1.0.0": {
         "type": "project",
         "framework": ".NETStandard,Version=v2.1",
         "dependencies": {
           "Common": "1.0.0",
-          "StorySystem": "1.0.0"
+          "DotnetSkillScript": "1.0.0",
+          "DotnetStoryScript": "1.0.0"
         },
         "compile": {
           "bin/placeholder/GameObjects.dll": {}
@@ -42,6 +69,8 @@
         "dependencies": {
           "ClientProtoBuf": "1.0.0",
           "Common": "1.0.0",
+          "DotnetSkillScript": "1.0.0",
+          "DotnetStoryScript": "1.0.0",
           "GameObjects": "1.0.0",
           "SceneLogic": "1.0.0",
           "SkillSystem": "1.0.0",
@@ -59,6 +88,8 @@
         "framework": ".NETStandard,Version=v2.1",
         "dependencies": {
           "Common": "1.0.0",
+          "DotnetSkillScript": "1.0.0",
+          "DotnetStoryScript": "1.0.0",
           "GameObjects": "1.0.0"
         },
         "compile": {
@@ -106,6 +137,16 @@
       "type": "project",
       "path": "../../../Infrastructure/Common/Common.csproj",
       "msbuildProject": "../../../Infrastructure/Common/Common.csproj"
+    },
+    "DotnetSkillScript/1.0.0": {
+      "type": "project",
+      "path": "../../../Infrastructure/DotnetSkillScript/DotnetSkillScript.csproj",
+      "msbuildProject": "../../../Infrastructure/DotnetSkillScript/DotnetSkillScript.csproj"
+    },
+    "DotnetStoryScript/1.0.0": {
+      "type": "project",
+      "path": "../../../Infrastructure/DotnetStoryScript/DotnetStoryScript.csproj",
+      "msbuildProject": "../../../Infrastructure/DotnetStoryScript/DotnetStoryScript.csproj"
     },
     "GameObjects/1.0.0": {
       "type": "project",

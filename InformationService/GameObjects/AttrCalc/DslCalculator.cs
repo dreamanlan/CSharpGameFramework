@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework.AttrCalc
+namespace ScriptableFramework.AttrCalc
 {
     public class AttrExpressionList : List<IAttrExpression>
     {        

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using StorySystem;
+using DotnetStoryScript;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal sealed class ServerStorySystem
     {

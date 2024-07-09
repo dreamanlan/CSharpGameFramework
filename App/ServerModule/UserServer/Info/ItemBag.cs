@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using GameFrameworkData;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class ItemBag
     {

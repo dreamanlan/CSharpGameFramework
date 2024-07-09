@@ -4,9 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using GameFramework;
-using GameFramework.Skill;
-using SkillSystem;
+using ScriptableFramework;
+using ScriptableFramework.Skill;
+using DotnetSkillScript;
 
 [CustomEditor(typeof(InplaceSkillInfo))]
 public class InplaceSkillInfoInspector : Editor

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using StorySystem;
+using DotnetStoryScript;
 using ScriptRuntime;
-using GameFramework;
-using GameFramework.Skill;
-using GameFramework.Skill.Trigers;
+using ScriptableFramework;
+using ScriptableFramework.Skill;
+using ScriptableFramework.Skill.Trigers;
 
-namespace GameFramework.Story.Commands
+namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
     /// blackboardclear();
@@ -1709,9 +1709,9 @@ namespace GameFramework.Story.Commands
                 if (null != uiObj) {
                     uiObj.name = name;
                     if (!string.IsNullOrEmpty(dslfile)) {
-                        GameFramework.Story.UiStoryInitializer initer = uiObj.GetComponent<GameFramework.Story.UiStoryInitializer>();
+                        ScriptableFramework.Story.UiStoryInitializer initer = uiObj.GetComponent<ScriptableFramework.Story.UiStoryInitializer>();
                         if (null == initer) {
-                            initer = uiObj.AddComponent<GameFramework.Story.UiStoryInitializer>();
+                            initer = uiObj.AddComponent<ScriptableFramework.Story.UiStoryInitializer>();
                         }
                         if (null != initer) {
                             initer.WindowName = name;

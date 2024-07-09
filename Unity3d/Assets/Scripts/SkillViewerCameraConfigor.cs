@@ -65,7 +65,7 @@ public class SkillViewerCameraConfigor : MonoBehaviour {
 
         if (target_node != null) 
         {
-            GameFramework.Utility.DrawGizmosCircle(target_node.position, 0.5f);
+            ScriptableFramework.Utility.DrawGizmosCircle(target_node.position, 0.5f);
         }
         if ((node0 != null && node1 != null))
         {

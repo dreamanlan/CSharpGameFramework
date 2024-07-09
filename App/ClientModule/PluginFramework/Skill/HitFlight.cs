@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameFramework.Skill
+namespace ScriptableFramework.Skill
 {
     internal sealed class HitFlight
     {

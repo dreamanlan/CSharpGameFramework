@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading;
 using CSharpCenterClient;
 using Lobby;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
 namespace Lobby

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class ServerAsyncActionProcessor : IActionQueue
     {

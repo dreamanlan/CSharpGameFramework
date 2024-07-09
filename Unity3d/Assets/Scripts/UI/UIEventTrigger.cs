@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using GameFramework;
+using ScriptableFramework;
 
 public class UIEventTrigger : UnityEngine.EventSystems.EventTrigger 
 {

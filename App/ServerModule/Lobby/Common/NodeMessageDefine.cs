@@ -1,5 +1,5 @@
 using System;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
 namespace Lobby

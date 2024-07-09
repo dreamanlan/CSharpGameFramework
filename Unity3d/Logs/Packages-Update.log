@@ -99,3 +99,13 @@ Update Mode: updateDependencies
 The following packages were updated:
   com.unity.ide.rider from version 3.0.25 to 3.0.27
   com.unity.ide.visualstudio from version 2.0.21 to 2.0.22
+
+=== Tue Jul  9 02:04:37 2024
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.collab-proxy from version 2.2.0 to 2.3.1
+  com.unity.ide.rider from version 3.0.27 to 3.0.28
+  com.unity.purchasing from version 4.9.3 to 4.11.0

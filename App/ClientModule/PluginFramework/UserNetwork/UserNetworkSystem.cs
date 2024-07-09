@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 using LitJson;
 using System.Net.Sockets;
 using System.Net.NetworkInformation;
 
-namespace GameFramework.Network
+namespace ScriptableFramework.Network
 {
     internal sealed partial class UserNetworkSystem
     {

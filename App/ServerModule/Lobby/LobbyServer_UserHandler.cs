@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using CSharpCenterClient;
 using Messenger;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
 namespace Lobby

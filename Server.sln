@@ -1,25 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RoomServer", "App\ServerModule\RoomServer\RoomServer.csproj", "{A8080D47-00A0-40B7-B353-71153D2E6663}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoomServer", "App\ServerModule\RoomServer\RoomServer.csproj", "{A8080D47-00A0-40B7-B353-71153D2E6663}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Infrastructure\Common\Common.csproj", "{1C8280CD-EB93-4849-940E-A99EDDF811D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Infrastructure\Common\Common.csproj", "{1C8280CD-EB93-4849-940E-A99EDDF811D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCommon", "Infrastructure\Common\ServerCommon.csproj", "{8EAD2077-DE3A-435C-B770-09EFFE4153C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerCommon", "Infrastructure\Common\ServerCommon.csproj", "{8EAD2077-DE3A-435C-B770-09EFFE4153C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkillSystem", "Infrastructure\SkillSystem\SkillSystem.csproj", "{562023AE-B38B-4CFF-B9A3-B6D91347BD59}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientProtoBuf", "App\ClientProtoBuf\ClientProtoBuf.csproj", "{C402FC70-3A7A-4CE2-956F-6AA1DFD5882E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorySystem", "Infrastructure\StorySystem\StorySystem.csproj", "{F1D962E1-3B17-4597-B542-BCB657E75829}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LogSys", "App\ServerModule\LogSys\LogSys\LogSys.csproj", "{7935F58E-9F5D-48F7-B915-C6A0F455165F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientProtoBuf", "App\ClientProtoBuf\ClientProtoBuf.csproj", "{C402FC70-3A7A-4CE2-956F-6AA1DFD5882E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Messenger", "App\ServerModule\Messenger\Messenger\Messenger.csproj", "{98BA0167-2BEB-4845-9926-50CB465C4FA6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogSys", "App\ServerModule\LogSys\LogSys\LogSys.csproj", "{7935F58E-9F5D-48F7-B915-C6A0F455165F}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messenger", "App\ServerModule\Messenger\Messenger\Messenger.csproj", "{98BA0167-2BEB-4845-9926-50CB465C4FA6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerProtoBuf", "App\ServerModule\ServerProtoBuf\ServerProtoBuf.csproj", "{3A1DEA99-D58B-4CE0-BB57-8C09E97AF5E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerProtoBuf", "App\ServerModule\ServerProtoBuf\ServerProtoBuf.csproj", "{3A1DEA99-D58B-4CE0-BB57-8C09E97AF5E4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{D965B9AE-EC7C-4F00-A779-E7650323C7E4}"
 EndProject
@@ -27,19 +23,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InformationService", "Infor
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{41D70746-E394-429F-9C59-94ACF4BFC36C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataCache", "App\ServerModule\DataCache\DataCache.csproj", "{893F4EAD-916E-435E-B093-9837DA7FDC7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataCache", "App\ServerModule\DataCache\DataCache.csproj", "{893F4EAD-916E-435E-B093-9837DA7FDC7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProtoBuf", "App\ServerModule\DataProtoBuf\DataProtoBuf.csproj", "{F261F4C6-33DB-44EE-87FE-AEC3D6FE395E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataProtoBuf", "App\ServerModule\DataProtoBuf\DataProtoBuf.csproj", "{F261F4C6-33DB-44EE-87FE-AEC3D6FE395E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lobby", "App\ServerModule\Lobby\Lobby.csproj", "{0664BB03-3179-4E26-BB87-D65529A3DFEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lobby", "App\ServerModule\Lobby\Lobby.csproj", "{0664BB03-3179-4E26-BB87-D65529A3DFEB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserServer", "App\ServerModule\UserServer\UserServer.csproj", "{A8EE9594-519A-4569-A517-7A13F856E08E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UserServer", "App\ServerModule\UserServer\UserServer.csproj", "{A8EE9594-519A-4569-A517-7A13F856E08E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameObjects", "InformationService\GameObjects\GameObjects.csproj", "{E280220B-7EDA-4274-B3D5-4E922D98CAAD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GameObjects", "InformationService\GameObjects\GameObjects.csproj", "{E280220B-7EDA-4274-B3D5-4E922D98CAAD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SceneLogic", "InformationService\SceneLogic\SceneLogic.csproj", "{3452C105-45DD-4821-BCDA-E495B7748519}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SceneLogic", "InformationService\SceneLogic\SceneLogic.csproj", "{3452C105-45DD-4821-BCDA-E495B7748519}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AppModule", "AppModule", "{8CBFE80B-ECCB-4C01-B93C-87AD4A5E9C2B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetSkillScript", "Infrastructure\DotnetSkillScript\DotnetSkillScript.csproj", "{6D7FA2BD-17DE-4C66-803A-8858E8B3729E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DotnetStoryScript", "Infrastructure\DotnetStoryScript\DotnetStoryScript.csproj", "{F2901406-B02C-4AB6-BA9B-E483169D1D95}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,14 +59,6 @@ Global
 		{8EAD2077-DE3A-435C-B770-09EFFE4153C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EAD2077-DE3A-435C-B770-09EFFE4153C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EAD2077-DE3A-435C-B770-09EFFE4153C1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{562023AE-B38B-4CFF-B9A3-B6D91347BD59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{562023AE-B38B-4CFF-B9A3-B6D91347BD59}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{562023AE-B38B-4CFF-B9A3-B6D91347BD59}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{562023AE-B38B-4CFF-B9A3-B6D91347BD59}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F1D962E1-3B17-4597-B542-BCB657E75829}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F1D962E1-3B17-4597-B542-BCB657E75829}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F1D962E1-3B17-4597-B542-BCB657E75829}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F1D962E1-3B17-4597-B542-BCB657E75829}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C402FC70-3A7A-4CE2-956F-6AA1DFD5882E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C402FC70-3A7A-4CE2-956F-6AA1DFD5882E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C402FC70-3A7A-4CE2-956F-6AA1DFD5882E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -107,6 +99,14 @@ Global
 		{3452C105-45DD-4821-BCDA-E495B7748519}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3452C105-45DD-4821-BCDA-E495B7748519}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3452C105-45DD-4821-BCDA-E495B7748519}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D7FA2BD-17DE-4C66-803A-8858E8B3729E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D7FA2BD-17DE-4C66-803A-8858E8B3729E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D7FA2BD-17DE-4C66-803A-8858E8B3729E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D7FA2BD-17DE-4C66-803A-8858E8B3729E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2901406-B02C-4AB6-BA9B-E483169D1D95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2901406-B02C-4AB6-BA9B-E483169D1D95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2901406-B02C-4AB6-BA9B-E483169D1D95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2901406-B02C-4AB6-BA9B-E483169D1D95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -115,8 +115,6 @@ Global
 		{A8080D47-00A0-40B7-B353-71153D2E6663} = {D965B9AE-EC7C-4F00-A779-E7650323C7E4}
 		{1C8280CD-EB93-4849-940E-A99EDDF811D6} = {41D70746-E394-429F-9C59-94ACF4BFC36C}
 		{8EAD2077-DE3A-435C-B770-09EFFE4153C1} = {41D70746-E394-429F-9C59-94ACF4BFC36C}
-		{562023AE-B38B-4CFF-B9A3-B6D91347BD59} = {41D70746-E394-429F-9C59-94ACF4BFC36C}
-		{F1D962E1-3B17-4597-B542-BCB657E75829} = {41D70746-E394-429F-9C59-94ACF4BFC36C}
 		{C402FC70-3A7A-4CE2-956F-6AA1DFD5882E} = {8CBFE80B-ECCB-4C01-B93C-87AD4A5E9C2B}
 		{7935F58E-9F5D-48F7-B915-C6A0F455165F} = {41D70746-E394-429F-9C59-94ACF4BFC36C}
 		{98BA0167-2BEB-4845-9926-50CB465C4FA6} = {8CBFE80B-ECCB-4C01-B93C-87AD4A5E9C2B}
@@ -127,6 +125,8 @@ Global
 		{A8EE9594-519A-4569-A517-7A13F856E08E} = {D965B9AE-EC7C-4F00-A779-E7650323C7E4}
 		{E280220B-7EDA-4274-B3D5-4E922D98CAAD} = {825542A8-2B62-4DA8-857C-307B0F42BD9A}
 		{3452C105-45DD-4821-BCDA-E495B7748519} = {825542A8-2B62-4DA8-857C-307B0F42BD9A}
+		{6D7FA2BD-17DE-4C66-803A-8858E8B3729E} = {41D70746-E394-429F-9C59-94ACF4BFC36C}
+		{F2901406-B02C-4AB6-BA9B-E483169D1D95} = {41D70746-E394-429F-9C59-94ACF4BFC36C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FF53EF1C-F047-43E4-B8D9-0A81141EBBEF}

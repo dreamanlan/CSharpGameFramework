@@ -2,7 +2,7 @@ using System;
 using LitJson;
 using GameFrameworkMessage;
 
-namespace GameFramework.Network
+namespace ScriptableFramework.Network
 {
     internal sealed class NodeMessage
     {

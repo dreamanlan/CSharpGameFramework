@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 using CSharpCenterClient;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal partial class UserServer
     {

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using GameFramework;
-using GameFramework.Plugin;
-using GameFramework.Skill;
-using SkillSystem;
-using StorySystem;
+using ScriptableFramework;
+using ScriptableFramework.Plugin;
+using ScriptableFramework.Skill;
+using DotnetSkillScript;
+using DotnetStoryScript;
 
 public class AiGohome : ISimpleStoryCommandPlugin
 {

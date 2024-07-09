@@ -3,45 +3,10 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public sealed class Helper
     {
-        public static T ConvertTo<T>(object obj)
-        {
-            if (obj is T) {
-                return (T)obj;
-            } else {
-                try {
-                    return (T)Convert.ChangeType(obj, typeof(T));
-                }
-                catch (OverflowException) {
-                    return (T)Convert.ChangeType(obj.ToString(), typeof(T));
-                }
-                catch {
-                    return default(T);
-                }
-            }
-        }
-        public static object ConvertTo(object obj, Type type)
-        {
-            if(obj == null) { 
-                return null;
-            }
-            if (type.IsAssignableFrom(obj.GetType()) || obj.GetType().IsSubclassOf(type)) {
-                return obj;
-            } else {
-                try {
-                    return Convert.ChangeType(obj, type);
-                }
-                catch (OverflowException) {
-                    return Convert.ChangeType(obj.ToString(), type);
-                }
-                catch {
-                    return null;
-                }
-            }
-        }
         public static void BubbleSort<T>(List<T> list, Comparison<T> comparison)
         {
             int ct = list.Count;

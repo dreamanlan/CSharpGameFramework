@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public sealed class ServerConcurrentPoolAllocatedAction : IServerConcurrentPoolAllocatedObject<ServerConcurrentPoolAllocatedAction>
   {

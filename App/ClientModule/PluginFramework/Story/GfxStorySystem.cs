@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using StorySystem;
-using GameFramework;
+using DotnetStoryScript;
+using ScriptableFramework;
 
-namespace GameFramework.Story
+namespace ScriptableFramework.Story
 {
     public sealed class GfxStorySystem
     {
@@ -29,7 +29,7 @@ namespace GameFramework.Story
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "resumeallmessagehandler", "resumeallmessagehandler command", new StoryCommandFactoryHelper<Story.Commands.ResumeAllMessageHandlerCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendroomstorymessage", "sendroomstorymessage command", new StoryCommandFactoryHelper<Story.Commands.SendRoomStoryMessageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendserverstorymessage", "sendserverstorymessage command", new StoryCommandFactoryHelper<Story.Commands.SendServerStoryMessageCommand>());
-            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendclientstorymessage", "sendclientstorymessage command", new StoryCommandFactoryHelper<StorySystem.CommonCommands.DummyCommand>());
+            StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendclientstorymessage", "sendclientstorymessage command", new StoryCommandFactoryHelper<DotnetStoryScript.CommonCommands.DummyCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "publishgfxevent", "publishgfxevent command", new StoryCommandFactoryHelper<Story.Commands.PublishGfxEventCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendgfxmessage", "sendgfxmessage command", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageCommand>());
             StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sendgfxmessagewithtag", "sendgfxmessagewithtag command", new StoryCommandFactoryHelper<Story.Commands.SendGfxMessageWithTagCommand>());
@@ -218,9 +218,9 @@ namespace GameFramework.Story
             StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getscalex", "getscalex function", new StoryFunctionFactoryHelper<Story.Functions.GetScaleXFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getscaley", "getscaley function", new StoryFunctionFactoryHelper<Story.Functions.GetScaleYFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getscalez", "getscalez function", new StoryFunctionFactoryHelper<Story.Functions.GetScaleZFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "position", "position function", new StoryFunctionFactoryHelper<StorySystem.CommonFunctions.Vector3Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "rotation", "rotation function", new StoryFunctionFactoryHelper<StorySystem.CommonFunctions.Vector3Function>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "scale", "scale function", new StoryFunctionFactoryHelper<StorySystem.CommonFunctions.Vector3Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "position", "position function", new StoryFunctionFactoryHelper<DotnetStoryScript.CommonFunctions.Vector3Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "rotation", "rotation function", new StoryFunctionFactoryHelper<DotnetStoryScript.CommonFunctions.Vector3Function>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "scale", "scale function", new StoryFunctionFactoryHelper<DotnetStoryScript.CommonFunctions.Vector3Function>());
             StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "getcamp", "getcamp function", new StoryFunctionFactoryHelper<Story.Functions.GetCampFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "iscombatnpc", "iscombatnpc function", new StoryFunctionFactoryHelper<Story.Functions.IsCombatNpcFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory(StoryFunctionGroupDefine.GFX, "gethp", "gethp function", new StoryFunctionFactoryHelper<Story.Functions.GetHpFunction>());

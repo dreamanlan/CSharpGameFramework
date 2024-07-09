@@ -6,11 +6,11 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Messenger;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 using GameFrameworkData;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal sealed partial class DataCacheThread
     {

@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using StorySystem;
+using DotnetStoryScript;
 using GameFrameworkMessage;
 
-namespace GameFramework.GmCommands
+namespace ScriptableFramework.GmCommands
 {
     //---------------------------------------------------------------------------------------------------------------------------------
     //********************************************************delimiter*******************************************************************
     //---------------------------------------------------------------------------------------------------------------------------------
-    //Commands that are only valid within the scene (only modify GameFramework combat-related data)
+    //Commands that are only valid within the scene (only modify ScriptableFramework combat-related data)
     public class SetPositionCommand : SimpleStoryCommandBase<SetPositionCommand, StoryValueParam<int, float, float>>
     {
         protected override bool ExecCommand(StoryInstance instance, StoryValueParam<int, float, float> _params, long delta)

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 
-namespace GameFramework.Network
+namespace ScriptableFramework.Network
 {
     internal sealed class ProtoNetEncoding
     {

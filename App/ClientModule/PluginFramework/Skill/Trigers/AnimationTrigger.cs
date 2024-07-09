@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using SkillSystem;
+using DotnetSkillScript;
 
-namespace GameFramework.Skill.Trigers
+namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
     /// animation(anim_name[,start_time[,normalized_anim_start_time]]);

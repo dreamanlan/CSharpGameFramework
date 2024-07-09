@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GameFramework.Skill;
+using ScriptableFramework.Skill;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class EntityViewModelManager
     {

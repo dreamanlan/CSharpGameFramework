@@ -10,9 +10,9 @@ using System.Data;
 using System.Data.Common;
 using MySql.Data.MySqlClient;
 using GameFrameworkData;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal static class DataDML
     {

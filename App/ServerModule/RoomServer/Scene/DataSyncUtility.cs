@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public sealed class DataSyncUtility
     {

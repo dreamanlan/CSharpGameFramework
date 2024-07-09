@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using SkillSystem;
+using DotnetSkillScript;
 
-namespace GameFramework.Skill.Trigers
+namespace ScriptableFramework.Skill.Trigers
 {
     public class EffectManager
     {
@@ -137,7 +137,7 @@ namespace GameFramework.Skill.Trigers
                         effectObj.SetActive(true);
                     }
 
-                    //GameFramework.LogSystem.Debug("SelfEffectTriger:{0}", m_EffectPath);
+                    //ScriptableFramework.LogSystem.Debug("SelfEffectTriger:{0}", m_EffectPath);
                     return false;
                 } else {
                     return true;
@@ -300,7 +300,7 @@ namespace GameFramework.Skill.Trigers
                         effectObj.SetActive(true);
                     }
 
-                    //GameFramework.LogSystem.Debug("TargetEffectTriger:{0}", m_EffectPath);
+                    //ScriptableFramework.LogSystem.Debug("TargetEffectTriger:{0}", m_EffectPath);
                     return false;
                 } else {
                     return true;
@@ -710,7 +710,7 @@ namespace GameFramework.Skill.Trigers
                             return false;
                         }
                     });
-                    //GameFramework.LogSystem.Debug("AoeEmitEffectTriger:{0}", m_EffectPath);
+                    //ScriptableFramework.LogSystem.Debug("AoeEmitEffectTriger:{0}", m_EffectPath);
                     return false;
                 } else {
                     return true;

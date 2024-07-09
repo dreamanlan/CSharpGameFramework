@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameFramework.Story;
+using ScriptableFramework.Story;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal class SceneLogicViewModel_General
     {

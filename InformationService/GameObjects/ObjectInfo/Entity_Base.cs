@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ScriptRuntime;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public delegate void DamageDelegation(int receiver, int caster, bool isNormalDamage, bool isCritical, int hpDamage, int npDamage);
 
@@ -649,7 +649,7 @@ namespace GameFramework
             if (null != source && null != target) {
                 Vector3 pos1 = source.GetMovementStateInfo().GetPosition3D();
                 Vector3 pos2 = target.GetMovementStateInfo().GetPosition3D();
-                float distSqr = GameFramework.Geometry.DistanceSquare(pos1, pos2);
+                float distSqr = ScriptableFramework.Geometry.DistanceSquare(pos1, pos2);
                 return CanSee(source, target, distSqr, pos1, pos2);
             }
             return ret;

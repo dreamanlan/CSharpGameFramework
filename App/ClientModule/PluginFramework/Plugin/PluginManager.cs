@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using GameFramework.Plugin;
+using ScriptableFramework.Plugin;
 
 public interface IObjectPluginFactory
 {

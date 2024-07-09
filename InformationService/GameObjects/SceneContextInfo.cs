@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public delegate void HighlightPromptDelegation(int userId, string dict, object[] args);
     public sealed class SceneContextInfo

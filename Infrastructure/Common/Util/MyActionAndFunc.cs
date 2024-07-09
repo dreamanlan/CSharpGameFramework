@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public delegate void MyAction();
   public delegate void MyAction<T1>(T1 t1);

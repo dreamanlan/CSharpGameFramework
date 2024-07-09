@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GameFramework.Plugin;
-using GameFramework.Story;
-using StorySystem;
+using ScriptableFramework.Plugin;
+using ScriptableFramework.Story;
+using DotnetStoryScript;
 
 internal class NativeSimpleStoryValueFactory : IStoryFunctionFactory
 {
@@ -67,7 +67,7 @@ internal class NativeSimpleStoryValue : IStoryFunction
         }
         return newObj;
     }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, ScriptableFramework.BoxedValue iterator, ScriptableFramework.BoxedValueList args)
     {
         if (null != m_Plugin) {
             m_Proxy.HaveValue = false;
@@ -84,7 +84,7 @@ internal class NativeSimpleStoryValue : IStoryFunction
             return m_Proxy.HaveValue;
         }
     }
-    public BoxedValue Value
+    public ScriptableFramework.BoxedValue Value
     {
         get
         {
@@ -136,7 +136,7 @@ internal class ScriptSimpleStoryValue : IStoryFunction
         }
         return newObj;
     }
-    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+    public void Evaluate(StoryInstance instance, StoryMessageHandler handler, ScriptableFramework.BoxedValue iterator, ScriptableFramework.BoxedValueList args)
     {
         if (null != m_Plugin) {
             m_Proxy.HaveValue = false;
@@ -153,7 +153,7 @@ internal class ScriptSimpleStoryValue : IStoryFunction
             return m_Proxy.HaveValue;
         }
     }
-    public BoxedValue Value
+    public ScriptableFramework.BoxedValue Value
     {
         get
         {

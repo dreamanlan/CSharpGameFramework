@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public delegate BoxedValueList SceneLogicNewBoxedValueListDelegation(SceneLogicInfo info);
     public delegate void SceneLogicSendStoryMessageDelegation(SceneLogicInfo info, string msgId, BoxedValueList args);

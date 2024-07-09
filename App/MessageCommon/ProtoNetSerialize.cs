@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using GameFrameworkMessage;
 
-namespace GameFramework.Network
+namespace ScriptableFramework.Network
 {
     public static class Serialize
     {

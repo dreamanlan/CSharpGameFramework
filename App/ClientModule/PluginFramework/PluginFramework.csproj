@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <OutputType>Library</OutputType>
-    <RootNamespace>GameFramework</RootNamespace>
+    <RootNamespace>ScriptableFramework</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <GenerateTargetFrameworkAttribute>False</GenerateTargetFrameworkAttribute>
   </PropertyGroup>
@@ -60,6 +60,8 @@
     <ProjectReference Include="..\..\..\InformationService\GameObjects\GameObjects.csproj" />
     <ProjectReference Include="..\..\..\InformationService\SceneLogic\SceneLogic.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\DotnetSkillScript\DotnetSkillScript.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\DotnetStoryScript\DotnetStoryScript.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\SkillSystem\SkillSystem.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\StorySystem\StorySystem.csproj" />
     <ProjectReference Include="..\..\ClientProtoBuf\ClientProtoBuf.csproj" />

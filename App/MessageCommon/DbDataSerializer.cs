@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 
 namespace GameFrameworkData
 {

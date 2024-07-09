@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using LitJson;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     //----------------------------------------------------------------------------------------------
     // node messages from client

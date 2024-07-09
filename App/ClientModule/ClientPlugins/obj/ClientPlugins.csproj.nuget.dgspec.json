@@ -130,6 +130,12 @@
               "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
                 "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
               },
+              "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
+                "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj"
+              },
+              "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
+                "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj"
+              },
               "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj": {
                 "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\SkillSystem\\SkillSystem.csproj"
               },
@@ -268,8 +274,11 @@
               "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
                 "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
               },
-              "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj": {
-                "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\StorySystem\\StorySystem.csproj"
+              "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
+                "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj"
+              },
+              "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
+                "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj"
               }
             }
           }
@@ -341,6 +350,12 @@
               },
               "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
                 "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              },
+              "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
+                "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj"
+              },
+              "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
+                "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj"
               }
             }
           }
@@ -407,6 +422,142 @@
           "netstandard2.1": {
             "targetAlias": "netstandard2.1",
             "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
+        "projectName": "DotnetSkillScript",
+        "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\DotnetSkillScript.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetSkillScript\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "netstandard2.1": {
+          "targetAlias": "netstandard2.1",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "NETStandard.Library": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.204\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
+        "projectName": "DotnetStoryScript",
+        "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\DotnetStoryScript.csproj",
+        "packagesPath": "C:\\Users\\dreamanlan\\.nuget\\packages\\",
+        "outputPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\DotnetStoryScript\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\dreamanlan\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.1": {
+            "targetAlias": "netstandard2.1",
+            "projectReferences": {
+              "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj": {
+                "projectPath": "F:\\GitHub\\CSharpGameFramework\\Infrastructure\\Common\\Common.csproj"
+              }
+            }
           }
         },
         "warningProperties": {

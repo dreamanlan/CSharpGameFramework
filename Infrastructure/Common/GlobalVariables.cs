@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     /// <summary>
     /// Put the variable values that are different between the client and the server here

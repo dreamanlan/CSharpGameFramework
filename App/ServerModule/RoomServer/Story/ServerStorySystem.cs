@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using StorySystem;
+using DotnetStoryScript;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public sealed class ServerStorySystem
     {
@@ -644,7 +644,7 @@ namespace GameFramework
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetcamp", "objsetcamp command", new StoryCommandFactoryHelper<Story.Commands.ObjSetCampCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetsummonerid", "objsetsummonerid command", new StoryCommandFactoryHelper<Story.Commands.ObjSetSummonerIdCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objsetsummonskillid", "objsetsummonskillid command", new StoryCommandFactoryHelper<Story.Commands.ObjSetSummonSkillIdCommand>());
-                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setvisible", "setvisible command", new StoryCommandFactoryHelper<StorySystem.CommonCommands.DummyCommand>());
+                StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setvisible", "setvisible command", new StoryCommandFactoryHelper<DotnetStoryScript.CommonCommands.DummyCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "sethp", "sethp command", new StoryCommandFactoryHelper<Story.Commands.SetHpCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "setenergy", "setenergy command", new StoryCommandFactoryHelper<Story.Commands.SetEnergyCommand>());
                 StoryCommandManager.Instance.RegisterCommandFactory(StoryCommandGroupDefine.GFX, "objset", "objset command", new StoryCommandFactoryHelper<Story.Commands.ObjSetCommand>());

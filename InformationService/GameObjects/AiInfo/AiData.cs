@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using ScriptRuntime;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class AiData_ForMoveCommand
     {

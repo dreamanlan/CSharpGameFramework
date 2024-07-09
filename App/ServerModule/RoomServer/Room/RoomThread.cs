@@ -5,7 +5,7 @@ using System.Threading;
 using Messenger;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     /// <remarks>
     /// Note that the public methods of this class should consider whether cross-thread calls are safe! ! !

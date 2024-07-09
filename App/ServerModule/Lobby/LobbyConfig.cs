@@ -24,7 +24,7 @@ internal class LobbyConfig
       s_Instance.m_Debug = (int.Parse(debug) != 0 ? true : false);
 
       if (s_Instance.m_Debug) {
-        GameFramework.GlobalVariables.Instance.IsDebug = true;
+        ScriptableFramework.GlobalVariables.Instance.IsDebug = true;
       }
     }
 

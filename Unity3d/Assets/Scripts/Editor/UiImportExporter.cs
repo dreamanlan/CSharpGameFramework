@@ -492,7 +492,7 @@ internal static class UiEditUtility
                     type = System.Type.GetType(fullName);
                 }
                 if (null == type) {
-                    fullName = string.Format("GameFramework.{0}, PluginFramework, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", name);
+                    fullName = string.Format("ScriptableFramework.{0}, PluginFramework, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", name);
                     type = System.Type.GetType(fullName);
                 }
             }
@@ -545,7 +545,7 @@ internal static class UiEditUtility
                             if (null != call) {
                                 string alignEnum = call.GetParamId(0);
                                 string boolVal = call.GetParamId(1);
-                                text.alignment = GameFramework.Converter.ConvertStrToEnum<TextAnchor>(alignEnum);
+                                text.alignment = ScriptableFramework.Converter.ConvertStrToEnum<TextAnchor>(alignEnum);
                                 text.alignByGeometry = boolVal == "True";
                             }
                         } else if (id == "font") {
@@ -563,7 +563,7 @@ internal static class UiEditUtility
                                 text.font = font;
                                 text.fontSize = size;
                                 text.lineSpacing = lineSpacing;
-                                text.fontStyle = GameFramework.Converter.ConvertStrToEnum<FontStyle>(fontStyle);
+                                text.fontStyle = ScriptableFramework.Converter.ConvertStrToEnum<FontStyle>(fontStyle);
                             }
                         }
                     }
@@ -603,10 +603,10 @@ internal static class UiEditUtility
                                 string e2 = call.GetParamId(1);
                                 string e3 = call.GetParamId(2);
                                 string e4 = call.GetParamId(3);
-                                gridLayout.startCorner = GameFramework.Converter.ConvertStrToEnum<GridLayoutGroup.Corner>(e1);
-                                gridLayout.startAxis = GameFramework.Converter.ConvertStrToEnum<GridLayoutGroup.Axis>(e2);
-                                gridLayout.childAlignment = GameFramework.Converter.ConvertStrToEnum<TextAnchor>(e3);
-                                gridLayout.constraint = GameFramework.Converter.ConvertStrToEnum<GridLayoutGroup.Constraint>(e4);
+                                gridLayout.startCorner = ScriptableFramework.Converter.ConvertStrToEnum<GridLayoutGroup.Corner>(e1);
+                                gridLayout.startAxis = ScriptableFramework.Converter.ConvertStrToEnum<GridLayoutGroup.Axis>(e2);
+                                gridLayout.childAlignment = ScriptableFramework.Converter.ConvertStrToEnum<TextAnchor>(e3);
+                                gridLayout.constraint = ScriptableFramework.Converter.ConvertStrToEnum<GridLayoutGroup.Constraint>(e4);
                             }
                         }
                     }
@@ -639,7 +639,7 @@ internal static class UiEditUtility
                                 bool o3 = call.GetParamId(2) == "True";
                                 bool o4 = call.GetParamId(3) == "True";
                                 bool o5 = call.GetParamId(4) == "True";
-                                horizontalLayout.childAlignment = GameFramework.Converter.ConvertStrToEnum<TextAnchor>(o1);
+                                horizontalLayout.childAlignment = ScriptableFramework.Converter.ConvertStrToEnum<TextAnchor>(o1);
                                 horizontalLayout.childControlWidth = o2;
                                 horizontalLayout.childControlHeight = o3;
                                 horizontalLayout.childForceExpandWidth = o4;
@@ -676,7 +676,7 @@ internal static class UiEditUtility
                                 bool o3 = call.GetParamId(2) == "True";
                                 bool o4 = call.GetParamId(3) == "True";
                                 bool o5 = call.GetParamId(4) == "True";
-                                verticalLayout.childAlignment = GameFramework.Converter.ConvertStrToEnum<TextAnchor>(o1);
+                                verticalLayout.childAlignment = ScriptableFramework.Converter.ConvertStrToEnum<TextAnchor>(o1);
                                 verticalLayout.childControlWidth = o2;
                                 verticalLayout.childControlHeight = o3;
                                 verticalLayout.childForceExpandWidth = o4;
@@ -710,8 +710,8 @@ internal static class UiEditUtility
                                 string v2 = call.GetParamId(1);
                                 string v3 = call.GetParamId(2);
                                 animator.applyRootMotion = v1;
-                                animator.updateMode = GameFramework.Converter.ConvertStrToEnum<AnimatorUpdateMode>(v2);
-                                animator.cullingMode = GameFramework.Converter.ConvertStrToEnum<AnimatorCullingMode>(v3);
+                                animator.updateMode = ScriptableFramework.Converter.ConvertStrToEnum<AnimatorUpdateMode>(v2);
+                                animator.cullingMode = ScriptableFramework.Converter.ConvertStrToEnum<AnimatorCullingMode>(v3);
                             }
                         }
                     }
@@ -772,7 +772,7 @@ internal static class UiEditUtility
                             if (null != call) {
                                 string rootBone = call.GetParamId(0);
                                 var root = FindRoot(obj);
-                                var boneObj = GameFramework.Utility.FindChildObject(root, rootBone);
+                                var boneObj = ScriptableFramework.Utility.FindChildObject(root, rootBone);
                                 if (null != boneObj) {
                                     skinnedMeshRenderer.rootBone = boneObj.transform;
                                 }

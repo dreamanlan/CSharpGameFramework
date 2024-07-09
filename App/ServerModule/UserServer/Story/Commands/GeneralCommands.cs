@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using StorySystem;
-using GameFramework;
+using DotnetStoryScript;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
-namespace GameFramework.Story.Commands
+namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
     /// startstory(story_id);
@@ -541,7 +541,7 @@ namespace GameFramework.Story.Commands
             UserThread userThread = instance.Context as UserThread;
             if (null != userThread) {
                 if (m_StartTime <= 0) {
-                    long startTime = GameFramework.TimeUtility.GetLocalMilliseconds();
+                    long startTime = ScriptableFramework.TimeUtility.GetLocalMilliseconds();
                     m_StartTime = startTime;
                 }
                 bool triggered = false;

@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using GameFramework;
-using GameFramework.Plugin;
-using GameFramework.Skill;
-using GameFramework.Skill.Trigers;
-using SkillSystem;
+using ScriptableFramework;
+using ScriptableFramework.Plugin;
+using ScriptableFramework.Skill;
+using ScriptableFramework.Skill.Trigers;
+using DotnetSkillScript;
 
 public class TrackBulletTrigger : ISkillTriggerPlugin
 {

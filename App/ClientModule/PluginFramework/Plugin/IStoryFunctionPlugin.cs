@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using StorySystem;
+using DotnetStoryScript;
 
-namespace GameFramework.Plugin
+namespace ScriptableFramework.Plugin
 {
     public interface IStoryFunctionPlugin
     {

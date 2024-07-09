@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using GameFramework.Plugin;
+using ScriptableFramework.Plugin;
 
 public class PluginProxyStartup : MonoBehaviour
 {

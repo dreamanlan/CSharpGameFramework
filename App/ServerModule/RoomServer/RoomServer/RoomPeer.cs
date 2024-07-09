@@ -4,10 +4,10 @@ using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using Lidgren.Network;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class RoomPeer
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ScriptRuntime;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class SceneLogic_Timeout : AbstractSceneLogic
     {

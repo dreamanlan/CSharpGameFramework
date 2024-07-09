@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GameFramework.DataCache
+namespace ScriptableFramework.DataCache
 {
     internal enum DirtyState
     {

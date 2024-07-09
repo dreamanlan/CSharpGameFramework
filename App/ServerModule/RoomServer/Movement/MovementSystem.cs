@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class MovementSystem
     {

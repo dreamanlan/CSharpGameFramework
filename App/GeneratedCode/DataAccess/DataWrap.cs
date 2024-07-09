@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Text;
 using GameFrameworkData;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class AccountInfo
 	{
@@ -129,7 +129,7 @@ namespace GameFramework
 	}
 }
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class TableActivationCodeWrap
 	{
@@ -231,7 +231,7 @@ namespace GameFramework
 	}
 }
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class FriendInfo
 	{
@@ -369,7 +369,7 @@ namespace GameFramework
 	}
 }
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class TableGlobalDataWrap
 	{
@@ -480,7 +480,7 @@ namespace GameFramework
 	}
 }
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class TableGuidWrap
 	{
@@ -573,7 +573,7 @@ namespace GameFramework
 	}
 }
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class ItemInfo
 	{
@@ -684,7 +684,7 @@ namespace GameFramework
 	}
 }
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class TableMailInfoWrap
 	{
@@ -934,7 +934,7 @@ namespace GameFramework
 	}
 }
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class MailState
 	{
@@ -1066,7 +1066,7 @@ namespace GameFramework
 	}
 }
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class MemberInfo
 	{
@@ -1177,7 +1177,7 @@ namespace GameFramework
 	}
 }
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class NicknameInfo
 	{
@@ -1270,7 +1270,7 @@ namespace GameFramework
 	}
 }
 
-namespace GameFramework
+namespace ScriptableFramework
 {
 	public sealed partial class UserInfo
 	{

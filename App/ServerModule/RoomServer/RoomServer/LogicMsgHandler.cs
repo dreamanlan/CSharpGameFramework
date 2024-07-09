@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using GameFrameworkMessage;
 using ScriptRuntime;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class DefaultMsgHandler
     {
@@ -193,7 +193,7 @@ namespace GameFramework
                         } else {
                             scene.GmStorySystem.GlobalVariables.Add("EntityInfo", BoxedValue.FromObject(user.Info));
                         }
-                        StorySystem.StoryConfigManager.Instance.Clear();
+                        DotnetStoryScript.StoryConfigManager.Instance.Clear();
                         scene.StorySystem.ClearStoryInstancePool();
                         scene.StorySystem.LoadSceneStories();
                         scene.StorySystem.StartStory("local_main");

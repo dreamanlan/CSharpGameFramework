@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class SpriteManager
     {

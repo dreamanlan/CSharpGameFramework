@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using GameFramework;
+using ScriptableFramework;
 
 public class TopMenu : MonoBehaviour
 {

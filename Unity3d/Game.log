@@ -1,66 +1,98 @@
-20-48-26-232:======GameLog Start (2024年6月18日, 20:48:26)======
-20-48-26-265:[Debug]:Time:20-48-26-264:table config root = F:/GitHub/CSharpGameFramework/Unity3d/Assets/StreamingAssets/Tables/
-20-48-26-292:[Info]:Time:20-48-26-291:binary load 2131 parse 1326, file Tables/Public/Level.dat
-20-48-26-308:[Info]:Time:20-48-26-308:binary load 288 parse 572, file Tables/Public/LevelMonster.dat
-20-48-26-311:[Info]:Time:20-48-26-311:binary load 193 parse 487, file Tables/Public/Const.dat
-20-48-26-322:[Info]:Time:20-48-26-322:binary load 309 parse 353, file Tables/Public/AttrDefine.dat
-20-48-26-338:[Info]:Time:20-48-26-338:binary load 308 parse 620, file Tables/Public/Actor.dat
-20-48-26-339:[Info]:Time:20-48-26-339:binary load 180 parse 394, file Tables/Public/Skill.dat
-20-48-26-340:[Info]:Time:20-48-26-340:binary load 164 parse 301, file Tables/Public/SkillResources.dat
-20-48-26-356:[Info]:Time:20-48-26-356:binary load 303 parse 499, file Tables/Public/SkillData.dat
-20-48-26-358:[Info]:Time:20-48-26-358:binary load 173 parse 365, file Tables/Public/ImpactData.dat
-20-48-26-359:[Info]:Time:20-48-26-359:binary load 153 parse 434, file Tables/Public/SkillEvent.dat
-20-48-26-383:[Info]:Time:20-48-26-383:binary load 313 parse 341, file Tables/Client/StoryDlg.dat
-20-48-26-389:[Info]:Time:20-48-26-389:binary load 222 parse 899, file Tables/Client/StrDictionary.dat
-20-48-26-390:[Info]:Time:20-48-26-390:binary load 182 parse 276, file Tables/Client/UI.dat
-20-48-26-392:[Info]:Time:20-48-26-392:binary load 329 parse 770, file Tables/Public/Formation.dat
-20-48-27-172:[Info]:Time:20-48-27-171:SendMessage GameRoot LoadScene TableConfig.Level False
-20-48-27-471:[Debug]:Time:20-48-27-471:StoryInstance.Init message handler num:6 True
-20-48-27-471:[Info]:Time:20-48-27-471:ParseStory story_main 0
-20-48-27-475:[Debug]:Time:20-48-27-475:StoryInstance.Init message handler num:4 True
-20-48-27-475:[Info]:Time:20-48-27-475:ParseStory local_main 0
-20-48-27-496:[Debug]:Time:20-48-27-496:StoryInstance.Init message handler num:5 True
-20-48-27-496:[Info]:Time:20-48-27-496:ParseStory skill_main 0
-20-48-27-497:[Debug]:Time:20-48-27-497:StoryInstance.Init message handler num:1 True
-20-48-27-497:[Info]:Time:20-48-27-497:ParseStory auto_story 0
-20-48-27-500:[Warn]:Time:20-48-27-500:StoryInstance queue message start
-20-48-27-500:[Info]:Time:20-48-27-500:StartStory local_main
-20-48-27-501:[Warn]:Time:20-48-27-500:StoryInstance queue message start
-20-48-27-501:[Info]:Time:20-48-27-501:StartStory story_main
-20-48-27-509:[Debug]:Time:20-48-27-509:StoryInstance.Init message handler num:3 True
-20-48-27-509:[Info]:Time:20-48-27-509:ParseStory LoginDlg:main 0
-20-48-27-512:[Debug]:Time:20-48-27-512:StoryInstance.Init message handler num:3 True
-20-48-27-512:[Info]:Time:20-48-27-512:ParseStory NicknameDlg:main 0
-20-48-27-519:[Debug]:Time:20-48-27-519:StoryInstance.Init message handler num:4 True
-20-48-27-519:[Info]:Time:20-48-27-519:ParseStory StoryDlg:main 0
-20-48-27-524:[Debug]:Time:20-48-27-524:SkillInstance.Init section num:0 True skill 2110000000
-20-48-27-525:[Debug]:Time:20-48-27-525:ParseSkill 2110000000
-20-48-27-525:[Debug]:Time:20-48-27-525:SkillInstance.Init section num:0 True skill 2120000000
-20-48-27-525:[Debug]:Time:20-48-27-525:ParseSkill 2120000000
-20-48-27-583:[Warn]:Time:20-48-27-582:StoryInstance queue message start
-20-48-27-583:[Info]:Time:20-48-27-583:StartStory LoginDlg:main
-20-48-27-606:[Warn]:Time:20-48-27-605:StoryInstance queue message start
-20-48-27-606:[Info]:Time:20-48-27-606:StartStory NicknameDlg:main
-20-48-27-615:[Warn]:Time:20-48-27-615:StoryInstance queue message start
-20-48-27-616:[Info]:Time:20-48-27-616:StartStory StoryDlg:main
-20-48-27-616:[Info]:Time:20-48-27-616:SendMessage GameRoot OnLoadMainUiComplete 1 False
-20-48-27-668:[Warn]:Time:20-48-27-667:NicknameDlg start
-20-48-27-669:[Warn]:Time:20-48-27-668:LoginDlg start
-20-48-27-669:[Info]:Time:20-48-27-669:Publish loading_complete ui
-20-48-27-670:[Info]:Time:20-48-27-670:Publish ge_select_server lobby
-20-48-27-680:[Warn]:Time:20-48-27-679:StoryInstance queue message show_login
-20-48-27-714:[Info]:Time:20-48-27-714:StartStory skill_main
-20-48-27-714:[Warn]:Time:20-48-27-714:StoryInstance queue message start
-20-48-27-714:[Info]:Time:20-48-27-714:StartStory auto_story
-20-48-27-714:[Info]:Time:20-48-27-714:Publish ui_hide ui
-20-48-37-257:[Debug]:Time:20-48-37-257:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) GameFramework.GameControler+Logger, action count 1
-20-48-37-540:[Info]:Time:20-48-37-540:Publish gm_execcommand gm
-20-48-37-541:[Debug]:Time:20-48-37-541:StoryInstance.Init message handler num:1 True
-20-48-37-541:[Info]:Time:20-48-37-541:ParseStory main 0
-20-48-37-542:[Warn]:Time:20-48-37-542:StoryInstance queue message start
-20-48-37-542:[Info]:Time:20-48-37-542:StartStory main
-20-48-37-542:[Warn]:Time:20-48-37-542:ExecCommand log "test" finish.
-20-48-37-543:[Warn]:Time:20-48-37-543:test
-20-48-41-900:[Info]:Time:20-48-41-899:SendToLobby:6 BgAAAA==
-20-48-41-900:[Info]:Time:20-48-41-900:Disconnect(False). CurTime 14569 LastConnectTime 0
-20-48-41-901:[Debug]:Time:20-48-41-901:QueueActionWithDelegation, Void OnLog(System.String) GameFramework.Network.UserNetworkSystem, action count 1
+13-27-09-019:======GameLog Start (2024年7月9日, 13:27:09)======
+13-27-09-055:[Debug]:Time:13-27-09-053:table config root = F:/GitHub/CSharpGameFramework/Unity3d/Assets/StreamingAssets/Tables/
+13-27-09-060:[Info]:Time:13-27-09-060:binary load 1887 parse 1242, file Tables/Public/Level.dat
+13-27-09-062:[Info]:Time:13-27-09-062:binary load 198 parse 481, file Tables/Public/LevelMonster.dat
+13-27-09-065:[Info]:Time:13-27-09-064:binary load 190 parse 462, file Tables/Public/Const.dat
+13-27-09-066:[Info]:Time:13-27-09-066:binary load 233 parse 288, file Tables/Public/AttrDefine.dat
+13-27-09-067:[Info]:Time:13-27-09-067:binary load 250 parse 493, file Tables/Public/Actor.dat
+13-27-09-069:[Info]:Time:13-27-09-069:binary load 168 parse 399, file Tables/Public/Skill.dat
+13-27-09-070:[Info]:Time:13-27-09-070:binary load 159 parse 377, file Tables/Public/SkillResources.dat
+13-27-09-071:[Info]:Time:13-27-09-071:binary load 166 parse 385, file Tables/Public/SkillData.dat
+13-27-09-073:[Info]:Time:13-27-09-073:binary load 163 parse 390, file Tables/Public/ImpactData.dat
+13-27-09-074:[Info]:Time:13-27-09-074:binary load 187 parse 481, file Tables/Public/SkillEvent.dat
+13-27-09-080:[Info]:Time:13-27-09-080:binary load 201 parse 270, file Tables/Client/StoryDlg.dat
+13-27-09-082:[Info]:Time:13-27-09-082:binary load 192 parse 880, file Tables/Client/StrDictionary.dat
+13-27-09-083:[Info]:Time:13-27-09-083:binary load 179 parse 259, file Tables/Client/UI.dat
+13-27-09-086:[Info]:Time:13-27-09-086:binary load 319 parse 710, file Tables/Public/Formation.dat
+13-27-09-673:[Info]:Time:13-27-09-673:SendMessage GameRoot LoadScene TableConfig.Level False
+13-27-09-884:[Debug]:Time:13-27-09-884:StoryInstance.Init message handler num:6 True
+13-27-09-884:[Info]:Time:13-27-09-884:ParseStory story_main 0
+13-27-09-888:[Debug]:Time:13-27-09-888:StoryInstance.Init message handler num:4 True
+13-27-09-888:[Info]:Time:13-27-09-888:ParseStory local_main 0
+13-27-09-911:[Debug]:Time:13-27-09-911:StoryInstance.Init message handler num:5 True
+13-27-09-911:[Info]:Time:13-27-09-911:ParseStory skill_main 0
+13-27-09-912:[Debug]:Time:13-27-09-912:StoryInstance.Init message handler num:1 True
+13-27-09-912:[Info]:Time:13-27-09-912:ParseStory auto_story 0
+13-27-09-914:[Warn]:Time:13-27-09-914:StoryInstance queue message start
+13-27-09-914:[Info]:Time:13-27-09-914:StartStory local_main
+13-27-09-915:[Warn]:Time:13-27-09-914:StoryInstance queue message start
+13-27-09-915:[Info]:Time:13-27-09-915:StartStory story_main
+13-27-09-921:[Debug]:Time:13-27-09-921:StoryInstance.Init message handler num:3 True
+13-27-09-921:[Info]:Time:13-27-09-921:ParseStory LoginDlg:main 0
+13-27-09-929:[Debug]:Time:13-27-09-929:StoryInstance.Init message handler num:3 True
+13-27-09-929:[Info]:Time:13-27-09-929:ParseStory NicknameDlg:main 0
+13-27-09-937:[Debug]:Time:13-27-09-937:StoryInstance.Init message handler num:4 True
+13-27-09-937:[Info]:Time:13-27-09-937:ParseStory StoryDlg:main 0
+13-27-09-942:[Debug]:Time:13-27-09-942:SkillInstance.Init section num:0 True skill 2110000000
+13-27-09-943:[Debug]:Time:13-27-09-943:ParseSkill 2110000000
+13-27-09-943:[Debug]:Time:13-27-09-943:SkillInstance.Init section num:0 True skill 2120000000
+13-27-09-943:[Debug]:Time:13-27-09-943:ParseSkill 2120000000
+13-27-09-953:[Warn]:Time:13-27-09-953:StoryInstance queue message start
+13-27-09-953:[Info]:Time:13-27-09-953:StartStory LoginDlg:main
+13-27-09-955:[Warn]:Time:13-27-09-955:StoryInstance queue message start
+13-27-09-955:[Info]:Time:13-27-09-955:StartStory NicknameDlg:main
+13-27-09-961:[Warn]:Time:13-27-09-961:StoryInstance queue message start
+13-27-09-961:[Info]:Time:13-27-09-961:StartStory StoryDlg:main
+13-27-09-961:[Info]:Time:13-27-09-961:SendMessage GameRoot OnLoadMainUiComplete 1 False
+13-27-09-975:[Warn]:Time:13-27-09-975:NicknameDlg start
+13-27-09-976:[Warn]:Time:13-27-09-975:LoginDlg start
+13-27-09-976:[Info]:Time:13-27-09-976:Publish loading_complete ui
+13-27-09-977:[Info]:Time:13-27-09-977:Publish ge_select_server lobby
+13-27-09-986:[Warn]:Time:13-27-09-985:StoryInstance queue message show_login
+13-27-10-029:[Info]:Time:13-27-10-029:StartStory skill_main
+13-27-10-030:[Warn]:Time:13-27-10-029:StoryInstance queue message start
+13-27-10-030:[Info]:Time:13-27-10-030:StartStory auto_story
+13-27-10-030:[Info]:Time:13-27-10-030:Publish ui_hide ui
+13-27-19-794:[Debug]:Time:13-27-19-794:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) ScriptableFramework.GameControler+Logger, action count 1
+13-27-25-833:[Info]:Time:13-27-25-833:Publish gm_execcommand gm
+13-27-25-835:[Error]:Time:13-27-25-835:[LoadStory] value:deviceinfo[deviceinfo()] line:1 failed.
+13-27-25-836:[Error]:Time:13-27-25-836:[LoadStory] LoadStoryText file: scene:0 Exception:[LoadStory] command:log[log(deviceinfo())] line:1 failed.
+  at DotnetStoryScript.StoryCommandManager.CreateCommand (Dsl.ISyntaxComponent commandConfig) [0x0040f] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryMessageHandler.RefreshCommands (Dsl.FunctionData handlerData) [0x0001e] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryMessageHandler.Load (Dsl.FunctionData messageHandlerData, System.String storyId) [0x00072] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryInstance.Init (Dsl.ISyntaxComponent config) [0x002bf] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryConfigManager.Load (Dsl.DslFile dataFile, System.Int32 sceneId, System.String _namespace, System.String resourceName) [0x000f4] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryConfigManager.LoadStoryText (System.String file, System.Byte[] bytes, System.Int32 sceneId, System.String _namespace) [0x000d0] in <4c420a06b77845fb942754ef680c986f>:0 
+	=> exception:[LoadStory] value:deviceinfo[deviceinfo()] line:1 failed. stack:  at DotnetStoryScript.StoryFunctionManager.CreateFunction (Dsl.ISyntaxComponent param) [0x005b4] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryValue.CalcInitValue (Dsl.ISyntaxComponent param) [0x00006] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryValue.InitFromDsl (Dsl.ISyntaxComponent param) [0x000d6] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.CommonCommands.LogCommand.Load (Dsl.FunctionData callData) [0x0001e] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.AbstractStoryCommand.Init (Dsl.ISyntaxComponent config) [0x00026] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryCommandManager.CreateCommand (Dsl.ISyntaxComponent commandConfig) [0x003a0] in <4c420a06b77845fb942754ef680c986f>:0 
+
+13-27-25-837:[Error]:Time:13-27-25-837:Can't load story config, story:main !
+13-27-25-837:[Warn]:Time:13-27-25-837:ExecCommand log deviceinfo(); finish.
+13-27-29-792:[Debug]:Time:13-27-29-792:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) ScriptableFramework.GameControler+Logger, action count 1
+13-27-36-194:[Info]:Time:13-27-36-194:Publish gm_execcommand gm
+13-27-36-195:[Error]:Time:13-27-36-195:[LoadStory] CreateCommand failed, line:1 command:+[log1 + 23]
+13-27-36-195:[Error]:Time:13-27-36-195:[LoadStory] LoadStoryText file: scene:0 Exception:[LoadStory] CreateCommand failed, line:1 command:+[log1 + 23]
+  at DotnetStoryScript.StoryCommandManager.CreateCommand (Dsl.ISyntaxComponent commandConfig) [0x0046c] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryMessageHandler.RefreshCommands (Dsl.FunctionData handlerData) [0x0001e] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryMessageHandler.Load (Dsl.FunctionData messageHandlerData, System.String storyId) [0x00072] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryInstance.Init (Dsl.ISyntaxComponent config) [0x002bf] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryConfigManager.Load (Dsl.DslFile dataFile, System.Int32 sceneId, System.String _namespace, System.String resourceName) [0x000f4] in <4c420a06b77845fb942754ef680c986f>:0 
+  at DotnetStoryScript.StoryConfigManager.LoadStoryText (System.String file, System.Byte[] bytes, System.Int32 sceneId, System.String _namespace) [0x000d0] in <4c420a06b77845fb942754ef680c986f>:0 
+
+13-27-36-195:[Error]:Time:13-27-36-195:Can't load story config, story:main !
+13-27-36-195:[Warn]:Time:13-27-36-195:ExecCommand log 1+23; finish.
+13-27-39-794:[Debug]:Time:13-27-39-794:QueueActionWithDelegation, Void FlushToFile(System.Collections.Generic.Queue`1[System.String]) ScriptableFramework.GameControler+Logger, action count 1
+13-27-41-722:[Info]:Time:13-27-41-722:Publish gm_execcommand gm
+13-27-41-722:[Debug]:Time:13-27-41-722:StoryInstance.Init message handler num:1 True
+13-27-41-722:[Info]:Time:13-27-41-722:ParseStory main 0
+13-27-41-723:[Warn]:Time:13-27-41-722:StoryInstance queue message start
+13-27-41-723:[Info]:Time:13-27-41-723:StartStory main
+13-27-41-723:[Warn]:Time:13-27-41-723:ExecCommand log (1+23); finish.
+13-27-41-723:[Warn]:Time:13-27-41-723:24
+13-27-45-549:[Info]:Time:13-27-45-549:SendToLobby:6 BgAAAA==
+13-27-45-549:[Info]:Time:13-27-45-549:Disconnect(False). CurTime 35674 LastConnectTime 0
+13-27-45-550:[Debug]:Time:13-27-45-550:QueueActionWithDelegation, Void OnLog(System.String) ScriptableFramework.Network.UserNetworkSystem, action count 1

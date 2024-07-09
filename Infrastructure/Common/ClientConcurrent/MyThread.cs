@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public delegate void MyClientThreadEventDelegate();
     public class MyClientThread : IActionQueue

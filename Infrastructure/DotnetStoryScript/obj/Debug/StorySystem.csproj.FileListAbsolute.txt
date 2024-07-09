@@ -1,0 +1,13 @@
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\bin\Debug\StorySystem.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\bin\Debug\StorySystem.pdb
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\bin\Debug\Common.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\bin\Debug\Dsl.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\bin\Debug\LitJson.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\bin\Debug\ScriptFrameworkLibrary.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\bin\Debug\Dsl.pdb
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\obj\Debug\StorySystem.csproj.AssemblyReference.cache
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\obj\Debug\StorySystem.csproj.CoreCompileInputs.cache
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\obj\Debug\StorySystem.csproj.CopyComplete
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\obj\Debug\StorySystem.dll
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\obj\Debug\StorySystem.pdb
+D:\GitHub\CSharpGameFramework\Infrastructure\StorySystem\bin\Debug\Common.pdb

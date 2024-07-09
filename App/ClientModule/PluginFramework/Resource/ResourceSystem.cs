@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Reflection;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public enum PredefinedResourceGroup
     {

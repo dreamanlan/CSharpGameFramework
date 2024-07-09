@@ -5,12 +5,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using GameFrameworkData;
 using GameFrameworkMessage;
-using GameFramework;
+using ScriptableFramework;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using CSharpCenterClient;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     /// <summary>
     /// Player data processing scheduler, player data requests will be processed in several parallel threads.
@@ -847,7 +847,7 @@ namespace GameFramework
 
                 m_NodeMessageManager.TickMonitor();
 
-                LogSys.Log(ServerLogType.MONITOR, "GameFramework User Count:{0} ElapsedTickTime:{1}", m_ActiveUserGuids.Count, elapsedTickTime);
+                LogSys.Log(ServerLogType.MONITOR, "ScriptableFramework User Count:{0} ElapsedTickTime:{1}", m_ActiveUserGuids.Count, elapsedTickTime);
             }
 
             var ds_thread = UserServer.Instance.DataCacheThread;

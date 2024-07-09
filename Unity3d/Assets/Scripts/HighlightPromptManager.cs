@@ -2,7 +2,7 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 
 public sealed class HighlightPromptManager
 {

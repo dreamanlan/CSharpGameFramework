@@ -1,4 +1,4 @@
-namespace GameFramework
+namespace ScriptableFramework
 {
 
     public class RoomPool

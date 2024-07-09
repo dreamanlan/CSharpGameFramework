@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using GameFramework;
+using ScriptableFramework;
 using System.Collections.Generic;
 using System;
 

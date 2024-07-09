@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using ScriptRuntime;
-using StorySystem;
-using GameFramework;
+using DotnetStoryScript;
+using ScriptableFramework;
 
-namespace GameFramework.Story.Functions
+namespace ScriptableFramework.Story.Functions
 {
     public sealed class BlackboardGetFunction : IStoryFunction
     {

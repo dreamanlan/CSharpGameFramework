@@ -6,11 +6,11 @@ using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using Messenger;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 using GameFrameworkData;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     /// <summary>
     /// Data access layer thread. This class is mainly used for operations related to data storage

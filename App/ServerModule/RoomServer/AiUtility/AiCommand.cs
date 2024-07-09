@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GameFramework;
-using GameFramework.Story;
+using ScriptableFramework;
+using ScriptableFramework.Story;
 using GameFrameworkMessage;
 
 public static class AiCommand

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using GameFrameworkData;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   internal class GuidInfo
   {

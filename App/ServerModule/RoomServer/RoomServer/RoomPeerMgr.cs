@@ -6,7 +6,7 @@ using System.Text;
 using Lidgren.Network;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class RoomPeerMgr
     {

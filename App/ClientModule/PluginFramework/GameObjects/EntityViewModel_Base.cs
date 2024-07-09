@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public partial class EntityViewModel
     {
@@ -118,7 +118,7 @@ namespace GameFramework
                 int ct = m_Materials.Count;
                 if (m_Shaders.Count != ct || m_Colors.Count != ct)
                 {
-                    GameFramework.LogSystem.Error("replaceshaderandfadecolor materials num is not equal shaders num !");
+                    ScriptableFramework.LogSystem.Error("replaceshaderandfadecolor materials num is not equal shaders num !");
                     return;
                 }
                 for (int i = 0; i < ct; ++i)

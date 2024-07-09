@@ -2,12 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using GameFramework;
-using GameFramework.Story;
+using ScriptableFramework;
+using ScriptableFramework.Story;
 using GameFrameworkMessage;
 using LitJson;
 
-namespace GameFramework.Network
+namespace ScriptableFramework.Network
 {
     ///
     internal sealed partial class UserNetworkSystem

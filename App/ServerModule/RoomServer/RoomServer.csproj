@@ -41,8 +41,8 @@
     <ProjectReference Include="..\..\..\InformationService\SceneLogic\SceneLogic.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\Common\Common.csproj" />
     <ProjectReference Include="..\..\..\Infrastructure\Common\ServerCommon.csproj" />
-    <ProjectReference Include="..\..\..\Infrastructure\SkillSystem\SkillSystem.csproj" />
-    <ProjectReference Include="..\..\..\Infrastructure\StorySystem\StorySystem.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\DotnetSkillScript\DotnetSkillScript.csproj" />
+    <ProjectReference Include="..\..\..\Infrastructure\DotnetStoryScript\DotnetStoryScript.csproj" />
     <ProjectReference Include="..\..\ClientProtoBuf\ClientProtoBuf.csproj" />
     <ProjectReference Include="..\LogSys\LogSys\LogSys.csproj" />
     <ProjectReference Include="..\Messenger\Messenger\Messenger.csproj" />

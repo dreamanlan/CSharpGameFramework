@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Concurrent;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public interface IClientConcurrentPoolAllocatedObject<T> where T : IClientConcurrentPoolAllocatedObject<T>, new()
   {

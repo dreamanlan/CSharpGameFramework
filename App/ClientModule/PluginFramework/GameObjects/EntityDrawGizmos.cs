@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     class EntityDrawGizmos : MonoBehaviour
     {

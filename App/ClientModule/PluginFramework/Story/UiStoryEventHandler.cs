@@ -2,11 +2,11 @@
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
-using GameFramework;
-using GameFramework.Story;
-using StorySystem;
+using ScriptableFramework;
+using ScriptableFramework.Story;
+using DotnetStoryScript;
 
-namespace GameFramework.Story
+namespace ScriptableFramework.Story
 {
     internal class UiStoryEventHandler : MonoBehaviour
     {

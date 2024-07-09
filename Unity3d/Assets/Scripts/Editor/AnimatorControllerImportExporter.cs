@@ -424,7 +424,7 @@ public static class AnimatorControllerUtility
                             layer.defaultWeight = val;
                         } else if (id == "blendingmode") {
                             string m = callData.GetParamId(0);
-                            AnimatorLayerBlendingMode mode = GameFramework.Converter.ConvertStrToEnum<AnimatorLayerBlendingMode>(m);
+                            AnimatorLayerBlendingMode mode = ScriptableFramework.Converter.ConvertStrToEnum<AnimatorLayerBlendingMode>(m);
                             layer.blendingMode = mode;
                         }
                     }
@@ -532,7 +532,7 @@ public static class AnimatorControllerUtility
             if (null != callData) {
                 string val = callData.GetParamId(0);
                 if (id == "type") {
-                    tree.blendType = GameFramework.Converter.ConvertStrToEnum<BlendTreeType>(val);
+                    tree.blendType = ScriptableFramework.Converter.ConvertStrToEnum<BlendTreeType>(val);
                 } else if (id == "parameter") {
                     tree.blendParameter = val;
                 } else if (id == "parametery") {
@@ -636,7 +636,7 @@ public static class AnimatorControllerUtility
                     }
                     AnimatorState state = FindAnimatorState(stateMachine, name);
                     if (null == state) {
-                        if (pos.sqrMagnitude < GameFramework.Geometry.c_FloatPrecision)
+                        if (pos.sqrMagnitude < ScriptableFramework.Geometry.c_FloatPrecision)
                             state = stateMachine.AddState(name);
                         else
                             state = stateMachine.AddState(name, pos);
@@ -652,7 +652,7 @@ public static class AnimatorControllerUtility
                     AnimatorState state = FindAnimatorState(stateMachine, name);
                     if (null == state) {
                         state = ctrl.CreateBlendTreeInController(name, out tree, layerIndex);
-                        if (pos.sqrMagnitude >= GameFramework.Geometry.c_FloatPrecision) {
+                        if (pos.sqrMagnitude >= ScriptableFramework.Geometry.c_FloatPrecision) {
                             int len = stateMachine.states.Length - 1;
                             stateMachine.states[len].position = pos;
                         }
@@ -660,7 +660,7 @@ public static class AnimatorControllerUtility
                         tree = state.motion as BlendTree;
                         if (null == tree) {
                             state = ctrl.CreateBlendTreeInController(name, out tree, layerIndex);
-                            if (pos.sqrMagnitude >= GameFramework.Geometry.c_FloatPrecision) {
+                            if (pos.sqrMagnitude >= ScriptableFramework.Geometry.c_FloatPrecision) {
                                 int len = stateMachine.states.Length - 1;
                                 stateMachine.states[len].position = pos;
                             }
@@ -675,7 +675,7 @@ public static class AnimatorControllerUtility
                     }
                     AnimatorStateMachine subStateMachine = FindAnimatorStateMachine(stateMachine, name);
                     if (null == subStateMachine) {
-                        if (pos.sqrMagnitude < GameFramework.Geometry.c_FloatPrecision)
+                        if (pos.sqrMagnitude < ScriptableFramework.Geometry.c_FloatPrecision)
                             subStateMachine = stateMachine.AddStateMachine(name);
                         else
                             subStateMachine = stateMachine.AddStateMachine(name, pos);
@@ -808,7 +808,7 @@ public static class AnimatorControllerUtility
                     }
                     AnimatorState state = FindAnimatorState(stateMachine, name);
                     if (null == state) {
-                        if (pos.sqrMagnitude < GameFramework.Geometry.c_FloatPrecision)
+                        if (pos.sqrMagnitude < ScriptableFramework.Geometry.c_FloatPrecision)
                             state = stateMachine.AddState(name);
                         else
                             state = stateMachine.AddState(name, pos);
@@ -824,7 +824,7 @@ public static class AnimatorControllerUtility
                     AnimatorState state = FindAnimatorState(stateMachine, name);
                     if (null == state) {
                         state = ctrl.CreateBlendTreeInController(name, out tree, layerIndex);
-                        if (pos.sqrMagnitude >= GameFramework.Geometry.c_FloatPrecision) {
+                        if (pos.sqrMagnitude >= ScriptableFramework.Geometry.c_FloatPrecision) {
                             int len = stateMachine.states.Length - 1;
                             stateMachine.states[len].position = pos;
                         }
@@ -832,7 +832,7 @@ public static class AnimatorControllerUtility
                         tree = state.motion as BlendTree;
                         if (null == tree) {
                             state = ctrl.CreateBlendTreeInController(name, out tree, layerIndex);
-                            if (pos.sqrMagnitude >= GameFramework.Geometry.c_FloatPrecision) {
+                            if (pos.sqrMagnitude >= ScriptableFramework.Geometry.c_FloatPrecision) {
                                 int len = stateMachine.states.Length - 1;
                                 stateMachine.states[len].position = pos;
                             }
@@ -847,7 +847,7 @@ public static class AnimatorControllerUtility
                     }
                     AnimatorStateMachine subStateMachine = FindAnimatorStateMachine(stateMachine, name);
                     if (null == subStateMachine) {
-                        if (pos.sqrMagnitude < GameFramework.Geometry.c_FloatPrecision)
+                        if (pos.sqrMagnitude < ScriptableFramework.Geometry.c_FloatPrecision)
                             subStateMachine = stateMachine.AddStateMachine(name);
                         else
                             subStateMachine = stateMachine.AddStateMachine(name, pos);
@@ -952,7 +952,7 @@ public static class AnimatorControllerUtility
                     string param = callData.GetParamId(0);
                     string mode = callData.GetParamId(1);
                     float val = float.Parse(callData.GetParamId(2));
-                    AnimatorConditionMode modeEnum = GameFramework.Converter.ConvertStrToEnum<AnimatorConditionMode>(mode);
+                    AnimatorConditionMode modeEnum = ScriptableFramework.Converter.ConvertStrToEnum<AnimatorConditionMode>(mode);
                     if (!TryUpdateAnimatorCondition(tran.conditions, param, val, modeEnum)) {
                         tran.AddCondition(modeEnum, val, param);
                     }
@@ -969,7 +969,7 @@ public static class AnimatorControllerUtility
                     string param = callData.GetParamId(0);
                     string mode = callData.GetParamId(1);
                     float val = float.Parse(callData.GetParamId(2));
-                    AnimatorConditionMode modeEnum = GameFramework.Converter.ConvertStrToEnum<AnimatorConditionMode>(mode);
+                    AnimatorConditionMode modeEnum = ScriptableFramework.Converter.ConvertStrToEnum<AnimatorConditionMode>(mode);
                     if (!TryUpdateAnimatorCondition(tran.conditions, param, val, modeEnum)) {
                         tran.AddCondition(modeEnum, val, param);
                     }

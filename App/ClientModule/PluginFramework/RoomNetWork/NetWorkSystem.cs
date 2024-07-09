@@ -6,9 +6,9 @@ using System.Threading;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using GameFrameworkMessage;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework.Network
+namespace ScriptableFramework.Network
 {
     internal class NetworkSystem
     {
@@ -204,7 +204,7 @@ namespace GameFramework.Network
         {
             //The network was shut down and did not end normally. It is possible that
             //the server copy has been shut down. Please try settlement directly.
-            GameFramework.Story.GfxStorySystem.Instance.SendMessage("try_stag_clear", 0);
+            ScriptableFramework.Story.GfxStorySystem.Instance.SendMessage("try_stag_clear", 0);
             ClearArgs();
             PluginFramework.Instance.QueueAction(this.ShutdownNetClient);
         }

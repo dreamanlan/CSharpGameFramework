@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 //using System.Diagnostics;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class DataDictionaryMgr<TData, KeyType> where TData : IDataRecord<KeyType>, new()
     {

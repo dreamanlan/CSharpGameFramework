@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AI;
-using SkillSystem;
+using DotnetSkillScript;
 
-namespace GameFramework.Skill.Trigers
+namespace ScriptableFramework.Skill.Trigers
 {
     public class TriggerUtil
     {
@@ -71,12 +71,12 @@ namespace GameFramework.Skill.Trigers
         {
             Transform child = GetChildNodeByName(obj, childname);
             if (child == null) {
-                GameFramework.LogSystem.Info("----not find child! {0} on {1}", childname, obj.name);
+                ScriptableFramework.LogSystem.Info("----not find child! {0} on {1}", childname, obj.name);
                 return;
             }
             Transform togglenode = TriggerUtil.GetChildNodeByName(obj, nodename);
             if (togglenode == null) {
-                GameFramework.LogSystem.Info("----not find node! {0} on {1}", nodename, obj.name);
+                ScriptableFramework.LogSystem.Info("----not find node! {0} on {1}", nodename, obj.name);
                 return;
             }
             child.parent = togglenode;
@@ -143,7 +143,7 @@ namespace GameFramework.Skill.Trigers
             }
             return target;
         }
-        public static List<GameObject> FiltByRelation(GameObject source, List<GameObject> list, GameFramework.CharacterRelation relation)
+        public static List<GameObject> FiltByRelation(GameObject source, List<GameObject> list, ScriptableFramework.CharacterRelation relation)
         {
             List<GameObject> result = new List<GameObject>();
             for (int i = 0; i < list.Count; ++i) {
@@ -450,7 +450,7 @@ namespace GameFramework.Skill.Trigers
             } else {
                 ScriptRuntime.Vector2 angleu = Geometry.GetRotate(new ScriptRuntime.Vector2(0, angleOrLength), radian);
                 ScriptRuntime.Vector2 c = new ScriptRuntime.Vector2(center.x, center.z) + angleu / 2;
-                GameFramework.PluginFramework.Instance.KdTree.QueryWithFunc(c.X, 0, c.Y, range + angleOrLength / 2, (float distSqr, GameFramework.KdTreeObject kdTreeObj) => {
+                ScriptableFramework.PluginFramework.Instance.KdTree.QueryWithFunc(c.X, 0, c.Y, range + angleOrLength / 2, (float distSqr, ScriptableFramework.KdTreeObject kdTreeObj) => {
                     int targetId = kdTreeObj.Object.GetId();
                     if (targetType == (int)SkillTargetType.Enemy && CharacterRelation.RELATION_ENEMY == EntityController.Instance.GetRelation(senderId, targetId) ||
                         targetType == (int)SkillTargetType.Friend && CharacterRelation.RELATION_FRIEND == EntityController.Instance.GetRelation(senderId, targetId)) {

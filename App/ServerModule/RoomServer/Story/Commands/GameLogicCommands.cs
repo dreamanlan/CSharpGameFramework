@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using StorySystem;
+using DotnetStoryScript;
 using ScriptRuntime;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
-namespace GameFramework.Story.Commands
+namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
     /// blackboardclear();

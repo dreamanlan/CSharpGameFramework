@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using GameFrameworkMessage;
 using ScriptRuntime;
-using SkillSystem;
+using DotnetSkillScript;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class EntityController
     {

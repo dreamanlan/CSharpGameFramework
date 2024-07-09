@@ -4,7 +4,7 @@ using UnityEditor;
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 
 [InitializeOnLoad]
 public class Startup

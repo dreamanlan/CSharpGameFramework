@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using GameFramework;
+using ScriptableFramework;
 using System.Collections.Generic;
 
 public sealed class LoadingManager

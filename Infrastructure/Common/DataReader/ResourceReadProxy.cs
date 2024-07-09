@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public delegate byte[] ReadAsArrayDelegation(string path);
     public static class ResourceReadProxy

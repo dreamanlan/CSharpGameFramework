@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 
 public class ScreenFading : MonoBehaviour
 {

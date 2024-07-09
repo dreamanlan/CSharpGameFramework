@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public interface IPoolAllocatedObject<T> where T : IPoolAllocatedObject<T>, new()
     {

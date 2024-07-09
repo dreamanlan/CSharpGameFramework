@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal class GlobalSaveCounter
     {

@@ -1,0 +1,13 @@
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\DotnetSkillScript.deps.json
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\DotnetSkillScript.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\DotnetSkillScript.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\Common.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\Dsl.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\Dsl.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.csproj.AssemblyReference.cache
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.GeneratedMSBuildEditorConfig.editorconfig
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.csproj.CoreCompileInputs.cache
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.sourcelink.json
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSk.75F1F714.Up2Date
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.pdb

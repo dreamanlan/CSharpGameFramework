@@ -3,7 +3,7 @@ using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
-using GameFramework;
+using ScriptableFramework;
 
 [CustomEditor(typeof(NpcConfigs))]
 public class NpcConfigInspedtor : Editor

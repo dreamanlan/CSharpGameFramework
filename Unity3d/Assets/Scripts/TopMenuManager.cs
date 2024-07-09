@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
-using GameFramework;
-using GameFramework.Story;
+using ScriptableFramework;
+using ScriptableFramework.Story;
 using System.Collections.Generic;
 
 public sealed class TopMenuManager

@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using System.Diagnostics;
-using GameFramework;
+using ScriptableFramework;
 
 namespace System.Collections.Concurrent
 {

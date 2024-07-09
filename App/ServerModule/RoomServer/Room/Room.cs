@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public enum RoomState
     {
@@ -273,7 +273,7 @@ namespace GameFramework
                     //At the end of each Tick, the spatial attributes are synchronized to the Peer for the Peer to forward messages.
                     foreach (User user in m_RoomUserMgr.RoomUsers) {
                         if (null != user && null != user.Info && null != user.Info.GetMovementStateInfo()) {
-                            GameFramework.RoomPeer peer = user.GetPeer();
+                            ScriptableFramework.RoomPeer peer = user.GetPeer();
                             if (null != peer) {
                                 MovementStateInfo info = user.Info.GetMovementStateInfo();
                                 peer.Position = info.GetPosition3D();

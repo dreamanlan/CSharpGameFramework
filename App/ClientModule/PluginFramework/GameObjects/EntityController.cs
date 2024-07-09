@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GameFramework.Skill;
-using SkillSystem;
+using ScriptableFramework.Skill;
+using DotnetSkillScript;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class EntityController
     {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using StorySystem;
-using GameFramework;
+using DotnetStoryScript;
+using ScriptableFramework;
 
-namespace GameFramework.Story.Functions
+namespace ScriptableFramework.Story.Functions
 {
     internal sealed class GetTimeFunction : IStoryFunction
     {

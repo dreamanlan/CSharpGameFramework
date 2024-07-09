@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkData;
 using GameFrameworkMessage;
 using System.Text;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     enum GlobalParamEnum
     {

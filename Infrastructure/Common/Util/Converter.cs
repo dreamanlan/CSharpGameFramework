@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Globalization;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public static class Converter
     {

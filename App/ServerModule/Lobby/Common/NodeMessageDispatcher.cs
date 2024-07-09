@@ -1,9 +1,9 @@
 using System;
 using System.Text;
 using CSharpCenterClient;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
-using GameFramework.Network;
+using ScriptableFramework.Network;
 
 namespace Lobby
 {

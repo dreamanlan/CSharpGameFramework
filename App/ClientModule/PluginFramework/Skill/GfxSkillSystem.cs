@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
-using SkillSystem;
+using DotnetSkillScript;
 
-namespace GameFramework.Skill
+namespace ScriptableFramework.Skill
 {
     public sealed class PredefinedSkill
     {
@@ -746,7 +746,7 @@ namespace GameFramework.Skill
                 }
             }
 
-            //GameFramework.LogSystem.Debug("Skill {0} finished.", info.SkillId);
+            //ScriptableFramework.LogSystem.Debug("Skill {0} finished.", info.SkillId);
             EntityController.Instance.DeactivateSkill(info.Sender, info.SkillInst);
             RecycleSkillInstance(info.Info);
         }
@@ -771,7 +771,7 @@ namespace GameFramework.Skill
                 if (null != skillData) {
                     return NewSkillInstanceImpl(skillId, skillData);
                 } else {
-                    GameFramework.LogSystem.Error("Can't find skill config, skill:{0} TableConfig.Skill is null!", skillId);
+                    ScriptableFramework.LogSystem.Error("Can't find skill config, skill:{0} TableConfig.Skill is null!", skillId);
                     return null;
                 }
             } else {
@@ -797,12 +797,12 @@ namespace GameFramework.Skill
         }       
         private SkillInstanceInfo NewSkillInstanceImpl(int skillId, TableConfig.Skill skillData)
         {
-            string filePath = GameFramework.HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + skillData.dslFile);
+            string filePath = ScriptableFramework.HomePath.GetAbsolutePath(FilePathDefine_Client.C_DslPath + skillData.dslFile);
             SkillConfigManager.Instance.LoadSkillIfNotExist(skillData.id, filePath);
             SkillInstance inst = SkillConfigManager.Instance.NewSkillInstance(skillData.id);
 
             if (inst == null) {
-                GameFramework.LogSystem.Error("Can't load skill config, skill:{0} !", skillId);
+                ScriptableFramework.LogSystem.Error("Can't load skill config, skill:{0} !", skillId);
                 return null;
             }
             SkillInstanceInfo res = new SkillInstanceInfo();

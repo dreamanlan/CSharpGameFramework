@@ -1,0 +1,15 @@
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\netstandard2.1\DotnetStoryScript.deps.json
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\netstandard2.1\DotnetStoryScript.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\netstandard2.1\DotnetStoryScript.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\netstandard2.1\Common.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\netstandard2.1\Dsl.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\netstandard2.1\LitJson.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\netstandard2.1\ScriptFrameworkLibrary.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\netstandard2.1\Dsl.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstandard2.1\DotnetStoryScript.csproj.AssemblyReference.cache
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstandard2.1\DotnetStoryScript.GeneratedMSBuildEditorConfig.editorconfig
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstandard2.1\DotnetStoryScript.csproj.CoreCompileInputs.cache
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstandard2.1\DotnetStoryScript.sourcelink.json
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstandard2.1\DotnetSt.CBCC9668.Up2Date
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstandard2.1\DotnetStoryScript.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\netstandard2.1\DotnetStoryScript.pdb

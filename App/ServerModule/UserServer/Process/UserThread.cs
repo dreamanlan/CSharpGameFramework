@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using GameFrameworkMessage;
-using StorySystem;
+using DotnetStoryScript;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal class UserThread : MyServerThread
     {

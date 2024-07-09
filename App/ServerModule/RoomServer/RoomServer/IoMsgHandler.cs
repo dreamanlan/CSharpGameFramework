@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Lidgren.Network;
 using ScriptRuntime;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
 public class MsgPingHandler

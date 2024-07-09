@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 
 public static class Dict
 {

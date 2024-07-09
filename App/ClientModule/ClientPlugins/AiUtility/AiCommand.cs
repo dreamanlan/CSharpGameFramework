@@ -3,9 +3,9 @@ using UnityEngine.AI;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using GameFramework;
-using GameFramework.Skill;
-using GameFramework.Story;
+using ScriptableFramework;
+using ScriptableFramework.Skill;
+using ScriptableFramework.Story;
 
 public static class AiCommand
 {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.Concurrent;
 using LitJson;
 using GameFrameworkMessage;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal sealed class CitySceneInfo
     {

@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using UnityEngine;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public static partial class Utility
     {

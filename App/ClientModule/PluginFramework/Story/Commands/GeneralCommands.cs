@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using StorySystem;
-using GameFramework;
-using GameFramework.Skill;
+using DotnetStoryScript;
+using ScriptableFramework;
+using ScriptableFramework.Skill;
 using GameFrameworkMessage;
 
-namespace GameFramework.Story.Commands
+namespace ScriptableFramework.Story.Commands
 {
     /// <summary>
     /// preload(objresid1,objresid2,...);
@@ -595,7 +595,7 @@ namespace GameFramework.Story.Commands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             if (m_StartTime <= 0) {
-                long startTime = GameFramework.TimeUtility.GetLocalMilliseconds();
+                long startTime = ScriptableFramework.TimeUtility.GetLocalMilliseconds();
                 m_StartTime = startTime;
             }
             bool triggered = false;

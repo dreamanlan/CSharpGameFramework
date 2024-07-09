@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 using ScriptRuntime;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public enum UserControlState : int
     {
@@ -22,7 +22,7 @@ namespace GameFramework
             IsEntered = false;
             IsDebug = false;
             IsReady = false;
-            m_UserControlState = (int)GameFramework.UserControlState.User;
+            m_UserControlState = (int)ScriptableFramework.UserControlState.User;
         }
 
         public void Reset()
@@ -32,7 +32,7 @@ namespace GameFramework
             IsEntered = false;
             IsReady = false;
             IsDebug = false;
-            m_UserControlState = (int)GameFramework.UserControlState.User;
+            m_UserControlState = (int)ScriptableFramework.UserControlState.User;
 
             m_HaveHpArmor = false;
             m_Hp = 0;

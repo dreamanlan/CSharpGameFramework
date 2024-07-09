@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using SkillSystem;
+using DotnetSkillScript;
 
-namespace GameFramework.Skill.Trigers
+namespace ScriptableFramework.Skill.Trigers
 {
     /// <summary>
     /// bufftotarget(starttime);
@@ -740,7 +740,7 @@ namespace GameFramework.Skill.Trigers
                         return false;
                     }
 
-                    //GameFramework.LogSystem.Debug("EmitEffectTriger:{0}", m_EffectPath);
+                    //ScriptableFramework.LogSystem.Debug("EmitEffectTriger:{0}", m_EffectPath);
                     return true;
                 } else {
                     return true;
@@ -852,7 +852,7 @@ namespace GameFramework.Skill.Trigers
                 int ct = 0;
                 bool isCollide = false;
                 List<int> targetIds = new List<int>();
-                GameFramework.PluginFramework.Instance.KdTree.QueryWithFunc(c.x, c.y, c.z, queryRadius, (float distSqr, GameFramework.KdTreeObject kdTreeObj) => {
+                ScriptableFramework.PluginFramework.Instance.KdTree.QueryWithFunc(c.x, c.y, c.z, queryRadius, (float distSqr, ScriptableFramework.KdTreeObject kdTreeObj) => {
                     int targetId = kdTreeObj.Object.GetId();
                     if (targetType == (int)SkillTargetType.Enemy && CharacterRelation.RELATION_ENEMY == EntityController.Instance.GetRelation(senderId, targetId) ||
                         targetType == (int)SkillTargetType.Friend && CharacterRelation.RELATION_FRIEND == EntityController.Instance.GetRelation(senderId, targetId)) {

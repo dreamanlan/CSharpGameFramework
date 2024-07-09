@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Lidgren.Network;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
-using GameFramework.Network;
-using GameFramework.Skill;
-using GameFramework.Story;
+using ScriptableFramework.Network;
+using ScriptableFramework.Skill;
+using ScriptableFramework.Story;
 using ScriptRuntime;
 using System.Collections;
 
@@ -142,7 +142,7 @@ internal class Msg_RC_NpcMove_Handler
             if (Geometry.DistanceSquare(msi.GetPosition2D(), curPos) > c_MaxPosDeltaSqr) {
                 msi.SetPosition2D(curPos);
                 UnityEngine.GameObject actor = EntityController.Instance.GetGameObject(npc.GetId());
-                GameFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, actor.transform.position.y, y));
+                ScriptableFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, actor.transform.position.y, y));
             }            
 
             EntityViewModel viewModel = EntityViewModelManager.Instance.GetEntityViewById(targetmsg.npc_id);
@@ -157,7 +157,7 @@ internal class Msg_RC_NpcMove_Handler
             if (Geometry.DistanceSquare(msi.GetPosition2D(), curPos) > c_MaxPosDeltaSqr) {
                 msi.SetPosition2D(curPos);
                 UnityEngine.GameObject actor = EntityController.Instance.GetGameObject(npc.GetId());
-                GameFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, actor.transform.position.y, y));
+                ScriptableFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, actor.transform.position.y, y));
             } else {
                 EntityViewModel viewModel = EntityViewModelManager.Instance.GetEntityViewById(targetmsg.npc_id);
                 if (null != viewModel) {
@@ -214,7 +214,7 @@ internal class Msg_RC_NpcSkill_Handler
             msi.SetFaceDir(faceDir);
             npc.GetAiStateInfo().Target = 0;
             UnityEngine.GameObject actor = EntityController.Instance.GetGameObject(npc.GetId());
-            GameFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, actor.transform.position.y, z));
+            ScriptableFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, actor.transform.position.y, z));
             actor.transform.localRotation = UnityEngine.Quaternion.Euler(0, Utility.RadianToDegree(faceDir), 0);
         } else {
             npc.GetAiStateInfo().Target = targetmsg.target_id;
@@ -349,7 +349,7 @@ internal class Msg_RC_AdjustPosition_Handler
             msi.SetFaceDir(faceDir);
 
             UnityEngine.GameObject actor = EntityController.Instance.GetGameObject(npc.GetId());
-            GameFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, 0, z));
+            ScriptableFramework.Skill.Trigers.TriggerUtil.MoveObjTo(actor, new UnityEngine.Vector3(x, 0, z));
             actor.transform.localRotation = UnityEngine.Quaternion.Euler(0, Utility.RadianToDegree(faceDir), 0);
         }
     }

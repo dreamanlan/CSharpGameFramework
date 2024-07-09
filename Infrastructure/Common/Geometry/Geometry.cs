@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using ScriptRuntime;
-using GameFramework;
+using ScriptableFramework;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public partial class Geometry
     {

@@ -6,7 +6,7 @@ using System.IO;
 using System.Text;
 using CSharpCenterClient;
 using Messenger;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
 class DataCache

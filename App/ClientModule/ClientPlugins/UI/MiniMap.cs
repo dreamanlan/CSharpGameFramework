@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine.UI;
-using GameFramework;
+using ScriptableFramework;
 
 class MiniMap : ITickPlugin
 {

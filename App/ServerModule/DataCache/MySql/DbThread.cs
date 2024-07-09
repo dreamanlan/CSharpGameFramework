@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     internal class DbThread : MyServerThread
     {

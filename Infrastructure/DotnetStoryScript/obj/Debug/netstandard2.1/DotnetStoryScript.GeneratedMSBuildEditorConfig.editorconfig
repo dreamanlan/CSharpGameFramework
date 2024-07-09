@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = DotnetStoryScript
+build_property.ProjectDir = F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

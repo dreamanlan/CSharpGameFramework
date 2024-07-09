@@ -2,11 +2,11 @@ using System;
 using System.Text;
 using LitJson;
 using CSharpCenterClient;
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
-using GameFramework.Network;
+using ScriptableFramework.Network;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     /// <summary>
     /// node message format(Binary form, finally encoded into a string using base64):

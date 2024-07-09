@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
-using GameFramework.GmCommands;
-using GameFramework.Story;
-using GameFramework.Skill;
-using SkillSystem;
+using ScriptableFramework.GmCommands;
+using ScriptableFramework.Story;
+using ScriptableFramework.Skill;
+using DotnetSkillScript;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public partial class PluginFramework
     {

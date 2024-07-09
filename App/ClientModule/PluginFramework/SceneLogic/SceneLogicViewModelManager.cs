@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   internal sealed class SceneLogicViewModelManager
   {

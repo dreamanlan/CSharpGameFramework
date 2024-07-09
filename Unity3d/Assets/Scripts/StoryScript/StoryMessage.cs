@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using GameFramework.Story;
+using ScriptableFramework.Story;
 
 public class StoryMessage : MonoBehaviour
 {

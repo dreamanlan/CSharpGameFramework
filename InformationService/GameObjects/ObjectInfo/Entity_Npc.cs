@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using ScriptRuntime;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public enum EntityTypeEnum
     {

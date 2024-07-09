@@ -1,6 +1,6 @@
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public class UserPool
   {

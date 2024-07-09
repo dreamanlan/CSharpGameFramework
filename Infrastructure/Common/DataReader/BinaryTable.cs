@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Text;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public sealed class BinaryTable
     {

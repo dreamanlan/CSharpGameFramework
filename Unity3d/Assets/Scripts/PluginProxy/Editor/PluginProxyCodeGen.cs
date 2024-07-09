@@ -6,8 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.IO;
 using System.Reflection;
-using GameFramework;
-using GameFramework.Plugin;
+using ScriptableFramework;
+using ScriptableFramework.Plugin;
 
 internal sealed class PluginProxyMethodInfo
 {
@@ -155,12 +155,12 @@ public static class PluginProxyCodeGen
         sb.AppendLine();
         sb.AppendFormat("{0}using System.Collections.Generic;", GetIndentString());
         sb.AppendLine();
-        sb.AppendFormat("{0}using GameFramework;", GetIndentString());
+        sb.AppendFormat("{0}using ScriptableFramework;", GetIndentString());
         sb.AppendLine();
-        sb.AppendFormat("{0}using GameFramework.Plugin;", GetIndentString());
+        sb.AppendFormat("{0}using ScriptableFramework.Plugin;", GetIndentString());
         sb.AppendLine();
         sb.AppendLine();
-        sb.AppendFormat("{0}namespace GameFramework", GetIndentString());
+        sb.AppendFormat("{0}namespace ScriptableFramework", GetIndentString());
         sb.AppendLine();
         sb.AppendFormat("{0}", GetIndentString());
         sb.AppendLine("{");
@@ -249,11 +249,11 @@ public static class PluginProxyCodeGen
         sb.AppendLine();
         sb.AppendFormat("{0}using System.Collections.Generic;", GetIndentString());
         sb.AppendLine();
-        sb.AppendFormat("{0}using GameFramework;", GetIndentString());
+        sb.AppendFormat("{0}using ScriptableFramework;", GetIndentString());
         sb.AppendLine();
-        sb.AppendFormat("{0}using GameFramework.Plugin;", GetIndentString());
+        sb.AppendFormat("{0}using ScriptableFramework.Plugin;", GetIndentString());
         sb.AppendLine();
-        if (!string.IsNullOrEmpty(type.Namespace) && type.Namespace != "GameFramework" && type.Namespace != "GameFramework.Plugin") {
+        if (!string.IsNullOrEmpty(type.Namespace) && type.Namespace != "ScriptableFramework" && type.Namespace != "ScriptableFramework.Plugin") {
             sb.AppendFormat("{0}using {1};", GetIndentString(), type.Namespace);
             sb.AppendLine();
         }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ScriptRuntime;
-using GameFramework;
+using ScriptableFramework;
 
 namespace TableConfig
 {

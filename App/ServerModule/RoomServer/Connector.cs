@@ -5,7 +5,7 @@ using System.Text;
 using CSharpCenterClient;
 using Messenger;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class Connector
     {
@@ -21,4 +21,4 @@ namespace GameFramework
 
         private PBChannel channel_;
     }
-}  // namespace GameFramework
+}  // namespace ScriptableFramework

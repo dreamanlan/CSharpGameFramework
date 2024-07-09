@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using GameFrameworkMessage;
-using GameFramework;
+using ScriptableFramework;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public delegate void ClientMsgHandler(object msg, User user);
   public class Dispatcher

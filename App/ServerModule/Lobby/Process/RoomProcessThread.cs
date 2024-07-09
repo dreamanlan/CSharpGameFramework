@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using CSharpCenterClient;
 using GameFrameworkMessage;
 using System.Collections.Generic;
-using GameFramework;
+using ScriptableFramework;
 using LitJson;
 
 namespace Lobby

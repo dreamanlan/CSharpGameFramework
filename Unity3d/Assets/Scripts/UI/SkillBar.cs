@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
-using GameFramework;
+using ScriptableFramework;
 
 public class SkillBar : MonoBehaviour
 {

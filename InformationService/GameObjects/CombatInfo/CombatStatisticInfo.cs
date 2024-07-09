@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public class CombatStatisticInfo
   {

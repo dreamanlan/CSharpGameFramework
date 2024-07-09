@@ -4,7 +4,7 @@ using System.Text;
 using CSharpCenterClient;
 using Messenger;
 using Lobby;
-using GameFramework;
+using ScriptableFramework;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;

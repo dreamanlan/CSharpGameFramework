@@ -5,10 +5,10 @@ using System.Text;
 using System.Reflection;
 using Lidgren.Network;
 
-using GameFramework;
+using ScriptableFramework;
 using GameFrameworkMessage;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public class MessageDispatch
     {

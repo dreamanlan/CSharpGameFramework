@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using ScriptRuntime;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
   public class BlackBoard
   {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 //using System.Diagnostics;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public interface IDataRecord
     {

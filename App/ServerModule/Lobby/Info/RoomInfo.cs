@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Messenger;
 using CSharpCenterClient;
 using GameFrameworkMessage;
-using GameFramework;
+using ScriptableFramework;
 
 namespace Lobby
 {
@@ -243,7 +243,7 @@ namespace Lobby
 
         private Dictionary<ulong, WeakReference> m_Users = new Dictionary<ulong, WeakReference>();
 
-        GameFramework.Network.ProtoNetEncoding m_Encoding = new GameFramework.Network.ProtoNetEncoding();
+        ScriptableFramework.Network.ProtoNetEncoding m_Encoding = new ScriptableFramework.Network.ProtoNetEncoding();
 
         private void UpdateUserCount()
         {

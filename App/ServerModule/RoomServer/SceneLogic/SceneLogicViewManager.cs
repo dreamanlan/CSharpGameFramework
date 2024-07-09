@@ -3,7 +3,7 @@ using System.Collections;
 using System.Linq;
 using System.Text;
 
-namespace GameFramework
+namespace ScriptableFramework
 {
     public sealed class SceneLogicViewManager
     {

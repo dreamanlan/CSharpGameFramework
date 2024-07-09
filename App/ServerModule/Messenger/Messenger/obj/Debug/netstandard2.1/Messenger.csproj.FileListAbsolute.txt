@@ -23,7 +23,7 @@ F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\bin\Debug\net
 F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.csproj.AssemblyReference.cache
 F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.GeneratedMSBuildEditorConfig.editorconfig
 F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.csproj.CoreCompileInputs.cache
-F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.dll
-F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.pdb
 F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.sourcelink.json
 F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.csproj.Up2Date
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.dll
+F:\GitHub\CSharpGameFramework\App\ServerModule\Messenger\Messenger\obj\Debug\netstandard2.1\Messenger.pdb

@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using GameFramework;
-using GameFramework.Story;
+using ScriptableFramework;
+using ScriptableFramework.Story;
 
 public sealed class SkillBarManager
 {

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using GameFramework.Plugin;
-using GameFramework.Story;
-using StorySystem;
+using ScriptableFramework.Plugin;
+using ScriptableFramework.Story;
+using DotnetStoryScript;
 
 internal class NativeSimpleStoryCommandFactory : IStoryCommandFactory
 {
@@ -91,7 +91,7 @@ internal class NativeSimpleStoryCommand : IStoryCommand
         m_LastExecResult = false;
         ResetState();
     }
-    public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
+    public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, ScriptableFramework.BoxedValue iterator, ScriptableFramework.BoxedValueList args)
     {
         if (!m_LastExecResult) {
             //When executing repeatedly, the variable value does not need to be updated every tick. Each command is executed and the variable value is only read once.
@@ -100,7 +100,7 @@ internal class NativeSimpleStoryCommand : IStoryCommand
         m_LastExecResult = ExecCommand(instance, handler, m_Params, delta);
         return m_LastExecResult;
     }
-    public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
+    public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, ScriptableFramework.BoxedValue iterator, ScriptableFramework.BoxedValueList args)
     {
         return false;
     }
@@ -190,7 +190,7 @@ internal class ScriptSimpleStoryCommand : IStoryCommand
         m_LastExecResult = false;
         ResetState();
     }
-    public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
+    public bool Execute(StoryInstance instance, StoryMessageHandler handler, long delta, ScriptableFramework.BoxedValue iterator, ScriptableFramework.BoxedValueList args)
     {
         if (!m_LastExecResult) {
             //When executing repeatedly, the variable value does not need to be updated every tick. Each command is executed and the variable value is only read once.
@@ -199,7 +199,7 @@ internal class ScriptSimpleStoryCommand : IStoryCommand
         m_LastExecResult = ExecCommand(instance, handler, m_Params, delta);
         return m_LastExecResult;
     }
-    public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, BoxedValue iterator, BoxedValueList args)
+    public bool ExecDebugger(StoryInstance instance, StoryMessageHandler handler, long delta, ScriptableFramework.BoxedValue iterator, ScriptableFramework.BoxedValueList args)
     {
         return false;
     }
