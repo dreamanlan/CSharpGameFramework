@@ -3006,7 +3006,7 @@ namespace DotnetStoryScript.DslExpression
                         Type t = obj as Type;
                         if (null != t) {
                             try {
-                                BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
+                                BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
                                 CastArgsForCall(t, method, flags, _args);
                                 ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, null, _args));
                             }
@@ -3018,7 +3018,7 @@ namespace DotnetStoryScript.DslExpression
                             t = obj.GetType();
                             if (null != t) {
                                 try {
-                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
+                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
                                     CastArgsForCall(t, method, flags, _args);
                                     ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, obj, _args));
                                 }
@@ -3086,14 +3086,14 @@ namespace DotnetStoryScript.DslExpression
                 else {
                     object[] _args = arglist.ToArray();
                     IDictionary dict = obj as IDictionary;
-                    if (null != dict && null == obj.GetType().GetMethod(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic)) {
+                    if (null != dict && null == obj.GetType().GetMethod(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic)) {
                         dict[method] = _args[0];
                     }
                     else {
                         Type t = obj as Type;
                         if (null != t) {
                             try {
-                                BindingFlags flags = BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+                                BindingFlags flags = BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
                                 CastArgsForSet(t, method, flags, _args);
                                 ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, null, _args));
                             }
@@ -3105,7 +3105,7 @@ namespace DotnetStoryScript.DslExpression
                             t = obj.GetType();
                             if (null != t) {
                                 try {
-                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
                                     CastArgsForSet(t, method, flags, _args);
                                     ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, obj, _args));
                                 }
@@ -3180,7 +3180,7 @@ namespace DotnetStoryScript.DslExpression
                         Type t = obj as Type;
                         if (null != t) {
                             try {
-                                BindingFlags flags = BindingFlags.Static | BindingFlags.GetField | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+                                BindingFlags flags = BindingFlags.Static | BindingFlags.GetField | BindingFlags.GetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
                                 CastArgsForGet(t, method, flags, _args);
                                 ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, null, _args));
                             }
@@ -3192,7 +3192,7 @@ namespace DotnetStoryScript.DslExpression
                             t = obj.GetType();
                             if (null != t) {
                                 try {
-                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.GetField | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.GetField | BindingFlags.GetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
                                     CastArgsForGet(t, method, flags, _args);
                                     ret = BoxedValue.FromObject(t.InvokeMember(method, flags, null, obj, _args));
                                 }

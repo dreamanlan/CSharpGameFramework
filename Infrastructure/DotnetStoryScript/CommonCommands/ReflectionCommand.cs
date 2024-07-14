@@ -52,7 +52,7 @@ namespace DotnetStoryScript.CommonCommands
                         Type t = obj as Type;
                         if (null != t) {
                             try {
-                                BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
+                                BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
                                 ScriptableFramework.Converter.CastArgsForCall(t, method, flags, args);
                                 t.InvokeMember(method, flags, null, null, args);
                             } catch (Exception ex) {
@@ -62,7 +62,7 @@ namespace DotnetStoryScript.CommonCommands
                             t = obj.GetType();
                             if (null != t) {
                                 try {
-                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public | BindingFlags.NonPublic;
+                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
                                     ScriptableFramework.Converter.CastArgsForCall(t, method, flags, args);
                                     t.InvokeMember(method, flags, null, obj, args);
                                 } catch (Exception ex) {
@@ -135,7 +135,7 @@ namespace DotnetStoryScript.CommonCommands
                         Type t = obj as Type;
                         if (null != t) {
                             try {
-                                BindingFlags flags = BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+                                BindingFlags flags = BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
                                 ScriptableFramework.Converter.CastArgsForSet(t, method, flags, args);
                                 t.InvokeMember(method, flags, null, null, args);
                             } catch (Exception ex) {
@@ -145,7 +145,7 @@ namespace DotnetStoryScript.CommonCommands
                             t = obj.GetType();
                             if (null != t) {
                                 try {
-                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic;
+                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
                                     ScriptableFramework.Converter.CastArgsForSet(t, method, flags, args);
                                     t.InvokeMember(method, flags, null, obj, args);
                                 } catch (Exception ex) {
