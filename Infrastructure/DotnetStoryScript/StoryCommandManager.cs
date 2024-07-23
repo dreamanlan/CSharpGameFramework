@@ -330,7 +330,6 @@ namespace DotnetStoryScript
             RegisterCommandFactory("dotnetset", "dotnetset command", new StoryCommandFactoryHelper<CommonCommands.DotnetSetCommand>());
             RegisterCommandFactory("collectioncall", "collectioncall command", new StoryCommandFactoryHelper<CommonCommands.CollectionCallCommand>());
             RegisterCommandFactory("collectionset", "collectionset command", new StoryCommandFactoryHelper<CommonCommands.CollectionSetCommand>());
-            RegisterCommandFactory("system", "system(file,args) command", new StoryCommandFactoryHelper<CommonCommands.SystemCommand>());
             RegisterCommandFactory("writealllines", "writealllines(file,lines) command", new StoryCommandFactoryHelper<CommonCommands.WriteAllLinesCommand>());
             RegisterCommandFactory("writefile", "writefile(file,txt) command", new StoryCommandFactoryHelper<CommonCommands.WriteFileCommand>());
             RegisterCommandFactory("hashtableadd", "hashtableadd(hashtable,key,val) command", new StoryCommandFactoryHelper<CommonCommands.HashtableAddCommand>());
@@ -427,8 +426,6 @@ namespace DotnetStoryScript
             StoryFunctionManager.Instance.RegisterFunctionFactory("collectionget", "collectionget function", new StoryFunctionFactoryHelper<CommonFunctions.CollectionGetFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("changetype", "changetype(obj,type_obj_or_str) function", new StoryFunctionFactoryHelper<CommonFunctions.ChangeTypeFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("parseenum", "parseenum(type_obj_or_str,enum_val) function", new StoryFunctionFactoryHelper<CommonFunctions.ParseEnumFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("pgrep", "pgrep(filter) function, return count", new StoryFunctionFactoryHelper<CommonFunctions.PgrepFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("plist", "plist(filter) function, return pname list", new StoryFunctionFactoryHelper<CommonFunctions.PlistFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("linq", "linq(obj,method,arg1,arg2,...) function", new StoryFunctionFactoryHelper<CommonFunctions.LinqFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("readalllines", "readalllines function", new StoryFunctionFactoryHelper<CommonFunctions.ReadAllLinesFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("readfile", "readfile(file) function", new StoryFunctionFactoryHelper<CommonFunctions.ReadFileFunction>());

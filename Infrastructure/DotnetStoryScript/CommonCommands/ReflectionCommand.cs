@@ -320,43 +320,4 @@ namespace DotnetStoryScript.CommonCommands
         private IStoryFunction m_Method = new StoryValue();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
     }
-    /// <summary>
-    /// system(file,args);
-    /// </summary>
-    public sealed class SystemCommand : AbstractStoryCommand
-    {
-        protected override IStoryCommand CloneCommand()
-        {
-            SystemCommand cmd = new SystemCommand();
-            cmd.m_FileName = m_FileName.Clone();
-            cmd.m_Arguments = m_Arguments.Clone();
-            return cmd;
-        }
-        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
-        {
-            m_FileName.Evaluate(instance, handler, iterator, args);
-            m_Arguments.Evaluate(instance, handler, iterator, args);
-        
-        }
-        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
-        {
-            try {
-                Process.Start(m_FileName.Value, m_Arguments.Value);
-            } catch (Exception ex) {
-                ScriptableFramework.LogSystem.Warn("Exception:{0}\n{1}", ex.Message, ex.StackTrace);
-            }
-            return false;
-        }
-        protected override bool Load(Dsl.FunctionData callData)
-        {
-            int num = callData.GetParamNum();
-            if (num > 1) {
-                m_FileName.InitFromDsl(callData.GetParam(0));
-                m_Arguments.InitFromDsl(callData.GetParam(1));
-            }
-            return true;
-        }
-        private IStoryFunction<string> m_FileName = new StoryValue<string>();
-        private IStoryFunction<string> m_Arguments = new StoryValue<string>();
-    }
 }

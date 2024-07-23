@@ -6123,9 +6123,6 @@ namespace DotnetStoryScript.DslExpression
                     encoding = Encoding.GetEncoding(codePage);
                 }
             }
-            if (null == encoding) {
-                encoding = Encoding.UTF8;
-            }
 
             fileName = Environment.ExpandEnvironmentVariables(fileName);
             args = Environment.ExpandEnvironmentVariables(args);
@@ -6309,9 +6306,6 @@ namespace DotnetStoryScript.DslExpression
                         int codePage = v.GetInt();
                         encoding = Encoding.GetEncoding(codePage);
                     }
-                }
-                if (null == encoding) {
-                    encoding = Encoding.UTF8;
                 }
                 IList<string> input = null;
                 if (null != cfg.m_Input) {
@@ -7833,6 +7827,15 @@ namespace DotnetStoryScript.DslExpression
                 psi.ErrorDialog = option.ErrorDialog;
                 psi.WorkingDirectory = option.WorkingDirectory;
 
+                if (null == encoding) {
+                    if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
+                        encoding = Encoding.GetEncoding(936);
+                    }
+                    else {
+                        encoding = Encoding.UTF8;
+                    }
+                }
+
                 if (null != istream || null != input) {
                     psi.RedirectStandardInput = true;
                 }
@@ -7906,12 +7909,19 @@ namespace DotnetStoryScript.DslExpression
         private static void OnOutputDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e, Stream ostream, StringBuilder output, bool redirectToConsole, Encoding encoding, StringBuilder temp)
         {
             var p = sender as System.Diagnostics.Process;
-            if (p.StartInfo.RedirectStandardOutput) {
+            if (p.StartInfo.RedirectStandardOutput && null != e.Data) {
+                string str = e.Data;
+                if (encoding != Encoding.UTF8) {
+                    var bytes = encoding.GetBytes(str);
+                    bytes = Encoding.Convert(encoding, Encoding.UTF8, bytes);
+                    str = Encoding.UTF8.GetString(bytes);
+                }
+
                 temp.Length = 0;
-                temp.AppendLine(e.Data);
+                temp.AppendLine(str);
                 var txt = temp.ToString();
                 if (null != ostream) {
-                    var bytes = encoding.GetBytes(txt);
+                    var bytes = Encoding.UTF8.GetBytes(txt);
                     ostream.Write(bytes, 0, bytes.Length);
                 }
                 if (null != output) {
@@ -7926,12 +7936,19 @@ namespace DotnetStoryScript.DslExpression
         private static void OnErrorDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e, Stream ostream, StringBuilder error, bool redirectToConsole, Encoding encoding, StringBuilder temp)
         {
             var p = sender as System.Diagnostics.Process;
-            if (p.StartInfo.RedirectStandardError) {
+            if (p.StartInfo.RedirectStandardError && null != e.Data) {
+                string str = e.Data;
+                if (encoding != Encoding.UTF8) {
+                    var bytes = encoding.GetBytes(str);
+                    bytes = Encoding.Convert(encoding, Encoding.UTF8, bytes);
+                    str = Encoding.UTF8.GetString(bytes);
+                }
+
                 temp.Length = 0;
-                temp.AppendLine(e.Data);
+                temp.AppendLine(str);
                 var txt = temp.ToString();
                 if (null != ostream) {
-                    var bytes = encoding.GetBytes(txt);
+                    var bytes = Encoding.UTF8.GetBytes(txt);
                     ostream.Write(bytes, 0, bytes.Length);
                 }
                 if (null != error) {
