@@ -147,7 +147,7 @@ namespace DotnetStoryScript.CommonCommands
                             string err = string.Format("[StoryDsl] else must be the last function !!! line:{0}", functionData.GetLine());
                             throw new Exception(err);
 #else
-              ScriptableFramework.LogSystem.Error("[StoryDsl] else must be the last function !!!");
+                            LogSystem.Error("[StoryDsl] else must be the last function !!!");
 #endif
                         }
                     }

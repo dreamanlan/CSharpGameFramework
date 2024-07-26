@@ -126,7 +126,7 @@ namespace DotnetStoryScript
                     m_Params.Evaluate(instance, handler, iterator, args);
                 }
                 catch (Exception ex) {
-                    ScriptableFramework.LogSystem.Error("SimpleStoryCommand Evaluate Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    LogSystem.Error("SimpleStoryCommand Evaluate Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     return false;
                 }
             }
@@ -136,7 +136,7 @@ namespace DotnetStoryScript
                 m_LastExecResult = ExecCommand(instance, (ValueParamType)m_Params, delta);
             }
             catch (Exception ex) {
-                ScriptableFramework.LogSystem.Error("SimpleStoryCommand ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                LogSystem.Error("SimpleStoryCommand ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                 m_LastExecResult = false;
             }
             return m_LastExecResult;

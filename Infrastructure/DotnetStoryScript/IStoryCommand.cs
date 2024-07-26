@@ -116,7 +116,7 @@ namespace DotnetStoryScript
                     return ExecCommand(instance, handler, delta, iterator, args);
                 }
                 catch (Exception ex) {
-                    ScriptableFramework.LogSystem.Error("AbstractStoryCommand Composite Command ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    LogSystem.Error("AbstractStoryCommand Composite Command ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     return false;
                 }
             }
@@ -128,7 +128,7 @@ namespace DotnetStoryScript
                         Evaluate(instance, handler, iterator, args);
                     }
                     catch (Exception ex) {
-                        ScriptableFramework.LogSystem.Error("AbstractStoryCommand Evaluate Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                        LogSystem.Error("AbstractStoryCommand Evaluate Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                         return false;
                     }
                 }
@@ -138,7 +138,7 @@ namespace DotnetStoryScript
                     m_LastExecResult = ExecCommand(instance, handler, delta);
                 }
                 catch (Exception ex) {
-                    ScriptableFramework.LogSystem.Error("AbstractStoryCommand ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
+                    LogSystem.Error("AbstractStoryCommand ExecCommand Exception:{0}\n{1}", ex.Message, ex.StackTrace);
                     m_LastExecResult = false;
                 }
                 return m_LastExecResult;

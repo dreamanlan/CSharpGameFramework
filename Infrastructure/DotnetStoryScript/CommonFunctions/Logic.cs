@@ -197,4 +197,72 @@ namespace DotnetStoryScript.CommonFunctions
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
+    public sealed class ConditionalOperator : IStoryFunction
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            var statementData = param as Dsl.StatementData;
+            if (null != statementData) {
+                Dsl.FunctionData funcData1 = statementData.First.AsFunction;
+                Dsl.FunctionData funcData2 = statementData.Second.AsFunction;
+                if (funcData1.IsHighOrder && funcData1.HaveLowerOrderParam() && funcData2.GetId() == ":" && funcData2.HaveParamOrStatement()) {
+                    Dsl.ISyntaxComponent cond = funcData1.LowerOrderFunction.GetParam(0);
+                    Dsl.ISyntaxComponent op1 = funcData1.GetParam(0);
+                    Dsl.ISyntaxComponent op2 = funcData2.GetParam(0);
+                    m_Op1.InitFromDsl(cond);
+                    m_Op2.InitFromDsl(op1);
+                    m_Op3.InitFromDsl(op2);
+                }
+                TryUpdateValue();
+            }
+        }
+        public IStoryFunction Clone()
+        {
+            ConditionalOperator val = new ConditionalOperator();
+            val.m_Op1 = m_Op1.Clone();
+            val.m_Op2 = m_Op2.Clone();
+            val.m_Op3 = m_Op3.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_HaveValue = false;
+            m_Op1.Evaluate(instance, handler, iterator, args);
+            if (m_Op1.HaveValue) {
+                if (m_Op1.Value.GetBool())
+                    m_Op2.Evaluate(instance, handler, iterator, args);
+                else
+                    m_Op3.Evaluate(instance, handler, iterator, args);
+            }
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public BoxedValue Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue()
+        {
+            if (m_Op1.HaveValue) {
+                m_HaveValue = true;
+                var v1 = m_Op1.Value;
+                BoxedValue v = v1.GetLong() != 0 ? m_Op2.Value : m_Op3.Value;
+                m_Value = v;
+            }
+        }
+        private IStoryFunction m_Op1 = new StoryValue();
+        private IStoryFunction m_Op2 = new StoryValue();
+        private IStoryFunction m_Op3 = new StoryValue();
+        private bool m_HaveValue;
+        private BoxedValue m_Value;
+    }
 }

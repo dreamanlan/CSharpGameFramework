@@ -265,10 +265,10 @@ namespace DotnetStoryScript
                             else if (null == OnCreateFailback || !OnCreateFailback(param, out ret)) {
 #if DEBUG
                                 string err = string.Format("[LoadStory] value:{0}[{1}] line:{2} failed.", id, param.ToScriptString(false), param.GetLine());
-                                ScriptableFramework.LogSystem.Error("{0}", err);
+                                LogSystem.Error("{0}", err);
                                 throw new Exception(err);
 #else
-                                ScriptableFramework.LogSystem.Error("[LoadStory] value:{0} line:{1} failed.", id, param.GetLine());
+                                LogSystem.Error("[LoadStory] value:{0} line:{1} failed.", id, param.GetLine());
 #endif
                             }
                         }

@@ -336,7 +336,7 @@ namespace DotnetStoryScript
                 string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
                 throw new Exception(err);
 #else
-        		ScriptableFramework.LogSystem.Error("Unknown value, id:{0}", param.GetId());
+        		LogSystem.Error("Unknown value, id:{0}", param.GetId());
 #endif
             }
         }
@@ -489,7 +489,7 @@ namespace DotnetStoryScript
                     string err = string.Format("Unknown value, id:{0} line:{1}", param.GetId(), param.GetLine());
                     throw new Exception(err);
 #else
-        			ScriptableFramework.LogSystem.Error("Unknown value, id:{0}", param.GetId());
+        			LogSystem.Error("Unknown value, id:{0}", param.GetId());
 #endif
                 }
             }

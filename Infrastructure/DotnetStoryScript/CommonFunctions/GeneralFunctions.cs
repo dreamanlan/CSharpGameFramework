@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Dsl;
 using ScriptRuntime;
 using ScriptableFramework;
 
@@ -567,8 +568,6 @@ namespace DotnetStoryScript.CommonFunctions
             m_HaveValue = true;
             m_Value = ScriptableFramework.Helper.Random.NextFloat();
         }
-        private IStoryFunction<int> m_Min = new StoryValue<int>();
-        private IStoryFunction<int> m_Max = new StoryValue<int>();
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
@@ -886,9 +885,9 @@ namespace DotnetStoryScript.CommonFunctions
 
         public BoxedValue Value => m_Value;
 
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            if (param is Dsl.FunctionData functionData && functionData.GetParamNum() == 4) {
+            if (param is FunctionData functionData && functionData.GetParamNum() == 4) {
                 m_X.InitFromDsl(functionData.GetParam(0));
                 m_Y.InitFromDsl(functionData.GetParam(1));
                 m_Z.InitFromDsl(functionData.GetParam(2));
@@ -945,9 +944,9 @@ namespace DotnetStoryScript.CommonFunctions
 
         public BoxedValue Value => m_Value;
 
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            if (param is Dsl.FunctionData functionData && functionData.GetParamNum() == 4) {
+            if (param is FunctionData functionData && functionData.GetParamNum() == 4) {
                 m_X.InitFromDsl(functionData.GetParam(0));
                 m_Y.InitFromDsl(functionData.GetParam(1));
                 m_Z.InitFromDsl(functionData.GetParam(2));
@@ -1000,9 +999,9 @@ namespace DotnetStoryScript.CommonFunctions
 
         public BoxedValue Value => m_Value;
 
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            if (param is Dsl.FunctionData functionData && functionData.GetParamNum() == 2) {
+            if (param is FunctionData functionData && functionData.GetParamNum() == 2) {
                 m_X.InitFromDsl(functionData.GetParam(0));
                 m_Y.InitFromDsl(functionData.GetParam(1));
                 TryUpdateValue();
@@ -1051,9 +1050,9 @@ namespace DotnetStoryScript.CommonFunctions
 
         public BoxedValue Value => m_Value;
 
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            if (param is Dsl.FunctionData functionData && functionData.GetParamNum() == 3) {
+            if (param is FunctionData functionData && functionData.GetParamNum() == 3) {
                 m_X.InitFromDsl(functionData.GetParam(0));
                 m_Y.InitFromDsl(functionData.GetParam(1));
                 m_Z.InitFromDsl(functionData.GetParam(2));
@@ -1091,9 +1090,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class Vector2DistanceFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 m_Pt1.InitFromDsl(callData.GetParam(0));
                 m_Pt2.InitFromDsl(callData.GetParam(1));
@@ -1145,9 +1144,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class Vector3DistanceFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 m_Pt1.InitFromDsl(callData.GetParam(0));
                 m_Pt2.InitFromDsl(callData.GetParam(1));
@@ -1199,9 +1198,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class Vector2To3Function : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_Pt.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
@@ -1249,9 +1248,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class Vector3To2Function : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_Pt.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
@@ -1299,9 +1298,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class StringListFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_ListString.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
@@ -1354,9 +1353,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class IntListFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_ListString.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
@@ -1409,9 +1408,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class FloatListFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_ListString.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
@@ -1464,9 +1463,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class Vector2ListFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_ListString.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
@@ -1519,9 +1518,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class Vector3ListFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_ListString.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
@@ -1574,13 +1573,13 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class ArrayFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData) {
 
                 for (int i = 0; i < callData.GetParamNum(); ++i) {
-                    Dsl.ISyntaxComponent arg = callData.GetParam(i);
+                    ISyntaxComponent arg = callData.GetParam(i);
                     StoryValue val = new StoryValue();
                     val.InitFromDsl(arg);
                     m_List.Add(val);
@@ -1643,9 +1642,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class ToArrayFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_ListValue.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
@@ -1703,13 +1702,13 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class ListFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData) {
 
                 for (int i = 0; i < callData.GetParamNum(); ++i) {
-                    Dsl.ISyntaxComponent arg = callData.GetParam(i);
+                    ISyntaxComponent arg = callData.GetParam(i);
                     StoryValue val = new StoryValue();
                     val.InitFromDsl(arg);
                     m_List.Add(val);
@@ -1774,9 +1773,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class RandomFromListFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData) {
                 m_ParamNum = callData.GetParamNum();
                 if (m_ParamNum > 0) {
@@ -1847,9 +1846,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class ListGetFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData) {
 
                 m_ParamNum = callData.GetParamNum();
@@ -1928,9 +1927,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class ListSizeFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 1) {
                 m_ListValue.InitFromDsl(callData.GetParam(0));
                 TryUpdateValue();
@@ -1980,9 +1979,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class ListIndexOfFunction : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData) {
 
                 m_ParamNum = callData.GetParamNum();
@@ -2044,9 +2043,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class RandVector3Function : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 m_Pt.InitFromDsl(callData.GetParam(0));
                 m_Radius.InitFromDsl(callData.GetParam(1));
@@ -2101,9 +2100,9 @@ namespace DotnetStoryScript.CommonFunctions
     }
     public sealed class RandVector2Function : IStoryFunction
     {
-        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        public void InitFromDsl(ISyntaxComponent param)
         {
-            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            FunctionData callData = param as FunctionData;
             if (null != callData && callData.GetParamNum() == 2) {
                 m_Pt.InitFromDsl(callData.GetParam(0));
                 m_Radius.InitFromDsl(callData.GetParam(1));

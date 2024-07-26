@@ -8,7 +8,7 @@ using ScriptableFramework;
 namespace DotnetStoryScript.CommonCommands
 {
     /// <summary>
-    /// dotnetexec(obj,method,arg1,arg2,...);
+    /// dotnetcall(obj,method,arg1,arg2,...);
     /// </summary>
     public sealed class DotnetCallCommand : AbstractStoryCommand
     {
@@ -33,40 +33,66 @@ namespace DotnetStoryScript.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             object obj = m_Object.Value.GetObject();
+            var disp = obj as IObjectDispatch;
+            BoxedValueList dispArgs = null;
+            ArrayList arglist = null;
             var methodObj = m_Method.Value;
             string method = methodObj.IsString ? methodObj.StringVal : null;
-            ArrayList arglist = new ArrayList();
-            for (int i = 0; i < m_Args.Count; i++) {
-                arglist.Add(m_Args[i].Value.GetObject());
+            if (null != disp) {
+                dispArgs = instance.NewBoxedValueList();
+                for (int i = 0; i < m_Args.Count; i++) {
+                    arglist.Add(m_Args[i].Value);
+                }
             }
-            object[] args = arglist.ToArray();
+            else {
+                arglist = new ArrayList();
+                for (int i = 0; i < m_Args.Count; i++) {
+                    arglist.Add(m_Args[i].Value.GetObject());
+                }
+            }
             if (null != obj) {
                 if (null != method) {
-                    IDictionary dict = obj as IDictionary;
-                    if (null != dict && dict.Contains(method) && dict[method] is Delegate) {
-                        var d = dict[method] as Delegate;
-                        if (null != d) {
-                            d.DynamicInvoke(args);
+                    if (null != disp) {
+                        if (m_DispId < 0) {
+                            m_DispId = disp.GetDispatchId(method);
                         }
-                    } else {
-                        Type t = obj as Type;
-                        if (null != t) {
-                            try {
-                                BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
-                                ScriptableFramework.Converter.CastArgsForCall(t, method, flags, args);
-                                t.InvokeMember(method, flags, null, null, args);
-                            } catch (Exception ex) {
-                                ScriptableFramework.LogSystem.Warn("DotnetExec {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                        if (m_DispId >= 0) {
+                            disp.InvokeMethod(m_DispId, dispArgs);
+                        }
+                        instance.RecycleBoxedValueList(dispArgs);
+                    }
+                    else {
+                        object[] args = arglist.ToArray();
+                        IDictionary dict = obj as IDictionary;
+                        if (null != dict && dict.Contains(method) && dict[method] is Delegate) {
+                            var d = dict[method] as Delegate;
+                            if (null != d) {
+                                d.DynamicInvoke(args);
                             }
-                        } else {
-                            t = obj.GetType();
+                        }
+                        else {
+                            Type t = obj as Type;
                             if (null != t) {
                                 try {
-                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
-                                    ScriptableFramework.Converter.CastArgsForCall(t, method, flags, args);
-                                    t.InvokeMember(method, flags, null, obj, args);
-                                } catch (Exception ex) {
-                                    ScriptableFramework.LogSystem.Warn("DotnetExec {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                                    BindingFlags flags = BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
+                                    Converter.CastArgsForCall(t, method, flags, args);
+                                    t.InvokeMember(method, flags, null, null, args);
+                                }
+                                catch (Exception ex) {
+                                    LogSystem.Warn("DotnetCall {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                                }
+                            }
+                            else {
+                                t = obj.GetType();
+                                if (null != t) {
+                                    try {
+                                        BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
+                                        Converter.CastArgsForCall(t, method, flags, args);
+                                        t.InvokeMember(method, flags, null, obj, args);
+                                    }
+                                    catch (Exception ex) {
+                                        LogSystem.Warn("DotnetCall {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                                    }
                                 }
                             }
                         }
@@ -92,6 +118,7 @@ namespace DotnetStoryScript.CommonCommands
         private IStoryFunction m_Object = new StoryValue();
         private IStoryFunction m_Method = new StoryValue();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
+        private int m_DispId = -1;
     }
     /// <summary>
     /// dotnetset(obj,method,arg1,arg2,...);
@@ -119,37 +146,55 @@ namespace DotnetStoryScript.CommonCommands
         protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
         {
             object obj = m_Object.Value.GetObject();
+            var disp = obj as IObjectDispatch;
+            BoxedValue argv = BoxedValue.NullObject;
             var methodObj = m_Method.Value;
             string method = methodObj.IsString ? methodObj.StringVal : null;
             ArrayList arglist = new ArrayList();
             for (int i = 0; i < m_Args.Count; i++) {
+                if (null != disp && i == 0)
+                    argv = m_Args[i].Value;
                 arglist.Add(m_Args[i].Value.GetObject());
             }
             object[] args = arglist.ToArray();
             if (null != obj) {
                 if (null != method) {
-                    IDictionary dict = obj as IDictionary;
-                    if (null != dict && null == obj.GetType().GetMethod(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.Public | BindingFlags.NonPublic)) {
-                        dict[method] = args[0];
-                    } else {
-                        Type t = obj as Type;
-                        if (null != t) {
-                            try {
-                                BindingFlags flags = BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
-                                ScriptableFramework.Converter.CastArgsForSet(t, method, flags, args);
-                                t.InvokeMember(method, flags, null, null, args);
-                            } catch (Exception ex) {
-                                ScriptableFramework.LogSystem.Warn("DotnetSet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
-                            }
-                        } else {
-                            t = obj.GetType();
+                    if (null != disp) {
+                        if (m_DispId < 0) {
+                            m_DispId = disp.GetDispatchId(method);
+                        }
+                        if (m_DispId >= 0) {
+                            disp.SetProperty(m_DispId, argv);
+                        }
+                    }
+                    else {
+                        IDictionary dict = obj as IDictionary;
+                        if (null != dict && null == obj.GetType().GetMethod(method, BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic)) {
+                            dict[method] = args[0];
+                        }
+                        else {
+                            Type t = obj as Type;
                             if (null != t) {
                                 try {
-                                    BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
-                                    ScriptableFramework.Converter.CastArgsForSet(t, method, flags, args);
-                                    t.InvokeMember(method, flags, null, obj, args);
-                                } catch (Exception ex) {
-                                    ScriptableFramework.LogSystem.Warn("DotnetSet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                                    BindingFlags flags = BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
+                                    Converter.CastArgsForSet(t, method, flags, args);
+                                    t.InvokeMember(method, flags, null, null, args);
+                                }
+                                catch (Exception ex) {
+                                    LogSystem.Warn("DotnetSet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                                }
+                            }
+                            else {
+                                t = obj.GetType();
+                                if (null != t) {
+                                    try {
+                                        BindingFlags flags = BindingFlags.Instance | BindingFlags.Static | BindingFlags.SetField | BindingFlags.SetProperty | BindingFlags.FlattenHierarchy | BindingFlags.Public | BindingFlags.NonPublic;
+                                        Converter.CastArgsForSet(t, method, flags, args);
+                                        t.InvokeMember(method, flags, null, obj, args);
+                                    }
+                                    catch (Exception ex) {
+                                        LogSystem.Warn("DotnetSet {0}.{1} Exception:{2}\n{3}", t.Name, method, ex.Message, ex.StackTrace);
+                                    }
                                 }
                             }
                         }
@@ -175,6 +220,7 @@ namespace DotnetStoryScript.CommonCommands
         private IStoryFunction m_Object = new StoryValue();
         private IStoryFunction m_Method = new StoryValue();
         private List<IStoryFunction> m_Args = new List<IStoryFunction>();
+        private int m_DispId = -1;
     }
     /// <summary>
     /// collectionexec(obj,method,arg1,arg2,...);

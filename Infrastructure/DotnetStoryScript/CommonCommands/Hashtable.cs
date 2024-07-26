@@ -2,10 +2,133 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using ScriptableFramework;
 
 namespace DotnetStoryScript.CommonCommands
 {
+    /// <summary>
+    /// appendformat(sb, fmt, args);
+    /// </summary>
+    public sealed class AppendFormatCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            AppendFormatCommand cmd = new AppendFormatCommand();
+            cmd.m_StringBuilder = m_StringBuilder.Clone();
+            cmd.m_Format = m_Format.Clone();
+            for (int i = 0; i < m_FormatArgs.Count; i++) {
+                cmd.m_FormatArgs.Add(m_FormatArgs[i].Clone());
+            }
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_StringBuilder.Evaluate(instance, handler, iterator, args);
+            m_Format.Evaluate(instance, handler, iterator, args);
+            for (int i = 0; i < m_FormatArgs.Count; i++) {
+                m_FormatArgs[i].Evaluate(instance, handler, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            var sb = m_StringBuilder.Value;
+            var formatObj = m_Format.Value;
+            string format = formatObj.IsString ? formatObj.StringVal : null;
+            if (!string.IsNullOrEmpty(format) && m_FormatArgs.Count > 0) {
+                ArrayList arglist = new ArrayList();
+                for (int i = 0; i < m_FormatArgs.Count; i++) {
+                    arglist.Add(m_FormatArgs[i].Value.GetObject());
+                }
+                object[] args = arglist.ToArray();
+                sb.AppendFormat(format, args);
+            }
+            else {
+                sb.AppendFormat("{0}", formatObj.ToString());
+            }
+            return false;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_StringBuilder.InitFromDsl(callData.GetParam(0));
+                m_Format.InitFromDsl(callData.GetParam(1));
+            }
+            for (int i = 2; i < callData.GetParamNum(); ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_FormatArgs.Add(val);
+            }
+            return true;
+        }
+
+        private IStoryFunction<StringBuilder> m_StringBuilder = new StoryValue<StringBuilder>();
+        private IStoryFunction m_Format = new StoryValue();
+        private List<IStoryFunction> m_FormatArgs = new List<IStoryFunction>();
+    }
+    /// <summary>
+    /// appendformatline(sb, fmt, args);
+    /// </summary>
+    public sealed class AppendFormatLineCommand : AbstractStoryCommand
+    {
+        protected override IStoryCommand CloneCommand()
+        {
+            AppendFormatLineCommand cmd = new AppendFormatLineCommand();
+            cmd.m_StringBuilder = m_StringBuilder.Clone();
+            cmd.m_Format = m_Format.Clone();
+            for (int i = 0; i < m_FormatArgs.Count; i++) {
+                cmd.m_FormatArgs.Add(m_FormatArgs[i].Clone());
+            }
+            return cmd;
+        }
+        protected override void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_StringBuilder.Evaluate(instance, handler, iterator, args);
+            m_Format.Evaluate(instance, handler, iterator, args);
+            for (int i = 0; i < m_FormatArgs.Count; i++) {
+                m_FormatArgs[i].Evaluate(instance, handler, iterator, args);
+            }
+        }
+        protected override bool ExecCommand(StoryInstance instance, StoryMessageHandler handler, long delta)
+        {
+            var sb = m_StringBuilder.Value;
+            var formatObj = m_Format.Value;
+            string format = formatObj.IsString ? formatObj.StringVal : null;
+            if (!string.IsNullOrEmpty(format) && m_FormatArgs.Count > 0) {
+                ArrayList arglist = new ArrayList();
+                for (int i = 0; i < m_FormatArgs.Count; i++) {
+                    arglist.Add(m_FormatArgs[i].Value.GetObject());
+                }
+                object[] args = arglist.ToArray();
+                sb.AppendFormat(format, args);
+                sb.AppendLine();
+            }
+            else {
+                sb.AppendFormat("{0}", formatObj.ToString());
+                sb.AppendLine();
+            }
+            return false;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            int num = callData.GetParamNum();
+            if (num > 1) {
+                m_StringBuilder.InitFromDsl(callData.GetParam(0));
+                m_Format.InitFromDsl(callData.GetParam(1));
+            }
+            for (int i = 2; i < callData.GetParamNum(); ++i) {
+                StoryValue val = new StoryValue();
+                val.InitFromDsl(callData.GetParam(i));
+                m_FormatArgs.Add(val);
+            }
+            return true;
+        }
+
+        private IStoryFunction<StringBuilder> m_StringBuilder = new StoryValue<StringBuilder>();
+        private IStoryFunction m_Format = new StoryValue();
+        private List<IStoryFunction> m_FormatArgs = new List<IStoryFunction>();
+    }
     /// <summary>
     /// writealllines(file, val);
     /// </summary>
