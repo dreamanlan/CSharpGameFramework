@@ -7576,15 +7576,8 @@ namespace DotnetStoryScript.DslExpression
             if (null != ret) {
                 Dsl.StatementData stData = comp as Dsl.StatementData;
                 if (null != stData) {
-                    Dsl.ValueData first = stData.First.AsValue;
-                    if (null != first) {
-                        //Convert command line syntax into function call syntax.
-                        Dsl.FunctionData fd = new Dsl.FunctionData();
-                        fd.Name = first;
-                        for (int argi = 1; argi < stData.GetFunctionNum(); ++argi) {
-                            var pfd = stData.GetFunction(argi);
-                            fd.AddParam(pfd);
-                        }
+                    //Convert command line syntax into function call syntax.
+                    if (DslSyntaxTransformer.TryTransformCommandLineLikeSyntax(stData, out var fd)) {
                         if (!ret.Load(fd, this)) {
                             //error
                             Log("DslCalculator error, {0} line {1}", comp.ToScriptString(false), comp.GetLine());
