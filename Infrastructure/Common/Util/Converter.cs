@@ -289,17 +289,35 @@ namespace ScriptableFramework
         public static void CastArgsForCall(Type t, string method, BindingFlags flags, params object[] args)
         {
             var mis = t.GetMember(method, flags);
+            ParameterInfo[] tpis = null;
+            int tscore = 0;
             foreach (var mi in mis) {
                 var info = mi as MethodInfo;
                 if (null != info) {
                     var pis = info.GetParameters();
                     if (pis.Length == args.Length) {
+                        int score = 0;
                         for (int i = 0; i < pis.Length; ++i) {
-                            if (null != args[i] && args[i].GetType() != pis[i].ParameterType && args[i].GetType().Name != "MonoType") {
-                                args[i] = CastTo(pis[i].ParameterType, args[i]);
+                            if (null != args[i]) {
+                                if (args[i].GetType() == pis[i].ParameterType) {
+                                    score += 2;
+                                }
+                                else if (pis[i].ParameterType.IsAssignableFrom(args[i].GetType())) {
+                                    score += 1;
+                                }
                             }
                         }
-                        break;
+                        if (score > tscore) {
+                            tpis = pis;
+                            tscore = score;
+                        }
+                    }
+                }
+            }
+            if (null != tpis) {
+                for (int i = 0; i < tpis.Length; ++i) {
+                    if (null != args[i] && args[i].GetType() != tpis[i].ParameterType && args[i].GetType().Name != "MonoType") {
+                        args[i] = CastTo(tpis[i].ParameterType, args[i]);
                     }
                 }
             }

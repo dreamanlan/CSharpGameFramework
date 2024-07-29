@@ -146,109 +146,23 @@ namespace DotnetStoryScript.DslExpression
 
         protected static void CastArgsForCall(Type t, string method, BindingFlags flags, params object[] args)
         {
-            var mis = t.GetMember(method, flags);
-            foreach (var mi in mis) {
-                var info = mi as MethodInfo;
-                if (null != info) {
-                    var pis = info.GetParameters();
-                    if (pis.Length == args.Length) {
-                        for (int i = 0; i < pis.Length; ++i) {
-                            if (null != args[i] && args[i].GetType() != pis[i].ParameterType && args[i].GetType().Name != "MonoType") {
-                                args[i] = CastTo(pis[i].ParameterType, args[i]);
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
+            Converter.CastArgsForCall(t, method, flags, args);
         }
         protected static void CastArgsForSet(Type t, string property, BindingFlags flags, params object[] args)
         {
-            var p = t.GetProperty(property, flags);
-            if (null != p) {
-                var info = p.GetSetMethod(true);
-                if (null != info) {
-                    var pis = info.GetParameters();
-                    if (pis.Length == args.Length) {
-                        for (int i = 0; i < pis.Length; ++i) {
-                            if (null != args[i] && args[i].GetType() != pis[i].ParameterType && args[i].GetType().Name != "MonoType") {
-                                args[i] = CastTo(pis[i].ParameterType, args[i]);
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                var f = t.GetField(property, flags);
-                if (null != f && args.Length == 1 && null != args[0] && args[0].GetType() != f.FieldType && args[0].GetType().Name != "MonoType") {
-                    args[0] = CastTo(f.FieldType, args[0]);
-                }
-            }
+            Converter.CastArgsForSet(t, property, flags, args);
         }
         protected static void CastArgsForGet(Type t, string property, BindingFlags flags, params object[] args)
         {
-            var p = t.GetProperty(property, flags);
-            if (null != p) {
-                var info = p.GetGetMethod(true);
-                if (null != info) {
-                    var pis = info.GetParameters();
-                    if (pis.Length == args.Length) {
-                        for (int i = 0; i < pis.Length; ++i) {
-                            if (null != args[i] && args[i].GetType() != pis[i].ParameterType && args[i].GetType().Name != "MonoType") {
-                                args[i] = CastTo(pis[i].ParameterType, args[i]);
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                var f = t.GetField(property, flags);
-                if (null != f && args.Length == 0) {
-                }
-            }
+            Converter.CastArgsForGet(t, property, flags, args);
         }
         protected static T CastTo<T>(object obj)
         {
-            if (obj is BoxedValue) {
-                return ((BoxedValue)obj).CastTo<T>();
-            }
-            else if (obj is T) {
-                return (T)obj;
-            }
-            else {
-                try {
-                    return (T)Convert.ChangeType(obj, typeof(T));
-                }
-                catch (OverflowException) {
-                    return (T)Convert.ChangeType(obj.ToString(), typeof(T));
-                }
-                catch {
-                    return default(T);
-                }
-            }
+            return Converter.CastTo<T>(obj);
         }
         protected static object CastTo(Type t, object obj)
         {
-            if (null == obj)
-                return null;
-            Type st = obj.GetType();
-            if (obj is BoxedValue) {
-                return ((BoxedValue)obj).CastTo(t);
-            }
-            else if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
-                return obj;
-            }
-            else {
-                try {
-                    return Convert.ChangeType(obj, t);
-                }
-                catch (OverflowException) {
-                    return Convert.ChangeType(obj.ToString(), t);
-                }
-                catch {
-                    return null;
-                }
-            }
+            return Converter.CastTo(t, obj);
         }
         protected static Encoding GetEncoding(BoxedValue v)
         {
