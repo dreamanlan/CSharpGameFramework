@@ -272,8 +272,11 @@ public class DebugConsole : MonoBehaviour
         m_Filter = string.Empty;
         m_History.FromString(PlayerPrefs.GetString("debug_console_history"));
 #if !EMBED_ONGUI
-        var scale = 1.0f;
-        if (scale != 0.0f && scale >= 1.1f) {
+        if (m_InitialScreenWidth == 0) {
+            m_InitialScreenWidth = Screen.width;
+        }
+        var scale = Screen.width / m_InitialScreenWidth;
+        if (scale != 0.0f) {
             m_Scaled = true;
             m_GuiScale.Set(scale, scale, scale);
         }
@@ -319,9 +322,10 @@ public class DebugConsole : MonoBehaviour
         LogMessage(Message.System(" Copyright 2008-2010 Jeremy Hollingsworth "));
         LogMessage(Message.System(" Ennanzus-Interactive.com "));
         LogMessage(Message.System(" type '/?' for available commands."));
-        LogMessage(Message.System(" type '/? filter' for available story commands."));
+        LogMessage(Message.System(" type '/? filter' for available story commands and script apis."));
         LogMessage(Message.Log(""));
 
+        this.RegisterCommandCallback("open", CMDOpen);
         this.RegisterCommandCallback("close", CMDClose);
         this.RegisterCommandCallback("clear", CMDClear);
         this.RegisterCommandCallback("sys", CMDSystemInfo);
@@ -464,8 +468,8 @@ public class DebugConsole : MonoBehaviour
             GUI.matrix = GUI.matrix * Matrix4x4.Scale(m_GuiScale);
         }
 
-#if UNITY_STANDALONE_WIN || UNITY_EDITOR
-        // Toggle key shows the console in non-iOS dev builds
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR || MOBILE
+        // Toggle key shows the console
         if (evt.keyCode == ToggleKey && evt.type == EventType.KeyUp)
             m_IsOpen = !m_IsOpen;
 #endif
@@ -477,7 +481,7 @@ public class DebugConsole : MonoBehaviour
       if (evt.type == EventType.Repaint && (touch.phase == TouchPhase.Canceled || touch.phase == TouchPhase.Ended) && touch.tapCount == 3/* && !_isLastHitUi*/) {
           Vector2 pos = touch.position;
           if (pos.x >= Screen.width * 1 / 3 && pos.x <= Screen.width * 2 / 3 && pos.y >= Screen.height * 2 / 3 && touch.deltaPosition.sqrMagnitude <= 25) {
-          m_IsOpen = !m_IsOpen;
+              m_IsOpen = !m_IsOpen;
           }
       }
       if (m_IsOpen) {
@@ -720,6 +724,13 @@ public class DebugConsole : MonoBehaviour
     #region Console commands
 
     //==== Built-in example DebugCommand handlers ====
+    private object CMDOpen(params string[] args)
+    {
+        ShowImpl();
+
+        return "opened";
+    }
+
     private object CMDClose(params string[] args)
     {
         HideImpl();
@@ -1025,6 +1036,7 @@ public class DebugConsole : MonoBehaviour
 
     private Vector3 m_GuiScale = Vector3.one;
     private Matrix4x4 m_RestoreMatrix = Matrix4x4.identity;
+    private int m_InitialScreenWidth = 0;
     private bool m_Scaled = false;
     private StringBuilder m_DisplayString = new StringBuilder();
     private bool m_Dirty;
