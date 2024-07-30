@@ -10,52 +10,11 @@ namespace DotnetStoryScript
         public const int c_MaxWaitCommandTime = 3600000;
         public static T CastTo<T>(object obj)
         {
-            if (obj is BoxedValue) {
-                return ((BoxedValue)obj).CastTo<T>();
-            }
-            else if (obj is T) {
-                return (T)obj;
-            }
-            else if (typeof(T) == typeof(BoxedValue)) {
-                return GenericValueConverter.From<T>(BoxedValue.FromObject(obj));
-            }
-            else {
-                try {
-                    return (T)Convert.ChangeType(obj, typeof(T));
-                }
-                catch (OverflowException) {
-                    return (T)Convert.ChangeType(obj.ToString(), typeof(T));
-                }
-                catch {
-                    return default(T);
-                }
-            }
+            return Converter.CastTo<T>(obj);
         }
         public static object CastTo(Type t, object obj)
         {
-            if (null == obj)
-                return null;
-            Type st = obj.GetType();
-            if (obj is BoxedValue) {
-                return ((BoxedValue)obj).CastTo(t);
-            }
-            else if (t.IsAssignableFrom(st) || st.IsSubclassOf(t)) {
-                return obj;
-            }
-            else if (t == typeof(BoxedValue)) {
-                return BoxedValue.FromObject(obj);
-            }
-            else {
-                try {
-                    return Convert.ChangeType(obj, t);
-                }
-                catch (OverflowException) {
-                    return Convert.ChangeType(obj.ToString(), t);
-                }
-                catch {
-                    return null;
-                }
-            }
+            return Converter.CastTo(t, obj);
         }
     }
     public sealed class StoryValueResult
