@@ -272,14 +272,7 @@ public class DebugConsole : MonoBehaviour
         m_Filter = string.Empty;
         m_History.FromString(PlayerPrefs.GetString("debug_console_history"));
 #if !EMBED_ONGUI
-        if (m_InitialScreenWidth == 0) {
-            m_InitialScreenWidth = Screen.width;
-        }
-        var scale = Screen.width / m_InitialScreenWidth;
-        if (scale != 0.0f) {
-            m_Scaled = true;
-            m_GuiScale.Set(scale, scale, scale);
-        }
+        m_InitialScreenWidth = Screen.width;
 
         m_WindowMethods = new GUI.WindowFunction[] { LogWindow, CopyLogWindow };
 
@@ -462,10 +455,17 @@ public class DebugConsole : MonoBehaviour
         // Apply a custom skin
         GUI.skin = customSkin;
 
-        if (m_Scaled) {
+        var scale = Screen.width / m_InitialScreenWidth;
+        bool scaled = false;
+        var guiScale = Vector3.one;
+        if (scale != 1.0f) {
+            scaled = true;
+            guiScale = new Vector3(scale, scale, scale);
+        }
+        if (scaled) {
             m_RestoreMatrix = GUI.matrix;
 
-            GUI.matrix = GUI.matrix * Matrix4x4.Scale(m_GuiScale);
+            GUI.matrix = GUI.matrix * Matrix4x4.Scale(guiScale);
         }
 
 #if UNITY_STANDALONE_WIN || UNITY_EDITOR || MOBILE
@@ -494,10 +494,10 @@ public class DebugConsole : MonoBehaviour
         else if (!m_Dragging && (touch.phase == TouchPhase.Began || touch.phase == TouchPhase.Stationary)) {
           var dragRect = m_FakeDragRect;
 
-          dragRect.x = m_WindowRect.x * m_GuiScale.x;
-          dragRect.y = m_WindowRect.y * m_GuiScale.y;
-          dragRect.width *= m_GuiScale.x;
-          dragRect.height *= m_GuiScale.y;
+          dragRect.x = m_WindowRect.x * guiScale.x;
+          dragRect.y = m_WindowRect.y * guiScale.y;
+          dragRect.width *= guiScale.x;
+          dragRect.height *= guiScale.y;
 
           // check to see if the touch is inside the dragRect.
           if (dragRect.Contains(pos)) {
@@ -510,8 +510,8 @@ public class DebugConsole : MonoBehaviour
           var delta = touch.deltaPosition * 2.0f;
 #elif UNITY_IOS
           var delta = touch.deltaPosition;
-          delta.x /= m_GuiScale.x;
-          delta.y /= m_GuiScale.y;
+          delta.x /= guiScale.x;
+          delta.y /= guiScale.y;
 #endif
           delta.y = -delta.y;
 
@@ -519,14 +519,14 @@ public class DebugConsole : MonoBehaviour
         }
         else {
           var tapRect = m_ScrollRect;
-          tapRect.x += m_WindowRect.x * m_GuiScale.x;
-          tapRect.y += m_WindowRect.y * m_GuiScale.y;
+          tapRect.x += m_WindowRect.x * guiScale.x;
+          tapRect.y += m_WindowRect.y * guiScale.y;
           tapRect.width -= 32;
-          tapRect.width *= m_GuiScale.x;
-          tapRect.height *= m_GuiScale.y;
+          tapRect.width *= guiScale.x;
+          tapRect.height *= guiScale.y;
 
           if (tapRect.Contains(pos)) {
-            var scrollY = (tapRect.center.y - pos.y) / m_GuiScale.y;
+            var scrollY = (tapRect.center.y - pos.y) / guiScale.y;
 
             switch (m_ToolbarIndex) {
             case 0:
@@ -613,7 +613,7 @@ public class DebugConsole : MonoBehaviour
             }
         }
 
-        if (m_Scaled) {
+        if (scaled) {
             GUI.matrix = m_RestoreMatrix;
         }
 
@@ -1034,10 +1034,8 @@ public class DebugConsole : MonoBehaviour
 #endif
 #endif
 
-    private Vector3 m_GuiScale = Vector3.one;
+    private float m_InitialScreenWidth = 1.0f;
     private Matrix4x4 m_RestoreMatrix = Matrix4x4.identity;
-    private int m_InitialScreenWidth = 0;
-    private bool m_Scaled = false;
     private StringBuilder m_DisplayString = new StringBuilder();
     private bool m_Dirty;
 
