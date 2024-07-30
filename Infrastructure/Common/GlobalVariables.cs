@@ -24,20 +24,20 @@ namespace ScriptableFramework
             get { return m_IsDebug; }
             set { m_IsDebug = value; }
         }
+        public bool IsDevelopment
+        {
+            get { return m_IsDevelopment; }
+            set { m_IsDevelopment = value; }
+        }
         public bool IsDevice
         {
             get { return m_IsDevice; }
             set { m_IsDevice = value; }
         }
-        public bool IsPublish
+        public bool LoggerEnabled
         {
-            get { return m_IsPublish; }
-            set { m_IsPublish = value; }
-        }
-        public bool IsIphone4S
-        {
-            get { return m_IsIphone4S; }
-            set { m_IsIphone4S = value; }
+            get { return m_LoggerEnabled; }
+            set { m_LoggerEnabled = value; }
         }
         public bool StoryEditorOpen
         {
@@ -73,9 +73,9 @@ namespace ScriptableFramework
 
         private bool m_IsClient = true;
         private bool m_IsDebug = false;
+        private bool m_IsDevelopment = false;
         private bool m_IsDevice = false;
-        private bool m_IsPublish = false;
-        private bool m_IsIphone4S = false;
+        private bool m_LoggerEnabled = true;
 
         private bool m_StoryEditorOpen = false;
         private bool m_StoryEditorContinue = false;

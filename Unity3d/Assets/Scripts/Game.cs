@@ -53,25 +53,27 @@ public class Game : MonoBehaviour
             Debug.Log("persistentDataPath=" + persistentDataPath);
             Debug.Log("streamingAssetsPath=" + streamingAssetsPath);
 
+#if DEVELOPMENT_BUILD
+            GlobalVariables.Instance.IsDevelopment = true;
+#else
+            GlobalVariables.Instance.IsDevelopment = false;
+#endif
+
 #if UNITY_ANDROID && !UNITY_EDITOR
 	        GameControler.Init(tempPath, persistentDataPath);
             GlobalVariables.Instance.IsDevice = true;
 #elif UNITY_IPHONE && !UNITY_EDITOR
             GameControler.Init(tempPath, persistentDataPath);
             GlobalVariables.Instance.IsDevice = true;
-            if ((int)Device.generation <= (int)iPhoneGeneration.iPhone4S) {
-                GlobalVariables.Instance.IsIphone4S = true;
-            } else {
-                GlobalVariables.Instance.IsIphone4S = false;
-            }
 #else
-            GlobalVariables.Instance.IsClient = true;
             GlobalVariables.Instance.IsDevice = false;
-            if (Application.isEditor && !GlobalVariables.Instance.IsPublish)
+            if (Application.isEditor)
                 GameControler.Init(".", streamingAssetsPath);
             else
                 GameControler.Init(dataPath, streamingAssetsPath);
 #endif
+
+            GlobalVariables.Instance.IsClient = true;
             StartCoroutine(CheckAndUpdate());
         }
         catch (System.Exception ex) {
@@ -316,7 +318,7 @@ public class Game : MonoBehaviour
         return false;
     }
 
-#if UNITY_ANDROID || UNITY_IPHONE     
+#if UNITY_ANDROID || UNITY_IPHONE
     IEnumerator ExtractDataFile()
     {
         string srcPath = Application.streamingAssetsPath;

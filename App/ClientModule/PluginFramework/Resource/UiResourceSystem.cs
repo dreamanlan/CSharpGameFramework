@@ -15,7 +15,7 @@ namespace ScriptableFramework
                 return obj;
             }
             if (!m_LoadedPrefabs.TryGetValue(res, out obj)) {
-                if (GlobalVariables.Instance.IsPublish && Contains(res)) {
+                if (Contains(res)) {
                     obj = Load(res);
                 }
                 if (obj == null) {
