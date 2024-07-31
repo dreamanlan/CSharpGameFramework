@@ -55,6 +55,104 @@ namespace DotnetStoryScript.CommonFunctions
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
+    public sealed class NullValue : IStoryFunction
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            if (null != callData) {
+            }
+        }
+        public IStoryFunction Clone()
+        {
+            NullValue val = new NullValue();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_HaveValue = false;
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public BoxedValue Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue()
+        {
+            m_HaveValue = true;
+            m_Value = BoxedValue.NullObject;
+        }
+
+        private bool m_HaveValue;
+        private BoxedValue m_Value;
+    }
+    public sealed class EqualsNullFunction : IStoryFunction
+    {
+        public void InitFromDsl(Dsl.ISyntaxComponent param)
+        {
+            Dsl.FunctionData callData = param as Dsl.FunctionData;
+            if (null != callData) {
+                if (callData.GetParamNum() == 1) {
+                    m_X.InitFromDsl(callData.GetParam(0));
+                }
+                TryUpdateValue();
+            }
+        }
+        public IStoryFunction Clone()
+        {
+            EqualsNullFunction val = new EqualsNullFunction();
+            val.m_X = m_X.Clone();
+            val.m_HaveValue = m_HaveValue;
+            val.m_Value = m_Value;
+            return val;
+        }
+        public void Evaluate(StoryInstance instance, StoryMessageHandler handler, BoxedValue iterator, BoxedValueList args)
+        {
+            m_HaveValue = false;
+            m_X.Evaluate(instance, handler, iterator, args);
+            TryUpdateValue();
+        }
+        public bool HaveValue
+        {
+            get {
+                return m_HaveValue;
+            }
+        }
+        public BoxedValue Value
+        {
+            get {
+                return m_Value;
+            }
+        }
+
+        private void TryUpdateValue()
+        {
+            if (m_X.HaveValue) {
+                m_HaveValue = true;
+                var valX = m_X.Value;
+                if (valX.IsObject || valX.IsString) {
+                    m_Value = object.Equals(null, valX.ObjectVal);
+                }
+                else {
+                    m_Value = false;
+                }
+            }
+        }
+        private IStoryFunction m_X = new StoryValue();
+        private bool m_HaveValue;
+        private BoxedValue m_Value;
+    }
     public sealed class EvalFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)

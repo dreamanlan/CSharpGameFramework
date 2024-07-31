@@ -344,6 +344,8 @@ namespace DotnetStoryScript
             RegisterCommandFactory("clearfuncsubsts", "clearfuncsubsts() command", new StoryCommandFactoryHelper<CommonCommands.ClearFuncSubstsCommand>());
             //register value or internal function
             //object
+            StoryFunctionManager.Instance.RegisterFunctionFactory("null", "null() function", new StoryFunctionFactoryHelper<CommonFunctions.NullValue>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("equalsnull", "equalsnull(obj) function", new StoryFunctionFactoryHelper<CommonFunctions.EqualsNullFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("eval", "eval(exp1,exp2,...) function", new StoryFunctionFactoryHelper<CommonFunctions.EvalFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("namespace", "namespace() function", new StoryFunctionFactoryHelper<CommonFunctions.NamespaceFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("storyid", "storyid() function", new StoryFunctionFactoryHelper<CommonFunctions.StoryIdFunction>());

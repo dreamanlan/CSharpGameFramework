@@ -3435,7 +3435,41 @@ namespace DotnetStoryScript.DslExpression
 
         private List<IExpression> m_Expressions = new List<IExpression>();
     }
-    internal class DotnetLoadExp : SimpleExpressionBase
+    internal sealed class NullExp : AbstractExpression
+    {
+        protected override BoxedValue DoCalc()
+        {
+            var ret = BoxedValue.NullObject;
+            return ret;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            return true;
+        }
+    }
+    internal sealed class EqualsNullExp : AbstractExpression
+    {
+        protected override BoxedValue DoCalc()
+        {
+            var ret = BoxedValue.NullObject;
+            if (m_Expressions.Count >= 1) {
+                var obj = m_Expressions[0].Calc();
+                ret = object.Equals(null, obj.ObjectVal);
+            }
+            return ret;
+        }
+        protected override bool Load(Dsl.FunctionData callData)
+        {
+            for (int i = 0; i < callData.GetParamNum(); ++i) {
+                Dsl.ISyntaxComponent param = callData.GetParam(i);
+                m_Expressions.Add(Calculator.Load(param));
+            }
+            return true;
+        }
+
+        private List<IExpression> m_Expressions = new List<IExpression>();
+    }
+    internal sealed class DotnetLoadExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3449,7 +3483,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class DotnetNewExp : SimpleExpressionBase
+    internal sealed class DotnetNewExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3468,7 +3502,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class SubstringExp : SimpleExpressionBase
+    internal sealed class SubstringExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3491,7 +3525,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class NewStringBuilderExp : SimpleExpressionBase
+    internal sealed class NewStringBuilderExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3502,7 +3536,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class AppendFormatExp : SimpleExpressionBase
+    internal sealed class AppendFormatExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3525,7 +3559,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class AppendFormatLineExp : SimpleExpressionBase
+    internal sealed class AppendFormatLineExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3554,7 +3588,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringBuilderToStringExp : SimpleExpressionBase
+    internal sealed class StringBuilderToStringExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3568,7 +3602,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringJoinExp : SimpleExpressionBase
+    internal sealed class StringJoinExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3587,7 +3621,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringSplitExp : SimpleExpressionBase
+    internal sealed class StringSplitExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3612,7 +3646,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringTrimExp : SimpleExpressionBase
+    internal sealed class StringTrimExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3624,7 +3658,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringTrimStartExp : SimpleExpressionBase
+    internal sealed class StringTrimStartExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3636,7 +3670,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringTrimEndExp : SimpleExpressionBase
+    internal sealed class StringTrimEndExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3648,7 +3682,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringToLowerExp : SimpleExpressionBase
+    internal sealed class StringToLowerExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3660,7 +3694,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringToUpperExp : SimpleExpressionBase
+    internal sealed class StringToUpperExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3672,7 +3706,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringReplaceExp : SimpleExpressionBase
+    internal sealed class StringReplaceExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3686,7 +3720,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringReplaceCharExp : SimpleExpressionBase
+    internal sealed class StringReplaceCharExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3702,7 +3736,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class MakeStringExp : SimpleExpressionBase
+    internal sealed class MakeStringExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3725,7 +3759,7 @@ namespace DotnetStoryScript.DslExpression
             return new String(chars.ToArray());
         }
     }
-    internal class StringContainsExp : SimpleExpressionBase
+    internal sealed class StringContainsExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3754,7 +3788,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringNotContainsExp : SimpleExpressionBase
+    internal sealed class StringNotContainsExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3783,7 +3817,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringContainsAnyExp : SimpleExpressionBase
+    internal sealed class StringContainsAnyExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3822,7 +3856,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StringNotContainsAnyExp : SimpleExpressionBase
+    internal sealed class StringNotContainsAnyExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3861,7 +3895,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class Str2IntExp : SimpleExpressionBase
+    internal sealed class Str2IntExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3876,7 +3910,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class Str2UintExp : SimpleExpressionBase
+    internal sealed class Str2UintExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3891,7 +3925,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class Str2LongExp : SimpleExpressionBase
+    internal sealed class Str2LongExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3906,7 +3940,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class Str2UlongExp : SimpleExpressionBase
+    internal sealed class Str2UlongExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3921,7 +3955,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class Str2FloatExp : SimpleExpressionBase
+    internal sealed class Str2FloatExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3936,7 +3970,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class Str2DoubleExp : SimpleExpressionBase
+    internal sealed class Str2DoubleExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3951,7 +3985,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class Hex2IntExp : SimpleExpressionBase
+    internal sealed class Hex2IntExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3966,7 +4000,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class Hex2UintExp : SimpleExpressionBase
+    internal sealed class Hex2UintExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3981,7 +4015,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class Hex2LongExp : SimpleExpressionBase
+    internal sealed class Hex2LongExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -3996,7 +4030,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class Hex2UlongExp : SimpleExpressionBase
+    internal sealed class Hex2UlongExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4011,7 +4045,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class DatetimeStrExp : SimpleExpressionBase
+    internal sealed class DatetimeStrExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4026,7 +4060,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class LongDateStrExp : SimpleExpressionBase
+    internal sealed class LongDateStrExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4034,7 +4068,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class LongTimeStrExp : SimpleExpressionBase
+    internal sealed class LongTimeStrExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4042,7 +4076,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ShortDateStrExp : SimpleExpressionBase
+    internal sealed class ShortDateStrExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4050,7 +4084,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ShortTimeStrExp : SimpleExpressionBase
+    internal sealed class ShortTimeStrExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4058,7 +4092,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class IsNullOrEmptyExp : SimpleExpressionBase
+    internal sealed class IsNullOrEmptyExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4070,7 +4104,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ArrayExp : SimpleExpressionBase
+    internal sealed class ArrayExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4081,7 +4115,7 @@ namespace DotnetStoryScript.DslExpression
             return BoxedValue.FromObject(r);
         }
     }
-    internal class ToArrayExp : SimpleExpressionBase
+    internal sealed class ToArrayExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4102,7 +4136,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListSizeExp : SimpleExpressionBase
+    internal sealed class ListSizeExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4116,7 +4150,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListExp : SimpleExpressionBase
+    internal sealed class ListExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4129,7 +4163,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListGetExp : SimpleExpressionBase
+    internal sealed class ListGetExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4153,7 +4187,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListSetExp : SimpleExpressionBase
+    internal sealed class ListSetExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4171,7 +4205,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListIndexOfExp : SimpleExpressionBase
+    internal sealed class ListIndexOfExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4186,7 +4220,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListAddExp : SimpleExpressionBase
+    internal sealed class ListAddExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4201,7 +4235,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListRemoveExp : SimpleExpressionBase
+    internal sealed class ListRemoveExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4216,7 +4250,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListInsertExp : SimpleExpressionBase
+    internal sealed class ListInsertExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4232,7 +4266,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListRemoveAtExp : SimpleExpressionBase
+    internal sealed class ListRemoveAtExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4247,7 +4281,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListClearExp : SimpleExpressionBase
+    internal sealed class ListClearExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4261,7 +4295,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListSplitExp : SimpleExpressionBase
+    internal sealed class ListSplitExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4296,7 +4330,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class HashtableSizeExp : SimpleExpressionBase
+    internal sealed class HashtableSizeExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4310,7 +4344,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class HashtableExp : AbstractExpression
+    internal sealed class HashtableExp : AbstractExpression
     {
         protected override BoxedValue DoCalc()
         {
@@ -4340,7 +4374,7 @@ namespace DotnetStoryScript.DslExpression
 
         private List<IExpression> m_Expressions = new List<IExpression>();
     }
-    internal class HashtableGetExp : SimpleExpressionBase
+    internal sealed class HashtableGetExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4362,7 +4396,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class HashtableSetExp : SimpleExpressionBase
+    internal sealed class HashtableSetExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4378,7 +4412,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class HashtableAddExp : SimpleExpressionBase
+    internal sealed class HashtableAddExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4394,7 +4428,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class HashtableRemoveExp : SimpleExpressionBase
+    internal sealed class HashtableRemoveExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4409,7 +4443,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class HashtableClearExp : SimpleExpressionBase
+    internal sealed class HashtableClearExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4423,7 +4457,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class HashtableKeysExp : SimpleExpressionBase
+    internal sealed class HashtableKeysExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4439,7 +4473,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class HashtableValuesExp : SimpleExpressionBase
+    internal sealed class HashtableValuesExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4455,7 +4489,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ListHashtableExp : SimpleExpressionBase
+    internal sealed class ListHashtableExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4473,7 +4507,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class HashtableSplitExp : SimpleExpressionBase
+    internal sealed class HashtableSplitExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4509,7 +4543,7 @@ namespace DotnetStoryScript.DslExpression
         }
     }
     //The stack and queue share the same peek function.
-    internal class PeekExp : SimpleExpressionBase
+    internal sealed class PeekExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4527,7 +4561,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StackSizeExp : SimpleExpressionBase
+    internal sealed class StackSizeExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4541,7 +4575,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StackExp : SimpleExpressionBase
+    internal sealed class StackExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4554,7 +4588,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class PushExp : SimpleExpressionBase
+    internal sealed class PushExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4569,7 +4603,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class PopExp : SimpleExpressionBase
+    internal sealed class PopExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4583,7 +4617,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class StackClearExp : SimpleExpressionBase
+    internal sealed class StackClearExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4597,7 +4631,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class QueueSizeExp : SimpleExpressionBase
+    internal sealed class QueueSizeExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4611,7 +4645,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class QueueExp : SimpleExpressionBase
+    internal sealed class QueueExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4624,7 +4658,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class EnqueueExp : SimpleExpressionBase
+    internal sealed class EnqueueExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4639,7 +4673,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class DequeueExp : SimpleExpressionBase
+    internal sealed class DequeueExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4653,7 +4687,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class QueueClearExp : SimpleExpressionBase
+    internal sealed class QueueClearExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4667,7 +4701,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class SetEnvironmentExp : SimpleExpressionBase
+    internal sealed class SetEnvironmentExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4681,7 +4715,7 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
-    internal class GetEnvironmentExp : SimpleExpressionBase
+    internal sealed class GetEnvironmentExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4693,7 +4727,7 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
-    internal class ExpandEnvironmentsExp : SimpleExpressionBase
+    internal sealed class ExpandEnvironmentsExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4705,14 +4739,14 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
-    internal class EnvironmentsExp : SimpleExpressionBase
+    internal sealed class EnvironmentsExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             return BoxedValue.FromObject(Environment.GetEnvironmentVariables());
         }
     }
-    internal class SetCurrentDirectoryExp : SimpleExpressionBase
+    internal sealed class SetCurrentDirectoryExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4725,21 +4759,21 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
-    internal class GetCurrentDirectoryExp : SimpleExpressionBase
+    internal sealed class GetCurrentDirectoryExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             return Environment.CurrentDirectory;
         }
     }
-    internal class CommandLineExp : SimpleExpressionBase
+    internal sealed class CommandLineExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             return Environment.CommandLine;
         }
     }
-    internal class CommandLineArgsExp : SimpleExpressionBase
+    internal sealed class CommandLineArgsExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4759,28 +4793,28 @@ namespace DotnetStoryScript.DslExpression
             }
         }
     }
-    internal class OsExp : SimpleExpressionBase
+    internal sealed class OsExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             return Environment.OSVersion.VersionString;
         }
     }
-    internal class OsPlatformExp : SimpleExpressionBase
+    internal sealed class OsPlatformExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             return Environment.OSVersion.Platform.ToString();
         }
     }
-    internal class OsVersionExp : SimpleExpressionBase
+    internal sealed class OsVersionExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             return Environment.OSVersion.Version.ToString();
         }
     }
-    internal class GetFullPathExp : SimpleExpressionBase
+    internal sealed class GetFullPathExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4795,7 +4829,7 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
-    internal class GetPathRootExp : SimpleExpressionBase
+    internal sealed class GetPathRootExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4810,28 +4844,28 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
-    internal class GetRandomFileNameExp : SimpleExpressionBase
+    internal sealed class GetRandomFileNameExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             return Path.GetRandomFileName();
         }
     }
-    internal class GetTempFileNameExp : SimpleExpressionBase
+    internal sealed class GetTempFileNameExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             return Path.GetTempFileName();
         }
     }
-    internal class GetTempPathExp : SimpleExpressionBase
+    internal sealed class GetTempPathExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
             return Path.GetTempPath();
         }
     }
-    internal class HasExtensionExp : SimpleExpressionBase
+    internal sealed class HasExtensionExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4846,7 +4880,7 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
-    internal class IsPathRootedExp : SimpleExpressionBase
+    internal sealed class IsPathRootedExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4861,7 +4895,7 @@ namespace DotnetStoryScript.DslExpression
             return ret;
         }
     }
-    internal class GetFileNameExp : SimpleExpressionBase
+    internal sealed class GetFileNameExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4876,7 +4910,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class GetFileNameWithoutExtensionExp : SimpleExpressionBase
+    internal sealed class GetFileNameWithoutExtensionExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4891,7 +4925,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class GetExtensionExp : SimpleExpressionBase
+    internal sealed class GetExtensionExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4906,7 +4940,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class GetDirectoryNameExp : SimpleExpressionBase
+    internal sealed class GetDirectoryNameExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4921,7 +4955,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class CombinePathExp : SimpleExpressionBase
+    internal sealed class CombinePathExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4938,7 +4972,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ChangeExtensionExp : SimpleExpressionBase
+    internal sealed class ChangeExtensionExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -4954,7 +4988,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class QuotePathExp : SimpleExpressionBase
+    internal sealed class QuotePathExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -5017,7 +5051,7 @@ namespace DotnetStoryScript.DslExpression
             }
         }
     }
-    internal class EchoExp : SimpleExpressionBase
+    internal sealed class EchoExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -5047,7 +5081,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class CallStackExp : SimpleExpressionBase
+    internal sealed class CallStackExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -5055,7 +5089,7 @@ namespace DotnetStoryScript.DslExpression
             return BoxedValue.FromObject(r);
         }
     }
-    internal class CallExp : SimpleExpressionBase
+    internal sealed class CallExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -5074,7 +5108,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class ReturnExp : SimpleExpressionBase
+    internal sealed class ReturnExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -5086,7 +5120,7 @@ namespace DotnetStoryScript.DslExpression
             return r;
         }
     }
-    internal class RedirectExp : SimpleExpressionBase
+    internal sealed class RedirectExp : SimpleExpressionBase
     {
         protected override BoxedValue OnCalc(IList<BoxedValue> operands)
         {
@@ -6757,6 +6791,8 @@ namespace DotnetStoryScript.DslExpression
             Register("collectionget", "collectionget api", new ExpressionFactoryHelper<CollectionGetExp>());
             Register("linq", "linq(list,method,arg1,arg2,...) statement", new ExpressionFactoryHelper<LinqExp>());
             Register("isnull", "isnull(obj) api", new ExpressionFactoryHelper<IsNullExp>());
+            Register("null", "null() api", new ExpressionFactoryHelper<NullExp>());
+            Register("equalsnull", "equalsnull(obj) api", new ExpressionFactoryHelper<EqualsNullExp>());
             Register("dotnetload", "dotnetload(dll_path) api", new ExpressionFactoryHelper<DotnetLoadExp>());
             Register("dotnetnew", "dotnetnew(assembly,type_name,arg1,arg2,...) api", new ExpressionFactoryHelper<DotnetNewExp>());
             Register("substring", "substring(str[,start,len]) function", new ExpressionFactoryHelper<SubstringExp>());

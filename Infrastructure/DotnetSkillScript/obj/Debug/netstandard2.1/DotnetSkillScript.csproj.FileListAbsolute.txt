@@ -11,3 +11,5 @@ F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstan
 F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSk.75F1F714.Up2Date
 F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.dll
 F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\obj\Debug\netstandard2.1\DotnetSkillScript.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\ScriptFrameworkLibrary.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetSkillScript\bin\Debug\netstandard2.1\Common.pdb

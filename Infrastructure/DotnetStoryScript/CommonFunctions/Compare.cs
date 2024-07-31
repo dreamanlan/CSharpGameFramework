@@ -414,7 +414,7 @@ namespace DotnetStoryScript.CommonFunctions
                 m_HaveValue = true;
                 var valX = m_X.Value;
                 if (valX.IsObject || valX.IsString) {
-                    m_Value = object.Equals(null, valX.ObjectVal);
+                    m_Value = valX.IsNullObject;
                 }
                 else {
                     m_Value = false;
