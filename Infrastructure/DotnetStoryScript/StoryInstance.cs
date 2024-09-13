@@ -504,7 +504,7 @@ namespace DotnetStoryScript
                         instance.SetVariable(m_ArgumentNames[i], BoxedValue.NullObject);
                 }
             }
-            m_Runtime.Iterator = BoxedValue.NullObject;
+            m_Runtime.Iterator = BoxedValue.From(args.Count);
             m_Runtime.Arguments = m_Arguments;
         }
         private void RefreshCommands(Dsl.FunctionData handlerData)
