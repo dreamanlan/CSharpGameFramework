@@ -214,9 +214,8 @@ namespace DotnetStoryScript
                         SetArgument(StoryArgValue.c_Iterator);
                     }
                     else {
-                        string idName = id.Substring(1);
-                        if (idName.Length > 0 && char.IsDigit(idName[0])) {
-                            SetArgument(int.Parse(idName));
+                        if (id.Length > 1 && char.IsDigit(id[1])) {
+                            SetArgument(int.Parse(id.Substring(1)));
                         }
                         else {
                             SetVariable(id);
@@ -360,8 +359,7 @@ namespace DotnetStoryScript
                             SetArgument(StoryArgValue.c_Iterator);
                         }
                         else {
-                            string idName = id.Substring(1);
-                            if (idName.Length > 0 && char.IsDigit(idName[0])) {
+                            if (id.Length > 1 && char.IsDigit(id[1])) {
                                 SetArgument(int.Parse(id.Substring(1)));
                             }
                             else {
