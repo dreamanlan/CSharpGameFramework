@@ -2,3 +2,14 @@ F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\D
 F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\DotnetStoryScript_dotnet_framework.GeneratedMSBuildEditorConfig.editorconfig
 F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\DotnetStoryScript_dotnet_framework.csproj.CoreCompileInputs.cache
 F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\DotnetStoryScript_dotnet_framework.sourcelink.json
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net48\DotnetStoryScript.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net48\DotnetStoryScript.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net48\Common.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net48\Dsl.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net48\LitJson.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net48\ScriptFrameworkLibrary.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net48\Common.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\bin\Debug\net48\Dsl.pdb
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\DotnetSt.B6BFFA7C.Up2Date
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\DotnetStoryScript.dll
+F:\GitHub\CSharpGameFramework\Infrastructure\DotnetStoryScript\obj\Debug\net48\DotnetStoryScript.pdb
