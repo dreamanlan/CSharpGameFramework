@@ -370,7 +370,7 @@ namespace DotnetStoryScript.CommonFunctions
         private bool m_HaveValue;
         private BoxedValue m_Value;
     }
-    public sealed class IsNullOperator : IStoryFunction
+    public sealed class IsNullFunction : IStoryFunction
     {
         public void InitFromDsl(Dsl.ISyntaxComponent param)
         {
@@ -384,7 +384,7 @@ namespace DotnetStoryScript.CommonFunctions
         }
         public IStoryFunction Clone()
         {
-            IsNullOperator val = new IsNullOperator();
+            IsNullFunction val = new IsNullFunction();
             val.m_X = m_X.Clone();
             val.m_HaveValue = m_HaveValue;
             val.m_Value = m_Value;

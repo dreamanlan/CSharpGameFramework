@@ -352,7 +352,7 @@ namespace DotnetStoryScript
             StoryFunctionManager.Instance.RegisterFunctionFactory("messageid", "messageid() function", new StoryFunctionFactoryHelper<CommonFunctions.MessageIdFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("countcommand", "countcommand(level) function", new StoryFunctionFactoryHelper<CommonFunctions.CountCommandFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("counthandlercommand", "counthandlercommand() function", new StoryFunctionFactoryHelper<CommonFunctions.CountHandlerCommandFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("propget", "propget(name[,defval] function", new StoryFunctionFactoryHelper<CommonFunctions.PropGetFunction>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("propget", "propget(name[,defval]) function", new StoryFunctionFactoryHelper<CommonFunctions.PropGetFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("vector2", "vector2(x,y) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector2Function>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("vector3", "vector3(x,y,z) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector3Function>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("vector4", "vector4(x,y,z,w) function", new StoryFunctionFactoryHelper<CommonFunctions.Vector4Function>());
@@ -474,7 +474,7 @@ namespace DotnetStoryScript
             StoryFunctionManager.Instance.RegisterFunctionFactory("changetype", "changetype(obj,type_obj_or_str) function", new StoryFunctionFactoryHelper<CommonFunctions.ChangeTypeFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("parseenum", "parseenum(type_obj_or_str,enum_val) function", new StoryFunctionFactoryHelper<CommonFunctions.ParseEnumFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("linq", "linq(obj,method,arg1,arg2,...) function", new StoryFunctionFactoryHelper<CommonFunctions.LinqFunction>());
-            StoryFunctionManager.Instance.RegisterFunctionFactory("isnull", "isnull(obj) function", new StoryFunctionFactoryHelper<CommonFunctions.IsNullOperator>());
+            StoryFunctionManager.Instance.RegisterFunctionFactory("isnull", "isnull(obj) function", new StoryFunctionFactoryHelper<CommonFunctions.IsNullFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("substring", "substring(str[,start,len]) function", new StoryFunctionFactoryHelper<CommonFunctions.SubstringFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("newstringbuilder", "newstringbuilder() api", new StoryFunctionFactoryHelper<CommonFunctions.NewStringBuilderFunction>());
             StoryFunctionManager.Instance.RegisterFunctionFactory("stringbuilder_tostring", "stringbuilder_tostring(sb)", new StoryFunctionFactoryHelper<CommonFunctions.StringBuilderToStringFunction>());
